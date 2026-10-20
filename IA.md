@@ -147,11 +147,16 @@ Tabs: Items · Collection log.
 
 ### The notices tray (panel)
 
-`tray.list`: the newest first, grouped by day. Each notice says what happened and links to where to act ("Smithing stopped: out of tin ore · Mine tin"). The away recap lands here too, after it is closed.
+| # | Section (slot) | Filled by | Notes |
+| --- | --- | --- | --- |
+| 1 | `tray.list` | any feature, through events | Newest first, grouped by day. Each notice says what happened and links to where to act ("Smithing stopped: out of tin ore · Mine tin"). The away recap lands here too, after it is closed |
 
 ### Settings (account menu)
 
-Account name, theme (light, dark, system), reduced motion, privacy, terms, sign out; delete account from session 9; email and recovery when the owner switches email on.
+| # | Section (slot) | Filled by | Notes |
+| --- | --- | --- | --- |
+| 1 | `settings.account` | the shell | Account name, theme (light, dark, system), reduced motion, privacy, terms, sign out; delete account from session 9; email and recovery when the owner switches email on |
+| 2 | `settings.extras` | later systems | Empty in version 1; the 48-hour upgrade and cosmetic donations arrive here |
 
 ## 4. Shared components
 

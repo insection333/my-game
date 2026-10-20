@@ -16,22 +16,32 @@ export function levelTimes(rEarly: number, lMid: number, d1 = 30 / 3600): number
 }
 export function fitLevelTimes() {
   let best = { err: Infinity, rE: 0, lm: 0, T: [] as number[] };
-  for (let rE = 1.3; rE <= 2.4; rE += 0.01) for (let lm = 3; lm <= 14; lm += 0.1) {
-    const T = levelTimes(rE, lm);
-    const err = Math.abs(Math.log(T[10])) * 3 + Math.abs(Math.log(T[40] / 490));
-    if (err < best.err) best = { err, rE, lm, T };
-  }
+  for (let rE = 1.3; rE <= 2.4; rE += 0.01)
+    for (let lm = 3; lm <= 14; lm += 0.1) {
+      const T = levelTimes(rE, lm);
+      const err = Math.abs(Math.log(T[10])) * 3 + Math.abs(Math.log(T[40] / 490));
+      if (err < best.err) best = { err, rE, lm, T };
+    }
   return best;
 }
 
-export interface Candidate { id: string; xpPerSec: number; spa: number; hpXpPerSec?: number }
+export interface Candidate {
+  id: string;
+  xpPerSec: number;
+  spa: number;
+  hpXpPerSec?: number;
+}
 export type Candidates = (level: number, done: Map<string, number>, fire: boolean) => Candidate[];
 
-export const gatherCandidates = (skill: 'woodcutting' | 'mining'): Candidates => (level, done, fire) =>
-  (skill === 'woodcutting' ? WOODCUTTING : MINING).filter((a) => a.level <= level).map((a) => {
-    const r = actionRate(skill, level, a, done.get(a.id) ?? 0, fire);
-    return { id: a.id, xpPerSec: r.xpPerAction / r.secondsPerAction, spa: r.secondsPerAction };
-  });
+export const gatherCandidates =
+  (skill: 'woodcutting' | 'mining'): Candidates =>
+  (level, done, fire) =>
+    (skill === 'woodcutting' ? WOODCUTTING : MINING)
+      .filter((a) => a.level <= level)
+      .map((a) => {
+        const r = actionRate(skill, level, a, done.get(a.id) ?? 0, fire);
+        return { id: a.id, xpPerSec: r.xpPerAction / r.secondsPerAction, spa: r.secondsPerAction };
+      });
 
 export const smithingCandidates: Candidates = (level, done, fire) =>
   SMITHING.filter((r) => r.level <= level).map((r) => {
@@ -50,37 +60,57 @@ export function combatOdds(style: Style, level: number, hpLevel: number, foeId: 
   return oddsCache.get(key)!;
 }
 // A player training one combat style, against every foe their Hitpoints level has opened.
-export const combatCandidates = (style: Style, hpLevelOf: () => number): Candidates => (level, _done, fire) =>
-  FOES.filter((f) => f.hitpoints <= hpLevelOf()).map((f) => {
-    const o = combatOdds(style, level, hpLevelOf(), f.id);
-    const ok = o.verdict === 'Easy' || o.verdict === 'Fair'; // a sensible player avoids costly fights
-    const xps = ok ? (o.xpPerHour / 3600) * (fire ? 1.15 : 1) : 0;
-    return { id: f.id, xpPerSec: xps, spa: 3600 / o.killsPerHour, hpXpPerSec: xps * HP_XP_SHARE };
-  });
+export const combatCandidates =
+  (style: Style, hpLevelOf: () => number): Candidates =>
+  (level, _done, fire) =>
+    FOES.filter((f) => f.hitpoints <= hpLevelOf()).map((f) => {
+      const o = combatOdds(style, level, hpLevelOf(), f.id);
+      const ok = o.verdict === 'Easy' || o.verdict === 'Fair'; // a sensible player avoids costly fights
+      const xps = ok ? (o.xpPerHour / 3600) * (fire ? 1.15 : 1) : 0;
+      return { id: f.id, xpPerSec: xps, spa: 3600 / o.killsPerHour, hpXpPerSec: xps * HP_XP_SHARE };
+    });
 
-export const levelFromTable = (table: number[], xp: number) => { let l = 1; while (l < 40 && xp >= table[l + 1]) l++; return l; };
+export const levelFromTable = (table: number[], xp: number) => {
+  let l = 1;
+  while (l < 40 && xp >= table[l + 1]) l++;
+  return l;
+};
 
 // A focused player: one active hour with the fire at the start of each day, then away.
 // 'derive' (given T) records XP at each target time; 'verify' (given table) records when each level lands.
-export function simulate(cands: Candidates, opts: { days: number; T?: number[]; table?: number[]; step?: number; onHp?: (xp: number) => void }) {
+export function simulate(
+  cands: Candidates,
+  opts: { days: number; T?: number[]; table?: number[]; step?: number; onHp?: (xp: number) => void },
+) {
   const doneAt: Map<string, number>[] = [];
   const step = opts.step ?? 30;
   const done = new Map<string, number>();
-  let xp = 0, current = '';
+  let xp = 0,
+    current = '';
   const derived: number[] = [0, 0];
   const reached: number[] = [0, 0];
   for (let t = 0; t < opts.days * 86400; t += step) {
     const active = (t / 3600) % 24 < 1;
     let level: number;
     if (opts.table) level = levelFromTable(opts.table, xp);
-    else { level = 1; while (level < 40 && t / 3600 >= opts.T![level + 1]) level++; while (derived.length <= level) derived.push(xp); }
+    else {
+      level = 1;
+      while (level < 40 && t / 3600 >= opts.T![level + 1]) level++;
+      while (derived.length <= level) derived.push(xp);
+    }
     const list = cands(level, done, active);
     if (active || !current) current = list.reduce((a, b) => (b.xpPerSec > a.xpPerSec ? b : a)).id;
     const use = list.find((c) => c.id === current)!;
     xp += use.xpPerSec * step;
     if (use.hpXpPerSec && opts.onHp) opts.onHp(use.hpXpPerSec * step);
     done.set(current, (done.get(current) ?? 0) + step / use.spa);
-    if (opts.table) { const l2 = levelFromTable(opts.table, xp); while (reached.length <= l2) { reached.push((t + step) / 3600); doneAt[reached.length - 1] = new Map(done); } }
+    if (opts.table) {
+      const l2 = levelFromTable(opts.table, xp);
+      while (reached.length <= l2) {
+        reached.push((t + step) / 3600);
+        doneAt[reached.length - 1] = new Map(done);
+      }
+    }
   }
   return { derived, reached, xp, done, doneAt };
 }

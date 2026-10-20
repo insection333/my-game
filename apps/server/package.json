@@ -1,0 +1,5 @@
+{
+  "name": "@idle-clash/server",
+  "private": true,
+  "type": "module"
+}

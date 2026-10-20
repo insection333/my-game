@@ -22,7 +22,21 @@ for (const f of FOES) {
   while (at(hp, maxHit + 5).foodPerHour <= FOOD_PER_HOUR && maxHit < 600) maxHit += 5;
   const kph = at(hp, maxHit).killsPerHour;
   const o = at(hp, maxHit);
-  out[f.id] = [hp, maxHit, Math.round(hp * XP_PER_DAMAGE_BY_TIER[f.tier - 1]), Math.max(1, Math.round(GOLD_PER_HOUR[tier - 1] / kph))];
-  console.log(f.id.padEnd(15), 'xp/h', Math.round(o.xpPerHour), 'target', Math.round(TIER_XP_PER_HOUR[tier - 1] * 1.1), 'food/h', o.foodPerHour.toFixed(1), o.verdict);
+  out[f.id] = [
+    hp,
+    maxHit,
+    Math.round(hp * XP_PER_DAMAGE_BY_TIER[f.tier - 1]),
+    Math.max(1, Math.round(GOLD_PER_HOUR[tier - 1] / kph)),
+  ];
+  console.log(
+    f.id.padEnd(15),
+    'xp/h',
+    Math.round(o.xpPerHour),
+    'target',
+    Math.round(TIER_XP_PER_HOUR[tier - 1] * 1.1),
+    'food/h',
+    o.foodPerHour.toFixed(1),
+    o.verdict,
+  );
 }
 writeFileSync(new URL('./foe-stats.json', import.meta.url), JSON.stringify(out, null, 1) + '\n');

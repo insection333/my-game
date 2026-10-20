@@ -23,18 +23,26 @@ export type Unlock =
   | { type: 'foe'; name: string }
   | { type: 'perk'; name: string; effect: Effect };
 
-interface PerkLine { name: string; effect: (rank: number) => Effect }
+interface PerkLine {
+  name: string;
+  effect: (rank: number) => Effect;
+}
 const roman = (n: number) => ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'][n - 1];
 
 function fillPerks(table: Map<number, Unlock[]>, lines: PerkLine[], capstone?: Unlock) {
   const ranks = lines.map(() => 0);
   let next = 0;
   for (let lvl = 2; lvl <= 40; lvl++) {
-    if (lvl === 40 && capstone) { table.get(40)!.push(capstone); continue; }
+    if (lvl === 40 && capstone) {
+      table.get(40)!.push(capstone);
+      continue;
+    }
     if (table.get(lvl)!.length) continue;
     const i = next++ % lines.length;
     ranks[i]++;
-    table.get(lvl)!.push({ type: 'perk', name: `${lines[i].name} ${roman(ranks[i])}`, effect: lines[i].effect(ranks[i]) });
+    table
+      .get(lvl)!
+      .push({ type: 'perk', name: `${lines[i].name} ${roman(ranks[i])}`, effect: lines[i].effect(ranks[i]) });
   }
 }
 const empty = () => new Map(Array.from({ length: 40 }, (_, i) => [i + 1, [] as Unlock[]]));
@@ -52,15 +60,23 @@ export function unlockTable(skill: SkillId): Map<number, Unlock[]> {
     const actions = skill === 'woodcutting' ? WOODCUTTING : MINING;
     for (const a of actions) t.get(a.level)!.push({ type: 'action', name: a.name });
     const [verb, eye] = skill === 'woodcutting' ? ['swing', "Woodsman's eye"] : ['strike', "Prospector's eye"];
-    fillPerks(t, gatherLines(verb, eye), { type: 'perk', name: `Master ${skill === 'woodcutting' ? 'woodcutter' : 'miner'}`, effect: { kind: 'extraYield', pct: 10 } });
+    fillPerks(t, gatherLines(verb, eye), {
+      type: 'perk',
+      name: `Master ${skill === 'woodcutting' ? 'woodcutter' : 'miner'}`,
+      effect: { kind: 'extraYield', pct: 10 },
+    });
   } else if (skill === 'smithing') {
     for (const r of SMITHING) t.get(r.level)!.push({ type: 'recipe', name: r.name });
-    fillPerks(t, [
-      { name: 'Steady forge', effect: () => ({ kind: 'speed', pct: 3 }) },
-      { name: 'Thrifty', effect: () => ({ kind: 'saveInput', pct: 4 }) },
-      { name: "Smith's eye", effect: () => ({ kind: 'findChance', pct: 8 }) },
-      { name: 'Practised hands', effect: () => ({ kind: 'masteryGain', pct: 8 }) },
-    ], { type: 'perk', name: 'Master smith', effect: { kind: 'saveInput', pct: 8 } });
+    fillPerks(
+      t,
+      [
+        { name: 'Steady forge', effect: () => ({ kind: 'speed', pct: 3 }) },
+        { name: 'Thrifty', effect: () => ({ kind: 'saveInput', pct: 4 }) },
+        { name: "Smith's eye", effect: () => ({ kind: 'findChance', pct: 8 }) },
+        { name: 'Practised hands', effect: () => ({ kind: 'masteryGain', pct: 8 }) },
+      ],
+      { type: 'perk', name: 'Master smith', effect: { kind: 'saveInput', pct: 8 } },
+    );
   } else if (skill === 'hitpoints') {
     for (const tier of TIERS) t.get(tier.level)!.push({ type: 'tier', name: `Wear ${tier.metal} armour` });
     for (const f of FOES) t.get(f.hitpoints)!.push({ type: 'foe', name: f.name });
@@ -84,12 +100,16 @@ export function unlockTable(skill: SkillId): Map<number, Unlock[]> {
       archery: ['Drawn deep', 'Steady aim', 'Light step', 'Spoils of the hunt'],
       magic: ['Kindled will', 'Focus', 'Ward', 'Spoils of the wild'],
     }[skill];
-    fillPerks(t, [
-      { name: names[0], effect: () => ({ kind: 'damage', pct: 3 }) },
-      { name: names[1], effect: () => ({ kind: 'accuracy', pct: 2 }) },
-      { name: names[2], effect: () => ({ kind: 'guard', pct: 2.5 }) },
-      { name: names[3], effect: () => ({ kind: 'spoils', pct: 6 }) },
-    ], { type: 'perk', name: `Master of ${skill}`, effect: { kind: 'damage', pct: 8 } });
+    fillPerks(
+      t,
+      [
+        { name: names[0], effect: () => ({ kind: 'damage', pct: 3 }) },
+        { name: names[1], effect: () => ({ kind: 'accuracy', pct: 2 }) },
+        { name: names[2], effect: () => ({ kind: 'guard', pct: 2.5 }) },
+        { name: names[3], effect: () => ({ kind: 'spoils', pct: 6 }) },
+      ],
+      { type: 'perk', name: `Master of ${skill}`, effect: { kind: 'damage', pct: 8 } },
+    );
   }
   return t;
 }
@@ -105,7 +125,8 @@ export function perkTotal(skill: SkillId, level: number, kind: Effect['kind']): 
   let sum = 0;
   for (const [lvl, list] of tables.get(skill)!) {
     if (lvl > level) continue;
-    for (const u of list) if (u.type === 'perk' && u.effect.kind === kind) sum += 'pct' in u.effect ? u.effect.pct : u.effect.amount;
+    for (const u of list)
+      if (u.type === 'perk' && u.effect.kind === kind) sum += 'pct' in u.effect ? u.effect.pct : u.effect.amount;
   }
   totals.set(key, sum);
   return sum;

@@ -1,9 +1,7 @@
 // Design-time content for Idle Clash version 1. This is the paper model's data;
 // session 3 onward moves it into packages/features/*/content.ts behind Zod schemas.
 
-export type SkillId =
-  | 'woodcutting' | 'mining' | 'smithing'
-  | 'melee' | 'archery' | 'magic' | 'hitpoints';
+export type SkillId = 'woodcutting' | 'mining' | 'smithing' | 'melee' | 'archery' | 'magic' | 'hitpoints';
 export type Style = 'melee' | 'archery' | 'magic';
 
 export const SKILLS: { id: SkillId; name: string; lane: 'gathering' | 'artisan' | 'combat' }[] = [
@@ -36,8 +34,17 @@ export const VALUE = {
 };
 
 export interface GatherAction {
-  id: string; skill: 'woodcutting' | 'mining'; name: string; level: number; tier: number;
-  kind: 'standard' | 'rich'; seconds: number; xp: number; item: string; qty: number; findMult: number;
+  id: string;
+  skill: 'woodcutting' | 'mining';
+  name: string;
+  level: number;
+  tier: number;
+  kind: 'standard' | 'rich';
+  seconds: number;
+  xp: number;
+  item: string;
+  qty: number;
+  findMult: number;
 }
 
 function gatherActions(skill: 'woodcutting' | 'mining'): GatherAction[] {
@@ -46,11 +53,36 @@ function gatherActions(skill: 'woodcutting' | 'mining'): GatherAction[] {
     const i = t.tier - 1;
     const res = skill === 'woodcutting' ? `${t.log} logs` : t.ore;
     const base = skill === 'woodcutting' ? `${t.log} tree` : `${t.ore.replace(' ore', '')} vein`;
-    const rich = skill === 'woodcutting' ? `Old ${t.log.toLowerCase()}` : `Deep ${t.ore.replace(' ore', '').toLowerCase()} seam`;
+    const rich =
+      skill === 'woodcutting' ? `Old ${t.log.toLowerCase()}` : `Deep ${t.ore.replace(' ore', '').toLowerCase()} seam`;
     const s = TIER_SECONDS[i];
     const xp = Math.round((TIER_XP_PER_HOUR[i] * s) / 3600);
-    out.push({ id: `${skill}.${i + 1}`, skill, name: base, level: t.level, tier: t.tier, kind: 'standard', seconds: s, xp, item: res, qty: 1, findMult: 1 });
-    out.push({ id: `${skill}.${i + 1}r`, skill, name: rich, level: t.level + 4, tier: t.tier, kind: 'rich', seconds: s * 1.5, xp: Math.round(xp * 1.3), item: res, qty: 2, findMult: 1.5 });
+    out.push({
+      id: `${skill}.${i + 1}`,
+      skill,
+      name: base,
+      level: t.level,
+      tier: t.tier,
+      kind: 'standard',
+      seconds: s,
+      xp,
+      item: res,
+      qty: 1,
+      findMult: 1,
+    });
+    out.push({
+      id: `${skill}.${i + 1}r`,
+      skill,
+      name: rich,
+      level: t.level + 4,
+      tier: t.tier,
+      kind: 'rich',
+      seconds: s * 1.5,
+      xp: Math.round(xp * 1.3),
+      item: res,
+      qty: 2,
+      findMult: 1.5,
+    });
   }
   return out;
 }
@@ -58,8 +90,15 @@ export const WOODCUTTING = gatherActions('woodcutting');
 export const MINING = gatherActions('mining');
 
 export interface Recipe {
-  id: string; name: string; level: number; tier: number; kind: string;
-  inputs: Record<string, number>; seconds: number; xp: number; value: number;
+  id: string;
+  name: string;
+  level: number;
+  tier: number;
+  kind: string;
+  inputs: Record<string, number>;
+  seconds: number;
+  xp: number;
+  value: number;
 }
 // Offsets within each tier's ten levels: bar 0, sword 1, staff 2, bow 3, helm 5, legs 6, body 8.
 const GEAR: { kind: string; offset: number; bars: number; logs: number }[] = [
@@ -83,8 +122,15 @@ export const SMITHING: Recipe[] = TIERS.flatMap((t) => {
   const barInputs = BAR_INPUTS[t.tier];
   const barUnits = Object.values(barInputs).reduce((a, b) => a + b, 0);
   const bar: Recipe = {
-    id: `smithing.bar${t.tier}`, name: `${t.metal} bar`, level: t.level, tier: t.tier, kind: 'bar',
-    inputs: barInputs, seconds: unit * barUnits, xp: 0, value: VALUE.bar[i],
+    id: `smithing.bar${t.tier}`,
+    name: `${t.metal} bar`,
+    level: t.level,
+    tier: t.tier,
+    kind: 'bar',
+    inputs: barInputs,
+    seconds: unit * barUnits,
+    xp: 0,
+    value: VALUE.bar[i],
   };
   bar.xp = Math.round(rate * bar.seconds);
   const gear = GEAR.map((g): Recipe => {
@@ -92,8 +138,14 @@ export const SMITHING: Recipe[] = TIERS.flatMap((t) => {
     if (g.logs) inputs[`${t.log} logs`] = g.logs;
     const seconds = unit * (g.bars + g.logs);
     return {
-      id: `smithing.${g.kind}${t.tier}`, name: `${t.metal} ${g.kind}`, level: t.level + g.offset, tier: t.tier,
-      kind: g.kind, inputs, seconds, xp: Math.round(rate * seconds),
+      id: `smithing.${g.kind}${t.tier}`,
+      name: `${t.metal} ${g.kind}`,
+      level: t.level + g.offset,
+      tier: t.tier,
+      kind: g.kind,
+      inputs,
+      seconds,
+      xp: Math.round(rate * seconds),
       value: Math.round((g.bars * VALUE.bar[i] + g.logs * VALUE.log[i]) * 1.4),
     };
   });
@@ -102,16 +154,33 @@ export const SMITHING: Recipe[] = TIERS.flatMap((t) => {
 
 // [hp, maxHit, xp per kill, gold per kill], written by design/model/calibrate.ts
 import FOE_STATS_JSON from './foe-stats.json' with { type: 'json' };
-export const FOE_STATS = FOE_STATS_JSON as Record<string, [number, number, number, number]>;
+export const FOE_STATS = FOE_STATS_JSON as unknown as Record<string, [number, number, number, number]>;
 
 export interface Foe {
-  id: string; name: string; style: Style; level: number; hp: number; maxHit: number; xp: number;
-  hitpoints: number; gold: number; drop: string; tier: number;
+  id: string;
+  name: string;
+  style: Style;
+  level: number;
+  hp: number;
+  maxHit: number;
+  xp: number;
+  hitpoints: number;
+  gold: number;
+  drop: string;
+  tier: number;
 }
 export const beatenBy: Record<Style, Style> = { archery: 'melee', magic: 'archery', melee: 'magic' };
 // A foe opens at a Hitpoints level, so every style can reach it. hp, maxHit, xp and gold are calibrated
 // by design/model/calibrate.ts against the intended matchup: the style that beats it, in tier gear.
-const foe = (id: string, name: string, style: Style, level: number, hitpoints: number, drop: string, tier: number): Foe => {
+const foe = (
+  id: string,
+  name: string,
+  style: Style,
+  level: number,
+  hitpoints: number,
+  drop: string,
+  tier: number,
+): Foe => {
   const [hp, maxHit, xp, gold] = FOE_STATS[id] ?? [100, 10, 36, 1];
   return { id, name, style, level, hitpoints, drop, tier, hp, maxHit, xp, gold };
 };
@@ -145,17 +214,45 @@ export const RARITY = [
   { id: 'legendary', name: 'Legendary', chance: 1 / 5000 },
 ] as const;
 export const FINDS: Record<Exclude<SkillId, 'hitpoints'>, [string, string][]> = {
-  woodcutting: [["Bird's nest", 'Amber nugget'], ['Carved acorn', 'Heartwood knot'], ['Silverbark seed', 'Crown of the old wood']],
-  mining: [['Rough garnet', 'Rough sapphire'], ['Ancient coin', 'Crystal geode'], ['Star-iron shard', 'Heart of the mountain']],
-  smithing: [['Lucky horseshoe', 'Masterwork rivets'], ["Guild smith's seal", 'Quenching flask'], ['Ember of the first forge', "Old king's hammer"]],
-  melee: [['Battle trophy', "Raider's war-horn"], ['Torn banner', "Warlord's seal"], ['Shard of a king’s blade', "Troll-chief's tooth"]],
-  archery: [['Goose fletchings', "Hunter's charm"], ['Silver arrowhead', "Bowman's ring"], ['Moonlit bowstring', 'Eagle-feather circlet']],
-  magic: [['Glimmer stone', 'Wisp lantern'], ['Rune-scratched tablet', "Wight's ring"], ['Star-glass orb', "Sorcerer's eye"]],
+  woodcutting: [
+    ["Bird's nest", 'Amber nugget'],
+    ['Carved acorn', 'Heartwood knot'],
+    ['Silverbark seed', 'Crown of the old wood'],
+  ],
+  mining: [
+    ['Rough garnet', 'Rough sapphire'],
+    ['Ancient coin', 'Crystal geode'],
+    ['Star-iron shard', 'Heart of the mountain'],
+  ],
+  smithing: [
+    ['Lucky horseshoe', 'Masterwork rivets'],
+    ["Guild smith's seal", 'Quenching flask'],
+    ['Ember of the first forge', "Old king's hammer"],
+  ],
+  melee: [
+    ['Battle trophy', "Raider's war-horn"],
+    ['Torn banner', "Warlord's seal"],
+    ['Shard of a king’s blade', "Troll-chief's tooth"],
+  ],
+  archery: [
+    ['Goose fletchings', "Hunter's charm"],
+    ['Silver arrowhead', "Bowman's ring"],
+    ['Moonlit bowstring', 'Eagle-feather circlet'],
+  ],
+  magic: [
+    ['Glimmer stone', 'Wisp lantern'],
+    ['Rune-scratched tablet', "Wight's ring"],
+    ['Star-glass orb', "Sorcerer's eye"],
+  ],
 };
 
 // Mastery: cumulative completions for steps 1-10, and what each step gives.
 export const MASTERY_STEPS = [30, 90, 210, 450, 900, 1800, 3600, 7200, 14400, 28800];
 export const MASTERY_PER_STEP = { speed: 0.03, extraYield: 0.06, findChance: 0 };
 
-export const STOREHOUSE = { startSlots: 24, slotsPerEnlargement: 6, costs: [40000, 90000, 100000, 120000, 180000, 200000, 230000, 250000] };
+export const STOREHOUSE = {
+  startSlots: 24,
+  slotsPerEnlargement: 6,
+  costs: [40000, 90000, 100000, 120000, 180000, 200000, 230000, 250000],
+};
 export const FIRE = { xpBonus: 0.15, extraGatheringLanes: 1, idleMinutesBeforeOut: 5 };
