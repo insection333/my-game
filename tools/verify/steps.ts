@@ -1,6 +1,6 @@
 // The nine steps of pnpm verify, in the brief's order. A step that is not built yet says so and
 // names its session; once the thing it checks exists, an unbuilt step fails instead of skipping.
-import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { bin, exec, node, ROOT } from './exec.ts';
 import { allStringKeys } from '@idle-clash/content';
@@ -118,6 +118,15 @@ async function tests(): Promise<StepResult> {
 }
 
 async function simulation(): Promise<StepResult> {
+  // The real simulation: simulated players on the real engine for every built skill.
+  const sim = await node('tools/sim/run.ts');
+  mkdirSync(join(ROOT, '.verify'), { recursive: true });
+  writeFileSync(join(ROOT, '.verify/simulation.md'), sim.output);
+  const simPassed = (sim.output.match(/^PASS /gm) ?? []).length;
+  const simFailed = sim.output.split('\n').filter((l) => /^FAIL /.test(l));
+  if (sim.code !== 0)
+    return fail('the simulation misses a target', simFailed.length ? simFailed.join('\n') : sim.output);
+  // The paper model still stands in for what is not built yet (other skills, combat, gold, goals).
   const reportPath = 'design/model/report.md';
   const before = read(reportPath);
   const r = await node('design/model/checks2.ts');
@@ -131,10 +140,11 @@ async function simulation(): Promise<StepResult> {
         .join('\n'),
     );
   if (read(reportPath) !== before) return fail("the model's report changed: run pnpm design:build and commit");
-  return pass(`paper model: ${checks} target checks (the real simulation replaces it in session 6)`);
+  return pass(
+    `real engine: ${simPassed} checks for the built skills (.verify/simulation.md); paper model: ${checks} for the rest`,
+  );
 }
 
-// Steps 6 to 9 share one build and one server (web/session.ts); each builds it if needed.
 async function screenshots(): Promise<StepResult> {
   const err = await ensureBuilt();
   if (err) return fail('the web app failed to build', err);

@@ -92,6 +92,7 @@ export const en: Record<string, string> = {
   'stop.stoppedByPlayer': 'Stopped',
   'stop.mended': 'Stopped while your save was mended',
   'stop.levelTooLow': 'Needs level {level}',
+  'stop.skillInOtherLane': 'Already working in your other Gathering lane',
 
   // Effects: what perks and mastery do
   'effect.speed': '{pct} faster',

@@ -26,7 +26,14 @@ export interface Engine {
 }
 
 /** Every stop code the kernel itself gives; features declare their own in their manifest. */
-export const KERNEL_STOP_CODES = ['unavailable', 'wrongLane', 'fireOut', 'stoppedByPlayer', 'mended'] as const;
+export const KERNEL_STOP_CODES = [
+  'unavailable',
+  'wrongLane',
+  'fireOut',
+  'stoppedByPlayer',
+  'mended',
+  'skillInOtherLane',
+] as const;
 
 const reason = (code: string, detail?: Record<string, string | number>): StopReason =>
   detail ? { code, detail } : { code };
@@ -62,6 +69,11 @@ export function createEngine(registry: ActionRegistry, config: KernelConfig = DE
     if (!rules) return reason('unavailable', { action: actionKey(action) });
     if (rules.lane !== laneKind(lane)) return reason('wrongLane', { action: actionKey(action) });
     if (lane === 'gathering2' && !(at < s.fireUntil)) return reason('fireOut');
+    // The fire's second Gathering lane is for a second skill (cut wood and mine at once), not twice one.
+    if (laneKind(lane) === 'gathering') {
+      const other = s.lanes[lane === 'gathering' ? 'gathering2' : 'gathering'].current;
+      if (other && other.action.feature === action.feature) return reason('skillInOtherLane');
+    }
     const why = rules.check(context(s, lane, at, rng, events, false), action);
     if (why) return why;
     const ms = Math.round(rules.duration(context(s, lane, at, rng, events), action));
