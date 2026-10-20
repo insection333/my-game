@@ -29,7 +29,7 @@ All game logic lives in feature folders on a small kernel. The apps only host fe
 
 | Package | Holds | May import | Built in |
 | --- | --- | --- | --- |
-| `@idle-clash/kernel` | The state schema and its versions, time, randomness, `advance`, lanes and the Next queue, events, saves, one-at-a-time requests | nothing in the workspace | Session 2 |
+| `@idle-clash/kernel` | The state schema and its versions, time, randomness, `advance`, lanes and the Next queue, events, mending, one-at-a-time requests. Its subpath `@idle-clash/kernel/store` holds the SQLite store and is for the server only | nothing in the workspace | Session 2 (built) |
 | `@idle-clash/content` | Content schemas (Zod), the effect kinds with their handlers and text formatters, the strings file and glossary | kernel | Session 3 |
 | `@idle-clash/ui` | Design tokens and about ten components | nothing in the workspace | Session 4 |
 | `@idle-clash/features` | The registry and one folder per feature | kernel, content, ui | From session 3 |
@@ -44,14 +44,21 @@ Two rules hold on top of the table: **a feature never imports another feature**,
 ## 3. The engine
 
 ```ts
-advance(state: State, now: number, rng: Rng): { state: State; events: GameEvent[] }
+const engine = createEngine(registry);          // registry: every feature's action rules
+engine.advance(state, now, rng)        → { state, events }
+engine.command(state, now, cmd, rng)   → { state, events, result }
 ```
 
-- **Pure.** Time (`now`, milliseconds) and randomness (`rng`, seeded and stored in the state) are passed in, never read. The same inputs always give the same result.
-- **Composable.** Advancing from a to b and then b to c gives exactly the state of advancing from a to c. Session 2 proves this with property tests.
-- **Lanes.** Gathering (and a second Gathering lane while the fire burns), Artisan and Combat. Each runs one action and repeats it; a queued Next action starts when the current one stops, and the stop always carries a reason.
-- **Time away.** Completions per lane are counted from elapsed time rather than stepped one by one; finds are rolled in batches; everything is capped at 24 hours after the player's last visit.
-- **Events** are a typed union (`levelUp`, `find`, `masteryStep`, `goalDone`, `laneStopped`, and so on). Goals, the away recap, notices, telemetry and the live channel all read the same events.
+- **Pure.** Time (`now`, milliseconds) and randomness are passed in, never read. The input state is never changed; a new one is returned.
+- **Randomness by counter.** `seeded(seed)` gives `rng(stream, counter)`: a number in [0, 1) that depends only on the seed, the stream (each lane is one) and that lane's draw count, which the state keeps. So a result never depends on how time was split between calls or on the order lanes are looked at.
+- **Lanes run in time order.** `advance` repeatedly takes the earliest thing due on any lane (a completion, or the fire going out on the second Gathering lane); ties go to the earlier lane in `gathering, gathering2, artisan, combat`. One lane can therefore feed another exactly as it would in real time: a forge that smelts faster than the mine digs runs dry at the right moment. A day of three busy lanes catches up in milliseconds.
+- **Composable.** Advancing a to b to c gives exactly a to c, with any commands in between. A property test checks this on random scenarios, and every state the engine produces is checked against the save format.
+- **Actions** come from features as `ActionRules`: `check` (why it cannot start, or null), `duration` (may roll), `complete` (take inputs, give outputs, add XP, emit events). A completion counts towards the action's mastery. An action repeats until `check` refuses it; then the lane stops with that reason and its queued Next action starts.
+- **Time away.** Lanes run until 24 hours after the last input, then rest. The next command shifts resting actions forward, so they resume where they were, with no burst of instant completions.
+- **The fire.** Every command lights it for 5 minutes (`fireUntil`). Actions read `ctx.fireBurning` for the XP bonus. The second Gathering lane runs only while it burns and stops with `fireOut` when it goes out.
+- **Commands:** `start`, `queueNext`, `clearNext`, `stop` and `stoke`, each validated by a Zod schema. Starting the action a lane is already doing keeps its progress.
+- **Events** are a typed union that features extend by augmenting `EventMap`. The kernel itself emits only `laneStopped` (with its reason) and `nextStarted`, never one event per completion: the away recap compares states before and after.
+- **Mending.** `load(raw, now)` upgrades an old save to the current version, then `mend` keeps every sound part and repairs or drops the rest. It reports each repair in plain words. Times ahead of the server's clock count as damage. A property test feeds it arbitrary junk at every level of a real save: the result is always a valid save the engine can advance.
 
 ## 4. Features
 
@@ -76,16 +83,18 @@ Descriptions are generated from numbers by the shared formatter and are never wr
 ## 5. Requests and the server
 
 - **The server is the authority.** The page shows state and sends requests; the server resolves every action.
-- **One at a time per player.** Each player's requests run through a queue, so two never interleave.
-- **Request ids.** Every action carries one; the server remembers recent results, so a double click or a retry does nothing twice.
-- **The live channel.** One WebSocket per page, carrying the same typed events the engine produces.
-- **Accounts.** Name and password (Argon2id); rate-limited sign-in and sign-up; secure session tokens. Email confirmation and recovery are built behind a switch that stays off until the owner turns it on; until then the admin page resets passwords.
+- **One at a time per player.** `PlayerQueue` runs each player's requests in order, even when a handler awaits (password hashing, I/O). Different players run side by side.
+- **Request ids.** `handle(queue, store, player, requestId, now, handler)` loads the save, returns the stored answer if this id was already handled, and otherwise writes the new state together with the id in one write. The save remembers its last 50 ids, so a double click or a retry does nothing twice.
+- **The live channel** (session 5): one WebSocket per page, carrying the same typed events the engine produces.
+- **Accounts** (session 5): name and password (Argon2id); rate-limited sign-in and sign-up; secure session tokens. Email confirmation and recovery are built behind a switch that stays off until the owner turns it on; until then the admin page resets passwords.
 
 ## 6. Persistence
 
-- SQLite in one file, in write-ahead mode, through Drizzle so it can move to Postgres later.
-- One row per player holding a versioned document. Migrations live in files, and each version has a sample save that tests load against current content.
-- A damaged save is mended where possible, with what was mended logged, rather than refused.
+- **SQLite** in one file, in write-ahead mode, through Drizzle (`better-sqlite3`, which ships prebuilt binaries for every platform). Drizzle keeps a later move to Postgres open.
+- **The `saves` table** has one row per player: the JSON save document, its format version, and a revision. A write succeeds only if the revision is still the one read (`SaveConflict` otherwise), and only if the document passes the schema.
+- **Reads mend.** A damaged save is mended on read, its original is kept in `damaged_saves` with the list of repairs, and the mended save is written back.
+- **Migrations** live in `packages/kernel/migrations`, generated by drizzle-kit from `src/store/schema.ts` (`pnpm --filter @idle-clash/kernel db:generate`), and are applied when the store opens.
+- **Save versions.** `SAVE_VERSION` is 1. A format change adds an upgrade in `versions.ts` and keeps a sample of the old version in `packages/kernel/tests/saves/` for good; tests load every sample.
 
 ## 7. The web shell
 

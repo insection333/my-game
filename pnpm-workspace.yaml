@@ -2,3 +2,8 @@ packages:
   - packages/*
   - apps/*
   - tools
+onlyBuiltDependencies:
+  - esbuild
+# better-sqlite3 ships prebuilt binaries for every platform; its implicit node-gyp rebuild is not needed.
+ignoredBuiltDependencies:
+  - better-sqlite3

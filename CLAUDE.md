@@ -51,6 +51,7 @@ To change the game design: edit the model in `design/model/` or the template, ru
 ## Environment
 
 - Node 22.18 or newer (`.nvmrc` pins 22.22.0) runs TypeScript directly; pnpm 10.28 (`packageManager` in `package.json`).
+- `better-sqlite3` loads its bundled prebuilt binary; its install-time rebuild is switched off in `pnpm-workspace.yaml` (it would download Node headers, which this workspace cannot reach).
 - Playwright browsers for steps 6 and 7 (from session 4) download from `cdn.playwright.dev` and `playwright.download.prss.microsoft.com`; the owner has allowed both.
 - The domain is idleclash.com; there is no server yet (session 10). Transactional email stays off until the owner says otherwise.
 
@@ -60,6 +61,7 @@ To change the game design: edit the model in `design/model/` or the template, ru
 | --- | --- |
 | 0 Design on paper | Done: `GAME_DESIGN.md`, `IA.md`, `GLOSSARY.md`; every target passes in the paper model |
 | 1 Workspace and verify | Done: seven packages; `pnpm verify` green locally and on GitHub Actions (steps 6–9 arrive in session 4) |
-| 2 The kernel | Next |
+| 2 The kernel | Done: `advance` composes (property-tested), saves round-trip and mend, requests never interleave and act once |
+| 3 The feature framework | Next |
 
 Outstanding: nothing beyond the next session.
