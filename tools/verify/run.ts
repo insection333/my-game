@@ -21,6 +21,15 @@ export interface RunOptions {
   only?: number[];
   print: (line: string) => void;
   now?: () => number;
+  /** On GitHub Actions: also print each failure as an annotation, readable through the API. */
+  annotate?: boolean;
+}
+
+/** A GitHub Actions error annotation for a failed step. */
+export function annotation(step: Step, result: StepResult): string {
+  const esc = (s: string) => s.replace(/%/g, '%25').replace(/\r/g, '%0D').replace(/\n/g, '%0A');
+  const body = `${result.summary}\n${result.detail ?? ''}`.slice(0, 6000);
+  return `::error title=verify step ${step.n} (${step.name})::${esc(body)}`;
 }
 
 const LABEL: Record<Status, string> = { pass: 'pass', fail: 'FAIL', skip: 'skip' };
@@ -50,6 +59,7 @@ export async function runSteps(steps: Step[], opts: RunOptions): Promise<number>
     counts[result.status]++;
     opts.print(formatLine(step, result, (now() - start) / 1000));
     if (result.status === 'fail' && result.detail) opts.print(indent(result.detail.trim()));
+    if (result.status === 'fail' && opts.annotate) opts.print(annotation(step, result));
   }
   const notBuilt = counts.skip ? `, ${counts.skip} not built yet` : '';
   opts.print(

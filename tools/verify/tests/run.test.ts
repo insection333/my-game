@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { runSteps, type Step, type StepResult } from '../run.ts';
+import { annotation, runSteps, type Step, type StepResult } from '../run.ts';
 
 const step = (n: number, result: StepResult | Error): Step => ({
   n,
@@ -12,6 +12,16 @@ async function run(steps: Step[], only?: number[]) {
   const code = await runSteps(steps, { only, print: (l) => lines.push(l), now: () => 0 });
   return { code, lines };
 }
+
+describe('annotation', () => {
+  it('turns a failure into one GitHub annotation line', () => {
+    const line = annotation(
+      { n: 3, name: 'Content', run: () => ({ status: 'pass', summary: '' }) },
+      { status: 'fail', summary: '50% done', detail: 'a\nb' },
+    );
+    expect(line).toBe('::error title=verify step 3 (Content)::50%25 done%0Aa%0Ab');
+  });
+});
 
 describe('runSteps', () => {
   it('is green when every step passes or is not built yet', async () => {

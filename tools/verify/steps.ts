@@ -2,7 +2,7 @@
 // names its session; once the thing it checks exists, an unbuilt step fails instead of skipping.
 import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { bin, node, ROOT } from './exec.ts';
+import { bin, exec, node, ROOT } from './exec.ts';
 import { allStringKeys } from '@idle-clash/content';
 import type { Feature } from '@idle-clash/features';
 import { checkContent } from './checks/content.ts';
@@ -32,6 +32,10 @@ export function projects(): string[] {
 }
 
 async function typecheckAndLint(): Promise<StepResult> {
+  // The lockfile must match every package.json, or CI's frozen install fails before verify runs.
+  const lock = await exec('pnpm', ['install', '--frozen-lockfile', '--lockfile-only', '--ignore-scripts']);
+  if (lock.code !== 0)
+    return fail('pnpm-lock.yaml does not match the package.json files: run pnpm install', lock.output);
   const list = projects();
   const checked = await Promise.all(list.map((p) => bin('tsc', ['-p', p]).then((r) => ({ p, ...r }))));
   const broken = checked.filter((r) => r.code !== 0);
@@ -41,7 +45,7 @@ async function typecheckAndLint(): Promise<StepResult> {
   if (lint.code !== 0) return fail('lint found problems', lint.output);
   const format = await bin('prettier', ['--check', '.', '--log-level', 'warn']);
   if (format.code !== 0) return fail('formatting differs: run pnpm format', format.output);
-  return pass(`${list.length} projects typechecked; lint and formatting clean`);
+  return pass(`lockfile current; ${list.length} projects typechecked; lint and formatting clean`);
 }
 
 const skillsOf = (features: readonly Feature[]) =>

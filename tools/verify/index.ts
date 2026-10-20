@@ -5,5 +5,9 @@ import { closeSession } from './web/session.ts';
 
 const arg = process.argv.indexOf('--only');
 const only = arg > 0 ? (process.argv[arg + 1] ?? '').split(',').map(Number).filter(Boolean) : undefined;
-process.exitCode = await runSteps(STEPS, { only, print: (line) => console.log(line) });
+process.exitCode = await runSteps(STEPS, {
+  only,
+  print: (line) => console.log(line),
+  annotate: process.env.GITHUB_ACTIONS === 'true',
+});
 await closeSession();
