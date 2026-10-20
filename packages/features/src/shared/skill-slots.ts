@@ -20,6 +20,7 @@ export interface SkillAction {
   seconds: number;
   xp: number;
   gives: { item: string; count: number }[];
+  takes?: { item: string; count: number }[];
 }
 
 /** What the skill slots give the shell, so the page can type what it draws. */
@@ -39,6 +40,8 @@ export interface SkillActionRow {
   time: string;
   xpPerHour: string;
   gives: string;
+  /** What one repetition uses up, or null when it takes nothing. */
+  takes: string | null;
   mastery: string;
   masteryProgress: number;
 }
@@ -151,6 +154,13 @@ export function skillSlots(def: SkillDef): Record<string, SlotFill> {
           gives: a.gives
             .map((g) => t('action.gives', { item: t(`item.${g.item}`), count: fmt.int(g.count) }))
             .join(', '),
+          takes: a.takes?.length
+            ? t('action.takes', {
+                items: a.takes
+                  .map((g) => t('action.gives', { item: t(`item.${g.item}`), count: fmt.int(g.count) }))
+                  .join(', '),
+              })
+            : null,
           mastery: t('mastery.step', { step: fmt.int(step) }),
           masteryProgress: to ? Math.min(1, (done - from) / (to - from)) : 1,
         };

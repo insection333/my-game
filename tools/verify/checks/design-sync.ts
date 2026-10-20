@@ -16,6 +16,7 @@ import {
   LUCK_STEP as MODEL_LUCK_STEP,
   MINING,
   RARITY,
+  SMITHING,
   WOODCUTTING,
 } from '../../../design/model/content.ts';
 import { fmtUnlock } from '../../../design/model/format.ts';
@@ -64,6 +65,7 @@ export function checkDesign(features: readonly Feature[], modelXp: number[]): st
         );
       }
     }
+    if (sk.id === 'smithing') problems.push(...checkRecipes(f));
     const designActions = DESIGN_ACTIONS[sk.id];
     if (!designActions) continue;
     for (const d of designActions) {
@@ -79,6 +81,28 @@ export function checkDesign(features: readonly Feature[], modelXp: number[]): st
         }
       }
     }
+  }
+  return problems;
+}
+
+/** Smithing's recipes against the design: level, seconds, XP, what each takes and what it sells for. */
+function checkRecipes(f: Feature): string[] {
+  const problems: string[] = [];
+  const nameOf = (id: string) => t(`item.${id}`);
+  for (const d of SMITHING) {
+    const a = (f.content.actions ?? []).find((x) => t(`action.${f.id}.${x.id}`) === d.name);
+    if (!a) {
+      problems.push(`Feature "${f.id}" has no recipe named "${d.name}" (GAME_DESIGN.md)`);
+      continue;
+    }
+    const value = (f.content.items ?? []).find((i) => i.id === a.gives?.[0]?.item)?.value;
+    const takes = Object.fromEntries((a.takes ?? []).map((x) => [nameOf(x.item), x.count]));
+    const ours = { level: a.level, seconds: a.seconds, xp: a.xp, takes, value };
+    const theirs = { level: d.level, seconds: d.seconds, xp: d.xp, takes: d.inputs, value: d.value };
+    if (JSON.stringify(ours) !== JSON.stringify(theirs))
+      problems.push(
+        `Feature "${f.id}": "${d.name}" is ${JSON.stringify(ours)}, the design says ${JSON.stringify(theirs)}`,
+      );
   }
   return problems;
 }

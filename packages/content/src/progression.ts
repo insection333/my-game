@@ -7,6 +7,12 @@ export const MAX_LEVEL = 40;
 /** Extra XP while the fire burns, in percent. */
 export const FIRE_XP_PCT = 15;
 
+/** Each tier's pace (GAME_DESIGN.md sections 5 and 6): seconds for a standard gathering action, and
+ *  per ingredient in Smithing; and the XP an hour that pace pays before perks and mastery. */
+export const TIER_LEVELS: readonly number[] = [1, 10, 20, 30];
+export const TIER_SECONDS: readonly number[] = [7.5, 12.5, 20, 26];
+export const TIER_XP_PER_HOUR: readonly number[] = [5400, 7200, 9300, 12000];
+
 /** XP_TABLE[level] is the total XP needed to reach that level; index 0 is unused. */
 export const XP_TABLE: readonly number[] = [
   0, 0, 50, 150, 310, 520, 890, 1490, 2500, 4170, 6790, 10400, 15900, 23800, 34000, 46800, 62100, 79900, 101000, 126000,

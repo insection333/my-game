@@ -10,13 +10,7 @@ export const woodcutting = defineFeature({
   flag: { on: true, note: 'Playable since session 6' },
   content: {
     items: ITEMS,
-    actions: TREES.map((tree) => ({
-      id: tree.id,
-      level: tree.level,
-      seconds: tree.seconds,
-      xp: tree.xp,
-      gives: [{ item: tree.logs, count: tree.count }],
-    })),
+    actions: TREES.map(({ id, level, seconds, xp, gives }) => ({ id, level, seconds, xp, gives })),
     skill: { id: SKILL, ladder: LADDER },
     finds: FINDS,
   },
@@ -29,7 +23,7 @@ export const woodcutting = defineFeature({
     skill: SKILL,
     ladder: LADDER,
     finds: FINDS,
-    actions: TREES.map((tree) => ({ ...tree, gives: [{ item: tree.logs, count: tree.count }] })),
+    actions: TREES,
   }),
   help: { title: 'help.woodcutting.title', body: 'help.woodcutting.body' },
 });

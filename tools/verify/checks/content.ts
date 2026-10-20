@@ -72,6 +72,9 @@ export function checkContent({ features, states, literalKeys }: ContentInput): {
       for (const g of a.gives ?? []) {
         if (!items.has(g.item)) problems.push(`${where}: action "${a.id}" gives "${g.item}", which no feature defines`);
       }
+      for (const g of a.takes ?? []) {
+        if (!items.has(g.item)) problems.push(`${where}: action "${a.id}" takes "${g.item}", which no feature defines`);
+      }
     }
     const used = new Set(effectsIn(f).map((e) => e.kind));
     for (const k of used)
