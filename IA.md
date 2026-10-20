@@ -123,8 +123,8 @@ The list, then one page per skill (`/skills/woodcutting`).
 
 | # | Section (slot) | Filled by | Notes |
 | --- | --- | --- | --- |
-| 1 | `combat.loadout` | combat | Weapon (and so your style), helm, body, legs, health, food carried; each slot opens the matching items from the Storehouse |
-| 2 | `combat.foes` | combat | One row per foe: icon, name, style badge (icon and word, never colour alone), level, the triangle against your style, Your odds verdict with XP, food and gold an hour, Fight and Queue next. Locked foes show the Hitpoints level that opens them |
+| 1 | `combat.loadout` | combat | Weapon (and so your style) across the top, then helm, body and legs as small tiles; health and food carried on one line. Each slot opens a sheet of the matching gear in the Storehouse to wear or take off; an empty weapon slot with nothing to wear leads to Smithing |
+| 2 | `combat.foes` | combat | One tier at a time under tabs (the newest with a foe open first). One row per foe: icon, name, style (as a word, never colour alone), level, the triangle against your style, Your odds verdict with XP, food and gold an hour, Fight and Next. Locked foes show the Hitpoints level that opens them; without a weapon each says to wear one |
 | 3 | `combat.food` | storehouse | Food carried, the vendor's food with prices, Buy |
 | 4 | `combat.triangle` | combat | A small permanent key: Melee beats Archery beats Magic beats Melee |
 
@@ -135,7 +135,8 @@ The list, then one page per skill (`/skills/woodcutting`).
 | View | 390 × 844 | 1,440 × 900 |
 | --- | --- | --- |
 | /combat | `combat.loadout`, `combat.foes` | `combat.loadout`, `combat.foes`, `combat.food`, `combat.triangle` |
-- **Newcomer:** an empty weapon slot with "Forge a sword in Smithing" and a button there; the hollow rat shows "Fair" once a sword is worn.
+- **Newcomer:** an empty weapon slot reading "Forge a weapon in Smithing" that leads there; the hollow rat says "Wear a weapon first", and shows "Fair" once the sword is worn with First steps' ten loaves.
+- **Combat skills' pages** (Melee, Archery, Magic, Hitpoints) have no actions of their own: in place of the actions, "Trained by fighting on the Combat page" and Go to Combat; the ladder and finds as for any skill.
 
 ### Storehouse
 
