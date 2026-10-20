@@ -23,7 +23,8 @@ export interface ActionRules {
   /** How long one repetition takes, in milliseconds. May roll; must not change state otherwise. */
   duration(ctx: ActionContext, action: ActionRef): number;
   /** One repetition finished: take inputs, give outputs, add XP, emit events. */
-  complete(ctx: ActionContext, action: ActionRef): void;
+  /** Returns false when nothing could be made (an ingredient went since it started): no mastery. */
+  complete(ctx: ActionContext, action: ActionRef): void | false;
 }
 
 /** Finds the rules for an action, or undefined if no feature (or no switched-on feature) has it. */

@@ -140,9 +140,9 @@ export function createEngine(registry: ActionRegistry, config: KernelConfig = DE
         halt(s, lane, run.action, reason('unavailable', { action: actionKey(run.action) }), at, rng, events);
         continue;
       }
-      rules.complete(context(s, lane, at, rng, events), run.action);
+      const made = rules.complete(context(s, lane, at, rng, events), run.action) !== false;
       const key = actionKey(run.action);
-      s.mastery[key] = (Object.hasOwn(s.mastery, key) ? s.mastery[key] : 0) + 1;
+      if (made) s.mastery[key] = (Object.hasOwn(s.mastery, key) ? s.mastery[key] : 0) + 1;
       s.lanes[lane].current = null;
       const why = begin(s, lane, run.action, at, rng, events);
       if (why) halt(s, lane, run.action, why, at, rng, events);

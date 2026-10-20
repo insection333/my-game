@@ -82,6 +82,8 @@ function Goal({ row }: { row: GoalRow }) {
           <Pill tone="moss">{row.note}</Pill>
         ) : row.state === 'working' ? (
           <Pill tone="woad">{row.note}</Pill>
+        ) : row.note ? (
+          <Pill>{row.note}</Pill>
         ) : undefined
       }
       progress={row.state !== 'claimed' && <ProgressBar value={row.progress} label={row.name} />}
