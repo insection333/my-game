@@ -44,10 +44,10 @@ function CombatPage({ combat }: { combat: Feature }) {
               </div>
               <div className={s.health}>
                 <ProgressBar value={loadout.health} label={loadout.healthText} />
-                <span className={s.muted}>{loadout.healthText}</span>
-                <span className={s.muted}>
-                  {t('combat.food')}: {loadout.food}
-                </span>
+                <div className={s.healthLine}>
+                  <span>{loadout.healthText}</span>
+                  <span>{loadout.food}</span>
+                </div>
               </div>
             </Slot>
           </Panel>
@@ -74,6 +74,8 @@ function CombatPage({ combat }: { combat: Feature }) {
                   status={
                     f.locked ? (
                       <Pill>{f.opensAt}</Pill>
+                    ) : !loadout.style ? (
+                      <Pill>{t('stop.noWeapon')}</Pill>
                     ) : fighting(f) ? (
                       <Pill tone="woad">{t('action.working')}</Pill>
                     ) : f.verdict ? (
@@ -81,7 +83,8 @@ function CombatPage({ combat }: { combat: Feature }) {
                     ) : undefined
                   }
                   actions={
-                    !f.locked && (
+                    !f.locked &&
+                    loadout.style && (
                       <>
                         <Button
                           variant="primary"
@@ -115,13 +118,16 @@ function CombatPage({ combat }: { combat: Feature }) {
 }
 
 function GearButton({ gear }: { gear: LoadoutSlot }) {
-  const href = `${location.pathname}?panel=gear&slot=${gear.slot}`;
+  // With no weapon to wear, the weapon slot leads to Smithing, where one is forged.
+  const forge = gear.slot === 'weapon' && !gear.item && !gear.choices.length;
+  const href = forge ? '/skills/smithing' : `${location.pathname}?panel=gear&slot=${gear.slot}`;
   return (
     <a
       href={href}
       data-ui="GearSlot"
       className={s.slot}
       data-empty={gear.item ? undefined : true}
+      data-slot-name={gear.slot}
       onClick={(e) => (e.preventDefault(), navigate(href))}
     >
       {gear.item ? <ItemIcon name={gear.item} size={32} /> : <span className={s.emptyIcon} />}
