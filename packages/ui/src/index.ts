@@ -11,4 +11,5 @@ export { ResponsiveTable, type Column } from './components/ResponsiveTable.tsx';
 export { ItemIcon, type IconSize } from './components/ItemIcon.tsx';
 export { Sheet } from './components/Sheet.tsx';
 export { Moment } from './components/Moment.tsx';
+export { Field, type FieldProps } from './components/Field.tsx';
 export { ICONS, REFERENCE_SET, hasIcon, type IconName, type IconFamily } from './icons/index.tsx';

@@ -15,7 +15,8 @@ import type { Step, StepResult } from './run.ts';
 import { runAxe, runPerf } from './web/audits.ts';
 import { runReview } from './web/review.ts';
 import { runScreens } from './web/screens.ts';
-import { ensureBuilt, views as webViews } from './web/session.ts';
+import { runFlows } from './web/flows.ts';
+import { ensureBuilt, ensureServer, views as webViews } from './web/session.ts';
 
 const pass = (summary: string): StepResult => ({ status: 'pass', summary });
 const fail = (summary: string, detail?: string): StepResult => ({ status: 'fail', summary, detail });
@@ -140,12 +141,14 @@ async function screenshots(): Promise<StepResult> {
   const loaded = await loadFeatures();
   if ('error' in loaded) return fail('the features failed to load', loaded.error);
   const r = await runScreens(loaded.features);
+  const flows = await runFlows((await ensureServer()).url);
   const views = webViews().length;
-  if (r.problems.length)
-    return fail(`${r.problems.length} layout problem${r.problems.length > 1 ? 's' : ''}`, r.problems.join('\n'));
+  const problems = [...r.problems, ...flows.problems];
+  if (problems.length)
+    return fail(`${problems.length} layout or flow problem${problems.length > 1 ? 's' : ''}`, problems.join('\n'));
   const awaiting = r.awaiting.size ? `; ${r.awaiting.size} slots await their features` : '';
   return pass(
-    `${views} views x 3 widths x 3 engines (${r.shots} shots): no overflow, taps 24px+, one design system, specs met${awaiting}`,
+    `${views} views x 3 widths x 3 engines (${r.shots} shots): no overflow, taps 24px+, one design system, specs met; account flows (${flows.steps} checks) work${awaiting}`,
   );
 }
 

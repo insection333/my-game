@@ -70,10 +70,17 @@ export function checkManifest({ features, slots, folders, states }: ManifestInpu
 export const ALLOWED_DEPS: Record<string, string[]> = {
   '@idle-clash/kernel': [],
   '@idle-clash/content': ['@idle-clash/kernel'],
+  '@idle-clash/contracts': ['@idle-clash/kernel'],
   '@idle-clash/ui': [],
   '@idle-clash/features': ['@idle-clash/kernel', '@idle-clash/content', '@idle-clash/ui'],
-  '@idle-clash/server': ['@idle-clash/kernel', '@idle-clash/content', '@idle-clash/features'],
-  '@idle-clash/web': ['@idle-clash/kernel', '@idle-clash/content', '@idle-clash/ui', '@idle-clash/features'],
+  '@idle-clash/server': ['@idle-clash/kernel', '@idle-clash/content', '@idle-clash/contracts', '@idle-clash/features'],
+  '@idle-clash/web': [
+    '@idle-clash/kernel',
+    '@idle-clash/content',
+    '@idle-clash/contracts',
+    '@idle-clash/ui',
+    '@idle-clash/features',
+  ],
   '@idle-clash/tools': ['*'],
 };
 

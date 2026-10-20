@@ -1,0 +1,12 @@
+{
+  "name": "@idle-clash/contracts",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@idle-clash/kernel": "workspace:*",
+    "zod": "4.6.5"
+  }
+}

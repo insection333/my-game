@@ -1,11 +1,23 @@
-// What steps 6 to 9 share: one build of the web app, one server, the three browser engines, and the
-// list of views to open (from IA.md, plus the two sheets).
-import { existsSync, readdirSync, readFileSync } from 'node:fs';
+// What steps 6 to 9 share: one build of the web app, the game's own server on a scratch database
+// with every built feature on, the three browser engines, a newcomer's session, and the list of
+// views to open (from IA.md, plus the two sheets).
+import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync } from 'node:fs';
+import { createServer } from 'node:net';
+import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { chromium, firefox, webkit, type Browser, type BrowserType } from 'playwright';
+import {
+  chromium,
+  firefox,
+  webkit,
+  type Browser,
+  type BrowserContextOptions,
+  type BrowserType,
+  type Page,
+} from 'playwright';
+import { buildApp } from '../../../apps/server/src/app.ts';
+import { flagsFrom } from '../../../apps/server/src/config.ts';
 import { exec, ROOT } from '../exec.ts';
 import { readPageMap, type ViewSpec } from '../ia.ts';
-import { serve, type Served } from './serve.ts';
 
 export const DIST = join(ROOT, 'apps/web/dist');
 export const OUT = join(ROOT, '.verify');
@@ -48,8 +60,78 @@ export function ensureBuilt(): Promise<string | null> {
   return built;
 }
 
+export interface Served {
+  url: string;
+  /** The session cookie of a newcomer signed up for this run. */
+  cookie: { name: string; value: string };
+  close: () => Promise<void>;
+}
+
+const freePort = () =>
+  new Promise<number>((resolve) => {
+    const probe = createServer();
+    probe.listen(0, '127.0.0.1', () => {
+      const addr = probe.address();
+      probe.close(() => resolve(typeof addr === 'object' && addr ? addr.port : 0));
+    });
+  });
+
+/** Signs a new player up and returns their session cookie. */
+export async function newcomer(url: string, name: string): Promise<{ name: string; value: string }> {
+  const res = await fetch(`${url}/api/auth/sign-up`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', origin: url },
+    body: JSON.stringify({ name, password: 'verify-newcomer-pass', ageConfirmed: true }),
+  });
+  if (res.status !== 201) throw new Error(`Signing up a newcomer failed: ${res.status} ${await res.text()}`);
+  const [pair] = (res.headers.get('set-cookie') ?? '').split(';');
+  const [cookieName, value] = pair.split('=');
+  return { name: cookieName, value };
+}
+
+async function start(): Promise<Served> {
+  const port = await freePort();
+  const url = `http://127.0.0.1:${port}`;
+  const dir = mkdtempSync(join(tmpdir(), 'idle-clash-verify-'));
+  const { app, close } = await buildApp({
+    port,
+    host: '127.0.0.1',
+    dbPath: join(dir, 'verify.db'),
+    webDist: DIST,
+    origins: [url],
+    secureCookies: false,
+    emailEnabled: false,
+    flags: flagsFrom('all'),
+    log: false,
+    now: () => Date.now(),
+  });
+  await app.listen({ port, host: '127.0.0.1' });
+  const cookie = await newcomer(url, 'Newcomer');
+  return {
+    url,
+    cookie,
+    close: async () => {
+      await close();
+      rmSync(dir, { recursive: true, force: true });
+    },
+  };
+}
+
 let server: Promise<Served> | null = null;
-export const ensureServer = (): Promise<Served> => (server ??= serve(DIST));
+export const ensureServer = (): Promise<Served> => (server ??= start());
+
+/** Welcome views are opened signed out; every other view as the run's newcomer. */
+export const signedOut = (path: string) => path.startsWith('/welcome');
+
+/** A page for one view, in its own browser context, signed in unless the view is for visitors. */
+export async function openPage(engine: Engine, path: string, options: BrowserContextOptions): Promise<Page> {
+  const served = await ensureServer();
+  const ctx = await (await browser(engine)).newContext(options);
+  if (!signedOut(path)) await ctx.addCookies([{ ...served.cookie, url: served.url }]);
+  const page = await ctx.newPage();
+  page.on('close', () => void ctx.close());
+  return page;
+}
 
 /** Chromium from Playwright's own download, or the one preinstalled here when that cannot be fetched. */
 function chromiumPath(): string | undefined {
@@ -77,8 +159,8 @@ export function browser(engine: Engine): Promise<Browser> {
   return browsers.get(engine)!;
 }
 
-/** The address of a view as a newcomer with every built feature switched on. */
-export const viewUrl = (base: string, path: string) => `${base}${path}${path.includes('?') ? '&' : '?'}features=all`;
+/** The address of a view on the run's server. */
+export const viewUrl = (base: string, path: string) => `${base}${path}`;
 
 /** Closes browsers and the server; verify calls this once at the end. */
 export async function closeSession(): Promise<void> {

@@ -10,4 +10,6 @@ export const SHELL_SLOTS = [
   'hearth.lanes',
   'tray.list',
   'settings.account',
+  'welcome.intro',
+  'welcome.form',
 ] as const;
