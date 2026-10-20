@@ -8,3 +8,4 @@
 - Verify's first step now checks that pnpm-lock.yaml matches every package.json, so a stale lockfile fails locally instead of on GitHub.
 - The owner approved the reference icons and the art style (20 October 2026).
 - Session 5: the server shell: contracts for every route, accounts (name and password, 13 or older, Argon2id, 30-day sessions), rate limits, strict JSON and security headers, request ids, the live channel, flags from the server, telemetry and browser error reports; email built behind its switch, off. The page now plays through the server, with a welcome page to sign up or in and Sign out in Settings; verify runs against the real server and walks the account flows.
+- Sweep after session 5: the page no longer lets an older server state undo a change still on its way, and keeps its last view while signing out, so nothing on screen reads an empty game.

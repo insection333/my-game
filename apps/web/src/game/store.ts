@@ -38,18 +38,22 @@ const emit = () => {
 };
 let timer: ReturnType<typeof setInterval> | null = null;
 let live: { close: () => void } | null = null;
+/** Changes sent and not yet answered. While any are, the page's guess already includes them, so
+ *  an older state from the server (a live message, an earlier answer) would undo them on screen. */
+let inFlight = 0;
+
+function stopClock() {
+  if (timer) clearInterval(timer);
+  timer = null;
+}
 
 const busy = (s: State, now: number) => now < s.fireUntil || Object.values(s.lanes).some((l) => l.current);
 
-function publish(next: GameView | null) {
+function publish(next: GameView) {
   view = next;
   emit();
-  const needsClock = !!view && busy(view.state, view.now);
-  if (needsClock && !timer) timer = setInterval(tick, 1000);
-  if (!needsClock && timer) {
-    clearInterval(timer);
-    timer = null;
-  }
+  if (busy(next.state, next.now)) timer ??= setInterval(tick, 1000);
+  else stopClock();
 }
 
 function setSession(next: Partial<Session>) {
@@ -64,8 +68,9 @@ function tick() {
   publish({ ...view, state: out.state, now, events: [...view.events, ...out.events].slice(-50) });
 }
 
-/** Takes the server's word for the save. */
+/** Takes the server's word for the save, unless a change sent since is still unanswered. */
 function adopt(state: State, now: number) {
+  if (inFlight > 0) return;
   skew = now - Date.now();
   publish({ state, now, events: view?.events ?? [], features: session.features });
 }
@@ -73,7 +78,8 @@ function adopt(state: State, now: number) {
 function signedOut() {
   live?.close();
   live = null;
-  publish(null);
+  stopClock();
+  // The last view stays until the next sign-in replaces it, so nothing still drawn reads an empty game.
   setSession({ phase: 'signedOut', player: null });
 }
 
@@ -128,7 +134,8 @@ if (typeof document !== 'undefined') {
   });
 }
 
-/** Sends a change, retrying with the same request id when the connection drops so it acts once. */
+/** Sends a change, retrying with the same request id when the connection drops so it acts once.
+ *  Resolves to null when it was refused or never got through. */
 async function send<T>(go: () => Promise<T>): Promise<T | null> {
   for (let attempt = 0; attempt < 3; attempt++) {
     try {
@@ -139,7 +146,6 @@ async function send<T>(go: () => Promise<T>): Promise<T | null> {
       await new Promise((r) => setTimeout(r, 500 * 2 ** attempt));
     }
   }
-  void resync();
   return null;
 }
 
@@ -157,7 +163,13 @@ export const game = {
     const out = engine.command(view.state, now, cmd, seeded(view.state.seed));
     publish({ ...view, state: out.state, now, events: [...view.events, ...out.events].slice(-50) });
     const id = requestId();
-    void send(() => api.command(id, cmd)).then((r) => r && adopt(r.state, r.now));
+    inFlight++;
+    void send(() => api.command(id, cmd)).then((r) => {
+      inFlight--;
+      // Refused or unreachable: the guess may be wrong, so read the save afresh.
+      if (r) adopt(r.state, r.now);
+      else void resync();
+    });
     return out.result;
   },
   signUp: async (name: string, password: string) => enter((await api.signUp(name, password)).player),
