@@ -63,6 +63,9 @@ export function measurePage(): Measured {
       el.getAttribute('aria-current'),
       (el as HTMLButtonElement).disabled,
     ].join('|');
+    // Rows grow with what they hold and are divided from the row above; every other control has one
+    // height and one border.
+    const row = ui === 'RowLink' || ui === 'ItemTile';
     const style = [
       cs.fontFamily,
       cs.fontSize,
@@ -70,9 +73,9 @@ export function measurePage(): Measured {
       cs.borderTopLeftRadius,
       cs.backgroundColor,
       cs.color,
-      cs.borderTopColor,
-      cs.borderTopWidth,
-      Math.round(r.height),
+      row ? '' : cs.borderTopColor,
+      row ? '' : cs.borderTopWidth,
+      row ? '' : Math.round(r.height),
     ].join('|');
     const seen = groups.get(key);
     if (!seen) groups.set(key, { style, el });

@@ -44,7 +44,13 @@ export function usedIn(features: readonly Feature[], item: string): ItemSource[]
     (f.content.actions ?? []).flatMap((a) =>
       (a.takes ?? [])
         .filter((g) => g.item === item)
-        .map((g) => ({ feature: f.id, skill: f.content.skill?.id ?? null, action: a.id, rarity: null, count: g.count })),
+        .map((g) => ({
+          feature: f.id,
+          skill: f.content.skill?.id ?? null,
+          action: a.id,
+          rarity: null,
+          count: g.count,
+        })),
     ),
   );
 }
