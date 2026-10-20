@@ -56,10 +56,8 @@ export async function runScreens(features: readonly Feature[]): Promise<ScreensR
         }
         const at = m.slots[slot];
         if (!at || !at.shown) problems.push(`slot "${slot}" is missing from the page`);
-        else if (at.top > m.visibleBottom - 24)
-          problems.push(
-            `slot "${slot}" starts at ${Math.round(at.top)}px, below the fold (${Math.round(m.visibleBottom)}px)`,
-          );
+        else if (at.top > at.limit - 24)
+          problems.push(`slot "${slot}" starts at ${Math.round(at.top)}px, below the fold (${Math.round(at.limit)}px)`);
       }
       return problems.map((p) => `${engine} ${width}px ${view.path}: ${p}`);
     } catch (err) {

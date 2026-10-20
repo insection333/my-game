@@ -15,7 +15,7 @@ export function FindGrid({ finds }: { finds: FindEntry[] }) {
           <div className={s.text}>
             <span className={s.name}>{f.name}</span>
             <Pill tone={TONE[f.rarityId as keyof typeof TONE] ?? 'neutral'}>{f.rarity}</Pill>
-            <span className={s.note}>{f.note}</span>
+            {f.note && <span className={s.note}>{f.note}</span>}
           </div>
         </li>
       ))}

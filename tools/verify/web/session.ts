@@ -129,7 +129,7 @@ export async function openPage(engine: Engine, path: string, options: BrowserCon
   const ctx = await (await browser(engine)).newContext(options);
   if (!signedOut(path)) await ctx.addCookies([{ ...served.cookie, url: served.url }]);
   const page = await ctx.newPage();
-  page.on('close', () => void ctx.close());
+  page.on('close', () => void ctx.close().catch(() => undefined));
   return page;
 }
 

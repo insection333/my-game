@@ -5,7 +5,8 @@
 export interface Measured {
   problems: string[];
   /** For each data-slot on the page: whether it shows and how far down it starts. */
-  slots: Record<string, { shown: boolean; top: number }>;
+  /** `limit`: where the screen's visible part ends for it (a sheet covers the bars). */
+  slots: Record<string, { shown: boolean; top: number; limit: number }>;
   /** The lowest point of the screen not covered by bars held at the bottom. */
   visibleBottom: number;
 }
@@ -122,12 +123,31 @@ export function measurePage(): Measured {
     const r = strip.getBoundingClientRect();
     if (r.top > H / 2) visibleBottom = Math.min(visibleBottom, r.top);
   }
+  // The frame: inside the shell the page area alone scrolls, ends where the bars begin, and no box
+  // in it is taller than the area itself (a long list scrolls inside its own box).
+  const area = document.querySelector('[data-main]');
+  if (area && shown(area)) {
+    if (document.documentElement.scrollHeight > H + 1)
+      problems.push(
+        `The whole page scrolls (${document.documentElement.scrollHeight}px at ${H}px); only the page area may`,
+      );
+    const a = area.getBoundingClientRect();
+    if (a.bottom > visibleBottom + 1)
+      problems.push(`The page area runs ${Math.round(a.bottom - visibleBottom)}px under the bars at the bottom`);
+    for (const box of Array.from(area.querySelectorAll('[data-ui="Panel"]'))) {
+      const h = box.getBoundingClientRect().height;
+      if (shown(box) && h > a.height)
+        problems.push(`${describe(box)} is ${Math.round(h)}px tall in a ${Math.round(a.height)}px page area`);
+    }
+  }
+
   const slots: Measured['slots'] = {};
   for (const el of Array.from(document.querySelectorAll('[data-slot]'))) {
     const id = el.getAttribute('data-slot')!;
     const vis = shown(el);
     const top = el.getBoundingClientRect().top;
-    if (!slots[id] || (vis && (!slots[id].shown || top < slots[id].top))) slots[id] = { shown: vis, top };
+    const limit = el.closest('[role="dialog"]') ? H : visibleBottom;
+    if (!slots[id] || (vis && (!slots[id].shown || top < slots[id].top))) slots[id] = { shown: vis, top, limit };
   }
   return { problems: [...new Set(problems)], slots, visibleBottom };
 }

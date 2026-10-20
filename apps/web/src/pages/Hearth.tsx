@@ -12,7 +12,6 @@ import s from './pages.module.css';
 export function Hearth() {
   const { state, now, features } = useGame();
   const next = fills<NextUpRow>(features, 'hearth.nextUp', state, now);
-  const firstSkill = features.find((f) => f.content.skill);
   const [goals] = fills<GoalsView>(features, 'hearth.goals', state, now);
   return (
     <>
@@ -24,11 +23,6 @@ export function Hearth() {
               <div className={s.welcome}>
                 <h2>{t('hearth.welcome.title')}</h2>
                 <p>{t('hearth.welcome.body')}</p>
-                {firstSkill && (
-                  <Button variant="secondary" onClick={() => navigate(`/skills/${firstSkill.content.skill!.id}`)}>
-                    {t('hearth.welcome.start')}
-                  </Button>
-                )}
               </div>
             </Panel>
           </Slot>

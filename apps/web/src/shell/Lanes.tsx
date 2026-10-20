@@ -18,14 +18,6 @@ export interface LaneView {
 
 const actionName = (a: { feature: string; id: string }) => t(`action.${a.feature}.${a.id}`);
 
-/** What a resting lane is for. */
-const HINTS: Record<LaneId, string> = {
-  gathering: 'lane.hint.gathering',
-  gathering2: 'lane.hint.gathering2',
-  artisan: 'lane.hint.artisan',
-  combat: 'lane.hint.combat',
-};
-
 export function laneViews(state: State, now: number): LaneView[] {
   const fire = now < state.fireUntil;
   return LANE_IDS.filter((id) => id !== 'gathering2' || fire || state.lanes.gathering2.current).map((id) => {
@@ -35,9 +27,7 @@ export function laneViews(state: State, now: number): LaneView[] {
       ? t('lane.next', { action: actionName(l.next) })
       : !run && l.stopped
         ? formatStop(l.stopped.reason)
-        : !run
-          ? t(HINTS[id])
-          : undefined;
+        : undefined;
     return {
       id,
       name: t(`lane.${id}`),

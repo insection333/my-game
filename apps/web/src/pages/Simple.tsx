@@ -21,7 +21,7 @@ export function Storehouse({ path }: { path: string }) {
   ];
   return (
     <>
-      <PageHead title={t('store.title')} lead={t('store.lead')}>
+      <PageHead title={t('store.title')}>
         <Tabs tabs={tabs} label={t('store.title')} onNavigate={navigate} />
       </PageHead>
       {path === '/storehouse/log' && <CollectionLog />}

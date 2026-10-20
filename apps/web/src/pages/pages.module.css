@@ -105,10 +105,14 @@ a.row:hover {
   height: 32px;
 }
 
+/* Forty levels scroll inside their panel, opened at the next unlock, so the box never towers. */
 .ladder {
   list-style: none;
   margin: 0;
   padding: 0;
+  max-height: min(30rem, 55dvh);
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .ladder li {

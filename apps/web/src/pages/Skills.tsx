@@ -21,7 +21,7 @@ export function Skills() {
     .filter((g) => g.rows.length);
   return (
     <>
-      <PageHead title={t('skills.title')} lead={t('skills.lead')} />
+      <PageHead title={t('skills.title')} />
       {rows.length > 0 && (
         <section data-section>
           <Slot id="skills.list" className={s.stack}>
