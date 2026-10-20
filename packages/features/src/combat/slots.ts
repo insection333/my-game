@@ -63,6 +63,12 @@ function oddsFor(state: State, foe: Foe): Odds | null {
   return o;
 }
 
+/** Your odds against a foe as the state stands (null without a weapon): the simulation picks by it. */
+export const yourOdds = (state: State, foe: string): Odds | null => {
+  const f = FOES.find((x) => x.id === foe);
+  return f ? oddsFor(state, f) : null;
+};
+
 const VERDICTS = {
   easy: 'verdict.easy',
   fair: 'verdict.fair',

@@ -15,3 +15,4 @@ export * as items from './shared/items.ts';
 export * as combatData from './shared/combat/data.ts';
 export type { Fighter, Odds, Verdict } from './shared/combat/fight.ts';
 export type { FoeRow, GearChoice, LoadoutSlot, LoadoutView } from './combat/slots.ts';
+export { yourOdds } from './combat/slots.ts';

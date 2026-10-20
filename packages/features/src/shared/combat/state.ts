@@ -23,9 +23,18 @@ export const CombatState = z
   .strict();
 export type CombatState = z.infer<typeof CombatState>;
 
+// Read often (every fight, every Your odds), so each saved object is checked once. Combat replaces
+// the object whenever it writes (`setCombat`), never changes it in place.
+const checked = new WeakMap<object, CombatState>();
 export function combatOf(state: State): CombatState {
-  const parsed = CombatState.safeParse(Object.hasOwn(state.features, 'combat') ? state.features.combat : undefined);
-  return parsed.success ? parsed.data : { worn: {}, health: null, healthAt: 0, retreated: null };
+  const raw = Object.hasOwn(state.features, 'combat') ? state.features.combat : undefined;
+  const known = raw && typeof raw === 'object' ? checked.get(raw) : undefined;
+  if (known) return known;
+  const parsed = CombatState.safeParse(raw);
+  const c = parsed.success ? parsed.data : { worn: {}, health: null, healthAt: 0, retreated: null };
+  Object.freeze(c.worn);
+  if (raw && typeof raw === 'object') checked.set(raw, c);
+  return c;
 }
 
 export const setCombat = (state: State, c: CombatState): void => {

@@ -16,10 +16,15 @@ import { xpOf, type State } from '@idle-clash/kernel';
 
 export const skillLevel = (state: State, skill: string): number => levelFor(xpOf(state, skill));
 
-/** The ladder's perk effects reached by a level. */
+const perkCache = new WeakMap<Ladder, Modifiers[]>();
+/** The ladder's perk effects reached by a level (worked out once per ladder and level: fights ask often). */
 export function perksAt(ladder: Ladder, level: number): Modifiers {
-  const effects = ladder.slice(0, level).flatMap((us) => us.flatMap((u) => (u.type === 'perk' ? [u.effect] : [])));
-  return applyEffects(effects);
+  let byLevel = perkCache.get(ladder);
+  if (!byLevel) perkCache.set(ladder, (byLevel = []));
+  byLevel[level] ??= applyEffects(
+    ladder.slice(0, level).flatMap((us) => us.flatMap((u) => (u.type === 'perk' ? [u.effect] : []))),
+  );
+  return { ...byLevel[level] };
 }
 
 /** Modifiers for one action: the skill's perks at its level plus the action's own mastery. */
