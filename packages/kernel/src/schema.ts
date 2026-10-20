@@ -38,7 +38,13 @@ export const StopReason = z
 export type StopReason = z.infer<typeof StopReason>;
 
 export const Running = z
-  .object({ action: ActionRef, startedAt: time, endsAt: time })
+  .object({
+    action: ActionRef,
+    startedAt: time,
+    endsAt: time,
+    /** A number fixed for this repetition, for rules that decide its course at the start (a fight). */
+    seed: z.number().int().min(0).max(0xffffffff).optional(),
+  })
   .strict()
   .refine((r) => r.endsAt > r.startedAt, 'an action must end after it starts');
 export type Running = z.infer<typeof Running>;

@@ -53,7 +53,14 @@ function mendLane(id: LaneId, raw: unknown, now: number, repairs: string[]): Lan
   const cur = raw.current;
   if (isObject(cur) && ActionRef.safeParse(cur.action).success && isTime(cur.startedAt) && isTime(cur.endsAt)) {
     const sane = cur.endsAt > cur.startedAt && cur.endsAt - cur.startedAt <= 24 * 3600_000 && cur.startedAt <= now;
-    if (sane) lane.current = { action: ActionRef.parse(cur.action), startedAt: cur.startedAt, endsAt: cur.endsAt };
+    const seed = Number.isInteger(cur.seed) && (cur.seed as number) >= 0 && (cur.seed as number) <= 0xffffffff;
+    if (sane)
+      lane.current = {
+        action: ActionRef.parse(cur.action),
+        startedAt: cur.startedAt,
+        endsAt: cur.endsAt,
+        ...(seed ? { seed: cur.seed as number } : {}),
+      };
   }
   if (cur && !lane.current) {
     repairs.push(`The ${id} lane's action was damaged and was stopped`);

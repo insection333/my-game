@@ -9,14 +9,36 @@ export const Id = z
   .max(64)
   .regex(/^[a-z0-9][a-z0-9-]*$/, 'ids are lower case letters, digits and hyphens');
 
+export const STYLES = ['melee', 'archery', 'magic'] as const;
+export type Style = (typeof STYLES)[number];
+export const GEAR_SLOTS = ['weapon', 'helm', 'body', 'legs'] as const;
+export type GearSlot = (typeof GEAR_SLOTS)[number];
+
+/** What a piece of gear is: where it is worn, its tier, and for a weapon the style it fights with. */
+export const Gear = z
+  .object({
+    slot: z.enum(GEAR_SLOTS),
+    tier: z.number().int().min(1).max(4),
+    style: z.enum(STYLES).optional(),
+  })
+  .strict()
+  .refine((g) => (g.slot === 'weapon') === (g.style !== undefined), 'a weapon, and only a weapon, has a style');
+export type Gear = z.infer<typeof Gear>;
+
 export const Item = z
   .object({
     id: Id,
     kind: z.enum(['resource', 'gear', 'food', 'find']),
     /** What the vendor pays for one. */
     value: z.number().int().nonnegative(),
+    /** Gear only: where it is worn and how good it is. */
+    gear: Gear.optional(),
+    /** Food only: health one restores (on the ×10 scale). */
+    heals: z.number().int().positive().optional(),
   })
-  .strict();
+  .strict()
+  .refine((i) => (i.kind === 'gear') === (i.gear !== undefined), 'gear, and only gear, says how it is worn')
+  .refine((i) => (i.kind === 'food') === (i.heals !== undefined), 'food, and only food, says how much it heals');
 export type Item = z.infer<typeof Item>;
 
 export const Level = z.number().int().min(1).max(MAX_LEVEL);
