@@ -81,7 +81,7 @@ async function manifest(): Promise<StepResult> {
   const { features } = loaded;
   const folders = featureFolders();
   const problems = [
-    ...checkManifest({ features, slots: map.slots, folders, states: sampleStates(skillsOf(features)) }),
+    ...checkManifest({ features, slots: map.slots, folders, states: sampleStates(skillsOf(features), features) }),
     ...checkPackageDeps(workspacePackages()),
     ...checkFeatureImports(featureFiles(), folders),
   ];
@@ -102,7 +102,11 @@ async function content(): Promise<StepResult> {
   if ('error' in loaded) return fail('the features failed to load', loaded.error);
   const { features } = loaded;
   const literalKeys = literalStringKeys(allStringKeys());
-  const { problems, strings } = checkContent({ features, states: sampleStates(skillsOf(features)), literalKeys });
+  const { problems, strings } = checkContent({
+    features,
+    states: sampleStates(skillsOf(features), features),
+    literalKeys,
+  });
   problems.push(...checkDesign(features, JSON.parse(read('design/model/xp-table.json')) as number[]));
   const stale = regenerate('GLOSSARY.md', glossaryMd());
   if (stale) problems.push(stale);

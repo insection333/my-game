@@ -1,7 +1,8 @@
 // Goals' rules: whether a step is done, and claiming it. Goals read shared state (completions,
-// items) through the kernel; they never import the features whose actions they name.
+// items, the gear worn) through the kernel and shared helpers, never the features they name.
 import { actionKey, give, noteMoment, type GameEvent, type State } from '@idle-clash/kernel';
 import { z } from 'zod';
+import { combatOf } from '../shared/combat/state.ts';
 import { FIRST_STEPS, type FirstStep } from './content.ts';
 
 /** Goals' own part of the save. */
@@ -18,7 +19,8 @@ export const completionsOf = (state: State, step: FirstStep): number => {
   return Object.hasOwn(state.mastery, key) ? state.mastery[key] : 0;
 };
 
-export const isDone = (state: State, step: FirstStep): boolean => completionsOf(state, step) >= step.completions;
+export const isDone = (state: State, step: FirstStep): boolean =>
+  step.wearWeapon ? combatOf(state).worn.weapon !== undefined : completionsOf(state, step) >= step.completions;
 
 export type ClaimResult = { ok: true } | { ok: false; reason: 'unknown' | 'notDone' };
 
@@ -34,7 +36,10 @@ export function claim(
   if (goals.claimed.includes(goal)) return { state, result: { ok: true }, events: [] };
   if (!isDone(state, step)) return { state, result: { ok: false, reason: 'notDone' }, events: [] };
   const next = structuredClone(state);
-  give(next, step.reward.item, step.reward.count);
+  if (!step.rewardFirst) give(next, step.reward.item, step.reward.count);
+  // The next step's reward, when it comes first, arrives with this one.
+  const after = FIRST_STEPS[FIRST_STEPS.indexOf(step) + 1] as FirstStep | undefined;
+  if (after?.rewardFirst) give(next, after.reward.item, after.reward.count);
   next.features.goals = { claimed: [...goals.claimed, goal] };
   noteMoment(next, now);
   return { state: next, result: { ok: true }, events: [{ type: 'goalDone', at: now, goal }] };

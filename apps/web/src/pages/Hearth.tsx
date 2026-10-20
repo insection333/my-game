@@ -91,7 +91,13 @@ function Goal({ row }: { row: GoalRow }) {
         b && (
           <Button
             variant="primary"
-            onClick={() => ('claim' in b ? game.act('goals', 'claim', { goal: b.claim }) : game.command(b.command))}
+            onClick={() =>
+              'claim' in b
+                ? game.act('goals', 'claim', { goal: b.claim })
+                : 'route' in b
+                  ? game.act(b.route.feature, b.route.route, b.route.input)
+                  : game.command(b.command)
+            }
           >
             {b.label}
           </Button>
