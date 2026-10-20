@@ -41,6 +41,7 @@ export const goals = defineFeature({
   routes: {
     claim: defineRoute({
       input: z.object({ goal: Id }).strict(),
+      example: { goal: 'chop-a-pine' },
       run: (state, input, now) => claim(state, input.goal, now),
     }),
   },

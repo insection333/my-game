@@ -130,7 +130,7 @@ export const game = {
     const id = requestId();
     inFlight++;
     void send(() => api.command(id, cmd)).then((r) => {
-      inFlight--;
+      inFlight = Math.max(0, inFlight - 1);
       // Refused or unreachable: the guess may be wrong, so read the save afresh.
       if (r) adopt(r.state, r.now);
       else void resync();
@@ -149,7 +149,7 @@ export const game = {
     const id = requestId();
     inFlight++;
     void send(() => api.feature(feature, route, id, input)).then((r) => {
-      inFlight--;
+      inFlight = Math.max(0, inFlight - 1);
       if (r) adopt(r.state, r.now);
       else void resync();
     });

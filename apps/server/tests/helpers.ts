@@ -19,6 +19,7 @@ export const notes = defineFeature({
   routes: {
     add: defineRoute({
       input: z.object({ text: z.string().min(1).max(40) }).strict(),
+      example: { text: 'hello' },
       run: (state, input) => {
         const list = (state.features.notes as string[] | undefined) ?? [];
         return {

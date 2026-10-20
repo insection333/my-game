@@ -1,6 +1,6 @@
 // Who is here, and whether the game is loaded. Light on purpose: the welcome page needs only this,
 // so the engine, the features and their art load as a second part of the page (./store.ts), fetched
-// as soon as a player is signed in, or quietly after the welcome page is drawn.
+// as soon as a player is signed in, or while a visitor fills in the welcome form.
 import type { PlayerView } from '@idle-clash/contracts';
 import { useSyncExternalStore } from 'react';
 import { api, ApiError } from '../api.ts';

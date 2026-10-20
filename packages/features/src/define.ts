@@ -22,6 +22,8 @@ export type SlotFill = (ctx: SlotContext) => Json;
  */
 export interface RouteDef<I = unknown> {
   input: ZodType<I>;
+  /** A valid input: the manifest check parses it, and the hostile-input suite builds its attacks from it. */
+  example: I;
   run: (state: State, input: I, now: number) => { state: State; result: Json; events?: GameEvent[] };
 }
 

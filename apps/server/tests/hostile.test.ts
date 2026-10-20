@@ -1,7 +1,8 @@
 // The hostile-input suite, generated from every route's contract: each route with input is sent
 // what an attacker or a broken client would send, and must answer with the right 4xx, never a 5xx,
 // never pollute prototypes, and stay healthy. Routes that change state are also sent twice.
-import { FeatureRequest, ROUTES, type RouteContract } from '@idle-clash/contracts';
+import { featurePath, FeatureRequest, ROUTES, type RouteContract } from '@idle-clash/contracts';
+import { FEATURES } from '@idle-clash/features';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { code, notes, post, server, signUp, type TestServer } from './helpers.ts';
 
@@ -13,16 +14,22 @@ beforeAll(async () => {
 });
 afterAll(() => s.close());
 
-// A feature route's full input: the envelope with the feature's own schema inside it.
-const featureRoute: RouteContract = {
-  id: 'notes.add',
-  method: 'POST',
-  path: '/api/f/notes/add',
-  auth: 'player',
-  input: FeatureRequest.extend({ input: notes.routes.add.input }),
-  example: { requestId: 'req-hostile-1', input: { text: 'hello' } },
-};
-const routes: RouteContract[] = [...Object.values(ROUTES).filter((r) => r.method === 'POST' && r.input), featureRoute];
+// Every feature's own routes (and the test fixture's), each as its full input: the envelope with the
+// feature's own schema inside it, so a new feature route is attacked the moment it exists.
+const featureRoutes: RouteContract[] = [...FEATURES, notes].flatMap((f) =>
+  Object.entries(f.routes).map(([name, route], i) => ({
+    id: `${f.id}.${name}`,
+    method: 'POST' as const,
+    path: featurePath(f.id, name),
+    auth: 'player' as const,
+    input: FeatureRequest.extend({ input: route.input }),
+    example: { requestId: `req-hostile-${f.id}-${i}`, input: route.example },
+  })),
+);
+const routes: RouteContract[] = [
+  ...Object.values(ROUTES).filter((r) => r.method === 'POST' && r.input),
+  ...featureRoutes,
+];
 
 /**
  * Each hostile body, what it is, and the status it must get. A changed field the route's own schema
@@ -58,6 +65,14 @@ function cases(r: RouteContract): [string, string, number][] {
     ['a 1 MB body', JSON.stringify({ ...ex, [keys[0]]: 'x'.repeat(1_000_000) }), 413],
   ];
   const expect = (body: unknown) => (r.input!.safeParse(body).success ? 0 : 400);
+  // A feature route's own fields, each set to a well-formed id that names nothing: the route must
+  // answer, never crash.
+  const inner = ex.input;
+  if (r.path.startsWith('/api/f/') && inner && typeof inner === 'object')
+    for (const k of Object.keys(inner)) {
+      const body = { ...ex, input: { ...(inner as Record<string, unknown>), [k]: 'zz-names-nothing' } };
+      out.push([`input.${k} naming nothing`, JSON.stringify(body), expect(body)]);
+    }
   for (const k of keys) {
     const { [k]: _gone, ...rest } = ex;
     out.push([`no ${k}`, JSON.stringify(rest), expect(rest)]);

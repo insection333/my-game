@@ -35,6 +35,9 @@ export function checkManifest({ features, slots, folders, states }: ManifestInpu
     if (!f.flag?.note) problems.push(`${where} has no flag note`);
     if (!f.help?.title || !f.help?.body) problems.push(`${where} has no Help entry`);
     if (!f.routes) problems.push(`${where} declares no routes (use {} if it has none)`);
+    for (const [name, route] of Object.entries(f.routes ?? {}))
+      if (!route.input.safeParse(route.example).success)
+        problems.push(`${where}: route "${name}" has an example its own schema refuses`);
     if (!f.rules) problems.push(`${where} declares no rules (use {} if it has none)`);
     const actions = (f.content.actions ?? []).map((a) => a.id);
     for (const a of actions) if (!f.rules?.[a]) problems.push(`${where}: action "${a}" has no rules`);
