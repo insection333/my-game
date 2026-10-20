@@ -66,7 +66,7 @@ To change the game design: edit the model in `design/model/` or the template, ru
 | 1 Workspace and verify | Done: seven packages; `pnpm verify` green locally and on GitHub Actions (steps 6–9 arrive in session 4) |
 | 2 The kernel | Done: `advance` composes (property-tested), saves round-trip and mend, requests never interleave and act once |
 | 3 The feature framework | Done: `defineFeature`, the manifest and content checks, effects with formatters, the strings file; Woodcutting's content and rules behind its flag |
-| 4 The shell and the design system | Built: pages, twelve components, steps 6 to 9, `ART.md` and twelve reference icons. Waiting on the owner's approval of the reference icons |
-| 5 The server shell | Next, once the icons are approved |
+| 4 The shell and the design system | Done: pages, twelve components, steps 6 to 9 green in three engines; `ART.md` and twelve reference icons, approved by the owner on 20 October 2026 |
+| 5 The server shell | Next |
 
-Outstanding: the owner approves (or asks for changes to) the twelve reference icons; the review sheet is in `.verify/review/` after `pnpm verify`.
+Outstanding: nothing beyond the next session. Icons for the remaining items are drawn to `ART.md` as their features arrive (logs, ores and bars in sessions 6 and 7; gear, foes and food in session 8).

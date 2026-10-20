@@ -1,6 +1,6 @@
 # Idle Clash: art style guide
 
-Every item, foe, food, find and skill icon is drawn in code, in `packages/ui/src/icons/`, to these rules. The rules themselves live in code too: `icons/style.tsx` holds the ink, the outline width, the material tones and the `Shape` every icon is built from, so an icon that uses `Shape` keeps most of these rules without trying. The twelve reference icons are the bar. A new icon is judged beside them at 24, 48 and 96 px on both themes (verify writes the sheet to `.verify/review/icons.png`). The owner approves the first icon of each new family; later icons in that family are held to the reference set.
+Every item, foe, food, find and skill icon is drawn in code, in `packages/ui/src/icons/`, to these rules. The rules themselves live in code too: `icons/style.tsx` holds the ink, the outline width, the material tones and the `Shape` every icon is built from, so an icon that uses `Shape` keeps most of these rules without trying. The twelve reference icons are the bar. A new icon is judged beside them at 24, 48 and 96 px on both themes (verify writes the sheet to `.verify/review/icons.png`). The owner approves the first icon of each new family; later icons in that family are held to the reference set. **The reference set and this style were approved by the owner on 20 October 2026.**
 
 ## The grid
 

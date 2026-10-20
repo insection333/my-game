@@ -6,3 +6,4 @@
 - Session 3: the feature framework: defineFeature and the registry, the content package (effects with handlers and formatters, strings, levels, mastery, glossary), manifest and content checks in verify, and Woodcutting's content and rules behind its flag.
 - Session 4: the web shell (five pages, two sheets, phone to desktop layouts), the design system (tokens, twelve components), ART.md and twelve reference icons, and verify steps 6 to 9 (screenshots in three engines, axe, speed budgets, review sheets).
 - Verify's first step now checks that pnpm-lock.yaml matches every package.json, so a stale lockfile fails locally instead of on GitHub.
+- The owner approved the reference icons and the art style (20 October 2026).
