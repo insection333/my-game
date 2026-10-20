@@ -59,7 +59,7 @@ To change the game design: edit the model in `design/model/` or the template, ru
 | Session | State |
 | --- | --- |
 | 0 Design on paper | Done: `GAME_DESIGN.md`, `IA.md`, `GLOSSARY.md`; every target passes in the paper model |
-| 1 Workspace and verify | Done when verify is green on GitHub |
+| 1 Workspace and verify | Done: seven packages; `pnpm verify` green locally and on GitHub Actions (steps 6–9 arrive in session 4) |
 | 2 The kernel | Next |
 
 Outstanding: nothing beyond the next session.
