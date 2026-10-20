@@ -45,6 +45,19 @@ export const Level = z.number().int().min(1).max(MAX_LEVEL);
 
 export const Unlock = z.discriminatedUnion('type', [
   z.object({ type: z.literal('action'), action: Id }).strict(),
+  /** A tier of gear: a style wields its weapon of the tier, Hitpoints wears its armour. */
+  z
+    .object({
+      type: z.literal('tier'),
+      tier: z.number().int().min(1).max(4),
+      use: z.enum(['wield', 'wear']),
+      style: z.enum(STYLES).optional(),
+    })
+    .strict(),
+  /** A foe that can now be fought (Hitpoints opens foes; its id is the combat action's). */
+  z.object({ type: z.literal('foe'), foe: Id }).strict(),
+  /** A food the vendor now sells. */
+  z.object({ type: z.literal('food'), item: Id }).strict(),
   z.object({ type: z.literal('perk'), perk: Id, rank: z.number().int().min(1).max(39), effect: Effect }).strict(),
 ]);
 export type Unlock = z.infer<typeof Unlock>;

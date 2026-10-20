@@ -16,6 +16,9 @@ const slots = [
   'collection.log',
   'hearth.nextUp',
   'hearth.goals',
+  'combat.loadout',
+  'combat.foes',
+  'combat.triangle',
 ];
 const manifest = (features: Feature[], folders = features.map((f) => f.id)) =>
   checkManifest({ features, slots, folders, states });

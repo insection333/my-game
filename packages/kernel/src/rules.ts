@@ -8,6 +8,8 @@ export interface ActionContext {
   readonly state: State;
   /** When this happens. */
   readonly at: number;
+  /** When this repetition started: `at` itself in `check` and `duration`, earlier in `complete`. */
+  readonly startedAt: number;
   readonly lane: LaneId;
   /** Whether the fire is burning at this moment. */
   readonly fireBurning: boolean;

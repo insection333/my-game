@@ -47,10 +47,12 @@ export function createEngine(registry: ActionRegistry, config: KernelConfig = DE
     events: GameEvent[],
     canRoll = true,
     seed?: number,
+    startedAt = at,
   ): ActionContext {
     return {
       state: s,
       at,
+      startedAt,
       lane,
       seed,
       fireBurning: at < s.fireUntil,
@@ -89,7 +91,8 @@ export function createEngine(registry: ActionRegistry, config: KernelConfig = DE
     const ms = Math.round(rules.duration(context(s, lane, at, rng, events, true, seed), action));
     if (!Number.isFinite(ms)) throw new Error(`${actionKey(action)} returned a duration of ${ms}`);
     const endsAt = at + Math.max(config.minAction, ms);
-    s.lanes[lane].current = seed === undefined ? { action, startedAt: at, endsAt } : { action, startedAt: at, endsAt, seed };
+    s.lanes[lane].current =
+      seed === undefined ? { action, startedAt: at, endsAt } : { action, startedAt: at, endsAt, seed };
     s.lanes[lane].stopped = null;
     return null;
   }
@@ -151,7 +154,8 @@ export function createEngine(registry: ActionRegistry, config: KernelConfig = DE
         halt(s, lane, run.action, reason('unavailable', { action: actionKey(run.action) }), at, rng, events);
         continue;
       }
-      const made = rules.complete(context(s, lane, at, rng, events, true, run.seed), run.action) !== false;
+      const made =
+        rules.complete(context(s, lane, at, rng, events, true, run.seed, run.startedAt), run.action) !== false;
       const key = actionKey(run.action);
       if (made) s.mastery[key] = (Object.hasOwn(s.mastery, key) ? s.mastery[key] : 0) + 1;
       s.lanes[lane].current = null;

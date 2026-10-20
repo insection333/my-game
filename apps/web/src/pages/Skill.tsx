@@ -81,6 +81,14 @@ function SkillPage({ feature }: { feature: Feature }) {
               </div>
             )}
             <Slot id="skill.actions">
+              {!all.length && (
+                <div className={s.trained}>
+                  <span className={s.muted}>{t('combat.trainedHere')}</span>
+                  <Button variant="primary" onClick={() => navigate('/combat')}>
+                    {t('combat.toCombat')}
+                  </Button>
+                </div>
+              )}
               {actions.map((a) => (
                 <ActionRow
                   key={a.action.id}

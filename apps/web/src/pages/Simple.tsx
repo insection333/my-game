@@ -1,5 +1,5 @@
 // Pages whose features have not arrived yet show their title and purpose; their slots fill as
-// Combat (session 8), the Storehouse and Hiscores (session 9) are built. The collection log is here
+// the Storehouse and Hiscores (session 9) are built. The collection log is here
 // since session 6.
 import { t } from '@idle-clash/content';
 import type { CollectionGroup } from '@idle-clash/features';
@@ -12,7 +12,6 @@ import { ItemGrid } from './Items.tsx';
 import { PageHead } from './PageHead.tsx';
 import s from './pages.module.css';
 
-export const Combat = () => <PageHead title={t('combat.title')} lead={t('combat.lead')} />;
 export const Hiscores = () => <PageHead title={t('hiscores.title')} lead={t('hiscores.lead')} />;
 
 export function Storehouse({ path }: { path: string }) {

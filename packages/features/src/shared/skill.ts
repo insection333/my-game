@@ -43,6 +43,12 @@ export const actionMastery = (state: State, ladder: Ladder, skill: string, featu
 /** An unlock as the player reads it: an action's name, or a perk with its rank and effect. */
 export function unlockText(feature: string, ladder: Ladder, u: Unlock): string {
   if (u.type === 'action') return t(`action.${feature}.${u.action}`);
+  if (u.type === 'tier')
+    return u.use === 'wield'
+      ? t('unlock.wield', { metal: t(`tier.metal.${u.tier}`), weapons: t(`weapons.${u.style ?? 'melee'}`) })
+      : t('unlock.wear', { metal: t(`tier.metal.${u.tier}`) });
+  if (u.type === 'foe') return t('unlock.foe', { foe: t(`action.combat.${u.foe}`) });
+  if (u.type === 'food') return t('unlock.food', { food: t(`item.${u.item}`) });
   const name = t(`perk.${u.perk}`);
   const ranked = ladder.some((us) => us.some((x) => x.type === 'perk' && x.perk === u.perk && x.rank > 1));
   return ranked
