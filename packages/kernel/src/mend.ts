@@ -8,6 +8,7 @@ import {
   StopReason,
   ActionRef,
   RequestRecord,
+  SkillXp,
 } from './schema.ts';
 import type { Lane, LaneId, State } from './schema.ts';
 import { newState } from './state.ts';
@@ -69,7 +70,13 @@ function mendLane(id: LaneId, raw: unknown, now: number, repairs: string[]): Lan
   return lane;
 }
 
-/** Mends a save document of the current version. `now` bounds times that lie in the future. */
+function mendLuck(raw: unknown, clock: number, repairs: string[]): State['luck'] {
+  if (isObject(raw) && isTime(raw.misses) && isTime(raw.lastMoment) && raw.lastMoment <= clock)
+    return { misses: raw.misses, lastMoment: raw.lastMoment };
+  if (raw !== undefined) repairs.push('Luck was damaged and was reset');
+  return { misses: 0, lastMoment: clock };
+}
+
 /** Checks the schema cannot make: times must not lie ahead of the server's clock. */
 function soundAt(doc: SaveDoc, now: number): boolean {
   const ahead = now + FUTURE_SLACK;
@@ -77,6 +84,7 @@ function soundAt(doc: SaveDoc, now: number): boolean {
   return (
     st.clock <= ahead &&
     st.fireUntil <= ahead + 10 * 60_000 &&
+    st.luck.lastMoment <= st.clock &&
     LANE_IDS.every((l) => (st.lanes[l].current?.startedAt ?? 0) <= st.clock)
   );
 }
@@ -116,13 +124,10 @@ export function mend(raw: unknown, now: number): Mended {
       LANE_IDS.map((l) => [l, mendLane(l, isObject(st.lanes) ? st.lanes[l] : undefined, clock, repairs)]),
     ) as Record<LaneId, Lane>,
     items: keepValid(st.items, 'Items', isTime, repairs),
-    skills: keepValid(
-      st.skills,
-      'Skills',
-      (v): v is { xp: number } => isObject(v) && isTime(v.xp) && Object.keys(v).length === 1,
-      repairs,
-    ),
+    skills: keepValid(st.skills, 'Skills', (v): v is SkillXp => SkillXp.safeParse(v).success, repairs),
     mastery: keepValid(st.mastery, 'Mastery', isTime, repairs, (k) => /^[a-z0-9-]{1,64}:[a-z0-9-]{1,64}$/.test(k)),
+    luck: mendLuck(st.luck, clock, repairs),
+    found: keepValid(st.found, 'First finds', isTime, repairs),
     features: keepValid(st.features, 'Feature data', (v): v is unknown => v !== undefined, repairs),
   };
   for (const id of LANE_IDS) {

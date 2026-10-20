@@ -1,7 +1,7 @@
 // defineFeature: the one place a feature declares everything it is. The manifest check reads these
 // declarations; a feature missing a part, or filling a slot IA.md does not list, fails verify.
-import { Id, Item, Ladder, type Effect, type EffectKind } from '@idle-clash/content';
-import type { ActionRules, State } from '@idle-clash/kernel';
+import { Find, Id, Item, Ladder, type Effect, type EffectKind } from '@idle-clash/content';
+import type { ActionRules, GameEvent, State } from '@idle-clash/kernel';
 import { z, type ZodType } from 'zod';
 
 export type Json = string | number | boolean | null | Json[] | { [key: string]: Json };
@@ -22,7 +22,7 @@ export type SlotFill = (ctx: SlotContext) => Json;
  */
 export interface RouteDef<I = unknown> {
   input: ZodType<I>;
-  run: (state: State, input: I, now: number) => { state: State; result: Json };
+  run: (state: State, input: I, now: number) => { state: State; result: Json; events?: GameEvent[] };
 }
 
 /** Types a route's `run` by its own input schema; the server only calls `run` with parsed input. */
@@ -46,6 +46,8 @@ export const FeatureContent = z
     items: z.array(Item).default([]),
     actions: z.array(ContentAction).default([]),
     skill: z.object({ id: Id, ladder: Ladder }).strict().optional(),
+    /** A skill's six finds (GAME_DESIGN.md section 8); each is also one of its items. */
+    finds: z.array(Find).default([]),
   })
   .strict();
 export type FeatureContent = z.input<typeof FeatureContent>;

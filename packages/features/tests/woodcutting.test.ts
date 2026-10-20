@@ -16,7 +16,8 @@ describe('woodcutting', () => {
     const s = cmd(newState(11, T0), { type: 'start', lane: 'gathering', action: pine }).state;
     const fire = engine.advance(s, T0 + 75 * SECOND, rng).state;
     expect(fire.items['pine-logs']).toBe(10);
-    expect(fire.skills.woodcutting.xp).toBe(10 * Math.round(11 * 1.15));
+    // 11 XP and 15% more: 12.65 a chop, carried exactly in thousandths.
+    expect(fire.skills.woodcutting).toEqual({ xp: 126, part: 500 });
   });
 
   it('refuses a tree above your level, and says why in words', () => {
@@ -36,7 +37,7 @@ describe('woodcutting', () => {
   });
 
   it('is not playable while its flag is off', () => {
-    const live = createEngine(actionRegistry());
+    const live = createEngine(actionRegistry(FEATURES, (f) => f.id !== 'woodcutting'));
     const out = live.command(newState(11, T0), T0, { type: 'start', lane: 'gathering', action: pine }, rng);
     expect(out.result).toMatchObject({ ok: false, reason: { code: 'unavailable' } });
   });

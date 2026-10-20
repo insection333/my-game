@@ -1,0 +1,120 @@
+{
+  "version": 2,
+  "state": {
+    "seed": 20261020,
+    "clock": 1792497600000,
+    "lastSeen": 1792497600000,
+    "fireUntil": 1792497900000,
+    "lanes": {
+      "gathering": {
+        "current": {
+          "action": {
+            "feature": "woodcutting",
+            "id": "pine-tree"
+          },
+          "startedAt": 1792497600000,
+          "endsAt": 1792497607500
+        },
+        "next": {
+          "feature": "mining",
+          "id": "copper-vein"
+        },
+        "stopped": null,
+        "rolls": 1440
+      },
+      "gathering2": {
+        "current": null,
+        "next": null,
+        "stopped": {
+          "reason": {
+            "code": "fireOut"
+          },
+          "at": 1792487280000
+        },
+        "rolls": 56
+      },
+      "artisan": {
+        "current": null,
+        "next": null,
+        "stopped": {
+          "reason": {
+            "code": "outOfInputs",
+            "detail": {
+              "item": "copper-bar"
+            }
+          },
+          "at": 1792487637500
+        },
+        "rolls": 0
+      },
+      "combat": {
+        "current": null,
+        "next": null,
+        "stopped": {
+          "reason": {
+            "code": "outOfFood"
+          },
+          "at": 1792489596000
+        },
+        "rolls": 477
+      }
+    },
+    "items": {
+      "pine-logs": 1440,
+      "copper-bar": 1,
+      "gold": 473,
+      "copper-ore": 10,
+      "copper-sword": 19,
+      "birds-nest": 31
+    },
+    "skills": {
+      "woodcutting": {
+        "xp": 15966
+      },
+      "mining": {
+        "xp": 726
+      },
+      "smithing": {
+        "xp": 969
+      },
+      "melee": {
+        "xp": 4855
+      }
+    },
+    "mastery": {
+      "woodcutting:pine-tree": 1440,
+      "mining:copper-vein": 56,
+      "smithing:copper-bar": 58,
+      "combat:hollow-rat": 159,
+      "smithing:copper-sword": 19
+    },
+    "luck": {
+      "misses": 17,
+      "lastMoment": 1792497510000
+    },
+    "found": {
+      "birds-nest": 1792490400000
+    },
+    "features": {
+      "goals": {
+        "claimed": ["first-chop"]
+      }
+    }
+  },
+  "requests": [
+    {
+      "id": "req-1",
+      "at": 1792486800000,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "id": "req-2",
+      "at": 1792497600000,
+      "result": {
+        "ok": true
+      }
+    }
+  ]
+}

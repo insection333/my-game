@@ -144,7 +144,7 @@ Tabs: Items · Collection log.
 | 1 | `store.capacity` | storehouse | Slots used of total, Enlarge with its price |
 | 2 | `store.items` | storehouse | A grid of items with counts, filterable by kind (resources, gear, food, finds); tap opens the item panel |
 | 3 | `item.panel` | storehouse, and every feature through queries | Name, icon at 96 px, count, sale price, Sell (one, ten, all but one), Wear for gear; **Comes from** and **Used in**, each answered by asking every registered feature |
-| 4 | `collection.log` | finds | 36 entries by skill, found or silhouetted, with first-find dates and progress per skill |
+| 4 | `collection.log` | every skill (its six finds) | 36 entries by skill, found or silhouetted, with first-find dates and progress per skill |
 
 - **At 390:** capacity and four rows of the grid; the item panel opens as a sheet. **At 1,440:** capacity, the full grid, and the item panel docked at the right of the content.
 

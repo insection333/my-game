@@ -1,8 +1,23 @@
 // The game's content against the design: the XP table, each skill's ladder (as the player reads it)
 // and each gathering action's numbers must match what GAME_DESIGN.md says.
-import { t, XP_TABLE } from '@idle-clash/content';
+import {
+  LEGENDARY_CHANCE,
+  LUCK_GUARANTEE_MS,
+  LUCK_STEP,
+  RARE_CHANCE,
+  RARITIES,
+  t,
+  XP_TABLE,
+} from '@idle-clash/content';
 import { skill, type Feature } from '@idle-clash/features';
-import { MINING, WOODCUTTING } from '../../../design/model/content.ts';
+import {
+  FINDS,
+  LUCK_GUARANTEE_SECONDS,
+  LUCK_STEP as MODEL_LUCK_STEP,
+  MINING,
+  RARITY,
+  WOODCUTTING,
+} from '../../../design/model/content.ts';
 import { fmtUnlock } from '../../../design/model/format.ts';
 import { unlockTable } from '../../../design/model/unlocks.ts';
 
@@ -14,6 +29,10 @@ export function checkDesign(features: readonly Feature[], modelXp: number[]): st
   if (JSON.stringify(modelXp) !== JSON.stringify(XP_TABLE)) {
     problems.push("packages/content's XP table differs from the model's (design/model/xp-table.json)");
   }
+  const ours = [LUCK_STEP, LUCK_GUARANTEE_MS / 1000, RARE_CHANCE, LEGENDARY_CHANCE];
+  const theirs = [MODEL_LUCK_STEP, LUCK_GUARANTEE_SECONDS, RARITY[1].chance, RARITY[2].chance];
+  if (JSON.stringify(ours) !== JSON.stringify(theirs))
+    problems.push(`Find chances and luck ${JSON.stringify(ours)} differ from the design's ${JSON.stringify(theirs)}`);
   for (const f of features) {
     const sk = f.content.skill;
     if (!sk) continue;
@@ -21,6 +40,13 @@ export function checkDesign(features: readonly Feature[], modelXp: number[]): st
     if (!id) {
       problems.push(`Feature "${f.id}": skill "${sk.id}" is not in GAME_DESIGN.md`);
       continue;
+    }
+    if (id !== 'hitpoints') {
+      const names = RARITIES.map((r) =>
+        (f.content.finds ?? []).filter((x) => x.rarity === r).map((x) => t(`item.${x.item}`)),
+      );
+      if (JSON.stringify(names) !== JSON.stringify(FINDS[id]))
+        problems.push(`Feature "${f.id}": finds ${JSON.stringify(names)}, the design ${JSON.stringify(FINDS[id])}`);
     }
     const model = unlockTable(id);
     for (let level = 1; level <= 40; level++) {

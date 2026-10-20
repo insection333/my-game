@@ -1,6 +1,6 @@
 // The slots every skill fills on its page, the Skills list and the Hearth's "Next up", from the
 // skill's ladder and actions. Data comes out already formatted; the shell (session 4) draws it.
-import { fmt, levelProgress, MASTERY_STEPS, t, XP_TABLE, type Ladder } from '@idle-clash/content';
+import { fmt, levelProgress, MASTERY_STEPS, t, XP_TABLE, type Find, type Ladder } from '@idle-clash/content';
 import { xpOf } from '@idle-clash/kernel';
 import type { Json, SlotFill } from '../define.ts';
 import { actionMastery, actionModifiers, nextUnlock, skillLevel, unlockText } from './skill.ts';
@@ -38,6 +38,22 @@ export interface LadderRow {
   reached: boolean;
   unlocks: string[];
 }
+/** One find as the skill page and the collection log show it: found, or a silhouette. */
+export interface FindEntry {
+  item: string;
+  name: string;
+  rarity: string;
+  rarityId: string;
+  found: boolean;
+  /** "Found 20 Oct 2026", or how to find it. */
+  note: string;
+}
+export interface CollectionGroup {
+  skill: string;
+  name: string;
+  progress: string;
+  finds: FindEntry[];
+}
 export interface NextUpRow {
   skill: string;
   text: string;
@@ -48,6 +64,7 @@ export interface SkillDef {
   feature: string;
   skill: string;
   ladder: Ladder;
+  finds: readonly Find[];
   actions: SkillAction[];
 }
 
@@ -73,7 +90,38 @@ export function skillSlots(def: SkillDef): Record<string, SlotFill> {
     };
   };
 
+  const findEntries = (found: Record<string, number>): { [k: string]: Json }[] =>
+    def.finds.map((f) => {
+      const at = Object.hasOwn(found, f.item) ? found[f.item] : null;
+      return {
+        item: f.item,
+        name: t(`item.${f.item}`),
+        rarity: t(`rarity.${f.rarity}`),
+        rarityId: f.rarity,
+        found: at !== null,
+        note:
+          at !== null
+            ? t('find.foundOn', { date: fmt.date(at) })
+            : f.greater
+              ? t('find.greaterHint')
+              : t('find.anyHint'),
+      };
+    });
+
   return {
+    'skill.finds': ({ state }) => findEntries(state.found),
+    'collection.log': ({ state }) => {
+      const finds = findEntries(state.found);
+      return {
+        skill,
+        name: name(),
+        progress: t('collection.progress', {
+          found: fmt.int(finds.filter((f) => f.found).length),
+          total: fmt.int(finds.length),
+        }),
+        finds,
+      };
+    },
     'skills.list': ({ state }) => summary(xpOf(state, skill)),
     'skill.header': ({ state }) => summary(xpOf(state, skill)),
     'skill.actions': ({ state }) => {

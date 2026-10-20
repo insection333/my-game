@@ -6,6 +6,7 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
+    "@idle-clash/kernel": "workspace:*",
     "zod": "4.6.5"
   }
 }

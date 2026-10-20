@@ -184,7 +184,7 @@ Enlargement costs follow each day's net gold, so one is affordable roughly when 
 
 ### The goals ladder (always in view on the Hearth)
 
-1. **First steps:** six goals, each with a button that starts it.
+1. **First steps:** six goals, each with a button that starts it and a reward of 25 gold (the sixth pays in bread instead).
    1. Chop a pine (Start chopping).
    2. Mine copper ore (Start mining: the fire's second Gathering lane).
    3. Smelt a copper bar (Start smelting).

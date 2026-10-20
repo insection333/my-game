@@ -1,6 +1,6 @@
 // Woodcutting's content: eight trees over four tiers, their logs, and the unlock ladder 1 to 40.
 // Every number here matches GAME_DESIGN.md; verify's content check compares them with the model.
-import { buildLadder, type Item } from '@idle-clash/content';
+import { buildLadder, type Find, type Item } from '@idle-clash/content';
 
 export const SKILL = 'woodcutting';
 
@@ -44,7 +44,29 @@ export const TREES: Tree[] = LOGS.flatMap((log, i) => {
   ];
 });
 
-export const ITEMS: Item[] = LOGS.map((log, i) => ({ id: `${log}-logs`, kind: 'resource', value: LOG_VALUE[i] }));
+/** Six finds (GAME_DESIGN.md section 8). Uncommon ones sell for about 50 actions' worth of their tier's
+ *  logs, Rare ones for about 500; Legendary ones are kept as trophies. */
+export const FINDS: Find[] = [
+  { item: 'birds-nest', rarity: 'uncommon', greater: false },
+  { item: 'amber-nugget', rarity: 'uncommon', greater: true },
+  { item: 'carved-acorn', rarity: 'rare', greater: false },
+  { item: 'heartwood-knot', rarity: 'rare', greater: true },
+  { item: 'silverbark-seed', rarity: 'legendary', greater: false },
+  { item: 'crown-of-the-old-wood', rarity: 'legendary', greater: true },
+];
+const FIND_VALUE: Record<string, number> = {
+  'birds-nest': 100,
+  'amber-nugget': 1200,
+  'carved-acorn': 1000,
+  'heartwood-knot': 12000,
+  'silverbark-seed': 0,
+  'crown-of-the-old-wood': 0,
+};
+
+export const ITEMS: Item[] = [
+  ...LOGS.map((log, i): Item => ({ id: `${log}-logs`, kind: 'resource', value: LOG_VALUE[i] })),
+  ...FINDS.map((f): Item => ({ id: f.item, kind: 'find', value: FIND_VALUE[f.item] })),
+];
 
 export const LADDER = buildLadder(
   TREES.map((tree) => ({ id: tree.id, level: tree.level })),

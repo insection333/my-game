@@ -1,10 +1,11 @@
 // advance(state, now, rng) → { state, events }: lanes run in time order, one completion at a time,
 // so advancing a to b to c gives exactly what a to c gives. The input state is never changed.
 import type { Command } from './commands.ts';
-import type { GameEvent } from './events.ts';
+import { isNotable, type GameEvent } from './events.ts';
 import type { Rng } from './rng.ts';
 import type { ActionContext, ActionRegistry } from './rules.ts';
 import { actionKey, LANE_IDS, laneKind, type ActionRef, type LaneId, type State, type StopReason } from './schema.ts';
+import { noteMoment } from './state.ts';
 import { DEFAULT_CONFIG, type KernelConfig } from './time.ts';
 
 export interface Advanced {
@@ -41,7 +42,10 @@ export function createEngine(registry: ActionRegistry, config: KernelConfig = DE
         if (!canRoll) throw new Error('rules.check must not roll');
         return rng(lane, s.lanes[lane].rolls++);
       },
-      emit: (e) => events.push(e),
+      emit: (e) => {
+        events.push(e);
+        if (isNotable(e)) noteMoment(s, e.at);
+      },
     };
   }
 

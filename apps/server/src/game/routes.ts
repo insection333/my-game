@@ -84,8 +84,8 @@ export function gameRoutes(app: FastifyInstance, ctx: Ctx, features: readonly Fe
           let next: SaveDoc | null = null;
           const out = await handle(ctx.queue, ctx.store, player, input.requestId, t, (doc) => {
             const arrived = ctx.engine.input(doc.state, t, seeded(doc.state.seed));
-            events = arrived.events;
             const ran = route.run(arrived.state, parsed.data, t);
+            events = [...arrived.events, ...(ran.events ?? [])];
             next = { ...doc, state: ran.state };
             return { doc: next, result: ran.result };
           });

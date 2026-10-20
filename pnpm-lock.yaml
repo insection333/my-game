@@ -139,6 +139,9 @@ importers:
 
   packages/content:
     dependencies:
+      '@idle-clash/kernel':
+        specifier: workspace:*
+        version: link:../kernel
       zod:
         specifier: 4.6.5
         version: 4.6.5

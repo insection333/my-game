@@ -131,6 +131,29 @@ export const en: Record<string, string> = {
   'action.gives': '{item} ×{count}',
   'mastery.step': 'Mastery {step}',
 
+  // Goals
+  'goals.firstSteps': 'First steps',
+  'goals.progress': '{done} of {total} done',
+  'goals.reward.gold': '{amount} gold',
+  'goals.claim': 'Claim {reward}',
+  'goals.claimed': 'Done',
+  'goals.inLane': 'Working in your {lane} lane',
+  'goal.chop-a-pine': 'Chop a pine',
+  'goal.chop-a-pine.start': 'Start chopping',
+  'help.goals.title': 'Goals',
+  'help.goals.body':
+    'Goals show what to aim for next. First steps walk you through the game, each with a button that starts it; claim each for its reward.',
+
+  // Finds and the collection log
+  'rarity.uncommon': 'Uncommon',
+  'rarity.rare': 'Rare',
+  'rarity.legendary': 'Legendary',
+  'find.foundOn': 'Found {date}',
+  'find.anyHint': 'Not found yet: from any action',
+  'find.greaterHint': 'Not found yet: from tier 3 and 4 actions',
+  'collection.progress': '{found} of {total} found',
+  'skill.finds.title': 'Finds',
+
   // Woodcutting
   'skill.woodcutting': 'Woodcutting',
   'help.woodcutting.title': 'Woodcutting',
@@ -148,6 +171,12 @@ export const en: Record<string, string> = {
   'item.ash-logs': 'Ash logs',
   'item.oak-logs': 'Oak logs',
   'item.yew-logs': 'Yew logs',
+  'item.birds-nest': "Bird's nest",
+  'item.amber-nugget': 'Amber nugget',
+  'item.carved-acorn': 'Carved acorn',
+  'item.heartwood-knot': 'Heartwood knot',
+  'item.silverbark-seed': 'Silverbark seed',
+  'item.crown-of-the-old-wood': 'Crown of the old wood',
   'perk.quick-swing': 'Quick swing',
   'perk.plenty': 'Plenty',
   'perk.woodsmans-eye': "Woodsman's eye",

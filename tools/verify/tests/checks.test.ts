@@ -7,7 +7,15 @@ import { literalStringKeys, sampleStates } from '../checks/sources.ts';
 
 const states = sampleStates(['woodcutting']);
 const [woodcutting] = FEATURES;
-const slots = ['skills.list', 'skill.header', 'skill.actions', 'skill.ladder', 'hearth.nextUp'];
+const slots = [
+  'skills.list',
+  'skill.header',
+  'skill.actions',
+  'skill.ladder',
+  'skill.finds',
+  'collection.log',
+  'hearth.nextUp',
+];
 const manifest = (features: Feature[], folders = features.map((f) => f.id)) =>
   checkManifest({ features, slots, folders, states });
 const literalKeys = literalStringKeys(allStringKeys());
