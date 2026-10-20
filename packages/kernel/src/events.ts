@@ -19,6 +19,8 @@ export interface EventMap {
   goalDone: { goal: string };
   /** A lane stopped; the reason says why, so the page can say what to do. */
   laneStopped: { lane: LaneId; action: ActionRef | null; reason: StopReason };
+  /** A command was refused: what was asked, and why not, so the page can say so. */
+  refused: { lane: LaneId | null; action: ActionRef | null; reason: StopReason };
   /** A queued Next action began after the current one stopped. */
   nextStarted: { lane: LaneId; action: ActionRef };
 }

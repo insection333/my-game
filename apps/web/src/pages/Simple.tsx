@@ -8,6 +8,7 @@ import { useGame } from '../game/hooks.ts';
 import { navigate } from '../router.ts';
 import { fills, Slot } from '../slots.tsx';
 import { FindGrid } from './Finds.tsx';
+import { ItemGrid } from './Items.tsx';
 import { PageHead } from './PageHead.tsx';
 import s from './pages.module.css';
 
@@ -24,7 +25,7 @@ export function Storehouse({ path }: { path: string }) {
       <PageHead title={t('store.title')}>
         <Tabs tabs={tabs} label={t('store.title')} onNavigate={navigate} />
       </PageHead>
-      {path === '/storehouse/log' && <CollectionLog />}
+      {path === '/storehouse/log' ? <CollectionLog /> : <ItemGrid />}
     </>
   );
 }

@@ -3,7 +3,7 @@ import { FEATURES } from '@idle-clash/features';
 import { seeded, type State } from '@idle-clash/kernel';
 import { afterEach, describe, expect, it } from 'vitest';
 import { telemetry } from '../src/db/schema.ts';
-import { code, notes, ORIGIN, post, server, signUp, type TestServer } from './helpers.ts';
+import { code, notes, ORIGIN, post, server, signUp, T0, type TestServer } from './helpers.ts';
 
 let s: TestServer;
 afterEach(() => s?.close());
@@ -94,6 +94,39 @@ describe('the game over HTTP', () => {
     s = await server();
     expect(code(await s.app.inject({ method: 'GET', url: '/api/game' }))).toBe('notSignedIn');
     expect(code(await command('ic_session=forged-token-value', 'req-x-1', { type: 'stoke' }))).toBe('notSignedIn');
+  });
+});
+
+describe('a queued action', () => {
+  it('starts while the player is away, and the server keeps what it made', async () => {
+    s = await server();
+    const cookie = await signUp(s, 'Smith');
+    const id = (
+      JSON.parse((await s.app.inject({ method: 'GET', url: '/api/me', headers: { cookie } })).body) as {
+        player: { id: string };
+      }
+    ).player.id;
+    const saved = s.ctx.store.read(id, s.clock.now)!;
+    s.ctx.store.write(
+      id,
+      { ...saved.doc, state: { ...saved.doc.state, items: { 'copper-ore': 60 } } },
+      saved.rev,
+      s.clock.now,
+    );
+    const bar = { feature: 'smithing', id: 'copper-bar' };
+    const sword = { feature: 'smithing', id: 'copper-sword' };
+    await command(cookie, 'req-smelt-1', { type: 'start', lane: 'artisan', action: bar });
+    await command(cookie, 'req-queue-1', { type: 'queueNext', lane: 'artisan', action: sword });
+    s.clock.now += 8 * 3600_000;
+    const r = JSON.parse((await command(cookie, 'req-back-1', { type: 'stoke' })).body) as {
+      state: State;
+      events: { type: string; at: number }[];
+    };
+    const started = r.events.find((e) => e.type === 'nextStarted')!;
+    expect(started.at).toBeGreaterThan(T0 + 5 * 60_000);
+    expect(r.state.items['copper-sword']).toBeGreaterThanOrEqual(18);
+    expect(r.state.lanes.artisan.stopped?.reason).toEqual({ code: 'outOfInputs', detail: { item: 'copper-bar' } });
+    expect((await state(cookie)).items['copper-sword']).toBe(r.state.items['copper-sword']);
   });
 });
 

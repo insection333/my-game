@@ -1,11 +1,12 @@
 // The shell: header, menu, lanes and sheets around every page. It owns the layout; pages fill the
 // main column and features fill slots.
 import { countOf } from '@idle-clash/kernel';
-import { fmt, t } from '@idle-clash/content';
+import { fmt, hasString, t } from '@idle-clash/content';
 import { IconButton, Pill, Sheet } from '@idle-clash/ui';
 import type { ReactNode } from 'react';
 import { useGame } from '../game/hooks.ts';
 import { navigate, useLocation, withPanel } from '../router.ts';
+import { ItemPanel } from '../pages/Items.tsx';
 import { Settings, Tray } from '../pages/Panels.tsx';
 import { FireBadge } from './FireBadge.tsx';
 import { Bell, Coin, MenuGlyph, Person } from './glyphs.tsx';
@@ -88,6 +89,7 @@ export function Shell({ children }: { children: ReactNode }) {
           <Tray />
         </Sheet>
       )}
+      {panel === 'item' && <ItemSheet onClose={close} />}
       {panel === 'settings' && (
         <Sheet title={t('settings.title')} closeLabel={t('shell.close')} onClose={close} slot="settings.account">
           <Settings />
@@ -99,5 +101,16 @@ export function Shell({ children }: { children: ReactNode }) {
         </Sheet>
       )}
     </div>
+  );
+}
+
+/** An item's panel: its address carries the item (`?panel=item&item=pine-logs`). */
+function ItemSheet({ onClose }: { onClose: () => void }) {
+  const item = new URLSearchParams(location.search).get('item') ?? '';
+  const title = hasString(`item.${item}`) ? t(`item.${item}`) : t('store.title');
+  return (
+    <Sheet title={title} closeLabel={t('shell.close')} onClose={onClose} slot="item.panel">
+      <ItemPanel item={item} />
+    </Sheet>
   );
 }

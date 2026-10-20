@@ -5,6 +5,7 @@ import {
   GREATER_FROM_TIER,
   levelProgress,
   MASTERY_STEPS,
+  TIER_LEVELS,
   t,
   XP_TABLE,
   type Find,
@@ -20,6 +21,7 @@ export interface SkillAction {
   seconds: number;
   xp: number;
   gives: { item: string; count: number }[];
+  takes?: { item: string; count: number }[];
 }
 
 /** What the skill slots give the shell, so the page can type what it draws. */
@@ -33,12 +35,16 @@ export interface SkillSummary {
 }
 export interface SkillActionRow {
   action: { feature: string; id: string };
+  /** The tier the action belongs to (tiers open at levels 1, 10, 20 and 30). */
+  tier: number;
   name: string;
   locked: boolean;
   opensAt: string | null;
   time: string;
   xpPerHour: string;
   gives: string;
+  /** What one repetition uses up, or null when it takes nothing. */
+  takes: string | null;
   mastery: string;
   masteryProgress: number;
 }
@@ -143,6 +149,7 @@ export function skillSlots(def: SkillDef): Record<string, SlotFill> {
         const [from, to] = [MASTERY_STEPS[step - 1] ?? 0, MASTERY_STEPS[step] ?? 0];
         return {
           action: { feature, id: a.id },
+          tier: TIER_LEVELS.filter((l) => a.level >= l).length,
           name: t(`action.${feature}.${a.id}`),
           locked: level < a.level,
           opensAt: level < a.level ? t('action.opensAt', { level: fmt.int(a.level) }) : null,
@@ -151,6 +158,13 @@ export function skillSlots(def: SkillDef): Record<string, SlotFill> {
           gives: a.gives
             .map((g) => t('action.gives', { item: t(`item.${g.item}`), count: fmt.int(g.count) }))
             .join(', '),
+          takes: a.takes?.length
+            ? t('action.takes', {
+                items: a.takes
+                  .map((g) => t('action.gives', { item: t(`item.${g.item}`), count: fmt.int(g.count) }))
+                  .join(', '),
+              })
+            : null,
           mastery: t('mastery.step', { step: fmt.int(step) }),
           masteryProgress: to ? Math.min(1, (done - from) / (to - from)) : 1,
         };

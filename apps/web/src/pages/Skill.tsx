@@ -1,11 +1,12 @@
 // A skill's page: its level, everything it can do (with what each pays), and every level's unlock.
-import { levelFor, t } from '@idle-clash/content';
+import { fmt, levelFor, t } from '@idle-clash/content';
 import type { Feature, FindEntry, LadderRow, SkillActionRow, SkillSummary } from '@idle-clash/features';
-import { actionKey, laneKind, LANE_IDS, xpOf, type LaneId, type State } from '@idle-clash/kernel';
-import { ActionRow, Button, hasIcon, ItemIcon, Panel, Pill, ProgressBar } from '@idle-clash/ui';
+import { actionKey, laneFor, laneKind, LANE_IDS, xpOf, type LaneId, type State } from '@idle-clash/kernel';
+import { ActionRow, Button, hasIcon, ItemIcon, Panel, Pill, ProgressBar, Tabs } from '@idle-clash/ui';
 import { memo, useEffect, useRef } from 'react';
 import { useGame } from '../game/hooks.ts';
 import { game } from '../game/store.ts';
+import { navigate } from '../router.ts';
 import { fillFor, Slot } from '../slots.tsx';
 import { FindGrid } from './Finds.tsx';
 import { NotFound } from './Simple.tsx';
@@ -27,15 +28,26 @@ function SkillPage({ feature }: { feature: Feature }) {
   const { state, now } = useGame();
   const id = feature.content.skill!.id;
   const head = fillFor<SkillSummary>(feature, 'skill.header', state, now);
-  const actions = fillFor<SkillActionRow[]>(feature, 'skill.actions', state, now) ?? [];
+  const all = fillFor<SkillActionRow[]>(feature, 'skill.actions', state, now) ?? [];
+  // One tier at a time, so the list stays short: the tier asked for in the address, or the newest
+  // tier with something open.
+  const tiers = [...new Set(all.map((a) => a.tier))].sort((a, b) => a - b);
+  const current = Math.max(tiers[0] ?? 1, ...all.filter((a) => !a.locked).map((a) => a.tier));
+  const asked = Number(new URLSearchParams(location.search).get('tier'));
+  const tier = tiers.includes(asked) ? asked : current;
+  const actions = all.filter((a) => a.tier === tier);
+  // A lane already running this skill keeps it; otherwise the kernel's choice (the fire's second
+  // Gathering lane when the first runs another skill).
   const lane = (a: SkillActionRow): LaneId => {
     const kind = feature.rules[a.action.id]?.lane ?? 'gathering';
-    return LANE_IDS.find((l) => laneKind(l) === kind) ?? 'gathering';
+    const own = LANE_IDS.find((l) => laneKind(l) === kind && state.lanes[l].current?.action.feature === feature.id);
+    return own ?? laneFor(state, now, a.action, kind);
   };
-  const running = (a: SkillActionRow) => {
-    const cur = state.lanes[lane(a)].current;
-    return cur ? actionKey(cur.action) === actionKey(a.action) : false;
-  };
+  const running = (a: SkillActionRow) =>
+    LANE_IDS.some((l) => {
+      const cur = state.lanes[l].current;
+      return cur ? actionKey(cur.action) === actionKey(a.action) : false;
+    });
   return (
     <>
       {head && (
@@ -55,6 +67,19 @@ function SkillPage({ feature }: { feature: Feature }) {
       <div className={s.pair}>
         <section data-section>
           <Panel title={t('skill.actions.title')} flush>
+            {tiers.length > 1 && (
+              <div className={s.tierTabs}>
+                <Tabs
+                  label={t('skill.tiers')}
+                  onNavigate={navigate}
+                  tabs={tiers.map((n) => ({
+                    href: `/skills/${id}?tier=${n}`,
+                    label: t('skill.tier', { tier: fmt.int(n) }),
+                    current: n === tier,
+                  }))}
+                />
+              </div>
+            )}
             <Slot id="skill.actions">
               {actions.map((a) => (
                 <ActionRow
@@ -62,7 +87,7 @@ function SkillPage({ feature }: { feature: Feature }) {
                   icon={actionIcon(feature, a.action.id)}
                   name={a.name}
                   locked={a.locked}
-                  facts={a.locked ? [a.gives] : [a.time, a.xpPerHour, a.gives]}
+                  facts={a.locked ? [a.gives] : [a.time, a.xpPerHour, a.gives, ...(a.takes ? [a.takes] : [])]}
                   status={
                     a.locked ? (
                       <Pill>{a.opensAt}</Pill>

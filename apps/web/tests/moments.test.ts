@@ -47,15 +47,39 @@ describe('moments', () => {
     expect(second).toMatchObject({ size: 'toast', title: 'Goal done: Chop a pine' });
   });
 
-  it('shows nothing for what happened before the page opened, or for a lane stopping', () => {
+  it('shows nothing for what happened before the page opened, or for a lane the player stopped', () => {
     const stop: GameEvent = {
       type: 'laneStopped',
       at: T + 1,
       lane: 'gathering',
       action: pine,
-      reason: { code: 'fireOut' },
+      reason: { code: 'stoppedByPlayer' },
     };
     expect(momentsFrom([rare, stop], T, FEATURES)).toEqual([]);
+  });
+
+  it('says why a lane stopped by itself, and why a command was refused', () => {
+    const bar = { feature: 'smithing', id: 'bronze-bar' };
+    const events: GameEvent[] = [
+      {
+        type: 'laneStopped',
+        at: T,
+        lane: 'artisan',
+        action: bar,
+        reason: { code: 'outOfInputs', detail: { item: 'tin-ore' } },
+      },
+      {
+        type: 'refused',
+        at: T + 9000,
+        lane: 'artisan',
+        action: bar,
+        reason: { code: 'levelTooLow', detail: { level: 10 } },
+      },
+    ];
+    expect(momentsFrom(events, T - 1, FEATURES)).toMatchObject([
+      { size: 'toast', title: 'Artisan stopped: out of tin ore', body: 'Bronze bar' },
+      { size: 'toast', title: 'Needs level 10', body: 'Bronze bar' },
+    ]);
   });
 
   it('says what a mastery step gives', () => {

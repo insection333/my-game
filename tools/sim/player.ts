@@ -54,11 +54,21 @@ export interface Played {
   final: State;
 }
 
-/** A player who keeps one gathering skill in the Gathering lane, for `days` days. */
+/** Every ingredient a feature's actions take: a focused player's stock, kept full (its supply is
+ *  someone else's lane). */
+const ingredients = (f: Feature) => [
+  ...new Set((f.content.actions ?? []).flatMap((a) => (a.takes ?? []).map((t) => t.item))),
+];
+
+/**
+ * A player who keeps one skill in its lane for `days` days: one active hour a day with the fire, the
+ * rest away. A skill that takes ingredients is kept stocked, so its own pace is what is measured.
+ */
 export function focusedPlayer(f: Feature, seed: number, days: number, lane: LaneId = 'gathering'): Played {
   const skillId = f.content.skill!.id;
   const rng = seeded(seed);
   let state = newState(seed, T0);
+  const stock = ingredients(f);
   const levelAt = [0, 0];
   const out: Day[] = [];
   let commands = 0;
@@ -70,6 +80,8 @@ export function focusedPlayer(f: Feature, seed: number, days: number, lane: Lane
 
   for (let d = 0; d < days; d++) {
     const dayStart = T0 + d * DAY;
+    if (stock.length)
+      state = { ...state, items: { ...state.items, ...Object.fromEntries(stock.map((i) => [i, 1e6])) } };
     const day: Day = { start: state, active: [], away: [] };
     for (let t = dayStart; t < dayStart + HOUR; t += MINUTE) {
       const best = bestAction(state, f);

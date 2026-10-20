@@ -38,6 +38,8 @@ export const ContentAction = z
     seconds: z.number().positive().optional(),
     xp: z.number().int().nonnegative().optional(),
     gives: z.array(z.object({ item: Id, count: z.number().int().positive() }).strict()).optional(),
+    /** What one completion uses up. */
+    takes: z.array(z.object({ item: Id, count: z.number().int().positive() }).strict()).optional(),
   })
   .strict();
 export type ContentAction = z.infer<typeof ContentAction>;

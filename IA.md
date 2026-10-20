@@ -103,11 +103,11 @@ The list, then one page per skill (`/skills/woodcutting`).
 | 1 | `skills.list` | every skill | Seven rows: icon, name, level, a progress bar to the next level, and the next unlock. Grouped by lane |
 | — | **A skill's page** | | |
 | 1 | `skill.header` | that skill | Level, XP to next, the next unlock and how far away it is |
-| 2 | `skill.actions` | that skill | ActionRow per action or recipe: name, level, seconds, XP an hour, what it gives or takes, mastery step and bar, Start and Queue next. Locked ones show their level, never hidden |
+| 2 | `skill.actions` | that skill | ActionRow per action or recipe: name, level, seconds, XP an hour, what it gives or takes, mastery step and bar, Start and Queue next. One tier at a time, under tabs (Tier 1 to 4), opening on the newest tier with something open; locked ones show their level, never hidden |
 | 3 | `skill.finds` | that skill | The six finds, found (with the date) or silhouetted (with where it comes from), with their rarity |
 | 4 | `skill.ladder` | that skill | The unlock ladder 1–40, the current level marked, past unlocks muted |
 
-- **At 390:** the header and the first four actions; the finds come before the long ladder. **At 1,440:** the header, every action of the current tier with the finds under them, and the ladder beside them.
+- **At 390:** the header and the current tier's actions; the finds come before the long ladder. **At 1,440:** the header, the current tier's actions with the finds under them, and the ladder beside them.
 
 **Visible without scrolling** (checked by verify at 390 × 844 and 1,440 × 900; a slot no built feature fills yet is skipped):
 
@@ -115,7 +115,9 @@ The list, then one page per skill (`/skills/woodcutting`).
 | --- | --- | --- |
 | /skills | `skills.list` | `skills.list` |
 | /skills/woodcutting | `skill.header`, `skill.actions` | `skill.header`, `skill.actions`, `skill.ladder` |
-- **Newcomer:** Woodcutting's page shows Pine tree ready, the next three actions with their levels, and the ladder's first ten levels.
+| /skills/mining | `skill.header`, `skill.actions` | `skill.header`, `skill.actions`, `skill.ladder` |
+| /skills/smithing | `skill.header`, `skill.actions` | `skill.header`, `skill.actions`, `skill.ladder` |
+- **Newcomer:** Woodcutting's page opens on Tier 1: Pine tree ready and Old pine with its level; the other tiers are a tap away, and the ladder opens at level 1.
 
 ### Combat
 
@@ -142,8 +144,8 @@ Tabs: Items · Collection log.
 | # | Section (slot) | Filled by | Notes |
 | --- | --- | --- | --- |
 | 1 | `store.capacity` | storehouse | Slots used of total, Enlarge with its price |
-| 2 | `store.items` | storehouse | A grid of items with counts, filterable by kind (resources, gear, food, finds); tap opens the item panel |
-| 3 | `item.panel` | storehouse, and every feature through queries | Name, icon at 96 px, count, sale price, Sell (one, ten, all but one), Wear for gear; **Comes from** and **Used in**, each answered by asking every registered feature |
+| 2 | `store.items` | the shell, asking every feature (the storehouse adds space and selling in session 9) | A grid of items with counts, grouped by kind (resources, gear, food, finds); tap opens the item panel |
+| 3 | `item.panel` | the shell, and every feature through queries (its content) | Name, icon at 96 px, count, sale price, Sell (one, ten, all but one), Wear for gear; **Comes from** and **Used in**, each answered by asking every registered feature |
 | 4 | `collection.log` | every skill (its six finds) | 36 entries by skill, found or silhouetted, with first-find dates and progress per skill |
 
 - **At 390:** capacity and four rows of the grid; the item panel opens as a sheet. **At 1,440:** capacity, the full grid, and the item panel docked at the right of the content.

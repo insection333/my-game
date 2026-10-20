@@ -8,13 +8,16 @@ export interface Reason {
   detail?: Record<string, string | number>;
 }
 
+/** An item's name inside a sentence: "Out of tin ore", in sentence case. */
+const midSentence = (name: string) => name.charAt(0).toLowerCase() + name.slice(1);
+
 export function formatStop(reason: Reason): string {
   const key = `stop.${reason.code}`;
   const params: Params = {};
   for (const p of placeholders(templateOf(key) ?? '')) {
     const v = reason.detail?.[p];
     if (v === undefined) continue;
-    params[p] = typeof v === 'number' ? fmt.int(v) : p === 'item' ? t(`item.${v}`) : v;
+    params[p] = typeof v === 'number' ? fmt.int(v) : p === 'item' ? midSentence(t(`item.${v}`)) : v;
   }
   return t(key, params);
 }

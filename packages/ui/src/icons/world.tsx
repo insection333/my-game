@@ -50,15 +50,15 @@ export const AshLogs = () => pile(M.ashWood, M.ashBark);
 export const OakLogs = () => pile(M.oakWood, M.oakBark);
 export const YewLogs = () => pile(M.yewWood, M.yewBark);
 
-export function CopperOre() {
-  /** A faceted chunk of copper: lit on its upper-left faces, shadowed on the lower right. */
+/** A chunk of rock with nuggets of its ore, faceted, lit on the upper left. */
+export function Ore({ ore }: { ore: Tone }) {
   const nugget = (cx: number, cy: number, r: number) => {
     const pt = (x: number, y: number) => `${cx + x * r} ${cy + y * r}`;
     const d = `M${pt(-1, -0.4)} L${pt(-0.2, -1)} L${pt(0.9, -0.6)} L${pt(1, 0.5)} L${pt(0.1, 1)} L${pt(-0.9, 0.6)} Z`;
     return (
       <Shape
         d={d}
-        tone={M.copper}
+        tone={ore}
         lit={`M${pt(-1, -0.4)} L${pt(-0.2, -1)} L${pt(0.9, -0.6)} L${pt(0.1, 0)} Z`}
         shade={`M${pt(0.1, 0)} L${pt(0.9, -0.6)} L${pt(1, 0.5)} L${pt(0.1, 1)} Z`}
       >
@@ -88,20 +88,21 @@ export function CopperOre() {
   );
 }
 
-export function IronBar() {
+/** An ingot seen from slightly above: its top in the metal's lighter tone, its face in the metal. */
+export function Bar({ top, metal }: { top: Tone; metal: Tone }) {
   return (
     <g>
       <Shape
         d="M13 14.5 H35 L40.5 22.5 H7.5 Z"
-        tone={M.steel}
+        tone={top}
         lit="M13 14.5 H35 L36.5 16.6 H11.5 Z"
         shade="M31 14.5 H35 L40.5 22.5 H35 Z"
       >
-        <rect x={19.5} y={16.8} width={9} height={3.4} rx={0.6} fill={M.iron.base} />
+        <rect x={19.5} y={16.8} width={9} height={3.4} rx={0.6} fill={metal.base} />
       </Shape>
       <Shape
         d="M7.5 22.5 H40.5 L37 35.5 H11 Z"
-        tone={M.iron}
+        tone={metal}
         lit="M7.5 22.5 H16 L16.5 35.5 H11 Z"
         shade="M29 22.5 H40.5 L37 35.5 H28.5 Z"
       >
@@ -217,3 +218,81 @@ export function WoodcuttingSeal() {
     </g>
   );
 }
+
+export const CopperOre = () => <Ore ore={M.copper} />;
+export const TinOre = () => <Ore ore={M.tin} />;
+export const IronOre = () => <Ore ore={M.ironOre} />;
+
+/** Coal: a heap of glossy black lumps, each catching the light on its upper-left face. */
+export function Coal() {
+  const lump = (pts: [number, number][], lit: [number, number][], g: [number, number]) => (
+    <Shape
+      d={`M${pts.map((p) => p.join(' ')).join(' L')} Z`}
+      tone={M.coal}
+      lit={`M${lit.map((p) => p.join(' ')).join(' L')} Z`}
+    >
+      <Glint x={g[0]} y={g[1]} r={1.2} />
+    </Shape>
+  );
+  return (
+    <g>
+      {lump(
+        [
+          [22, 12],
+          [33, 9.5],
+          [40, 17],
+          [37.5, 27],
+          [26, 28],
+          [20, 21],
+        ],
+        [
+          [22, 12],
+          [33, 9.5],
+          [30, 17.5],
+          [21, 20],
+        ],
+        [26, 14],
+      )}
+      {lump(
+        [
+          [6.5, 30],
+          [12, 20.5],
+          [23, 19.5],
+          [27, 29],
+          [22, 39.5],
+          [10, 39],
+        ],
+        [
+          [6.5, 30],
+          [12, 20.5],
+          [23, 19.5],
+          [15, 28],
+        ],
+        [12, 24.5],
+      )}
+      {lump(
+        [
+          [25, 31],
+          [33, 25],
+          [42, 29],
+          [42.5, 39],
+          [33, 42.5],
+          [25.5, 39],
+        ],
+        [
+          [25, 31],
+          [33, 25],
+          [42, 29],
+          [32, 33],
+        ],
+        [31, 29],
+      )}
+    </g>
+  );
+}
+
+const barTop = (light: string, metal: Tone): Tone => ({ light, base: metal.light, shadow: metal.base });
+export const CopperBar = () => <Bar top={barTop('#fbd2b2', M.copper)} metal={M.copper} />;
+export const BronzeBar = () => <Bar top={barTop('#f8e6bf', M.bronze)} metal={M.bronze} />;
+export const IronBar = () => <Bar top={M.steel} metal={M.iron} />;
+export const SteelBar = () => <Bar top={barTop('#ffffff', M.steel)} metal={M.steel} />;

@@ -13,7 +13,7 @@ import {
   type Find,
   type Ladder,
 } from '@idle-clash/content';
-import { addXp, give, type ActionContext, type Rarity, type State } from '@idle-clash/kernel';
+import { addXp, countOf, give, take, type ActionContext, type Rarity, type State } from '@idle-clash/kernel';
 import { actionModifiers, perksAt, skillLevel, yieldOf } from './skill.ts';
 
 export interface SkillDefinition {
@@ -28,6 +28,8 @@ export interface CompletedAction {
   tier: number;
   xp: number;
   gives: readonly { item: string; count: number }[];
+  /** What one completion uses up (Smithing's ores, bars and logs); checked before the action starts. */
+  takes?: readonly { item: string; count: number }[];
   /** Rare and Legendary chances per action are multiplied by this (rich actions: 1.5). */
   findMultiple: number;
 }
@@ -63,9 +65,25 @@ function rollFind(ctx: ActionContext, def: SkillDefinition, act: CompletedAction
   ctx.emit({ type: 'find', at: ctx.at, skill: def.skill, item: find.item, rarity, first });
 }
 
+/** The first ingredient there is not enough of, or null when all are there. */
+export function missingInput(state: State, takes: CompletedAction['takes']): string | null {
+  return (takes ?? []).find((t) => countOf(state, t.item) < t.count)?.item ?? null;
+}
+
+/** Uses up the ingredients; with a saving perk, one roll may keep one unit of the largest. */
+function takeInputs(ctx: ActionContext, takes: NonNullable<CompletedAction['takes']>, savePct: number): boolean {
+  if (missingInput(ctx.state, takes)) return false;
+  const largest = takes.reduce((a, b) => (b.count > a.count ? b : a));
+  const saved = savePct > 0 && ctx.roll() < savePct / 100;
+  for (const t of takes) take(ctx.state, t.item, t.count - (saved && t === largest ? 1 : 0));
+  return true;
+}
+
 export function completeSkillAction(ctx: ActionContext, def: SkillDefinition, act: CompletedAction): void {
   const { state } = ctx;
   const m = actionModifiers(state, def.skill, def.ladder, def.feature, act.id);
+  // Ingredients are checked before every repetition starts; should one have gone since, nothing is made.
+  if (act.takes?.length && !takeInputs(ctx, act.takes, m.saveInput)) return;
   rollFind(ctx, def, act, m.findChance);
 
   for (const g of act.gives)

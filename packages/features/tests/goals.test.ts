@@ -41,7 +41,17 @@ describe('first steps', () => {
     const again = claim(first.state);
     expect(again.state.items.gold).toBe(25);
     expect(again.events).toEqual([]);
-    expect(view(first.state)).toMatchObject({ progress: '1 of 1 done', rows: [{ state: 'claimed', note: 'Done' }] });
+    expect(view(first.state)).toMatchObject({ progress: '1 of 4 done' });
+    expect(view(first.state).rows[0]).toMatchObject({ state: 'claimed', note: 'Done' });
     expect(done.items).toEqual({});
+  });
+
+  it("starts mining in the fire's second lane while chopping, and waits for Smithing 2 to forge", () => {
+    const start = (view(newState(1, T0)).rows[0].button as { command: Command }).command;
+    const chopping = engine.command(newState(1, T0), T0, start, seeded(1)).state;
+    const mine = view(chopping).rows.find((r) => r.id === 'mine-copper-ore')!;
+    expect(mine.button).toMatchObject({ label: 'Start mining', command: { lane: 'gathering2' } });
+    const forge = view(chopping).rows.find((r) => r.id === 'forge-a-copper-sword')!;
+    expect(forge).toMatchObject({ button: null, note: 'Needs Smithing level 2' });
   });
 });

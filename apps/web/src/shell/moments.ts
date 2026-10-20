@@ -1,7 +1,7 @@
 // Notable moments as the page shows them (GAME_DESIGN.md section 11): events within 5 seconds of each
 // other show together, led by the best. Levels and Legendary finds take the centre of the screen;
 // Rare finds and mastery steps a banner; Uncommon finds and goals a small toast.
-import { fmt, formatEffect, masteryEffects, t } from '@idle-clash/content';
+import { fmt, formatEffect, formatStop, masteryEffects, t } from '@idle-clash/content';
 import { skill as skillKit, type Feature } from '@idle-clash/features';
 import { isNotable, type GameEvent } from '@idle-clash/kernel';
 
@@ -81,7 +81,7 @@ export function momentsFrom(events: readonly GameEvent[], since: number, feature
     if (last && e.at - last[0].at <= GROUP_MS) last.push(e);
     else groups.push([e]);
   }
-  return groups.map((group) => {
+  const moments = groups.map((group): MomentView => {
     const ordered = [...group].sort((a, b) => rank(a) - rank(b));
     const best = describe(ordered[0], features);
     const size = group.map(sizeOf).reduce((a, b) => (SIZE_RANK.indexOf(b) > SIZE_RANK.indexOf(a) ? b : a));
@@ -95,5 +95,37 @@ export function momentsFrom(events: readonly GameEvent[], since: number, feature
       body: body.length ? body.join(' ') : null,
       until: group.at(-1)!.at + SHOW_MS[size],
     };
+  });
+  return [...moments, ...notices(events, since)].sort((a, b) => a.until - b.until);
+}
+
+/** What did not happen, and why: a refused command, or a lane that stopped by itself. A small toast each. */
+function notices(events: readonly GameEvent[], since: number): MomentView[] {
+  const lower = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
+  return events.flatMap((e): MomentView[] => {
+    if (e.at <= since) return [];
+    if (e.type === 'refused')
+      return [
+        {
+          key: `refused-${e.at}`,
+          size: 'toast',
+          icon: null,
+          title: formatStop(e.reason),
+          body: e.action ? t(`action.${e.action.feature}.${e.action.id}`) : null,
+          until: e.at + SHOW_MS.toast,
+        },
+      ];
+    if (e.type === 'laneStopped' && e.reason.code !== 'stoppedByPlayer')
+      return [
+        {
+          key: `stopped-${e.lane}-${e.at}`,
+          size: 'toast',
+          icon: null,
+          title: t('moment.laneStopped', { lane: t(`lane.${e.lane}`), reason: lower(formatStop(e.reason)) }),
+          body: e.action ? t(`action.${e.action.feature}.${e.action.id}`) : null,
+          until: e.at + SHOW_MS.toast,
+        },
+      ];
+    return [];
   });
 }

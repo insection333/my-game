@@ -206,6 +206,14 @@ export function createEngine(registry: ActionRegistry, config: KernelConfig = DE
   function command(state: State, now: number, cmd: Command, rng: Rng): Commanded {
     const { state: s, events } = input(state, now, rng);
     const result = apply(s, s.clock, cmd, rng, events);
+    if (!result.ok)
+      events.push({
+        type: 'refused',
+        at: s.clock,
+        lane: 'lane' in cmd ? cmd.lane : null,
+        action: 'action' in cmd ? cmd.action : null,
+        reason: result.reason,
+      });
     return { state: s, events, result };
   }
 

@@ -1,0 +1,98 @@
+.kinds {
+  display: grid;
+  gap: var(--s-4);
+}
+
+.empty {
+  margin: 0;
+  color: var(--ink-2);
+}
+
+.grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr));
+  gap: var(--s-2);
+}
+
+.tile {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: var(--s-1);
+  padding: var(--s-2) var(--s-1);
+  border: 1px solid var(--line);
+  border-radius: var(--r-control);
+  background: var(--surface-2);
+  color: var(--ink);
+  text-decoration: none;
+  text-align: center;
+}
+
+.tile:hover {
+  border-color: var(--line-strong);
+}
+
+.count {
+  position: absolute;
+  top: var(--s-1);
+  right: var(--s-2);
+  font: 700 var(--t-small) / 1 var(--font-ui);
+  font-variant-numeric: tabular-nums;
+}
+
+.name {
+  font-size: var(--t-small);
+  line-height: 1.2;
+}
+
+.panel {
+  display: grid;
+  gap: var(--s-4);
+  padding: var(--s-2) var(--s-4) var(--s-4);
+}
+
+.head {
+  display: flex;
+  gap: var(--s-4);
+  align-items: center;
+}
+
+.head p {
+  margin: var(--s-1) 0 0;
+}
+
+.muted,
+.none {
+  color: var(--ink-2);
+}
+
+.sources h3 {
+  font-size: var(--t-lead);
+  margin: 0 0 var(--s-2);
+}
+
+.sources ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+}
+
+.sources li {
+  border-top: 1px solid var(--line);
+}
+
+.sources li a,
+.sources li > span {
+  display: flex;
+  align-items: center;
+  min-height: var(--tap);
+  color: var(--woad);
+}
+
+.none {
+  margin: 0;
+}

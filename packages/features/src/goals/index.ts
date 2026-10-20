@@ -1,7 +1,7 @@
-// Goals: the ladder on the Hearth. In session 6, the first of the six first steps, with its button and
-// its claim; short goals, the daily goal and milestones join in session 9.
-import { fmt, Id, t } from '@idle-clash/content';
-import { actionKey, type Command, type LaneId } from '@idle-clash/kernel';
+// Goals: the ladder on the Hearth. First steps with their buttons and claims (four since session 7);
+// short goals, the daily goal and milestones join in session 9.
+import { fmt, Id, levelFor, t } from '@idle-clash/content';
+import { actionKey, LANE_IDS, laneFor, xpOf, type Command, type LaneId } from '@idle-clash/kernel';
 import { z } from 'zod';
 import { defineFeature, defineRoute, type Json } from '../define.ts';
 import { FIRST_STEPS } from './content.ts';
@@ -46,7 +46,7 @@ export const goals = defineFeature({
     }),
   },
   slots: {
-    'hearth.goals': ({ state }) => {
+    'hearth.goals': ({ state, now }) => {
       const { claimed } = goalsOf(state);
       const rows = FIRST_STEPS.map((step): GoalRow => {
         const reward = t('goals.reward.gold', { amount: fmt.int(step.reward.count) });
@@ -64,8 +64,11 @@ export const goals = defineFeature({
             button: { label: t('goals.claim', { reward }), claim: step.id },
             note: null,
           };
-        const running = state.lanes[step.start.lane].current;
-        if (running && actionKey(running.action) === actionKey(step.start.action))
+        const working = LANE_IDS.find((l) => {
+          const run = state.lanes[l].current;
+          return run && actionKey(run.action) === actionKey(step.start.action);
+        });
+        if (working)
           return {
             id: step.id,
             name,
@@ -73,9 +76,20 @@ export const goals = defineFeature({
             progress,
             state: 'working',
             button: null,
-            note: t('goals.inLane', { lane: t(LANE_NAMES[step.start.lane]) }),
+            note: t('goals.inLane', { lane: t(LANE_NAMES[working]) }),
           };
-        const command: Command = { type: 'start', lane: step.start.lane, action: step.start.action };
+        if (step.needs && levelFor(xpOf(state, step.needs.skill)) < step.needs.level)
+          return {
+            id: step.id,
+            name,
+            reward,
+            progress,
+            state: 'todo',
+            button: null,
+            note: t('goals.needs', { skill: t(`skill.${step.needs.skill}`), level: fmt.int(step.needs.level) }),
+          };
+        const lane = laneFor(state, now, step.start.action, step.start.kind);
+        const command: Command = { type: 'start', lane, action: step.start.action };
         return {
           id: step.id,
           name,

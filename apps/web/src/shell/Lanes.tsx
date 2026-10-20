@@ -14,6 +14,8 @@ export interface LaneView {
   idle: boolean;
   progress?: number;
   note?: string;
+  /** Stopped by itself (not by the player), so it needs the player: out of ore, the fire out. */
+  halted?: boolean;
 }
 
 const actionName = (a: { feature: string; id: string }) => t(`action.${a.feature}.${a.id}`);
@@ -35,6 +37,7 @@ export function laneViews(state: State, now: number): LaneView[] {
       idle: !run,
       progress: run ? Math.min(1, Math.max(0, (now - run.startedAt) / (run.endsAt - run.startedAt))) : undefined,
       note,
+      halted: !run && !!l.stopped && l.stopped.reason.code !== 'stoppedByPlayer',
     };
   });
 }
@@ -71,8 +74,9 @@ export function LaneStrip({ lanes }: { lanes: LaneView[] }) {
           key={l.id}
           compact
           lane={l.name}
-          doing={l.idle ? l.name : l.doing}
+          doing={l.halted && l.note ? l.note : l.idle ? l.name : l.doing}
           idle={l.idle}
+          halted={l.halted}
           progress={l.progress}
           onOpen={() => navigate(withPanel('lanes'))}
         />

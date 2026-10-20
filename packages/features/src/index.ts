@@ -11,3 +11,4 @@ export type {
   CollectionGroup,
 } from './shared/skill-slots.ts';
 export type { GoalRow, GoalsView } from './goals/index.ts';
+export * as items from './shared/items.ts';
