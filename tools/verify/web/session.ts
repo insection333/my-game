@@ -1,6 +1,6 @@
 // What steps 6 to 9 share: one build of the web app, the game's own server on a scratch database
 // with every built feature on, the three browser engines, a newcomer's session, and the list of
-// views to open (from IA.md, plus the two sheets).
+// views to open (from IA.md, plus the sheets).
 import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync } from 'node:fs';
 import { createServer } from 'node:net';
 import { tmpdir } from 'node:os';
@@ -33,11 +33,17 @@ export interface View extends ViewSpec {
   name: string;
 }
 
-/** Views to open: every row of IA.md's "Visible without scrolling" tables, and the two sheets. */
+/** Views to open: every row of IA.md's "Visible without scrolling" tables, and the sheets (the tray, an item, settings). */
 export function views(): View[] {
   const map = readPageMap(readFileSync(join(ROOT, 'IA.md'), 'utf8'));
   const sheets: ViewSpec[] = [
     { page: 'The notices tray (panel)', path: '/?panel=tray', phone: ['tray.list'], desktop: ['tray.list'] },
+    {
+      page: 'Storehouse',
+      path: '/storehouse?panel=item&item=copper-bar',
+      phone: ['item.panel'],
+      desktop: ['item.panel'],
+    },
     {
       page: 'Settings (account menu)',
       path: '/?panel=settings',
