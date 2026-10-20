@@ -3,7 +3,7 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { chromium, firefox, webkit, type Browser, type BrowserType } from 'playwright';
-import { bin, ROOT } from '../exec.ts';
+import { exec, ROOT } from '../exec.ts';
 import { readPageMap, type ViewSpec } from '../ia.ts';
 import { serve, type Served } from './serve.ts';
 
@@ -41,7 +41,10 @@ export function views(): View[] {
 let built: Promise<string | null> | null = null;
 /** Builds the web app once per verify run; resolves to an error message, or null when built. */
 export function ensureBuilt(): Promise<string | null> {
-  built ??= bin('vite', ['build', 'apps/web', '--logLevel', 'warn']).then((r) => (r.code === 0 ? null : r.output));
+  // The web app's own Vite, from its package folder (pnpm does not hoist it to the root).
+  built ??= exec(join(ROOT, 'apps/web/node_modules/.bin/vite'), ['build', 'apps/web', '--logLevel', 'warn']).then(
+    (r) => (r.code === 0 ? null : r.output),
+  );
   return built;
 }
 
