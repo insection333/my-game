@@ -1,9 +1,10 @@
-// A notable moment: a level, a find, a goal. Big ones take the centre; smaller ones a banner.
+// A notable moment: a level, a find, a goal. Big ones take the centre; smaller ones a banner, the
+// smallest a toast.
 import type { ReactNode } from 'react';
 import s from './Moment.module.css';
 
 export interface MomentProps {
-  size: 'centre' | 'banner';
+  size: 'centre' | 'banner' | 'toast';
   title: string;
   body?: string;
   icon?: ReactNode;

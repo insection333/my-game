@@ -182,3 +182,8 @@ a.row:hover {
   font-weight: 700;
   overflow-wrap: anywhere;
 }
+
+/* A second panel under the first in the same column. */
+.below {
+  margin-top: var(--s-4);
+}

@@ -10,6 +10,7 @@ import { Settings, Tray } from '../pages/Panels.tsx';
 import { FireBadge } from './FireBadge.tsx';
 import { Bell, Coin, MenuGlyph, Person } from './glyphs.tsx';
 import { LaneList, LaneStrip, laneViews } from './Lanes.tsx';
+import { Moments } from './Moments.tsx';
 import s from './shell.module.css';
 
 export const MENU = [
@@ -81,7 +82,7 @@ export function Shell({ children }: { children: ReactNode }) {
         <h2 className={s.lanesTitle}>{t('shell.lanes')}</h2>
         <LaneList lanes={lanes} />
       </aside>
-      <div data-slot="shell.moment" aria-live="polite" className={s.moments} />
+      <Moments />
       {panel === 'tray' && (
         <Sheet title={t('tray.title')} closeLabel={t('shell.close')} onClose={close} slot="tray.list">
           <Tray />

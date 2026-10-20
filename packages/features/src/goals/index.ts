@@ -1,7 +1,7 @@
 // Goals: the ladder on the Hearth. In session 6, the first of the six first steps, with its button and
 // its claim; short goals, the daily goal and milestones join in session 9.
 import { fmt, Id, t } from '@idle-clash/content';
-import { actionKey, LANE_IDS, type Command } from '@idle-clash/kernel';
+import { actionKey, type Command, type LaneId } from '@idle-clash/kernel';
 import { z } from 'zod';
 import { defineFeature, defineRoute, type Json } from '../define.ts';
 import { FIRST_STEPS } from './content.ts';
@@ -24,7 +24,7 @@ export interface GoalsView {
   rows: GoalRow[];
 }
 
-const LANE_NAMES: Record<(typeof LANE_IDS)[number], string> = {
+const LANE_NAMES: Record<LaneId, string> = {
   gathering: 'lane.gathering',
   gathering2: 'lane.gathering2',
   artisan: 'lane.artisan',

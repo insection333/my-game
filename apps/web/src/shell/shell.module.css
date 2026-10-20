@@ -194,12 +194,29 @@
 
 .moments {
   position: fixed;
-  left: 50%;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
   bottom: calc(var(--menu-h) + 72px);
-  transform: translateX(-50%);
   z-index: 15;
   width: min(420px, calc(100vw - 32px));
   pointer-events: none;
+  display: grid;
+  gap: var(--s-2);
+}
+
+/* A big moment sits in the middle of the screen; its Close button can be pressed. */
+.centreMoment {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: var(--gutter);
+}
+
+.centreMoment > * {
+  width: min(360px, 100%);
+  pointer-events: auto;
 }
 
 @media (min-width: 768px) {

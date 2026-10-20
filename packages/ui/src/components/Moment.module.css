@@ -24,8 +24,27 @@
   font: 500 var(--t-lead) / 1.2 var(--font-book);
 }
 
+.toast {
+  padding: var(--s-2) var(--s-3);
+  box-shadow: 0 6px 20px var(--shade);
+}
+
+.toast .title {
+  font: 700 var(--t-body) / 1.25 var(--font-ui);
+}
+
 .body {
   color: var(--ink-2);
+}
+
+.toast .body {
+  font-size: var(--t-small);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .moment {
+    animation: none;
+  }
 }
 
 @keyframes rise {

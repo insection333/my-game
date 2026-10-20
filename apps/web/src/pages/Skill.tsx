@@ -1,11 +1,12 @@
 // A skill's page: its level, everything it can do (with what each pays), and every level's unlock.
 import { t } from '@idle-clash/content';
-import type { Feature, LadderRow, SkillActionRow, SkillSummary } from '@idle-clash/features';
+import type { Feature, FindEntry, LadderRow, SkillActionRow, SkillSummary } from '@idle-clash/features';
 import { actionKey, laneKind, LANE_IDS, type LaneId } from '@idle-clash/kernel';
 import { ActionRow, Button, hasIcon, ItemIcon, Panel, Pill, ProgressBar } from '@idle-clash/ui';
 import { useGame } from '../game/hooks.ts';
 import { game } from '../game/store.ts';
 import { fillFor, Slot } from '../slots.tsx';
+import { FindGrid } from './Finds.tsx';
 import { NotFound } from './Simple.tsx';
 import s from './pages.module.css';
 
@@ -22,6 +23,7 @@ export function Skill({ id }: { id: string }) {
   const head = fillFor<SkillSummary>(feature, 'skill.header', state, now);
   const actions = fillFor<SkillActionRow[]>(feature, 'skill.actions', state, now) ?? [];
   const ladder = fillFor<LadderRow[]>(feature, 'skill.ladder', state, now) ?? [];
+  const finds = fillFor<FindEntry[]>(feature, 'skill.finds', state, now) ?? [];
   const lane = (a: SkillActionRow): LaneId => {
     const kind = feature.rules[a.action.id]?.lane ?? 'gathering';
     return LANE_IDS.find((l) => laneKind(l) === kind) ?? 'gathering';
@@ -90,6 +92,13 @@ export function Skill({ id }: { id: string }) {
               ))}
             </Slot>
           </Panel>
+          {finds.length > 0 && (
+            <Panel title={t('skill.finds.title')} flush className={s.below}>
+              <Slot id="skill.finds">
+                <FindGrid finds={finds} />
+              </Slot>
+            </Panel>
+          )}
         </section>
         <section data-section>
           <Panel title={t('skill.ladder.title')} flush>

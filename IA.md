@@ -104,10 +104,10 @@ The list, then one page per skill (`/skills/woodcutting`).
 | — | **A skill's page** | | |
 | 1 | `skill.header` | that skill | Level, XP to next, the next unlock and how far away it is |
 | 2 | `skill.actions` | that skill | ActionRow per action or recipe: name, level, seconds, XP an hour, what it gives or takes, mastery step and bar, Start and Queue next. Locked ones show their level, never hidden |
-| 3 | `skill.ladder` | that skill | The unlock ladder 1–40, the current level marked, past unlocks muted |
-| 4 | `skill.finds` | that skill | The six finds, found or silhouetted |
+| 3 | `skill.finds` | that skill | The six finds, found (with the date) or silhouetted (with where it comes from), with their rarity |
+| 4 | `skill.ladder` | that skill | The unlock ladder 1–40, the current level marked, past unlocks muted |
 
-- **At 390:** the header and the first four actions. **At 1,440:** the header, every action of the current tier, and the ladder beside them.
+- **At 390:** the header and the first four actions; the finds come before the long ladder. **At 1,440:** the header, every action of the current tier with the finds under them, and the ladder beside them.
 
 **Visible without scrolling** (checked by verify at 390 × 844 and 1,440 × 900; a slot no built feature fills yet is skipped):
 

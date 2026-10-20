@@ -23,7 +23,11 @@ export const isDone = (state: State, step: FirstStep): boolean => completionsOf(
 export type ClaimResult = { ok: true } | { ok: false; reason: 'unknown' | 'notDone' };
 
 /** Claims a finished step: its reward, a moment, and the step marked claimed. Claiming twice does nothing. */
-export function claim(state: State, goal: string, now: number): { state: State; result: ClaimResult; events: GameEvent[] } {
+export function claim(
+  state: State,
+  goal: string,
+  now: number,
+): { state: State; result: ClaimResult; events: GameEvent[] } {
   const step = FIRST_STEPS.find((s) => s.id === goal);
   if (!step) return { state, result: { ok: false, reason: 'unknown' }, events: [] };
   const goals = goalsOf(state);

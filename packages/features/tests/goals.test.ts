@@ -24,7 +24,10 @@ describe('first steps', () => {
     const s = engine.command(newState(1, T0), T0, start, seeded(1)).state;
     expect(view(s).rows[0]).toMatchObject({ state: 'working', note: 'Working in your Gathering lane', button: null });
     const later = engine.advance(s, T0 + 8000, seeded(1)).state;
-    expect(view(later).rows[0]).toMatchObject({ state: 'ready', button: { label: 'Claim 25 gold', claim: 'chop-a-pine' } });
+    expect(view(later).rows[0]).toMatchObject({
+      state: 'ready',
+      button: { label: 'Claim 25 gold', claim: 'chop-a-pine' },
+    });
   });
 
   it('pays its reward once, with a moment, and refuses a claim before the step is done', () => {

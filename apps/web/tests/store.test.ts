@@ -43,9 +43,10 @@ const settle = () => new Promise((r) => setTimeout(r, 0));
 
 describe('the game store', () => {
   it('keeps two quick commands on screen until the last answer arrives, then takes the server state', async () => {
-    const { boot, game } = await import('../src/game/store.ts');
+    const { boot, sessionStore } = await import('../src/game/session.ts');
+    const { game } = await import('../src/game/store.ts');
     await boot();
-    expect(game.session().phase).toBe('playing');
+    expect(sessionStore.get().phase).toBe('playing');
 
     expect(game.command(start)).toEqual({ ok: true });
     expect(game.command(stop)).toEqual({ ok: true });

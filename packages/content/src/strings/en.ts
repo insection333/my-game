@@ -131,6 +131,16 @@ export const en: Record<string, string> = {
   'action.gives': '{item} ×{count}',
   'mastery.step': 'Mastery {step}',
 
+  // Moments
+  'moment.levelUp': '{skill} level {level}',
+  'moment.unlocked': 'Unlocked: {unlock}.',
+  'moment.find': '{rarity} find: {item}',
+  'moment.find.first': 'New in your collection log.',
+  'moment.masteryStep': '{action}: mastery {step}',
+  'moment.goalDone': 'Goal done: {goal}',
+  'moment.also': 'Also: {what}.',
+  'moment.close': 'Close',
+
   // Goals
   'goals.firstSteps': 'First steps',
   'goals.progress': '{done} of {total} done',
