@@ -1,5 +1,29 @@
 {
   "name": "@idle-clash/server",
   "private": true,
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "@fastify/cookie": "11.1.2",
+    "@fastify/static": "10.1.5",
+    "@fastify/websocket": "11.3.3",
+    "@idle-clash/content": "workspace:*",
+    "@idle-clash/contracts": "workspace:*",
+    "@idle-clash/features": "workspace:*",
+    "@idle-clash/kernel": "workspace:*",
+    "@node-rs/argon2": "2.2.1",
+    "better-sqlite3": "13.0.3",
+    "drizzle-orm": "0.45.3",
+    "fastify": "5.12.5",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "9.6.0",
+    "@types/ws": "8.18.2",
+    "drizzle-kit": "0.31.11",
+    "ws": "8.22.0"
+  },
+  "scripts": {
+    "db:generate": "drizzle-kit generate",
+    "start": "node src/main.ts"
+  }
 }

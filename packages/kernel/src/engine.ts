@@ -20,6 +20,8 @@ export interface Engine {
   advance(state: State, now: number, rng: Rng): Advanced;
   /** Advances to now, counts the input (the fire, the away clock), then applies the command. */
   command(state: State, now: number, cmd: Command, rng: Rng): Commanded;
+  /** Advances to now and counts a real input, for a feature's own route to change the state after. */
+  input(state: State, now: number, rng: Rng): Advanced;
 }
 
 /** Every stop code the kernel itself gives; features declare their own in their manifest. */
@@ -178,13 +180,18 @@ export function createEngine(registry: ActionRegistry, config: KernelConfig = DE
     }
   }
 
-  function command(state: State, now: number, cmd: Command, rng: Rng): Commanded {
+  function input(state: State, now: number, rng: Rng): Advanced {
     const at = Math.max(now, state.clock);
-    const { state: s, events } = advance(state, at, rng);
-    touch(s, at);
-    const result = apply(s, at, cmd, rng, events);
+    const out = advance(state, at, rng);
+    touch(out.state, at);
+    return out;
+  }
+
+  function command(state: State, now: number, cmd: Command, rng: Rng): Commanded {
+    const { state: s, events } = input(state, now, rng);
+    const result = apply(s, s.clock, cmd, rng, events);
     return { state: s, events, result };
   }
 
-  return { advance, command };
+  return { advance, command, input };
 }

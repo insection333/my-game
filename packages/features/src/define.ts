@@ -14,10 +14,19 @@ export interface SlotContext {
 /** Data for one slot, already formatted for the screen; the shell draws it with a shared component. */
 export type SlotFill = (ctx: SlotContext) => Json;
 
-/** A route's input schema; the server mounts handlers for these in session 5. */
-export interface RouteDef {
-  input: ZodType;
+/**
+ * A feature's own route (claim a goal, buy food), mounted by the server at
+ * POST /api/f/<feature>/<route>. The server checks the input against `input`, advances the state to
+ * now and counts the input, then calls `run`, which must be pure: it returns the new state and an
+ * answer for the page.
+ */
+export interface RouteDef<I = unknown> {
+  input: ZodType<I>;
+  run: (state: State, input: I, now: number) => { state: State; result: Json };
 }
+
+/** Types a route's `run` by its own input schema; the server only calls `run` with parsed input. */
+export const defineRoute = <I>(def: RouteDef<I>): RouteDef => def as unknown as RouteDef;
 
 /** An action as content: the level it opens at and, for timed actions, its seconds, XP and output. */
 export const ContentAction = z
