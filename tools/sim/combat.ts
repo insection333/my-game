@@ -3,7 +3,7 @@
 // Easy or Fair, then away until the next day. Like the model's fighter, it wears the best gear its
 // levels allow (handed over each morning and whenever a level opens a tier) and carries plenty of the
 // best food its Hitpoints level buys.
-import { levelFor, TIER_LEVELS, type Style } from '@idle-clash/content';
+import { levelFor, TIER_LEVELS, XP_TABLE, type Style } from '@idle-clash/content';
 import { actionRegistry, combatData, FEATURES, yourOdds } from '@idle-clash/features';
 import {
   createEngine,
@@ -26,7 +26,7 @@ const WEAPON: Record<Style, string> = { melee: 'sword', archery: 'bow', magic: '
 const tierAt = (level: number) => TIER_LEVELS.filter((l) => l <= level).length;
 
 /** The player's gear and food, as the model's fighter has them at these levels. */
-function equip(state: State, style: Style): State {
+export function equip(state: State, style: Style): State {
   const metal = (level: number) => METALS[tierAt(level) - 1];
   const weapon = `${metal(levelFor(xpOf(state, style)))}-${WEAPON[style]}`;
   const hp = levelFor(xpOf(state, combatData.HITPOINTS));
@@ -96,4 +96,56 @@ export function fighter(style: Style, seed: number, days: number): Played {
 export function combatXpPerHour(state: State, fire: boolean): number {
   const o = yourOdds(state, bestFoe(state));
   return (o?.xpPerHour ?? 0) * (fire ? 1.15 : 1);
+}
+
+export interface Measured {
+  xpPerHour: number;
+  foodPerHour: number;
+  retreatRate: number;
+  verdict: 'easy' | 'fair' | 'costly' | 'tooStrong';
+}
+
+/**
+ * Fights measured on the engine at fixed levels: the lane runs `hours`, a minute at a time, with the
+ * levels and mastery put back each minute (so the fighter does not outgrow the foe while measured) and
+ * the food topped up. After a retreat the fighter rests to full health and goes again. The verdict
+ * follows GAME_DESIGN.md's rules from what happened.
+ */
+export function measured(
+  style: Style,
+  styleLevel: number,
+  hpLevel: number,
+  foe: string,
+  food: boolean,
+  hours = 6,
+): Measured {
+  const skills = { [style]: { xp: XP_TABLE[styleLevel] }, [combatData.HITPOINTS]: { xp: XP_TABLE[hpLevel] } };
+  let s = equip({ ...newState(7, T0), skills }, style);
+  const meal = Object.keys(s.items).find((i) => combatData.FOODS.some((f) => f.id === i))!;
+  const stock = food ? 10_000 : 0;
+  const rng = seeded(7);
+  const fight: Command = { type: 'start', lane: 'combat', action: { feature: 'combat', id: foe } };
+  // Starting a fight lights the fire; it is put out, so its XP does not count.
+  const go = (st: State, at: number) => ({ ...engine.command(st, at, fight, rng).state, fireUntil: at });
+  s = go({ ...s, items: { ...s.items, [meal]: stock } }, T0);
+  let t = T0;
+  let [xp, eaten, wins, retreats] = [0, 0, 0, 0];
+  for (let m = 0; m < hours * 60; m++) {
+    s = { ...s, skills, mastery: {}, items: { ...s.items, [meal]: stock } };
+    const out = engine.advance(s, (t += MINUTE), rng);
+    xp += out.state.skills[style].xp - XP_TABLE[styleLevel];
+    eaten += stock - (out.state.items[meal] ?? 0);
+    wins += out.state.mastery[`combat:${foe}`] ?? 0;
+    s = out.state;
+    if (out.events.some((e) => e.type === 'laneStopped')) {
+      retreats++;
+      const c = s.features.combat as Record<string, unknown>;
+      s = { ...s, features: { ...s.features, combat: { ...c, health: null, retreated: null } } };
+      s = go(s, t);
+    }
+  }
+  const foodPerHour = eaten / hours;
+  const retreatRate = retreats / Math.max(1, wins + retreats);
+  const verdict = retreatRate > 0.02 ? 'tooStrong' : foodPerHour < 4 ? 'easy' : foodPerHour < 25 ? 'fair' : 'costly';
+  return { xpPerHour: xp / hours, foodPerHour, retreatRate, verdict };
 }

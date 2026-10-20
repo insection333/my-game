@@ -1,6 +1,6 @@
 // How a fight resolves (GAME_DESIGN.md section 9), as one pure function of the fighter, the foe, the
 // health and food they start with, and a source of random numbers. The engine plays each fight with
-// the seed its repetition drew; "Your odds" plays 200 of them with a fixed seed.
+// the seed its repetition drew; "Your odds" plays 1,000 of them with a fixed seed.
 import { BASE_RETREAT_PCT, type Modifiers, type Style } from '@idle-clash/content';
 import { seeded } from '@idle-clash/kernel';
 import {
@@ -118,8 +118,8 @@ export interface Odds {
   retreatRate: number;
 }
 
-/** "Your odds": 200 fights in a row with the best food carried (as much as they need), a fixed seed. */
-export function odds(p: Fighter, foe: Foe, meal: Omit<Meal, 'count'> | null, n = 200): Odds {
+/** "Your odds": 1,000 fights in a row with the best food carried (as much as they need), a fixed seed. */
+export function odds(p: Fighter, foe: Foe, meal: Omit<Meal, 'count'> | null, n = 1000): Odds {
   const r = seeded(0x0dd5);
   let i = 0;
   const rng = () => r('odds', i++);

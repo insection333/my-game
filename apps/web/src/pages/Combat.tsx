@@ -1,9 +1,9 @@
 // Combat: the loadout (gear worn, health, food), every foe with Your odds, and the triangle's key.
 // A gear slot opens a sheet of the matching gear in the Storehouse (`?panel=gear&slot=weapon`).
-import { t } from '@idle-clash/content';
+import { fmt, t } from '@idle-clash/content';
 import type { Feature, FoeRow, LoadoutSlot, LoadoutView } from '@idle-clash/features';
 import { actionKey, LANE_IDS } from '@idle-clash/kernel';
-import { ActionRow, Button, hasIcon, ItemIcon, Panel, Pill, ProgressBar, Sheet } from '@idle-clash/ui';
+import { ActionRow, Button, hasIcon, ItemIcon, Panel, Pill, ProgressBar, Sheet, Tabs } from '@idle-clash/ui';
 import { useGame } from '../game/hooks.ts';
 import { game } from '../game/store.ts';
 import { navigate, useLocation, withPanel } from '../router.ts';
@@ -24,7 +24,13 @@ function CombatPage({ combat }: { combat: Feature }) {
   const { state, now } = useGame();
   const { panel } = useLocation();
   const loadout = fillFor<LoadoutView>(combat, 'combat.loadout', state, now)!;
-  const foes = fillFor<FoeRow[]>(combat, 'combat.foes', state, now) ?? [];
+  const all = fillFor<FoeRow[]>(combat, 'combat.foes', state, now) ?? [];
+  // One tier at a time, as on a skill's page: the tier asked for, or the newest with a foe open.
+  const tiers = [...new Set(all.map((f) => f.tier))].sort((a, b) => a - b);
+  const asked = Number(new URLSearchParams(location.search).get('tier'));
+  const newest = Math.max(tiers[0] ?? 1, ...all.filter((f) => !f.locked).map((f) => f.tier));
+  const tier = tiers.includes(asked) ? asked : newest;
+  const foes = all.filter((f) => f.tier === tier);
   const triangle = fillFor<string[]>(combat, 'combat.triangle', state, now) ?? [];
   const fighting = (f: FoeRow) =>
     LANE_IDS.some((l) => state.lanes[l].current && actionKey(state.lanes[l].current.action) === actionKey(f.foe));
@@ -63,6 +69,19 @@ function CombatPage({ combat }: { combat: Feature }) {
         </section>
         <section data-section>
           <Panel title={t('combat.foes')} flush>
+            {tiers.length > 1 && (
+              <div className={s.tierTabs}>
+                <Tabs
+                  label={t('skill.tiers')}
+                  onNavigate={navigate}
+                  tabs={tiers.map((n) => ({
+                    href: `/combat?tier=${n}`,
+                    label: t('skill.tier', { tier: fmt.int(n) }),
+                    current: n === tier,
+                  }))}
+                />
+              </div>
+            )}
             <Slot id="combat.foes">
               {foes.map((f) => (
                 <ActionRow
@@ -124,7 +143,7 @@ function GearButton({ gear }: { gear: LoadoutSlot }) {
   return (
     <a
       href={href}
-      data-ui="GearSlot"
+      data-ui={gear.slot === 'weapon' ? 'WeaponSlot' : 'GearSlot'}
       className={s.slot}
       data-empty={gear.item ? undefined : true}
       data-slot-name={gear.slot}

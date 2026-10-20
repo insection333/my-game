@@ -232,7 +232,7 @@ export const FINDS: Record<Exclude<SkillId, 'hitpoints'>, [string, string][]> = 
   melee: [
     ['Battle trophy', "Raider's war-horn"],
     ['Torn banner', "Warlord's seal"],
-    ['Shard of a king’s blade', "Troll-chief's tooth"],
+    ["Shard of a king's blade", "Troll-chief's tooth"],
   ],
   archery: [
     ['Goose fletchings', "Hunter's charm"],

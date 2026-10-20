@@ -35,6 +35,7 @@ export interface LoadoutView {
 export interface FoeRow {
   foe: { feature: string; id: string };
   name: string;
+  tier: number;
   styleId: string;
   style: string;
   level: string;
@@ -48,7 +49,7 @@ export interface FoeRow {
 }
 
 const cache = new Map<string, Odds>();
-/** Your odds, worked out once for each fighter, foe and food (the 200 fights are not free). */
+/** Your odds, worked out once for each fighter, foe and food (the 1,000 fights are not free). */
 function oddsFor(state: State, foe: Foe): Odds | null {
   const p = fighterOf(state, foe);
   if (!p) return null;
@@ -124,6 +125,7 @@ function foeRow(state: State, foe: Foe): FoeRow {
   return {
     foe: { feature: FEATURE, id: foe.id },
     name: t(`action.combat.${foe.id}`),
+    tier: foe.tier,
     styleId: foe.style,
     style: t(`skill.${foe.style}`),
     level: t('skill.level', { level: fmt.int(foe.level) }),

@@ -127,3 +127,7 @@
 .slot:not([data-slot-name='weapon']) .slotText {
   width: 100%;
 }
+
+.tierTabs {
+  padding: 0 var(--s-4);
+}

@@ -15,6 +15,7 @@ import {
 } from '../../design/model/curve.ts';
 import { combatXpPerHour, fighter } from './combat.ts';
 import { newcomer } from './newcomer.ts';
+import { combatProofs } from './proofs.ts';
 import { bestAction, DAY, focusedPlayer, gaps, T0, xpPerHour, type Played } from './player.ts';
 
 export interface SimResult {
@@ -159,6 +160,8 @@ export function runSimulation(): SimResult {
         awayRuns.push(runs);
       }
     }
+
+  combatProofs(check, lines);
 
   // A newcomer following First steps: the first crafted gear worn within 15 minutes (the brief).
   if (FEATURES.some((f) => f.id === 'combat' && f.flag.on)) {
