@@ -173,9 +173,12 @@ async function performance(): Promise<StepResult> {
 async function review(): Promise<StepResult> {
   const err = await ensureBuilt();
   if (err) return fail('the web app failed to build', err);
-  const r = await runReview();
-  if (r.problems.length) return fail('the review sheets are incomplete', r.problems.join('\n'));
-  return pass(`${r.sheets} page sheets and the icon sheet in .verify/review/`);
+  const loaded = await loadFeatures();
+  if ('error' in loaded) return fail('the features failed to load', loaded.error);
+  const r = await runReview(loaded.features.flatMap((f) => (f.content.items ?? []).map((i) => i.id)));
+  const problems = r.problems;
+  if (problems.length) return fail('the review sheets are incomplete', problems.join('\n'));
+  return pass(`${r.sheets} page sheets and the icon sheet in .verify/review/; every item drawn`);
 }
 
 export const STEPS: Step[] = [

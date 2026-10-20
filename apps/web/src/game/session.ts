@@ -5,6 +5,7 @@ import type { PlayerView } from '@idle-clash/contracts';
 import { useSyncExternalStore } from 'react';
 import { api, ApiError } from '../api.ts';
 import { replace } from '../router.ts';
+import type * as Store from './store.ts';
 
 export type Phase = 'loading' | 'signedOut' | 'playing' | 'offline';
 export interface Session {
@@ -33,7 +34,7 @@ export const sessionStore = {
 };
 export const useSession = (): Session => useSyncExternalStore(sessionStore.subscribe, sessionStore.get);
 
-let game: Promise<typeof import('./store.ts')> | null = null;
+let game: Promise<typeof Store> | null = null;
 /** The game's part of the page: fetched once, the first time anything asks. */
 export const loadGame = () => (game ??= import('./store.ts'));
 

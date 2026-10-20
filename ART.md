@@ -26,7 +26,9 @@ Each material has exactly three tones: light, base and shadow.
 | Iron | `#ccd3d7` | `#8f989e` | `#5a6268` | Tier 3 metal |
 | Steel | `#f2f6f8` | `#b8c5cd` | `#768792` | Tier 4 metal |
 | Ash, pine, oak | see `style.tsx` | | | Bows, staves, handles |
-| Bark, heartwood | `#a2714a` / `#f4dcae` | `#6f4a2e` / `#ddb67a` | `#46301d` / `#b2864d` | Logs |
+| Bark, heartwood | `#a2714a` / `#f4dcae` | `#6f4a2e` / `#ddb67a` | `#46301d` / `#b2864d` | Pine logs |
+| Ash, oak, yew logs | see `style.tsx` (`ashWood`, `oakWood`, `yewWood` and their barks) | | | Logs step from pale to deep as tiers rise, as metals step from warm to cold |
+| Amber, silverbark, leaf | see `style.tsx` | | | Finds |
 | Stone | `#b3ada4` | `#7f786f` | `#504b45` | Ore rock |
 | Fur, skin | see `style.tsx` | | | Beasts |
 | Crust, crumb | see `style.tsx` | | | Food |

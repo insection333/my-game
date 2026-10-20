@@ -1,5 +1,5 @@
 // Reference icons for the other families: Pine logs, Copper ore, Iron bar (resources), Hollow rat
-// (foe), Bread (food), Bird's nest (find) and Woodcutting (skill, on its seal).
+// (foe), Bread (food), Bird's nest (find) and Woodcutting (skill, on its seal); and the other logs.
 import { circle, ellipse, Glint, INK, LINE, M, Shape, type Tone } from './style.tsx';
 
 /** One log lying with its cut end towards you: a rounded bark body running back to the upper right. */
@@ -36,6 +36,19 @@ export function PineLogs() {
     </g>
   );
 }
+
+/** The three logs of a pile, in a tree's wood and bark. Tiers step from pale to deep. */
+const pile = (wood: Tone, bark: Tone) => (
+  <g>
+    <Log x={21} y={18.5} r={8} wood={wood} bark={bark} />
+    <Log x={12.5} y={34} r={8} wood={wood} bark={bark} />
+    <Log x={29.5} y={34} r={8} wood={wood} bark={bark} />
+  </g>
+);
+
+export const AshLogs = () => pile(M.ashWood, M.ashBark);
+export const OakLogs = () => pile(M.oakWood, M.oakBark);
+export const YewLogs = () => pile(M.yewWood, M.yewBark);
 
 export function CopperOre() {
   /** A faceted chunk of copper: lit on its upper-left faces, shadowed on the lower right. */
