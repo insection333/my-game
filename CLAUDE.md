@@ -55,8 +55,8 @@ To change the game design: edit the model in `design/model/` or the template, ru
 - Node 22.18 or newer (`.nvmrc` pins 22.22.0) runs TypeScript directly; pnpm 10.28 (`packageManager` in `package.json`).
 - `better-sqlite3` loads its bundled prebuilt binary; its install-time rebuild is switched off in `pnpm-workspace.yaml` (it would download Node headers, which this workspace cannot reach).
 - Browsers for steps 6 to 9: Firefox and WebKit are installed in `/opt/pw-browsers` (downloaded from `cdn.playwright.dev`, which the owner allowed). Playwright's own Chromium is hosted on Google storage, which this workspace cannot reach, so verify falls back to the preinstalled Chromium there. GitHub Actions installs all three itself.
-- See the pages yourself: `pnpm --filter @idle-clash/web build`, then `node -e "import('./tools/verify/web/serve.ts').then(m => m.serve(process.cwd() + '/apps/web/dist', 4173))"` and open `http://127.0.0.1:4173/?features=all`.
-- The domain is idleclash.com; there is no server yet (session 10). Transactional email stays off until the owner says otherwise.
+- See the game yourself: `pnpm --filter @idle-clash/web build`, then `WEB_DIST=../web/dist FEATURES=all DB_PATH=/tmp/ic.db pnpm --filter @idle-clash/server start` and open `http://127.0.0.1:3000`. For live reloading, run the server without `WEB_DIST` and `pnpm --filter @idle-clash/web dev` beside it (Vite passes `/api` to port 3000).
+- The domain is idleclash.com; there is no host yet (session 10). Transactional email stays off (`EMAIL_ENABLED`) until the owner says otherwise.
 
 ## Progress
 
@@ -67,6 +67,7 @@ To change the game design: edit the model in `design/model/` or the template, ru
 | 2 The kernel | Done: `advance` composes (property-tested), saves round-trip and mend, requests never interleave and act once |
 | 3 The feature framework | Done: `defineFeature`, the manifest and content checks, effects with formatters, the strings file; Woodcutting's content and rules behind its flag |
 | 4 The shell and the design system | Done: pages, twelve components, steps 6 to 9 green in three engines; `ART.md` and twelve reference icons, approved by the owner on 20 October 2026 |
-| 5 The server shell | Next |
+| 5 The server shell | Done: accounts, security, contracts, the live channel, flags, telemetry and error reports; the page plays through the server; the hostile-input suite (245 cases) and the account tests green, sign-up and sign-in rate-limited |
+| 6 Woodcutting, end to end | Next |
 
-Outstanding: nothing beyond the next session. Icons for the remaining items are drawn to `ART.md` as their features arrive (logs, ores and bars in sessions 6 and 7; gear, foes and food in session 8).
+Outstanding: nothing beyond the next session. Forgotten passwords are reset by an admin (session 9) while email is off. Icons for the remaining items are drawn to `ART.md` as their features arrive (logs, ores and bars in sessions 6 and 7; gear, foes and food in session 8).

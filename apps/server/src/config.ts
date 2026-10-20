@@ -39,7 +39,9 @@ export function configFromEnv(env: NodeJS.ProcessEnv = process.env): Config {
     host: env.HOST ?? '127.0.0.1',
     dbPath: env.DB_PATH ?? 'idle-clash.db',
     webDist: env.WEB_DIST ?? null,
-    origins: (env.ORIGINS ?? 'http://127.0.0.1:3000,http://localhost:3000').split(',').map((s) => s.trim()),
+    origins: (env.ORIGINS ?? 'http://127.0.0.1:3000,http://localhost:3000,http://127.0.0.1:5173,http://localhost:5173')
+      .split(',')
+      .map((s) => s.trim()),
     secureCookies: env.SECURE_COOKIES === 'true',
     emailEnabled: env.EMAIL_ENABLED === 'true',
     flags: flagsFrom(env.FEATURES),

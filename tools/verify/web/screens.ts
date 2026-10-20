@@ -7,11 +7,11 @@ import { join } from 'node:path';
 import { SHELL_SLOTS } from '../../../apps/web/src/shell-slots.ts';
 import { measurePage } from './measure.ts';
 import {
-  browser,
   ENGINES,
   ensureServer,
   height,
   OUT,
+  openPage,
   viewUrl,
   views,
   WIDTHS,
@@ -34,8 +34,7 @@ export async function runScreens(features: readonly Feature[]): Promise<ScreensR
   let shots = 0;
 
   const one = async (engine: Engine, width: number, view: View): Promise<string[]> => {
-    const b = await browser(engine);
-    const page = await b.newPage({ viewport: { width, height: height(width) } });
+    const page = await openPage(engine, view.path, { viewport: { width, height: height(width) } });
     const errors: string[] = [];
     page.on('pageerror', (e) => errors.push(`script error: ${e.message}`));
     try {

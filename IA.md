@@ -172,6 +172,24 @@ Tabs: Items · Collection log.
 | /hiscores | `hiscores.online`, `hiscores.ladder` | `hiscores.online`, `hiscores.ladder` |
 - **Newcomer:** your row at the bottom, and "Your rank appears after your first level".
 
+### Welcome (signed out)
+
+Anyone not signed in sees this page instead of the shell, at any address; afterwards they land where they were going. `/welcome` opens on Create account, `/welcome/sign-in` on Sign in. No menu, no lanes: what the game is, and the form.
+
+| # | Section (slot) | Filled by | Notes |
+| --- | --- | --- | --- |
+| 1 | `welcome.intro` | the shell | The name, one sentence on what the game is, and the loop it is built on drawn as four icons (ore, bar, sword, foe) |
+| 2 | `welcome.form` | the shell | Tabs for Create account and Sign in. Create: name, password, "I am 13 or older", one button. Sign in: name, password, one button, and how a forgotten password is reset. Each field says what it needs; a refusal says why, in place |
+
+- **At 390:** the intro, then the form, both whole. **At 1,440:** the intro and the form side by side. Verify opens these views signed out.
+
+**Visible without scrolling** (checked by verify at 390 × 844 and 1,440 × 900; a slot no built feature fills yet is skipped):
+
+| View | 390 × 844 | 1,440 × 900 |
+| --- | --- | --- |
+| /welcome | `welcome.intro`, `welcome.form` | `welcome.intro`, `welcome.form` |
+| /welcome/sign-in | `welcome.intro`, `welcome.form` | `welcome.intro`, `welcome.form` |
+
 ### The notices tray (panel)
 
 Opened from the header's bell; its address is `/?panel=tray`.

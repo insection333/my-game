@@ -4,7 +4,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { ROOT } from '../exec.ts';
-import { browser, ensureServer, OUT, views, WIDTHS } from './session.ts';
+import { ensureServer, OUT, openPage, views, WIDTHS } from './session.ts';
 
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
@@ -36,7 +36,7 @@ export async function runReview(): Promise<{ problems: string[]; sheets: number 
   }
 
   const { url } = await ensureServer();
-  const page = await (await browser('chromium')).newPage({ viewport: { width: 1400, height: 900 } });
+  const page = await openPage('chromium', '/review.html', { viewport: { width: 1400, height: 900 } });
   try {
     await page.goto(`${url}/review.html`);
     await page.waitForFunction(() => document.documentElement.dataset.ready === 'true', undefined, { timeout: 15_000 });

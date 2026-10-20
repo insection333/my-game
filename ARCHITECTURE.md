@@ -8,7 +8,7 @@ How the code is arranged and why. `docs/BRIEF.md` is the plan, `GAME_DESIGN.md` 
             ┌──────────────────────── apps ────────────────────────┐
             │  server (Fastify)                 web (React, Vite)  │
             │  routes, accounts, live channel   the shell: pages,  │
-            │  admin                            slots, the tour    │
+            │  admin            ◄── contracts ──► slots, the tour  │
             └───────┬──────────────────────────────────┬───────────┘
                     │ mounts                            │ renders
             ┌───────▼──────────── packages/features ────▼───────────┐
@@ -31,10 +31,11 @@ All game logic lives in feature folders on a small kernel. The apps only host fe
 | --- | --- | --- | --- |
 | `@idle-clash/kernel` | The state schema and its versions, time, randomness, `advance`, lanes and the Next queue, events, mending, one-at-a-time requests. Its subpath `@idle-clash/kernel/store` holds the SQLite store and is for the server only | nothing in the workspace | Session 2 (built) |
 | `@idle-clash/content` | Content schemas (Zod), the effect kinds with their handlers and text formatters, levels and mastery, the number formatter, the strings file and the glossary | kernel | Session 3 (built) |
-| `@idle-clash/ui` | Design tokens (`tokens.css`, `base.css`), twelve components, and the item art (`icons/`, see `ART.md`) | nothing in the workspace | Session 4 (built) |
+| `@idle-clash/ui` | Design tokens (`tokens.css`, `base.css`), thirteen components, and the item art (`icons/`, see `ART.md`) | nothing in the workspace | Session 4 (built) |
+| `@idle-clash/contracts` | Every HTTP route's method, path, who may call it and its input schema (Zod), the response types, the field rules (names, passwords, plain text), and the live channel's messages. The server checks against them, the page is typed by them, and the hostile-input suite is generated from them | kernel | Session 5 (built) |
 | `@idle-clash/features` | `defineFeature`, the registry, shared skill machinery (`shared/`), and one folder per feature | kernel, content, ui | Session 3 (built); features from session 6 |
-| `@idle-clash/server` | Fastify: feature routes, accounts, the live channel, admin | kernel, content, features | Session 5 |
-| `@idle-clash/web` | The shell: the pages and slots from `IA.md` | kernel (never `/store`), content, ui, features | Session 4 (built) |
+| `@idle-clash/server` | Fastify: accounts, the game and feature routes, the live channel, telemetry, browser error reports, and serving the built page; admin from session 9 | kernel, content, contracts, features | Session 5 (built) |
+| `@idle-clash/web` | The shell: the pages and slots from `IA.md`, and the welcome page | kernel (never `/store`), content, contracts, ui, features | Session 4 (built) |
 | `@idle-clash/tools` | `pnpm verify`, the simulation, load test, review sheets | anything | Session 1 onward |
 
 Two rules hold on top of the table: **a feature never imports another feature**, and **nothing imports an app**. Features cooperate through shared state read via the kernel, events they announce, and queries ("Used in" asks every feature about an item). Inside `packages/features/src`, a feature may import only `shared/` and `define.ts`, and `shared/` never imports a feature. Verify's manifest step checks every package's dependencies against this table and every import inside the features package.
@@ -95,25 +96,34 @@ export const woodcutting = defineFeature({ id, flag, content, effects, stops, ru
 ## 5. Requests and the server
 
 - **The server is the authority.** The page shows state and sends requests; the server resolves every action.
+- **Routes come from contracts.** `contractRoute(app, ROUTES.x, handler)` mounts a route from its contract in `@idle-clash/contracts`: its method, path and Zod input schema. Every schema is strict (an unknown field is refused). A feature's own routes mount at `POST /api/f/<feature>/<route>`, each body `{ requestId, input }` with `input` checked by the feature's schema, and only while the feature's flag is on.
+- **Hostile input.** Only `application/json` is parsed (anything else is 415), by a strict parser that refuses `__proto__`, `constructor` and `prototype` keys, repeated keys and nesting deeper than 32. Bodies are capped at 16 KB (413). Names, passwords and reports refuse control and text-direction characters. `apps/server/tests/hostile.test.ts` is generated from the contracts: for every route and field it sends missing, oversized, wrong-type, null, nested and control-character values, and expects exactly the answer the schema gives, never a 500.
 - **One at a time per player.** `PlayerQueue` runs each player's requests in order, even when a handler awaits (password hashing, I/O). Different players run side by side.
-- **Request ids.** `handle(queue, store, player, requestId, now, handler)` loads the save, returns the stored answer if this id was already handled, and otherwise writes the new state together with the id in one write. The save remembers its last 50 ids, so a double click or a retry does nothing twice.
-- **The live channel** (session 5): one WebSocket per page, carrying the same typed events the engine produces.
-- **Accounts** (session 5): name and password (Argon2id); rate-limited sign-in and sign-up; secure session tokens. Email confirmation and recovery are built behind a switch that stays off until the owner turns it on; until then the admin page resets passwords.
+- **Request ids.** `handle(queue, store, player, requestId, now, handler)` loads the save, returns the stored answer if this id was already handled, and otherwise writes the new state together with the id in one write. The save remembers its last 50 ids, so a double click or a retry does nothing twice. A changing request's answer is `{ result, duplicate, events, state, now }`.
+- **Accounts.** Name (3 to 16 characters, unique in any case) and password (10 to 200 characters, stored as Argon2id, m=19456, t=2); players confirm they are 13 or older. A session is 32 random bytes in an `HttpOnly`, `SameSite=Lax` cookie (`Secure` on the live site), stored only as its SHA-256, lasting 30 days from last use. A wrong password and an unknown name get the same answer in the same time. Banned players are refused at every route.
+- **Limits** (a sliding window in memory, per address and per name or player; a refusal is 429 with `Retry-After`): sign-up 5 an hour per address; sign-in 20 per 15 minutes per address and 10 per name; commands and feature routes 30 per 10 seconds per player; browser error reports 30 a minute per address.
+- **Origin and headers.** A changing request from another site is refused (403) by its `Origin` or `Sec-Fetch-Site`. Every answer carries a content security policy (scripts, styles, fonts and connections only from the site; no framing), `nosniff`, a same-origin referrer policy and a permissions policy.
+- **Email** (`EMAIL_ENABLED`, off): setting and confirming an address, recovery and reset are built and tested, but their routes are not mounted until the owner switches email on. Recovery always answers alike, whether or not the name exists. Until then the admin page (session 9) resets passwords.
+- **The live channel.** `GET /api/live` upgrades to a WebSocket for a signed-in page (others are closed with 4401). After a change is written, the server sends that player's pages `{ type: 'state' }`, and `{ type: 'events' }` when something happened.
+- **Flags.** `FEATURES` in the environment lists the features switched on (`all` for every built one); otherwise each feature's own default applies. `GET /api/me` tells the page who is signed in, which features are on, and whether email is.
+- **Telemetry and logs.** Notable events (sign-up, sign-in, and every game event as `game.<type>`) are stored in `telemetry` by player id, with no names or addresses. Logs are JSON lines with a request id per request; cookies and authorization headers are redacted. The page reports its own errors to `POST /api/errors`, which logs them.
+- **Configuration** (environment): `PORT`, `HOST`, `DB_PATH`, `WEB_DIST` (serve the built page), `ORIGINS`, `SECURE_COOKIES`, `EMAIL_ENABLED`, `FEATURES`, `LOG`.
 
 ## 6. Persistence
 
 - **SQLite** in one file, in write-ahead mode, through Drizzle (`better-sqlite3`, which ships prebuilt binaries for every platform). Drizzle keeps a later move to Postgres open.
 - **The `saves` table** has one row per player: the JSON save document, its format version, and a revision. A write succeeds only if the revision is still the one read (`SaveConflict` otherwise), and only if the document passes the schema.
 - **Reads mend.** A damaged save is mended on read, its original is kept in `damaged_saves` with the list of repairs, and the mended save is written back.
-- **Migrations** live in `packages/kernel/migrations`, generated by drizzle-kit from `src/store/schema.ts` (`pnpm --filter @idle-clash/kernel db:generate`), and are applied when the store opens.
+- **Migrations** live in `packages/kernel/migrations`, generated by drizzle-kit from `src/store/schema.ts` (`pnpm --filter @idle-clash/kernel db:generate`), and are applied when the store opens. The server's own tables (`players`, `sessions`, `email_tokens`, `telemetry`) share the file, with migrations in `apps/server/migrations` (`pnpm --filter @idle-clash/server db:generate`) tracked in their own table.
 - **Save versions.** `SAVE_VERSION` is 1. A format change adds an upgrade in `versions.ts` and keeps a sample of the old version in `packages/kernel/tests/saves/` for good; tests load every sample.
 
 ## 7. The web shell
 
 - **React 19 and Vite 8.** `apps/web` owns the pages and their layout; features fill slots; `@idle-clash/ui` draws everything. A page asks every feature for a slot's data (`fills`) and marks where it drew it with `data-slot`, which is what the tour and verify point at.
 - **The layout.** Phone first: header, page, a lanes strip and the menu held at the bottom. From 768 px the menu becomes a glyph rail and the strip moves under the header; from 1,024 px a labelled rail on the left and the lanes panel on the right. Sections arrange themselves with container queries on the main column.
-- **The design system.** Twelve components: Button, IconButton, Panel, Pill, ProgressBar, Tabs, ActionRow, LaneCard, ResponsiveTable, ItemIcon, Sheet, Moment. Every control carries `data-ui`, so verify can confirm each control is drawn one way everywhere. Tokens: cool birch and slate, moss for progress, woad for what you press, and ember for the fire alone; Alegreya for names and headings, Alegreya Sans for everything else, self-hosted.
-- **Until the server (session 5),** the page runs the kernel engine itself (`src/game/store.ts`), so every screen is live. Its clock ticks only while something is moving, so a resting page uses no CPU. `?features=all` switches on every built feature for previews and verify.
+- **The design system.** Thirteen components: Button, IconButton, Panel, Pill, ProgressBar, Tabs, ActionRow, LaneCard, ResponsiveTable, ItemIcon, Sheet, Moment, Field. Every control carries `data-ui`, so verify can confirm each control is drawn one way everywhere. Tokens: cool birch and slate, moss for progress, woad for what you press, ember for the fire alone, and alert for what went wrong; Alegreya for names and headings, Alegreya Sans for everything else, self-hosted and preloaded.
+- **The page and the server.** `src/api.ts` has one typed function per contract. `src/game/store.ts` asks the server who is here and which features are on, then loads the save. Between answers the page runs the same engine to show time passing (on the server's clock), shows a command's effect at once, and sends it with a request id, retried with the same id if the connection drops; the server's answer, a live message, or a fresh read when the tab comes back replaces the guess. Its clock ticks only while something is moving, so a resting page uses no CPU. A lost session returns the player to the welcome page.
+- **The welcome page** (`/welcome`, `/welcome/sign-in`) stands outside the shell. Anyone not signed in is sent there from any address and returned afterwards. The form checks fields with the server's own schemas before sending.
 - **Words** come from the strings file through `t()`; numbers through `fmt`. Sheets (the notices tray, settings, the lanes on a phone) have their own addresses (`?panel=`), so they can be linked and checked.
 - **Meaning is never carried by colour alone,** and the tour points at slot names, never at layout classes.
 
@@ -141,4 +151,4 @@ The single command that decides whether a change is done. It prints one line per
 | 8 Performance budgets | First page under 250 KB compressed; usable within 2 s with 4x CPU and network throttling; under 2% CPU at rest and with a lane at work | Built |
 | 9 Review sheets | Every view beside its IA.md spec, and every icon at 24, 48 and 96 px on both themes, in `.verify/review/` | Built |
 
-Steps 6 to 9 share one build of the web app and one local server (`tools/verify/web/`). Every view is opened as a newcomer with every built feature switched on; a slot IA.md expects but no built feature fills yet is reported as awaiting its feature, and becomes required the moment a feature fills it. GitHub Actions installs the three browsers and runs verify on every push.
+Steps 6 to 9 share one build of the web app and the game's own server on a scratch database with every built feature switched on (`tools/verify/web/`). Every view is opened as a newcomer signed up for the run (the welcome views signed out), and step 6 also walks the account flows in the page: sent to the welcome page, refused with a reason, signed up, a lane kept across a reload, signed out, signed back in. The speed budget's first page is the welcome page. A slot IA.md expects but no built feature fills yet is reported as awaiting its feature, and becomes required the moment a feature fills it. GitHub Actions installs the three browsers and runs verify on every push.

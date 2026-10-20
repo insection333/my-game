@@ -1,7 +1,7 @@
 // Serves the built web app: every file read once at start and kept gzipped in memory; hashed
 // assets cached for a year; every other page address answered with index.html for the page's router.
 import type { FastifyInstance } from 'fastify';
-import { readdirSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { extname, join, relative } from 'node:path';
 import { gzipSync } from 'node:zlib';
 import { fail } from './http.ts';
@@ -43,6 +43,7 @@ function load(dir: string): Map<string, File> {
 }
 
 export function webRoutes(app: FastifyInstance, dist: string): void {
+  if (!existsSync(dist)) throw new Error(`WEB_DIST ${dist} does not exist: build the web app first`);
   const files = load(dist);
   const index = files.get('/index.html');
   if (!index) throw new Error(`No index.html in ${dist}: build the web app first`);

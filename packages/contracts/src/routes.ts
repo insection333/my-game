@@ -1,7 +1,7 @@
 // Every HTTP route of the server shell: its method, path, who may call it, its input schema and a
 // valid example input. The server validates against these, the page is typed by them, and the
 // hostile-input suite is generated from them.
-import { Command, type State } from '@idle-clash/kernel';
+import { Command, type GameEvent, type State } from '@idle-clash/kernel';
 import { z } from 'zod';
 import { Email, Password, PASSWORD_MAX, plainText, PlayerName, RequestId, Token } from './fields.ts';
 
@@ -131,10 +131,20 @@ export interface MeResponse {
   flags: Record<string, boolean>;
   email: { enabled: boolean };
 }
+export interface AuthResponse {
+  player: PlayerView;
+}
 export interface GameResponse {
   state: State;
   /** The server's clock when it answered; the page corrects its own clock by this. */
   now: number;
+}
+/** A command's or feature route's answer: the result, and the save as it now stands. */
+export interface ActResponse<R = unknown> extends GameResponse {
+  result: R;
+  /** True when this request id had already been handled: nothing happened twice. */
+  duplicate: boolean;
+  events: GameEvent[];
 }
 export const ErrorCode = z.enum([
   'invalidInput',

@@ -7,3 +7,4 @@
 - Session 4: the web shell (five pages, two sheets, phone to desktop layouts), the design system (tokens, twelve components), ART.md and twelve reference icons, and verify steps 6 to 9 (screenshots in three engines, axe, speed budgets, review sheets).
 - Verify's first step now checks that pnpm-lock.yaml matches every package.json, so a stale lockfile fails locally instead of on GitHub.
 - The owner approved the reference icons and the art style (20 October 2026).
+- Session 5: the server shell: contracts for every route, accounts (name and password, 13 or older, Argon2id, 30-day sessions), rate limits, strict JSON and security headers, request ids, the live channel, flags from the server, telemetry and browser error reports; email built behind its switch, off. The page now plays through the server, with a welcome page to sign up or in and Sign out in Settings; verify runs against the real server and walks the account flows.

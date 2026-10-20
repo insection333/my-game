@@ -3,3 +3,6 @@ node_modules/
 *.log
 .verify/
 dist/
+*.db
+*.db-wal
+*.db-shm

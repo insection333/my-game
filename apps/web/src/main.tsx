@@ -6,15 +6,15 @@ import '@idle-clash/ui/base.css';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { App } from './App.tsx';
+import { watchErrors } from './errors.ts';
+import { boot } from './game/store.ts';
 import { applyTheme, readTheme } from './pages/Panels.tsx';
 
+watchErrors();
 applyTheme(readTheme());
+void boot();
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <App />
   </StrictMode>,
 );
-// Usable: the shell has drawn and the fonts are in. Verify's speed budget waits for this mark.
-requestAnimationFrame(() => {
-  void document.fonts.ready.then(() => (document.documentElement.dataset.ready = 'true'));
-});

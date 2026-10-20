@@ -1,0 +1,121 @@
+.page {
+  min-height: 100dvh;
+  display: grid;
+  align-content: center;
+  gap: var(--s-5);
+  max-width: var(--content-max);
+  grid-template-columns: minmax(0, 1fr);
+  margin: 0 auto;
+  padding: var(--s-5) var(--gutter);
+}
+
+@media (min-width: 900px) {
+  .page {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 400px);
+    align-items: center;
+    gap: var(--s-6);
+  }
+}
+
+.intro {
+  display: grid;
+  gap: var(--s-3);
+  justify-items: start;
+}
+
+.title {
+  font: 500 var(--t-h1) / 1.1 var(--font-book);
+  margin: 0;
+}
+
+@media (min-width: 900px) {
+  .title {
+    font-size: 2.5rem;
+  }
+}
+
+.lead {
+  margin: 0;
+  max-width: 34em;
+  color: var(--ink-2);
+  font-size: var(--t-lead);
+  line-height: 1.45;
+}
+
+/* Ore, bar, sword, foe: the loop the game is built on, joined by small chevrons. */
+.loop {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.loop li {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.loop li + li::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-top: 2px solid var(--line-strong);
+  border-right: 2px solid var(--line-strong);
+  transform: rotate(45deg);
+}
+
+.card {
+  display: grid;
+  gap: var(--s-4);
+  padding: var(--s-4);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-panel);
+}
+
+.form {
+  display: grid;
+  gap: var(--s-4);
+}
+
+.age {
+  display: grid;
+  gap: var(--s-1);
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  min-height: var(--tap);
+  cursor: pointer;
+}
+
+.check input {
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  flex: none;
+  accent-color: var(--woad);
+}
+
+.error {
+  margin: 0;
+  color: var(--alert);
+  font-size: var(--t-small);
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.hint {
+  margin: 0;
+  color: var(--ink-2);
+  font-size: var(--t-small);
+}
+
+.submit {
+  width: 100%;
+}

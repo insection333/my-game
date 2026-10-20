@@ -166,3 +166,19 @@ a.row:hover {
   padding: var(--s-2) var(--s-4);
   color: var(--ink-2);
 }
+
+.account {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  padding: var(--s-3) var(--s-4);
+  border-bottom: 1px solid var(--line);
+}
+
+.account p {
+  margin: 0;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}

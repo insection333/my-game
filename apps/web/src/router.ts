@@ -19,10 +19,23 @@ export function navigate(href: string) {
   window.scrollTo(0, 0);
 }
 
-export function useLocation(): { path: string; panel: string | null } {
+/** Changes the address without adding a step to the history (a redirect). */
+export function replace(href: string) {
+  if (href === snapshot()) return;
+  history.replaceState(null, '', href);
+  for (const l of listeners) l();
+}
+
+export function useLocation(): { path: string; panel: string | null; next: string } {
   const at = useSyncExternalStore(subscribe, snapshot);
   const url = new URL(at, 'http://x');
-  return { path: url.pathname.replace(/\/$/, '') || '/', panel: url.searchParams.get('panel') };
+  // Where to go after signing in: only an address on this site.
+  const next = url.searchParams.get('next') ?? '/';
+  return {
+    path: url.pathname.replace(/\/$/, '') || '/',
+    panel: url.searchParams.get('panel'),
+    next: /^\/(?!\/)/.test(next) ? next : '/',
+  };
 }
 
 /** The current address with a panel opened or closed. */

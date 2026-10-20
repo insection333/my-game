@@ -1,6 +1,6 @@
 // Sign up, sign in, sign out, and who is signed in. Every attempt is rate-limited; a wrong name and
 // a wrong password look the same, and take the same time.
-import { nameKey, ROUTES, type MeResponse, type PlayerView } from '@idle-clash/contracts';
+import { nameKey, ROUTES, type AuthResponse, type MeResponse, type PlayerView } from '@idle-clash/contracts';
 import { newState, seedFrom } from '@idle-clash/kernel';
 import { eq } from 'drizzle-orm';
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
@@ -73,7 +73,7 @@ export function authRoutes(app: FastifyInstance, ctx: Ctx): void {
     }
     startSession(ctx, reply, id);
     ctx.telemetry.record('signUp', id);
-    return reply.code(201).send({ player: view({ id, name: input.name }) });
+    return reply.code(201).send({ player: view({ id, name: input.name }) } satisfies AuthResponse);
   });
 
   contractRoute<{ name: string; password: string }>(app, ROUTES.signIn, async ({ req, reply, input }) => {
@@ -89,7 +89,7 @@ export function authRoutes(app: FastifyInstance, ctx: Ctx): void {
     if (row.bannedAt) throw fail(403, 'banned');
     startSession(ctx, reply, row.id);
     ctx.telemetry.record('signIn', row.id);
-    return { player: view(row) };
+    return { player: view(row) } satisfies AuthResponse;
   });
 
   contractRoute(

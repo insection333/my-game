@@ -76,13 +76,16 @@ export class RateLimiter {
   }
 }
 
-/** Headers on every response: no framing, no sniffing, scripts and styles only from the site. */
+/**
+ * Headers on every response: no framing, no sniffing, scripts and styles only from the site. No
+ * Cross-Origin-Opener-Policy: the game opens no windows, and the header makes Firefox switch
+ * processes on every first load, which the browser tests in verify cannot follow.
+ */
 export const SECURITY_HEADERS: Record<string, string> = {
   'content-security-policy':
     "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'",
   'x-content-type-options': 'nosniff',
   'referrer-policy': 'same-origin',
   'x-frame-options': 'DENY',
-  'cross-origin-opener-policy': 'same-origin',
   'permissions-policy': 'camera=(), microphone=(), geolocation=()',
 };

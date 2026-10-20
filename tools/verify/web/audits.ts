@@ -1,17 +1,16 @@
 // Step 7, accessibility: axe on every view at every width (in Chromium; the rules do not depend on
 // the engine). Step 8, performance: page weight, time to usable on a throttled phone, idle CPU.
 import { AxeBuilder } from '@axe-core/playwright';
-import { browser, ensureServer, height, viewUrl, views, WIDTHS } from './session.ts';
+import { browser, ensureServer, height, newcomer, openPage, viewUrl, views, WIDTHS } from './session.ts';
 
 export async function runAxe(): Promise<{ problems: string[]; checks: number }> {
   const { url } = await ensureServer();
-  const b = await browser('chromium');
   const problems: string[] = [];
   let checks = 0;
   for (const width of WIDTHS) {
     for (const view of views()) {
-      const ctx = await b.newContext({ viewport: { width, height: height(width) } });
-      const page = await ctx.newPage();
+      // axe needs a page of its own context, which openPage gives.
+      const page = await openPage('chromium', view.path, { viewport: { width, height: height(width) } });
       await page.goto(viewUrl(url, view.path));
       await page.waitForFunction(() => document.documentElement.dataset.ready === 'true', undefined, {
         timeout: 15_000,
@@ -30,7 +29,7 @@ export async function runAxe(): Promise<{ problems: string[]; checks: number }> 
           problems.push(`${width}px ${scheme} ${view.path}: ${v.id} (${v.impact ?? 'minor'}): ${v.help} at ${where}`);
         }
       }
-      await ctx.close();
+      await page.close();
     }
   }
   return { problems: [...new Set(problems)], checks };
@@ -52,11 +51,13 @@ export async function runPerf(): Promise<PerfResult> {
   const b = await browser('chromium');
   const problems: string[] = [];
 
-  // Page weight: every byte the first page needs, as compressed by the server.
-  served.sent.clear();
+  // Page weight: every byte the first page needs, as it crossed the network. The first page is what a
+  // visitor who is not signed in sees: the welcome page.
   const ctx = await b.newContext({ viewport: { width: 390, height: 844 } });
   const page = await ctx.newPage();
   const cdp = await ctx.newCDPSession(page);
+  let received = 0;
+  cdp.on('Network.loadingFinished', (e) => (received += e.encodedDataLength));
   await cdp.send('Network.enable');
   await cdp.send('Network.setCacheDisabled', { cacheDisabled: true });
   // A mid-range phone on a middling connection: four times slower CPU, 1.6 Mb/s down, 150 ms away.
@@ -71,7 +72,7 @@ export async function runPerf(): Promise<PerfResult> {
   await page.goto(served.url + '/');
   await page.waitForFunction(() => document.documentElement.dataset.ready === 'true', undefined, { timeout: 30_000 });
   const usableMs = Date.now() - start;
-  const bytes = [...served.sent.values()].reduce((a, n) => a + n, 0);
+  const bytes = received;
   await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 });
   await cdp.send('Network.emulateNetworkConditions', {
     offline: false,
@@ -99,7 +100,9 @@ export async function runPerf(): Promise<PerfResult> {
   };
   await page.waitForTimeout(1000);
   const idleBusy = await busy();
-  await page.goto(`${served.url}/skills/woodcutting?features=all`);
+  // A player of its own, so the lane it starts changes no other step's newcomer.
+  await ctx.addCookies([{ ...(await newcomer(served.url, 'Perf runner')), url: served.url }]);
+  await page.goto(`${served.url}/skills/woodcutting`);
   await page.waitForFunction(() => document.documentElement.dataset.ready === 'true');
   await page.getByRole('button', { name: 'Start' }).first().click();
   await page.waitForTimeout(1000);
