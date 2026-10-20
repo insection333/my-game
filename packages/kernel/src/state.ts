@@ -1,5 +1,5 @@
 // A new player's state, and the small helpers features use to read and change shared state.
-import { LANE_IDS, type Lane, type LaneId, type State } from './schema.ts';
+import { LANE_IDS, type ActionRef, type Lane, type LaneId, type LaneKind, type State } from './schema.ts';
 
 const idleLane = (): Lane => ({ current: null, next: null, stopped: null, rolls: 0 });
 
@@ -56,6 +56,20 @@ export function addXp(s: State, skill: string, xp: number): void {
 }
 
 export const fireBurning = (s: State, at: number): boolean => at < s.fireUntil;
+
+/**
+ * The lane an action of a kind should start in. A gathering action takes the first Gathering lane
+ * when it is free or already runs that skill; while the fire burns and the first lane runs another
+ * skill, it takes the second (cut wood and mine at once); otherwise it replaces what the first runs.
+ */
+export function laneFor(s: State, now: number, action: ActionRef, kind: LaneKind): LaneId {
+  if (kind !== 'gathering') return kind;
+  const first = s.lanes.gathering.current;
+  if (!first || first.action.feature === action.feature) return 'gathering';
+  const second = s.lanes.gathering2.current;
+  if (fireBurning(s, now) && (!second || second.action.feature === action.feature)) return 'gathering2';
+  return 'gathering';
+}
 
 /** A notable moment happened: the luck guarantee counts from here. */
 export function noteMoment(s: State, at: number): void {

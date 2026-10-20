@@ -1,7 +1,7 @@
 // A skill's page: its level, everything it can do (with what each pays), and every level's unlock.
 import { levelFor, t } from '@idle-clash/content';
 import type { Feature, FindEntry, LadderRow, SkillActionRow, SkillSummary } from '@idle-clash/features';
-import { actionKey, laneKind, LANE_IDS, xpOf, type LaneId, type State } from '@idle-clash/kernel';
+import { actionKey, laneFor, laneKind, LANE_IDS, xpOf, type LaneId, type State } from '@idle-clash/kernel';
 import { ActionRow, Button, hasIcon, ItemIcon, Panel, Pill, ProgressBar } from '@idle-clash/ui';
 import { memo, useEffect, useRef } from 'react';
 import { useGame } from '../game/hooks.ts';
@@ -28,14 +28,18 @@ function SkillPage({ feature }: { feature: Feature }) {
   const id = feature.content.skill!.id;
   const head = fillFor<SkillSummary>(feature, 'skill.header', state, now);
   const actions = fillFor<SkillActionRow[]>(feature, 'skill.actions', state, now) ?? [];
+  // A lane already running this skill keeps it; otherwise the kernel's choice (the fire's second
+  // Gathering lane when the first runs another skill).
   const lane = (a: SkillActionRow): LaneId => {
     const kind = feature.rules[a.action.id]?.lane ?? 'gathering';
-    return LANE_IDS.find((l) => laneKind(l) === kind) ?? 'gathering';
+    const own = LANE_IDS.find((l) => laneKind(l) === kind && state.lanes[l].current?.action.feature === feature.id);
+    return own ?? laneFor(state, now, a.action, kind);
   };
-  const running = (a: SkillActionRow) => {
-    const cur = state.lanes[lane(a)].current;
-    return cur ? actionKey(cur.action) === actionKey(a.action) : false;
-  };
+  const running = (a: SkillActionRow) =>
+    LANE_IDS.some((l) => {
+      const cur = state.lanes[l].current;
+      return cur ? actionKey(cur.action) === actionKey(a.action) : false;
+    });
   return (
     <>
       {head && (
@@ -62,7 +66,7 @@ function SkillPage({ feature }: { feature: Feature }) {
                   icon={actionIcon(feature, a.action.id)}
                   name={a.name}
                   locked={a.locked}
-                  facts={a.locked ? [a.gives] : [a.time, a.xpPerHour, a.gives]}
+                  facts={a.locked ? [a.gives] : [a.time, a.xpPerHour, a.gives, ...(a.takes ? [a.takes] : [])]}
                   status={
                     a.locked ? (
                       <Pill>{a.opensAt}</Pill>

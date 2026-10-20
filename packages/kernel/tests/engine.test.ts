@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { createEngine, HOUR, MINUTE, newState, seeded, SECOND, State, type Command } from '../src/index.ts';
+import { createEngine, HOUR, laneFor, MINUTE, newState, seeded, SECOND, State, type Command } from '../src/index.ts';
 import { A, registry, T0 } from './fixtures.ts';
 
 const engine = createEngine(registry);
@@ -10,6 +10,28 @@ const run = (s: State, at: number, cmd: Command) => {
   expect(out.result).toEqual({ ok: true });
   return out.state;
 };
+
+describe('laneFor', () => {
+  it("puts a second gathering skill in the fire's lane, the same skill in the first, and other kinds in their own", () => {
+    const chopping = run(fresh(), T0, { type: 'start', lane: 'gathering', action: A.pine });
+    expect(laneFor(fresh(), T0, A.copper, 'gathering')).toBe('gathering');
+    expect(laneFor(chopping, T0 + 1000, A.pine, 'gathering')).toBe('gathering');
+    expect(laneFor(chopping, T0 + 1000, A.copper, 'gathering')).toBe('gathering2');
+    expect(laneFor(chopping, T0 + 10 * MINUTE, A.copper, 'gathering')).toBe('gathering');
+    expect(laneFor(chopping, T0, A.bar, 'artisan')).toBe('artisan');
+  });
+
+  it('says why a command was refused, as an event', () => {
+    const out = engine.command(fresh(), T0, { type: 'queueNext', lane: 'artisan', action: A.pine }, rng);
+    expect(out.events).toContainEqual({
+      type: 'refused',
+      at: T0,
+      lane: 'artisan',
+      action: A.pine,
+      reason: { code: 'wrongLane' },
+    });
+  });
+});
 
 describe('advance', () => {
   it("opens the fire's second Gathering lane to a second skill, not the same one twice", () => {

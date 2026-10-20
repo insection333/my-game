@@ -133,6 +133,7 @@ export const en: Record<string, string> = {
   'moment.goalDone': 'Goal done: {goal}',
   'moment.also': 'Also: {what}.',
   'moment.close': 'Close',
+  'moment.laneStopped': '{lane} stopped: {reason}',
 
   // Goals
   'goals.firstSteps': 'First steps',
@@ -143,6 +144,13 @@ export const en: Record<string, string> = {
   'goals.inLane': 'Working in your {lane} lane',
   'goal.chop-a-pine': 'Chop a pine',
   'goal.chop-a-pine.start': 'Start chopping',
+  'goal.mine-copper-ore': 'Mine copper ore',
+  'goal.mine-copper-ore.start': 'Start mining',
+  'goal.smelt-a-copper-bar': 'Smelt a copper bar',
+  'goal.smelt-a-copper-bar.start': 'Start smelting',
+  'goal.forge-a-copper-sword': 'Forge a copper sword',
+  'goal.forge-a-copper-sword.start': 'Start forging',
+  'goals.needs': 'Needs {skill} level {level}',
   'help.goals.title': 'Goals',
   'help.goals.body':
     'Goals show what to aim for next. First steps walk you through the game, each with a button that starts it; claim each for its reward.',
