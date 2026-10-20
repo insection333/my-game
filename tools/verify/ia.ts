@@ -1,10 +1,20 @@
 // Reads IA.md: the menu, the pages and every slot. The manifest check (session 3) compares each
 // feature's slot contributions against this list.
 
+export interface ViewSpec {
+  /** The page heading in IA.md this view belongs to. */
+  page: string;
+  path: string;
+  /** Slots that must be visible without scrolling at 390 x 844 and at 1,440 x 900. */
+  phone: string[];
+  desktop: string[];
+}
+
 export interface PageMap {
   menu: string[];
   pages: string[];
   slots: string[];
+  views: ViewSpec[];
   problems: string[];
 }
 
@@ -27,18 +37,50 @@ function firstCells(text: string): string[] {
     .map((l) => l.split('|')[1]?.trim() ?? '');
 }
 
-/** In each table row, the first cell that starts with a backticked name: the slot column. */
+/** Every table in the text, as its rows of trimmed cells (header first, divider dropped). */
+function tables(md: string): string[][][] {
+  const out: string[][][] = [];
+  let rows: string[][] = [];
+  for (const line of [...md.split('\n'), '']) {
+    if (line.startsWith('|')) {
+      if (!/^\|\s*-/.test(line))
+        rows.push(
+          line
+            .split('|')
+            .slice(1, -1)
+            .map((c) => c.trim()),
+        );
+    } else if (rows.length) {
+      out.push(rows);
+      rows = [];
+    }
+  }
+  return out;
+}
+
+const isViewTable = (t: string[][]) => t[0]?.[0] === 'View';
+const ticks = (cell: string) => [...cell.matchAll(/`([^`]+)`/g)].map((m) => m[1]);
+
+/** In each slot table's rows, the first cell that starts with a backticked name: the slot column. */
 function slotCells(md: string): string[] {
-  return md
-    .split('\n')
-    .filter((l) => l.startsWith('|'))
-    .flatMap(
-      (l) =>
-        l
-          .split('|')
-          .map((c) => c.trim())
-          .find((c) => c.startsWith('`')) ?? [],
-    );
+  return tables(md)
+    .filter((t) => !isViewTable(t))
+    .flatMap((t) => t.slice(1).flatMap((row) => row.find((c) => c.startsWith('`')) ?? []));
+}
+
+/** The "Visible without scrolling" tables, under the page heading each sits in. */
+function viewSpecs(md: string): ViewSpec[] {
+  const specs: ViewSpec[] = [];
+  const pagesText = section(md, /^## 3\. Pages/);
+  const parts = pagesText.split(/^### /m).slice(1);
+  for (const part of parts) {
+    const page = part.split('\n')[0].trim();
+    for (const t of tables(part).filter(isViewTable)) {
+      for (const row of t.slice(1))
+        specs.push({ page, path: row[0], phone: ticks(row[1] ?? ''), desktop: ticks(row[2] ?? '') });
+    }
+  }
+  return specs;
 }
 
 /** The first run of consecutive table lines in a section. */
@@ -69,5 +111,11 @@ export function readPageMap(md: string): PageMap {
     else slots.push(m[1]);
   }
   if (!slots.length) problems.push('IA.md lists no slots');
-  return { menu, pages, slots, problems };
+  const views = viewSpecs(md);
+  for (const v of views) {
+    for (const slot of [...v.phone, ...v.desktop]) {
+      if (!slots.includes(slot)) problems.push(`View ${v.path} expects slot "${slot}", which IA.md does not list`);
+    }
+  }
+  return { menu, pages, slots, views, problems };
 }

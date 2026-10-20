@@ -1,0 +1,36 @@
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-1);
+  padding: 1px var(--s-2);
+  border-radius: 999px;
+  font: 600 var(--t-small) / 1.4 var(--font-ui);
+  white-space: nowrap;
+  border: 1px solid transparent;
+}
+
+.neutral {
+  background: var(--surface-2);
+  color: var(--ink-2);
+  border-color: var(--line);
+}
+
+.moss {
+  background: var(--moss-soft);
+  color: var(--moss);
+}
+
+.woad {
+  background: var(--woad-soft);
+  color: var(--woad);
+}
+
+.gold {
+  background: var(--gold-soft);
+  color: var(--gold);
+}
+
+.ember {
+  background: color-mix(in srgb, var(--ember) 14%, transparent);
+  color: var(--ember);
+}

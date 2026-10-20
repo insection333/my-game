@@ -1,0 +1,36 @@
+.moment {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-panel);
+  box-shadow: 0 12px 40px var(--shade);
+  padding: var(--s-4);
+  animation: rise 260ms ease-out;
+}
+
+.centre {
+  flex-direction: column;
+  text-align: center;
+  padding: var(--s-6) var(--s-5);
+}
+
+.centre .title {
+  font: 500 var(--t-h1) / 1.1 var(--font-book);
+}
+
+.banner .title {
+  font: 500 var(--t-lead) / 1.2 var(--font-book);
+}
+
+.body {
+  color: var(--ink-2);
+}
+
+@keyframes rise {
+  from {
+    transform: translateY(12px);
+    opacity: 0;
+  }
+}

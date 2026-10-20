@@ -73,7 +73,7 @@ export const ALLOWED_DEPS: Record<string, string[]> = {
   '@idle-clash/ui': [],
   '@idle-clash/features': ['@idle-clash/kernel', '@idle-clash/content', '@idle-clash/ui'],
   '@idle-clash/server': ['@idle-clash/kernel', '@idle-clash/content', '@idle-clash/features'],
-  '@idle-clash/web': ['@idle-clash/content', '@idle-clash/ui', '@idle-clash/features'],
+  '@idle-clash/web': ['@idle-clash/kernel', '@idle-clash/content', '@idle-clash/ui', '@idle-clash/features'],
   '@idle-clash/tools': ['*'],
 };
 

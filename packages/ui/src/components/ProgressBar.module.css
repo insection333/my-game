@@ -1,0 +1,20 @@
+.track {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--surface-2);
+  box-shadow: inset 0 0 0 1px var(--line);
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  border-radius: 3px;
+}
+
+.moss {
+  background: var(--moss);
+}
+
+.woad {
+  background: var(--woad);
+}

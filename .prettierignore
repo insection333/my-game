@@ -2,3 +2,4 @@ pnpm-lock.yaml
 *.md
 design/model/foe-stats.json
 design/model/xp-table.json
+apps/web/dist

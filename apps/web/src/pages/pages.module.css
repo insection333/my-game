@@ -1,0 +1,168 @@
+.head {
+  display: grid;
+  gap: var(--s-1);
+  margin-bottom: var(--s-4);
+}
+
+.lead {
+  color: var(--ink-2);
+  font-size: var(--t-lead);
+}
+
+.stack {
+  display: grid;
+  gap: var(--s-4);
+}
+
+.pair {
+  display: grid;
+  gap: var(--s-4);
+  align-items: start;
+}
+
+@container main (min-width: 720px) {
+  .pair {
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  }
+}
+
+.phoneOnly {
+  display: block;
+}
+
+@media (min-width: 1024px) {
+  .phoneOnly {
+    display: none;
+  }
+}
+
+.welcome {
+  display: grid;
+  gap: var(--s-3);
+  justify-items: start;
+}
+
+.welcome h2 {
+  font-size: var(--t-h2);
+}
+
+.rows {
+  display: grid;
+}
+
+.row {
+  display: grid;
+  gap: var(--s-1);
+  padding: var(--s-3) var(--s-4);
+  border-top: 1px solid var(--line);
+  color: inherit;
+  text-decoration: none;
+}
+
+.row:first-child {
+  border-top: 0;
+}
+
+a.row:hover {
+  background: var(--surface-2);
+}
+
+.rowHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--s-3);
+}
+
+.rowName {
+  font: 500 var(--t-lead) / 1.25 var(--font-book);
+}
+
+.muted {
+  color: var(--ink-2);
+  font-size: var(--t-small);
+}
+
+.skillHead {
+  display: grid;
+  gap: var(--s-2);
+  margin-bottom: var(--s-4);
+}
+
+.skillTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  flex-wrap: wrap;
+}
+
+.skillBar {
+  max-width: 360px;
+}
+
+.iconCell {
+  width: 32px;
+  height: 32px;
+}
+
+.ladder {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ladder li {
+  display: grid;
+  grid-template-columns: 4.5em 1fr;
+  gap: var(--s-2);
+  padding: var(--s-1) var(--s-4);
+  font-size: var(--t-small);
+  border-top: 1px solid var(--line);
+}
+
+.ladder li:first-child {
+  border-top: 0;
+}
+
+.ladder li[data-reached] {
+  color: var(--ink-2);
+}
+
+.ladder .lv {
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+.choices {
+  border: 0;
+  margin: 0;
+  padding: var(--s-2) var(--s-4);
+  display: grid;
+  gap: var(--s-1);
+}
+
+.choices legend {
+  font-weight: 600;
+  padding: 0;
+  margin-bottom: var(--s-1);
+}
+
+.choice {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  min-height: var(--tap);
+  cursor: pointer;
+}
+
+.choice input {
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  accent-color: var(--woad);
+}
+
+.note {
+  padding: var(--s-2) var(--s-4);
+  color: var(--ink-2);
+}

@@ -1,0 +1,55 @@
+.layer {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+}
+
+.scrim {
+  position: absolute;
+  inset: 0;
+  background: var(--scrim);
+}
+
+.sheet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-height: 85vh;
+  overflow: auto;
+  background: var(--surface);
+  border-radius: var(--r-panel) var(--r-panel) 0 0;
+  box-shadow: 0 -8px 32px var(--shade);
+  outline: none;
+}
+
+@media (min-width: 768px) {
+  .sheet {
+    left: auto;
+    top: 0;
+    width: 400px;
+    max-height: none;
+    border-radius: 0;
+    box-shadow: -8px 0 32px var(--shade);
+  }
+}
+
+.head {
+  position: sticky;
+  top: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-3) var(--s-4);
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+
+.title {
+  font-size: var(--t-h3);
+}
+
+.body {
+  padding: var(--s-2) 0 var(--s-4);
+}

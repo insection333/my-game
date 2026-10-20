@@ -31,10 +31,10 @@ All game logic lives in feature folders on a small kernel. The apps only host fe
 | --- | --- | --- | --- |
 | `@idle-clash/kernel` | The state schema and its versions, time, randomness, `advance`, lanes and the Next queue, events, mending, one-at-a-time requests. Its subpath `@idle-clash/kernel/store` holds the SQLite store and is for the server only | nothing in the workspace | Session 2 (built) |
 | `@idle-clash/content` | Content schemas (Zod), the effect kinds with their handlers and text formatters, levels and mastery, the number formatter, the strings file and the glossary | kernel | Session 3 (built) |
-| `@idle-clash/ui` | Design tokens and about ten components | nothing in the workspace | Session 4 |
+| `@idle-clash/ui` | Design tokens (`tokens.css`, `base.css`), twelve components, and the item art (`icons/`, see `ART.md`) | nothing in the workspace | Session 4 (built) |
 | `@idle-clash/features` | `defineFeature`, the registry, shared skill machinery (`shared/`), and one folder per feature | kernel, content, ui | Session 3 (built); features from session 6 |
 | `@idle-clash/server` | Fastify: feature routes, accounts, the live channel, admin | kernel, content, features | Session 5 |
-| `@idle-clash/web` | The shell: the pages and slots from `IA.md` | content, ui, features | Session 4 |
+| `@idle-clash/web` | The shell: the pages and slots from `IA.md` | kernel (never `/store`), content, ui, features | Session 4 (built) |
 | `@idle-clash/tools` | `pnpm verify`, the simulation, load test, review sheets | anything | Session 1 onward |
 
 Two rules hold on top of the table: **a feature never imports another feature**, and **nothing imports an app**. Features cooperate through shared state read via the kernel, events they announce, and queries ("Used in" asks every feature about an item). Inside `packages/features/src`, a feature may import only `shared/` and `define.ts`, and `shared/` never imports a feature. Verify's manifest step checks every package's dependencies against this table and every import inside the features package.
@@ -110,9 +110,12 @@ export const woodcutting = defineFeature({ id, flag, content, effects, stops, ru
 
 ## 7. The web shell
 
-- React and Vite. The shell owns the pages and their layout; features fill slots; one design-system package draws everything.
-- Built at 320 px first, with container queries. Checked at 320, 390 and 1,440 px.
-- Meaning is never carried by colour alone, and the tour points at slot names, never at layout classes.
+- **React 19 and Vite 8.** `apps/web` owns the pages and their layout; features fill slots; `@idle-clash/ui` draws everything. A page asks every feature for a slot's data (`fills`) and marks where it drew it with `data-slot`, which is what the tour and verify point at.
+- **The layout.** Phone first: header, page, a lanes strip and the menu held at the bottom. From 768 px the menu becomes a glyph rail and the strip moves under the header; from 1,024 px a labelled rail on the left and the lanes panel on the right. Sections arrange themselves with container queries on the main column.
+- **The design system.** Twelve components: Button, IconButton, Panel, Pill, ProgressBar, Tabs, ActionRow, LaneCard, ResponsiveTable, ItemIcon, Sheet, Moment. Every control carries `data-ui`, so verify can confirm each control is drawn one way everywhere. Tokens: cool birch and slate, moss for progress, woad for what you press, and ember for the fire alone; Alegreya for names and headings, Alegreya Sans for everything else, self-hosted.
+- **Until the server (session 5),** the page runs the kernel engine itself (`src/game/store.ts`), so every screen is live. Its clock ticks only while something is moving, so a resting page uses no CPU. `?features=all` switches on every built feature for previews and verify.
+- **Words** come from the strings file through `t()`; numbers through `fmt`. Sheets (the notices tray, settings, the lanes on a phone) have their own addresses (`?panel=`), so they can be linked and checked.
+- **Meaning is never carried by colour alone,** and the tour points at slot names, never at layout classes.
 
 ## 8. Tooling and conventions in the code
 
@@ -133,6 +136,9 @@ The single command that decides whether a change is done. It prints one line per
 | 3 Content | `GAME_DESIGN.md` matches its template and the model; schemas, references, effects, no empty levels, strings complete and used, avoided terms, content matches the design; `GLOSSARY.md` regenerated | Built |
 | 4 Tests | Every package's tests | Built |
 | 5 Simulation | The paper model against every target in the brief | Paper model; the real simulation from session 6 |
-| 6–9 | Screenshots, accessibility, performance budgets, review sheets | Session 4 |
+| 6 Screenshots | Every view at 320, 390 and 1,440 px in Chromium, Firefox and WebKit: no sideways scroll, nothing off screen, taps 24 px or more, every control from the design system and drawn one way, at most six menu entries, no full-width section of one or two lines, no wide gaps, and IA.md's slots visible without scrolling | Built |
+| 7 Accessibility | axe (WCAG 2.2 AA and best practice) on every view at every width, light and dark | Built |
+| 8 Performance budgets | First page under 250 KB compressed; usable within 2 s with 4x CPU and network throttling; under 2% CPU at rest and with a lane at work | Built |
+| 9 Review sheets | Every view beside its IA.md spec, and every icon at 24, 48 and 96 px on both themes, in `.verify/review/` | Built |
 
-A step that is not built yet reports "skip" and names its session. Once the thing it would check exists (any page under `apps/web/src/pages`, any feature folder), an unbuilt step fails instead, so nothing ships unchecked because a check was missing. GitHub Actions runs verify on every push.
+Steps 6 to 9 share one build of the web app and one local server (`tools/verify/web/`). Every view is opened as a newcomer with every built feature switched on; a slot IA.md expects but no built feature fills yet is reported as awaiting its feature, and becomes required the moment a feature fills it. GitHub Actions installs the three browsers and runs verify on every push.

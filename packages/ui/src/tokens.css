@@ -1,0 +1,100 @@
+/* Idle Clash design tokens. Cool birch and slate, moss for progress, woad for what you press, and
+   ember for the fire alone. Light by default; dark follows the system unless the player chooses. */
+
+:root {
+  --bg: #e4e9e3;
+  --surface: #f4f6f1;
+  --surface-2: #eaefe8;
+  --ink: #1b2629;
+  --ink-2: #4b5958;
+  --line: #c5cec7;
+  --line-strong: #a9b5ad;
+  --moss: #2f6b45;
+  --moss-soft: #d6e6d9;
+  --woad: #2c5a8c;
+  --woad-soft: #dbe5f0;
+  --woad-ink: #ffffff;
+  --gold: #8a6a10;
+  --gold-soft: #f0e6c4;
+  --ember: #d4511f;
+  --ember-glow: #f4a13b;
+  --shade: rgb(16 28 32 / 0.18);
+  --scrim: rgb(16 28 32 / 0.45);
+
+  --font-book: 'Alegreya', 'Iowan Old Style', Georgia, serif;
+  --font-ui: 'Alegreya Sans', 'Segoe UI', system-ui, sans-serif;
+
+  /* Type scale (about a major third), in rem from a 16px root. */
+  --t-small: 0.8125rem;
+  --t-body: 0.9375rem;
+  --t-lead: 1.0625rem;
+  --t-h3: 1.25rem;
+  --t-h2: 1.5rem;
+  --t-h1: 1.875rem;
+
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+
+  --r-control: 4px;
+  --r-panel: 6px;
+  --tap: 44px;
+  --gutter: 16px;
+
+  --header-h: 48px;
+  --menu-h: 56px;
+  --rail-w: 200px;
+  --lanes-w: 320px;
+  --content-max: 880px;
+
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: #121b1f;
+    --surface: #1a262b;
+    --surface-2: #213036;
+    --ink: #e4eae5;
+    --ink-2: #a3b0ac;
+    --line: #2f3f45;
+    --line-strong: #44575e;
+    --moss: #7fb68f;
+    --moss-soft: #22382b;
+    --woad: #8ab6e6;
+    --woad-soft: #1f3247;
+    --woad-ink: #0f1a24;
+    --gold: #d8b04a;
+    --gold-soft: #3a3118;
+    --ember: #f06a2e;
+    --ember-glow: #ffb24d;
+    --shade: rgb(0 0 0 / 0.4);
+    --scrim: rgb(0 0 0 / 0.6);
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme='dark'] {
+  --bg: #121b1f;
+  --surface: #1a262b;
+  --surface-2: #213036;
+  --ink: #e4eae5;
+  --ink-2: #a3b0ac;
+  --line: #2f3f45;
+  --line-strong: #44575e;
+  --moss: #7fb68f;
+  --moss-soft: #22382b;
+  --woad: #8ab6e6;
+  --woad-soft: #1f3247;
+  --woad-ink: #0f1a24;
+  --gold: #d8b04a;
+  --gold-soft: #3a3118;
+  --ember: #f06a2e;
+  --ember-glow: #ffb24d;
+  --shade: rgb(0 0 0 / 0.4);
+  --scrim: rgb(0 0 0 / 0.6);
+  color-scheme: dark;
+}

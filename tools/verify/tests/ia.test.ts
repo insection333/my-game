@@ -24,6 +24,7 @@ describe('readPageMap', () => {
       menu: ['Hearth', 'Skills'],
       pages: ['Hearth'],
       slots: ['hearth.today', 'shell.lane'],
+      views: [],
       problems: [],
     });
   });
@@ -45,5 +46,11 @@ describe('readPageMap', () => {
     expect(map.slots).toContain('item.panel');
     expect(map.slots).toContain('hearth.goals');
     expect(map.slots.length).toBeGreaterThan(20);
+    expect(map.views.find((v) => v.path === '/skills/woodcutting')).toEqual({
+      page: 'Skills',
+      path: '/skills/woodcutting',
+      phone: ['skill.header', 'skill.actions'],
+      desktop: ['skill.header', 'skill.actions', 'skill.ladder'],
+    });
   });
 });

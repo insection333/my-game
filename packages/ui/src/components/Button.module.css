@@ -1,0 +1,46 @@
+.button {
+  min-height: var(--tap);
+  min-width: var(--tap);
+  padding: 0 var(--s-4);
+  border-radius: var(--r-control);
+  border: 1px solid transparent;
+  font: 600 var(--t-body) / 1 var(--font-ui);
+  cursor: pointer;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+}
+
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.primary {
+  background: var(--woad);
+  color: var(--woad-ink);
+}
+
+.primary:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.secondary {
+  background: var(--surface);
+  color: var(--woad);
+  border-color: var(--line-strong);
+}
+
+.secondary:hover:not(:disabled) {
+  background: var(--woad-soft);
+}
+
+.quiet {
+  background: transparent;
+  color: var(--woad);
+  padding: 0 var(--s-2);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

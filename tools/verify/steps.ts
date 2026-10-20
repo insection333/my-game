@@ -12,6 +12,10 @@ import { featureFiles, featureFolders, literalStringKeys, sampleStates, workspac
 import { featuresMd, glossaryMd } from './features-md.ts';
 import { readPageMap } from './ia.ts';
 import type { Step, StepResult } from './run.ts';
+import { runAxe, runPerf } from './web/audits.ts';
+import { runReview } from './web/review.ts';
+import { runScreens } from './web/screens.ts';
+import { ensureBuilt, views as webViews } from './web/session.ts';
 
 const pass = (summary: string): StepResult => ({ status: 'pass', summary });
 const fail = (summary: string, detail?: string): StepResult => ({ status: 'fail', summary, detail });
@@ -125,11 +129,47 @@ async function simulation(): Promise<StepResult> {
   return pass(`paper model: ${checks} target checks (the real simulation replaces it in session 6)`);
 }
 
-/** A step not built yet: skips while there are no pages, fails once pages exist without it. */
-const later = (session: number) => (): StepResult =>
-  existsSync(join(ROOT, 'apps/web/src/pages'))
-    ? fail(`pages exist but this step is not built (due in session ${session})`)
-    : { status: 'skip', summary: `no pages yet (session ${session})` };
+// Steps 6 to 9 share one build and one server (web/session.ts); each builds it if needed.
+async function screenshots(): Promise<StepResult> {
+  const err = await ensureBuilt();
+  if (err) return fail('the web app failed to build', err);
+  const loaded = await loadFeatures();
+  if ('error' in loaded) return fail('the features failed to load', loaded.error);
+  const r = await runScreens(loaded.features);
+  const views = webViews().length;
+  if (r.problems.length)
+    return fail(`${r.problems.length} layout problem${r.problems.length > 1 ? 's' : ''}`, r.problems.join('\n'));
+  const awaiting = r.awaiting.size ? `; ${r.awaiting.size} slots await their features` : '';
+  return pass(
+    `${views} views x 3 widths x 3 engines (${r.shots} shots): no overflow, taps 24px+, one design system, specs met${awaiting}`,
+  );
+}
+
+async function accessibility(): Promise<StepResult> {
+  const err = await ensureBuilt();
+  if (err) return fail('the web app failed to build', err);
+  const r = await runAxe();
+  if (r.problems.length)
+    return fail(`${r.problems.length} accessibility problem${r.problems.length > 1 ? 's' : ''}`, r.problems.join('\n'));
+  return pass(`axe found nothing in ${r.checks} checks (every view, 3 widths, light and dark)`);
+}
+
+async function performance(): Promise<StepResult> {
+  const err = await ensureBuilt();
+  if (err) return fail('the web app failed to build', err);
+  const r = await runPerf();
+  const facts = `${Math.round(r.bytes / 1024)} KB, usable in ${r.usableMs} ms on a throttled phone, CPU ${(r.idleBusy * 100).toFixed(1)}% resting and ${(r.runningBusy * 100).toFixed(1)}% working`;
+  if (r.problems.length) return fail(`over budget: ${facts}`, r.problems.join('\n'));
+  return pass(facts);
+}
+
+async function review(): Promise<StepResult> {
+  const err = await ensureBuilt();
+  if (err) return fail('the web app failed to build', err);
+  const r = await runReview();
+  if (r.problems.length) return fail('the review sheets are incomplete', r.problems.join('\n'));
+  return pass(`${r.sheets} page sheets and the icon sheet in .verify/review/`);
+}
 
 export const STEPS: Step[] = [
   { n: 1, name: 'Typecheck and lint', run: typecheckAndLint },
@@ -137,8 +177,8 @@ export const STEPS: Step[] = [
   { n: 3, name: 'Content', run: content },
   { n: 4, name: 'Tests', run: tests },
   { n: 5, name: 'Simulation', run: simulation },
-  { n: 6, name: 'Screenshots', run: later(4) },
-  { n: 7, name: 'Accessibility', run: later(4) },
-  { n: 8, name: 'Performance budgets', run: later(4) },
-  { n: 9, name: 'Review sheets', run: later(4) },
+  { n: 6, name: 'Screenshots', run: screenshots },
+  { n: 7, name: 'Accessibility', run: accessibility },
+  { n: 8, name: 'Performance budgets', run: performance },
+  { n: 9, name: 'Review sheets', run: review },
 ];

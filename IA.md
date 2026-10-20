@@ -74,19 +74,24 @@ Between 768 and 1,023 px the rail collapses to icons (64 px) and the lanes panel
 
 ## 3. Pages
 
-Each page lists its sections in order, what must be visible without scrolling at 390 × 844 and at 1,440 × 900, and what a newcomer sees before anything unlocks. Density rules from the brief apply everywhere: no full-width section holding one or two lines, no scroll when the content would fit, one control drawn one way.
+Each page lists its sections in order, what must be visible without scrolling at 390 × 844 and at 1,440 × 900, and what a newcomer sees before anything unlocks. Verify opens every view as a newcomer, with every built feature switched on, and checks it at 320, 390 and 1,440 px. Density rules from the brief apply everywhere: no full-width section holding one or two lines, no scroll when the content would fit, one control drawn one way.
 
 ### Hearth
 
 | # | Section (slot) | Filled by | Notes |
 | --- | --- | --- | --- |
-| 1 | `hearth.today` | recap, goals | On return: the away recap, best thing first, then "Collect". Otherwise: today's notable moments as a compact timeline |
+| 1 | `hearth.today` | the shell (welcome), recap | On return: the away recap, best thing first, then "Collect". Otherwise: today's notable moments as a compact timeline |
 | 2 | `hearth.goals` | goals | First steps while unfinished (six rows with buttons); afterwards three short goals, the daily goal and the next milestone, each with a progress bar and its reward |
 | 3 | `hearth.lanes` | each lane | Full lane cards with their Next action; on desktop the lanes panel already shows them, so this section is omitted |
 | 4 | `hearth.nextUp` | every skill | The three nearest unlocks across all skills: "Woodcutting 21: Practised hands IV, 3,400 XP away" |
 
-- **Above the fold at 390:** the recap or Today (first 3 rows), the goals ladder's first two rows.
-- **Above the fold at 1,440:** Today, the full goals ladder and Next up side by side (two columns from 720 px of content width).
+- **At 390:** the recap or Today (first 3 rows), then the goals ladder's first two rows. **At 1,440:** Today, the goals ladder and Next up side by side (two columns from 720 px of content width).
+
+**Visible without scrolling** (checked by verify at 390 × 844 and 1,440 × 900; a slot no built feature fills yet is skipped):
+
+| View | 390 × 844 | 1,440 × 900 |
+| --- | --- | --- |
+| / | `hearth.today`, `hearth.goals` | `hearth.today`, `hearth.goals`, `hearth.nextUp` |
 - **Newcomer:** no recap; Today reads "Welcome to the march"; the goals ladder shows First steps with the first button highlighted by the tour.
 
 ### Skills
@@ -102,8 +107,14 @@ The list, then one page per skill (`/skills/woodcutting`).
 | 3 | `skill.ladder` | that skill | The unlock ladder 1–40, the current level marked, past unlocks muted |
 | 4 | `skill.finds` | that skill | The six finds, found or silhouetted |
 
-- **Above the fold at 390:** the header and the first four actions.
-- **Above the fold at 1,440:** the header, every action of the current tier, and the ladder beside them.
+- **At 390:** the header and the first four actions. **At 1,440:** the header, every action of the current tier, and the ladder beside them.
+
+**Visible without scrolling** (checked by verify at 390 × 844 and 1,440 × 900; a slot no built feature fills yet is skipped):
+
+| View | 390 × 844 | 1,440 × 900 |
+| --- | --- | --- |
+| /skills | `skills.list` | `skills.list` |
+| /skills/woodcutting | `skill.header`, `skill.actions` | `skill.header`, `skill.actions`, `skill.ladder` |
 - **Newcomer:** Woodcutting's page shows Pine tree ready, the next three actions with their levels, and the ladder's first ten levels.
 
 ### Combat
@@ -115,8 +126,13 @@ The list, then one page per skill (`/skills/woodcutting`).
 | 3 | `combat.food` | storehouse | Food carried, the vendor's food with prices, Buy |
 | 4 | `combat.triangle` | combat | A small permanent key: Melee beats Archery beats Magic beats Melee |
 
-- **Above the fold at 390:** loadout (one compact row of four gear slots and health) and the first three foes.
-- **Above the fold at 1,440:** loadout and food side by side, every foe, the triangle key.
+- **At 390:** loadout (one compact row of four gear slots and health) and the first three foes. **At 1,440:** loadout and food side by side, every foe, the triangle key.
+
+**Visible without scrolling** (checked by verify at 390 × 844 and 1,440 × 900; a slot no built feature fills yet is skipped):
+
+| View | 390 × 844 | 1,440 × 900 |
+| --- | --- | --- |
+| /combat | `combat.loadout`, `combat.foes` | `combat.loadout`, `combat.foes`, `combat.food`, `combat.triangle` |
 - **Newcomer:** an empty weapon slot with "Forge a sword in Smithing" and a button there; the hollow rat shows "Fair" once a sword is worn.
 
 ### Storehouse
@@ -130,8 +146,14 @@ Tabs: Items · Collection log.
 | 3 | `item.panel` | storehouse, and every feature through queries | Name, icon at 96 px, count, sale price, Sell (one, ten, all but one), Wear for gear; **Comes from** and **Used in**, each answered by asking every registered feature |
 | 4 | `collection.log` | finds | 36 entries by skill, found or silhouetted, with first-find dates and progress per skill |
 
-- **Above the fold at 390:** capacity and four rows of the grid; the item panel opens as a sheet.
-- **Above the fold at 1,440:** capacity, the full grid, and the item panel docked at the right of the content.
+- **At 390:** capacity and four rows of the grid; the item panel opens as a sheet. **At 1,440:** capacity, the full grid, and the item panel docked at the right of the content.
+
+**Visible without scrolling** (checked by verify at 390 × 844 and 1,440 × 900; a slot no built feature fills yet is skipped):
+
+| View | 390 × 844 | 1,440 × 900 |
+| --- | --- | --- |
+| /storehouse | `store.capacity`, `store.items` | `store.capacity`, `store.items` |
+| /storehouse/log | `collection.log` | `collection.log` |
 - **Newcomer:** capacity 0 of 24 and an empty grid reading "Logs and ores you gather land here".
 
 ### Hiscores
@@ -141,17 +163,26 @@ Tabs: Items · Collection log.
 | 1 | `hiscores.online` | server | How many are playing now |
 | 2 | `hiscores.ladder` | hiscores | Tabs for Total and each skill; rank, name, level, XP; your own row pinned |
 
-- **Above the fold at 390:** the online count and the first ten rows with your row pinned at the bottom.
-- **Above the fold at 1,440:** twenty-five rows and the tab list beside them.
+- **At 390:** the online count and the first ten rows with your row pinned at the bottom. **At 1,440:** twenty-five rows and the tab list beside them.
+
+**Visible without scrolling** (checked by verify at 390 × 844 and 1,440 × 900; a slot no built feature fills yet is skipped):
+
+| View | 390 × 844 | 1,440 × 900 |
+| --- | --- | --- |
+| /hiscores | `hiscores.online`, `hiscores.ladder` | `hiscores.online`, `hiscores.ladder` |
 - **Newcomer:** your row at the bottom, and "Your rank appears after your first level".
 
 ### The notices tray (panel)
 
+Opened from the header's bell; its address is `/?panel=tray`.
+
 | # | Section (slot) | Filled by | Notes |
 | --- | --- | --- | --- |
-| 1 | `tray.list` | any feature, through events | Newest first, grouped by day. Each notice says what happened and links to where to act ("Smithing stopped: out of tin ore · Mine tin"). The away recap lands here too, after it is closed |
+| 1 | `tray.list` | the shell, from events | Newest first, grouped by day. Each notice says what happened and links to where to act ("Smithing stopped: out of tin ore · Mine tin"). The away recap lands here too, after it is closed |
 
 ### Settings (account menu)
+
+Opened from the account button; its address is `/?panel=settings`.
 
 | # | Section (slot) | Filled by | Notes |
 | --- | --- | --- | --- |

@@ -1,16 +1,18 @@
-import { buildLadder } from '@idle-clash/content';
+import { allStringKeys, buildLadder } from '@idle-clash/content';
 import { defineFeature, FEATURES, type Feature } from '@idle-clash/features';
 import { describe, expect, it } from 'vitest';
 import { checkContent } from '../checks/content.ts';
 import { checkFeatureImports, checkManifest, checkPackageDeps } from '../checks/manifest.ts';
-import { sampleStates } from '../checks/sources.ts';
+import { literalStringKeys, sampleStates } from '../checks/sources.ts';
 
 const states = sampleStates(['woodcutting']);
 const [woodcutting] = FEATURES;
 const slots = ['skills.list', 'skill.header', 'skill.actions', 'skill.ladder', 'hearth.nextUp'];
 const manifest = (features: Feature[], folders = features.map((f) => f.id)) =>
   checkManifest({ features, slots, folders, states });
-const content = (features: Feature[]) => checkContent({ features, states, literalKeys: new Set() }).problems;
+const literalKeys = literalStringKeys(allStringKeys());
+const content = (features: Feature[], keys = literalKeys) =>
+  checkContent({ features, states, literalKeys: keys }).problems;
 
 describe('the manifest check', () => {
   it('passes the real registry', () => {
@@ -116,7 +118,7 @@ describe('the content check', () => {
   });
 
   it('finds strings nothing uses', () => {
-    const problems = content([]);
+    const problems = content([], new Set());
     expect(problems.at(-1)).toMatch(/^Strings nothing uses \(remove them, or use them\): .*item\.pine-logs/);
   });
 });

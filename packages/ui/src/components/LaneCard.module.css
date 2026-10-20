@@ -1,0 +1,76 @@
+.card {
+  display: grid;
+  gap: var(--s-2);
+  padding: var(--s-3) var(--s-4);
+  border-top: 1px solid var(--line);
+}
+
+.card:first-child {
+  border-top: 0;
+}
+
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--ink-2);
+  font-size: var(--t-small);
+  font-weight: 600;
+}
+
+.doing {
+  font: 500 var(--t-lead) / 1.25 var(--font-book);
+}
+
+.card[data-idle] .doing {
+  color: var(--ink-2);
+  font-family: var(--font-ui);
+  font-size: var(--t-body);
+}
+
+.note {
+  color: var(--ink-2);
+  font-size: var(--t-small);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
+.chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-height: 36px;
+  min-width: 0;
+  padding: 0 var(--s-3);
+  border-radius: var(--r-control);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  font: 600 var(--t-small) / 1 var(--font-ui);
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.chip[data-idle] {
+  color: var(--ink-2);
+  border-style: dashed;
+}
+
+.chipText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chipBar {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  background: var(--moss);
+}

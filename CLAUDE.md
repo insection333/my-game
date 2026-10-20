@@ -29,7 +29,7 @@ To change the game design: edit the model in `design/model/` or the template, ru
 - One changelog line per change in `CHANGELOG.md`.
 - A reported problem is reproduced, and its fix confirmed, at the reporter's screen size doing what they did.
 - Pages are compact and held to their spec in `IA.md`: nothing full-width for a line or two, nothing a newcomer needs hidden. A changed page is seen on the review sheet at all three widths before it ships.
-- Art is held to the reference set, never "good enough": shaded forms, consistent light from the top left, readable at 24 px, no flat placeholders. Ask the owner only when a new family of art begins.
+- Art follows `ART.md` and is held to the reference set, never "good enough": shaded forms, consistent light from the top left, readable at 24 px, no flat placeholders. Ask the owner only when a new family of art begins.
 - Every number on screen comes from data through the shared formatter. Every player-facing word lives in the strings file, and new terms go into `GLOSSARY.md`.
 - A feature never imports another feature; it reads shared state through the kernel and announces what happened as events.
 - Files stay under 300 lines (lint enforces it).
@@ -54,7 +54,8 @@ To change the game design: edit the model in `design/model/` or the template, ru
 
 - Node 22.18 or newer (`.nvmrc` pins 22.22.0) runs TypeScript directly; pnpm 10.28 (`packageManager` in `package.json`).
 - `better-sqlite3` loads its bundled prebuilt binary; its install-time rebuild is switched off in `pnpm-workspace.yaml` (it would download Node headers, which this workspace cannot reach).
-- Playwright browsers for steps 6 and 7 (from session 4) download from `cdn.playwright.dev` and `playwright.download.prss.microsoft.com`; the owner has allowed both.
+- Browsers for steps 6 to 9: Firefox and WebKit are installed in `/opt/pw-browsers` (downloaded from `cdn.playwright.dev`, which the owner allowed). Playwright's own Chromium is hosted on Google storage, which this workspace cannot reach, so verify falls back to the preinstalled Chromium there. GitHub Actions installs all three itself.
+- See the pages yourself: `pnpm --filter @idle-clash/web build`, then `node -e "import('./tools/verify/web/serve.ts').then(m => m.serve(process.cwd() + '/apps/web/dist', 4173))"` and open `http://127.0.0.1:4173/?features=all`.
 - The domain is idleclash.com; there is no server yet (session 10). Transactional email stays off until the owner says otherwise.
 
 ## Progress
@@ -65,6 +66,7 @@ To change the game design: edit the model in `design/model/` or the template, ru
 | 1 Workspace and verify | Done: seven packages; `pnpm verify` green locally and on GitHub Actions (steps 6–9 arrive in session 4) |
 | 2 The kernel | Done: `advance` composes (property-tested), saves round-trip and mend, requests never interleave and act once |
 | 3 The feature framework | Done: `defineFeature`, the manifest and content checks, effects with formatters, the strings file; Woodcutting's content and rules behind its flag |
-| 4 The shell and the design system | Next |
+| 4 The shell and the design system | Built: pages, twelve components, steps 6 to 9, `ART.md` and twelve reference icons. Waiting on the owner's approval of the reference icons |
+| 5 The server shell | Next, once the icons are approved |
 
-Outstanding: nothing beyond the next session.
+Outstanding: the owner approves (or asks for changes to) the twelve reference icons; the review sheet is in `.verify/review/` after `pnpm verify`.

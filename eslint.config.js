@@ -2,6 +2,7 @@
 import js from '@eslint/js';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
+import reactHooks from 'eslint-plugin-react-hooks';
 
 export default tseslint.config(
   { ignores: ['**/node_modules/**', '**/dist/**', '**/*.js', '!eslint.config.js'] },
@@ -19,6 +20,12 @@ export default tseslint.config(
       '@typescript-eslint/consistent-type-imports': 'error',
       eqeqeq: ['error', 'always'],
     },
+  },
+  {
+    files: ['**/*.tsx'],
+    plugins: { 'react-hooks': reactHooks },
+    languageOptions: { globals: globals.browser },
+    rules: { ...reactHooks.configs.recommended.rules },
   },
   {
     files: ['eslint.config.js'],

@@ -32,6 +32,11 @@ export const fmt = {
     const d = Math.floor(h / 24);
     return h % 24 ? `${d} d ${h % 24} h` : `${d} d`;
   },
+  /** milliseconds → "4:07": a countdown */
+  clock: (ms: number): string => {
+    const s = Math.max(0, Math.ceil(ms / 1000));
+    return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+  },
   /** 4 → "IV", up to 39 */
   roman: (n: number): string => {
     if (!Number.isInteger(n) || n < 1 || n > 39) throw new Error(`roman: ${n} is out of range`);

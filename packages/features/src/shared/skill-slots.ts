@@ -13,6 +13,37 @@ export interface SkillAction {
   gives: { item: string; count: number }[];
 }
 
+/** What the skill slots give the shell, so the page can type what it draws. */
+export interface SkillSummary {
+  skill: string;
+  name: string;
+  level: string;
+  progress: number;
+  toNext: string;
+  nextUnlock: string | null;
+}
+export interface SkillActionRow {
+  action: { feature: string; id: string };
+  name: string;
+  locked: boolean;
+  opensAt: string | null;
+  time: string;
+  xpPerHour: string;
+  gives: string;
+  mastery: string;
+  masteryProgress: number;
+}
+export interface LadderRow {
+  level: string;
+  reached: boolean;
+  unlocks: string[];
+}
+export interface NextUpRow {
+  skill: string;
+  text: string;
+  away: string;
+}
+
 export interface SkillDef {
   feature: string;
   skill: string;
