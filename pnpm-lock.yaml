@@ -133,12 +133,18 @@ importers:
       '@vitejs/plugin-react':
         specifier: 6.1.2
         version: 6.1.2(vite@8.3.2(@types/node@22.20.5)(esbuild@0.28.2)(tsx@4.23.15))
+      fast-check:
+        specifier: 4.10.2
+        version: 4.10.2
       vite:
         specifier: 8.3.2
         version: 8.3.2(@types/node@22.20.5)(esbuild@0.28.2)(tsx@4.23.15)
 
   packages/content:
     dependencies:
+      '@idle-clash/kernel':
+        specifier: workspace:*
+        version: link:../kernel
       zod:
         specifier: 4.6.5
         version: 4.6.5
@@ -163,6 +169,10 @@ importers:
       zod:
         specifier: 4.6.5
         version: 4.6.5
+    devDependencies:
+      fast-check:
+        specifier: 4.10.2
+        version: 4.10.2
 
   packages/kernel:
     dependencies:

@@ -1,12 +1,14 @@
-/* The shell's layout. Phone first: header on top, the page, then the lanes strip and the menu held
-   at the bottom. From 768 px the menu becomes a rail of glyphs; from 1,024 px a labelled rail on the
-   left and the lanes panel on the right. */
+/* The shell's layout: a fixed frame the height of the screen (100dvh), like an app. Only the page
+   scrolls, inside its own area, so it never runs under the bars. Phone first: header on top, the
+   page, then the lanes strip and the menu. From 768 px the menu becomes a rail of glyphs; from
+   1,024 px a labelled rail on the left and the lanes panel on the right, both full height. */
 
 .app {
-  min-height: 100dvh;
+  height: 100dvh;
+  overflow: hidden;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: var(--header-h) 1fr auto auto;
+  grid-template-rows: var(--header-h) minmax(0, 1fr) auto auto;
   grid-template-areas: 'header' 'main' 'strip' 'menu';
 }
 
@@ -26,16 +28,13 @@
 
 .header {
   grid-area: header;
-  position: sticky;
-  top: 0;
   z-index: 10;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--s-2);
   padding: 0 var(--s-1) 0 var(--gutter);
-  background: color-mix(in srgb, var(--bg) 92%, transparent);
-  backdrop-filter: blur(6px);
+  background: var(--bg);
   border-bottom: 1px solid var(--line);
 }
 
@@ -119,12 +118,12 @@
 
 .menu {
   grid-area: menu;
-  position: sticky;
-  bottom: 0;
   z-index: 10;
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  height: var(--menu-h);
+  /* Clears the phone's home indicator (with viewport-fit=cover in index.html). */
+  height: calc(var(--menu-h) + env(safe-area-inset-bottom, 0px));
+  padding-bottom: env(safe-area-inset-bottom, 0px);
   background: var(--surface);
   border-top: 1px solid var(--line);
 }
@@ -155,10 +154,7 @@
 
 .stripArea {
   grid-area: strip;
-  position: sticky;
-  bottom: var(--menu-h);
-  z-index: 9;
-  background: color-mix(in srgb, var(--bg) 94%, transparent);
+  background: var(--bg);
   border-top: 1px solid var(--line);
 }
 
@@ -173,13 +169,16 @@
 .main {
   grid-area: main;
   min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   outline: none;
 }
 
 .content {
   max-width: var(--content-max);
   margin: 0 auto;
-  padding: var(--s-4) var(--gutter) var(--s-5);
+  padding: var(--s-3) var(--gutter) var(--s-4);
   container: main / inline-size;
 }
 
@@ -194,25 +193,40 @@
 
 .moments {
   position: fixed;
-  left: 50%;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
   bottom: calc(var(--menu-h) + 72px);
-  transform: translateX(-50%);
   z-index: 15;
   width: min(420px, calc(100vw - 32px));
   pointer-events: none;
+  display: grid;
+  gap: var(--s-2);
+}
+
+/* A big moment sits in the middle of the screen; its Close button can be pressed. */
+.centreMoment {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: var(--gutter);
+}
+
+.centreMoment > * {
+  width: min(360px, 100%);
+  pointer-events: auto;
 }
 
 @media (min-width: 768px) {
   .app {
     grid-template-columns: 64px minmax(0, 1fr);
-    grid-template-rows: var(--header-h) auto 1fr;
+    grid-template-rows: var(--header-h) auto minmax(0, 1fr);
     grid-template-areas: 'menu header' 'menu strip' 'menu main';
   }
 
   .menu {
-    position: sticky;
-    top: 0;
-    height: 100dvh;
+    height: auto;
     grid-template-columns: 1fr;
     grid-auto-rows: 64px;
     align-content: start;
@@ -226,15 +240,12 @@
   }
 
   .stripArea {
-    position: sticky;
-    top: var(--header-h);
-    bottom: auto;
     border-top: 0;
     border-bottom: 1px solid var(--line);
   }
 
   .content {
-    padding: var(--s-5) var(--s-5) var(--s-6);
+    padding: var(--s-4) var(--s-5) var(--s-5);
   }
 
   .moments {
@@ -245,7 +256,7 @@
 @media (min-width: 1024px) {
   .app {
     grid-template-columns: var(--rail-w) minmax(0, 1fr) var(--lanes-w);
-    grid-template-rows: var(--header-h) 1fr;
+    grid-template-rows: var(--header-h) minmax(0, 1fr);
     grid-template-areas: 'menu header header' 'menu main lanes';
   }
 
@@ -279,11 +290,8 @@
   .lanesPanel {
     grid-area: lanes;
     display: block;
-    position: sticky;
-    top: var(--header-h);
-    align-self: start;
-    max-height: calc(100dvh - var(--header-h));
-    overflow: auto;
+    min-height: 0;
+    overflow-y: auto;
     border-left: 1px solid var(--line);
     background: var(--surface);
   }

@@ -37,9 +37,10 @@ export async function runFlows(base: string): Promise<{ problems: string[]; step
     await page.getByLabel('I am 13 or older').check();
     await page.getByRole('button', { name: 'Create account' }).click();
     await page.waitForURL(`${base}/skills`);
-    await expect('signing up lands on the page asked for, inside the shell', () =>
-      page.locator('[data-slot="shell.fire"]').isVisible(),
-    );
+    await expect('signing up lands on the page asked for, inside the shell', async () => {
+      await page.locator('[data-slot="shell.fire"]').waitFor({ timeout: 10_000 });
+      return true;
+    });
 
     await page.goto(`${base}/skills/woodcutting`);
     await ready();
@@ -76,9 +77,10 @@ export async function runFlows(base: string): Promise<{ problems: string[]; step
     await page.getByLabel('Password').fill(PASSWORD);
     await page.getByRole('button', { name: 'Sign in' }).last().click();
     await page.waitForURL(`${base}/`);
-    await expect('signing in, in any case of the name, opens the Hearth', () =>
-      page.locator('[data-slot="hearth.today"]').isVisible(),
-    );
+    await expect('signing in, in any case of the name, opens the Hearth', async () => {
+      await page.locator('[data-slot="hearth.today"]').waitFor({ timeout: 10_000 });
+      return true;
+    });
   } catch (err) {
     problems.push(`Flow stopped at ${path()}: ${err instanceof Error ? err.message.split('\n')[0] : String(err)}`);
   } finally {

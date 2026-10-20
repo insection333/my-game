@@ -1,6 +1,6 @@
 // Step 9: the review sheets. Every view at its three widths beside its page's spec from IA.md, and
 // every icon at 24, 48 and 96 px on both themes. Written to .verify/review/ for a person to read;
-// the step fails if a view has no screenshot or the icon sheet cannot be drawn.
+// the step fails if a view has no screenshot, the icon sheet cannot be drawn, or an item has no icon.
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { ROOT } from '../exec.ts';
@@ -19,7 +19,8 @@ function specOf(page: string): string {
   return md.slice(start, stop);
 }
 
-export async function runReview(): Promise<{ problems: string[]; sheets: number }> {
+/** `items`: every item a built feature defines; each must be drawn, so no placeholder reaches a player. */
+export async function runReview(items: string[]): Promise<{ problems: string[]; sheets: number }> {
   const dir = join(OUT, 'review');
   mkdirSync(dir, { recursive: true });
   const problems: string[] = [];
@@ -40,8 +41,12 @@ export async function runReview(): Promise<{ problems: string[]; sheets: number 
   try {
     await page.goto(`${url}/review.html`);
     await page.waitForFunction(() => document.documentElement.dataset.ready === 'true', undefined, { timeout: 15_000 });
-    const icons = await page.locator('[data-ui="ItemIcon"]').count();
-    if (icons === 0) problems.push('The icon sheet drew no icons');
+    const drawn = new Set(
+      await page.locator('[data-ui="ItemIcon"]').evaluateAll((els) => els.map((e) => e.getAttribute('data-icon'))),
+    );
+    if (drawn.size === 0) problems.push('The icon sheet drew no icons');
+    for (const item of items)
+      if (!drawn.has(item)) problems.push(`Item "${item}" has no icon (packages/ui/src/icons, see ART.md)`);
     await page.screenshot({ path: join(dir, 'icons.png'), fullPage: true });
   } catch (err) {
     problems.push(`The icon sheet failed: ${err instanceof Error ? err.message.split('\n')[0] : String(err)}`);

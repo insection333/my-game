@@ -1,6 +1,7 @@
 // The content check: schemas (checked as features load), references, every effect kind handled and
 // formatted, no empty levels, every word in the strings file and none left unused, no avoided terms.
 import {
+  RARITIES,
   allStringKeys,
   avoidedTerms,
   EFFECT_KINDS,
@@ -79,6 +80,17 @@ export function checkContent({ features, states, literalKeys }: ContentInput): {
     const sk = f.content.skill;
     if (sk) {
       attempt(`${where}: skill name`, () => t(`skill.${sk.id}`));
+      const finds = f.content.finds ?? [];
+      for (const rarity of RARITIES) {
+        const pair = finds.filter((x) => x.rarity === rarity);
+        if (pair.length !== 2 || pair[0].greater || !pair[1].greater)
+          problems.push(`${where}: needs a lesser then a greater ${rarity} find (it has ${pair.length})`);
+        attempt(`Rarity "${rarity}"`, () => t(`rarity.${rarity}`));
+      }
+      for (const x of finds) {
+        const item = (f.content.items ?? []).find((i) => i.id === x.item);
+        if (item?.kind !== 'find') problems.push(`${where}: find "${x.item}" is not one of its items of kind "find"`);
+      }
       const empty = emptyLevels(sk.ladder);
       if (empty.length) problems.push(`${where}: levels with nothing to unlock: ${empty.join(', ')}`);
       sk.ladder.forEach((unlocks, i) => {

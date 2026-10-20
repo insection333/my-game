@@ -1,8 +1,9 @@
 // The Hearth: what is happening, what happened while you were away, and what to aim for next.
 import { t } from '@idle-clash/content';
-import type { NextUpRow } from '@idle-clash/features';
-import { Button, Panel } from '@idle-clash/ui';
+import type { GoalRow, GoalsView, NextUpRow } from '@idle-clash/features';
+import { ActionRow, Button, Panel, Pill, ProgressBar } from '@idle-clash/ui';
 import { useGame } from '../game/hooks.ts';
+import { game } from '../game/store.ts';
 import { navigate } from '../router.ts';
 import { LaneList, laneViews } from '../shell/Lanes.tsx';
 import { fills, Slot } from '../slots.tsx';
@@ -11,7 +12,7 @@ import s from './pages.module.css';
 export function Hearth() {
   const { state, now, features } = useGame();
   const next = fills<NextUpRow>(features, 'hearth.nextUp', state, now);
-  const firstSkill = features.find((f) => f.content.skill);
+  const [goals] = fills<GoalsView>(features, 'hearth.goals', state, now);
   return (
     <>
       <h1 className="visually-hidden">{t('hearth.title')}</h1>
@@ -22,14 +23,18 @@ export function Hearth() {
               <div className={s.welcome}>
                 <h2>{t('hearth.welcome.title')}</h2>
                 <p>{t('hearth.welcome.body')}</p>
-                {firstSkill && (
-                  <Button variant="primary" onClick={() => navigate(`/skills/${firstSkill.content.skill!.id}`)}>
-                    {t('hearth.welcome.start')}
-                  </Button>
-                )}
               </div>
             </Panel>
           </Slot>
+          {goals && (
+            <Panel title={goals.data.title} aside={goals.data.progress} flush className={s.below}>
+              <Slot id="hearth.goals">
+                {goals.data.rows.map((row) => (
+                  <Goal key={row.id} row={row} />
+                ))}
+              </Slot>
+            </Panel>
+          )}
         </section>
         {next.length > 0 && (
           <section data-section>
@@ -63,5 +68,33 @@ export function Hearth() {
         </Slot>
       </section>
     </>
+  );
+}
+
+function Goal({ row }: { row: GoalRow }) {
+  const b = row.button;
+  return (
+    <ActionRow
+      name={row.name}
+      facts={[row.reward]}
+      status={
+        row.state === 'claimed' ? (
+          <Pill tone="moss">{row.note}</Pill>
+        ) : row.state === 'working' ? (
+          <Pill tone="woad">{row.note}</Pill>
+        ) : undefined
+      }
+      progress={row.state !== 'claimed' && <ProgressBar value={row.progress} label={row.name} />}
+      actions={
+        b && (
+          <Button
+            variant="primary"
+            onClick={() => ('claim' in b ? game.act('goals', 'claim', { goal: b.claim }) : game.command(b.command))}
+          >
+            {b.label}
+          </Button>
+        )
+      }
+    />
   );
 }

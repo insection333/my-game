@@ -2,7 +2,7 @@ import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { createEngine, HOUR, newState, SaveConflict, seeded, type SaveDoc } from '../src/index.ts';
+import { createEngine, HOUR, newState, SAVE_VERSION, SaveConflict, seeded, type SaveDoc } from '../src/index.ts';
 import { openStore, saves, type SqliteStore } from '../src/store/index.ts';
 import { eq } from 'drizzle-orm';
 import { A, registry, T0 } from './fixtures.ts';
@@ -18,7 +18,7 @@ afterEach(() => {
   rmSync(dir, { recursive: true, force: true });
 });
 
-const sample = () => readFileSync(new URL('./saves/v1.json', import.meta.url), 'utf8');
+const sample = () => readFileSync(new URL('./saves/v2.json', import.meta.url), 'utf8');
 
 describe('the SQLite store', () => {
   it('applies its migrations to a new file, in write-ahead mode', () => {
@@ -37,7 +37,7 @@ describe('the SQLite store', () => {
     state = engine.advance(state, T0 + HOUR, rng).state;
     store.create('p1', state, T0);
     const read = store.read('p1', T0 + HOUR);
-    expect(read).toEqual({ doc: { version: 1, state, requests: [] }, rev: 0, repairs: [] });
+    expect(read).toEqual({ doc: { version: SAVE_VERSION, state, requests: [] }, rev: 0, repairs: [] });
   });
 
   it('refuses a write based on a stale read', () => {

@@ -13,6 +13,8 @@ export function newState(seed: number, now: number): State {
     items: {},
     skills: {},
     mastery: {},
+    luck: { misses: 0, lastMoment: now },
+    found: {},
     features: {},
   };
 }
@@ -43,10 +45,19 @@ export function take(s: State, item: string, n: number): boolean {
 
 export const xpOf = (s: State, skill: string): number => (Object.hasOwn(s.skills, skill) ? s.skills[skill].xp : 0);
 
+/** Adds XP, which may have a fraction (an action's XP with a bonus); thousandths carry over. */
 export function addXp(s: State, skill: string, xp: number): void {
   assertId('skill', skill);
-  if (!Number.isInteger(xp) || xp < 0) throw new Error(`addXp: ${xp} is not a whole, non-negative amount`);
-  s.skills[skill] = { xp: xpOf(s, skill) + xp };
+  if (!Number.isFinite(xp) || xp < 0) throw new Error(`addXp: ${xp} is not a non-negative amount`);
+  const had = Object.hasOwn(s.skills, skill) ? s.skills[skill] : { xp: 0 };
+  const total = had.xp * 1000 + (had.part ?? 0) + Math.round(xp * 1000);
+  const part = total % 1000;
+  s.skills[skill] = part ? { xp: (total - part) / 1000, part } : { xp: total / 1000 };
 }
 
 export const fireBurning = (s: State, at: number): boolean => at < s.fireUntil;
+
+/** A notable moment happened: the luck guarantee counts from here. */
+export function noteMoment(s: State, at: number): void {
+  s.luck.lastMoment = Math.min(s.clock, Math.max(s.luck.lastMoment, at));
+}

@@ -36,7 +36,9 @@ export async function buildApp(
       ? { redact: ['req.headers.cookie', 'req.headers.authorization', 'res.headers["set-cookie"]'] }
       : false,
     bodyLimit: 16 * 1024,
-    trustProxy: true,
+    // Only a proxy on this machine (Caddy, from session 10) may say who the client is; anyone else's
+    // X-Forwarded-For is ignored, so it cannot be used to slip past the per-address limits.
+    trustProxy: 'loopback',
   });
   const features = opts.features ?? FEATURES;
   const { db, store, close: closeDb } = openDb(config.dbPath);

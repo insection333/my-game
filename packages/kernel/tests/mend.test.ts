@@ -4,7 +4,10 @@ import { describe, expect, it } from 'vitest';
 import { createEngine, HOUR, load, mend, SaveDoc, seeded, type SaveDoc as Doc } from '../src/index.ts';
 import { registry, T0 } from './fixtures.ts';
 
-const sample = (): Doc => JSON.parse(readFileSync(new URL('./saves/v1.json', import.meta.url), 'utf8')) as Doc;
+const read = (file: string): Doc =>
+  JSON.parse(readFileSync(new URL(`./saves/${file}`, import.meta.url), 'utf8')) as Doc;
+/** The sample save of the current version. */
+const sample = (): Doc => read('v2.json');
 const NOW = T0 + 4 * HOUR;
 /** The sample save, damaged by a change. */
 function damaged(change: (doc: Doc) => void): unknown {
@@ -98,9 +101,32 @@ describe('mend', () => {
 });
 
 describe('load', () => {
-  it('reads the version 1 sample save without repairs', () => {
-    const loaded = load(sample(), NOW);
-    expect(loaded).toMatchObject({ from: 1, repairs: [] });
+  it('reads every sample save without repairs', () => {
+    expect(load(read('v1.json'), NOW)).toMatchObject({ from: 1, repairs: [] });
+    expect(load(read('v2.json'), NOW)).toMatchObject({ from: 2, repairs: [] });
+  });
+
+  it('upgrades a version 1 save: luck starts afresh and nothing is in the collection log yet', () => {
+    const { doc } = load(read('v1.json'), NOW);
+    expect(doc.version).toBe(2);
+    expect(doc.state.luck).toEqual({ misses: 0, lastMoment: doc.state.clock });
+    expect(doc.state.found).toEqual({});
+    expect({ ...doc.state, luck: undefined, found: undefined }).toEqual({
+      ...read('v1.json').state,
+      luck: undefined,
+      found: undefined,
+    });
+  });
+
+  it('resets damaged luck and drops a damaged first-find date, saying so', () => {
+    const raw = damaged((d) => {
+      d.state.luck.lastMoment = d.state.clock + 1;
+      d.state.found['amber-nugget'] = -3;
+    });
+    const { doc, repairs } = mend(raw, NOW);
+    expect(doc.state.luck).toEqual({ misses: 0, lastMoment: doc.state.clock });
+    expect(doc.state.found).toEqual({ 'birds-nest': sample().state.found['birds-nest'] });
+    expect(repairs).toEqual(['Luck was damaged and was reset', 'First finds: dropped "amber-nugget" (-3)']);
   });
 
   it('refuses a save from a newer version rather than guessing', () => {

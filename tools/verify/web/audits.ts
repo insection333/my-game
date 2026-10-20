@@ -52,7 +52,9 @@ export async function runPerf(): Promise<PerfResult> {
   const problems: string[] = [];
 
   // Page weight: every byte the first page needs, as it crossed the network. The first page is what a
-  // visitor who is not signed in sees: the welcome page.
+  // visitor who is not signed in sees: the welcome page. A mid-range phone on a middling connection:
+  // four times slower CPU, 1.6 Mb/s down, 150 ms away, nothing cached. The browser's own first start
+  // is not the page's cost, so one load warms it up; the time is the median of the next three.
   const ctx = await b.newContext({ viewport: { width: 390, height: 844 } });
   const page = await ctx.newPage();
   const cdp = await ctx.newCDPSession(page);
@@ -60,7 +62,6 @@ export async function runPerf(): Promise<PerfResult> {
   cdp.on('Network.loadingFinished', (e) => (received += e.encodedDataLength));
   await cdp.send('Network.enable');
   await cdp.send('Network.setCacheDisabled', { cacheDisabled: true });
-  // A mid-range phone on a middling connection: four times slower CPU, 1.6 Mb/s down, 150 ms away.
   await cdp.send('Emulation.setCPUThrottlingRate', { rate: 4 });
   await cdp.send('Network.emulateNetworkConditions', {
     offline: false,
@@ -68,11 +69,19 @@ export async function runPerf(): Promise<PerfResult> {
     downloadThroughput: 200_000,
     uploadThroughput: 94_000,
   });
-  const start = Date.now();
-  await page.goto(served.url + '/');
-  await page.waitForFunction(() => document.documentElement.dataset.ready === 'true', undefined, { timeout: 30_000 });
-  const usableMs = Date.now() - start;
-  const bytes = received;
+  const loads: { ms: number; bytes: number }[] = [];
+  for (let i = 0; i < 4; i++) {
+    received = 0;
+    const start = Date.now();
+    await page.goto(served.url + '/');
+    await page.waitForFunction(() => document.documentElement.dataset.ready === 'true', undefined, {
+      timeout: 30_000,
+    });
+    loads.push({ ms: Date.now() - start, bytes: received });
+  }
+  const timed = loads.slice(1).sort((a, b) => a.ms - b.ms);
+  const usableMs = timed[1].ms;
+  const bytes = Math.max(...loads.map((l) => l.bytes));
   await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 });
   await cdp.send('Network.emulateNetworkConditions', {
     offline: false,

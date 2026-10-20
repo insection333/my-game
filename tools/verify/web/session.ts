@@ -16,6 +16,7 @@ import {
 } from 'playwright';
 import { buildApp } from '../../../apps/server/src/app.ts';
 import { flagsFrom } from '../../../apps/server/src/config.ts';
+import type { Ctx } from '../../../apps/server/src/context.ts';
 import { exec, ROOT } from '../exec.ts';
 import { readPageMap, type ViewSpec } from '../ia.ts';
 
@@ -64,6 +65,8 @@ export interface Served {
   url: string;
   /** The session cookie of a newcomer signed up for this run. */
   cookie: { name: string; value: string };
+  /** The server's insides, for flows that set up a save the way the admin page will. */
+  ctx: Ctx;
   close: () => Promise<void>;
 }
 
@@ -76,11 +79,13 @@ const freePort = () =>
     });
   });
 
-/** Signs a new player up and returns their session cookie. */
+let signups = 0;
+/** Signs a new player up and returns their session cookie. Each comes as if from its own address
+ *  (through the loopback proxy the server trusts), so the run stays clear of the sign-up limit. */
 export async function newcomer(url: string, name: string): Promise<{ name: string; value: string }> {
   const res = await fetch(`${url}/api/auth/sign-up`, {
     method: 'POST',
-    headers: { 'content-type': 'application/json', origin: url },
+    headers: { 'content-type': 'application/json', origin: url, 'x-forwarded-for': `10.77.0.${++signups}` },
     body: JSON.stringify({ name, password: 'verify-newcomer-pass', ageConfirmed: true }),
   });
   if (res.status !== 201) throw new Error(`Signing up a newcomer failed: ${res.status} ${await res.text()}`);
@@ -93,7 +98,7 @@ async function start(): Promise<Served> {
   const port = await freePort();
   const url = `http://127.0.0.1:${port}`;
   const dir = mkdtempSync(join(tmpdir(), 'idle-clash-verify-'));
-  const { app, close } = await buildApp({
+  const { app, ctx, close } = await buildApp({
     port,
     host: '127.0.0.1',
     dbPath: join(dir, 'verify.db'),
@@ -110,6 +115,7 @@ async function start(): Promise<Served> {
   return {
     url,
     cookie,
+    ctx,
     close: async () => {
       await close();
       rmSync(dir, { recursive: true, force: true });
@@ -129,7 +135,7 @@ export async function openPage(engine: Engine, path: string, options: BrowserCon
   const ctx = await (await browser(engine)).newContext(options);
   if (!signedOut(path)) await ctx.addCookies([{ ...served.cookie, url: served.url }]);
   const page = await ctx.newPage();
-  page.on('close', () => void ctx.close());
+  page.on('close', () => void ctx.close().catch(() => undefined));
   return page;
 }
 

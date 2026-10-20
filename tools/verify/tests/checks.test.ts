@@ -7,7 +7,16 @@ import { literalStringKeys, sampleStates } from '../checks/sources.ts';
 
 const states = sampleStates(['woodcutting']);
 const [woodcutting] = FEATURES;
-const slots = ['skills.list', 'skill.header', 'skill.actions', 'skill.ladder', 'hearth.nextUp'];
+const slots = [
+  'skills.list',
+  'skill.header',
+  'skill.actions',
+  'skill.ladder',
+  'skill.finds',
+  'collection.log',
+  'hearth.nextUp',
+  'hearth.goals',
+];
 const manifest = (features: Feature[], folders = features.map((f) => f.id)) =>
   checkManifest({ features, slots, folders, states });
 const literalKeys = literalStringKeys(allStringKeys());
@@ -83,10 +92,17 @@ describe('the content check', () => {
         items: woodcutting.content.items,
         actions: [{ id: 'pine-tree', level: 1, gives: [{ item: 'pine-logs', count: 1 }] }],
         skill: { id: 'woodcutting', ladder: buildLadder([{ id: 'pine-tree', level: 1 }], []) },
+        finds: woodcutting.content.finds,
       },
       effects: [],
       ...over,
     });
+
+  it('finds a skill without its lesser and greater find at each rarity', () => {
+    const finds = (woodcutting.content.finds ?? []).filter((f) => f.item !== 'heartwood-knot');
+    const problems = content([tiny({ content: { ...tiny().content, finds } })]);
+    expect(problems).toContain('Feature "woodcutting": needs a lesser then a greater rare find (it has 1)');
+  });
 
   it('finds every empty level', () => {
     const problems = content([tiny()]);

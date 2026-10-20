@@ -1,7 +1,7 @@
 // Reading the workspace for the checks: feature folders and their files, package dependencies,
 // sample states to fill slots from, and string keys that appear literally in source code.
 import { MAX_LEVEL, XP_TABLE } from '@idle-clash/content';
-import { newState, SaveDoc } from '@idle-clash/kernel';
+import { load, newState } from '@idle-clash/kernel';
 import type { SlotContext } from '@idle-clash/features';
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
@@ -46,15 +46,21 @@ export function workspacePackages(): { name: string; deps: string[] }[] {
     });
 }
 
-/** A new player, the version 1 sample save, and a player at the top of every skill: slots must fill from all. */
+/** A new player, every sample save (upgraded), and a player at the top of every skill: slots must fill from all. */
 export function sampleStates(skills: string[] = []): SlotContext[] {
   const now = Date.UTC(2026, 9, 20, 12);
   const maxed = newState(2, now);
   for (const s of skills) maxed.skills[s] = { xp: XP_TABLE[MAX_LEVEL] };
-  const sample = SaveDoc.parse(JSON.parse(readFileSync(join(ROOT, 'packages/kernel/tests/saves/v1.json'), 'utf8')));
+  const dir = join(ROOT, 'packages/kernel/tests/saves');
+  const samples = readdirSync(dir)
+    .filter((f) => /^v\d+\.json$/.test(f))
+    .map((f) => {
+      const raw = JSON.parse(readFileSync(join(dir, f), 'utf8')) as { state: { clock: number } };
+      return load(raw, raw.state.clock).doc.state;
+    });
   return [
     { state: newState(1, now), now },
-    { state: sample.state, now: sample.state.clock },
+    ...samples.map((state) => ({ state, now: state.clock })),
     { state: maxed, now },
   ];
 }

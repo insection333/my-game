@@ -12,6 +12,13 @@ const run = (s: State, at: number, cmd: Command) => {
 };
 
 describe('advance', () => {
+  it("opens the fire's second Gathering lane to a second skill, not the same one twice", () => {
+    const s = run(fresh(), T0, { type: 'start', lane: 'gathering', action: A.pine });
+    const twice = engine.command(s, T0 + 1000, { type: 'start', lane: 'gathering2', action: A.pine }, rng);
+    expect(twice.result).toEqual({ ok: false, reason: { code: 'skillInOtherLane' } });
+    run(s, T0 + 1000, { type: 'start', lane: 'gathering2', action: A.copper });
+  });
+
   it('repeats an action and counts its mastery', () => {
     const s = run(fresh(), T0, { type: 'start', lane: 'gathering', action: A.pine });
     const { state } = engine.advance(s, T0 + 75 * SECOND, rng);

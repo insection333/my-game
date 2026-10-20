@@ -3,7 +3,9 @@
 // hostile-input suite is generated from them.
 import { Command, type GameEvent, type State } from '@idle-clash/kernel';
 import { z } from 'zod';
-import { Email, Password, PASSWORD_MAX, plainText, PlayerName, RequestId, Token } from './fields.ts';
+import { Email, Password, plainText, PlayerName, RequestId, Token } from './fields.ts';
+import { PASSWORD_MAX } from './limits.ts';
+import { PATHS } from './paths.ts';
 
 export const SignUp = z.object({ name: PlayerName, password: Password, ageConfirmed: z.literal(true) }).strict();
 export const SignIn = z.object({ name: plainText(64), password: plainText(PASSWORD_MAX) }).strict();
@@ -38,12 +40,12 @@ export interface RouteContract {
 const route = (r: RouteContract) => r;
 
 export const ROUTES = {
-  health: route({ id: 'health', method: 'GET', path: '/api/health', auth: 'none', input: null, example: null }),
-  me: route({ id: 'me', method: 'GET', path: '/api/me', auth: 'none', input: null, example: null }),
+  health: route({ id: 'health', method: 'GET', path: PATHS.health, auth: 'none', input: null, example: null }),
+  me: route({ id: 'me', method: 'GET', path: PATHS.me, auth: 'none', input: null, example: null }),
   signUp: route({
     id: 'signUp',
     method: 'POST',
-    path: '/api/auth/sign-up',
+    path: PATHS.signUp,
     auth: 'none',
     input: SignUp,
     example: { name: 'Rowan', password: 'a long enough secret', ageConfirmed: true },
@@ -51,7 +53,7 @@ export const ROUTES = {
   signIn: route({
     id: 'signIn',
     method: 'POST',
-    path: '/api/auth/sign-in',
+    path: PATHS.signIn,
     auth: 'none',
     input: SignIn,
     example: { name: 'Rowan', password: 'a long enough secret' },
@@ -59,16 +61,16 @@ export const ROUTES = {
   signOut: route({
     id: 'signOut',
     method: 'POST',
-    path: '/api/auth/sign-out',
+    path: PATHS.signOut,
     auth: 'player',
     input: null,
     example: null,
   }),
-  game: route({ id: 'game', method: 'GET', path: '/api/game', auth: 'player', input: null, example: null }),
+  game: route({ id: 'game', method: 'GET', path: PATHS.game, auth: 'player', input: null, example: null }),
   command: route({
     id: 'command',
     method: 'POST',
-    path: '/api/game/command',
+    path: PATHS.command,
     auth: 'player',
     input: CommandRequest,
     example: { requestId: 'req-0000001', command: { type: 'stoke' } },
@@ -76,7 +78,7 @@ export const ROUTES = {
   errors: route({
     id: 'errors',
     method: 'POST',
-    path: '/api/errors',
+    path: PATHS.errors,
     auth: 'none',
     input: ErrorReport,
     example: { message: 'x is not a function', url: '/skills', line: 3, column: 9 },
@@ -84,7 +86,7 @@ export const ROUTES = {
   setEmail: route({
     id: 'setEmail',
     method: 'POST',
-    path: '/api/account/email',
+    path: PATHS.setEmail,
     auth: 'player',
     input: SetEmail,
     example: { email: 'rowan@example.com' },
@@ -93,7 +95,7 @@ export const ROUTES = {
   confirmEmail: route({
     id: 'confirmEmail',
     method: 'POST',
-    path: '/api/account/email/confirm',
+    path: PATHS.confirmEmail,
     auth: 'none',
     input: ConfirmEmail,
     example: { token: 'aaaaaaaaaaaaaaaaaaaaaaaa' },
@@ -102,7 +104,7 @@ export const ROUTES = {
   recover: route({
     id: 'recover',
     method: 'POST',
-    path: '/api/auth/recover',
+    path: PATHS.recover,
     auth: 'none',
     input: Recover,
     example: { name: 'Rowan' },
@@ -111,7 +113,7 @@ export const ROUTES = {
   resetPassword: route({
     id: 'resetPassword',
     method: 'POST',
-    path: '/api/auth/reset',
+    path: PATHS.resetPassword,
     auth: 'none',
     input: ResetPassword,
     example: { token: 'aaaaaaaaaaaaaaaaaaaaaaaa', password: 'a new long secret' },

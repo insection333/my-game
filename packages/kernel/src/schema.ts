@@ -2,7 +2,7 @@
 // before the engine ever sees it.
 import { z } from 'zod';
 
-export const SAVE_VERSION = 1;
+export const SAVE_VERSION = 2;
 
 export const LANE_IDS = ['gathering', 'gathering2', 'artisan', 'combat'] as const;
 export type LaneId = (typeof LANE_IDS)[number];
@@ -54,6 +54,16 @@ export const Lane = z
   .strict();
 export type Lane = z.infer<typeof Lane>;
 
+/**
+ * Luck for Uncommon finds, shared by every lane: misses since the last find raise the next chance,
+ * and a long stretch of active play with no notable moment makes the next find certain.
+ */
+export const Luck = z.object({ misses: count, lastMoment: time }).strict();
+export type Luck = z.infer<typeof Luck>;
+
+export const SkillXp = z.object({ xp: count, part: z.number().int().min(1).max(999).optional() }).strict();
+export type SkillXp = z.infer<typeof SkillXp>;
+
 export const State = z
   .object({
     seed: z.number().int().min(0).max(0xffffffff),
@@ -65,9 +75,13 @@ export const State = z
     fireUntil: time,
     lanes: z.object(Object.fromEntries(LANE_IDS.map((l) => [l, Lane])) as Record<LaneId, typeof Lane>).strict(),
     items: z.record(name, count),
-    skills: z.record(name, z.object({ xp: count }).strict()),
+    /** XP by skill. `part` carries thousandths of an XP, so bonuses like +15% are exact over time. */
+    skills: z.record(name, SkillXp),
     /** Completions of each action ("feature:id"); mastery steps are derived from these. */
     mastery: z.record(z.string().max(129), count),
+    luck: Luck,
+    /** When each find was first found: the collection log. */
+    found: z.record(name, time),
     /** Each feature's own state, checked by that feature's schema (session 3). */
     features: z.record(name, z.unknown()),
   })

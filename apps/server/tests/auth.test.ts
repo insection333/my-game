@@ -72,6 +72,22 @@ describe('sign up', () => {
   });
 });
 
+describe('client addresses', () => {
+  it('ignores X-Forwarded-For from anywhere but a proxy on this machine, so limits cannot be dodged', async () => {
+    s = await server();
+    const up = (n: number) =>
+      s.app.inject({
+        method: 'POST',
+        url: '/api/auth/sign-up',
+        remoteAddress: '203.0.113.7',
+        headers: { 'content-type': 'application/json', 'x-forwarded-for': `198.51.100.${n}` },
+        payload: JSON.stringify({ name: `Spoof ${n}`, password: PW, ageConfirmed: true }),
+      });
+    for (let i = 0; i < 5; i++) expect((await up(i)).statusCode).toBe(201);
+    expect((await up(5)).statusCode).toBe(429);
+  });
+});
+
 describe('sign in and out', () => {
   it('signs in with the right password, in any case of the name', async () => {
     s = await server();

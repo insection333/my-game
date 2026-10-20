@@ -46,7 +46,14 @@ export function checkManifest({ features, slots, folders, states }: ManifestInpu
     for (const s of filled)
       if (!slots.includes(s)) problems.push(`${where} fills slot "${s}", which IA.md does not list`);
     if (f.content.skill) {
-      for (const s of ['skills.list', 'skill.header', 'skill.actions', 'skill.ladder']) {
+      for (const s of [
+        'skills.list',
+        'skill.header',
+        'skill.actions',
+        'skill.ladder',
+        'skill.finds',
+        'collection.log',
+      ]) {
         if (!filled.includes(s)) problems.push(`${where} is a skill but does not fill "${s}"`);
       }
     }

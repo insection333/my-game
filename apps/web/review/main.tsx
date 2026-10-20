@@ -1,8 +1,11 @@
 // The icon review sheet (not part of the game): every icon at 24, 48 and 96 px on each theme's
-// surface, by family. Verify's review step screenshots this page.
+// surface, the reference set first and every later icon after it. Verify's review step screenshots
+// this page.
 import '@idle-clash/ui/tokens.css';
 import '@idle-clash/ui/base.css';
-import { ICONS, ItemIcon, REFERENCE_SET } from '@idle-clash/ui';
+import { ICONS, ItemIcon, REFERENCE_SET, type IconName } from '@idle-clash/ui';
+
+const ALL = [...REFERENCE_SET, ...(Object.keys(ICONS) as IconName[]).filter((n) => !REFERENCE_SET.includes(n))];
 import { createRoot } from 'react-dom/client';
 
 const Sheet = ({ theme }: { theme: 'light' | 'dark' }) => (
@@ -15,7 +18,7 @@ const Sheet = ({ theme }: { theme: 'light' | 'dark' }) => (
     }}
   >
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 24 }}>
-      {REFERENCE_SET.map((n) => (
+      {ALL.map((n) => (
         <figure key={n} style={{ margin: 0, display: 'grid', gap: 8, justifyItems: 'center' }}>
           <div style={{ display: 'flex', alignItems: 'end', gap: 12 }}>
             <ItemIcon name={n} size={96} />
@@ -23,7 +26,11 @@ const Sheet = ({ theme }: { theme: 'light' | 'dark' }) => (
             <ItemIcon name={n} size={24} />
           </div>
           <figcaption style={{ font: '13px var(--font-ui)', textAlign: 'center' }}>
-            {ICONS[n].title} <span style={{ opacity: 0.6 }}>({ICONS[n].family})</span>
+            {ICONS[n].title}{' '}
+            <span style={{ opacity: 0.6 }}>
+              ({ICONS[n].family}
+              {REFERENCE_SET.includes(n) ? ', reference' : ''})
+            </span>
           </figcaption>
         </figure>
       ))}

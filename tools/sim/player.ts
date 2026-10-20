@@ -1,0 +1,102 @@
+// A simulated player on the real engine: the same rules, content and randomness the server runs.
+// The focused player keeps one skill in its lane: one active hour a day with the fire (it stokes and
+// picks the best action every minute), then away until the next day.
+import { levelFor } from '@idle-clash/content';
+import { actionRegistry, FEATURES, skill as kit, type Feature } from '@idle-clash/features';
+import {
+  createEngine,
+  HOUR,
+  isNotable,
+  MINUTE,
+  newState,
+  seeded,
+  xpOf,
+  type Command,
+  type GameEvent,
+  type LaneId,
+  type State,
+} from '@idle-clash/kernel';
+
+export const DAY = 24 * HOUR;
+export const T0 = Date.UTC(2026, 0, 5, 8);
+const engine = createEngine(actionRegistry(FEATURES, (f) => f.flag.on));
+
+/** XP an hour from an action as things stand (perks and its mastery), with or without the fire. */
+export function xpPerHour(state: State, f: Feature, id: string, fire = false): number {
+  const sk = f.content.skill!;
+  const a = f.content.actions!.find((x) => x.id === id)!;
+  const m = kit.actionModifiers(state, sk.id, sk.ladder, f.id, id);
+  return ((a.xp! * (fire ? 1.15 : 1)) / (a.seconds! / (1 + m.speed / 100))) * 3600;
+}
+
+/** The action earning the most XP an hour among those open at the player's level. */
+export function bestAction(state: State, f: Feature): string {
+  const level = levelFor(xpOf(state, f.content.skill!.id));
+  const open = f.content.actions!.filter((a) => a.level <= level && a.seconds && a.xp !== undefined);
+  return open.reduce((a, b) => (xpPerHour(state, f, b.id) > xpPerHour(state, f, a.id) ? b : a)).id;
+}
+
+export interface Day {
+  /** The state at the start of the day, before the active hour. */
+  start: State;
+  /** Notable events during the active hour. */
+  active: GameEvent[];
+  /** Notable events while away. */
+  away: GameEvent[];
+}
+
+export interface Played {
+  /** levelAt[l]: hours from the first visit until level l. */
+  levelAt: number[];
+  days: Day[];
+  commands: number;
+  refused: number;
+  final: State;
+}
+
+/** A player who keeps one gathering skill in the Gathering lane, for `days` days. */
+export function focusedPlayer(f: Feature, seed: number, days: number, lane: LaneId = 'gathering'): Played {
+  const skillId = f.content.skill!.id;
+  const rng = seeded(seed);
+  let state = newState(seed, T0);
+  const levelAt = [0, 0];
+  const out: Day[] = [];
+  let commands = 0;
+  let refused = 0;
+  const note = (events: GameEvent[]) => {
+    for (const e of events) if (e.type === 'levelUp' && e.skill === skillId) levelAt[e.level] = (e.at - T0) / HOUR;
+    return events.filter(isNotable);
+  };
+
+  for (let d = 0; d < days; d++) {
+    const dayStart = T0 + d * DAY;
+    const day: Day = { start: state, active: [], away: [] };
+    for (let t = dayStart; t < dayStart + HOUR; t += MINUTE) {
+      const best = bestAction(state, f);
+      const cmd: Command =
+        state.lanes[lane].current?.action.id === best
+          ? { type: 'stoke' }
+          : { type: 'start', lane, action: { feature: f.id, id: best } };
+      const r = engine.command(state, t, cmd, rng);
+      commands++;
+      if (!r.result.ok) refused++;
+      state = r.state;
+      day.active.push(...note(r.events));
+    }
+    const away = engine.advance(state, dayStart + DAY, rng);
+    state = away.state;
+    // What happened while away is recorded with the next input; the first hour of it ends the active hour.
+    const all = note(away.events);
+    day.active.push(...all.filter((e) => e.at < dayStart + HOUR));
+    day.away.push(...all.filter((e) => e.at >= dayStart + HOUR));
+    out.push(day);
+  }
+  return { levelAt, days: out, commands, refused, final: state };
+}
+
+/** Seconds between notable moments within a window, counting from its start and to its end. */
+export function gaps(events: GameEvent[], from: number, to: number): number[] {
+  const times = events.map((e) => e.at).filter((t) => t >= from && t <= to);
+  const marks = [from, ...times, to];
+  return marks.slice(1).map((t, i) => (t - marks[i]) / 1000);
+}

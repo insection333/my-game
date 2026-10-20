@@ -1,6 +1,6 @@
 // Telemetry: sessions, notable events and stop reasons, keyed by player id. No names, no addresses,
 // no free text: only event types and the event's own fields.
-import type { GameEvent } from '@idle-clash/kernel';
+import { isNotable, type GameEvent } from '@idle-clash/kernel';
 import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
 import { telemetry } from './db/schema.ts';
 
@@ -19,9 +19,10 @@ export class Telemetry {
       .run();
   }
 
-  /** Every game event, by its type; the event carries ids and numbers only. */
+  /** Notable moments and lane stops, by type; the event carries ids and numbers only. */
   events(playerId: string, events: GameEvent[]): void {
     for (const e of events) {
+      if (!isNotable(e) && e.type !== 'laneStopped') continue;
       const { type, ...data } = e;
       this.db
         .insert(telemetry)

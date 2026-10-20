@@ -1,6 +1,13 @@
 // The game over HTTP: read your state, send a command, call a feature's route, and the live channel.
 // Every change runs one at a time per player and acts once per request id (the kernel's `handle`).
-import { FeatureRequest, LIVE_PATH, ROUTES, type ActResponse, type GameResponse } from '@idle-clash/contracts';
+import {
+  featurePath,
+  FeatureRequest,
+  LIVE_PATH,
+  ROUTES,
+  type ActResponse,
+  type GameResponse,
+} from '@idle-clash/contracts';
 import type { Feature } from '@idle-clash/features';
 import { handle, seeded, type Command, type GameEvent, type SaveDoc } from '@idle-clash/kernel';
 import type { FastifyInstance } from 'fastify';
@@ -67,7 +74,7 @@ export function gameRoutes(app: FastifyInstance, ctx: Ctx, features: readonly Fe
         {
           id: `${f.id}.${name}`,
           method: 'POST',
-          path: `/api/f/${f.id}/${name}`,
+          path: featurePath(f.id, name),
           auth: 'player',
           input: FeatureRequest,
           example: null,
@@ -84,8 +91,8 @@ export function gameRoutes(app: FastifyInstance, ctx: Ctx, features: readonly Fe
           let next: SaveDoc | null = null;
           const out = await handle(ctx.queue, ctx.store, player, input.requestId, t, (doc) => {
             const arrived = ctx.engine.input(doc.state, t, seeded(doc.state.seed));
-            events = arrived.events;
             const ran = route.run(arrived.state, parsed.data, t);
+            events = [...arrived.events, ...(ran.events ?? [])];
             next = { ...doc, state: ran.state };
             return { doc: next, result: ran.result };
           });

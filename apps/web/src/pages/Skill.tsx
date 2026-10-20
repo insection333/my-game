@@ -1,11 +1,13 @@
 // A skill's page: its level, everything it can do (with what each pays), and every level's unlock.
-import { t } from '@idle-clash/content';
-import type { Feature, LadderRow, SkillActionRow, SkillSummary } from '@idle-clash/features';
-import { actionKey, laneKind, LANE_IDS, type LaneId } from '@idle-clash/kernel';
+import { levelFor, t } from '@idle-clash/content';
+import type { Feature, FindEntry, LadderRow, SkillActionRow, SkillSummary } from '@idle-clash/features';
+import { actionKey, laneKind, LANE_IDS, xpOf, type LaneId, type State } from '@idle-clash/kernel';
 import { ActionRow, Button, hasIcon, ItemIcon, Panel, Pill, ProgressBar } from '@idle-clash/ui';
+import { memo, useEffect, useRef } from 'react';
 import { useGame } from '../game/hooks.ts';
 import { game } from '../game/store.ts';
 import { fillFor, Slot } from '../slots.tsx';
+import { FindGrid } from './Finds.tsx';
 import { NotFound } from './Simple.tsx';
 import s from './pages.module.css';
 
@@ -16,12 +18,16 @@ function actionIcon(feature: Feature, id: string) {
 }
 
 export function Skill({ id }: { id: string }) {
-  const { state, now, features } = useGame();
+  const { features } = useGame();
   const feature = features.find((f) => f.content.skill?.id === id);
-  if (!feature) return <NotFound />;
+  return feature ? <SkillPage feature={feature} /> : <NotFound />;
+}
+
+function SkillPage({ feature }: { feature: Feature }) {
+  const { state, now } = useGame();
+  const id = feature.content.skill!.id;
   const head = fillFor<SkillSummary>(feature, 'skill.header', state, now);
   const actions = fillFor<SkillActionRow[]>(feature, 'skill.actions', state, now) ?? [];
-  const ladder = fillFor<LadderRow[]>(feature, 'skill.ladder', state, now) ?? [];
   const lane = (a: SkillActionRow): LaneId => {
     const kind = feature.rules[a.action.id]?.lane ?? 'gathering';
     return LANE_IDS.find((l) => laneKind(l) === kind) ?? 'gathering';
@@ -90,22 +96,60 @@ export function Skill({ id }: { id: string }) {
               ))}
             </Slot>
           </Panel>
+          <Finds feature={feature} state={state} found={Object.keys(state.found).length} />
         </section>
         <section data-section>
-          <Panel title={t('skill.ladder.title')} flush>
-            <Slot id="skill.ladder">
-              <ol className={s.ladder}>
-                {ladder.map((l) => (
-                  <li key={l.level} data-reached={l.reached || undefined}>
-                    <span className={s.lv}>{l.level}</span>
-                    <span>{l.unlocks.join('; ')}</span>
-                  </li>
-                ))}
-              </ol>
-            </Slot>
-          </Panel>
+          <Ladder feature={feature} state={state} xp={xpOf(state, id)} />
         </section>
       </div>
     </>
   );
 }
+
+/** The six finds; drawn again only when something new is found, not on every tick of the clock. */
+const Finds = memo(
+  function Finds({ feature, state }: { feature: Feature; state: State; found: number }) {
+    const finds = fillFor<FindEntry[]>(feature, 'skill.finds', state, state.clock) ?? [];
+    if (!finds.length) return null;
+    return (
+      <Panel title={t('skill.finds.title')} flush className={s.below}>
+        <Slot id="skill.finds">
+          <FindGrid finds={finds} />
+        </Slot>
+      </Panel>
+    );
+  },
+  (a, b) => a.feature === b.feature && a.found === b.found,
+);
+
+/** Every level's unlock, opened a row above the current level; drawn again only when XP changes. */
+const Ladder = memo(
+  function Ladder({ feature, state }: { feature: Feature; state: State; xp: number }) {
+    const ladder = fillFor<LadderRow[]>(feature, 'skill.ladder', state, state.clock) ?? [];
+    const reached = ladder.filter((l) => l.reached).length;
+    const ref = useRef<HTMLOListElement>(null);
+    const opened = useRef(-1);
+    useEffect(() => {
+      const list = ref.current;
+      if (!list || opened.current === reached) return;
+      opened.current = reached;
+      const row = list.children[Math.max(0, reached - 2)] as HTMLElement | undefined;
+      if (row) list.scrollTop = row.offsetTop - list.offsetTop;
+    }, [reached]);
+    return (
+      <Panel title={t('skill.ladder.title')} flush>
+        <Slot id="skill.ladder">
+          <ol className={s.ladder} ref={ref} tabIndex={0} aria-label={t('skill.ladder.title')}>
+            {ladder.map((l) => (
+              <li key={l.level} data-reached={l.reached || undefined}>
+                <span className={s.lv}>{l.level}</span>
+                <span>{l.unlocks.join('; ')}</span>
+              </li>
+            ))}
+          </ol>
+        </Slot>
+      </Panel>
+    );
+  },
+  (a, b) => a.feature === b.feature && levelFor(a.xp) === levelFor(b.xp),
+);

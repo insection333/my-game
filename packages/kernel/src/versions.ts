@@ -6,7 +6,14 @@ import { SAVE_VERSION } from './schema.ts';
 type Doc = Record<string, unknown>;
 
 /** UPGRADES[n] turns a version n document into version n + 1. Version 1 is the first. */
-export const UPGRADES: Record<number, (doc: Doc) => Doc> = {};
+export const UPGRADES: Record<number, (doc: Doc) => Doc> = {
+  // Version 2 (session 6) adds luck for Uncommon finds and the dates of first finds.
+  1: (doc) => {
+    if (!isDoc(doc.state)) return doc;
+    const clock = Number.isSafeInteger(doc.state.clock) ? (doc.state.clock as number) : 0;
+    return { ...doc, state: { ...doc.state, luck: { misses: 0, lastMoment: clock }, found: {} } };
+  },
+};
 
 export interface Loaded extends Mended {
   /** The version the document was stored in. */

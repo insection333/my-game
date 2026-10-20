@@ -7,8 +7,8 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { App } from './App.tsx';
 import { watchErrors } from './errors.ts';
-import { boot } from './game/store.ts';
-import { applyTheme, readTheme } from './pages/Panels.tsx';
+import { boot } from './game/session.ts';
+import { applyTheme, readTheme } from './theme.ts';
 
 watchErrors();
 applyTheme(readTheme());

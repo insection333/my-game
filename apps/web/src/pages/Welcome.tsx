@@ -1,15 +1,14 @@
 // The welcome page: what the game is, and creating an account or signing in. Shown at /welcome
 // (create) and /welcome/sign-in, outside the shell, to anyone not signed in.
 import { fmt, t } from '@idle-clash/content';
-import { NAME_MAX, SignUp } from '@idle-clash/contracts';
+import { NAME_MAX } from '@idle-clash/contracts';
 import { Button, Field, ItemIcon, Tabs } from '@idle-clash/ui';
 import { useState, type FormEvent } from 'react';
 import { ApiError } from '../api.ts';
-import { game } from '../game/store.ts';
+import { account, loadGame } from '../game/session.ts';
 import { navigate } from '../router.ts';
+import { check, type Errors } from './welcome-check.ts';
 import s from './welcome.module.css';
-
-type Errors = Partial<Record<'name' | 'password' | 'age' | 'form', string>>;
 
 /** The loop the game is built on: ore to bars to gear to the foes it beats. */
 const LOOP = ['copper-ore', 'iron-bar', 'copper-sword', 'hollow-rat'] as const;
@@ -32,23 +31,7 @@ function refusal(err: unknown): string {
   }
 }
 
-/** Checks the form with the server's own schema, so the page refuses what the server would. */
-function check(create: boolean, name: string, password: string, age: boolean): Errors {
-  const errors: Errors = {};
-  if (create) {
-    const r = SignUp.safeParse({ name, password, ageConfirmed: age || undefined });
-    for (const issue of r.success ? [] : r.error.issues) {
-      const field = issue.path[0];
-      if (field === 'name') errors.name = t('error.name');
-      if (field === 'password') errors.password = t('error.password');
-      if (field === 'ageConfirmed') errors.age = t('error.age');
-    }
-  } else {
-    if (!name.trim()) errors.name = t('error.name');
-    if (!password) errors.password = t('error.password');
-  }
-  return errors;
-}
+const prefetch = () => void loadGame().then(() => import('../Game.tsx'));
 
 export function Welcome({ path, next }: { path: string; next: string }) {
   const create = path !== '/welcome/sign-in';
@@ -66,7 +49,7 @@ export function Welcome({ path, next }: { path: string; next: string }) {
     if (Object.keys(found).length) return;
     setWorking(true);
     try {
-      await (create ? game.signUp(name.trim(), password) : game.signIn(name.trim(), password));
+      await (create ? account.signUp(name.trim(), password) : account.signIn(name.trim(), password));
       navigate(next);
     } catch (err) {
       setErrors({ form: refusal(err) });
@@ -99,7 +82,8 @@ export function Welcome({ path, next }: { path: string; next: string }) {
             { href: `/welcome/sign-in${keep}`, label: t('welcome.signIn'), current: !create },
           ]}
         />
-        <form className={s.form} onSubmit={(e) => void submit(e)} noValidate>
+        {/* Typing a name means a sign-in is coming: fetch the game's part of the page meanwhile. */}
+        <form className={s.form} onSubmit={(e) => void submit(e)} onFocus={prefetch} noValidate>
           <Field
             label={t('welcome.name')}
             hint={create ? t('welcome.name.hint') : undefined}

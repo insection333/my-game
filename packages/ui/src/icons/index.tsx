@@ -2,7 +2,19 @@
 // bar every later icon is reviewed against, at 24, 48 and 96 px in both themes.
 import type { ComponentType } from 'react';
 import { AshBow, BronzeHelm, CopperSword, IronStaff, SteelBody } from './gear.tsx';
-import { Bread, BirdsNest, CopperOre, HollowRat, IronBar, PineLogs, WoodcuttingSeal } from './world.tsx';
+import { AmberNugget, CarvedAcorn, CrownOfTheOldWood, HeartwoodKnot, SilverbarkSeed } from './finds.tsx';
+import {
+  AshLogs,
+  Bread,
+  BirdsNest,
+  CopperOre,
+  HollowRat,
+  IronBar,
+  OakLogs,
+  PineLogs,
+  WoodcuttingSeal,
+  YewLogs,
+} from './world.tsx';
 
 export type IconFamily = 'weapon' | 'armour' | 'resource' | 'foe' | 'food' | 'find' | 'skill';
 
@@ -26,11 +38,33 @@ export const ICONS = {
   bread: { draw: Bread, family: 'food', title: 'Bread' },
   'birds-nest': { draw: BirdsNest, family: 'find', title: "Bird's nest (Uncommon find)" },
   woodcutting: { draw: WoodcuttingSeal, family: 'skill', title: 'Woodcutting' },
+  // Session 6: the other logs and Woodcutting's finds.
+  'ash-logs': { draw: AshLogs, family: 'resource', title: 'Ash logs' },
+  'oak-logs': { draw: OakLogs, family: 'resource', title: 'Oak logs' },
+  'yew-logs': { draw: YewLogs, family: 'resource', title: 'Yew logs' },
+  'amber-nugget': { draw: AmberNugget, family: 'find', title: 'Amber nugget (Uncommon find)' },
+  'carved-acorn': { draw: CarvedAcorn, family: 'find', title: 'Carved acorn (Rare find)' },
+  'heartwood-knot': { draw: HeartwoodKnot, family: 'find', title: 'Heartwood knot (Rare find)' },
+  'silverbark-seed': { draw: SilverbarkSeed, family: 'find', title: 'Silverbark seed (Legendary find)' },
+  'crown-of-the-old-wood': { draw: CrownOfTheOldWood, family: 'find', title: 'Crown of the old wood (Legendary find)' },
 } satisfies Record<string, IconDef>;
 
 export type IconName = keyof typeof ICONS;
 
-/** The reference set: twelve icons covering every family. */
-export const REFERENCE_SET = Object.keys(ICONS) as IconName[];
+/** The reference set, approved by the owner: twelve icons covering every family. */
+export const REFERENCE_SET: IconName[] = [
+  'copper-sword',
+  'ash-bow',
+  'iron-staff',
+  'bronze-helm',
+  'steel-body',
+  'pine-logs',
+  'copper-ore',
+  'iron-bar',
+  'hollow-rat',
+  'bread',
+  'birds-nest',
+  'woodcutting',
+];
 
 export const hasIcon = (name: string): name is IconName => Object.hasOwn(ICONS, name);

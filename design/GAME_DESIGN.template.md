@@ -37,7 +37,7 @@ The three pillars decide everything below:
 
 - Any real input lights it: starting or changing an action, claiming a goal, or the **Stoke** button.
 - It burns for **5 minutes** after your last input. In its last minute it dims and Stoke pulses. An idle open tab therefore falls back to the away rate.
-- While it burns: **+15% XP** in every lane and a **second Gathering lane**, so you can cut wood and mine at once. When it goes out, the second lane stops with "The fire went out".
+- While it burns: **+15% XP** in every lane and a **second Gathering lane**, so you can cut wood and mine at once (one skill never runs in both). When it goes out, the second lane stops with "The fire went out".
 - Worked through the model, an hour with the fire earns **1.54 times** the XP of an hour away (target 1.5).
 
 ## 3. Skills, tiers and materials
@@ -184,7 +184,7 @@ Enlargement costs follow each day's net gold, so one is affordable roughly when 
 
 ### The goals ladder (always in view on the Hearth)
 
-1. **First steps:** six goals, each with a button that starts it.
+1. **First steps:** six goals, each with a button that starts it and a reward of 25 gold (the sixth pays in bread instead).
    1. Chop a pine (Start chopping).
    2. Mine copper ore (Start mining: the fire's second Gathering lane).
    3. Smelt a copper bar (Start smelting).

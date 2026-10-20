@@ -1,6 +1,6 @@
 // The nine steps of pnpm verify, in the brief's order. A step that is not built yet says so and
 // names its session; once the thing it checks exists, an unbuilt step fails instead of skipping.
-import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { bin, exec, node, ROOT } from './exec.ts';
 import { allStringKeys } from '@idle-clash/content';
@@ -16,6 +16,7 @@ import { runAxe, runPerf } from './web/audits.ts';
 import { runReview } from './web/review.ts';
 import { runScreens } from './web/screens.ts';
 import { runFlows } from './web/flows.ts';
+import { runProofs } from './web/proofs.ts';
 import { ensureBuilt, ensureServer, views as webViews } from './web/session.ts';
 
 const pass = (summary: string): StepResult => ({ status: 'pass', summary });
@@ -118,6 +119,15 @@ async function tests(): Promise<StepResult> {
 }
 
 async function simulation(): Promise<StepResult> {
+  // The real simulation: simulated players on the real engine for every built skill.
+  const sim = await node('tools/sim/run.ts');
+  mkdirSync(join(ROOT, '.verify'), { recursive: true });
+  writeFileSync(join(ROOT, '.verify/simulation.md'), sim.output);
+  const simPassed = (sim.output.match(/^PASS /gm) ?? []).length;
+  const simFailed = sim.output.split('\n').filter((l) => /^FAIL /.test(l));
+  if (sim.code !== 0)
+    return fail('the simulation misses a target', simFailed.length ? simFailed.join('\n') : sim.output);
+  // The paper model still stands in for what is not built yet (other skills, combat, gold, goals).
   const reportPath = 'design/model/report.md';
   const before = read(reportPath);
   const r = await node('design/model/checks2.ts');
@@ -131,24 +141,27 @@ async function simulation(): Promise<StepResult> {
         .join('\n'),
     );
   if (read(reportPath) !== before) return fail("the model's report changed: run pnpm design:build and commit");
-  return pass(`paper model: ${checks} target checks (the real simulation replaces it in session 6)`);
+  return pass(
+    `real engine: ${simPassed} checks for the built skills (.verify/simulation.md); paper model: ${checks} for the rest`,
+  );
 }
 
-// Steps 6 to 9 share one build and one server (web/session.ts); each builds it if needed.
 async function screenshots(): Promise<StepResult> {
   const err = await ensureBuilt();
   if (err) return fail('the web app failed to build', err);
   const loaded = await loadFeatures();
   if ('error' in loaded) return fail('the features failed to load', loaded.error);
   const r = await runScreens(loaded.features);
-  const flows = await runFlows((await ensureServer()).url);
+  const served = await ensureServer();
+  const flows = await runFlows(served.url);
+  const proofs = await runProofs(served);
   const views = webViews().length;
-  const problems = [...r.problems, ...flows.problems];
+  const problems = [...r.problems, ...flows.problems, ...proofs.problems];
   if (problems.length)
     return fail(`${problems.length} layout or flow problem${problems.length > 1 ? 's' : ''}`, problems.join('\n'));
   const awaiting = r.awaiting.size ? `; ${r.awaiting.size} slots await their features` : '';
   return pass(
-    `${views} views x 3 widths x 3 engines (${r.shots} shots): no overflow, taps 24px+, one design system, specs met; account flows (${flows.steps} checks) work${awaiting}`,
+    `${views} views x 3 widths x 3 engines (${r.shots} shots): no overflow, taps 24px+, one design system, specs met; account flows (${flows.steps} checks) work; a newcomer is chopping after ${proofs.newcomerSeconds.toFixed(0)} s at a person's pace; a Rare find has its moment${awaiting}`,
   );
 }
 
@@ -173,9 +186,12 @@ async function performance(): Promise<StepResult> {
 async function review(): Promise<StepResult> {
   const err = await ensureBuilt();
   if (err) return fail('the web app failed to build', err);
-  const r = await runReview();
-  if (r.problems.length) return fail('the review sheets are incomplete', r.problems.join('\n'));
-  return pass(`${r.sheets} page sheets and the icon sheet in .verify/review/`);
+  const loaded = await loadFeatures();
+  if ('error' in loaded) return fail('the features failed to load', loaded.error);
+  const r = await runReview(loaded.features.flatMap((f) => (f.content.items ?? []).map((i) => i.id)));
+  const problems = r.problems;
+  if (problems.length) return fail('the review sheets are incomplete', problems.join('\n'));
+  return pass(`${r.sheets} page sheets and the icon sheet in .verify/review/; every item drawn`);
 }
 
 export const STEPS: Step[] = [
