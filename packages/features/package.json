@@ -10,5 +10,8 @@
     "@idle-clash/kernel": "workspace:*",
     "zod": "4.6.5"
   },
-  "sideEffects": false
+  "sideEffects": false,
+  "devDependencies": {
+    "fast-check": "4.10.2"
+  }
 }
