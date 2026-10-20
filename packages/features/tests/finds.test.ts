@@ -44,6 +44,7 @@ function chop(n: number, act = pine, opts: { fire?: boolean; state?: State; roll
     const ctx: ActionContext = {
       state,
       at,
+      startedAt: at - 7500,
       lane: 'gathering',
       fireBurning: opts.fire ?? false,
       roll: opts.rolls ?? (() => rng('gathering', counter++)),

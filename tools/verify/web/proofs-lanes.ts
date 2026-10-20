@@ -7,10 +7,10 @@ import { HOUR, seeded, type Command, type State } from '@idle-clash/kernel';
 import type { Page } from 'playwright';
 import { newcomer, openPage, type Served } from './session.ts';
 
-const say = (err: unknown) => (err instanceof Error ? err.message.split('\n')[0] : String(err));
+export const say = (err: unknown) => (err instanceof Error ? err.message.split('\n')[0] : String(err));
 
 /** A new player whose save is then changed by `setUp`, and a page signed in as them. */
-async function playerWith(
+export async function playerWith(
   served: Served,
   name: string,
   path: string,
@@ -32,7 +32,7 @@ async function playerWith(
   return page;
 }
 
-const run = (served: Served, s: State, at: number, cmds: Command[]) =>
+export const run = (served: Served, s: State, at: number, cmds: Command[]) =>
   cmds.reduce((st, c) => served.ctx.engine.command(st, at, c, seeded(st.seed)).state, s);
 
 const bar = { feature: 'smithing', id: 'copper-bar' };

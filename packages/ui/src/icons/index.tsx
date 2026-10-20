@@ -18,6 +18,39 @@ import {
   OldKingsHammer,
   QuenchingFlask,
 } from './finds-smithing.tsx';
+import {
+  BattleTrophy,
+  BowmansRing,
+  EagleFeatherCirclet,
+  GooseFletchings,
+  HuntersCharm,
+  MoonlitBowstring,
+  RaidersWarHorn,
+  ShardOfAKingsBlade,
+  SilverArrowhead,
+  TornBanner,
+  TrollChiefsTooth,
+  WarlordsSeal,
+} from './finds-combat.tsx';
+import {
+  GlimmerStone,
+  RuneScratchedTablet,
+  SorcerersEye,
+  StarGlassOrb,
+  WightsRing,
+  WispLantern,
+} from './finds-magic.tsx';
+import {
+  FellHuntsman,
+  GoblinSlinger,
+  GraveWight,
+  HeartyStew,
+  HillTroll,
+  MarshWisp,
+  MeatPie,
+  OrcBowman,
+  OrcRaider,
+} from './foes.tsx';
 import { Body, Bow, Helm, Legs, Staff, Sword } from './gear.tsx';
 import { M, type Tone } from './style.tsx';
 import {
@@ -113,6 +146,42 @@ const NAMED = {
     title: 'Ember of the first forge (Legendary find)',
   },
   'old-kings-hammer': { draw: OldKingsHammer, family: 'find', title: "Old king's hammer (Legendary find)" },
+  // Session 8: the foes after the rat, the better foods, and the combat styles' finds.
+  'goblin-slinger': { draw: GoblinSlinger, family: 'foe', title: 'Goblin slinger' },
+  'marsh-wisp': { draw: MarshWisp, family: 'foe', title: 'Marsh wisp' },
+  'orc-raider': { draw: OrcRaider, family: 'foe', title: 'Orc raider' },
+  'orc-bowman': { draw: OrcBowman, family: 'foe', title: 'Orc bowman' },
+  'grave-wight': { draw: GraveWight, family: 'foe', title: 'Grave wight' },
+  'hill-troll': { draw: HillTroll, family: 'foe', title: 'Hill troll' },
+  'fell-huntsman': { draw: FellHuntsman, family: 'foe', title: 'Fell huntsman' },
+  'meat-pie': { draw: MeatPie, family: 'food', title: 'Meat pie' },
+  'hearty-stew': { draw: HeartyStew, family: 'food', title: 'Hearty stew' },
+  'battle-trophy': { draw: BattleTrophy, family: 'find', title: 'Battle trophy (Uncommon find)' },
+  'raiders-war-horn': { draw: RaidersWarHorn, family: 'find', title: "Raider's war-horn (Uncommon find)" },
+  'torn-banner': { draw: TornBanner, family: 'find', title: 'Torn banner (Rare find)' },
+  'warlords-seal': { draw: WarlordsSeal, family: 'find', title: "Warlord's seal (Rare find)" },
+  'shard-of-a-kings-blade': {
+    draw: ShardOfAKingsBlade,
+    family: 'find',
+    title: "Shard of a king's blade (Legendary find)",
+  },
+  'troll-chiefs-tooth': { draw: TrollChiefsTooth, family: 'find', title: "Troll-chief's tooth (Legendary find)" },
+  'goose-fletchings': { draw: GooseFletchings, family: 'find', title: 'Goose fletchings (Uncommon find)' },
+  'hunters-charm': { draw: HuntersCharm, family: 'find', title: "Hunter's charm (Uncommon find)" },
+  'silver-arrowhead': { draw: SilverArrowhead, family: 'find', title: 'Silver arrowhead (Rare find)' },
+  'bowmans-ring': { draw: BowmansRing, family: 'find', title: "Bowman's ring (Rare find)" },
+  'moonlit-bowstring': { draw: MoonlitBowstring, family: 'find', title: 'Moonlit bowstring (Legendary find)' },
+  'eagle-feather-circlet': {
+    draw: EagleFeatherCirclet,
+    family: 'find',
+    title: 'Eagle-feather circlet (Legendary find)',
+  },
+  'glimmer-stone': { draw: GlimmerStone, family: 'find', title: 'Glimmer stone (Uncommon find)' },
+  'wisp-lantern': { draw: WispLantern, family: 'find', title: 'Wisp lantern (Uncommon find)' },
+  'rune-scratched-tablet': { draw: RuneScratchedTablet, family: 'find', title: 'Rune-scratched tablet (Rare find)' },
+  'wights-ring': { draw: WightsRing, family: 'find', title: "Wight's ring (Rare find)" },
+  'star-glass-orb': { draw: StarGlassOrb, family: 'find', title: 'Star-glass orb (Legendary find)' },
+  'sorcerers-eye': { draw: SorcerersEye, family: 'find', title: "Sorcerer's eye (Legendary find)" },
 } satisfies Record<string, IconDef>;
 
 export const ICONS: Record<string, IconDef> = { ...GEAR, ...NAMED };

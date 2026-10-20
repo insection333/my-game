@@ -53,7 +53,7 @@ function rollRarity(ctx: ActionContext, findMult: number): Rarity | null {
   return null;
 }
 
-function rollFind(ctx: ActionContext, def: SkillDefinition, act: CompletedAction, findChancePct: number) {
+export function rollFind(ctx: ActionContext, def: SkillDefinition, act: CompletedAction, findChancePct: number) {
   const rarity = rollRarity(ctx, act.findMultiple * (1 + findChancePct / 100));
   if (!rarity) return;
   const choices = def.finds.filter((f) => f.rarity === rarity && (!f.greater || act.tier >= GREATER_FROM_TIER));

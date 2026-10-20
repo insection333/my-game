@@ -1,11 +1,22 @@
 // The simulation's checks: simulated players on the real engine, against the brief's targets and
-// against the paper model (within 25% of both). Each built skill is checked; targets that need
-// skills not yet built stay with the paper model until they are.
+// against the paper model (within 25% of both). Each built skill is checked, each combat style by a
+// focused fighter, and the fire's worth once four lanes run.
+import { STYLES } from '@idle-clash/content';
 import { FEATURES, type Feature } from '@idle-clash/features';
 import { HOUR, type GameEvent, type LaneId } from '@idle-clash/kernel';
 import { readFileSync } from 'node:fs';
-import { gatherCandidates, simulate, smithingCandidates } from '../../design/model/curve.ts';
-import { DAY, focusedPlayer, gaps, T0, xpPerHour, type Played } from './player.ts';
+import {
+  combatCandidates,
+  gatherCandidates,
+  levelFromTable,
+  simulate,
+  smithingCandidates,
+  type Candidates,
+} from '../../design/model/curve.ts';
+import { combatXpPerHour, fighter } from './combat.ts';
+import { newcomer } from './newcomer.ts';
+import { combatProofs } from './proofs.ts';
+import { bestAction, DAY, focusedPlayer, gaps, T0, xpPerHour, type Played } from './player.ts';
 
 export interface SimResult {
   lines: string[];
@@ -43,6 +54,14 @@ const keptSkills = (): [Feature, LaneId][] =>
 const modelFor = (id: string) =>
   id === 'smithing' ? smithingCandidates : gatherCandidates(id as 'woodcutting' | 'mining');
 
+/** The paper model's focused fighter, its Hitpoints rising with it. */
+function modelFighter(style: (typeof STYLES)[number], table: number[]) {
+  let hpXp = 0;
+  const cands: Candidates = combatCandidates(style, () => levelFromTable(table, hpXp));
+  return simulate(cands, { days: 30, table, step: 60, onHp: (x) => (hpXp += x) }).reached;
+}
+const title = (id: string) => id[0].toUpperCase() + id.slice(1);
+
 export function runSimulation(): SimResult {
   const lines: string[] = [];
   const failed: string[] = [];
@@ -56,15 +75,8 @@ export function runSimulation(): SimResult {
     readFileSync(new URL('../../design/model/xp-table.json', import.meta.url), 'utf8'),
   ) as number[];
 
-  const awayRuns: Played[][] = [];
-  let gatheringJoined = false;
-  for (const [f, lane] of keptSkills()) {
-    const name = f.id[0].toUpperCase() + f.id.slice(1);
-    const runs: Played[] = PLAYERS.map((seed) => focusedPlayer(f, seed, DAYS, lane));
-    lines.push(`\n## ${name}: ${PLAYERS.length} focused players, ${DAYS} days on the real engine`);
-
-    // Pacing, against the brief and the paper model.
-    const model = simulate(modelFor(f.id), { days: 30, table }).reached;
+  /** What every focused player is held to: pacing, moments, a find, commands taken, a lane at work. */
+  const common = (name: string, runs: Played[], lane: LaneId, model: number[], firstSkill = true) => {
     for (const l of [10, 20, 30, 40]) {
       const h = median(runs.map((r) => r.levelAt[l] ?? Infinity));
       lines.push(
@@ -73,8 +85,11 @@ export function runSimulation(): SimResult {
       check(Math.abs(h / TARGETS[l] - 1) <= 0.25, `${name} level ${l} within 25% of the target`);
       check(Math.abs(h / model[l] - 1) <= 0.25, `${name} level ${l} within 25% of the paper model`);
     }
+    // The brief's first level-up is a newcomer's, in the first skill they touch (a fighter's comes later).
     const first = Math.max(...runs.map((r) => r.levelAt[2] * 3600));
-    check(first < 60, `${name}: first level-up after ${Math.round(first)} s at most (target under 1 minute)`);
+    if (firstSkill)
+      check(first < 60, `${name}: first level-up after ${Math.round(first)} s at most (target under 1 minute)`);
+    else lines.push(`First level-up after ${Math.round(first)} s at most`);
 
     // Notable moments in the active hour: never more than 5 minutes without one.
     for (const [stage, d] of STAGES) {
@@ -89,6 +104,24 @@ export function runSimulation(): SimResult {
     const finds = (ev: GameEvent[]) => ev.some((e) => e.type === 'find');
     const lucky = runs.filter((r) => finds(r.days[0].active)).length;
     check(lucky === runs.length, `${name}: a find in the first hour for ${lucky} of ${runs.length} fresh players`);
+
+    const commands = runs.reduce((n, r) => n + r.commands, 0);
+    const refused = runs.reduce((n, r) => n + r.refused, 0);
+    check(refused / commands <= 0.01, `${name}: ${refused} of ${commands} commands refused (at most 1%)`);
+    const stuck = runs.filter((r) => r.final.lanes[lane].current === null).length;
+    check(stuck === 0, `${name}: every player's lane still working on day ${DAYS}`);
+  };
+
+  const awayRuns: Played[][] = [];
+  /** Each kept skill's (and the first style's) players, for the fire's worth on day 5. */
+  const kept = new Map<string, { f?: Feature; runs: Played[] }>();
+  let gatheringJoined = false;
+  for (const [f, lane] of keptSkills()) {
+    const name = title(f.id);
+    const runs: Played[] = PLAYERS.map((seed) => focusedPlayer(f, seed, DAYS, lane));
+    kept.set(f.id, { f, runs });
+    lines.push(`\n## ${name}: ${PLAYERS.length} focused players, ${DAYS} days on the real engine`);
+    common(name, runs, lane, simulate(modelFor(f.id), { days: 30, table }).reached);
 
     // Away, the fire is out: one Gathering lane, so one gathering skill joins the player below.
     if (lane !== 'gathering' || !gatheringJoined) awayRuns.push(runs);
@@ -113,13 +146,57 @@ export function runSimulation(): SimResult {
         `${name}: ${a.id} at level ${lvl} earns ${Math.round(ratio * 100)}% of the best fresh action of its kind (at least 80%)`,
       );
     }
-
-    const commands = runs.reduce((n, r) => n + r.commands, 0);
-    const refused = runs.reduce((n, r) => n + r.refused, 0);
-    check(refused / commands <= 0.01, `${name}: ${refused} of ${commands} commands refused (at most 1%)`);
-    const stuck = runs.filter((r) => r.final.lanes[lane].current === null).length;
-    check(stuck === 0, `${name}: every player's lane still working on day ${DAYS}`);
   }
+
+  // Combat: a focused fighter for each style, in the Combat lane (the first one also works while away).
+  if (FEATURES.some((f) => f.id === 'combat' && f.flag.on))
+    for (const style of STYLES) {
+      const name = title(style);
+      const runs = PLAYERS.map((seed) => fighter(style, seed, DAYS));
+      lines.push(`\n## ${name}: ${PLAYERS.length} focused fighters, ${DAYS} days on the real engine`);
+      common(name, runs, 'combat', modelFighter(style, table), false);
+      if (!kept.has('combat')) {
+        kept.set('combat', { runs });
+        awayRuns.push(runs);
+      }
+    }
+
+  combatProofs(check, lines);
+
+  // A newcomer following First steps: the first crafted gear worn within 15 minutes (the brief).
+  if (FEATURES.some((f) => f.id === 'combat' && f.flag.on)) {
+    const fresh = PLAYERS.map((seed) => newcomer(seed));
+    const worn = Math.max(...fresh.map((n) => n.worn));
+    const fought = Math.max(...fresh.map((n) => n.fought));
+    lines.push(`\n## First steps: ${PLAYERS.length} newcomers pressing each step's button`);
+    lines.push(`The sword worn after ${Math.round(worn)} s; the first hollow rat beaten after ${Math.round(fought)} s`);
+    check(
+      worn <= 15 * 60,
+      `The first crafted gear is worn after ${Math.round(worn)} s at most (target under 15 minutes)`,
+    );
+    const claimed = Math.min(...fresh.map((n) => n.claimed));
+    check(claimed === 6, `Every newcomer claims all six first steps within 30 minutes (${claimed} at least)`);
+  }
+
+  // The fire (as the model measures it, on day 5): an hour with it, every lane at its best action with
+  // the fire's XP and the second Gathering lane, against an hour away with the lanes that run then.
+  const day5 = (id: string) => kept.get(id)?.runs[0].days[4].start;
+  const rate = (id: string, fire: boolean) => {
+    const k = kept.get(id);
+    const s = day5(id);
+    if (!k || !s) return 0;
+    return k.f ? xpPerHour(s, k.f, bestAction(s, k.f), fire) : combatXpPerHour(s, fire);
+  };
+  if (['woodcutting', 'mining', 'smithing', 'combat'].every((id) => kept.has(id))) {
+    const lit = ['woodcutting', 'mining', 'smithing', 'combat'].reduce((n, id) => n + rate(id, true), 0);
+    const out = ['woodcutting', 'smithing', 'combat'].reduce((n, id) => n + rate(id, false), 0);
+    lines.push(`\n## The fire, day 5: ${(lit / out).toFixed(2)}x the XP of an hour away`);
+    check(
+      Math.abs(lit / out / 1.5 - 1) <= 0.25,
+      `An hour with the fire earns ${(lit / out).toFixed(2)}x the XP of an hour away (target 1.5x)`,
+    );
+  }
+
   // The away recap belongs to a player, not a skill: a player with every lane that runs while away at
   // work (each skill kept as above) comes back after 8 hours to at least three good things.
   // Uncommon finds count as one line.

@@ -183,7 +183,7 @@ Every completion rolls for a find at three rarities. Each skill has six finds, a
 | Woodcutting | Bird's nest · Amber nugget | Carved acorn · Heartwood knot | Silverbark seed · Crown of the old wood |
 | Mining | Rough garnet · Rough sapphire | Ancient coin · Crystal geode | Star-iron shard · Heart of the mountain |
 | Smithing | Lucky horseshoe · Masterwork rivets | Guild smith's seal · Quenching flask | Ember of the first forge · Old king's hammer |
-| Melee | Battle trophy · Raider's war-horn | Torn banner · Warlord's seal | Shard of a king’s blade · Troll-chief's tooth |
+| Melee | Battle trophy · Raider's war-horn | Torn banner · Warlord's seal | Shard of a king's blade · Troll-chief's tooth |
 | Archery | Goose fletchings · Hunter's charm | Silver arrowhead · Bowman's ring | Moonlit bowstring · Eagle-feather circlet |
 | Magic | Glimmer stone · Wisp lantern | Rune-scratched tablet · Wight's ring | Star-glass orb · Sorcerer's eye |
 

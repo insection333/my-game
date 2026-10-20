@@ -1,10 +1,12 @@
-// Goals: the ladder on the Hearth. First steps with their buttons and claims (four since session 7);
-// short goals, the daily goal and milestones join in session 9.
-import { fmt, Id, levelFor, t } from '@idle-clash/content';
-import { actionKey, LANE_IDS, laneFor, xpOf, type Command, type LaneId } from '@idle-clash/kernel';
+// Goals: the ladder on the Hearth. First steps with their buttons and claims (all six since
+// session 8); short goals, the daily goal and milestones join in session 9.
+import { fmt, Id, levelFor, t, TIER_LEVELS } from '@idle-clash/content';
+import { actionKey, countOf, LANE_IDS, laneFor, xpOf, type Command, type LaneId, type State } from '@idle-clash/kernel';
 import { z } from 'zod';
 import { defineFeature, defineRoute, type Json } from '../define.ts';
-import { FIRST_STEPS } from './content.ts';
+import { itemOf } from '../shared/catalog.ts';
+import { combatOf } from '../shared/combat/state.ts';
+import { FIRST_STEPS, type FirstStep } from './content.ts';
 import { claim, completionsOf, goalsOf, isDone } from './rules.ts';
 
 /** One goal as the Hearth draws it. */
@@ -15,7 +17,11 @@ export interface GoalRow {
   progress: number;
   state: 'todo' | 'working' | 'ready' | 'claimed';
   /** What its button does: start the step's action, or claim it. Null when there is nothing to press. */
-  button: { label: string; command: Command } | { label: string; claim: string } | null;
+  button:
+    | { label: string; command: Command }
+    | { label: string; claim: string }
+    | { label: string; route: { feature: string; route: string; input: Json } }
+    | null;
   note: string | null;
 }
 export interface GoalsView {
@@ -30,6 +36,49 @@ const LANE_NAMES: Record<LaneId, string> = {
   artisan: 'lane.artisan',
   combat: 'lane.combat',
 };
+
+/** A weapon the player owns and may wear: the one the first fight's step puts on. */
+function wearable(state: State): string | null {
+  for (const id of Object.keys(state.items)) {
+    const gear = itemOf(id)?.gear;
+    if (gear?.slot !== 'weapon' || !gear.style || countOf(state, id) < 1) continue;
+    if (levelFor(xpOf(state, gear.style)) >= TIER_LEVELS[gear.tier - 1]) return id;
+  }
+  return null;
+}
+
+const lower = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
+function rewardText(step: FirstStep): string {
+  const { item, count } = step.reward;
+  const reward =
+    item === 'gold'
+      ? t('goals.reward.gold', { amount: fmt.int(count) })
+      : t('goals.reward.items', { count: fmt.int(count), item: lower(t(`item.${item}`)) });
+  return step.rewardFirst ? t('goals.reward.first', { reward }) : reward;
+}
+
+/** A step not yet done: its button, or why it has none yet. */
+function todo(state: State, now: number, step: FirstStep): Pick<GoalRow, 'button' | 'note'> {
+  if (step.wearWeapon) {
+    const item = wearable(state);
+    return item
+      ? {
+          button: { label: t(`goal.${step.id}.start`), route: { feature: 'combat', route: 'wear', input: { item } } },
+          note: null,
+        }
+      : { button: null, note: t('gear.noWeapon') };
+  }
+  if (step.needs && levelFor(xpOf(state, step.needs.skill)) < step.needs.level)
+    return {
+      button: null,
+      note: t('goals.needs', { skill: t(`skill.${step.needs.skill}`), level: fmt.int(step.needs.level) }),
+    };
+  if (step.start.kind === 'combat' && combatOf(state).worn.weapon === undefined)
+    return { button: null, note: t('stop.noWeapon') };
+  const lane = laneFor(state, now, step.start.action, step.start.kind);
+  const command: Command = { type: 'start', lane, action: step.start.action };
+  return { button: { label: t(`goal.${step.id}.start`), command }, note: null };
+}
 
 export const goals = defineFeature({
   id: 'goals',
@@ -49,9 +98,9 @@ export const goals = defineFeature({
     'hearth.goals': ({ state, now }) => {
       const { claimed } = goalsOf(state);
       const rows = FIRST_STEPS.map((step): GoalRow => {
-        const reward = t('goals.reward.gold', { amount: fmt.int(step.reward.count) });
+        const reward = rewardText(step);
         const name = t(`goal.${step.id}`);
-        const progress = Math.min(1, completionsOf(state, step) / step.completions);
+        const progress = step.completions ? Math.min(1, completionsOf(state, step) / step.completions) : 0;
         if (claimed.includes(step.id))
           return { id: step.id, name, reward, progress: 1, state: 'claimed', button: null, note: t('goals.claimed') };
         if (isDone(state, step))
@@ -61,13 +110,15 @@ export const goals = defineFeature({
             reward,
             progress: 1,
             state: 'ready',
-            button: { label: t('goals.claim', { reward }), claim: step.id },
+            button: { label: step.rewardFirst ? t('goals.finish') : t('goals.claim', { reward }), claim: step.id },
             note: null,
           };
-        const working = LANE_IDS.find((l) => {
-          const run = state.lanes[l].current;
-          return run && actionKey(run.action) === actionKey(step.start.action);
-        });
+        const working =
+          !step.wearWeapon &&
+          LANE_IDS.find((l) => {
+            const run = state.lanes[l].current;
+            return run && actionKey(run.action) === actionKey(step.start.action);
+          });
         if (working)
           return {
             id: step.id,
@@ -78,27 +129,7 @@ export const goals = defineFeature({
             button: null,
             note: t('goals.inLane', { lane: t(LANE_NAMES[working]) }),
           };
-        if (step.needs && levelFor(xpOf(state, step.needs.skill)) < step.needs.level)
-          return {
-            id: step.id,
-            name,
-            reward,
-            progress,
-            state: 'todo',
-            button: null,
-            note: t('goals.needs', { skill: t(`skill.${step.needs.skill}`), level: fmt.int(step.needs.level) }),
-          };
-        const lane = laneFor(state, now, step.start.action, step.start.kind);
-        const command: Command = { type: 'start', lane, action: step.start.action };
-        return {
-          id: step.id,
-          name,
-          reward,
-          progress,
-          state: 'todo',
-          button: { label: t(`goal.${step.id}.start`), command },
-          note: null,
-        };
+        return { id: step.id, name, reward, progress, state: 'todo', ...todo(state, now, step) };
       });
       const done = rows.filter((r) => r.state === 'claimed').length;
       return {

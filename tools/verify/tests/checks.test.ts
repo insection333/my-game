@@ -5,7 +5,10 @@ import { checkContent } from '../checks/content.ts';
 import { checkFeatureImports, checkManifest, checkPackageDeps } from '../checks/manifest.ts';
 import { literalStringKeys, sampleStates } from '../checks/sources.ts';
 
-const states = sampleStates(FEATURES.flatMap((f) => (f.content.skill ? [f.content.skill.id] : [])));
+const states = sampleStates(
+  FEATURES.flatMap((f) => (f.content.skill ? [f.content.skill.id] : [])),
+  FEATURES,
+);
 const [woodcutting] = FEATURES;
 const slots = [
   'skills.list',
@@ -16,6 +19,9 @@ const slots = [
   'collection.log',
   'hearth.nextUp',
   'hearth.goals',
+  'combat.loadout',
+  'combat.foes',
+  'combat.triangle',
 ];
 const manifest = (features: Feature[], folders = features.map((f) => f.id)) =>
   checkManifest({ features, slots, folders, states });

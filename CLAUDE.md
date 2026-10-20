@@ -18,7 +18,7 @@ The plan is `docs/BRIEF.md`: the pillars, scope, targets, sessions and the owner
 | `pnpm design:check` | Runs the paper model against every target (writes `design/model/report.md`) |
 | `pnpm design:build` | Rebuilds `GAME_DESIGN.md` from `design/GAME_DESIGN.template.md` and the model |
 
-To add a feature: make `packages/features/src/<id>/` with `content.ts`, `rules.ts` and `index.ts` (`defineFeature`), add it to `registry.ts`, add its words to `packages/content/src/strings/en.ts`, and run `pnpm verify`; steps 2 and 3 list everything still missing. Woodcutting is the model to copy.
+To add a feature: make `packages/features/src/<id>/` with `content.ts`, `rules.ts` and `index.ts` (`defineFeature`), add it to `registry.ts`, add its words to the strings files (`packages/content/src/strings/`: `en.ts`, `en-skills.ts`, `en-combat.ts`), and run `pnpm verify`; steps 2 and 3 list everything still missing. Woodcutting is the model to copy.
 
 To change the game design: edit the model in `design/model/` or the template, run `pnpm design:check`, then `pnpm design:build`, and commit the results. Never edit `GAME_DESIGN.md`, `FEATURES.md` or `GLOSSARY.md` by hand; `GLOSSARY.md` comes from `packages/content/src/glossary.ts`.
 
@@ -70,6 +70,7 @@ To change the game design: edit the model in `design/model/` or the template, ru
 | 5 The server shell | Done: accounts, security, contracts, the live channel, flags, telemetry and error reports; the page plays through the server; the hostile-input suite (245 cases) and the account tests green, sign-up and sign-in rate-limited |
 | 6 Woodcutting, end to end | Done: finds with luck and the collection log, mastery and level moments, the first first-steps goal, save version 2, eight new icons, the real simulation for Woodcutting; a newcomer chops within 30 s, 8 hours away is credited exactly, a Rare find has its moment |
 | 7 Mining and Smithing | Done: both skills on the shared machinery, recipes with ingredients and the three weapon kinds, first steps 2 to 4, the fire's lane for a second skill, the Storehouse's items with Comes from and Used in, 43 new icons, the simulation for all three skills; every lane stop says why, a queued action starts while away |
-| 8 Combat | Next |
+| 8 Combat | Done: the three styles and Hitpoints, eight foes, the triangle, gear, food, retreat, Your odds from the engine's own fights, first steps 5 and 6, 27 new icons, fighters in the simulation; each style wins where the triangle says, Your odds agrees with engine-run fights, a retreat costs nothing |
+| 9 Goals, the Storehouse and vendor, hiscores, admin | Next |
 
-Outstanding: nothing beyond the next session. Forgotten passwords are reset by an admin (session 9) while email is off. Using a Rare find (500 mastery completions), selling, Storehouse space and the vendor arrive in session 9. The fire's 1.5x target is read by the simulation once Combat gives the player a fourth lane (session 8), as the model measured it. Icons for foes and food are drawn to `ART.md` in session 8.
+Outstanding: nothing beyond the next session. Forgotten passwords are reset by an admin (session 9) while email is off. Using a Rare find (500 mastery completions), selling, Storehouse space and the vendor (food is bought there; until then the first fight's bread comes from First steps) arrive in session 9, with the Combat page's food slot (`combat.food`).

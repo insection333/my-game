@@ -1,8 +1,8 @@
 // Reading the workspace for the checks: feature folders and their files, package dependencies,
 // sample states to fill slots from, and string keys that appear literally in source code.
 import { MAX_LEVEL, XP_TABLE } from '@idle-clash/content';
-import { load, newState } from '@idle-clash/kernel';
-import type { SlotContext } from '@idle-clash/features';
+import { load, newState, type State } from '@idle-clash/kernel';
+import type { Feature, SlotContext } from '@idle-clash/features';
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { ROOT } from '../exec.ts';
@@ -47,7 +47,12 @@ export function workspacePackages(): { name: string; deps: string[] }[] {
 }
 
 /** A new player, every sample save (upgraded), and a player at the top of every skill: slots must fill from all. */
-export function sampleStates(skills: string[] = []): SlotContext[] {
+/**
+ * States to fill slots from: a newcomer, every saved version, a player at the top of every skill, and
+ * that player holding ten of every item as each feature's routes run their examples in turn (wearing a
+ * sword, then taking it off), so slots are seen in the states those routes make.
+ */
+export function sampleStates(skills: string[] = [], features: readonly Feature[] = []): SlotContext[] {
   const now = Date.UTC(2026, 9, 20, 12);
   const maxed = newState(2, now);
   for (const s of skills) maxed.skills[s] = { xp: XP_TABLE[MAX_LEVEL] };
@@ -58,10 +63,20 @@ export function sampleStates(skills: string[] = []): SlotContext[] {
       const raw = JSON.parse(readFileSync(join(dir, f), 'utf8')) as { state: { clock: number } };
       return load(raw, raw.state.clock).doc.state;
     });
+  let played: State = {
+    ...maxed,
+    items: Object.fromEntries(features.flatMap((f) => (f.content.items ?? []).map((i) => [i.id, 10]))),
+  };
+  const routed: SlotContext[] = [];
+  for (const route of features.flatMap((f) => Object.values(f.routes))) {
+    played = route.run(played, route.example, now).state;
+    routed.push({ state: played, now });
+  }
   return [
     { state: newState(1, now), now },
     ...samples.map((state) => ({ state, now: state.clock })),
     { state: maxed, now },
+    ...routed,
   ];
 }
 

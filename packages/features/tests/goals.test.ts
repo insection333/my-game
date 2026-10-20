@@ -1,6 +1,8 @@
-// The first step on the Hearth: its button starts it, it is ready once done, and claiming pays once.
+// First steps on the Hearth: each button starts its step, a step is ready once done, and claiming pays
+// once; the sword is worn from its step, and the first fight's bread arrives before it.
 import { createEngine, newState, seeded, type Command, type State } from '@idle-clash/kernel';
 import { describe, expect, it } from 'vitest';
+import type { Json } from '../src/define.ts';
 import { goals, type GoalsView } from '../src/goals/index.ts';
 import { actionRegistry, FEATURES } from '../src/index.ts';
 
@@ -41,7 +43,7 @@ describe('first steps', () => {
     const again = claim(first.state);
     expect(again.state.items.gold).toBe(25);
     expect(again.events).toEqual([]);
-    expect(view(first.state)).toMatchObject({ progress: '1 of 4 done' });
+    expect(view(first.state)).toMatchObject({ progress: '1 of 6 done' });
     expect(view(first.state).rows[0]).toMatchObject({ state: 'claimed', note: 'Done' });
     expect(done.items).toEqual({});
   });
@@ -53,5 +55,26 @@ describe('first steps', () => {
     expect(mine.button).toMatchObject({ label: 'Start mining', command: { lane: 'gathering2' } });
     const forge = view(chopping).rows.find((r) => r.id === 'forge-a-copper-sword')!;
     expect(forge).toMatchObject({ button: null, note: 'Needs Smithing level 2' });
+  });
+
+  it('wears the forged sword from its button, and hands over the bread before the first fight', () => {
+    const forged = { ...newState(1, T0), items: { 'copper-sword': 1 }, mastery: { 'smithing:copper-sword': 1 } };
+    const row = (s: State, id: string) => view(s).rows.find((r) => r.id === id)!;
+    expect(row(newState(1, T0), 'wear-your-sword')).toMatchObject({ button: null, note: 'Forge a weapon in Smithing' });
+    expect(row(forged, 'defeat-a-hollow-rat')).toMatchObject({
+      reward: '10 bread, given first',
+      note: 'Wear a weapon first',
+    });
+    const button = row(forged, 'wear-your-sword').button as { route: { feature: string; route: string; input: Json } };
+    expect(button.route).toEqual({ feature: 'combat', route: 'wear', input: { item: 'copper-sword' } });
+    const combat = FEATURES.find((f) => f.id === 'combat')!;
+    const worn = combat.routes.wear.run(forged, button.route.input, T0).state;
+    expect(row(worn, 'wear-your-sword')).toMatchObject({ state: 'ready', button: { claim: 'wear-your-sword' } });
+    const claimed = claim(worn, 'wear-your-sword').state;
+    expect(claimed.items).toMatchObject({ gold: 25, bread: 10 });
+    expect(row(claimed, 'defeat-a-hollow-rat').button).toMatchObject({ label: 'Fight', command: { lane: 'combat' } });
+    const won = { ...claimed, mastery: { ...claimed.mastery, 'combat:hollow-rat': 1 } };
+    expect(row(won, 'defeat-a-hollow-rat').button).toMatchObject({ label: 'Mark done' });
+    expect(claim(won, 'defeat-a-hollow-rat').state.items).toMatchObject({ gold: 25, bread: 10 });
   });
 });

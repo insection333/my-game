@@ -196,3 +196,13 @@ a.row:hover {
 .tierTabs {
   padding: 0 var(--s-4);
 }
+
+/* A combat skill has no actions of its own: it points to the Combat page. */
+.trained {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  padding: var(--s-3) var(--s-4);
+}

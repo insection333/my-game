@@ -57,6 +57,20 @@ export const M = {
   eggshell: tone('#e4f2f3', '#a9cfd6', '#6c97a3'),
   moonstone: tone('#f2fbff', '#a9d0e6', '#5f8fae'),
   seal: tone('#41545c', '#2c3b41', '#1b262b'),
+  /** Foes' skins and what they wear (session 8). */
+  goblin: tone('#c9dc8e', '#80a046', '#4d6527'),
+  orc: tone('#b3bf8f', '#6d7d50', '#414c30'),
+  wisp: tone('#eafff7', '#98dcc9', '#4b9583'),
+  wight: tone('#f1f4ee', '#bcc6c0', '#7c8b87'),
+  troll: tone('#bfbf9f', '#83846a', '#50513f'),
+  cloth: tone('#a6c491', '#577b4c', '#30492c'),
+  banner: tone('#ec9182', '#b03c30', '#6c2119'),
+  bone: tone('#fbf5e3', '#e1d3ad', '#a9976d'),
+  feather: tone('#ffffff', '#d8dcd5', '#979f98'),
+  eagle: tone('#ddbb8e', '#93693f', '#5b3f24'),
+  /** Food: a pie's meat, a stew's broth. */
+  meat: tone('#df9474', '#a04c35', '#62291c'),
+  broth: tone('#e5ae69', '#ad6d33', '#6c421c'),
 };
 
 /** A circle as a path, so it can be shaded like any shape. */
@@ -66,6 +80,10 @@ export const circle = (cx: number, cy: number, r: number) =>
 /** An ellipse as a path. */
 export const ellipse = (cx: number, cy: number, rx: number, ry: number) =>
   `M${cx - rx} ${cy}a${rx} ${ry} 0 1 0 ${rx * 2} 0a${rx} ${ry} 0 1 0 ${-rx * 2} 0Z`;
+
+/** An ellipse drawn the other way round: added to a shape's path, it cuts a hole (a ring). */
+export const hole = (cx: number, cy: number, rx: number, ry: number) =>
+  `M${cx - rx} ${cy}a${rx} ${ry} 0 1 1 ${rx * 2} 0a${rx} ${ry} 0 1 1 ${-rx * 2} 0Z`;
 
 export interface ShapeProps {
   d: string;

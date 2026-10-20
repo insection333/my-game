@@ -29,12 +29,12 @@ const BAR_VALUE = [2, 7, 36, 96];
 const LOG_VALUE = [1, 4, 14, 35];
 /** Gear by kind: its level within the tier's ten, and how many bars and logs it takes. */
 const GEAR = [
-  { kind: 'sword', offset: 1, bars: 3, logs: 0 },
-  { kind: 'staff', offset: 2, bars: 2, logs: 1 },
-  { kind: 'bow', offset: 3, bars: 1, logs: 2 },
-  { kind: 'helm', offset: 5, bars: 2, logs: 0 },
-  { kind: 'legs', offset: 6, bars: 3, logs: 0 },
-  { kind: 'body', offset: 8, bars: 5, logs: 0 },
+  { kind: 'sword', offset: 1, bars: 3, logs: 0, slot: 'weapon', style: 'melee' },
+  { kind: 'staff', offset: 2, bars: 2, logs: 1, slot: 'weapon', style: 'magic' },
+  { kind: 'bow', offset: 3, bars: 1, logs: 2, slot: 'weapon', style: 'archery' },
+  { kind: 'helm', offset: 5, bars: 2, logs: 0, slot: 'helm' },
+  { kind: 'legs', offset: 6, bars: 3, logs: 0, slot: 'legs' },
+  { kind: 'body', offset: 8, bars: 5, logs: 0, slot: 'body' },
 ] as const;
 
 const list = (r: Record<string, number>) => Object.entries(r).map(([item, count]) => ({ item, count }));
@@ -91,6 +91,7 @@ export const ITEMS: Item[] = [
       id: `${m}-${g.kind}`,
       kind: 'gear',
       value: Math.round((g.bars * BAR_VALUE[i] + g.logs * LOG_VALUE[i]) * 1.4),
+      gear: { slot: g.slot, tier: i + 1, ...('style' in g ? { style: g.style } : {}) },
     })),
   ),
   ...FINDS.map((f): Item => ({ id: f.item, kind: 'find', value: FIND_VALUE[f.item] ?? 0 })),

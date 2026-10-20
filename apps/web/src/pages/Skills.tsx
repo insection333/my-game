@@ -13,8 +13,9 @@ export function Skills() {
   const { state, now, features } = useGame();
   const rows = fills<SkillSummary>(features, 'skills.list', state, now);
   const laneOf = (feature: string) => {
+    // A skill with no actions of its own (Melee, Hitpoints) is trained in the Combat lane.
     const rules = Object.values(features.find((f) => f.id === feature)?.rules ?? {});
-    return rules[0]?.lane ?? 'gathering';
+    return rules[0]?.lane ?? 'combat';
   };
   const groups = LANE_IDS.filter((l) => l !== 'gathering2')
     .map((lane) => ({ lane, rows: rows.filter((r) => laneOf(r.feature) === lane) }))

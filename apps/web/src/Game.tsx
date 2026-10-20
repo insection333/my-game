@@ -4,7 +4,8 @@ import { Ready } from './Ready.tsx';
 import { Hearth } from './pages/Hearth.tsx';
 import { Skill } from './pages/Skill.tsx';
 import { Skills } from './pages/Skills.tsx';
-import { Combat, Hiscores, NotFound, Storehouse } from './pages/Simple.tsx';
+import { Combat } from './pages/Combat.tsx';
+import { Hiscores, NotFound, Storehouse } from './pages/Simple.tsx';
 import { Shell } from './shell/Shell.tsx';
 
 function Page({ path }: { path: string }) {

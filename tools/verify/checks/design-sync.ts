@@ -9,8 +9,10 @@ import {
   t,
   XP_TABLE,
 } from '@idle-clash/content';
-import { skill, type Feature } from '@idle-clash/features';
+import { combatData, skill, type Feature } from '@idle-clash/features';
 import {
+  FOES as MODEL_FOES,
+  FOODS as MODEL_FOODS,
   FINDS,
   LUCK_GUARANTEE_SECONDS,
   LUCK_STEP as MODEL_LUCK_STEP,
@@ -34,6 +36,36 @@ export function checkDesign(features: readonly Feature[], modelXp: number[]): st
   const theirs = [MODEL_LUCK_STEP, LUCK_GUARANTEE_SECONDS, RARITY[1].chance, RARITY[2].chance];
   if (JSON.stringify(ours) !== JSON.stringify(theirs))
     problems.push(`Find chances and luck ${JSON.stringify(ours)} differ from the design's ${JSON.stringify(theirs)}`);
+  // Foes and foods, number for number (a built combat feature reads these).
+  if (features.some((f) => f.id === 'combat')) {
+    const ours = combatData.FOES.map((x) => [
+      t(`action.combat.${x.id}`),
+      x.style,
+      x.level,
+      x.hitpoints,
+      x.tier,
+      x.hp,
+      x.maxHit,
+      x.gold,
+      t(`item.${x.drop}`),
+    ]);
+    const theirs = MODEL_FOES.map((x) => [
+      x.name,
+      x.style,
+      x.level,
+      x.hitpoints,
+      x.tier,
+      x.hp,
+      x.maxHit,
+      x.gold,
+      x.drop,
+    ]);
+    if (JSON.stringify(ours) !== JSON.stringify(theirs))
+      problems.push(`Foes differ from the design: ${JSON.stringify(ours)} against ${JSON.stringify(theirs)}`);
+    const food = (xs: { heals: number; price: number; level: number }[]) => xs.map((x) => [x.heals, x.price, x.level]);
+    if (JSON.stringify(food([...combatData.FOODS])) !== JSON.stringify(food(MODEL_FOODS)))
+      problems.push('Foods differ from the design (heals, price, level)');
+  }
   for (const f of features) {
     const sk = f.content.skill;
     if (!sk) continue;

@@ -8,16 +8,23 @@ export interface ActionContext {
   readonly state: State;
   /** When this happens. */
   readonly at: number;
+  /** When this repetition started: `at` itself in `check` and `duration`, earlier in `complete`. */
+  readonly startedAt: number;
   readonly lane: LaneId;
   /** Whether the fire is burning at this moment. */
   readonly fireBurning: boolean;
   /** The lane's next random number in [0, 1). */
   roll(): number;
+  /** For rules marked `seeded`: a number fixed for this repetition, the same in `duration` and
+   *  `complete`, so a repetition decided at its start (a whole fight) plays out the same at its end. */
+  readonly seed?: number;
   emit(event: GameEvent): void;
 }
 
 export interface ActionRules {
   lane: LaneKind;
+  /** Draw one seed as each repetition starts and pass it to `duration` and `complete`. */
+  seeded?: boolean;
   /** Why the action cannot start (or repeat) right now, or null if it can. Must not change state. */
   check(ctx: ActionContext, action: ActionRef): StopReason | null;
   /** How long one repetition takes, in milliseconds. May roll; must not change state otherwise. */

@@ -84,7 +84,9 @@ export function checkContent({ features, states, literalKeys }: ContentInput): {
     if (sk) {
       attempt(`${where}: skill name`, () => t(`skill.${sk.id}`));
       const finds = f.content.finds ?? [];
-      for (const rarity of RARITIES) {
+      // A skill with something to do (actions, or fights for a style) has six finds; Hitpoints has none.
+      const findsSix = finds.length > 0 || actions.length > 0;
+      for (const rarity of findsSix ? RARITIES : []) {
         const pair = finds.filter((x) => x.rarity === rarity);
         if (pair.length !== 2 || pair[0].greater || !pair[1].greater)
           problems.push(`${where}: needs a lesser then a greater ${rarity} find (it has ${pair.length})`);

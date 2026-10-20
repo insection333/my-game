@@ -16,6 +16,7 @@ import { runAxe, runPerf } from './web/audits.ts';
 import { runReview } from './web/review.ts';
 import { runScreens } from './web/screens.ts';
 import { runFlows } from './web/flows.ts';
+import { runCombatProofs } from './web/proofs-combat.ts';
 import { runLaneProofs } from './web/proofs-lanes.ts';
 import { runProofs } from './web/proofs.ts';
 import { ensureBuilt, ensureServer, views as webViews } from './web/session.ts';
@@ -81,7 +82,7 @@ async function manifest(): Promise<StepResult> {
   const { features } = loaded;
   const folders = featureFolders();
   const problems = [
-    ...checkManifest({ features, slots: map.slots, folders, states: sampleStates(skillsOf(features)) }),
+    ...checkManifest({ features, slots: map.slots, folders, states: sampleStates(skillsOf(features), features) }),
     ...checkPackageDeps(workspacePackages()),
     ...checkFeatureImports(featureFiles(), folders),
   ];
@@ -102,7 +103,11 @@ async function content(): Promise<StepResult> {
   if ('error' in loaded) return fail('the features failed to load', loaded.error);
   const { features } = loaded;
   const literalKeys = literalStringKeys(allStringKeys());
-  const { problems, strings } = checkContent({ features, states: sampleStates(skillsOf(features)), literalKeys });
+  const { problems, strings } = checkContent({
+    features,
+    states: sampleStates(skillsOf(features), features),
+    literalKeys,
+  });
   problems.push(...checkDesign(features, JSON.parse(read('design/model/xp-table.json')) as number[]));
   const stale = regenerate('GLOSSARY.md', glossaryMd());
   if (stale) problems.push(stale);
@@ -157,13 +162,14 @@ async function screenshots(): Promise<StepResult> {
   const flows = await runFlows(served.url);
   const proofs = await runProofs(served);
   const lanes = await runLaneProofs(served);
+  const combat = await runCombatProofs(served);
   const views = webViews().length;
-  const problems = [...r.problems, ...flows.problems, ...proofs.problems, ...lanes];
+  const problems = [...r.problems, ...flows.problems, ...proofs.problems, ...lanes, ...combat];
   if (problems.length)
     return fail(`${problems.length} layout or flow problem${problems.length > 1 ? 's' : ''}`, problems.join('\n'));
   const awaiting = r.awaiting.size ? `; ${r.awaiting.size} slots await their features` : '';
   return pass(
-    `${views} views x 3 widths x 3 engines (${r.shots} shots): no overflow, taps 24px+, one design system, specs met; account flows (${flows.steps} checks) work; a newcomer is chopping after ${proofs.newcomerSeconds.toFixed(0)} s at a person's pace; a Rare find has its moment; a stopped lane says why; a queued action ran while away${awaiting}`,
+    `${views} views x 3 widths x 3 engines (${r.shots} shots): no overflow, taps 24px+, one design system, specs met; account flows (${flows.steps} checks) work; a newcomer is chopping after ${proofs.newcomerSeconds.toFixed(0)} s at a person's pace; a Rare find has its moment; a stopped lane says why; a queued action ran while away; gear is worn from the page and a retreat costs nothing${awaiting}`,
   );
 }
 

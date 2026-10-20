@@ -1,5 +1,17 @@
 import { describe, expect, it } from 'vitest';
-import { createEngine, HOUR, laneFor, MINUTE, newState, seeded, SECOND, State, type Command } from '../src/index.ts';
+import {
+  createEngine,
+  give,
+  HOUR,
+  laneFor,
+  MINUTE,
+  newState,
+  registryOf,
+  seeded,
+  SECOND,
+  State,
+  type Command,
+} from '../src/index.ts';
 import { A, registry, T0 } from './fixtures.ts';
 
 const engine = createEngine(registry);
@@ -173,5 +185,39 @@ describe('advance', () => {
     const ms = performance.now() - start;
     expect(state.mastery['mining:copper-vein']).toBe(11520);
     expect(ms).toBeLessThan(400);
+  });
+});
+
+describe('seeded repetitions', () => {
+  // A fight-like rule: its length and its outcome both come from one seed drawn as it starts.
+  const fightLike = registryOf({
+    combat: {
+      duel: {
+        lane: 'combat',
+        seeded: true,
+        check: () => null,
+        duration: (ctx) => 3000 + (ctx.seed! % 7) * 1000,
+        complete: (ctx) => give(ctx.state, 'tokens', 1 + (ctx.seed! % 7)),
+      },
+    },
+  });
+  const duels = createEngine(fightLike);
+  const duel = { feature: 'combat', id: 'duel' };
+
+  it('gives duration and completion the same seed, so a repetition ends as it was decided', () => {
+    const s = duels.command(newState(9, T0), T0, { type: 'start', lane: 'combat', action: duel }, rng).state;
+    const run = s.lanes.combat.current!;
+    expect(run.seed).toBeDefined();
+    expect(run.endsAt - run.startedAt).toBe(3000 + (run.seed! % 7) * 1000);
+    const after = duels.advance(s, run.endsAt, rng).state;
+    expect(after.items.tokens).toBe(1 + (run.seed! % 7));
+  });
+
+  it('still composes: an hour in one step equals the same hour in pieces', () => {
+    const s = duels.command(newState(9, T0), T0, { type: 'start', lane: 'combat', action: duel }, rng).state;
+    const whole = duels.advance(s, T0 + HOUR, rng).state;
+    let pieces = s;
+    for (let t = T0 + 7 * MINUTE; t < T0 + HOUR; t += 7 * MINUTE) pieces = duels.advance(pieces, t, rng).state;
+    expect(duels.advance(pieces, T0 + HOUR, rng).state).toEqual(whole);
   });
 });
