@@ -16,13 +16,22 @@ export interface LaneCardProps {
   icon?: ReactNode;
   actions?: ReactNode;
   compact?: boolean;
+  /** Stopped by itself and waiting for the player: the chip says why and stands out. */
+  halted?: boolean;
   onOpen?: () => void;
 }
 
-export function LaneCard({ lane, doing, idle, progress, note, icon, actions, compact, onOpen }: LaneCardProps) {
+export function LaneCard({ lane, doing, idle, progress, note, icon, actions, compact, halted, onOpen }: LaneCardProps) {
   if (compact) {
     return (
-      <button type="button" data-ui="LaneChip" className={s.chip} data-idle={idle || undefined} onClick={onOpen}>
+      <button
+        type="button"
+        data-ui="LaneChip"
+        className={s.chip}
+        data-idle={idle || undefined}
+        data-halted={halted || undefined}
+        onClick={onOpen}
+      >
         {icon}
         <span className={s.chipText}>
           <span className="visually-hidden">{lane}: </span>

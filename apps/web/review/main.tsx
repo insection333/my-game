@@ -3,9 +3,9 @@
 // this page.
 import '@idle-clash/ui/tokens.css';
 import '@idle-clash/ui/base.css';
-import { ICONS, ItemIcon, REFERENCE_SET, type IconName } from '@idle-clash/ui';
+import { ICONS, ItemIcon, REFERENCE_SET } from '@idle-clash/ui';
 
-const ALL = [...REFERENCE_SET, ...(Object.keys(ICONS) as IconName[]).filter((n) => !REFERENCE_SET.includes(n))];
+const ALL = [...REFERENCE_SET, ...Object.keys(ICONS).filter((n) => !REFERENCE_SET.includes(n))];
 import { createRoot } from 'react-dom/client';
 
 const Sheet = ({ theme }: { theme: 'light' | 'dark' }) => (

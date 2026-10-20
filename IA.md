@@ -103,11 +103,11 @@ The list, then one page per skill (`/skills/woodcutting`).
 | 1 | `skills.list` | every skill | Seven rows: icon, name, level, a progress bar to the next level, and the next unlock. Grouped by lane |
 | — | **A skill's page** | | |
 | 1 | `skill.header` | that skill | Level, XP to next, the next unlock and how far away it is |
-| 2 | `skill.actions` | that skill | ActionRow per action or recipe: name, level, seconds, XP an hour, what it gives or takes, mastery step and bar, Start and Queue next. Locked ones show their level, never hidden |
+| 2 | `skill.actions` | that skill | ActionRow per action or recipe: name, level, seconds, XP an hour, what it gives or takes, mastery step and bar, Start and Queue next. One tier at a time, under tabs (Tier 1 to 4), opening on the newest tier with something open; locked ones show their level, never hidden |
 | 3 | `skill.finds` | that skill | The six finds, found (with the date) or silhouetted (with where it comes from), with their rarity |
 | 4 | `skill.ladder` | that skill | The unlock ladder 1–40, the current level marked, past unlocks muted |
 
-- **At 390:** the header and the first four actions; the finds come before the long ladder. **At 1,440:** the header, every action of the current tier with the finds under them, and the ladder beside them.
+- **At 390:** the header and the current tier's actions; the finds come before the long ladder. **At 1,440:** the header, the current tier's actions with the finds under them, and the ladder beside them.
 
 **Visible without scrolling** (checked by verify at 390 × 844 and 1,440 × 900; a slot no built feature fills yet is skipped):
 
@@ -115,7 +115,9 @@ The list, then one page per skill (`/skills/woodcutting`).
 | --- | --- | --- |
 | /skills | `skills.list` | `skills.list` |
 | /skills/woodcutting | `skill.header`, `skill.actions` | `skill.header`, `skill.actions`, `skill.ladder` |
-- **Newcomer:** Woodcutting's page shows Pine tree ready, the next three actions with their levels, and the ladder's first ten levels.
+| /skills/mining | `skill.header`, `skill.actions` | `skill.header`, `skill.actions`, `skill.ladder` |
+| /skills/smithing | `skill.header`, `skill.actions` | `skill.header`, `skill.actions`, `skill.ladder` |
+- **Newcomer:** Woodcutting's page opens on Tier 1: Pine tree ready and Old pine with its level; the other tiers are a tap away, and the ladder opens at level 1.
 
 ### Combat
 

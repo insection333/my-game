@@ -5,6 +5,7 @@ import {
   GREATER_FROM_TIER,
   levelProgress,
   MASTERY_STEPS,
+  TIER_LEVELS,
   t,
   XP_TABLE,
   type Find,
@@ -34,6 +35,8 @@ export interface SkillSummary {
 }
 export interface SkillActionRow {
   action: { feature: string; id: string };
+  /** The tier the action belongs to (tiers open at levels 1, 10, 20 and 30). */
+  tier: number;
   name: string;
   locked: boolean;
   opensAt: string | null;
@@ -146,6 +149,7 @@ export function skillSlots(def: SkillDef): Record<string, SlotFill> {
         const [from, to] = [MASTERY_STEPS[step - 1] ?? 0, MASTERY_STEPS[step] ?? 0];
         return {
           action: { feature, id: a.id },
+          tier: TIER_LEVELS.filter((l) => a.level >= l).length,
           name: t(`action.${feature}.${a.id}`),
           locked: level < a.level,
           opensAt: level < a.level ? t('action.opensAt', { level: fmt.int(a.level) }) : null,

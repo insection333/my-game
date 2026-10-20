@@ -37,6 +37,8 @@ export const en: Record<string, string> = {
   'hearth.lanes.title': 'Your lanes',
   'skills.title': 'Skills',
   'skill.actions.title': 'Actions',
+  'skill.tiers': 'Tiers',
+  'skill.tier': 'Tier {tier}',
   'skill.ladder.title': 'Every level',
   'combat.title': 'Combat',
   'combat.lead': 'Opens when you can forge a weapon.',

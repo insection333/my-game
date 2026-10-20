@@ -61,6 +61,13 @@
   border-style: dashed;
 }
 
+.chip[data-halted] {
+  color: var(--alert);
+  border-style: solid;
+  border-color: var(--alert);
+  font-weight: 700;
+}
+
 .chipText {
   overflow: hidden;
   text-overflow: ellipsis;

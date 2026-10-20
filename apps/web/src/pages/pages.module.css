@@ -191,3 +191,8 @@ a.row:hover {
 .below {
   margin-top: var(--s-4);
 }
+
+/* The tier tabs sit under the Actions heading, flush with the rows. */
+.tierTabs {
+  padding: 0 var(--s-4);
+}
