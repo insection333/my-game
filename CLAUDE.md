@@ -18,7 +18,9 @@ The plan is `docs/BRIEF.md`: the pillars, scope, targets, sessions and the owner
 | `pnpm design:check` | Runs the paper model against every target (writes `design/model/report.md`) |
 | `pnpm design:build` | Rebuilds `GAME_DESIGN.md` from `design/GAME_DESIGN.template.md` and the model |
 
-To change the game design: edit the model in `design/model/` or the template, run `pnpm design:check`, then `pnpm design:build`, and commit the results. Never edit `GAME_DESIGN.md` or `FEATURES.md` by hand.
+To add a feature: make `packages/features/src/<id>/` with `content.ts`, `rules.ts` and `index.ts` (`defineFeature`), add it to `registry.ts`, add its words to `packages/content/src/strings/en.ts`, and run `pnpm verify`; steps 2 and 3 list everything still missing. Woodcutting is the model to copy.
+
+To change the game design: edit the model in `design/model/` or the template, run `pnpm design:check`, then `pnpm design:build`, and commit the results. Never edit `GAME_DESIGN.md`, `FEATURES.md` or `GLOSSARY.md` by hand; `GLOSSARY.md` comes from `packages/content/src/glossary.ts`.
 
 ## Conventions
 
@@ -62,6 +64,7 @@ To change the game design: edit the model in `design/model/` or the template, ru
 | 0 Design on paper | Done: `GAME_DESIGN.md`, `IA.md`, `GLOSSARY.md`; every target passes in the paper model |
 | 1 Workspace and verify | Done: seven packages; `pnpm verify` green locally and on GitHub Actions (steps 6–9 arrive in session 4) |
 | 2 The kernel | Done: `advance` composes (property-tested), saves round-trip and mend, requests never interleave and act once |
-| 3 The feature framework | Next |
+| 3 The feature framework | Done: `defineFeature`, the manifest and content checks, effects with formatters, the strings file; Woodcutting's content and rules behind its flag |
+| 4 The shell and the design system | Next |
 
 Outstanding: nothing beyond the next session.

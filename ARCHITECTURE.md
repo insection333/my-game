@@ -30,14 +30,14 @@ All game logic lives in feature folders on a small kernel. The apps only host fe
 | Package | Holds | May import | Built in |
 | --- | --- | --- | --- |
 | `@idle-clash/kernel` | The state schema and its versions, time, randomness, `advance`, lanes and the Next queue, events, mending, one-at-a-time requests. Its subpath `@idle-clash/kernel/store` holds the SQLite store and is for the server only | nothing in the workspace | Session 2 (built) |
-| `@idle-clash/content` | Content schemas (Zod), the effect kinds with their handlers and text formatters, the strings file and glossary | kernel | Session 3 |
+| `@idle-clash/content` | Content schemas (Zod), the effect kinds with their handlers and text formatters, levels and mastery, the number formatter, the strings file and the glossary | kernel | Session 3 (built) |
 | `@idle-clash/ui` | Design tokens and about ten components | nothing in the workspace | Session 4 |
-| `@idle-clash/features` | The registry and one folder per feature | kernel, content, ui | From session 3 |
+| `@idle-clash/features` | `defineFeature`, the registry, shared skill machinery (`shared/`), and one folder per feature | kernel, content, ui | Session 3 (built); features from session 6 |
 | `@idle-clash/server` | Fastify: feature routes, accounts, the live channel, admin | kernel, content, features | Session 5 |
 | `@idle-clash/web` | The shell: the pages and slots from `IA.md` | content, ui, features | Session 4 |
 | `@idle-clash/tools` | `pnpm verify`, the simulation, load test, review sheets | anything | Session 1 onward |
 
-Two rules hold on top of the table: **a feature never imports another feature**, and **nothing imports an app**. Features cooperate through shared state read via the kernel, events they announce, and queries ("Used in" asks every feature about an item). From session 3, verify's manifest step reads every import and fails on an edge the table does not allow.
+Two rules hold on top of the table: **a feature never imports another feature**, and **nothing imports an app**. Features cooperate through shared state read via the kernel, events they announce, and queries ("Used in" asks every feature about an item). Inside `packages/features/src`, a feature may import only `shared/` and `define.ts`, and `shared/` never imports a feature. Verify's manifest step checks every package's dependencies against this table and every import inside the features package.
 
 `design/model/` is session 0's paper model. It stands outside the packages; verify runs it as the simulation step until the real simulation replaces it in session 6.
 
@@ -62,23 +62,35 @@ engine.command(state, now, cmd, rng)   → { state, events, result }
 
 ## 4. Features
 
-A feature declares itself in one place and is added to one registry:
+A feature declares itself in one place, `packages/features/src/<id>/index.ts`, and is added to the one list in `registry.ts`:
 
 ```ts
-defineFeature({ id, flag, content, effects, rules, routes, slots, help })
+export const woodcutting = defineFeature({ id, flag, content, effects, stops, rules, routes, slots, help });
 ```
 
 | Part | What it is |
 | --- | --- |
-| `content` | Data checked by Zod at build time: references resolve, values are in range, no level is empty |
-| `effects` | Effect kinds the feature uses; each has a handler and a text formatter, or the build fails |
-| `rules` | Pure functions the kernel calls for this feature's actions |
-| `routes` | One Zod schema per route: it validates input, types the client and generates contract tests |
-| `slots` | Data for named slots in `IA.md`; a slot not listed there fails verify |
-| `help` | The feature's entry in the in-game help |
-| `flag` | Read on the server and passed to the page, so a feature can be switched off |
+| `content` | Items, actions (level, seconds, XP, output) and, for a skill, its unlock ladder: checked against the shared Zod schemas as the feature loads |
+| `effects` | Every effect kind its content uses; each kind has a handler and a formatter in `@idle-clash/content`, or the build fails |
+| `stops` | Stop codes its rules may give beyond the kernel's own; each needs a `stop.<code>` string |
+| `rules` | The kernel's `ActionRules` for each of its actions |
+| `routes` | One Zod schema per route; the server mounts them from session 5 (`{}` when the kernel's commands suffice) |
+| `slots` | Data for named slots in `IA.md`, as pure functions of the state, already formatted for the screen |
+| `help` | String keys of its entry in the in-game help |
+| `flag` | On or off, with a note; off means its actions cannot start and its slots are hidden |
 
-Descriptions are generated from numbers by the shared formatter and are never written beside them. That one rule prevents the first attempt's worst drift ("a building said 4% and gave 20%").
+**Shared machinery.** `shared/skill.ts` turns a ladder and the state into modifiers (perks reached plus the action's mastery), unlock text and the next unlock. `shared/skill-slots.ts` fills the slots every skill has (the Skills list row, the skill page's header, actions and ladder, and the Hearth's Next up), so every skill page reads the same.
+
+**Words and numbers.** Every player-facing word is a key in `packages/content/src/strings/en.ts`, read through `t(key, params)`. Params are strings only, so every number passes through `fmt` (`fmt.int`, `fmt.pct`, `fmt.seconds`, `fmt.duration`, `fmt.roman`) first. Effect text comes from each kind's formatter, so "Quick swing IV (2.5% faster)" is built from the perk's numbers, never typed beside them.
+
+**What verify holds a feature to** (steps 2 and 3):
+
+- Every part declared; every action has rules and every rule an action; a skill fills its four page slots; every slot it fills is listed in `IA.md`; every slot fills from a new player, the sample save and a player at the top, with plain JSON.
+- Every feature folder is registered; imports keep to the boundaries above.
+- No level of any skill is empty; every action is on its ladder at its level; every output item is defined; every effect it uses is declared and every one it declares is used.
+- Every string a feature, an effect, a stop or a lane needs exists, no string goes unused, and none uses a term `GLOSSARY.md` says to avoid.
+- Its ladder, read as the player reads it, and its actions' numbers match `GAME_DESIGN.md` exactly; the XP table matches the model's.
+- `FEATURES.md` and `GLOSSARY.md` are regenerated from the registry and the glossary data.
 
 ## 5. Requests and the server
 
@@ -117,8 +129,8 @@ The single command that decides whether a change is done. It prints one line per
 | Step | Checks | Status |
 | --- | --- | --- |
 | 1 Typecheck and lint | `tsc` on every project; ESLint; Prettier | Built |
-| 2 Manifest | `IA.md`'s menu (six entries at most), pages and slots; `FEATURES.md` regenerated; each feature's manifest from session 3 | Page map built; features from session 3 |
-| 3 Content | `GAME_DESIGN.md` matches its template and the model; content schemas from session 3 | Design doc built; schemas from session 3 |
+| 2 Manifest | `IA.md`'s menu (six entries at most), pages and slots; each feature's manifest, slots and imports; package dependencies; `FEATURES.md` regenerated | Built |
+| 3 Content | `GAME_DESIGN.md` matches its template and the model; schemas, references, effects, no empty levels, strings complete and used, avoided terms, content matches the design; `GLOSSARY.md` regenerated | Built |
 | 4 Tests | Every package's tests | Built |
 | 5 Simulation | The paper model against every target in the brief | Paper model; the real simulation from session 6 |
 | 6–9 | Screenshots, accessibility, performance budgets, review sheets | Session 4 |

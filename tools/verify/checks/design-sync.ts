@@ -1,0 +1,58 @@
+// The game's content against the design: the XP table, each skill's ladder (as the player reads it)
+// and each gathering action's numbers must match what GAME_DESIGN.md says.
+import { t, XP_TABLE } from '@idle-clash/content';
+import { skill, type Feature } from '@idle-clash/features';
+import { MINING, WOODCUTTING } from '../../../design/model/content.ts';
+import { fmtUnlock } from '../../../design/model/format.ts';
+import { unlockTable } from '../../../design/model/unlocks.ts';
+
+const DESIGN_SKILLS = ['woodcutting', 'mining', 'smithing', 'melee', 'archery', 'magic', 'hitpoints'] as const;
+const DESIGN_ACTIONS: Record<string, typeof WOODCUTTING> = { woodcutting: WOODCUTTING, mining: MINING };
+
+export function checkDesign(features: readonly Feature[], modelXp: number[]): string[] {
+  const problems: string[] = [];
+  if (JSON.stringify(modelXp) !== JSON.stringify(XP_TABLE)) {
+    problems.push("packages/content's XP table differs from the model's (design/model/xp-table.json)");
+  }
+  for (const f of features) {
+    const sk = f.content.skill;
+    if (!sk) continue;
+    const id = DESIGN_SKILLS.find((s) => s === sk.id);
+    if (!id) {
+      problems.push(`Feature "${f.id}": skill "${sk.id}" is not in GAME_DESIGN.md`);
+      continue;
+    }
+    const model = unlockTable(id);
+    for (let level = 1; level <= 40; level++) {
+      let ours: string[];
+      try {
+        ours = sk.ladder[level - 1].map((u) => skill.unlockText(f.id, sk.ladder, u));
+      } catch (err) {
+        problems.push(`Feature "${f.id}", level ${level}: ${err instanceof Error ? err.message : String(err)}`);
+        continue;
+      }
+      const theirs = model.get(level)!.map(fmtUnlock);
+      if (JSON.stringify(ours) !== JSON.stringify(theirs)) {
+        problems.push(
+          `Feature "${f.id}", level ${level}: the game says "${ours.join('; ')}", the design "${theirs.join('; ')}"`,
+        );
+      }
+    }
+    const designActions = DESIGN_ACTIONS[sk.id];
+    if (!designActions) continue;
+    for (const d of designActions) {
+      const a = (f.content.actions ?? []).find((x) => t(`action.${f.id}.${x.id}`) === d.name);
+      if (!a) problems.push(`Feature "${f.id}" has no action named "${d.name}" (GAME_DESIGN.md)`);
+      else {
+        const ours = { level: a.level, seconds: a.seconds, xp: a.xp, count: a.gives?.[0]?.count };
+        const theirs = { level: d.level, seconds: d.seconds, xp: d.xp, count: d.qty };
+        if (JSON.stringify(ours) !== JSON.stringify(theirs)) {
+          problems.push(
+            `Feature "${f.id}": "${d.name}" is ${JSON.stringify(ours)}, the design says ${JSON.stringify(theirs)}`,
+          );
+        }
+      }
+    }
+  }
+  return problems;
+}

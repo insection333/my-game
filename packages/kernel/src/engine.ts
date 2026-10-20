@@ -22,6 +22,9 @@ export interface Engine {
   command(state: State, now: number, cmd: Command, rng: Rng): Commanded;
 }
 
+/** Every stop code the kernel itself gives; features declare their own in their manifest. */
+export const KERNEL_STOP_CODES = ['unavailable', 'wrongLane', 'fireOut', 'stoppedByPlayer', 'mended'] as const;
+
 const reason = (code: string, detail?: Record<string, string | number>): StopReason =>
   detail ? { code, detail } : { code };
 

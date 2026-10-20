@@ -1,2 +1,4 @@
-// The feature registry; one folder per feature beside this file. Built from session 3.
-export {};
+// Features: defineFeature, the registry, and the shared skill machinery.
+export * from './define.ts';
+export * from './registry.ts';
+export * as skill from './shared/skill.ts';

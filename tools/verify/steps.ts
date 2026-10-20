@@ -3,7 +3,13 @@
 import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { bin, node, ROOT } from './exec.ts';
-import { featuresMd } from './features-md.ts';
+import { allStringKeys } from '@idle-clash/content';
+import type { Feature } from '@idle-clash/features';
+import { checkContent } from './checks/content.ts';
+import { checkDesign } from './checks/design-sync.ts';
+import { checkFeatureImports, checkManifest, checkPackageDeps } from './checks/manifest.ts';
+import { featureFiles, featureFolders, literalStringKeys, sampleStates, workspacePackages } from './checks/sources.ts';
+import { featuresMd, glossaryMd } from './features-md.ts';
 import { readPageMap } from './ia.ts';
 import type { Step, StepResult } from './run.ts';
 
@@ -34,28 +40,65 @@ async function typecheckAndLint(): Promise<StepResult> {
   return pass(`${list.length} projects typechecked; lint and formatting clean`);
 }
 
-function manifest(): StepResult {
+const skillsOf = (features: readonly Feature[]) =>
+  features.flatMap((f) => (f.content.skill ? [f.content.skill.id] : []));
+
+/** Writes a generated file locally; in CI, a stale one fails instead. Returns a problem or null. */
+function regenerate(path: string, text: string): string | null {
+  const current = existsSync(join(ROOT, path)) ? read(path) : '';
+  if (current === text) return null;
+  if (process.env.CI) return `${path} is out of date: run pnpm verify locally and commit it`;
+  writeFileSync(join(ROOT, path), text);
+  return null;
+}
+
+/** Loads the registry, turning an error while features load (bad content) into a failure. */
+async function loadFeatures(): Promise<{ features: readonly Feature[] } | { error: string }> {
+  try {
+    const { FEATURES } = await import('@idle-clash/features');
+    return { features: FEATURES };
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : String(err) };
+  }
+}
+
+async function manifest(): Promise<StepResult> {
   const map = readPageMap(read('IA.md'));
   if (map.problems.length) return fail('IA.md has problems', map.problems.join('\n'));
-  const features = dirs('packages/features/src');
-  if (features.length)
-    return fail(`feature folders exist (${features.join(', ')}) but the manifest check arrives in session 3`);
-  const md = featuresMd(features);
-  const current = existsSync(join(ROOT, 'FEATURES.md')) ? read('FEATURES.md') : '';
-  if (current !== md) {
-    if (process.env.CI) return fail('FEATURES.md is out of date: run pnpm verify locally and commit it');
-    writeFileSync(join(ROOT, 'FEATURES.md'), md);
-  }
+  const loaded = await loadFeatures();
+  if ('error' in loaded) return fail('the features failed to load', loaded.error);
+  const { features } = loaded;
+  const folders = featureFolders();
+  const problems = [
+    ...checkManifest({ features, slots: map.slots, folders, states: sampleStates(skillsOf(features)) }),
+    ...checkPackageDeps(workspacePackages()),
+    ...checkFeatureImports(featureFiles(), folders),
+  ];
+  const stale = regenerate('FEATURES.md', featuresMd(features));
+  if (stale) problems.push(stale);
+  if (problems.length)
+    return fail(`${problems.length} manifest problem${problems.length > 1 ? 's' : ''}`, problems.join('\n'));
+  const on = features.filter((f) => f.flag.on).length;
   return pass(
-    `no features yet; IA.md: ${map.menu.length} menu entries, ${map.pages.length} pages, ${map.slots.length} slots`,
+    `${features.length} feature${features.length === 1 ? '' : 's'} (${on} on), all complete; IA.md: ${map.menu.length} menu entries, ${map.slots.length} slots`,
   );
 }
 
 async function content(): Promise<StepResult> {
   const docs = await node('design/model/build-docs.ts', ['--check']);
   if (docs.code !== 0) return fail('GAME_DESIGN.md is out of date', docs.output);
-  if (!existsSync(join(ROOT, 'GLOSSARY.md'))) return fail('GLOSSARY.md is missing');
-  return pass('GAME_DESIGN.md matches the model; content schemas arrive in session 3');
+  const loaded = await loadFeatures();
+  if ('error' in loaded) return fail('the features failed to load', loaded.error);
+  const { features } = loaded;
+  const literalKeys = literalStringKeys(allStringKeys());
+  const { problems, strings } = checkContent({ features, states: sampleStates(skillsOf(features)), literalKeys });
+  problems.push(...checkDesign(features, JSON.parse(read('design/model/xp-table.json')) as number[]));
+  const stale = regenerate('GLOSSARY.md', glossaryMd());
+  if (stale) problems.push(stale);
+  if (problems.length)
+    return fail(`${problems.length} content problem${problems.length > 1 ? 's' : ''}`, problems.join('\n'));
+  const levels = features.filter((f) => f.content.skill).length * 40;
+  return pass(`${levels} levels all unlock something; ${strings} strings, all used; content matches GAME_DESIGN.md`);
 }
 
 async function tests(): Promise<StepResult> {

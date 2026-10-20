@@ -2,7 +2,7 @@
 // Run after checks: node design/model/checks2.ts && node design/model/build-docs.ts
 // With --check, writes nothing and exits 1 if GAME_DESIGN.md is out of date (used by pnpm verify).
 import { readFileSync, writeFileSync } from 'node:fs';
-import { TABLES } from './tables.ts';
+import { TABLES, XP_TABLE_FROM_MODEL } from './tables.ts';
 
 const root = new URL('../../', import.meta.url);
 const target = new URL('GAME_DESIGN.md', root);
@@ -14,14 +14,19 @@ const missing = doc.match(/\{\{[A-Z_]+\}\}/g);
 if (missing) throw new Error(`Unfilled placeholders: ${missing.join(', ')}`);
 const built = `<!-- Generated from design/GAME_DESIGN.template.md by design/model/build-docs.ts. Edit the template. -->\n\n${doc}`;
 
+const xpTarget = new URL('design/model/xp-table.json', root);
+const xpJson = JSON.stringify(XP_TABLE_FROM_MODEL) + '\n';
+
 if (process.argv.includes('--check')) {
   const current = readFileSync(target, 'utf8');
-  if (current !== built) {
+  const xpCurrent = readFileSync(xpTarget, 'utf8');
+  if (current !== built || xpCurrent !== xpJson) {
     console.log('GAME_DESIGN.md is out of date with its template or the model: run pnpm design:build');
     process.exit(1);
   }
   console.log('GAME_DESIGN.md matches its template and the model');
 } else {
   writeFileSync(target, built);
-  console.log('GAME_DESIGN.md written');
+  writeFileSync(xpTarget, xpJson);
+  console.log('GAME_DESIGN.md and design/model/xp-table.json written');
 }

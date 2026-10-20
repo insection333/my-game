@@ -1,0 +1,97 @@
+import { describe, expect, it } from 'vitest';
+import {
+  applyEffects,
+  avoidedTerms,
+  buildLadder,
+  EFFECT_KINDS,
+  emptyLevels,
+  fmt,
+  formatEffect,
+  levelFor,
+  levelProgress,
+  masteryStep,
+  MAX_LEVEL,
+  t,
+  XP_TABLE,
+} from '../src/index.ts';
+
+describe('fmt', () => {
+  it('formats numbers one way everywhere', () => {
+    expect(fmt.int(1234567.4)).toBe('1,234,567');
+    expect(fmt.pct(2.5)).toBe('2.5%');
+    expect(fmt.seconds(7.5)).toBe('7.5 s');
+    expect([45_000, 12 * 60_000, 200 * 60_000, 52 * 3600_000].map(fmt.duration)).toEqual([
+      '45 s',
+      '12 min',
+      '3 h 20 min',
+      '2 d 4 h',
+    ]);
+    expect([1, 4, 8, 9, 14, 39].map(fmt.roman)).toEqual(['I', 'IV', 'VIII', 'IX', 'XIV', 'XXXIX']);
+  });
+});
+
+describe('t', () => {
+  it('fills a template', () => {
+    expect(t('skill.toNext', { xp: '1,200', level: '5' })).toBe('1,200 XP to level 5');
+  });
+
+  it('refuses a missing key, a missing parameter and an unknown one', () => {
+    expect(() => t('no.such.key')).toThrow('Missing string "no.such.key"');
+    expect(() => t('skill.level')).toThrow('needs {level}');
+    expect(() => t('skill.top', { level: '3' })).toThrow('has no {level}');
+  });
+});
+
+describe('effects', () => {
+  it('formats every kind from its numbers', () => {
+    expect(formatEffect({ kind: 'speed', pct: 2.5 })).toBe('2.5% faster');
+    expect(formatEffect({ kind: 'maxHealth', amount: 40 })).toBe('+40 health');
+    expect(formatEffect({ kind: 'retreatAt', pct: 12 })).toBe('retreat at 12% health instead of 20%');
+    expect(EFFECT_KINDS).toHaveLength(13);
+  });
+
+  it('adds effects into modifiers; the lowest retreat point wins', () => {
+    const m = applyEffects([
+      { kind: 'speed', pct: 2.5 },
+      { kind: 'speed', pct: 3 },
+      { kind: 'retreatAt', pct: 12 },
+      { kind: 'retreatAt', pct: 15 },
+    ]);
+    expect(m.speed).toBe(5.5);
+    expect(m.retreatAt).toBe(12);
+    expect(m.damage).toBe(0);
+  });
+});
+
+describe('progression', () => {
+  it('reads levels from the XP table', () => {
+    expect(XP_TABLE).toHaveLength(MAX_LEVEL + 1);
+    expect([0, 49, 50, 6790, 8_100_000, 99_000_000].map(levelFor)).toEqual([1, 1, 2, 10, 40, 40]);
+    expect(levelProgress(100)).toEqual({ level: 2, into: 50, span: 100, toNext: 50 });
+    expect(levelProgress(9e9).toNext).toBe(0);
+  });
+
+  it('counts mastery steps, faster with the masteryGain perk', () => {
+    expect([0, 29, 30, 28_800].map((c) => masteryStep(c))).toEqual([0, 0, 1, 10]);
+    expect(masteryStep(28, 10)).toBe(1);
+  });
+});
+
+describe('ladders', () => {
+  it('builds a ladder and finds its empty levels', () => {
+    const ladder = buildLadder(
+      [{ id: 'a', level: 1 }],
+      [{ perk: 'p', effect: { kind: 'speed', pct: 1 }, levels: [2, 4] }],
+    );
+    expect(ladder[3]).toEqual([{ type: 'perk', perk: 'p', rank: 2, effect: { kind: 'speed', pct: 1 } }]);
+    expect(emptyLevels(ladder)).toEqual([3, ...Array.from({ length: 36 }, (_, i) => i + 5)]);
+  });
+});
+
+describe('the glossary', () => {
+  it('finds terms to avoid, but allows the game its name', () => {
+    expect(avoidedTerms('Your bank is full; go AFK')).toEqual(['bank', 'AFK']);
+    expect(avoidedTerms('Welcome to Idle Clash')).toEqual([]);
+    expect(avoidedTerms('Skills')).toEqual([]);
+  });
+});

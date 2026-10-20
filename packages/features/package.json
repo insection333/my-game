@@ -4,5 +4,10 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@idle-clash/content": "workspace:*",
+    "@idle-clash/kernel": "workspace:*",
+    "zod": "4.6.5"
   }
 }

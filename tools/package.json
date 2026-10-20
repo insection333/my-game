@@ -1,5 +1,10 @@
 {
   "name": "@idle-clash/tools",
   "private": true,
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "@idle-clash/content": "workspace:*",
+    "@idle-clash/features": "workspace:*",
+    "@idle-clash/kernel": "workspace:*"
+  }
 }

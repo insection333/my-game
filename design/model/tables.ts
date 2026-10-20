@@ -13,42 +13,11 @@ import {
   VALUE,
   WOODCUTTING,
 } from './content.ts';
-import { unlockTable, type Effect, type Unlock } from './unlocks.ts';
+import { unlockTable } from './unlocks.ts';
+import { fmtUnlock } from './format.ts';
 import { maxHealth, XP_PER_DAMAGE_BY_TIER } from './mechanics.ts';
 import { fitLevelTimes, gatherCandidates, roundTable, simulate } from './curve.ts';
 
-export function formatEffect(e: Effect): string {
-  switch (e.kind) {
-    case 'speed':
-      return `${e.pct}% faster`;
-    case 'extraYield':
-      return `+${e.pct}% chance of an extra item`;
-    case 'findChance':
-      return `Rare and Legendary finds ${e.pct}% likelier`;
-    case 'masteryGain':
-      return `mastery ${e.pct}% faster`;
-    case 'saveInput':
-      return `${e.pct}% chance to save an ingredient`;
-    case 'damage':
-      return `+${e.pct}% damage`;
-    case 'accuracy':
-      return `+${e.pct}% to hit`;
-    case 'guard':
-      return `${e.pct}% less damage taken`;
-    case 'spoils':
-      return `+${e.pct}% gold and drops`;
-    case 'maxHealth':
-      return `+${e.amount * 10} health`;
-    case 'regen':
-      return `health returns ${e.pct}% faster`;
-    case 'foodHeal':
-      return `food heals ${e.pct}% more`;
-    case 'retreatAt':
-      return `retreat at ${e.pct}% health instead of 20%`;
-  }
-}
-const fmtUnlock = (u: Unlock) =>
-  u.type === 'perk' ? `${u.name} (${formatEffect(u.effect)})` : u.type === 'foe' ? `Foe: ${u.name}` : u.name;
 const n = (x: number) => x.toLocaleString('en');
 const p: string[] = [];
 const say = (s = '') => p.push(s);
@@ -126,6 +95,9 @@ const MASTERY_TABLE = p.splice(0).join('\n');
 
 const STORE = `Starts with ${STOREHOUSE.startSlots} slots; each enlargement adds ${STOREHOUSE.slotsPerEnlargement}. Costs: ${STOREHOUSE.costs.map(n).join(', ')} gold.`;
 const HEALTH = `Health ${maxHealth(1)} at Hitpoints 1, ${maxHealth(40)} at 40. Style XP per point of damage by foe tier: ${XP_PER_DAMAGE_BY_TIER.join(', ')}.`;
+
+/** The XP table (index = level), for the content check to compare against packages/content. */
+export const XP_TABLE_FROM_MODEL = table;
 
 export const TABLES: Record<string, string> = {
   XP_TABLE,
