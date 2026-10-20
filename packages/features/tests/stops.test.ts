@@ -81,3 +81,16 @@ describe('every lane stop says why', () => {
     );
   });
 });
+
+describe('an ingredient that goes mid-action', () => {
+  it('makes nothing, counts no mastery, and stops the lane saying what ran out', () => {
+    const smelt = { feature: 'smithing', id: 'copper-bar' };
+    const s0 = { ...newState(1, T0), items: { 'copper-ore': 5 } };
+    const started = engine.command(s0, T0, { type: 'start', lane: 'artisan', action: smelt }, seeded(1)).state;
+    const sold = { ...started, items: {} };
+    const after = engine.advance(sold, T0 + MINUTE, seeded(1)).state;
+    expect(after.items['copper-bar']).toBeUndefined();
+    expect(after.mastery['smithing:copper-bar']).toBeUndefined();
+    expect(after.lanes.artisan.stopped?.reason).toEqual({ code: 'outOfInputs', detail: { item: 'copper-ore' } });
+  });
+});

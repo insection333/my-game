@@ -79,11 +79,11 @@ function takeInputs(ctx: ActionContext, takes: NonNullable<CompletedAction['take
   return true;
 }
 
-export function completeSkillAction(ctx: ActionContext, def: SkillDefinition, act: CompletedAction): void {
+export function completeSkillAction(ctx: ActionContext, def: SkillDefinition, act: CompletedAction): void | false {
   const { state } = ctx;
   const m = actionModifiers(state, def.skill, def.ladder, def.feature, act.id);
   // Ingredients are checked before every repetition starts; should one have gone since, nothing is made.
-  if (act.takes?.length && !takeInputs(ctx, act.takes, m.saveInput)) return;
+  if (act.takes?.length && !takeInputs(ctx, act.takes, m.saveInput)) return false;
   rollFind(ctx, def, act, m.findChance);
 
   for (const g of act.gives)

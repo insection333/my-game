@@ -43,6 +43,9 @@ async function newcomerStarts(served: Served, problems: string[]): Promise<numbe
     human += 2 * PER_TAP;
     const go = page.getByRole('button', { name: 'Start chopping' });
     await go.waitFor({ timeout: 20_000 });
+    // A step that cannot start yet says what it needs, in place of its button.
+    if (!(await page.locator('[data-slot="hearth.goals"]').getByText('Needs Smithing level 2').count()))
+      problems.push('Newcomer: the sword step does not say it needs Smithing level 2');
     const sent = page.waitForResponse((r) => r.url().endsWith('/api/game/command'));
     await go.click();
     human += PER_TAP;
