@@ -38,6 +38,7 @@ const ITEMS: Record<string, number> = {
   'birds-nest': 3,
   'amber-nugget': 1,
   'battle-trophy': 2,
+  'carved-acorn': 1,
 };
 
 /** The veteran, last here 8 hours ago with all three lanes at work: the Hearth opens on the recap. */

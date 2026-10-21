@@ -2,9 +2,9 @@
 // panel itself, which sells to the vendor, wears gear, and answers Comes from and Used in by asking
 // every feature.
 import { fmt, t } from '@idle-clash/content';
-import { items, type CapacityView } from '@idle-clash/features';
+import { actionsFor, findOf, items, RARE_FIND_COMPLETIONS, type CapacityView } from '@idle-clash/features';
 import { countOf } from '@idle-clash/kernel';
-import { Button, ItemIcon, Panel, Pill, ProgressBar } from '@idle-clash/ui';
+import { ActionRow, Button, ItemIcon, Panel, Pill, ProgressBar } from '@idle-clash/ui';
 import { useGame } from '../game/hooks.ts';
 import { game } from '../game/store.ts';
 import { navigate } from '../router.ts';
@@ -134,6 +134,7 @@ export function ItemPanel({ item }: { item: string }) {
         </div>
       </div>
       <ItemActions item={item} value={def.value} gear={def.kind === 'gear'} />
+      <UseFind item={item} />
       <Sources title={t('item.panel.comesFrom')} list={items.comesFrom(features, item)} />
       <Sources title={t('item.panel.usedIn')} list={items.usedIn(features, item)} />
     </div>
@@ -174,5 +175,34 @@ function ItemActions({ item, value, gear }: { item: string; value: number; gear:
         </>
       )}
     </div>
+  );
+}
+
+/** A Rare find held: spend it on one action of its skill for 500 mastery completions, most used first. */
+function UseFind({ item }: { item: string }) {
+  const { state } = useGame();
+  if (findOf(item)?.rarity !== 'rare' || countOf(state, item) < 1) return null;
+  const done = (a: { feature: string; id: string }) => state.mastery[`${a.feature}:${a.id}`] ?? 0;
+  const list = actionsFor(state, item)
+    .sort((a, b) => done(b) - done(a))
+    .slice(0, 6);
+  return (
+    <section className={s.sources}>
+      <h3>{t('item.panel.use', { count: fmt.int(RARE_FIND_COMPLETIONS) })}</h3>
+      <div className={s.useList}>
+        {list.map((a) => (
+          <ActionRow
+            key={`${a.feature}:${a.id}`}
+            name={t(`action.${a.feature}.${a.id}`)}
+            facts={[t('item.panel.completions', { count: fmt.int(done(a)) })]}
+            actions={
+              <Button variant="secondary" onClick={() => game.act('storehouse', 'useFind', { item, action: a })}>
+                {t('item.panel.useButton')}
+              </Button>
+            }
+          />
+        ))}
+      </div>
+    </section>
   );
 }

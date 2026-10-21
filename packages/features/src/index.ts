@@ -18,6 +18,8 @@ export type { FoeRow, GearChoice, LoadoutSlot, LoadoutView } from './combat/slot
 export { yourOdds } from './combat/slots.ts';
 export type { CapacityView, FoodView } from './storehouse/index.ts';
 export * as storehouseData from './shared/storehouse.ts';
+export { actionsFor, RARE_FIND_COMPLETIONS } from './storehouse/finds.ts';
+export { findOf } from './shared/catalog.ts';
 export * as recap from './shared/recap.ts';
 export { allSkills, totalLevel } from './goals/ladder.ts';
 export { paces, bestIn, type Pace } from './goals/pace.ts';

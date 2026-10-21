@@ -57,13 +57,21 @@ describe('hiscores', () => {
   });
 
   it('gives a tie to whoever reached it first', async () => {
+    // Recorded straight from saves, so the two hold exactly the same XP.
     s = await server();
     const a = await signUp(s, 'Alder');
     const b = await signUp(s, 'Birch');
-    await chop(b, 'b', 10);
-    await chop(a, 'a', 10);
+    const id = async (c: string) =>
+      (
+        JSON.parse((await s.app.inject({ method: 'GET', url: '/api/me', headers: { cookie: c } })).body) as {
+          player: { id: string };
+        }
+      ).player.id;
+    const base = s.ctx.store.read(await id(a), s.clock.now)!.doc.state;
+    const same = { ...base, skills: { woodcutting: { xp: 5_000 } } };
+    s.ctx.hiscores.update(await id(b), same, 1);
+    s.ctx.hiscores.update(await id(a), same, 2);
     const wc = (await ladders(a)).ladders.find((l) => l.skill === 'woodcutting')!;
-    expect(wc.rows[0].xp).toBe(wc.rows[1].xp);
     expect(wc.rows.map((r) => r.name)).toEqual(['Birch', 'Alder']);
     expect(wc.you).toMatchObject({ rank: 2 });
   });

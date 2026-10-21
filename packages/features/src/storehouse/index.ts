@@ -7,6 +7,7 @@ import { defineFeature, defineRoute, type Json } from '../define.ts';
 import { FOODS, HITPOINTS } from '../shared/combat/data.ts';
 import { skillLevel } from '../shared/skill.ts';
 import { capacity, ENLARGE_COSTS, SLOTS_PER_ENLARGEMENT, slotsUsed, storeOf } from '../shared/storehouse.ts';
+import { useFind } from './finds.ts';
 import { buy, enlarge, sell } from './rules.ts';
 
 /** The Storehouse's space, as the page shows it. */
@@ -89,6 +90,11 @@ export const storehouse = defineFeature({
       input: z.object({ item: Id, count: Count }).strict(),
       example: { item: 'bread', count: 10 },
       run: (state, input) => buy(state, input.item, input.count),
+    }),
+    useFind: defineRoute({
+      input: z.object({ item: Id, action: z.object({ feature: Id, id: Id }).strict() }).strict(),
+      example: { item: 'carved-acorn', action: { feature: 'woodcutting', id: 'pine-tree' } },
+      run: (state, input, now) => useFind(state, input.item, input.action, now),
     }),
     enlarge: defineRoute({
       input: z.object({}).strict(),

@@ -58,6 +58,7 @@ export function views(): View[] {
     ...map.views.filter((v) => !signedOut(v.path)).map((v) => ({ ...v, as: 'veteran' as const })),
     { page: 'Combat', path: '/combat?panel=gear&slot=weapon', phone: [], desktop: [], as: 'veteran' },
     { page: 'Skill', path: '/skills/melee', phone: [], desktop: [], as: 'veteran' },
+    { page: 'Storehouse', path: '/storehouse?panel=item&item=carved-acorn', phone: [], desktop: [], as: 'veteran' },
   ];
   // The privacy page and the terms, as a visitor reads them from the welcome page.
   const visitor: ViewSpec[] = map.views

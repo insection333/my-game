@@ -5,8 +5,8 @@ import { masteryStep, MASTERY_STEPS } from '@idle-clash/content';
 import type { ActionRef, State } from '@idle-clash/kernel';
 import { itemOf, skillActions } from '../shared/catalog.ts';
 import { FOES } from '../shared/combat/data.ts';
-import { odds } from '../shared/combat/fight.ts';
-import { fighterOf, mealsOf } from '../shared/combat/state.ts';
+import { oddsFor } from '../shared/combat/odds.ts';
+import { fighterOf } from '../shared/combat/state.ts';
 import { actionModifiers, skillLevel } from '../shared/skill.ts';
 
 export interface Pace {
@@ -53,11 +53,10 @@ export function paces(state: State): Pace[] {
     }
   }
   const hp = skillLevel(state, 'hitpoints');
-  const meal = mealsOf(state)[0];
   for (const foe of FOES.filter((f) => f.hitpoints <= hp)) {
     const p = fighterOf(state, foe);
-    if (!p) break;
-    const o = odds(p, foe, meal ? { item: meal.item, heals: meal.heals } : { item: 'bread', heals: 140 }, 200);
+    const o = oddsFor(state, foe);
+    if (!p || !o) break;
     if (o.verdict !== 'easy' && o.verdict !== 'fair') continue;
     out.push({
       action: { feature: 'combat', id: foe.id },

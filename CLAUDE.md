@@ -57,6 +57,7 @@ To change the game design: edit the model in `design/model/` or the template, ru
 - Browsers for steps 6 to 9: Firefox and WebKit are installed in `/opt/pw-browsers` (downloaded from `cdn.playwright.dev`, which the owner allowed). Playwright's own Chromium is hosted on Google storage, which this workspace cannot reach, so verify falls back to the preinstalled Chromium there. GitHub Actions installs all three itself.
 - See the game yourself: `pnpm --filter @idle-clash/web build`, then `WEB_DIST=../web/dist FEATURES=all DB_PATH=/tmp/ic.db pnpm --filter @idle-clash/server start` and open `http://127.0.0.1:3000`. For live reloading, run the server without `WEB_DIST` and `pnpm --filter @idle-clash/web dev` beside it (Vite passes `/api` to port 3000).
 - The domain is idleclash.com; there is no host yet (session 10). Transactional email stays off (`EMAIL_ENABLED`) until the owner says otherwise.
+- Admins are named in `ADMIN_NAMES` (comma-separated player names). Verify's screenshot server makes its veteran player an admin, so the admin page is checked with players on it.
 
 ## Progress
 
@@ -71,6 +72,7 @@ To change the game design: edit the model in `design/model/` or the template, ru
 | 6 Woodcutting, end to end | Done: finds with luck and the collection log, mastery and level moments, the first first-steps goal, save version 2, eight new icons, the real simulation for Woodcutting; a newcomer chops within 30 s, 8 hours away is credited exactly, a Rare find has its moment |
 | 7 Mining and Smithing | Done: both skills on the shared machinery, recipes with ingredients and the three weapon kinds, first steps 2 to 4, the fire's lane for a second skill, the Storehouse's items with Comes from and Used in, 43 new icons, the simulation for all three skills; every lane stop says why, a queued action starts while away |
 | 8 Combat | Done: the three styles and Hitpoints, eight foes, the triangle, gear, food, retreat, Your odds from the engine's own fights, first steps 5 and 6, 27 new icons, fighters in the simulation; each style wins where the triangle says, Your odds agrees with engine-run fights, a retreat costs nothing |
-| 9 Goals, the Storehouse and vendor, hiscores, admin | Next |
+| 9 Goals, the Storehouse and vendor, hiscores, admin | Done: the goals ladder (short goals by pace, a daily goal, milestones), the away recap and Today, the notices tray, the Storehouse's space with selling and the vendor's food, hiscores, account deletion, names refused, privacy and terms, the admin page, the tour, using a Rare find, six skill seals; a fresh player meets the first-hour targets, the recap leads with the best thing, every page passes its spec and budgets (as a newcomer and three weeks in), a deleted account leaves nothing, an admin resets a password |
+| 10 Ship | Next |
 
-Outstanding: nothing beyond the next session. Forgotten passwords are reset by an admin (session 9) while email is off. Using a Rare find (500 mastery completions), selling, Storehouse space and the vendor (food is bought there; until then the first fight's bread comes from First steps) arrive in session 9, with the Combat page's food slot (`combat.food`).
+Outstanding: nothing beyond the next session. Forgotten passwords are reset from the admin page while email is off; the owner's account is made an admin by naming it in `ADMIN_NAMES`. The privacy page and terms point to "the contact address shown on idleclash.com", which the site must show before launch.

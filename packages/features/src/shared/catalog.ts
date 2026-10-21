@@ -28,3 +28,20 @@ export function setSkills(list: readonly SkillActions[]): void {
 
 /** Every skill with actions of its own (not the combat skills, whose actions are combat's foes). */
 export const skillActions = (): readonly SkillActions[] => skills;
+
+/** A skill's find, with the skill and feature it belongs to (a Rare one can be used on its actions). */
+export interface FindEntry {
+  item: string;
+  rarity: 'uncommon' | 'rare' | 'legendary';
+  skill: string;
+  feature: string;
+  ladder: Ladder;
+}
+
+let finds = new Map<string, FindEntry>();
+
+export function setFinds(list: readonly FindEntry[]): void {
+  finds = new Map(list.map((f) => [f.item, f]));
+}
+
+export const findOf = (item: string): FindEntry | undefined => finds.get(item);
