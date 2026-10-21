@@ -23,6 +23,7 @@ import {
 import type { FastifyInstance } from 'fastify';
 import { limit, type Ctx } from '../context.ts';
 import { TOTAL } from './hiscores.ts';
+import { hear } from './watching.ts';
 import { contractRoute, fail } from '../http.ts';
 import { identify, requirePlayer } from '../auth/routes.ts';
 
@@ -39,6 +40,8 @@ export function gameRoutes(app: FastifyInstance, ctx: Ctx, features: readonly Fe
     const out = ctx.engine.advance(before, t, seeded(before.seed));
     const away =
       recap && t - before.lastSeen >= RECAP_AFTER_MS ? summarizeAway(before, out.state, out.events, t) : null;
+    // The hiscores hear of progress whenever the page reads it, not only when the save is written.
+    ctx.hiscores.update(playerId, out.state, t);
     return { state: out.state, now: t, away };
   };
 
@@ -68,11 +71,14 @@ export function gameRoutes(app: FastifyInstance, ctx: Ctx, features: readonly Fe
   contractRoute(
     app,
     ROUTES.hiscores,
-    ({ req }) =>
-      ({
+    async ({ req }) => {
+      // Your own entry as of now, even if the save was last written a while ago.
+      await ctx.queue.run(req.playerId!, () => hear(ctx, req.playerId!, now()));
+      return {
         online: ctx.live.online,
         ladders: [TOTAL, ...allSkills()].map((skill) => ctx.hiscores.ladder(skill, req.playerId!)),
-      }) satisfies HiscoresResponse,
+      } satisfies HiscoresResponse;
+    },
     requirePlayer(ctx),
   );
 

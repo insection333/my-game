@@ -22,6 +22,7 @@ import { adminRoutes } from './admin/routes.ts';
 import { accountRoutes } from './auth/account.ts';
 import { Hiscores } from './game/hiscores.ts';
 import { Notices } from './game/notices.ts';
+import { hearWatching, WATCH_EVERY_MS } from './game/watching.ts';
 import { Telemetry } from './telemetry.ts';
 import { webRoutes } from './web.ts';
 
@@ -83,12 +84,18 @@ export async function buildApp(
   if (config.emailEnabled) emailRoutes(app, ctx);
   gameRoutes(app, ctx, features);
   if (config.webDist) webRoutes(app, config.webDist);
+  const watching = setInterval(
+    () => void hearWatching(ctx).catch((err: unknown) => app.log.error({ err }, 'hiscores for watchers')),
+    WATCH_EVERY_MS,
+  );
+  watching.unref();
   app.setNotFoundHandler((_req, reply) => reply.code(404).send({ error: { code: 'notFound' } }));
 
   return {
     app,
     ctx,
     close: async () => {
+      clearInterval(watching);
       ctx.live.closeAll();
       await app.close();
       closeDb();

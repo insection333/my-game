@@ -103,7 +103,11 @@ function Row({ row, you, total }: { row: HiscoreRow; you: boolean; total: boolea
       <td>
         <span className={s.player}>{row.name}</span>
         {total && row.milestones > 0 && (
-          <span className={s.milestones}>{t('hiscores.milestones', { count: fmt.int(row.milestones) })}</span>
+          <span className={s.milestones}>
+            {row.milestones === 1
+              ? t('hiscores.milestonesOne')
+              : t('hiscores.milestones', { count: fmt.int(row.milestones) })}
+          </span>
         )}
       </td>
       <td data-num>{fmt.int(row.level)}</td>

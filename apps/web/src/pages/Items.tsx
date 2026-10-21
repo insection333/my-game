@@ -83,12 +83,6 @@ export function ItemGrid() {
   );
 }
 
-const sourceText = (src: items.ItemSource) => {
-  const skill = src.skill ? t(`skill.${src.skill}`) : '';
-  if (src.rarity) return t('item.panel.find', { skill, rarity: t(`rarity.${src.rarity}`) });
-  return t('item.panel.action', { skill, action: t(`action.${src.feature}.${src.action}`), count: fmt.int(src.count) });
-};
-
 function Sources({ title, list }: { title: string; list: items.ItemSource[] }) {
   return (
     <section className={s.sources}>
@@ -97,21 +91,17 @@ function Sources({ title, list }: { title: string; list: items.ItemSource[] }) {
         <p className={s.none}>{t('item.panel.nothing')}</p>
       ) : (
         <ul>
-          {list.map((src, i) => (
-            <li key={i}>
-              {src.skill ? (
-                <a
-                  href={`/skills/${src.skill}`}
-                  data-ui="RowLink"
-                  onClick={(e) => (e.preventDefault(), navigate(`/skills/${src.skill}`))}
-                >
-                  {sourceText(src)}
+          {list.map((src, i) => {
+            // A skill's page, or the page of a feature without one (Combat).
+            const href = src.skill ? `/skills/${src.skill}` : `/${src.feature}`;
+            return (
+              <li key={i}>
+                <a href={href} data-ui="RowLink" onClick={(e) => (e.preventDefault(), navigate(href))}>
+                  {items.sourceLabel(src)}
                 </a>
-              ) : (
-                <span>{sourceText(src)}</span>
-              )}
-            </li>
-          ))}
+              </li>
+            );
+          })}
         </ul>
       )}
     </section>

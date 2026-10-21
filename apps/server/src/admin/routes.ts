@@ -11,9 +11,9 @@ import {
 } from '@idle-clash/contracts';
 import { and, asc, eq, sql } from 'drizzle-orm';
 import type { FastifyInstance } from 'fastify';
-import { randomBytes } from 'node:crypto';
+import { randomInt } from 'node:crypto';
 import { hashPassword } from '../auth/passwords.ts';
-import { requireAdmin } from '../auth/routes.ts';
+import { isAdmin, requireAdmin } from '../auth/routes.ts';
 import type { Ctx } from '../context.ts';
 import { hiscores, players } from '../db/schema.ts';
 import { contractRoute, fail } from '../http.ts';
@@ -36,7 +36,7 @@ const playerOf = (ctx: Ctx, id: string) => {
 /** A new password the admin can read out: 16 letters and digits, unambiguous ones only. */
 function freshPassword(): string {
   const letters = 'abcdefghjkmnpqrstuvwxyz23456789';
-  return [...randomBytes(16)].map((b) => letters[b % letters.length]).join('');
+  return Array.from({ length: 16 }, () => letters[randomInt(letters.length)]).join('');
 }
 
 export function adminRoutes(app: FastifyInstance, ctx: Ctx): void {
@@ -76,6 +76,8 @@ export function adminRoutes(app: FastifyInstance, ctx: Ctx): void {
     ROUTES.adminRename,
     ({ req, input }) => {
       playerOf(ctx, input.playerId);
+      // Renaming someone into a name on the admin list would make them an admin.
+      if (isAdmin(ctx, input.name)) throw fail(422, 'nameNotAllowed');
       const key = nameKey(input.name);
       const taken = ctx.db.select({ id: players.id }).from(players).where(eq(players.nameKey, key)).get();
       if (taken && taken.id !== input.playerId) throw fail(409, 'nameTaken');

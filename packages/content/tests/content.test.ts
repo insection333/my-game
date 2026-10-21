@@ -12,6 +12,8 @@ import {
   masteryStep,
   MAX_LEVEL,
   t,
+  templateOf,
+  allStringKeys,
   XP_TABLE,
 } from '../src/index.ts';
 
@@ -40,6 +42,16 @@ describe('t', () => {
     expect(() => t('no.such.key')).toThrow('Missing string "no.such.key"');
     expect(() => t('skill.level')).toThrow('needs {level}');
     expect(() => t('skill.top', { level: '3' })).toThrow('has no {level}');
+  });
+
+  it('has a one-form beside every count before a plural, so the page never says "1 milestones"', () => {
+    // Counts that are never 1: the 500 completions a Rare find gives, the log sizes milestones ask for.
+    const neverOne = ['item.panel.use', 'goal.milestone.log'];
+    const plural = /\{(count|skills)\} (?:[A-Za-z]+ )?[a-z]+s\b/;
+    const missing = allStringKeys().filter(
+      (k) => plural.test(templateOf(k)!) && !neverOne.includes(k) && !allStringKeys().includes(`${k}One`),
+    );
+    expect(missing).toEqual([]);
   });
 });
 

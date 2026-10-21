@@ -72,7 +72,9 @@ export function authRoutes(app: FastifyInstance, ctx: Ctx): void {
   contractRoute<{ name: string; password: string }>(app, ROUTES.signUp, async ({ req, reply, input }) => {
     limit(ctx, reply, `sign-up:${ipOf(req)}`, 5, HOUR);
     const key = nameKey(input.name);
-    if (!nameAllowed(input.name)) throw fail(422, 'nameNotAllowed');
+    // A name on the admin list is refused too: whoever took it would be an admin. The owner signs up
+    // first and lists the name after, and a listed name freed by deleting its account stays refused.
+    if (!nameAllowed(input.name) || isAdmin(ctx, input.name)) throw fail(422, 'nameNotAllowed');
     if (ctx.db.select({ id: players.id }).from(players).where(eq(players.nameKey, key)).get())
       throw fail(409, 'nameTaken');
     const passwordHash = await hashPassword(input.password);

@@ -1,7 +1,7 @@
 // Questions about items, answered by asking every registered feature's content: what an item is, where
 // it comes from (actions that give it, finds), and what uses it (actions that take it). A feature that
 // arrives later answers by declaring its content; nothing here names a feature.
-import type { Item } from '@idle-clash/content';
+import { fmt, t, type Item } from '@idle-clash/content';
 import type { Feature } from '../define.ts';
 
 export interface ItemSource {
@@ -53,4 +53,12 @@ export function usedIn(features: readonly Feature[], item: string): ItemSource[]
         })),
     ),
   );
+}
+
+/** A source as the item panel lists it: "Woodcutting: Pine tree (×1)"; a page with no skill (Combat)
+ *  is named by its title, "Combat: Goblin slinger (×1)". */
+export function sourceLabel(src: ItemSource): string {
+  const skill = src.skill ? t(`skill.${src.skill}`) : t(`${src.feature}.title`);
+  if (src.rarity) return t('item.panel.find', { skill, rarity: t(`rarity.${src.rarity}`) });
+  return t('item.panel.action', { skill, action: t(`action.${src.feature}.${src.action}`), count: fmt.int(src.count) });
 }

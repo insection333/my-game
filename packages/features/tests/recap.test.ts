@@ -36,7 +36,7 @@ describe('the away recap', () => {
     const lines = recap.recapLines(away);
     expect(lines.map((l) => l.text)).toEqual([
       'Legendary find: Star-iron shard',
-      'Uncommon find: Rough garnet',
+      'First find: Rough garnet (Uncommon)',
       'Mining reached level 13',
       'Rare find: Heartwood knot ×2',
       'Oak tree: mastery 4',

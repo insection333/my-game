@@ -26,6 +26,13 @@ describe('item questions', () => {
     ]);
   });
 
+  it('names every source by its skill, or by its page where it has none', () => {
+    expect(items.comesFrom(FEATURES, 'pine-logs').map(items.sourceLabel)).toContain('Combat: Goblin slinger (×1)');
+    for (const i of items.catalog(FEATURES))
+      for (const src of [...items.comesFrom(FEATURES, i.id), ...items.usedIn(FEATURES, i.id)])
+        expect(items.sourceLabel(src)).toMatch(/^\w/);
+  });
+
   it('knows every item a feature makes or uses', () => {
     const known = new Set(items.catalog(FEATURES).map((i) => i.id));
     for (const f of FEATURES)

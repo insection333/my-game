@@ -2,7 +2,7 @@
 // are refused; and the admin page renames, bans, inspects a save and resets a forgotten password.
 import type { AdminPlayersResponse, AdminResetResponse, AdminSaveResponse } from '@idle-clash/contracts';
 import { afterEach, describe, expect, it } from 'vitest';
-import { code, post, server, signUp, type TestServer } from './helpers.ts';
+import { code, post, server, signUp, signUpAdmin, type TestServer } from './helpers.ts';
 
 let s: TestServer;
 afterEach(() => s?.close());
@@ -38,6 +38,9 @@ describe('deleting an account', () => {
     );
     s.clock.now += 3_600_000;
     await post(s, '/api/game/command', { requestId: 'req-del-stoke', command: { type: 'stoke' } }, cookie);
+    // An admin mended the player's save: the record of it names them too.
+    const warden = await signUpAdmin(s, 'Warden');
+    await post(s, '/api/admin/mend', { playerId: player!.id }, warden);
     const before = everything();
     expect(before).toContain(player!.id);
     expect(before).toContain('Zephyrine');
@@ -69,13 +72,26 @@ describe('names', () => {
     for (const bad of ['Admin', 'Moderator', 'Sh1thead', 'f u c k', 'Big_Dick']) expect(await try_(bad)).toBe(422);
     for (const fine of ['Cockburn', 'Scunthorpe', 'Dickens', 'Assam']) expect(await try_(fine)).toBe(201);
   });
+
+  it('refuses a name on the admin list, at sign-up and by rename, so no one else can take it', async () => {
+    s = await server({ adminNames: ['Owner'] });
+    const r = await post(s, '/api/auth/sign-up', { name: 'owner', password: PASSWORD, ageConfirmed: true });
+    expect(code(r)).toBe('nameNotAllowed');
+    const warden = await signUpAdmin(s, 'Warden');
+    const rowan = await signUp(s, 'Rowan');
+    const { player } = await meOf(rowan);
+    expect(code(await post(s, '/api/admin/rename', { playerId: player!.id, name: 'OWNER' }, warden))).toBe(
+      'nameNotAllowed',
+    );
+    expect((await meOf(rowan)).admin).toBe(false);
+  });
 });
 
 describe('the admin page', () => {
   it('is for the named admins only', async () => {
     s = await server();
     const player = await signUp(s, 'Rowan');
-    const warden = await signUp(s, 'Warden');
+    const warden = await signUpAdmin(s, 'Warden');
     expect((await meOf(player)).admin).toBe(false);
     expect((await meOf(warden)).admin).toBe(true);
     expect(code(await post(s, '/api/admin/players', { query: '' }, player))).toBe('notAdmin');
@@ -85,13 +101,14 @@ describe('the admin page', () => {
   it('finds a player, renames them, inspects their save, bans and unbans them', async () => {
     s = await server();
     const rowan = await signUp(s, 'Rowan');
-    const warden = await signUp(s, 'Warden');
+    const warden = await signUpAdmin(s, 'Warden');
     const found = JSON.parse(
       (await post(s, '/api/admin/players', { query: 'row' }, warden)).body,
     ) as AdminPlayersResponse;
     expect(found.players.map((p) => p.name)).toEqual(['Rowan']);
     const id = found.players[0].id;
-    expect(code(await post(s, '/api/admin/rename', { playerId: id, name: 'warden' }, warden))).toBe('nameTaken');
+    await signUp(s, 'Bystander');
+    expect(code(await post(s, '/api/admin/rename', { playerId: id, name: 'bystander' }, warden))).toBe('nameTaken');
     await post(s, '/api/admin/rename', { playerId: id, name: 'Rowena' }, warden);
     expect((await meOf(rowan)).player).toMatchObject({ name: 'Rowena' });
     const save = JSON.parse((await post(s, '/api/admin/save', { playerId: id }, warden)).body) as AdminSaveResponse;
@@ -107,7 +124,7 @@ describe('the admin page', () => {
   it('resets a forgotten password: the new one works, the old one and old sessions do not', async () => {
     s = await server();
     const rowan = await signUp(s, 'Rowan');
-    const warden = await signUp(s, 'Warden');
+    const warden = await signUpAdmin(s, 'Warden');
     const { player } = await meOf(rowan);
     const r = await post(s, '/api/admin/reset-password', { playerId: player!.id }, warden);
     const { password } = JSON.parse(r.body) as AdminResetResponse;
