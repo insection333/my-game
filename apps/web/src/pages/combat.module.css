@@ -117,7 +117,7 @@
   color: var(--ink-2);
 }
 
-/* The key is for reference: on phones it waits under the foes. */
+/* The key is for reference: on phones each foe row names its matchup instead (IA.md lists it at 1,440). */
 @container main (max-width: 719px) {
   .key {
     display: none;
@@ -126,6 +126,12 @@
 
 .slot:not([data-slot-name='weapon']) .slotText {
   width: 100%;
+}
+
+/* A tile's name wraps to a second line rather than losing its end ("Bronze he…"). */
+.slot:not([data-slot-name='weapon']) .slotName {
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .tierTabs {

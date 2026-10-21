@@ -10,7 +10,7 @@ export async function runAxe(): Promise<{ problems: string[]; checks: number }> 
   for (const width of WIDTHS) {
     for (const view of views()) {
       // axe needs a page of its own context, which openPage gives.
-      const page = await openPage('chromium', view.path, { viewport: { width, height: height(width) } });
+      const page = await openPage('chromium', view.path, { viewport: { width, height: height(width) } }, view.as);
       await page.goto(viewUrl(url, view.path));
       await page.waitForFunction(() => document.documentElement.dataset.ready === 'true', undefined, {
         timeout: 15_000,

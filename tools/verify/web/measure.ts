@@ -35,12 +35,14 @@ export function measurePage(): Measured {
     if (!shown(el) || hidden(el)) continue;
     const r = el.getBoundingClientRect();
     if (r.right > W + 1 || r.left < -1) {
-      let clipped = false;
+      // Inside a box that scrolls sideways (a wide table), it can be reached; a box that merely hides
+      // its overflow (the shell's frame) cuts it off, which is as bad as running off the screen.
+      let scrolls = false;
       for (let p = el.parentElement; p; p = p.parentElement) {
         const o = getComputedStyle(p).overflowX;
-        if (o !== 'visible') clipped = true;
+        if (o === 'auto' || o === 'scroll') scrolls = true;
       }
-      if (!clipped && getComputedStyle(el).position !== 'fixed') problems.push(`${describe(el)} runs off the screen`);
+      if (!scrolls && getComputedStyle(el).position !== 'fixed') problems.push(`${describe(el)} runs off the screen`);
     }
   }
 

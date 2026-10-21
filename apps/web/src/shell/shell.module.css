@@ -109,6 +109,19 @@
   text-align: start;
 }
 
+/* The narrowest phones: the fire's time, five-figure gold and both buttons must still fit. */
+@media (max-width: 359px) {
+  .wordmark {
+    font-size: 1.05rem;
+  }
+  .gold {
+    margin: 0;
+  }
+  .fire {
+    padding-right: var(--s-1);
+  }
+}
+
 @keyframes breathe {
   50% {
     transform: scale(1.25);

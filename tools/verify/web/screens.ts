@@ -34,7 +34,7 @@ export async function runScreens(features: readonly Feature[]): Promise<ScreensR
   let shots = 0;
 
   const one = async (engine: Engine, width: number, view: View): Promise<string[]> => {
-    const page = await openPage(engine, view.path, { viewport: { width, height: height(width) } });
+    const page = await openPage(engine, view.path, { viewport: { width, height: height(width) } }, view.as);
     const errors: string[] = [];
     page.on('pageerror', (e) => errors.push(`script error: ${e.message}`));
     try {
@@ -59,7 +59,8 @@ export async function runScreens(features: readonly Feature[]): Promise<ScreensR
         else if (at.top > at.limit - 24)
           problems.push(`slot "${slot}" starts at ${Math.round(at.top)}px, below the fold (${Math.round(at.limit)}px)`);
       }
-      return problems.map((p) => `${engine} ${width}px ${view.path}: ${p}`);
+      const who = view.as ? ` (as a ${view.as})` : '';
+      return problems.map((p) => `${engine} ${width}px ${view.path}${who}: ${p}`);
     } catch (err) {
       return [
         `${engine} ${width}px ${view.path}: could not open the page (${err instanceof Error ? err.message.split('\n')[0] : String(err)})`,

@@ -45,7 +45,7 @@ export function Shell({ children }: { children: ReactNode }) {
             <Pill tone="gold">
               <Coin />
               <span className="visually-hidden">{t('shell.gold', { amount: fmt.int(countOf(state, 'gold')) })}</span>
-              <span aria-hidden="true">{fmt.int(countOf(state, 'gold'))}</span>
+              <span aria-hidden="true">{fmt.short(countOf(state, 'gold'))}</span>
             </Pill>
           </span>
           <span data-slot="shell.tray">

@@ -3,6 +3,7 @@
 
 const whole = new Intl.NumberFormat('en', { maximumFractionDigits: 0 });
 const decimal = new Intl.NumberFormat('en', { maximumFractionDigits: 2 });
+const compact = new Intl.NumberFormat('en', { notation: 'compact', maximumFractionDigits: 1 });
 const day = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 
 const ROMAN: [number, string][] = [
@@ -16,6 +17,8 @@ const ROMAN: [number, string][] = [
 export const fmt = {
   /** 1234 → "1,234" */
   int: (n: number): string => whole.format(Math.round(n)),
+  /** Where room is short (the header's gold): 12345 → "12,345", but 123456 → "123.5K", 2500000 → "2.5M" */
+  short: (n: number): string => (Math.abs(n) < 100_000 ? whole.format(Math.round(n)) : compact.format(n)),
   /** 2.5 → "2.5", 1234.5 → "1,234.5" */
   num: (n: number): string => decimal.format(n),
   /** 2.5 → "2.5%" */

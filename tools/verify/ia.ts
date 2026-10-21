@@ -8,6 +8,8 @@ export interface ViewSpec {
   /** Slots that must be visible without scrolling at 390 x 844 and at 1,440 x 900. */
   phone: string[];
   desktop: string[];
+  /** Who the page is opened as: the run's newcomer (the default) or a player three weeks in. */
+  as?: 'veteran';
 }
 
 export interface PageMap {
