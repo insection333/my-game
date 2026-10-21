@@ -77,6 +77,14 @@ export class SqliteStore implements SaveStore {
     if (done.changes !== 1) throw new SaveConflict(player);
   }
 
+  /** Deletes a player's save and every damaged copy of it (the account is being deleted). */
+  remove(player: string): void {
+    this.sqlite.transaction(() => {
+      this.db.delete(saves).where(eq(saves.playerId, player)).run();
+      this.db.delete(damagedSaves).where(eq(damagedSaves.playerId, player)).run();
+    })();
+  }
+
   /** The damaged originals kept for a player, newest last. */
   damaged(player: string) {
     return this.db.select().from(damagedSaves).where(eq(damagedSaves.playerId, player)).all();

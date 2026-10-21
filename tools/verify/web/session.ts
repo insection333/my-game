@@ -17,8 +17,9 @@ import {
 import { buildApp } from '../../../apps/server/src/app.ts';
 import { flagsFrom } from '../../../apps/server/src/config.ts';
 import type { Ctx } from '../../../apps/server/src/context.ts';
+import type { State } from '@idle-clash/kernel';
 import { exec, ROOT } from '../exec.ts';
-import { veteran } from './veteran.ts';
+import { crowd, CROWD, veteran } from './veteran.ts';
 import { readPageMap, type ViewSpec } from '../ia.ts';
 
 export const DIST = join(ROOT, 'apps/web/dist');
@@ -54,19 +55,18 @@ export function views(): View[] {
   ];
   // The same pages for a player three weeks in, whose rows carry odds, pills and long names.
   const veteran: ViewSpec[] = [
-    // (Their First steps are finished, so the Hearth's goals slot is empty until short goals arrive.)
-    ...map.views
-      .filter((v) => !signedOut(v.path))
-      .map((v) => ({
-        ...v,
-        phone: v.phone.filter((x) => x !== 'hearth.goals'),
-        desktop: v.desktop.filter((x) => x !== 'hearth.goals'),
-        as: 'veteran' as const,
-      })),
+    ...map.views.filter((v) => !signedOut(v.path)).map((v) => ({ ...v, as: 'veteran' as const })),
     { page: 'Combat', path: '/combat?panel=gear&slot=weapon', phone: [], desktop: [], as: 'veteran' },
     { page: 'Skill', path: '/skills/melee', phone: [], desktop: [], as: 'veteran' },
+    { page: 'Storehouse', path: '/storehouse?panel=item&item=carved-acorn', phone: [], desktop: [], as: 'veteran' },
   ];
-  return [...map.views, ...sheets, ...veteran].map((v) => ({
+  // The privacy page and the terms, as a visitor reads them from the welcome page.
+  const visitor: ViewSpec[] = map.views
+    .filter((v) => v.path === '/privacy' || v.path === '/terms')
+    .map((v) => ({ ...v, as: 'visitor' as const }));
+  // The admin page is the admin's: a newcomer gets the page that does not exist.
+  const newcomer = map.views.filter((v) => v.path !== '/admin');
+  return [...newcomer, ...sheets, ...veteran, ...visitor].map((v) => ({
     ...v,
     name: (v.as ? `${v.as}-` : '') + (v.path.replace(/^\//, '').replace(/[^a-z0-9]+/gi, '-') || 'hearth'),
   }));
@@ -132,16 +132,27 @@ async function start(): Promise<Served> {
     flags: flagsFrom('all'),
     log: false,
     now: () => Date.now(),
+    // The veteran keeps the game's admin page, so it is screenshot with players on it.
+    adminNames: ['Veteran'],
   });
   await app.listen({ port, host: '127.0.0.1' });
   const cookie = await newcomer(url, 'Newcomer');
-  const vet = await newcomer(url, 'Veteran');
-  const me = (await (await fetch(`${url}/api/me`, { headers: { cookie: `${vet.name}=${vet.value}` } })).json()) as {
-    player: { id: string };
-  };
   const now = Date.now();
-  const saved = ctx.store.read(me.player.id, now)!;
-  ctx.store.write(me.player.id, { ...saved.doc, state: veteran(ctx, saved.doc.state, now) }, saved.rev, now);
+  /** Signs a player up and gives their save a history (written as the admin page can). */
+  const settle = async (name: string, make: (s: State) => State) => {
+    const c = await newcomer(url, name);
+    const me = (await (await fetch(`${url}/api/me`, { headers: { cookie: `${c.name}=${c.value}` } })).json()) as {
+      player: { id: string };
+    };
+    const saved = ctx.store.read(me.player.id, now)!;
+    const state = make(saved.doc.state);
+    ctx.store.write(me.player.id, { ...saved.doc, state }, saved.rev, now);
+    ctx.hiscores.update(me.player.id, state, now);
+    return c;
+  };
+  const vet = await settle('Veteran', (s) => veteran(ctx, s, now));
+  // Others on the hiscores, so the ladders read as they will with players on them.
+  for (const [i, name] of CROWD.entries()) await settle(name, (s) => crowd(s, i));
   return {
     url,
     cookie,
@@ -165,12 +176,12 @@ export async function openPage(
   engine: Engine,
   path: string,
   options: BrowserContextOptions,
-  as?: 'veteran',
+  as?: 'veteran' | 'visitor',
 ): Promise<Page> {
   const served = await ensureServer();
   const ctx = await (await browser(engine)).newContext(options);
   const cookie = as === 'veteran' ? served.veteran : served.cookie;
-  if (!signedOut(path)) await ctx.addCookies([{ ...cookie, url: served.url }]);
+  if (!signedOut(path) && as !== 'visitor') await ctx.addCookies([{ ...cookie, url: served.url }]);
   const page = await ctx.newPage();
   page.on('close', () => void ctx.close().catch(() => undefined));
   return page;

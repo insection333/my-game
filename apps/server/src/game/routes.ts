@@ -7,23 +7,39 @@ import {
   ROUTES,
   type ActResponse,
   type GameResponse,
+  type HiscoresResponse,
+  type NoticesResponse,
 } from '@idle-clash/contracts';
-import type { Feature } from '@idle-clash/features';
-import { handle, seeded, type Command, type GameEvent, type SaveDoc } from '@idle-clash/kernel';
+import { allSkills, type Feature } from '@idle-clash/features';
+import {
+  handle,
+  RECAP_AFTER_MS,
+  seeded,
+  summarizeAway,
+  type Command,
+  type GameEvent,
+  type SaveDoc,
+} from '@idle-clash/kernel';
 import type { FastifyInstance } from 'fastify';
 import { limit, type Ctx } from '../context.ts';
+import { TOTAL } from './hiscores.ts';
 import { contractRoute, fail } from '../http.ts';
 import { identify, requirePlayer } from '../auth/routes.ts';
 
 export function gameRoutes(app: FastifyInstance, ctx: Ctx, features: readonly Feature[]): void {
   const now = () => ctx.config.now();
 
-  /** Reads a player's save and advances it to now, without writing: what the page should show. */
-  const current = (playerId: string): GameResponse => {
+  /** Reads a player's save and advances it to now, without writing: what the page should show. With
+   *  `recap`, a player away a quarter of an hour or more also gets what happened meanwhile. */
+  const current = (playerId: string, recap = false): GameResponse => {
     const saved = ctx.store.read(playerId, now());
     if (!saved) throw fail(404, 'notFound');
     const t = now();
-    return { state: ctx.engine.advance(saved.doc.state, t, seeded(saved.doc.state.seed)).state, now: t };
+    const before = saved.doc.state;
+    const out = ctx.engine.advance(before, t, seeded(before.seed));
+    const away =
+      recap && t - before.lastSeen >= RECAP_AFTER_MS ? summarizeAway(before, out.state, out.events, t) : null;
+    return { state: out.state, now: t, away };
   };
 
   /** After a change: tell the player's open pages, and record what happened. */
@@ -31,12 +47,32 @@ export function gameRoutes(app: FastifyInstance, ctx: Ctx, features: readonly Fe
     ctx.live.publish(playerId, { type: 'state', state: doc.state, now: at });
     if (events.length) ctx.live.publish(playerId, { type: 'events', events });
     ctx.telemetry.events(playerId, events);
+    ctx.notices.add(playerId, events);
+    ctx.hiscores.update(playerId, doc.state, at);
   };
 
   contractRoute(
     app,
     ROUTES.game,
-    async ({ req }) => ctx.queue.run(req.playerId!, () => current(req.playerId!)),
+    async ({ req }) => ctx.queue.run(req.playerId!, () => current(req.playerId!, true)),
+    requirePlayer(ctx),
+  );
+
+  contractRoute(
+    app,
+    ROUTES.notices,
+    ({ req }) => ({ notices: ctx.notices.list(req.playerId!) }) satisfies NoticesResponse,
+    requirePlayer(ctx),
+  );
+
+  contractRoute(
+    app,
+    ROUTES.hiscores,
+    ({ req }) =>
+      ({
+        online: ctx.live.online,
+        ladders: [TOTAL, ...allSkills()].map((skill) => ctx.hiscores.ladder(skill, req.playerId!)),
+      }) satisfies HiscoresResponse,
     requirePlayer(ctx),
   );
 

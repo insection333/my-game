@@ -2,7 +2,7 @@
 // (create) and /welcome/sign-in, outside the shell, to anyone not signed in.
 import { fmt, t } from '@idle-clash/content';
 import { NAME_MAX } from '@idle-clash/contracts';
-import { Button, Field, ItemIcon, Tabs } from '@idle-clash/ui';
+import { Button, Field, ItemIcon, Tabs, TextLink } from '@idle-clash/ui';
 import { useState, type FormEvent } from 'react';
 import { ApiError } from '../api.ts';
 import { account, loadGame } from '../game/session.ts';
@@ -18,6 +18,8 @@ function refusal(err: unknown): string {
   switch (err.code) {
     case 'nameTaken':
       return t('error.nameTaken');
+    case 'nameNotAllowed':
+      return t('error.nameNotAllowed');
     case 'wrongNameOrPassword':
       return t('error.wrongNameOrPassword');
     case 'banned':
@@ -135,6 +137,14 @@ export function Welcome({ path, next }: { path: string; next: string }) {
             {working ? t('welcome.working') : create ? t('welcome.create') : t('welcome.signIn')}
           </Button>
           {!create && <p className={s.hint}>{t('welcome.forgot')}</p>}
+          <p className={s.legalLinks}>
+            <TextLink href="/terms" onNavigate={navigate}>
+              {t('legal.terms.title')}
+            </TextLink>
+            <TextLink href="/privacy" onNavigate={navigate}>
+              {t('legal.privacy.title')}
+            </TextLink>
+          </p>
         </form>
       </section>
     </main>

@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect } from 'react';
 import { boot, useSession } from './game/session.ts';
+import { Legal, legalPage } from './pages/Legal.tsx';
 import { Offline, Welcome } from './pages/Welcome.tsx';
 import { Ready } from './Ready.tsx';
 import { replace, useLocation } from './router.ts';
@@ -15,7 +16,7 @@ export function App() {
   // Not signed in: every address leads to the welcome page, which returns there afterwards.
   // Signed in: the welcome page leads on to where the player was going.
   const redirect =
-    phase === 'signedOut' && !isWelcome(path)
+    phase === 'signedOut' && !isWelcome(path) && !legalPage(path)
       ? `/welcome${path === '/' ? '' : `?next=${encodeURIComponent(location.pathname + location.search)}`}`
       : phase === 'playing' && isWelcome(path)
         ? next
@@ -29,6 +30,14 @@ export function App() {
     return (
       <>
         <Offline retry={() => void boot()} />
+        <Ready />
+      </>
+    );
+  const legal = legalPage(path);
+  if (phase === 'signedOut' && legal)
+    return (
+      <>
+        <Legal page={legal} back="/welcome" standalone />
         <Ready />
       </>
     );

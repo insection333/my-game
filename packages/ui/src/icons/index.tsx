@@ -52,6 +52,7 @@ import {
   OrcRaider,
 } from './foes.tsx';
 import { Body, Bow, Helm, Legs, Staff, Sword } from './gear.tsx';
+import { ArcherySeal, HitpointsSeal, MagicSeal, MeleeSeal, MiningSeal, SmithingSeal } from './seals.tsx';
 import { M, type Tone } from './style.tsx';
 import {
   AshLogs,
@@ -146,6 +147,13 @@ const NAMED = {
     title: 'Ember of the first forge (Legendary find)',
   },
   'old-kings-hammer': { draw: OldKingsHammer, family: 'find', title: "Old king's hammer (Legendary find)" },
+  // Session 9: the other six skills' seals.
+  mining: { draw: MiningSeal, family: 'skill', title: 'Mining' },
+  smithing: { draw: SmithingSeal, family: 'skill', title: 'Smithing' },
+  melee: { draw: MeleeSeal, family: 'skill', title: 'Melee' },
+  archery: { draw: ArcherySeal, family: 'skill', title: 'Archery' },
+  magic: { draw: MagicSeal, family: 'skill', title: 'Magic' },
+  hitpoints: { draw: HitpointsSeal, family: 'skill', title: 'Hitpoints' },
   // Session 8: the foes after the rat, the better foods, and the combat styles' finds.
   'goblin-slinger': { draw: GoblinSlinger, family: 'foe', title: 'Goblin slinger' },
   'marsh-wisp': { draw: MarshWisp, family: 'foe', title: 'Marsh wisp' },

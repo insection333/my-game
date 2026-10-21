@@ -1,0 +1,13 @@
+.link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  color: var(--woad);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-weight: 600;
+}
+
+.link:hover {
+  color: var(--ink);
+}

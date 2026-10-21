@@ -73,6 +73,8 @@ export interface NextUpRow {
   skill: string;
   text: string;
   away: string;
+  /** XP still to earn, for choosing the nearest three. */
+  xpAway: number;
 }
 
 export interface SkillDef {
@@ -190,6 +192,7 @@ export function skillSlots(def: SkillDef): Record<string, SlotFill> {
           unlock: next.unlocks.map((u) => unlockText(feature, ladder, u)).join('; '),
         }),
         away: t('skill.xpAway', { xp: fmt.int(Math.max(0, XP_TABLE[next.level] - xp)) }),
+        xpAway: Math.max(0, XP_TABLE[next.level] - xp),
       };
     },
   };

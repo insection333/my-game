@@ -10,7 +10,9 @@ import {
   MINUTE,
   newState,
   seeded,
+  summarizeAway,
   xpOf,
+  type AwaySummary,
   type Command,
   type GameEvent,
   type LaneId,
@@ -18,6 +20,8 @@ import {
 } from '@idle-clash/kernel';
 
 export const DAY = 24 * HOUR;
+/** A recap of nothing, until the day's is made. */
+export const EMPTY: AwaySummary = { from: 0, to: 0, events: [], uncommon: 0, items: {}, xp: {} };
 export const T0 = Date.UTC(2026, 0, 5, 8);
 const engine = createEngine(actionRegistry(FEATURES, (f) => f.flag.on));
 
@@ -43,6 +47,8 @@ export interface Day {
   active: GameEvent[];
   /** Notable events while away. */
   away: GameEvent[];
+  /** What the recap would hold on coming back 8 hours after the active hour. */
+  recap: AwaySummary;
 }
 
 export interface Played {
@@ -82,7 +88,7 @@ export function focusedPlayer(f: Feature, seed: number, days: number, lane: Lane
     const dayStart = T0 + d * DAY;
     if (stock.length)
       state = { ...state, items: { ...state.items, ...Object.fromEntries(stock.map((i) => [i, 1e6])) } };
-    const day: Day = { start: state, active: [], away: [] };
+    const day: Day = { start: state, active: [], away: [], recap: EMPTY };
     for (let t = dayStart; t < dayStart + HOUR; t += MINUTE) {
       const best = bestAction(state, f);
       const cmd: Command =
@@ -95,13 +101,15 @@ export function focusedPlayer(f: Feature, seed: number, days: number, lane: Lane
       state = r.state;
       day.active.push(...note(r.events));
     }
+    const eight = engine.advance(state, dayStart + 9 * HOUR, rng);
+    const recap = summarizeAway(state, eight.state, eight.events, dayStart + 9 * HOUR);
     const away = engine.advance(state, dayStart + DAY, rng);
     state = away.state;
     // What happened while away is recorded with the next input; the first hour of it ends the active hour.
     const all = note(away.events);
     day.active.push(...all.filter((e) => e.at < dayStart + HOUR));
     day.away.push(...all.filter((e) => e.at >= dayStart + HOUR));
-    out.push(day);
+    out.push({ ...day, recap });
   }
   return { levelAt, days: out, commands, refused, final: state };
 }

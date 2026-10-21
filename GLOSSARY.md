@@ -18,6 +18,7 @@ Plain, warm and brief, with an old-world flavour in names rather than in instruc
 | Bar | Metal smelted from ore: copper, bronze, iron, steel |
 | Collection log | The record of every find you have made, by skill |
 | Combat lane | The lane that fights; trains your weapon's style and Hitpoints |
+| Collect | Close the away recap: everything in it is already in your Storehouse |
 | Comes from | On an item: every action that produces it |
 | Daily goal | One larger goal a day |
 | Disadvantage | The foe's style beats yours: you deal less damage and take more |
@@ -48,6 +49,7 @@ Plain, warm and brief, with an old-world flavour in names rather than in instruc
 | Slot | A space in the Storehouse for one kind of item, in any amount |
 | Stoke | Keep the fire burning |
 | Storehouse | Where everything you own is kept |
+| Storehouse full | No free slot for a new kind of item: a lane that would make one stops |
 | Style | Melee, Archery or Magic: set by the weapon you wear |
 | The fire | Burns while you play: more XP and a second Gathering lane |
 | Tier | A rank of material and gear: Copper, Bronze, Iron, Steel |

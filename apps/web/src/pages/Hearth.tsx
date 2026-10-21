@@ -1,5 +1,6 @@
 // The Hearth: what is happening, what happened while you were away, and what to aim for next.
 import { t } from '@idle-clash/content';
+import { useEffect } from 'react';
 import type { GoalRow, GoalsView, NextUpRow } from '@idle-clash/features';
 import { ActionRow, Button, Panel, Pill, ProgressBar } from '@idle-clash/ui';
 import { useGame } from '../game/hooks.ts';
@@ -8,26 +9,29 @@ import { navigate } from '../router.ts';
 import { LaneList, laneViews } from '../shell/Lanes.tsx';
 import { fills, Slot } from '../slots.tsx';
 import s from './pages.module.css';
+import { Tour } from '../shell/Tour.tsx';
+import { Today } from './Today.tsx';
 
 export function Hearth() {
   const { state, now, features } = useGame();
-  const next = fills<NextUpRow>(features, 'hearth.nextUp', state, now);
+  // The three nearest unlocks across every skill (IA.md).
+  const next = fills<NextUpRow>(features, 'hearth.nextUp', state, now)
+    .sort((a, b) => a.data.xpAway - b.data.xpAway)
+    .slice(0, 3);
   const [goals] = fills<GoalsView>(features, 'hearth.goals', state, now);
+  // The ladder lacks a goal (a short goal was claimed, or a new day began): the server makes it.
+  const wants = goals?.data.refresh ?? false;
+  useEffect(() => {
+    if (wants) game.act('goals', 'refresh', {});
+  }, [wants]);
   return (
     <>
       <h1 className="visually-hidden">{t('hearth.title')}</h1>
       <div className={s.pair}>
         <section data-section>
-          <Slot id="hearth.today">
-            <Panel>
-              <div className={s.welcome}>
-                <h2>{t('hearth.welcome.title')}</h2>
-                <p>{t('hearth.welcome.body')}</p>
-              </div>
-            </Panel>
-          </Slot>
+          <Today />
           {goals && (
-            <Panel title={goals.data.title} aside={goals.data.progress} flush className={s.below}>
+            <Panel title={goals.data.title} aside={goals.data.progress ?? undefined} flush className={s.below}>
               <Slot id="hearth.goals">
                 {goals.data.rows.map((row) => (
                   <Goal key={row.id} row={row} />
@@ -67,6 +71,7 @@ export function Hearth() {
           </Panel>
         </Slot>
       </section>
+      <Tour />
     </>
   );
 }
@@ -76,7 +81,7 @@ function Goal({ row }: { row: GoalRow }) {
   return (
     <ActionRow
       name={row.name}
-      facts={[row.reward]}
+      facts={[row.reward, ...(row.count ? [row.count] : [])]}
       status={
         row.state === 'claimed' ? (
           <Pill tone="moss">{row.note}</Pill>

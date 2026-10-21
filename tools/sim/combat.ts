@@ -12,12 +12,13 @@ import {
   MINUTE,
   newState,
   seeded,
+  summarizeAway,
   xpOf,
   type Command,
   type GameEvent,
   type State,
 } from '@idle-clash/kernel';
-import { DAY, T0, type Day, type Played } from './player.ts';
+import { DAY, EMPTY, T0, type Day, type Played } from './player.ts';
 
 const engine = createEngine(actionRegistry(FEATURES, (f) => f.flag.on));
 const combat = FEATURES.find((f) => f.id === 'combat')!;
@@ -36,6 +37,21 @@ export function equip(state: State, style: Style): State {
   for (const item of [weapon, ...armour]) {
     if (!s.items[item]) s = { ...s, items: { ...s.items, [item]: 1 } };
     s = combat.routes.wear.run(s, { item }, s.clock).state;
+  }
+  return s;
+}
+
+const storehouse = FEATURES.find((f) => f.id === 'storehouse');
+/** A fighter's morning visit to the vendor: everything sold but gold, food and the gear worn, so the
+ *  Storehouse never fills with drops and outgrown gear. */
+function tidy(state: State): State {
+  if (!storehouse) return state;
+  const worn = Object.values((state.features.combat as { worn?: Record<string, string> } | undefined)?.worn ?? {});
+  const food = new Set(combatData.FOODS.map((f) => f.id));
+  let s = state;
+  for (const [item, count] of Object.entries(state.items)) {
+    if (item === 'gold' || food.has(item) || worn.includes(item)) continue;
+    s = storehouse.routes.sell.run(s, { item, count }, s.clock).state;
   }
   return s;
 }
@@ -65,8 +81,8 @@ export function fighter(style: Style, seed: number, days: number): Played {
   };
   for (let d = 0; d < days; d++) {
     const dayStart = T0 + d * DAY;
-    state = equip({ ...state, clock: Math.max(state.clock, dayStart) }, style);
-    const day: Day = { start: state, active: [], away: [] };
+    state = equip(tidy({ ...state, clock: Math.max(state.clock, dayStart) }), style);
+    const day: Day = { start: state, active: [], away: [], recap: EMPTY };
     for (let t = dayStart; t < dayStart + HOUR; t += MINUTE) {
       const arrived = engine.advance(state, t, rng);
       day.active.push(...note(arrived.events));
@@ -82,12 +98,14 @@ export function fighter(style: Style, seed: number, days: number): Played {
       state = r.state;
       day.active.push(...note(r.events));
     }
+    const eight = engine.advance(state, dayStart + 9 * HOUR, rng);
+    const recap = summarizeAway(state, eight.state, eight.events, dayStart + 9 * HOUR);
     const away = engine.advance(state, dayStart + DAY, rng);
     state = away.state;
     const all = note(away.events);
     day.active.push(...all.filter((e) => e.at < dayStart + HOUR));
     day.away.push(...all.filter((e) => e.at >= dayStart + HOUR));
-    out.push(day);
+    out.push({ ...day, recap });
   }
   return { levelAt, days: out, commands, refused, final: state };
 }

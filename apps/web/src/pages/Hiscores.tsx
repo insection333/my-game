@@ -1,0 +1,113 @@
+// Hiscores (IA.md): how many are playing now, and a ladder for Total and each skill with your own
+// entry pinned. The ladders come from the server; the page asks again each minute while it is open.
+import type { HiscoreRow, HiscoresResponse } from '@idle-clash/contracts';
+import { fmt, t } from '@idle-clash/content';
+import { Panel, Pill, Tabs } from '@idle-clash/ui';
+import { useEffect, useState } from 'react';
+import { api } from '../api.ts';
+import { handled } from '../game/session.ts';
+import { untilLoaded } from '../Ready.tsx';
+import { navigate, useLocation } from '../router.ts';
+import { Slot } from '../slots.tsx';
+import { PageHead } from './PageHead.tsx';
+import s from './hiscores.module.css';
+
+const PHONE_ROWS = 10;
+
+export function Hiscores() {
+  const [data, setData] = useState<HiscoresResponse | null>(null);
+  useLocation();
+  useEffect(() => {
+    let live = true;
+    const load = (first = false) =>
+      (first ? untilLoaded(api.hiscores()) : api.hiscores()).then(
+        (r) => live && setData(r),
+        (err: unknown) => void handled(err),
+      );
+    void load(true);
+    const every = setInterval(() => void load(), 60_000);
+    return () => {
+      live = false;
+      clearInterval(every);
+    };
+  }, []);
+  const asked = new URLSearchParams(location.search).get('skill') ?? 'total';
+  const ladder = data?.ladders.find((l) => l.skill === asked) ?? data?.ladders[0];
+  const name = (skill: string) => (skill === 'total' ? t('hiscores.total') : t(`skill.${skill}`));
+  const you = ladder?.you ?? null;
+  const shown = ladder?.rows ?? [];
+  const pinned = you && !shown.slice(0, PHONE_ROWS).some((r) => r.rank === you.rank) ? you : null;
+  return (
+    <>
+      <PageHead title={t('hiscores.title')}>
+        <Slot id="hiscores.online" className={s.online}>
+          {data && <Pill tone="moss">{t('hiscores.online', { count: fmt.int(data.online) })}</Pill>}
+        </Slot>
+      </PageHead>
+      <div className={s.layout}>
+        <div className={s.tabs}>
+          <Tabs
+            label={t('hiscores.ladders')}
+            onNavigate={navigate}
+            tabs={(data?.ladders ?? []).map((l) => ({
+              href: l.skill === 'total' ? '/hiscores' : `/hiscores?skill=${l.skill}`,
+              label: name(l.skill),
+              current: l.skill === ladder?.skill,
+            }))}
+          />
+        </div>
+        <section data-section>
+          <Panel flush>
+            <Slot id="hiscores.ladder" className={s.ladder}>
+              {ladder && (
+                <table className={s.table}>
+                  <caption className="visually-hidden">{name(ladder.skill)}</caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">{t('hiscores.rank')}</th>
+                      <th scope="col">{t('hiscores.name')}</th>
+                      <th scope="col" data-num>
+                        {t('hiscores.level')}
+                      </th>
+                      <th scope="col" data-num>
+                        {t('hiscores.xp')}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {shown.map((r) => (
+                      <Row key={r.rank} row={r} you={you?.rank === r.rank} total={ladder.skill === 'total'} />
+                    ))}
+                  </tbody>
+                  {pinned && (
+                    <tbody className={s.pinned}>
+                      <Row row={pinned} you total={ladder.skill === 'total'} />
+                    </tbody>
+                  )}
+                </table>
+              )}
+              {data && !you && <p className={s.note}>{t('hiscores.unranked')}</p>}
+            </Slot>
+          </Panel>
+        </section>
+      </div>
+    </>
+  );
+}
+
+/** One place on a ladder; on Total, the milestones claimed under the name. */
+function Row({ row, you, total }: { row: HiscoreRow; you: boolean; total: boolean }) {
+  return (
+    <tr data-you={you || undefined}>
+      <td>{fmt.int(row.rank)}</td>
+      <td>
+        <span className={s.player}>{row.name}</span>
+        {total && row.milestones > 0 && (
+          <span className={s.milestones}>{t('hiscores.milestones', { count: fmt.int(row.milestones) })}</span>
+        )}
+      </td>
+      <td data-num>{fmt.int(row.level)}</td>
+      <td data-num>{fmt.int(row.xp)}</td>
+    </tr>
+  );
+}

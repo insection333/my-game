@@ -3,11 +3,12 @@
 import { countOf } from '@idle-clash/kernel';
 import { fmt, hasString, t } from '@idle-clash/content';
 import { IconButton, Pill, Sheet } from '@idle-clash/ui';
-import type { ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { useGame } from '../game/hooks.ts';
 import { navigate, useLocation, withPanel } from '../router.ts';
 import { ItemPanel } from '../pages/Items.tsx';
-import { Settings, Tray } from '../pages/Panels.tsx';
+import { Settings, Tray, trayReadAt } from '../pages/Panels.tsx';
+import { noticesOf } from '../pages/notices.ts';
 import { FireBadge } from './FireBadge.tsx';
 import { Bell, Coin, MenuGlyph, Person } from './glyphs.tsx';
 import { LaneList, LaneStrip, laneViews } from './Lanes.tsx';
@@ -49,9 +50,7 @@ export function Shell({ children }: { children: ReactNode }) {
             </Pill>
           </span>
           <span data-slot="shell.tray">
-            <IconButton label={t('shell.notices')} onClick={() => navigate(withPanel('tray'))}>
-              <Bell />
-            </IconButton>
+            <TrayButton />
           </span>
           <IconButton label={t('shell.account')} onClick={() => navigate(withPanel('settings'))}>
             <Person />
@@ -112,5 +111,26 @@ function ItemSheet({ onClose }: { onClose: () => void }) {
     <Sheet title={title} closeLabel={t('shell.close')} onClose={onClose} slot="item.panel">
       <ItemPanel item={item} />
     </Sheet>
+  );
+}
+
+/** The bell, with how many notices arrived since the tray was last opened here. */
+function TrayButton() {
+  const view = useGame();
+  const [readAt, setReadAt] = useState(trayReadAt);
+  useEffect(() => {
+    const read = () => setReadAt(trayReadAt());
+    window.addEventListener('tray-read', read);
+    return () => window.removeEventListener('tray-read', read);
+  }, []);
+  const unread = noticesOf(view).filter((n) => n.at > readAt).length;
+  return (
+    <IconButton
+      label={unread ? `${t('shell.notices')}: ${t('tray.unread', { count: fmt.int(unread) })}` : t('shell.notices')}
+      badge={unread ? (unread > 9 ? '9+' : fmt.int(unread)) : undefined}
+      onClick={() => navigate(withPanel('tray'))}
+    >
+      <Bell />
+    </IconButton>
   );
 }

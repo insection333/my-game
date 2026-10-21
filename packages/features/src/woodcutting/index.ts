@@ -15,7 +15,7 @@ export const woodcutting = defineFeature({
     finds: FINDS,
   },
   effects: ['speed', 'extraYield', 'findChance', 'masteryGain'],
-  stops: ['levelTooLow'],
+  stops: ['levelTooLow', 'storehouseFull'],
   rules: RULES,
   routes: {},
   slots: skillSlots({

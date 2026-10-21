@@ -2,8 +2,8 @@
 // against the paper model (within 25% of both). Each built skill is checked, each combat style by a
 // focused fighter, and the fire's worth once four lanes run.
 import { STYLES } from '@idle-clash/content';
-import { FEATURES, type Feature } from '@idle-clash/features';
-import { HOUR, type GameEvent, type LaneId } from '@idle-clash/kernel';
+import { FEATURES, recap, type Feature } from '@idle-clash/features';
+import { HOUR, type AwaySummary, type GameEvent, type LaneId } from '@idle-clash/kernel';
 import { readFileSync } from 'node:fs';
 import {
   combatCandidates,
@@ -14,7 +14,7 @@ import {
   type Candidates,
 } from '../../design/model/curve.ts';
 import { combatXpPerHour, fighter } from './combat.ts';
-import { newcomer } from './newcomer.ts';
+import { firstHour, gold } from './first-hour.ts';
 import { combatProofs } from './proofs.ts';
 import { bestAction, DAY, focusedPlayer, gaps, T0, xpPerHour, type Played } from './player.ts';
 
@@ -60,6 +60,21 @@ function modelFighter(style: (typeof STYLES)[number], table: number[]) {
   const cands: Candidates = combatCandidates(style, () => levelFromTable(table, hpXp));
   return simulate(cands, { days: 30, table, step: 60, onHp: (x) => (hpXp += x) }).reached;
 }
+/** One player's recap from several lanes' (each focused run is one of their lanes). */
+const merged = (list: readonly AwaySummary[]): AwaySummary => {
+  const add = (a: Record<string, number>, b: Record<string, number>) => {
+    for (const [k, v] of Object.entries(b)) a[k] = (a[k] ?? 0) + v;
+    return a;
+  };
+  return {
+    from: Math.min(...list.map((x) => x.from)),
+    to: Math.max(...list.map((x) => x.to)),
+    events: list.flatMap((x) => x.events).sort((a, b) => a.at - b.at),
+    uncommon: list.reduce((n, x) => n + x.uncommon, 0),
+    items: list.reduce((a, x) => add(a, x.items), {} as Record<string, number>),
+    xp: list.reduce((a, x) => add(a, x.xp), {} as Record<string, number>),
+  };
+};
 const title = (id: string) => id[0].toUpperCase() + id.slice(1);
 
 export function runSimulation(): SimResult {
@@ -163,20 +178,12 @@ export function runSimulation(): SimResult {
 
   combatProofs(check, lines);
 
-  // A newcomer following First steps: the first crafted gear worn within 15 minutes (the brief).
-  if (FEATURES.some((f) => f.id === 'combat' && f.flag.on)) {
-    const fresh = PLAYERS.map((seed) => newcomer(seed));
-    const worn = Math.max(...fresh.map((n) => n.worn));
-    const fought = Math.max(...fresh.map((n) => n.fought));
-    lines.push(`\n## First steps: ${PLAYERS.length} newcomers pressing each step's button`);
-    lines.push(`The sword worn after ${Math.round(worn)} s; the first hollow rat beaten after ${Math.round(fought)} s`);
-    check(
-      worn <= 15 * 60,
-      `The first crafted gear is worn after ${Math.round(worn)} s at most (target under 15 minutes)`,
-    );
-    const claimed = Math.min(...fresh.map((n) => n.claimed));
-    check(claimed === 6, `Every newcomer claims all six first steps within 30 minutes (${claimed} at least)`);
-  }
+  firstHour(check, lines, PLAYERS);
+  gold(check, lines, {
+    gather: kept.get('woodcutting')?.runs[0],
+    smith: kept.get('smithing')?.runs[0],
+    fight: kept.get('combat')?.runs[0],
+  });
 
   // The fire (as the model measures it, on day 5): an hour with it, every lane at its best action with
   // the fire's XP and the second Gathering lane, against an hour away with the lanes that run then.
@@ -198,16 +205,17 @@ export function runSimulation(): SimResult {
   }
 
   // The away recap belongs to a player, not a skill: a player with every lane that runs while away at
-  // work (each skill kept as above) comes back after 8 hours to at least three good things.
-  // Uncommon finds count as one line.
-  lines.push(`\n## A player with ${awayRuns.length} lanes at work, 8 hours away`);
+  // work (each skill kept as above) comes back after 8 hours to the recap the page would show: at least
+  // three good things, the best first.
+  lines.push(`\n## A player with ${awayRuns.length} lanes at work, 8 hours away: the recap`);
   for (const [stage, d] of STAGES.slice(1)) {
-    const good = PLAYERS.map((_, i) => {
-      const ev = awayRuns.flatMap((runs) => runs[i].days[d].away.filter((e) => e.at < T0 + d * DAY + 9 * HOUR));
-      const plain = ev.filter((e) => !(e.type === 'find' && e.rarity === 'uncommon')).length;
-      return plain + (ev.length > plain ? 1 : 0);
-    });
+    const recaps = PLAYERS.map((_, i) => recap.recapLines(merged(awayRuns.map((runs) => runs[i].days[d].recap))));
+    const good = recaps.map((r) => recap.goodThings(r).length);
+    lines.push(`${stage}: ${recaps[0].map((l) => l.text).join(' / ')}`);
     check(Math.min(...good) >= 3, `${stage}: ${Math.min(...good)} good things after 8 hours away (at least 3)`);
+    const rank = (k: recap.RecapKind) => recap.RECAP_ORDER.indexOf(k);
+    const bestFirst = recaps.every((r) => r.every((l) => rank(l.kind) >= rank(r[0].kind)));
+    check(bestFirst, `${stage}: every recap leads with its best thing`);
   }
   return { lines, passed, failed };
 }

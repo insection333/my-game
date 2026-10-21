@@ -15,7 +15,7 @@ export const smithing = defineFeature({
     finds: FINDS,
   },
   effects: ['speed', 'saveInput', 'findChance', 'masteryGain'],
-  stops: ['levelTooLow', 'outOfInputs'],
+  stops: ['levelTooLow', 'outOfInputs', 'storehouseFull'],
   rules: RULES,
   routes: {},
   slots: skillSlots({ feature: 'smithing', skill: SKILL, ladder: LADDER, finds: FINDS, actions: RECIPES }),

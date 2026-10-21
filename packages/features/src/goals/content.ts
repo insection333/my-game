@@ -59,3 +59,39 @@ export const FIRST_STEPS: readonly FirstStep[] = [
     rewardFirst: true,
   },
 ];
+
+/** A milestone (GAME_DESIGN.md section 11): a long-term mark, paid in gold and shown on hiscores. */
+export type Milestone =
+  | { id: string; kind: 'total'; level: number; reward: number }
+  | { id: string; kind: 'forged'; metal: string; tier: number; reward: number }
+  | { id: string; kind: 'log'; count: number; reward: number }
+  | { id: string; kind: 'mastery'; step: number; reward: number };
+
+export const MILESTONES: readonly Milestone[] = [
+  ...[
+    [50, 2_000],
+    [100, 10_000],
+    [150, 30_000],
+    [200, 60_000],
+    [250, 100_000],
+    [280, 150_000],
+  ].map(([level, reward]): Milestone => ({ id: `total-${level}`, kind: 'total', level, reward })),
+  ...[
+    ['copper', 250],
+    ['bronze', 1_000],
+    ['iron', 5_000],
+    ['steel', 20_000],
+  ].map(([metal, reward], i): Milestone => ({
+    id: `first-${metal}`,
+    kind: 'forged',
+    metal: String(metal),
+    tier: i + 1,
+    reward: Number(reward),
+  })),
+  ...[
+    [12, 5_000],
+    [24, 25_000],
+    [36, 75_000],
+  ].map(([count, reward]): Milestone => ({ id: `log-${count}`, kind: 'log', count, reward })),
+  { id: 'mastery-10', kind: 'mastery', step: 10, reward: 50_000 },
+];

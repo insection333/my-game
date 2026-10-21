@@ -9,7 +9,7 @@ import {
   t,
   XP_TABLE,
 } from '@idle-clash/content';
-import { combatData, skill, type Feature } from '@idle-clash/features';
+import { combatData, skill, storehouseData, type Feature } from '@idle-clash/features';
 import {
   FOES as MODEL_FOES,
   FOODS as MODEL_FOODS,
@@ -19,6 +19,7 @@ import {
   MINING,
   RARITY,
   SMITHING,
+  STOREHOUSE,
   WOODCUTTING,
 } from '../../../design/model/content.ts';
 import { fmtUnlock } from '../../../design/model/format.ts';
@@ -37,6 +38,13 @@ export function checkDesign(features: readonly Feature[], modelXp: number[]): st
   if (JSON.stringify(ours) !== JSON.stringify(theirs))
     problems.push(`Find chances and luck ${JSON.stringify(ours)} differ from the design's ${JSON.stringify(theirs)}`);
   // Foes and foods, number for number (a built combat feature reads these).
+  // The Storehouse's space and the price of each enlargement.
+  if (features.some((f) => f.id === 'storehouse')) {
+    const ours = [storehouseData.START_SLOTS, storehouseData.SLOTS_PER_ENLARGEMENT, ...storehouseData.ENLARGE_COSTS];
+    const theirs = [STOREHOUSE.startSlots, STOREHOUSE.slotsPerEnlargement, ...STOREHOUSE.costs];
+    if (JSON.stringify(ours) !== JSON.stringify(theirs))
+      problems.push(`The Storehouse ${JSON.stringify(ours)} differs from the design's ${JSON.stringify(theirs)}`);
+  }
   if (features.some((f) => f.id === 'combat')) {
     const ours = combatData.FOES.map((x) => [
       t(`action.combat.${x.id}`),

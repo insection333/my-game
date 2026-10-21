@@ -9,6 +9,12 @@ import {
   type ErrorCode,
   type ErrorResponse,
   type GameResponse,
+  type AdminPlayersResponse,
+  type AdminPlayerView,
+  type AdminResetResponse,
+  type AdminSaveResponse,
+  type HiscoresResponse,
+  type NoticesResponse,
   type MeResponse,
 } from '@idle-clash/contracts';
 import type { Command, CommandResult } from '@idle-clash/kernel';
@@ -59,7 +65,18 @@ export const api = {
   signUp: (name: string, password: string) => post<AuthResponse>(PATHS.signUp, { name, password, ageConfirmed: true }),
   signIn: (name: string, password: string) => post<AuthResponse>(PATHS.signIn, { name, password }),
   signOut: () => post<void>(PATHS.signOut),
+  deleteAccount: (password: string) => post<void>(PATHS.deleteAccount, { password, confirm: true }),
+  admin: {
+    players: (query: string) => post<AdminPlayersResponse>(PATHS.adminPlayers, { query }),
+    save: (playerId: string) => post<AdminSaveResponse>(PATHS.adminSave, { playerId }),
+    rename: (playerId: string, name: string) => post<AdminPlayerView>(PATHS.adminRename, { playerId, name }),
+    ban: (playerId: string, banned: boolean) => post<AdminPlayerView>(PATHS.adminBan, { playerId, banned }),
+    mend: (playerId: string) => post<AdminSaveResponse>(PATHS.adminMend, { playerId }),
+    resetPassword: (playerId: string) => post<AdminResetResponse>(PATHS.adminResetPassword, { playerId }),
+  },
   game: () => get<GameResponse>(PATHS.game),
+  notices: () => get<NoticesResponse>(PATHS.notices),
+  hiscores: () => get<HiscoresResponse>(PATHS.hiscores),
   command: (id: string, command: Command) =>
     post<ActResponse<CommandResult>>(PATHS.command, { requestId: id, command }),
   feature: <R>(feature: string, route: string, id: string, input: unknown) =>

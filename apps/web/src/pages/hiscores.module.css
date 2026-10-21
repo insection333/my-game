@@ -1,0 +1,85 @@
+/* Hiscores: the ladders' tabs above the ladder on phones (scrolling sideways in their own strip),
+   beside it on wide screens. */
+.layout {
+  display: grid;
+  gap: var(--s-4);
+  align-items: start;
+}
+
+.tabs {
+  min-width: 0;
+  overflow-x: auto;
+}
+
+@container main (min-width: 720px) {
+  .layout {
+    grid-template-columns: 12rem minmax(0, 1fr);
+  }
+  .tabs nav {
+    flex-direction: column;
+    border-bottom: 0;
+  }
+}
+
+.online {
+  display: flex;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+.table th {
+  padding: var(--s-2) var(--s-3);
+  text-align: start;
+  font-size: var(--t-small);
+  font-weight: 600;
+  color: var(--ink-2);
+  border-bottom: 1px solid var(--line);
+}
+
+.table td {
+  padding: var(--s-2) var(--s-3);
+  border-top: 1px solid var(--line);
+  vertical-align: top;
+}
+
+.table [data-num] {
+  text-align: end;
+  white-space: nowrap;
+}
+
+.table tr[data-you] td {
+  background: var(--woad-soft);
+  font-weight: 600;
+}
+
+.player {
+  overflow-wrap: anywhere;
+}
+
+.milestones {
+  display: block;
+  font-size: var(--t-small);
+  font-weight: 400;
+  color: var(--gold);
+}
+
+.pinned td {
+  border-top: 2px solid var(--line-strong);
+}
+
+.note {
+  margin: 0;
+  padding: var(--s-3) var(--s-4);
+  color: var(--ink-2);
+}
+
+/* Phones show the first ten; wide screens all twenty-five. */
+@container main (max-width: 719px) {
+  .ladder tbody:first-of-type tr:nth-child(n + 11) {
+    display: none;
+  }
+}

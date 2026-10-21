@@ -18,7 +18,7 @@ export interface ActionRowProps {
 export function ActionRow({ icon, name, facts, status, progress, actions, locked }: ActionRowProps) {
   return (
     <div data-ui="ActionRow" data-locked={locked || undefined} className={s.row}>
-      <div className={s.grid}>
+      <div className={s.grid} data-icon={icon ? true : undefined}>
         {icon && <div className={s.icon}>{icon}</div>}
         <div className={s.main}>
           <div className={s.title}>

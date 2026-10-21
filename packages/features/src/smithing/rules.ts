@@ -4,6 +4,7 @@
 import type { ActionRules, StopReason } from '@idle-clash/kernel';
 import { completeSkillAction, missingInput, type SkillDefinition } from '../shared/complete.ts';
 import { actionModifiers, skillLevel } from '../shared/skill.ts';
+import { noRoom } from '../shared/storehouse.ts';
 import { FINDS, LADDER, RECIPES, SKILL, type Recipe } from './content.ts';
 
 const DEF: SkillDefinition = { feature: 'smithing', skill: SKILL, ladder: LADDER, finds: FINDS };
@@ -14,7 +15,12 @@ function forge(r: Recipe): ActionRules {
     check: (ctx): StopReason | null => {
       if (skillLevel(ctx.state, SKILL) < r.level) return { code: 'levelTooLow', detail: { level: r.level } };
       const missing = missingInput(ctx.state, r.takes);
-      return missing ? { code: 'outOfInputs', detail: { item: missing } } : null;
+      if (missing) return { code: 'outOfInputs', detail: { item: missing } };
+      return noRoom(
+        ctx.state,
+        r.gives.map((g) => g.item),
+        r.takes,
+      );
     },
     duration: (ctx) => {
       const m = actionModifiers(ctx.state, SKILL, LADDER, DEF.feature, r.id);

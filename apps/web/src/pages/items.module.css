@@ -96,3 +96,33 @@
 .none {
   margin: 0;
 }
+
+/* The Storehouse's space: slots used, and the next enlargement beside it. */
+.capacity {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-2) var(--s-4);
+  margin-bottom: var(--s-4);
+}
+
+.capacityText {
+  display: grid;
+  gap: var(--s-1);
+  flex: 1 1 10rem;
+  min-width: 0;
+  font-size: var(--t-small);
+  color: var(--ink-2);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
+.useList {
+  border: 1px solid var(--line);
+  border-radius: var(--r-control);
+}

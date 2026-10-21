@@ -1,0 +1,89 @@
+/* The admin page: the player search beside the player opened, wide enough to read a save. */
+.layout {
+  display: grid;
+  gap: var(--s-4);
+  align-items: start;
+}
+
+@container main (min-width: 900px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+  }
+}
+
+.search {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--s-2);
+  padding: var(--s-3) var(--s-4);
+}
+
+.search > :first-child {
+  flex: 1 1 12rem;
+}
+
+.player {
+  display: grid;
+  gap: var(--s-3);
+}
+
+.player h3 {
+  margin: var(--s-2) 0 0;
+  font-size: var(--t-body);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
+.password {
+  padding: var(--s-3);
+  border: 1px solid var(--woad);
+  border-radius: var(--r-control);
+  background: var(--woad-soft);
+}
+
+.password p {
+  margin: 0 0 var(--s-1);
+}
+
+.password code {
+  font-size: 1.25rem;
+  user-select: all;
+}
+
+.note {
+  margin: 0;
+  padding: var(--s-2) var(--s-4);
+  color: var(--ink-2);
+}
+
+.repairs {
+  margin: 0;
+  padding-left: var(--s-4);
+  font-size: var(--t-small);
+}
+
+.doc {
+  max-height: 24rem;
+  overflow: auto;
+  margin: 0;
+  padding: var(--s-3);
+  border: 1px solid var(--line);
+  border-radius: var(--r-control);
+  background: var(--surface-2);
+  font-size: 0.75rem;
+}
+
+.error {
+  color: var(--alert);
+}
+
+.results {
+  max-height: min(28rem, 55dvh);
+  overflow-y: auto;
+  border-top: 1px solid var(--line);
+}

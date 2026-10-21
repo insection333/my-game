@@ -56,6 +56,7 @@ export async function server(
     flags: { ...flagsFrom('all'), notes: true },
     log: false,
     now: () => clock.now,
+    adminNames: ['Warden'],
     ...over,
   };
   const built = await buildApp(config, { mailer, features });

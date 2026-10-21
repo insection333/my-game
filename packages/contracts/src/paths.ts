@@ -7,12 +7,21 @@ export const PATHS = {
   signIn: '/api/auth/sign-in',
   signOut: '/api/auth/sign-out',
   game: '/api/game',
+  notices: '/api/notices',
+  hiscores: '/api/hiscores',
   command: '/api/game/command',
   errors: '/api/errors',
   setEmail: '/api/account/email',
   confirmEmail: '/api/account/email/confirm',
   recover: '/api/auth/recover',
   resetPassword: '/api/auth/reset',
+  deleteAccount: '/api/account/delete',
+  adminPlayers: '/api/admin/players',
+  adminSave: '/api/admin/save',
+  adminRename: '/api/admin/rename',
+  adminBan: '/api/admin/ban',
+  adminMend: '/api/admin/mend',
+  adminResetPassword: '/api/admin/reset-password',
 } as const;
 
 /** A feature's own route. */

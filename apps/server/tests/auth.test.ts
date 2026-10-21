@@ -154,6 +154,7 @@ describe('sign in and out', () => {
       player: null,
       flags: s.config.flags,
       email: { enabled: false },
+      admin: false,
     });
     const cookie = await signUp(s, 'Rowan');
     const me = JSON.parse((await s.app.inject({ method: 'GET', url: '/api/me', headers: { cookie } })).body) as {

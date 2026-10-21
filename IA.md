@@ -146,7 +146,7 @@ Tabs: Items · Collection log.
 | --- | --- | --- | --- |
 | 1 | `store.capacity` | storehouse | Slots used of total, Enlarge with its price |
 | 2 | `store.items` | the shell, asking every feature (the storehouse adds space and selling in session 9) | A grid of items with counts, grouped by kind (resources, gear, food, finds); tap opens the item panel |
-| 3 | `item.panel` | the shell, and every feature through queries (its content) | Name, icon at 96 px, count, sale price, Sell (one, ten, all but one), Wear for gear; **Comes from** and **Used in**, each answered by asking every registered feature |
+| 3 | `item.panel` | the shell, and every feature through queries (its content) | Name, icon at 96 px, count, sale price, Sell (one, ten, all but one), Wear for gear; for a Rare find, Use on one of its skill's actions (500 mastery completions), most used first; **Comes from** and **Used in**, each answered by asking every registered feature |
 | 4 | `collection.log` | every skill (its six finds) | 36 entries by skill, found or silhouetted, with first-find dates and progress per skill |
 
 - **At 390:** capacity and four rows of the grid; the item panel opens as a sheet. **At 1,440:** capacity, the full grid, and the item panel docked at the right of the content.
@@ -207,8 +207,38 @@ Opened from the account button; its address is `/?panel=settings`.
 
 | # | Section (slot) | Filled by | Notes |
 | --- | --- | --- | --- |
-| 1 | `settings.account` | the shell | Account name, theme (light, dark, system), reduced motion, privacy, terms, sign out; delete account from session 9; email and recovery when the owner switches email on |
+| 1 | `settings.account` | the shell | Account name, sign out, links to Privacy and Terms (and Admin, for admins), theme (light, dark, system), and Delete account at the foot: asked for twice, the second time with the password; email and recovery when the owner switches email on |
 | 2 | `settings.extras` | later systems | Empty in version 1; the 48-hour upgrade and cosmetic donations arrive here |
+
+### Privacy and terms
+
+Two pages of short sections in plain words, at `/privacy` and `/terms`: inside the shell for a player (linked from Settings), and on their own for a visitor (linked from the welcome form), with Back to the welcome page. No menu entry.
+
+| # | Section (slot) | Filled by | Notes |
+| --- | --- | --- | --- |
+| 1 | `legal.text` | the shell | The title, when it last changed, then each section: a heading and one paragraph, a reading column wide |
+
+**Visible without scrolling** (checked by verify at 390 × 844 and 1,440 × 900; a slot no built feature fills yet is skipped):
+
+| View | 390 × 844 | 1,440 × 900 |
+| --- | --- | --- |
+| /privacy | `legal.text` | `legal.text` |
+| /terms | `legal.text` | `legal.text` |
+
+### Admin
+
+At `/admin`, for players named in the server's admin list only (anyone else sees the page that does not exist); linked from their Settings. No menu entry.
+
+| # | Section (slot) | Filled by | Notes |
+| --- | --- | --- | --- |
+| 1 | `admin.players` | the shell | Find a player by name: name, when they joined, total level, Banned; Open |
+| 2 | `admin.player` | the shell | The player opened: rename, ban or unban, check and mend the save, set a new password (shown once, to pass on), what was repaired, and the save itself in a scrolling box |
+
+**Visible without scrolling** (checked by verify at 390 × 844 and 1,440 × 900; a slot no built feature fills yet is skipped):
+
+| View | 390 × 844 | 1,440 × 900 |
+| --- | --- | --- |
+| /admin | `admin.players` | `admin.players` |
 
 ## 4. Shared components
 

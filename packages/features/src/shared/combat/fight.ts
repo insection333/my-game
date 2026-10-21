@@ -116,6 +116,8 @@ export interface Odds {
   foodPerHour: number;
   goldPerHour: number;
   retreatRate: number;
+  /** Seconds from one foe to the next, on average. */
+  secondsPerFight: number;
 }
 
 /** "Your odds": 1,000 fights in a row with the best food carried (as much as they need), a fixed seed. */
@@ -144,5 +146,5 @@ export function odds(p: Fighter, foe: Foe, meal: Omit<Meal, 'count'> | null, n =
   const retreatRate = retreats / n;
   const verdict: Verdict =
     retreatRate > 0.02 ? 'tooStrong' : foodPerHour < 4 ? 'easy' : foodPerHour < 25 ? 'fair' : 'costly';
-  return { verdict, xpPerHour, foodPerHour, goldPerHour, retreatRate };
+  return { verdict, xpPerHour, foodPerHour, goldPerHour, retreatRate, secondsPerFight: secs / n };
 }

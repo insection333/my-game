@@ -2,10 +2,12 @@
 // feature route). Dropped connections reopen with growing pauses; a reopened channel asks for a
 // fresh read, since changes made while it was closed were not heard.
 import { LIVE_PATH, type LiveMessage } from '@idle-clash/contracts';
-import type { State } from '@idle-clash/kernel';
+import type { GameEvent, State } from '@idle-clash/kernel';
 
 export interface LiveHandlers {
   state: (state: State, now: number) => void;
+  /** What a change just written brought about (for the notices tray). */
+  events: (events: GameEvent[]) => void;
   signedOut: () => void;
   reopened: () => void;
 }
@@ -28,6 +30,7 @@ export function openLive(on: LiveHandlers): { close: () => void } {
       try {
         const msg = JSON.parse(e.data) as LiveMessage;
         if (msg.type === 'state') on.state(msg.state, msg.now);
+        else if (msg.type === 'events') on.events(msg.events);
       } catch {
         /* A message this page cannot read is skipped; the next read corrects it. */
       }

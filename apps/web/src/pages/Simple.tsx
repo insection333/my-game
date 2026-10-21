@@ -12,8 +12,6 @@ import { ItemGrid } from './Items.tsx';
 import { PageHead } from './PageHead.tsx';
 import s from './pages.module.css';
 
-export const Hiscores = () => <PageHead title={t('hiscores.title')} lead={t('hiscores.lead')} />;
-
 export function Storehouse({ path }: { path: string }) {
   const tabs = [
     { href: '/storehouse', label: t('store.tab.items'), current: path === '/storehouse' },

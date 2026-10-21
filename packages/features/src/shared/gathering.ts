@@ -12,6 +12,7 @@ import {
 } from '@idle-clash/content';
 import type { ActionRules } from '@idle-clash/kernel';
 import { completeSkillAction, type SkillDefinition } from './complete.ts';
+import { noRoom } from './storehouse.ts';
 import { actionModifiers, skillLevel } from './skill.ts';
 
 export interface GatheringTier {
@@ -86,7 +87,12 @@ export function gatheringRules(def: SkillDefinition, actions: GatherAction[]): R
   const rules = (a: GatherAction): ActionRules => ({
     lane: 'gathering',
     check: (ctx) =>
-      skillLevel(ctx.state, def.skill) < a.level ? { code: 'levelTooLow', detail: { level: a.level } } : null,
+      skillLevel(ctx.state, def.skill) < a.level
+        ? { code: 'levelTooLow', detail: { level: a.level } }
+        : noRoom(
+            ctx.state,
+            a.gives.map((g) => g.item),
+          ),
     duration: (ctx) => {
       const m = actionModifiers(ctx.state, def.skill, def.ladder, def.feature, a.id);
       return (a.seconds * 1000) / (1 + m.speed / 100);
