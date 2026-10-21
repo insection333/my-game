@@ -14,7 +14,13 @@ import { NotFound } from './Simple.tsx';
 import s from './admin.module.css';
 
 const why = (err: unknown) =>
-  err instanceof ApiError && err.code === 'nameTaken' ? t('error.nameTaken') : t('error.other');
+  !(err instanceof ApiError)
+    ? t('error.other')
+    : err.code === 'nameTaken'
+      ? t('error.nameTaken')
+      : err.code === 'nameNotAllowed'
+        ? t('error.nameNotAllowed')
+        : t('error.other');
 
 export function Admin() {
   const { admin } = useSession();

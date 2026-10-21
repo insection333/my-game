@@ -132,8 +132,7 @@ async function start(): Promise<Served> {
     flags: flagsFrom('all'),
     log: false,
     now: () => Date.now(),
-    // The veteran keeps the game's admin page, so it is screenshot with players on it.
-    adminNames: ['Veteran'],
+    adminNames: [],
   });
   await app.listen({ port, host: '127.0.0.1' });
   const cookie = await newcomer(url, 'Newcomer');
@@ -151,6 +150,9 @@ async function start(): Promise<Served> {
     return c;
   };
   const vet = await settle('Veteran', (s) => veteran(ctx, s, now));
+  // The veteran keeps the game's admin page, so it is screenshot with players on it. Named on the list
+  // once signed up, as the owner is: a name already on it cannot be signed up for.
+  ctx.config.adminNames.push('Veteran');
   // Others on the hiscores, so the ladders read as they will with players on them.
   for (const [i, name] of CROWD.entries()) await settle(name, (s) => crowd(s, i));
   return {

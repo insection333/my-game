@@ -29,6 +29,11 @@ export class LiveHub {
     for (const s of this.sockets.get(playerId) ?? []) if (s.readyState === OPEN) s.send(text);
   }
 
+  /** The players with a page open. */
+  players(): string[] {
+    return [...this.sockets.keys()];
+  }
+
   /** Open pages, for the "online now" count on the hiscores. */
   get online(): number {
     return this.sockets.size;

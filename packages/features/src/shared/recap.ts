@@ -59,7 +59,14 @@ export function recapLines(a: AwaySummary): RecapLine[] {
   for (const e of finds) {
     const text = t('moment.find', { rarity: t(`rarity.${e.rarity}`), item: t(`item.${e.item}`) });
     if (e.rarity === 'legendary') lines.push({ kind: 'legendary', text, icon: e.item, href: '/storehouse/log' });
-    else if (e.first) lines.push({ kind: 'newFind', text, icon: e.item, href: '/storehouse/log' });
+    // New to the log: said so, since a first Uncommon find comes before a Rare one seen before.
+    else if (e.first)
+      lines.push({
+        kind: 'newFind',
+        text: t('recap.newFind', { item: t(`item.${e.item}`), rarity: t(`rarity.${e.rarity}`) }),
+        icon: e.item,
+        href: '/storehouse/log',
+      });
   }
   // Rare finds the log already holds, one line an item: "Rare find: Torn banner ×4".
   const rares = new Map<string, number>();

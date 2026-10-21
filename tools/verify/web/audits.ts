@@ -98,14 +98,19 @@ export async function runPerf(): Promise<PerfResult> {
       `The first page took ${usableMs} ms to be usable on a throttled phone; the budget is ${BUDGET.usableMs} ms`,
     );
 
-  // Idle CPU: main-thread time while nothing is pressed, resting and with a lane at work.
+  // Idle CPU: main-thread time while nothing is pressed, resting and with a lane at work. The middle
+  // of three 5-second windows, so a lasting cost counts and a one-off pause (a collection) does not.
   const busy = async () => {
     await cdp.send('Performance.enable');
     const read = async () =>
       (await cdp.send('Performance.getMetrics')).metrics.find((m) => m.name === 'TaskDuration')!.value;
-    const t0 = await read();
-    await page.waitForTimeout(5000);
-    return ((await read()) - t0) / 5;
+    const windows: number[] = [];
+    for (let i = 0; i < 3; i++) {
+      const t0 = await read();
+      await page.waitForTimeout(5000);
+      windows.push(((await read()) - t0) / 5);
+    }
+    return windows.sort((a, b) => a - b)[1];
   };
   await page.waitForTimeout(1000);
   const idleBusy = await busy();

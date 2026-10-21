@@ -28,7 +28,7 @@ async function recapBestFirst(served: Served, problems: string[]) {
     step = 'Collect closes it and the tray holds its moments';
     await page.getByRole('button', { name: 'Collect' }).click();
     await page.locator('[data-recap]').waitFor({ state: 'detached', timeout: 5_000 });
-    await page.getByRole('button', { name: /^Notices: \d+ new notices$/ }).waitFor({ timeout: 10_000 });
+    await page.getByRole('button', { name: /^Notices: \d+ new notices?$/ }).waitFor({ timeout: 10_000 });
   } catch (err) {
     problems.push(`Recap: failed where ${step} (${say(err)})`);
   } finally {

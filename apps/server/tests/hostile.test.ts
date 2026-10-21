@@ -4,14 +4,14 @@
 import { featurePath, FeatureRequest, ROUTES, type RouteContract } from '@idle-clash/contracts';
 import { FEATURES } from '@idle-clash/features';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
-import { code, notes, post, server, signUp, type TestServer } from './helpers.ts';
+import { code, notes, post, server, signUpAdmin, type TestServer } from './helpers.ts';
 
 let s: TestServer;
 let cookie: string;
 beforeAll(async () => {
-  s = await server({ emailEnabled: true, adminNames: ['Hostile Tester'] });
+  s = await server({ emailEnabled: true });
   // A password unlike the routes' examples, so a well-formed request to delete the account is refused.
-  cookie = await signUp(s, 'Hostile Tester', 'not the example password');
+  cookie = await signUpAdmin(s, 'Hostile Tester', 'not the example password');
 });
 afterAll(() => s.close());
 // Half a second between cases, as a quick attacker would: the suite measures answers, not the rate

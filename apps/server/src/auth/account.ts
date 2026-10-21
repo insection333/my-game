@@ -2,7 +2,7 @@
 // confirmation, everything the server holds for the player goes at once: the account, its sessions
 // and email tokens, the save and every damaged copy, notices, hiscores and telemetry. Nothing stays.
 import { ROUTES } from '@idle-clash/contracts';
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import type { FastifyInstance } from 'fastify';
 import { limit, type Ctx } from '../context.ts';
 import { emailTokens, players, sessions, telemetry } from '../db/schema.ts';
@@ -19,6 +19,11 @@ export function erase(ctx: Ctx, playerId: string): void {
     ctx.db.delete(sessions).where(eq(sessions.playerId, playerId)).run();
     ctx.db.delete(emailTokens).where(eq(emailTokens.playerId, playerId)).run();
     ctx.db.delete(telemetry).where(eq(telemetry.playerId, playerId)).run();
+    // Any other record naming them, such as an admin's record of acting on the player.
+    ctx.db
+      .delete(telemetry)
+      .where(sql`instr(${telemetry.data}, ${playerId}) > 0`)
+      .run();
     ctx.notices.remove(playerId);
     ctx.hiscores.remove(playerId);
     ctx.store.remove(playerId);

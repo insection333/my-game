@@ -1,9 +1,11 @@
-// Hiscores: kept as saves change; ranked by XP, ties to whoever got there first; your own entry
+// Hiscores: kept as saves change and as pages read them; ranked by XP, ties to whoever got there first; your own entry
 // wherever it is; banned players left out; and how many are online.
 import type { HiscoresResponse } from '@idle-clash/contracts';
+import type { State } from '@idle-clash/kernel';
 import { eq } from 'drizzle-orm';
 import { afterEach, describe, expect, it } from 'vitest';
 import { players } from '../src/db/schema.ts';
+import { hearWatching } from '../src/game/watching.ts';
 import { post, server, signUp, type TestServer } from './helpers.ts';
 
 let s: TestServer;
@@ -22,8 +24,23 @@ const chop = async (cookie: string, id: string, minutes: number) => {
     cookie,
   );
   s.clock.now += minutes * 60_000;
-  // A stoke writes the time spent, which is when the hiscores hear of it.
-  await post(s, '/api/game/command', { requestId: `req-hs-${id}-stoke`, command: { type: 'stoke' } }, cookie);
+  // Stopped, so the lane does not run on while others chop.
+  await post(
+    s,
+    '/api/game/command',
+    { requestId: `req-hs-${id}-stop`, command: { type: 'stop', lane: 'gathering' } },
+    cookie,
+  );
+};
+/** Gives a player's save this state and records it on the hiscores at `at`. */
+const record = async (cookie: string, make: (s: State) => State, at: number) => {
+  const me = JSON.parse((await s.app.inject({ method: 'GET', url: '/api/me', headers: { cookie } })).body) as {
+    player: { id: string };
+  };
+  const saved = s.ctx.store.read(me.player.id, s.clock.now)!;
+  const state = make(saved.doc.state);
+  s.ctx.store.write(me.player.id, { ...saved.doc, state }, saved.rev, s.clock.now);
+  s.ctx.hiscores.update(me.player.id, state, at);
 };
 
 describe('hiscores', () => {
@@ -57,20 +74,13 @@ describe('hiscores', () => {
   });
 
   it('gives a tie to whoever reached it first', async () => {
-    // Recorded straight from saves, so the two hold exactly the same XP.
+    // Written straight into saves, so the two hold exactly the same XP.
     s = await server();
     const a = await signUp(s, 'Alder');
     const b = await signUp(s, 'Birch');
-    const id = async (c: string) =>
-      (
-        JSON.parse((await s.app.inject({ method: 'GET', url: '/api/me', headers: { cookie: c } })).body) as {
-          player: { id: string };
-        }
-      ).player.id;
-    const base = s.ctx.store.read(await id(a), s.clock.now)!.doc.state;
-    const same = { ...base, skills: { woodcutting: { xp: 5_000 } } };
-    s.ctx.hiscores.update(await id(b), same, 1);
-    s.ctx.hiscores.update(await id(a), same, 2);
+    const same = (st: State): State => ({ ...st, skills: { woodcutting: { xp: 5_000 } } });
+    await record(b, same, 1);
+    await record(a, same, 2);
     const wc = (await ladders(a)).ladders.find((l) => l.skill === 'woodcutting')!;
     expect(wc.rows.map((r) => r.name)).toEqual(['Birch', 'Alder']);
     expect(wc.you).toMatchObject({ rank: 2 });
@@ -88,26 +98,50 @@ describe('hiscores', () => {
     expect(wc.you).toMatchObject({ rank: 2 });
   });
 
+  it('counts what a player gained while only watching, or away, without a write', async () => {
+    s = await server();
+    const a = await signUp(s, 'Alder');
+    const b = await signUp(s, 'Birch');
+    const idOf = async (c: string) =>
+      (
+        JSON.parse((await s.app.inject({ method: 'GET', url: '/api/me', headers: { cookie: c } })).body) as {
+          player: { id: string };
+        }
+      ).player.id;
+    const start = (c: string, id: string) =>
+      post(
+        s,
+        '/api/game/command',
+        { requestId: `req-hs-${id}-watch`, command: { type: 'start', lane: 'gathering', action: pine } },
+        c,
+      );
+    await start(a, 'a');
+    await start(b, 'b');
+    // Alder leaves a page open; Birch has gone. Neither acts for half an hour.
+    s.ctx.live.add(await idOf(a), { readyState: 1, send: () => undefined, close: () => undefined });
+    s.clock.now += 30 * 60_000;
+    expect(await hearWatching(s.ctx)).toBe(1);
+    const seen = (await ladders(b)).ladders.find((l) => l.skill === 'woodcutting')!;
+    // Both are on the ladder with their half hour: Alder as the server read him, Birch as he asked.
+    expect(seen.rows.map((r) => r.name).sort()).toEqual(['Alder', 'Birch']);
+    expect(seen.rows.every((r) => r.level > 1)).toBe(true);
+    // Heard of just now, so the next tick leaves Alder be.
+    expect(await hearWatching(s.ctx)).toBe(0);
+  });
+
   it('ranks Total by total level first, then XP', () => {
-    // Recorded straight from saves: one broad player, one with more XP in a single skill.
+    // Written straight into saves: one broad player, one with more XP in a single skill.
     const xp = (n: number) => ({ xp: n });
     return (async () => {
       s = await server();
       const a = await signUp(s, 'Alder');
       const b = await signUp(s, 'Birch');
-      const id = async (c: string) =>
-        (
-          JSON.parse((await s.app.inject({ method: 'GET', url: '/api/me', headers: { cookie: c } })).body) as {
-            player: { id: string };
-          }
-        ).player.id;
-      const base = s.ctx.store.read(await id(a), s.clock.now)!.doc.state;
-      s.ctx.hiscores.update(
-        await id(a),
-        { ...base, skills: { woodcutting: xp(1_000), mining: xp(1_000), smithing: xp(1_000) } },
+      await record(
+        a,
+        (st) => ({ ...st, skills: { woodcutting: xp(1_000), mining: xp(1_000), smithing: xp(1_000) } }),
         1,
       );
-      s.ctx.hiscores.update(await id(b), { ...base, skills: { woodcutting: xp(20_000) } }, 1);
+      await record(b, (st) => ({ ...st, skills: { woodcutting: xp(20_000) } }), 1);
       const total = (await ladders(a)).ladders.find((l) => l.skill === 'total')!;
       expect(total.rows.map((r) => r.name)).toEqual(['Alder', 'Birch']);
       expect(total.rows[0].xp).toBeLessThan(total.rows[1].xp);

@@ -14,12 +14,20 @@ export const LADDER_ROWS = 25;
 
 export class Hiscores {
   private db: BetterSQLite3Database;
+  /** When each player's levels were last recorded (since the server started). */
+  private heard = new Map<string, number>();
   constructor(db: BetterSQLite3Database) {
     this.db = db;
   }
 
+  /** When a player's levels were last recorded; 0 if not since the server started. */
+  heardAt(playerId: string): number {
+    return this.heard.get(playerId) ?? 0;
+  }
+
   /** Records a save's levels: each skill, and the total (total level, all XP, milestones claimed). */
   update(playerId: string, state: State, at: number): void {
+    this.heard.set(playerId, at);
     const skills = allSkills();
     const entries = [
       ...skills.map((s) => ({
@@ -115,6 +123,7 @@ export class Hiscores {
   }
 
   remove(playerId: string): void {
+    this.heard.delete(playerId);
     this.db.delete(hiscores).where(eq(hiscores.playerId, playerId)).run();
   }
 }

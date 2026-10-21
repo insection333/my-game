@@ -56,7 +56,7 @@ export async function server(
     flags: { ...flagsFrom('all'), notes: true },
     log: false,
     now: () => clock.now,
-    adminNames: ['Warden'],
+    adminNames: [],
     ...over,
   };
   const built = await buildApp(config, { mailer, features });
@@ -73,6 +73,13 @@ export async function signUp(s: TestServer, name = 'Rowan', password = 'a long e
   });
   if (r.statusCode !== 201) throw new Error(`sign-up failed: ${r.statusCode} ${r.body}`);
   return String(r.headers['set-cookie']).split(';')[0];
+}
+
+/** Signs a player up, then names them on the admin list (the order the owner follows). */
+export async function signUpAdmin(s: TestServer, name: string, password?: string): Promise<string> {
+  const cookie = await signUp(s, name, password);
+  s.config.adminNames.push(name);
+  return cookie;
 }
 
 /** A JSON POST. An empty string sends no body (for routes that take none). */

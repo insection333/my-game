@@ -124,9 +124,10 @@ function TrayButton() {
     return () => window.removeEventListener('tray-read', read);
   }, []);
   const unread = noticesOf(view).filter((n) => n.at > readAt).length;
+  const news = unread === 1 ? t('tray.unreadOne') : t('tray.unread', { count: fmt.int(unread) });
   return (
     <IconButton
-      label={unread ? `${t('shell.notices')}: ${t('tray.unread', { count: fmt.int(unread) })}` : t('shell.notices')}
+      label={unread ? `${t('shell.notices')}: ${news}` : t('shell.notices')}
       badge={unread ? (unread > 9 ? '9+' : fmt.int(unread)) : undefined}
       onClick={() => navigate(withPanel('tray'))}
     >
