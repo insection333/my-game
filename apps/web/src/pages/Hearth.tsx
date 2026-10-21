@@ -67,7 +67,7 @@ export function Hearth() {
       <section data-section className={s.phoneOnly} style={{ marginTop: 'var(--s-4)' }}>
         <Slot id="hearth.lanes">
           <Panel title={t('hearth.lanes.title')} flush>
-            <LaneList lanes={laneViews(state, now)} />
+            <LaneList lanes={laneViews(state, now, features)} />
           </Panel>
         </Slot>
       </section>

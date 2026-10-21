@@ -1,0 +1,78 @@
+/* The gains feed: just above the lanes strip on phones, under the strip on tablets, at the foot of
+   the lanes panel on desktop. Nothing in it can be pressed, so it never blocks the page beneath, and
+   a moment's toast draws over it. */
+.gains {
+  position: fixed;
+  bottom: calc(var(--menu-h) + 64px + env(safe-area-inset-bottom, 0px));
+  right: var(--gutter);
+  z-index: 14;
+  display: grid;
+  justify-items: end;
+  gap: var(--s-1);
+  max-width: min(260px, calc(100vw - 2 * var(--gutter)));
+  pointer-events: none;
+}
+
+.gain {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  max-width: 100%;
+  padding: 4px var(--s-3) 4px var(--s-2);
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: 0 4px 14px var(--shade);
+  color: var(--ink);
+  font: 600 var(--t-small) / 1.2 var(--font-ui);
+  white-space: nowrap;
+  animation:
+    gain-in 220ms cubic-bezier(0.2, 0.9, 0.3, 1.3),
+    gain-out 300ms ease-in 2100ms forwards;
+}
+
+.gain span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gain[data-kind='xp'] {
+  color: var(--moss);
+}
+
+@keyframes gain-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.92);
+  }
+}
+
+@keyframes gain-out {
+  to {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+@media (min-width: 768px) {
+  .gains {
+    bottom: auto;
+    top: calc(var(--header-h) + 64px);
+  }
+}
+
+@media (min-width: 1024px) {
+  .gains {
+    top: auto;
+    bottom: var(--s-5);
+    right: var(--s-4);
+    width: calc(var(--lanes-w) - 2 * var(--s-4));
+    max-width: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gain {
+    animation: gain-out 1ms linear 2400ms forwards;
+  }
+}

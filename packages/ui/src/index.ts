@@ -3,7 +3,7 @@ export { Button, type ButtonProps } from './components/Button.tsx';
 export { IconButton, type IconButtonProps } from './components/IconButton.tsx';
 export { Panel, type PanelProps } from './components/Panel.tsx';
 export { Pill } from './components/Pill.tsx';
-export { ProgressBar } from './components/ProgressBar.tsx';
+export { ProgressBar, ProgressFill, type ProgressRun } from './components/ProgressBar.tsx';
 export { Tabs, type Tab } from './components/Tabs.tsx';
 export { ActionRow, type ActionRowProps } from './components/ActionRow.tsx';
 export { LaneCard, type LaneCardProps } from './components/LaneCard.tsx';

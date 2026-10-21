@@ -12,6 +12,8 @@ import { noticesOf } from '../pages/notices.ts';
 import { FireBadge } from './FireBadge.tsx';
 import { Bell, Coin, MenuGlyph, Person } from './glyphs.tsx';
 import { LaneList, LaneStrip, laneViews } from './Lanes.tsx';
+import { useCountUp } from './countUp.ts';
+import { Gains } from './Gains.tsx';
 import { Moments } from './Moments.tsx';
 import s from './shell.module.css';
 
@@ -27,10 +29,11 @@ const isCurrent = (href: string, path: string) =>
   href === '/' ? path === '/' : path === href || path.startsWith(`${href}/`);
 
 export function Shell({ children }: { children: ReactNode }) {
-  const { state, now } = useGame();
+  const { state, now, features } = useGame();
   const { path, panel } = useLocation();
-  const lanes = laneViews(state, now);
+  const lanes = laneViews(state, now, features);
   const close = () => navigate(withPanel(null));
+  const gold = useCountUp(countOf(state, 'gold'));
   return (
     <div className={s.app}>
       <a className={s.skip} href="#main" data-ui="Link">
@@ -46,7 +49,7 @@ export function Shell({ children }: { children: ReactNode }) {
             <Pill tone="gold">
               <Coin />
               <span className="visually-hidden">{t('shell.gold', { amount: fmt.int(countOf(state, 'gold')) })}</span>
-              <span aria-hidden="true">{fmt.short(countOf(state, 'gold'))}</span>
+              <span aria-hidden="true">{fmt.short(gold)}</span>
             </Pill>
           </span>
           <span data-slot="shell.tray">
@@ -82,6 +85,7 @@ export function Shell({ children }: { children: ReactNode }) {
         <h2 className={s.lanesTitle}>{t('shell.lanes')}</h2>
         <LaneList lanes={lanes} />
       </aside>
+      <Gains />
       <Moments />
       {panel === 'tray' && (
         <Sheet title={t('tray.title')} closeLabel={t('shell.close')} onClose={close} slot="tray.list">

@@ -14,6 +14,7 @@ import {
   type State,
 } from '@idle-clash/kernel';
 import { api, ApiError, requestId } from '../api.ts';
+import { announceGains } from './gains.ts';
 import { openLive } from './live.ts';
 import { handled, sessionStore, signedOut } from './session.ts';
 
@@ -63,6 +64,7 @@ function tick() {
   if (document.hidden || !view) return;
   const now = clock();
   const out = engine.advance(view.state, now, seeded(view.state.seed));
+  announceGains(view.state, out.state);
   publish({ ...view, state: out.state, now, events: [...view.events, ...out.events].slice(-50) });
 }
 
