@@ -66,22 +66,25 @@ export function Admin() {
                 </Button>
               </form>
               {found?.length === 0 && <p className={s.note}>{t('admin.none')}</p>}
-              {found?.map((p) => (
-                <ActionRow
-                  key={p.id}
-                  name={p.name}
-                  facts={[
-                    t('admin.joined', { date: fmt.date(p.createdAt) }),
-                    t('admin.totalLevel', { level: fmt.int(p.totalLevel) }),
-                  ]}
-                  status={p.bannedAt ? <Pill tone="ember">{t('admin.banned')}</Pill> : undefined}
-                  actions={
-                    <Button variant="secondary" onClick={() => open(p.id)}>
-                      {t('admin.open')}
-                    </Button>
-                  }
-                />
-              ))}
+              {/* Up to 25 players: the list scrolls in its own box, reachable from the keyboard. */}
+              <div className={s.results} tabIndex={0} aria-label={t('admin.players')}>
+                {found?.map((p) => (
+                  <ActionRow
+                    key={p.id}
+                    name={p.name}
+                    facts={[
+                      t('admin.joined', { date: fmt.date(p.createdAt) }),
+                      t('admin.totalLevel', { level: fmt.int(p.totalLevel) }),
+                    ]}
+                    status={p.bannedAt ? <Pill tone="ember">{t('admin.banned')}</Pill> : undefined}
+                    actions={
+                      <Button variant="secondary" onClick={() => open(p.id)}>
+                        {t('admin.open')}
+                      </Button>
+                    }
+                  />
+                ))}
+              </div>
             </Slot>
           </Panel>
         </section>

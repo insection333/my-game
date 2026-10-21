@@ -31,13 +31,22 @@ export function Legal({ page, back, standalone }: { page: LegalPage; back?: stri
           <p>{sec.body}</p>
         </section>
       ))}
-      {back && (
-        <p>
+      <p className={s.legalLinks}>
+        {back && (
           <TextLink href={back} onNavigate={navigate}>
             {t('legal.back')}
           </TextLink>
-        </p>
-      )}
+        )}
+        {page === 'privacy' ? (
+          <TextLink href="/terms" onNavigate={navigate}>
+            {t('legal.terms.title')}
+          </TextLink>
+        ) : (
+          <TextLink href="/privacy" onNavigate={navigate}>
+            {t('legal.privacy.title')}
+          </TextLink>
+        )}
+      </p>
     </Slot>
   );
   return standalone ? (

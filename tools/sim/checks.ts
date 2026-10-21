@@ -14,7 +14,7 @@ import {
   type Candidates,
 } from '../../design/model/curve.ts';
 import { combatXpPerHour, fighter } from './combat.ts';
-import { newcomer } from './newcomer.ts';
+import { firstHour, gold } from './first-hour.ts';
 import { combatProofs } from './proofs.ts';
 import { bestAction, DAY, focusedPlayer, gaps, T0, xpPerHour, type Played } from './player.ts';
 
@@ -178,20 +178,12 @@ export function runSimulation(): SimResult {
 
   combatProofs(check, lines);
 
-  // A newcomer following First steps: the first crafted gear worn within 15 minutes (the brief).
-  if (FEATURES.some((f) => f.id === 'combat' && f.flag.on)) {
-    const fresh = PLAYERS.map((seed) => newcomer(seed));
-    const worn = Math.max(...fresh.map((n) => n.worn));
-    const fought = Math.max(...fresh.map((n) => n.fought));
-    lines.push(`\n## First steps: ${PLAYERS.length} newcomers pressing each step's button`);
-    lines.push(`The sword worn after ${Math.round(worn)} s; the first hollow rat beaten after ${Math.round(fought)} s`);
-    check(
-      worn <= 15 * 60,
-      `The first crafted gear is worn after ${Math.round(worn)} s at most (target under 15 minutes)`,
-    );
-    const claimed = Math.min(...fresh.map((n) => n.claimed));
-    check(claimed === 6, `Every newcomer claims all six first steps within 30 minutes (${claimed} at least)`);
-  }
+  firstHour(check, lines, PLAYERS);
+  gold(check, lines, {
+    gather: kept.get('woodcutting')?.runs[0],
+    smith: kept.get('smithing')?.runs[0],
+    fight: kept.get('combat')?.runs[0],
+  });
 
   // The fire (as the model measures it, on day 5): an hour with it, every lane at its best action with
   // the fire's XP and the second Gathering lane, against an hour away with the lanes that run then.

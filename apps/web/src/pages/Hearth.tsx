@@ -9,6 +9,7 @@ import { navigate } from '../router.ts';
 import { LaneList, laneViews } from '../shell/Lanes.tsx';
 import { fills, Slot } from '../slots.tsx';
 import s from './pages.module.css';
+import { Tour } from '../shell/Tour.tsx';
 import { Today } from './Today.tsx';
 
 export function Hearth() {
@@ -70,6 +71,7 @@ export function Hearth() {
           </Panel>
         </Slot>
       </section>
+      <Tour />
     </>
   );
 }

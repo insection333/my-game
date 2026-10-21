@@ -81,3 +81,9 @@
 .error {
   color: var(--alert);
 }
+
+.results {
+  max-height: min(28rem, 55dvh);
+  overflow-y: auto;
+  border-top: 1px solid var(--line);
+}

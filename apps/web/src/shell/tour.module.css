@@ -1,0 +1,42 @@
+/* The tour: a ring around the slot it points at, and a small card beside it. Neither blocks the
+   page; only the card's own buttons take presses. */
+.ring {
+  position: fixed;
+  z-index: 40;
+  border: 3px solid var(--woad);
+  border-radius: var(--r-panel, 12px);
+  box-shadow: 0 0 0 4px var(--woad-soft);
+  pointer-events: none;
+}
+
+.card {
+  position: fixed;
+  z-index: 41;
+  width: min(300px, calc(100vw - 24px));
+  padding: var(--s-3);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-panel, 12px);
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 18%);
+}
+
+.card p {
+  margin: 0 0 var(--s-2);
+}
+
+.buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--s-2);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ring {
+    transition:
+      top 0.2s,
+      left 0.2s,
+      width 0.2s,
+      height 0.2s;
+  }
+}
