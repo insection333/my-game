@@ -23,8 +23,9 @@ export function newcomer(seed: number, limitS = 30 * 60): Newcomer {
   for (let t = T0; t <= T0 + limitS * 1000; t += 5000) {
     state = engine.input(state, t, rng).state;
     if (state.fireUntil < t + 60_000) state = engine.command(state, t, { type: 'stoke' }, rng).state;
-    const view = feature('goals').slots['hearth.goals']({ state, now: t }) as unknown as GoalsView;
-    const row = view.rows.find((r) => r.state !== 'claimed' && r.button);
+    // The slot is empty once every step is claimed.
+    const view = feature('goals').slots['hearth.goals']({ state, now: t }) as unknown as GoalsView | null;
+    const row = view?.rows.find((r) => r.state !== 'claimed' && r.button);
     const b = row?.button;
     if (b && 'claim' in b) state = feature('goals').routes.claim.run(state, { goal: b.claim }, t).state;
     else if (b && 'route' in b)
@@ -34,7 +35,7 @@ export function newcomer(seed: number, limitS = 30 * 60): Newcomer {
     const worn = (state.features.combat as { worn?: { weapon?: string } } | undefined)?.worn?.weapon;
     if (worn && out.worn === Infinity) out.worn = at;
     if ((state.mastery['combat:hollow-rat'] ?? 0) > 0 && out.fought === Infinity) out.fought = at;
-    out.claimed = view.rows.filter((r) => r.state === 'claimed').length;
+    out.claimed = (state.features.goals as { claimed?: string[] } | undefined)?.claimed?.length ?? 0;
   }
   return out;
 }

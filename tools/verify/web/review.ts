@@ -32,7 +32,7 @@ export async function runReview(items: string[]): Promise<{ problems: string[]; 
       return `<figure><figcaption>${w} px</figcaption><img src="${rel}" alt="${esc(v.path)} at ${w} px" width="${w === 1440 ? 720 : w}"></figure>`;
     });
     blocks.push(
-      `<section><h2>${esc(v.path)} <small>${esc(v.page)}</small></h2><div class="row">${imgs.join('')}<pre>${esc(specOf(v.page))}</pre></div></section>`,
+      `<section><h2>${esc(v.path)} <small>${esc(v.page)}${v.as ? `, as a ${v.as}` : ''}</small></h2><div class="row">${imgs.join('')}<pre>${esc(specOf(v.page))}</pre></div></section>`,
     );
   }
 

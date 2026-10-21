@@ -132,6 +132,9 @@ export const goals = defineFeature({
         return { id: step.id, name, reward, progress, state: 'todo', ...todo(state, now, step) };
       });
       const done = rows.filter((r) => r.state === 'claimed').length;
+      // First steps show while unfinished (IA.md); once all are claimed the panel goes, until the
+      // short goals that follow them arrive (session 9).
+      if (done === rows.length) return null;
       return {
         title: t('goals.firstSteps'),
         progress: t('goals.progress', { done: fmt.int(done), total: fmt.int(rows.length) }),

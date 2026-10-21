@@ -18,6 +18,7 @@ import {
 describe('fmt', () => {
   it('formats numbers one way everywhere', () => {
     expect(fmt.int(1234567.4)).toBe('1,234,567');
+    expect([12_345, 123_456, 2_500_000].map(fmt.short)).toEqual(['12,345', '123.5K', '2.5M']);
     expect(fmt.pct(2.5)).toBe('2.5%');
     expect(fmt.seconds(7.5)).toBe('7.5 s');
     expect([45_000, 12 * 60_000, 200 * 60_000, 52 * 3600_000].map(fmt.duration)).toEqual([

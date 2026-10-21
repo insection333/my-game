@@ -77,4 +77,11 @@ describe('first steps', () => {
     expect(row(won, 'defeat-a-hollow-rat').button).toMatchObject({ label: 'Mark done' });
     expect(claim(won, 'defeat-a-hollow-rat').state.items).toMatchObject({ gold: 25, bread: 10 });
   });
+
+  it('leaves the Hearth once every first step is claimed', () => {
+    const all = ['chop-a-pine', 'mine-copper-ore', 'smelt-a-copper-bar', 'forge-a-copper-sword', 'wear-your-sword'];
+    const s = (claimed: string[]) => ({ ...newState(1, T0), features: { goals: { claimed } } });
+    expect(view(s(all))).toMatchObject({ progress: '5 of 6 done' });
+    expect(goals.slots['hearth.goals']({ state: s([...all, 'defeat-a-hollow-rat']), now: T0 })).toBeNull();
+  });
 });

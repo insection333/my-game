@@ -18,6 +18,7 @@ import { buildApp } from '../../../apps/server/src/app.ts';
 import { flagsFrom } from '../../../apps/server/src/config.ts';
 import type { Ctx } from '../../../apps/server/src/context.ts';
 import { exec, ROOT } from '../exec.ts';
+import { veteran } from './veteran.ts';
 import { readPageMap, type ViewSpec } from '../ia.ts';
 
 export const DIST = join(ROOT, 'apps/web/dist');
@@ -51,9 +52,23 @@ export function views(): View[] {
       desktop: ['settings.account'],
     },
   ];
-  return [...map.views, ...sheets].map((v) => ({
+  // The same pages for a player three weeks in, whose rows carry odds, pills and long names.
+  const veteran: ViewSpec[] = [
+    // (Their First steps are finished, so the Hearth's goals slot is empty until short goals arrive.)
+    ...map.views
+      .filter((v) => !signedOut(v.path))
+      .map((v) => ({
+        ...v,
+        phone: v.phone.filter((x) => x !== 'hearth.goals'),
+        desktop: v.desktop.filter((x) => x !== 'hearth.goals'),
+        as: 'veteran' as const,
+      })),
+    { page: 'Combat', path: '/combat?panel=gear&slot=weapon', phone: [], desktop: [], as: 'veteran' },
+    { page: 'Skill', path: '/skills/melee', phone: [], desktop: [], as: 'veteran' },
+  ];
+  return [...map.views, ...sheets, ...veteran].map((v) => ({
     ...v,
-    name: v.path.replace(/^\//, '').replace(/[^a-z0-9]+/gi, '-') || 'hearth',
+    name: (v.as ? `${v.as}-` : '') + (v.path.replace(/^\//, '').replace(/[^a-z0-9]+/gi, '-') || 'hearth'),
   }));
 }
 
@@ -71,6 +86,8 @@ export interface Served {
   url: string;
   /** The session cookie of a newcomer signed up for this run. */
   cookie: { name: string; value: string };
+  /** The session cookie of a player three weeks in (`veteran.ts`). */
+  veteran: { name: string; value: string };
   /** The server's insides, for flows that set up a save the way the admin page will. */
   ctx: Ctx;
   close: () => Promise<void>;
@@ -118,9 +135,17 @@ async function start(): Promise<Served> {
   });
   await app.listen({ port, host: '127.0.0.1' });
   const cookie = await newcomer(url, 'Newcomer');
+  const vet = await newcomer(url, 'Veteran');
+  const me = (await (await fetch(`${url}/api/me`, { headers: { cookie: `${vet.name}=${vet.value}` } })).json()) as {
+    player: { id: string };
+  };
+  const now = Date.now();
+  const saved = ctx.store.read(me.player.id, now)!;
+  ctx.store.write(me.player.id, { ...saved.doc, state: veteran(ctx, saved.doc.state, now) }, saved.rev, now);
   return {
     url,
     cookie,
+    veteran: vet,
     ctx,
     close: async () => {
       await close();
@@ -132,14 +157,20 @@ async function start(): Promise<Served> {
 let server: Promise<Served> | null = null;
 export const ensureServer = (): Promise<Served> => (server ??= start());
 
-/** Welcome views are opened signed out; every other view as the run's newcomer. */
+/** Welcome views are opened signed out; every other view as the run's newcomer, or its veteran. */
 export const signedOut = (path: string) => path.startsWith('/welcome');
 
 /** A page for one view, in its own browser context, signed in unless the view is for visitors. */
-export async function openPage(engine: Engine, path: string, options: BrowserContextOptions): Promise<Page> {
+export async function openPage(
+  engine: Engine,
+  path: string,
+  options: BrowserContextOptions,
+  as?: 'veteran',
+): Promise<Page> {
   const served = await ensureServer();
   const ctx = await (await browser(engine)).newContext(options);
-  if (!signedOut(path)) await ctx.addCookies([{ ...served.cookie, url: served.url }]);
+  const cookie = as === 'veteran' ? served.veteran : served.cookie;
+  if (!signedOut(path)) await ctx.addCookies([{ ...cookie, url: served.url }]);
   const page = await ctx.newPage();
   page.on('close', () => void ctx.close().catch(() => undefined));
   return page;
