@@ -5,6 +5,7 @@ import { t } from '@idle-clash/content';
 import { Button } from '@idle-clash/ui';
 import { useEffect, useState } from 'react';
 import { useGame } from '../game/hooks.ts';
+import { useLocation } from '../router.ts';
 import s from './tour.module.css';
 
 const STEPS = [
@@ -41,6 +42,7 @@ function target(slot: string): DOMRect | null {
 
 export function Tour() {
   const { state } = useGame();
+  const { panel } = useLocation();
   // Only a newcomer: nothing claimed and no XP yet.
   const fresh = Object.keys(state.skills).length === 0;
   const [asked, setStep] = useState<number | null>(() => (fresh && !done() ? 0 : null));
@@ -58,7 +60,8 @@ export function Tour() {
       clearInterval(again);
     };
   }, [step]);
-  if (step === null || !box) return null;
+  // A sheet open over the page (Settings, Notices) has the player's attention: the tour waits.
+  if (step === null || !box || panel) return null;
   const end = () => {
     finish();
     setStep(null);
