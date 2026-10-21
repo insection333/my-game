@@ -1,5 +1,6 @@
 // Serves the built web app: every file read once at start and kept gzipped in memory; hashed
 // assets cached for a year; every other page address answered with index.html for the page's router.
+// A file that is not there (an asset from before a deploy, a favicon) is a 404, never the page.
 import type { FastifyInstance } from 'fastify';
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { extname, join, relative } from 'node:path';
@@ -16,6 +17,7 @@ const TYPES: Record<string, string> = {
   '.png': 'image/png',
   '.json': 'application/json',
   '.ico': 'image/x-icon',
+  '.txt': 'text/plain; charset=utf-8',
 };
 
 interface File {
@@ -50,7 +52,10 @@ export function webRoutes(app: FastifyInstance, dist: string): void {
   app.get('/*', (req, reply) => {
     const path = new URL(req.url, 'http://x').pathname;
     if (path.startsWith('/api/')) throw fail(404, 'notFound');
-    const file = files.get(path) ?? (path === '/review' ? files.get('/review.html') : undefined) ?? index;
+    const found = files.get(path) ?? (path === '/review' ? files.get('/review.html') : undefined);
+    // Page addresses have no file extension; anything that does and is missing is not the page.
+    if (!found && (path.startsWith('/assets/') || /\.[a-z0-9]+$/i.test(path))) throw fail(404, 'notFound');
+    const file = found ?? index;
     const gzip = file.gz && /\bgzip\b/.test(String(req.headers['accept-encoding']));
     reply
       .header('content-type', file.type)

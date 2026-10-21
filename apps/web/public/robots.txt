@@ -1,0 +1,6 @@
+# The welcome page is for everyone; the game's API is not for crawlers, save the health check.
+User-agent: *
+Allow: /api/health
+Disallow: /api/
+Disallow: /admin
+Disallow: /review

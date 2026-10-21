@@ -94,9 +94,10 @@
   z-index: -1;
 }
 
+/* A steady glow while it burns: an endless animation would keep a page left open drawing frames
+   (and a phone's battery working) all day. Only a fire about to go out breathes, to be noticed. */
 .fire[data-state='burning'] .fireGlow {
-  opacity: 0.55;
-  animation: breathe 3.2s ease-in-out infinite;
+  opacity: 0.45;
 }
 
 .fire[data-state='dimming'] .fireGlow {
