@@ -1,28 +1,21 @@
 import { allStringKeys, buildLadder } from '@idle-clash/content';
 import { defineFeature, FEATURES, type Feature } from '@idle-clash/features';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { checkContent } from '../checks/content.ts';
 import { checkFeatureImports, checkManifest, checkPackageDeps } from '../checks/manifest.ts';
 import { literalStringKeys, sampleStates } from '../checks/sources.ts';
+import { ROOT } from '../exec.ts';
+import { readPageMap } from '../ia.ts';
 
 const states = sampleStates(
   FEATURES.flatMap((f) => (f.content.skill ? [f.content.skill.id] : [])),
   FEATURES,
 );
 const [woodcutting] = FEATURES;
-const slots = [
-  'skills.list',
-  'skill.header',
-  'skill.actions',
-  'skill.ladder',
-  'skill.finds',
-  'collection.log',
-  'hearth.nextUp',
-  'hearth.goals',
-  'combat.loadout',
-  'combat.foes',
-  'combat.triangle',
-];
+// The slots IA.md lists, as verify reads them.
+const slots = readPageMap(readFileSync(join(ROOT, 'IA.md'), 'utf8')).slots;
 const manifest = (features: Feature[], folders = features.map((f) => f.id)) =>
   checkManifest({ features, slots, folders, states });
 const literalKeys = literalStringKeys(allStringKeys());
