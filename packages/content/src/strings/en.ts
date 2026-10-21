@@ -1,8 +1,10 @@
 // Every player-facing word in the game. Templates take {named} parameters, always already formatted
 // (see numbers.ts). The content check fails on a missing key, an unused key, or a term GLOSSARY.md
 // says to avoid. Keep sections in order; within a feature's section, keys follow its content. The gathering
-// and artisan skills' words are in en-skills.ts, Combat's in en-combat.ts.
+// and artisan skills' words are in en-skills.ts, Combat's in en-combat.ts, the privacy page's and the
+// terms' in en-legal.ts.
 import { combat } from './en-combat.ts';
+import { legal } from './en-legal.ts';
 import { skills } from './en-skills.ts';
 
 export const en: Record<string, string> = {
@@ -101,6 +103,33 @@ export const en: Record<string, string> = {
   'settings.theme.dark': 'Dark',
   'settings.signedInAs': 'Signed in as {name}',
   'settings.signOut': 'Sign out',
+  'settings.delete': 'Delete account',
+  'settings.delete.warning':
+    'Deleting your account removes your save, your hiscores, your notices and your name at once. It cannot be undone.',
+  'settings.delete.password': 'Your password',
+  'settings.delete.confirm': 'Delete everything',
+  'settings.delete.cancel': 'Keep my account',
+  'settings.delete.wrong': 'That is not your password.',
+  'legal.back': 'Back',
+  'admin.title': 'Admin',
+  'admin.players': 'Players',
+  'admin.search': 'Player name',
+  'admin.find': 'Find',
+  'admin.none': 'No player by that name.',
+  'admin.joined': 'Joined {date}',
+  'admin.totalLevel': 'Total level {level}',
+  'admin.banned': 'Banned',
+  'admin.open': 'Open',
+  'admin.newName': 'Name',
+  'admin.rename': 'Rename',
+  'admin.ban': 'Ban',
+  'admin.unban': 'Unban',
+  'admin.mend': 'Check and mend save',
+  'admin.reset': 'Set a new password',
+  'admin.newPassword': 'Their new password. Pass it on; it replaces the old one, and they are signed out everywhere:',
+  'admin.repairs': 'Repairs to this save',
+  'admin.noRepairs': 'None: the save has always read cleanly.',
+  'admin.save': 'The save',
 
   // The welcome page, before signing in
   'welcome.title': 'Idle Clash',
@@ -121,6 +150,7 @@ export const en: Record<string, string> = {
   'error.password': 'Use at least 10 characters.',
   'error.age': 'Idle Clash is for players aged 13 and over.',
   'error.nameTaken': 'That name is taken. Try another.',
+  'error.nameNotAllowed': 'That name is not allowed here. Try another.',
   'error.wrongNameOrPassword': 'That name and password do not match.',
   'error.banned': 'This account is closed.',
   'error.tooManyTries': 'Too many tries. Try again in {wait}.',
@@ -250,4 +280,5 @@ export const en: Record<string, string> = {
 
   ...skills,
   ...combat,
+  ...legal,
 };

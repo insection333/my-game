@@ -18,6 +18,8 @@ import { LiveHub } from './game/live.ts';
 import { gameRoutes } from './game/routes.ts';
 import { contractRoute, harden } from './http.ts';
 import { RateLimiter } from './security.ts';
+import { adminRoutes } from './admin/routes.ts';
+import { accountRoutes } from './auth/account.ts';
 import { Hiscores } from './game/hiscores.ts';
 import { Notices } from './game/notices.ts';
 import { Telemetry } from './telemetry.ts';
@@ -76,6 +78,8 @@ export async function buildApp(
     identify(ctx),
   );
   authRoutes(app, ctx);
+  accountRoutes(app, ctx);
+  adminRoutes(app, ctx);
   if (config.emailEnabled) emailRoutes(app, ctx);
   gameRoutes(app, ctx, features);
   if (config.webDist) webRoutes(app, config.webDist);

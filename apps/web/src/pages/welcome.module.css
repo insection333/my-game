@@ -119,3 +119,10 @@
 .submit {
   width: 100%;
 }
+
+.legalLinks {
+  display: flex;
+  gap: var(--s-4);
+  margin: 0;
+  font-size: var(--t-small);
+}

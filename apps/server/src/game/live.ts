@@ -34,6 +34,12 @@ export class LiveHub {
     return this.sockets.size;
   }
 
+  /** Closes a player's pages (signed out everywhere: banned, or the account deleted). */
+  closePlayer(playerId: string): void {
+    for (const s of this.sockets.get(playerId) ?? []) s.close(4401, 'signed out');
+    this.sockets.delete(playerId);
+  }
+
   closeAll(): void {
     for (const set of this.sockets.values()) for (const s of set) s.close(1001, 'server stopping');
     this.sockets.clear();

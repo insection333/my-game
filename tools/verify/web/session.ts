@@ -59,7 +59,13 @@ export function views(): View[] {
     { page: 'Combat', path: '/combat?panel=gear&slot=weapon', phone: [], desktop: [], as: 'veteran' },
     { page: 'Skill', path: '/skills/melee', phone: [], desktop: [], as: 'veteran' },
   ];
-  return [...map.views, ...sheets, ...veteran].map((v) => ({
+  // The privacy page and the terms, as a visitor reads them from the welcome page.
+  const visitor: ViewSpec[] = map.views
+    .filter((v) => v.path === '/privacy' || v.path === '/terms')
+    .map((v) => ({ ...v, as: 'visitor' as const }));
+  // The admin page is the admin's: a newcomer gets the page that does not exist.
+  const newcomer = map.views.filter((v) => v.path !== '/admin');
+  return [...newcomer, ...sheets, ...veteran, ...visitor].map((v) => ({
     ...v,
     name: (v.as ? `${v.as}-` : '') + (v.path.replace(/^\//, '').replace(/[^a-z0-9]+/gi, '-') || 'hearth'),
   }));
@@ -125,6 +131,8 @@ async function start(): Promise<Served> {
     flags: flagsFrom('all'),
     log: false,
     now: () => Date.now(),
+    // The veteran keeps the game's admin page, so it is screenshot with players on it.
+    adminNames: ['Veteran'],
   });
   await app.listen({ port, host: '127.0.0.1' });
   const cookie = await newcomer(url, 'Newcomer');
@@ -167,12 +175,12 @@ export async function openPage(
   engine: Engine,
   path: string,
   options: BrowserContextOptions,
-  as?: 'veteran',
+  as?: 'veteran' | 'visitor',
 ): Promise<Page> {
   const served = await ensureServer();
   const ctx = await (await browser(engine)).newContext(options);
   const cookie = as === 'veteran' ? served.veteran : served.cookie;
-  if (!signedOut(path)) await ctx.addCookies([{ ...cookie, url: served.url }]);
+  if (!signedOut(path) && as !== 'visitor') await ctx.addCookies([{ ...cookie, url: served.url }]);
   const page = await ctx.newPage();
   page.on('close', () => void ctx.close().catch(() => undefined));
   return page;

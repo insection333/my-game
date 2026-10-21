@@ -20,6 +20,8 @@ export interface Config {
   log: boolean;
   /** The clock, so tests can move time. */
   now: () => number;
+  /** Players who may open the admin page, by name (any case). */
+  adminNames: string[];
 }
 
 /** Flags from FEATURES: unset keeps each feature's own flag; "all" turns every built feature on. */
@@ -47,5 +49,9 @@ export function configFromEnv(env: NodeJS.ProcessEnv = process.env): Config {
     flags: flagsFrom(env.FEATURES),
     log: env.LOG !== 'false',
     now: () => Date.now(),
+    adminNames: (env.ADMIN_NAMES ?? '')
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean),
   };
 }

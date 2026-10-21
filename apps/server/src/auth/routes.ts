@@ -8,6 +8,7 @@ import { randomInt, randomUUID } from 'node:crypto';
 import { ipOf, limit, type Ctx } from '../context.ts';
 import { players } from '../db/schema.ts';
 import { contractRoute, fail } from '../http.ts';
+import { nameAllowed } from './names.ts';
 import { checkPassword, dummyHash, hashPassword } from './passwords.ts';
 import { SESSION_COOKIE, SESSION_DAYS } from './sessions.ts';
 
@@ -31,6 +32,20 @@ export function identify(ctx: Ctx) {
     req.playerId = id;
   };
 }
+
+/** Whether a name is on the server's admin list. */
+export const isAdmin = (ctx: Ctx, name: string) => ctx.config.adminNames.some((n) => nameKey(n) === nameKey(name));
+
+/** A signed-in player on the admin list; anyone else is refused. */
+export const requireAdmin = (ctx: Ctx) => {
+  const who = identify(ctx);
+  return (req: FastifyRequest): void => {
+    who(req);
+    if (!req.playerId) throw fail(401, 'notSignedIn');
+    const row = ctx.db.select({ name: players.name }).from(players).where(eq(players.id, req.playerId)).get();
+    if (!row || !isAdmin(ctx, row.name)) throw fail(403, 'notAdmin');
+  };
+};
 
 export const requirePlayer = (ctx: Ctx) => {
   const who = identify(ctx);
@@ -57,6 +72,7 @@ export function authRoutes(app: FastifyInstance, ctx: Ctx): void {
   contractRoute<{ name: string; password: string }>(app, ROUTES.signUp, async ({ req, reply, input }) => {
     limit(ctx, reply, `sign-up:${ipOf(req)}`, 5, HOUR);
     const key = nameKey(input.name);
+    if (!nameAllowed(input.name)) throw fail(422, 'nameNotAllowed');
     if (ctx.db.select({ id: players.id }).from(players).where(eq(players.nameKey, key)).get())
       throw fail(409, 'nameTaken');
     const passwordHash = await hashPassword(input.password);
@@ -113,6 +129,7 @@ export function authRoutes(app: FastifyInstance, ctx: Ctx): void {
         player: row ? view(row) : null,
         flags: ctx.config.flags,
         email: { enabled: ctx.config.emailEnabled },
+        admin: row ? isAdmin(ctx, row.name) : false,
       } satisfies MeResponse;
     },
     identify(ctx),

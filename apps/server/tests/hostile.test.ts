@@ -9,8 +9,9 @@ import { code, notes, post, server, signUp, type TestServer } from './helpers.ts
 let s: TestServer;
 let cookie: string;
 beforeAll(async () => {
-  s = await server({ emailEnabled: true });
-  cookie = await signUp(s, 'Hostile Tester');
+  s = await server({ emailEnabled: true, adminNames: ['Hostile Tester'] });
+  // A password unlike the routes' examples, so a well-formed request to delete the account is refused.
+  cookie = await signUp(s, 'Hostile Tester', 'not the example password');
 });
 afterAll(() => s.close());
 // Half a second between cases, as a quick attacker would: the suite measures answers, not the rate
@@ -97,7 +98,7 @@ function cases(r: RouteContract): [string, string, number][] {
 
 describe.each(routes.map((r) => [r.id, r] as const))('%s', (_id, r) => {
   it.each(cases(r))('answers %s', async (_what, body, status) => {
-    const res = await post(s, r.path, body, r.auth === 'player' ? cookie : undefined);
+    const res = await post(s, r.path, body, r.auth === 'none' ? undefined : cookie);
     if (status === 0) {
       expect(res.statusCode).not.toBe(400);
       expect(res.statusCode).toBeLessThan(500);

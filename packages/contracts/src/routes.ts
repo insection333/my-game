@@ -24,13 +24,19 @@ export const SetEmail = z.object({ email: Email }).strict();
 export const ConfirmEmail = z.object({ token: Token }).strict();
 export const Recover = z.object({ name: plainText(64) }).strict();
 export const ResetPassword = z.object({ token: Token, password: Password }).strict();
+export const DeleteAccount = z.object({ password: plainText(PASSWORD_MAX), confirm: z.literal(true) }).strict();
+const PlayerId = z.string().uuid();
+export const AdminSearch = z.object({ query: plainText(64, 0) }).strict();
+export const AdminPlayer = z.object({ playerId: PlayerId }).strict();
+export const AdminRename = z.object({ playerId: PlayerId, name: PlayerName }).strict();
+export const AdminBan = z.object({ playerId: PlayerId, banned: z.boolean() }).strict();
 
 export interface RouteContract {
   id: string;
   method: 'GET' | 'POST';
   path: string;
-  /** none: anyone; player: a signed-in player. */
-  auth: 'none' | 'player';
+  /** none: anyone; player: a signed-in player; admin: a player named in the server's admin list. */
+  auth: 'none' | 'player' | 'admin';
   input: z.ZodType | null;
   example: unknown;
   /** Only mounted when transactional email is switched on. */
@@ -121,6 +127,62 @@ export const ROUTES = {
     example: { token: 'aaaaaaaaaaaaaaaaaaaaaaaa', password: 'a new long secret' },
     email: true,
   }),
+  deleteAccount: route({
+    id: 'deleteAccount',
+    method: 'POST',
+    path: PATHS.deleteAccount,
+    auth: 'player',
+    input: DeleteAccount,
+    example: { password: 'a long enough secret', confirm: true },
+  }),
+  adminPlayers: route({
+    id: 'adminPlayers',
+    method: 'POST',
+    path: PATHS.adminPlayers,
+    auth: 'admin',
+    input: AdminSearch,
+    example: { query: 'Rowan' },
+  }),
+  adminSave: route({
+    id: 'adminSave',
+    method: 'POST',
+    path: PATHS.adminSave,
+    auth: 'admin',
+    input: AdminPlayer,
+    example: { playerId: '00000000-0000-4000-8000-000000000000' },
+  }),
+  adminRename: route({
+    id: 'adminRename',
+    method: 'POST',
+    path: PATHS.adminRename,
+    auth: 'admin',
+    input: AdminRename,
+    example: { playerId: '00000000-0000-4000-8000-000000000000', name: 'Renamed' },
+  }),
+  adminBan: route({
+    id: 'adminBan',
+    method: 'POST',
+    path: PATHS.adminBan,
+    auth: 'admin',
+    input: AdminBan,
+    example: { playerId: '00000000-0000-4000-8000-000000000000', banned: true },
+  }),
+  adminMend: route({
+    id: 'adminMend',
+    method: 'POST',
+    path: PATHS.adminMend,
+    auth: 'admin',
+    input: AdminPlayer,
+    example: { playerId: '00000000-0000-4000-8000-000000000000' },
+  }),
+  adminResetPassword: route({
+    id: 'adminResetPassword',
+    method: 'POST',
+    path: PATHS.adminResetPassword,
+    auth: 'admin',
+    input: AdminPlayer,
+    example: { playerId: '00000000-0000-4000-8000-000000000000' },
+  }),
 } satisfies Record<string, RouteContract>;
 
 export type RouteId = keyof typeof ROUTES;
@@ -134,6 +196,30 @@ export interface MeResponse {
   player: PlayerView | null;
   flags: Record<string, boolean>;
   email: { enabled: boolean };
+  /** Whether this player may open the admin page. */
+  admin: boolean;
+}
+/** A player as the admin page lists them. */
+export interface AdminPlayerView {
+  id: string;
+  name: string;
+  createdAt: number;
+  bannedAt: number | null;
+  totalLevel: number;
+}
+export interface AdminPlayersResponse {
+  players: AdminPlayerView[];
+}
+export interface AdminSaveResponse {
+  player: AdminPlayerView;
+  /** The save as stored (mended on reading, as every read is). */
+  doc: unknown;
+  /** Every repair made to this player's save, oldest first. */
+  repairs: { at: number; repairs: string[] }[];
+}
+export interface AdminResetResponse {
+  /** A new password for the admin to pass on; it works once the player signs in with it. */
+  password: string;
 }
 export interface AuthResponse {
   player: PlayerView;
@@ -189,6 +275,9 @@ export const ErrorCode = z.enum([
   'tooManyTries',
   'notFound',
   'tokenInvalid',
+  'nameNotAllowed',
+  'wrongPassword',
+  'notAdmin',
   'serverError',
 ]);
 export type ErrorCode = z.infer<typeof ErrorCode>;

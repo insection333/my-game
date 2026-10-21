@@ -1,7 +1,8 @@
 // The notices tray and settings: sheets over any page.
 import { fmt, t } from '@idle-clash/content';
-import { Button, ItemIcon } from '@idle-clash/ui';
-import { useEffect, useState } from 'react';
+import { Button, Field, ItemIcon, TextLink } from '@idle-clash/ui';
+import { useEffect, useState, type FormEvent } from 'react';
+import { ApiError } from '../api.ts';
 import { useGame } from '../game/hooks.ts';
 import { navigate } from '../router.ts';
 import { noticesOf } from './notices.ts';
@@ -68,13 +69,76 @@ export function Tray() {
 }
 
 function Account() {
-  const { player } = useSession();
+  const { player, admin } = useSession();
   if (!player) return null;
   return (
-    <div className={s.account}>
-      <p>{t('settings.signedInAs', { name: player.name })}</p>
-      <Button onClick={() => void account.signOut()}>{t('settings.signOut')}</Button>
-    </div>
+    <>
+      <div className={s.account}>
+        <p>{t('settings.signedInAs', { name: player.name })}</p>
+        <Button onClick={() => void account.signOut()}>{t('settings.signOut')}</Button>
+      </div>
+      <p className={s.links}>
+        <TextLink href="/privacy" onNavigate={navigate}>
+          {t('legal.privacy.title')}
+        </TextLink>
+        <TextLink href="/terms" onNavigate={navigate}>
+          {t('legal.terms.title')}
+        </TextLink>
+        {admin && (
+          <TextLink href="/admin" onNavigate={navigate}>
+            {t('admin.title')}
+          </TextLink>
+        )}
+      </p>
+    </>
+  );
+}
+
+/** Deleting the account: asked for twice, the second time with the password. */
+function DeleteAccount() {
+  const [open, setOpen] = useState(false);
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  if (!open)
+    return (
+      <div className={s.danger}>
+        <Button variant="quiet" onClick={() => setOpen(true)}>
+          {t('settings.delete')}
+        </Button>
+      </div>
+    );
+  const submit = async (e: FormEvent) => {
+    e.preventDefault();
+    setBusy(true);
+    try {
+      await account.deleteAccount(password);
+    } catch (err) {
+      setError(err instanceof ApiError && err.code === 'wrongPassword' ? t('settings.delete.wrong') : t('error.other'));
+      setBusy(false);
+    }
+  };
+  return (
+    <form className={s.danger} onSubmit={(e) => void submit(e)}>
+      <p>{t('settings.delete.warning')}</p>
+      <Field
+        label={t('settings.delete.password')}
+        type="password"
+        autoComplete="current-password"
+        value={password}
+        error={error}
+        onChange={(e) => setPassword(e.target.value)}
+        required
+      />
+      <div className={s.dangerActions}>
+        <Button type="submit" variant="primary" disabled={busy || !password}>
+          {t('settings.delete.confirm')}
+        </Button>
+        <Button variant="secondary" onClick={() => setOpen(false)}>
+          {t('settings.delete.cancel')}
+        </Button>
+      </div>
+    </form>
   );
 }
 
@@ -101,6 +165,7 @@ export function Settings() {
           </label>
         ))}
       </fieldset>
+      <DeleteAccount />
     </>
   );
 }

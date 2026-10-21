@@ -15,9 +15,11 @@ export interface Session {
   flags: Record<string, boolean>;
   /** Transactional email: off until the owner switches it on. */
   email: boolean;
+  /** Whether this player may open the admin page. */
+  admin: boolean;
 }
 
-let session: Session = { phase: 'loading', player: null, flags: {}, email: false };
+let session: Session = { phase: 'loading', player: null, flags: {}, email: false, admin: false };
 const listeners = new Set<() => void>();
 
 function setSession(next: Partial<Session>) {
@@ -41,7 +43,7 @@ export const loadGame = () => (game ??= import('./store.ts'));
 /** The session ended (signed out here, or found ended by the server): back to the welcome page. */
 export function signedOut() {
   void game?.then((m) => m.stop());
-  setSession({ phase: 'signedOut', player: null });
+  setSession({ phase: 'signedOut', player: null, admin: false });
 }
 
 /** What every failed request does first: a lost session sends the player back to the welcome page. */
@@ -63,7 +65,7 @@ async function enter(player: PlayerView) {
 export async function boot(): Promise<void> {
   try {
     const me = await api.me();
-    setSession({ flags: me.flags, email: me.email.enabled });
+    setSession({ flags: me.flags, email: me.email.enabled, admin: me.admin });
     if (me.player) await enter(me.player);
     else setSession({ phase: 'signedOut' });
   } catch (err) {
@@ -73,7 +75,20 @@ export async function boot(): Promise<void> {
 
 export const account = {
   signUp: async (name: string, password: string) => enter((await api.signUp(name, password)).player),
-  signIn: async (name: string, password: string) => enter((await api.signIn(name, password)).player),
+  signIn: async (name: string, password: string) => {
+    await enter((await api.signIn(name, password)).player);
+    // Whether the page offers the admin page is the server's to say.
+    void api.me().then(
+      (me) => setSession({ admin: me.admin }),
+      () => undefined,
+    );
+  },
+  /** Deletes the account and everything with it, then opens the welcome page. */
+  deleteAccount: async (password: string) => {
+    await api.deleteAccount(password);
+    replace('/welcome');
+    signedOut();
+  },
   /** Ends the session and opens the sign-in form. */
   signOut: async () => {
     await api.signOut().catch(() => undefined);
