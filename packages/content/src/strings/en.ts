@@ -178,6 +178,18 @@ export const en: Record<string, string> = {
 
   // Goals
   'goals.firstSteps': 'First steps',
+  'goals.title': 'Goals',
+  'goals.count': '{now} of {of}',
+  'goals.start': 'Start',
+  'goals.doneToday': 'Done for today',
+  'goals.milestone': 'Milestone',
+  'goal.short.count': '{skill}: {action} ×{count}',
+  'goal.short.mastery': 'Reach mastery {step} on {action}',
+  'goal.daily': 'Earn {xp} {skill} XP today',
+  'goal.milestone.total': 'Reach total level {level}',
+  'goal.milestone.forged': 'Forge your first {metal} item',
+  'goal.milestone.log': 'Find {count} things for your collection log',
+  'goal.milestone.mastery': 'Reach mastery {step} on any action',
   'goals.progress': '{done} of {total} done',
   'goals.reward.gold': '{amount} gold',
   'goals.reward.items': '{count} {item}',

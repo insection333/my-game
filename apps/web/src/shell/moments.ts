@@ -66,7 +66,7 @@ function describe(
         icon: null,
       };
     case 'goalDone':
-      return { title: t('moment.goalDone', { goal: t(`goal.${e.goal}`) }), body: null, icon: null };
+      return { title: t('moment.goalDone', { goal: e.name ?? t(`goal.${e.goal}`) }), body: null, icon: null };
     default:
       return { title: '', body: null, icon: null };
   }

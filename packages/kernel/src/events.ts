@@ -15,8 +15,8 @@ export interface EventMap {
   masteryStep: { action: ActionRef; step: number };
   /** A find; `first` when it is new to the collection log. */
   find: { skill: string; item: string; rarity: Rarity; first: boolean };
-  /** A goal was claimed. */
-  goalDone: { goal: string };
+  /** A goal was claimed; `name` is its words when they are made for it (a short goal's count). */
+  goalDone: { goal: string; name?: string };
   /** A lane stopped; the reason says why, so the page can say what to do. */
   laneStopped: { lane: LaneId; action: ActionRef | null; reason: StopReason };
   /** A command was refused: what was asked, and why not, so the page can say so. */

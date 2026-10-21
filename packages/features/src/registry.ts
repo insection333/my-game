@@ -9,7 +9,7 @@ import { magic } from './magic/index.ts';
 import { melee } from './melee/index.ts';
 import { mining } from './mining/index.ts';
 import { smithing } from './smithing/index.ts';
-import { setCatalog } from './shared/catalog.ts';
+import { setCatalog, setSkills } from './shared/catalog.ts';
 import { storehouse } from './storehouse/index.ts';
 import { catalog } from './shared/items.ts';
 import { woodcutting } from './woodcutting/index.ts';
@@ -28,6 +28,13 @@ export const FEATURES: readonly Feature[] = [
 ];
 // Rules that must know what an item is while playing (a worn sword's tier) read this catalog.
 setCatalog(catalog(FEATURES));
+setSkills(
+  FEATURES.flatMap((f) =>
+    f.content.skill && f.content.actions?.length
+      ? [{ feature: f.id, skill: f.content.skill.id, ladder: f.content.skill.ladder, actions: f.content.actions }]
+      : [],
+  ),
+);
 
 /** The kernel's action registry: rules of every feature whose flag is on (or of those named). */
 export function actionRegistry(

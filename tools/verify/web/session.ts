@@ -54,15 +54,7 @@ export function views(): View[] {
   ];
   // The same pages for a player three weeks in, whose rows carry odds, pills and long names.
   const veteran: ViewSpec[] = [
-    // (Their First steps are finished, so the Hearth's goals slot is empty until short goals arrive.)
-    ...map.views
-      .filter((v) => !signedOut(v.path))
-      .map((v) => ({
-        ...v,
-        phone: v.phone.filter((x) => x !== 'hearth.goals'),
-        desktop: v.desktop.filter((x) => x !== 'hearth.goals'),
-        as: 'veteran' as const,
-      })),
+    ...map.views.filter((v) => !signedOut(v.path)).map((v) => ({ ...v, as: 'veteran' as const })),
     { page: 'Combat', path: '/combat?panel=gear&slot=weapon', phone: [], desktop: [], as: 'veteran' },
     { page: 'Skill', path: '/skills/melee', phone: [], desktop: [], as: 'veteran' },
   ];
