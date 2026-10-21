@@ -1,13 +1,13 @@
 // Combat: the loadout (gear worn, health, food), every foe with Your odds, and the triangle's key.
 // A gear slot opens a sheet of the matching gear in the Storehouse (`?panel=gear&slot=weapon`).
 import { fmt, t } from '@idle-clash/content';
-import type { Feature, FoeRow, LoadoutSlot, LoadoutView } from '@idle-clash/features';
+import type { Feature, FoeRow, FoodView, LoadoutSlot, LoadoutView } from '@idle-clash/features';
 import { actionKey, LANE_IDS } from '@idle-clash/kernel';
 import { ActionRow, Button, hasIcon, ItemIcon, Panel, Pill, ProgressBar, Sheet, Tabs } from '@idle-clash/ui';
 import { useGame } from '../game/hooks.ts';
 import { game } from '../game/store.ts';
 import { navigate, useLocation, withPanel } from '../router.ts';
-import { fillFor, Slot } from '../slots.tsx';
+import { fillFor, fills, Slot } from '../slots.tsx';
 import { PageHead } from './PageHead.tsx';
 import { NotFound } from './Simple.tsx';
 import s from './combat.module.css';
@@ -40,7 +40,7 @@ function CombatPage({ combat }: { combat: Feature }) {
     <>
       <PageHead title={t('combat.title')} />
       <div className={s.layout}>
-        <section data-section className={s.side}>
+        <section data-section className={s.loadoutArea}>
           <Panel title={t('combat.loadout')} aside={loadout.style ?? undefined} flush>
             <Slot id="combat.loadout" className={s.loadout}>
               <div className={s.gear}>
@@ -57,17 +57,8 @@ function CombatPage({ combat }: { combat: Feature }) {
               </div>
             </Slot>
           </Panel>
-          <Panel title={t('combat.triangle')} className={s.key}>
-            <Slot id="combat.triangle">
-              <ul className={s.triangle}>
-                {triangle.map((line) => (
-                  <li key={line}>{line}</li>
-                ))}
-              </ul>
-            </Slot>
-          </Panel>
         </section>
-        <section data-section>
+        <section data-section className={s.foesArea}>
           <Panel title={t('combat.foes')} flush>
             {tiers.length > 1 && (
               <div className={s.tierTabs}>
@@ -123,6 +114,20 @@ function CombatPage({ combat }: { combat: Feature }) {
                   }
                 />
               ))}
+            </Slot>
+          </Panel>
+        </section>
+        <section data-section className={s.foodArea}>
+          <Food />
+        </section>
+        <section data-section className={s.keyArea}>
+          <Panel title={t('combat.triangle')}>
+            <Slot id="combat.triangle">
+              <ul className={s.triangle}>
+                {triangle.map((line) => (
+                  <li key={line}>{line}</li>
+                ))}
+              </ul>
             </Slot>
           </Panel>
         </section>
@@ -187,5 +192,39 @@ function GearChoices({ gear }: { gear: LoadoutSlot }) {
         />
       ))}
     </div>
+  );
+}
+
+/** The vendor's food: what each heals and costs, how many you have, and Buy 10. */
+function Food() {
+  const { state, now, features } = useGame();
+  const [food] = fills<FoodView>(features, 'combat.food', state, now);
+  if (!food) return null;
+  return (
+    <Panel title={t('combat.food')} flush>
+      <Slot id="combat.food">
+        {food.data.shop.map((f) => (
+          <ActionRow
+            key={f.item}
+            icon={<ItemIcon name={f.item} size={32} />}
+            name={f.name}
+            locked={f.locked}
+            facts={f.facts}
+            status={f.locked ? <Pill>{f.opensAt}</Pill> : undefined}
+            actions={
+              !f.locked && (
+                <Button
+                  variant="secondary"
+                  disabled={!f.affordable}
+                  onClick={() => game.act('storehouse', 'buy', { item: f.item, count: 10 })}
+                >
+                  {t('store.buyTen')}
+                </Button>
+              )
+            }
+          />
+        ))}
+      </Slot>
+    </Panel>
   );
 }

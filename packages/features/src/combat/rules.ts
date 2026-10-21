@@ -17,6 +17,7 @@ import {
 import { fight, maxHealth, retreatShare, styleXp, type Fought } from '../shared/combat/fight.ts';
 import { combatOf, fighterOf, healthAt, mealsOf, setCombat } from '../shared/combat/state.ts';
 import { skillLevel, yieldOf } from '../shared/skill.ts';
+import { noRoom } from '../shared/storehouse.ts';
 
 export const FEATURE = 'combat';
 
@@ -53,7 +54,7 @@ function battle(foe: Foe): ActionRules {
         return { code: 'retreated', detail: { foe: foe.id } };
       const low = healthAt(ctx.state, ctx.at) < maxHealth(p) * retreatShare(p);
       if (low && mealsOf(ctx.state).length === 0) return { code: 'tooHurt' };
-      return null;
+      return noRoom(ctx.state, [foe.drop]);
     },
     duration: (ctx) => (play(ctx, foe)?.seconds ?? 3) * 1000,
     complete: (ctx) => {

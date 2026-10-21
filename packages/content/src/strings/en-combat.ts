@@ -11,6 +11,7 @@ export const combat: Record<string, string> = {
   'combat.foes': 'Foes',
   'combat.triangle': 'The triangle',
   'combat.fight': 'Fight',
+  'combat.food': 'Food',
   'combat.trainedHere': 'Trained by fighting on the Combat page.',
   'combat.toCombat': 'Go to Combat',
   'gear.weapon': 'Weapon',

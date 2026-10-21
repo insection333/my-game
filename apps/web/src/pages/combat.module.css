@@ -1,19 +1,35 @@
-/* The Combat page: the loadout and the triangle beside the foes on wide screens, above them on phones. */
+/* The Combat page. Phones: loadout, foes, food (the triangle's key is for wide screens). Wide: the
+   loadout and food in a column; the foes beside them, with the key under the foes. */
 .layout {
   display: grid;
   gap: var(--s-4);
   align-items: start;
+  grid-template-areas: 'loadout' 'foes' 'food';
+}
+
+.loadoutArea {
+  grid-area: loadout;
+}
+.foesArea {
+  grid-area: foes;
+}
+.foodArea {
+  grid-area: food;
+}
+.keyArea {
+  grid-area: key;
+  display: none;
 }
 
 @container main (min-width: 720px) {
   .layout {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
+    grid-template-rows: auto auto 1fr;
+    grid-template-areas: 'loadout foes' 'food key' 'food .';
   }
-}
-
-.side {
-  display: grid;
-  gap: var(--s-4);
+  .keyArea {
+    display: block;
+  }
 }
 
 .loadout {
@@ -115,13 +131,6 @@
 .note {
   padding: var(--s-4);
   color: var(--ink-2);
-}
-
-/* The key is for reference: on phones each foe row names its matchup instead (IA.md lists it at 1,440). */
-@container main (max-width: 719px) {
-  .key {
-    display: none;
-  }
 }
 
 .slot:not([data-slot-name='weapon']) .slotText {

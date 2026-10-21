@@ -10,6 +10,7 @@ import { melee } from './melee/index.ts';
 import { mining } from './mining/index.ts';
 import { smithing } from './smithing/index.ts';
 import { setCatalog } from './shared/catalog.ts';
+import { storehouse } from './storehouse/index.ts';
 import { catalog } from './shared/items.ts';
 import { woodcutting } from './woodcutting/index.ts';
 
@@ -22,6 +23,7 @@ export const FEATURES: readonly Feature[] = [
   magic,
   hitpoints,
   combat,
+  storehouse,
   goals,
 ];
 // Rules that must know what an item is while playing (a worn sword's tier) read this catalog.

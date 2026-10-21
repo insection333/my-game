@@ -21,7 +21,7 @@ export const combat = defineFeature({
     actions: FOES.map((f) => ({ id: f.id, level: f.hitpoints, gives: [{ item: f.drop, count: 1 }] })),
   },
   effects: [],
-  stops: ['hitpointsTooLow', 'noWeapon', 'retreated', 'tooHurt'],
+  stops: ['hitpointsTooLow', 'noWeapon', 'retreated', 'tooHurt', 'storehouseFull'],
   rules: RULES,
   routes: {
     wear: defineRoute({

@@ -40,6 +40,21 @@ export function equip(state: State, style: Style): State {
   return s;
 }
 
+const storehouse = FEATURES.find((f) => f.id === 'storehouse');
+/** A fighter's morning visit to the vendor: everything sold but gold, food and the gear worn, so the
+ *  Storehouse never fills with drops and outgrown gear. */
+function tidy(state: State): State {
+  if (!storehouse) return state;
+  const worn = Object.values((state.features.combat as { worn?: Record<string, string> } | undefined)?.worn ?? {});
+  const food = new Set(combatData.FOODS.map((f) => f.id));
+  let s = state;
+  for (const [item, count] of Object.entries(state.items)) {
+    if (item === 'gold' || food.has(item) || worn.includes(item)) continue;
+    s = storehouse.routes.sell.run(s, { item, count }, s.clock).state;
+  }
+  return s;
+}
+
 /** The foe a sensible fighter picks: the most XP an hour among those Easy or Fair. */
 export function bestFoe(state: State): string {
   const hp = levelFor(xpOf(state, combatData.HITPOINTS));
@@ -65,7 +80,7 @@ export function fighter(style: Style, seed: number, days: number): Played {
   };
   for (let d = 0; d < days; d++) {
     const dayStart = T0 + d * DAY;
-    state = equip({ ...state, clock: Math.max(state.clock, dayStart) }, style);
+    state = equip(tidy({ ...state, clock: Math.max(state.clock, dayStart) }), style);
     const day: Day = { start: state, active: [], away: [] };
     for (let t = dayStart; t < dayStart + HOUR; t += MINUTE) {
       const arrived = engine.advance(state, t, rng);

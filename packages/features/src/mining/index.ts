@@ -15,7 +15,7 @@ export const mining = defineFeature({
     finds: FINDS,
   },
   effects: ['speed', 'extraYield', 'findChance', 'masteryGain'],
-  stops: ['levelTooLow'],
+  stops: ['levelTooLow', 'storehouseFull'],
   rules: gatheringRules({ feature: 'mining', skill: SKILL, ladder: LADDER, finds: FINDS }, VEINS),
   routes: {},
   slots: skillSlots({ feature: 'mining', skill: SKILL, ladder: LADDER, finds: FINDS, actions: VEINS }),
