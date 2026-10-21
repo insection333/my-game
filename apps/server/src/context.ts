@@ -7,6 +7,7 @@ import type { Sessions } from './auth/sessions.ts';
 import type { Mailer } from './auth/mailer.ts';
 import type { Config } from './config.ts';
 import type { LiveHub } from './game/live.ts';
+import type { Notices } from './game/notices.ts';
 import { fail } from './http.ts';
 import type { RateLimiter } from './security.ts';
 import type { Telemetry } from './telemetry.ts';
@@ -22,6 +23,7 @@ export interface Ctx {
   mailer: Mailer;
   live: LiveHub;
   telemetry: Telemetry;
+  notices: Notices;
 }
 
 declare module 'fastify' {

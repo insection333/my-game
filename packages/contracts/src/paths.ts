@@ -7,6 +7,7 @@ export const PATHS = {
   signIn: '/api/auth/sign-in',
   signOut: '/api/auth/sign-out',
   game: '/api/game',
+  notices: '/api/notices',
   command: '/api/game/command',
   errors: '/api/errors',
   setEmail: '/api/account/email',

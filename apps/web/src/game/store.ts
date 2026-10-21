@@ -4,7 +4,15 @@
 // read when the tab comes back). The clock ticks only while something is moving, so a resting page
 // uses no CPU.
 import { actionRegistry, FEATURES, type Feature, type Json } from '@idle-clash/features';
-import { createEngine, seeded, type Command, type CommandResult, type GameEvent, type State } from '@idle-clash/kernel';
+import {
+  createEngine,
+  seeded,
+  type AwaySummary,
+  type Command,
+  type CommandResult,
+  type GameEvent,
+  type State,
+} from '@idle-clash/kernel';
 import { api, ApiError, requestId } from '../api.ts';
 import { openLive } from './live.ts';
 import { handled, sessionStore, signedOut } from './session.ts';
@@ -14,6 +22,10 @@ export interface GameView {
   now: number;
   events: GameEvent[];
   features: readonly Feature[];
+  /** The server's notices (newest first): the tray adds this page's own events to them. */
+  notices: GameEvent[];
+  /** What happened while the player was away, until they collect it. */
+  away: AwaySummary | null;
 }
 
 let features: readonly Feature[] = [];
@@ -58,7 +70,7 @@ function tick() {
 function adopt(state: State, now: number) {
   if (inFlight > 0) return;
   skew = now - Date.now();
-  publish({ state, now, events: view?.events ?? [], features });
+  publish({ state, now, events: view?.events ?? [], features, notices: view?.notices ?? [], away: view?.away ?? null });
 }
 
 /** Signed out: the channel closes and the clock stops. The last view stays until the next sign-in
@@ -84,11 +96,16 @@ export async function start(flags: Record<string, boolean>): Promise<void> {
   features = FEATURES.filter((f) => flags[f.id]);
   engine = createEngine(actionRegistry(features, () => true));
   inFlight = 0;
-  const g = await api.game();
+  const [g, n] = await Promise.all([api.game(), api.notices().catch(() => ({ notices: [] }))]);
+  view = null;
   adopt(g.state, g.now);
+  publish({ ...view!, notices: n.notices, away: g.away ?? null });
   live?.close();
   live = openLive({
     state: (state, now) => adopt(state, now),
+    events: (events) => {
+      if (view) publish({ ...view, notices: [...[...events].reverse(), ...view.notices].slice(0, 100) });
+    },
     signedOut,
     reopened: () => void resync(),
   });
@@ -136,6 +153,13 @@ export const game = {
       else void resync();
     });
     return out.result;
+  },
+  /** Closes the recap: the page counts it as being back (the fire lights), and the recap's events
+   *  reach the notices tray as the server writes them. */
+  collect: () => {
+    if (!view) return;
+    publish({ ...view, away: null });
+    game.command({ type: 'stoke' });
   },
   /** Runs a feature's own route (claim a goal): shown at once, then sent like a command. */
   act: (feature: string, route: string, input: unknown): Json | null => {

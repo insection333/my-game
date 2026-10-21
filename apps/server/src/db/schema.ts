@@ -1,6 +1,6 @@
 // The server's tables, beside the kernel's saves in the same SQLite file. Change these, then run
 // `pnpm --filter @idle-clash/server db:generate`; migrations apply in order when the server starts.
-import { index, integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { index, integer, primaryKey, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 export const players = sqliteTable(
   'players',
@@ -54,4 +54,33 @@ export const telemetry = sqliteTable(
     data: text('data'),
   },
   (t) => [index('telemetry_type_at').on(t.type, t.at)],
+);
+
+/** The notices tray: each player's notable events and lane stops, newest kept (the last 100). */
+export const notices = sqliteTable(
+  'notices',
+  {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    playerId: text('player_id').notNull(),
+    at: integer('at').notNull(),
+    /** The event, as the kernel announced it. */
+    data: text('data').notNull(),
+  },
+  (t) => [index('notices_player_at').on(t.playerId, t.at)],
+);
+
+/** Hiscores: each player's XP and level in every skill and in total ('total'), kept as saves change. */
+export const hiscores = sqliteTable(
+  'hiscores',
+  {
+    playerId: text('player_id').notNull(),
+    skill: text('skill').notNull(),
+    level: integer('level').notNull(),
+    xp: integer('xp').notNull(),
+    /** Milestones claimed, shown on the entry (the total row only). */
+    milestones: integer('milestones').notNull().default(0),
+    /** When this XP was first reached: ties go to whoever got there first. */
+    reachedAt: integer('reached_at').notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.playerId, t.skill] }), index('hiscores_skill_xp').on(t.skill, t.xp)],
 );

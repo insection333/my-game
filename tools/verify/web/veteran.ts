@@ -1,7 +1,8 @@
 // A second player for the screenshots: three weeks in, with levels in every skill, a full Storehouse,
-// gear worn, food carried, finds in the log and all three lanes at work. A page that holds its spec
-// for a newcomer can still overflow once rows carry odds, pills and long names; this player shows it.
+// gear worn, food carried, finds in the log, and all three lanes at work since 8 hours ago. A page
+// that holds its spec for a newcomer can still overflow once rows carry odds, pills and long names.
 import { XP_TABLE } from '@idle-clash/content';
+import { FEATURES } from '@idle-clash/features';
 import { seeded, type Command, type State } from '@idle-clash/kernel';
 import type { Ctx } from '../../../apps/server/src/context.ts';
 
@@ -39,9 +40,15 @@ const ITEMS: Record<string, number> = {
   'battle-trophy': 2,
 };
 
+/** The veteran, last here 8 hours ago with all three lanes at work: the Hearth opens on the recap. */
 export function veteran(ctx: Ctx, base: State, now: number): State {
+  const then = now - 8 * 3600_000;
   const s: State = {
     ...base,
+    clock: then,
+    lastSeen: then,
+    fireUntil: then,
+    luck: { misses: 0, lastMoment: then },
     skills: Object.fromEntries(Object.entries(LEVELS).map(([k, l]) => [k, { xp: XP_TABLE[l] + 1 }])),
     items: ITEMS,
     found: {
@@ -65,7 +72,7 @@ export function veteran(ctx: Ctx, base: State, now: number): State {
       combat: {
         worn: { weapon: 'iron-sword', helm: 'bronze-helm', body: 'bronze-body', legs: 'bronze-legs' },
         health: 420,
-        healthAt: now,
+        healthAt: then,
         retreated: null,
       },
     },
@@ -75,5 +82,8 @@ export function veteran(ctx: Ctx, base: State, now: number): State {
     { type: 'start', lane: 'artisan', action: { feature: 'smithing', id: 'bronze-bar' } },
     { type: 'start', lane: 'combat', action: { feature: 'combat', id: 'orc-raider' } },
   ];
-  return cmds.reduce((st, c) => ctx.engine.command(st, now, c, seeded(st.seed)).state, s);
+  const working = cmds.reduce((st, c) => ctx.engine.command(st, then, c, seeded(st.seed)).state, s);
+  // Today's goals already made, so opening the Hearth sends nothing (which would end the time away).
+  const goals = FEATURES.find((f) => f.id === 'goals')!;
+  return goals.routes.refresh.run(working, {}, now).state;
 }

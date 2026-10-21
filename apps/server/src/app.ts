@@ -18,6 +18,7 @@ import { LiveHub } from './game/live.ts';
 import { gameRoutes } from './game/routes.ts';
 import { contractRoute, harden } from './http.ts';
 import { RateLimiter } from './security.ts';
+import { Notices } from './game/notices.ts';
 import { Telemetry } from './telemetry.ts';
 import { webRoutes } from './web.ts';
 
@@ -54,6 +55,7 @@ export async function buildApp(
     mailer: opts.mailer ?? new LogMailer(config.log ? app.log : null),
     live: new LiveHub(),
     telemetry: new Telemetry(db, config.now),
+    notices: new Notices(db),
   };
   app.decorateRequest('playerId', null);
   harden(app, config.origins);

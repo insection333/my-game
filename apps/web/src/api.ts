@@ -9,6 +9,7 @@ import {
   type ErrorCode,
   type ErrorResponse,
   type GameResponse,
+  type NoticesResponse,
   type MeResponse,
 } from '@idle-clash/contracts';
 import type { Command, CommandResult } from '@idle-clash/kernel';
@@ -60,6 +61,7 @@ export const api = {
   signIn: (name: string, password: string) => post<AuthResponse>(PATHS.signIn, { name, password }),
   signOut: () => post<void>(PATHS.signOut),
   game: () => get<GameResponse>(PATHS.game),
+  notices: () => get<NoticesResponse>(PATHS.notices),
   command: (id: string, command: Command) =>
     post<ActResponse<CommandResult>>(PATHS.command, { requestId: id, command }),
   feature: <R>(feature: string, route: string, id: string, input: unknown) =>

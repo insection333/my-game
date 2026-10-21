@@ -4,6 +4,7 @@
 const whole = new Intl.NumberFormat('en', { maximumFractionDigits: 0 });
 const decimal = new Intl.NumberFormat('en', { maximumFractionDigits: 2 });
 const compact = new Intl.NumberFormat('en', { notation: 'compact', maximumFractionDigits: 1 });
+const timeOfDay = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit' });
 const day = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 
 const ROMAN: [number, string][] = [
@@ -41,6 +42,8 @@ export const fmt = {
     const s = Math.max(0, Math.ceil(ms / 1000));
     return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
   },
+  /** milliseconds since the epoch → "09:42", in the player's own time zone */
+  time: (ms: number): string => timeOfDay.format(ms),
   /** milliseconds since the epoch → "20 Oct 2026", in the player's own time zone */
   date: (ms: number): string => day.format(ms),
   /** 4 → "IV", up to 39 */

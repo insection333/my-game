@@ -12,12 +12,13 @@ import {
   MINUTE,
   newState,
   seeded,
+  summarizeAway,
   xpOf,
   type Command,
   type GameEvent,
   type State,
 } from '@idle-clash/kernel';
-import { DAY, T0, type Day, type Played } from './player.ts';
+import { DAY, EMPTY, T0, type Day, type Played } from './player.ts';
 
 const engine = createEngine(actionRegistry(FEATURES, (f) => f.flag.on));
 const combat = FEATURES.find((f) => f.id === 'combat')!;
@@ -81,7 +82,7 @@ export function fighter(style: Style, seed: number, days: number): Played {
   for (let d = 0; d < days; d++) {
     const dayStart = T0 + d * DAY;
     state = equip(tidy({ ...state, clock: Math.max(state.clock, dayStart) }), style);
-    const day: Day = { start: state, active: [], away: [] };
+    const day: Day = { start: state, active: [], away: [], recap: EMPTY };
     for (let t = dayStart; t < dayStart + HOUR; t += MINUTE) {
       const arrived = engine.advance(state, t, rng);
       day.active.push(...note(arrived.events));
@@ -97,12 +98,14 @@ export function fighter(style: Style, seed: number, days: number): Played {
       state = r.state;
       day.active.push(...note(r.events));
     }
+    const eight = engine.advance(state, dayStart + 9 * HOUR, rng);
+    const recap = summarizeAway(state, eight.state, eight.events, dayStart + 9 * HOUR);
     const away = engine.advance(state, dayStart + DAY, rng);
     state = away.state;
     const all = note(away.events);
     day.active.push(...all.filter((e) => e.at < dayStart + HOUR));
     day.away.push(...all.filter((e) => e.at >= dayStart + HOUR));
-    out.push(day);
+    out.push({ ...day, recap });
   }
   return { levelAt, days: out, commands, refused, final: state };
 }

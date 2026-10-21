@@ -1,7 +1,7 @@
 // Every HTTP route of the server shell: its method, path, who may call it, its input schema and a
 // valid example input. The server validates against these, the page is typed by them, and the
 // hostile-input suite is generated from them.
-import { Command, type GameEvent, type State } from '@idle-clash/kernel';
+import { Command, type AwaySummary, type GameEvent, type State } from '@idle-clash/kernel';
 import { z } from 'zod';
 import { Email, Password, plainText, PlayerName, RequestId, Token } from './fields.ts';
 import { PASSWORD_MAX } from './limits.ts';
@@ -67,6 +67,7 @@ export const ROUTES = {
     example: null,
   }),
   game: route({ id: 'game', method: 'GET', path: PATHS.game, auth: 'player', input: null, example: null }),
+  notices: route({ id: 'notices', method: 'GET', path: PATHS.notices, auth: 'player', input: null, example: null }),
   command: route({
     id: 'command',
     method: 'POST',
@@ -140,6 +141,12 @@ export interface GameResponse {
   state: State;
   /** The server's clock when it answered; the page corrects its own clock by this. */
   now: number;
+  /** On reading the game after a quarter of an hour away: what happened meanwhile (the recap). */
+  away?: AwaySummary | null;
+}
+/** The notices tray: notable events and lane stops, newest first. */
+export interface NoticesResponse {
+  notices: GameEvent[];
 }
 /** A command's or feature route's answer: the result, and the save as it now stands. */
 export interface ActResponse<R = unknown> extends GameResponse {

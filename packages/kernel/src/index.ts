@@ -11,3 +11,4 @@ export * from './engine.ts';
 export * from './mend.ts';
 export * from './versions.ts';
 export * from './requests.ts';
+export * from './away.ts';
