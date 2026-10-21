@@ -159,13 +159,15 @@ export const woodcutting = defineFeature({ id, flag, content, effects, stops, ru
 - **Tests** run on Vitest and live in each package's `tests/` folder.
 - **Versions are pinned exactly**, choosing releases at least two weeks old.
 
+- **Operations** (session 10; `OPERATIONS.md`). `tools/ops/` holds everything the live server runs beside the game: `setup.sh` prepares a fresh Ubuntu server (Node, Caddy, the firewall, the `idleclash` and `deploy` users, the systemd units in `tools/ops/systemd/`); `pack.sh` builds a release (the server's sources, production dependencies and the built page); `deploy.sh` activates one with a health check and puts back the one before if it fails (database too), or rolls back on demand; `backup.sh`, `rehearse.sh` and `restore.sh` back up to Cloudflare R2, rehearse a restore monthly and restore for real. Their tests (`tools/ops/tests/`) run each on a folder of its own with stand-ins for systemd and R2 (rclone's local remote). The health answer reports whether the backup and the rehearsal are recent (`apps/server/src/ops/status.ts`). `.github/workflows/deploy.yml` deploys `main` after verify passes. `pnpm load` (`tools/load/run.ts`) is the 500-player load test.
+
 ## 9. `pnpm verify`
 
 The single command that decides whether a change is done. It prints one line per step and ends green or red.
 
 | Step | Checks | Status |
 | --- | --- | --- |
-| 1 Typecheck and lint | `tsc` on every project; ESLint; Prettier | Built |
+| 1 Typecheck and lint | `tsc` on every project; ESLint; Prettier; shellcheck on the server's scripts (`tools/ops/*.sh`) | Built |
 | 2 Manifest | `IA.md`'s menu (six entries at most), pages and slots; each feature's manifest, slots and imports; package dependencies; `FEATURES.md` regenerated | Built |
 | 3 Content | `GAME_DESIGN.md` matches its template and the model; schemas, references, effects, no empty levels, strings complete and used, avoided terms, content matches the design; `GLOSSARY.md` regenerated | Built |
 | 4 Tests | Every package's tests | Built |

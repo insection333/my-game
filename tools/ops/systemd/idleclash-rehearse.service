@@ -1,0 +1,19 @@
+# The monthly restore rehearsal: the newest backup from R2, restored and opened by a second server
+# (tools/ops/rehearse.sh). Its success is what the health answer reports as a fresh restore.
+[Unit]
+Description=Idle Clash restore rehearsal
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=idleclash
+Group=idleclash
+EnvironmentFile=/etc/idleclash/backup.env
+ExecStart=/srv/idleclash/current/tools/ops/rehearse.sh
+UMask=0007
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/var/lib/idleclash

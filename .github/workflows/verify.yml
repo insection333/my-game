@@ -23,5 +23,7 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      # The server's tools, which the ops tests run: SQLite's shell, rclone and shellcheck.
+      - run: sudo apt-get install -y sqlite3 rclone shellcheck
       - run: pnpm exec playwright install --with-deps chromium firefox webkit
       - run: pnpm verify

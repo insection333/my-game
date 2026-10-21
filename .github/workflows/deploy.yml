@@ -1,0 +1,138 @@
+# Deploys the game to its server (tools/ops; OPERATIONS.md). After verify passes on main, the commit is
+# packed and deployed: if the new release does not come up healthy, the server puts back the one
+# before it. Run by hand (Actions, deploy, Run workflow) to deploy main again, roll back, or run the
+# backup or the restore rehearsal now. Nothing happens until the server's secrets are set.
+name: deploy
+
+on:
+  workflow_run:
+    workflows: [verify]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      action:
+        description: What to do
+        type: choice
+        options: [deploy, rollback, backup, rehearse]
+        default: deploy
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      ACTION: ${{ inputs.action || 'deploy' }}
+      HOST: ${{ secrets.DEPLOY_HOST }}
+    steps:
+      - name: Is there a server?
+        id: server
+        run: |
+          if [ -z "$HOST" ]; then
+            echo "::notice::No server yet (the DEPLOY_HOST secret is not set), so nothing was deployed."
+            echo "ready=false" >>"$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >>"$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v5
+        if: steps.server.outputs.ready == 'true'
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+
+      - name: Connect to the server
+        if: steps.server.outputs.ready == 'true'
+        env:
+          KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          KNOWN: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+        run: |
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$KEY" >~/.ssh/deploy
+          chmod 600 ~/.ssh/deploy
+          printf '%s\n' "$KNOWN" >~/.ssh/known_hosts
+          printf 'Host server\n  HostName %s\n  User deploy\n  IdentityFile ~/.ssh/deploy\n  ServerAliveInterval 30\n' "$HOST" >~/.ssh/config
+          ssh server true
+
+      - name: Write the server's settings
+        if: steps.server.outputs.ready == 'true' && (env.ACTION == 'deploy' || env.ACTION == 'rollback')
+        env:
+          ADMIN_NAMES: ${{ vars.ADMIN_NAMES }}
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+        run: |
+          [ -n "$R2_SECRET_ACCESS_KEY" ] || echo "::warning::The R2 secrets are not set, so backups will fail."
+          ssh server 'umask 077; cat >/etc/idleclash/server.env' <<EOF
+          NODE_ENV=production
+          PORT=3000
+          HOST=127.0.0.1
+          DB_PATH=/var/lib/idleclash/idle-clash.db
+          WEB_DIST=/srv/idleclash/current/apps/web/dist
+          ORIGINS=https://idleclash.com,https://www.idleclash.com
+          SECURE_COOKIES=true
+          EMAIL_ENABLED=false
+          BACKUP_STATUS_DIR=/var/lib/idleclash/status
+          ADMIN_NAMES=$ADMIN_NAMES
+          EOF
+          ssh server 'umask 077; cat >/etc/idleclash/backup.env' <<EOF
+          BACKUP_REMOTE=r2:idleclash-backups
+          RCLONE_CONFIG_R2_TYPE=s3
+          RCLONE_CONFIG_R2_PROVIDER=Cloudflare
+          RCLONE_CONFIG_R2_ACCESS_KEY_ID=$R2_ACCESS_KEY_ID
+          RCLONE_CONFIG_R2_SECRET_ACCESS_KEY=$R2_SECRET_ACCESS_KEY
+          RCLONE_CONFIG_R2_ENDPOINT=https://$R2_ACCOUNT_ID.r2.cloudflarestorage.com
+          RCLONE_CONFIG_R2_NO_CHECK_BUCKET=true
+          EOF
+
+      - uses: pnpm/action-setup@v4
+        if: steps.server.outputs.ready == 'true' && env.ACTION == 'deploy'
+      - uses: actions/setup-node@v5
+        if: steps.server.outputs.ready == 'true' && env.ACTION == 'deploy'
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Pack and deploy
+        if: steps.server.outputs.ready == 'true' && env.ACTION == 'deploy'
+        run: |
+          name="$(date -u +%Y%m%d-%H%M%S)-$(git rev-parse --short HEAD)"
+          tools/ops/pack.sh release.tgz "$name"
+          scp -q release.tgz "server:/srv/idleclash/incoming/$name.tgz"
+          ssh server "bash -s -- activate $name" <tools/ops/deploy.sh
+
+      - name: Roll back
+        if: steps.server.outputs.ready == 'true' && env.ACTION == 'rollback'
+        run: ssh server 'bash -s -- rollback' <tools/ops/deploy.sh
+
+      # The first deploy, and any run asked for one, backs up and rehearses a restore at once, so the
+      # health answer reports fresh backups from the start.
+      - name: Back up and rehearse a restore
+        if: steps.server.outputs.ready == 'true' && env.ACTION != 'rollback'
+        run: |
+          ssh server '
+            set -e
+            if [ "'"$ACTION"'" = backup ] || [ ! -f /var/lib/idleclash/status/backup ]; then
+              sudo systemctl start idleclash-backup.service
+              journalctl -u idleclash-backup.service -n 3 --no-pager -o cat
+            fi
+            if [ "'"$ACTION"'" = rehearse ] || [ ! -f /var/lib/idleclash/status/restore ]; then
+              sudo systemctl start idleclash-rehearse.service
+              journalctl -u idleclash-rehearse.service -n 3 --no-pager -o cat
+            fi
+          '
+
+      - name: The site answers
+        if: steps.server.outputs.ready == 'true'
+        run: |
+          ssh server 'bash -s -- status' <tools/ops/deploy.sh
+          if curl -fsS --max-time 10 https://idleclash.com/api/health; then echo; else
+            echo "::warning::https://idleclash.com does not answer yet (is the domain pointed at the server?)"
+          fi
