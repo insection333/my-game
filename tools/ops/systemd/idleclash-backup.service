@@ -1,0 +1,18 @@
+# The nightly backup: a copy of the database, compressed, to Cloudflare R2 (tools/ops/backup.sh).
+[Unit]
+Description=Idle Clash nightly backup
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=idleclash
+Group=idleclash
+EnvironmentFile=/etc/idleclash/backup.env
+ExecStart=/srv/idleclash/current/tools/ops/backup.sh
+UMask=0007
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/var/lib/idleclash

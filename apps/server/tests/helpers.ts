@@ -57,6 +57,7 @@ export async function server(
     log: false,
     now: () => clock.now,
     adminNames: [],
+    backupStatusDir: null,
     ...over,
   };
   const built = await buildApp(config, { mailer, features });

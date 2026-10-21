@@ -50,7 +50,15 @@ async function typecheckAndLint(): Promise<StepResult> {
   if (lint.code !== 0) return fail('lint found problems', lint.output);
   const format = await bin('prettier', ['--check', '.', '--log-level', 'warn']);
   if (format.code !== 0) return fail('formatting differs: run pnpm format', format.output);
-  return pass(`lockfile current; ${list.length} projects typechecked; lint and formatting clean`);
+  // The server's shell scripts (deploy, backups) run where nothing else checks them.
+  const scripts = readdirSync(join(ROOT, 'tools/ops'))
+    .filter((f) => f.endsWith('.sh'))
+    .map((f) => `tools/ops/${f}`);
+  const shell = await exec('shellcheck', scripts);
+  if (shell.code !== 0) return fail('shellcheck found problems in tools/ops', shell.output);
+  return pass(
+    `lockfile current; ${list.length} projects typechecked; lint, formatting and ${scripts.length} shell scripts clean`,
+  );
 }
 
 const skillsOf = (features: readonly Feature[]) =>

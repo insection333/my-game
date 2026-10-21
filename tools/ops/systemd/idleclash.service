@@ -1,0 +1,33 @@
+# The game server. Installed by setup.sh; the live release is whatever /srv/idleclash/current points at.
+[Unit]
+Description=Idle Clash game server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=idleclash
+Group=idleclash
+WorkingDirectory=/srv/idleclash/current
+EnvironmentFile=/etc/idleclash/server.env
+ExecStart=/usr/bin/node apps/server/src/main.ts
+Restart=always
+RestartSec=2
+TimeoutStopSec=15
+# The database is shared with the deploy user's group (snapshots before a deploy).
+UMask=0007
+MemoryMax=1500M
+LimitNOFILE=65536
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+ReadWritePaths=/var/lib/idleclash
+
+[Install]
+WantedBy=multi-user.target

@@ -133,6 +133,7 @@ async function start(): Promise<Served> {
     log: false,
     now: () => Date.now(),
     adminNames: [],
+    backupStatusDir: null,
   });
   await app.listen({ port, host: '127.0.0.1' });
   const cookie = await newcomer(url, 'Newcomer');

@@ -217,6 +217,13 @@ importers:
       '@idle-clash/kernel':
         specifier: workspace:*
         version: link:../packages/kernel
+      ws:
+        specifier: 8.22.0
+        version: 8.22.0
+    devDependencies:
+      '@types/ws':
+        specifier: 8.18.2
+        version: 8.18.2
 
 packages:
 

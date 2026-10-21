@@ -1,0 +1,17 @@
+# The site's front door (installed to /etc/caddy/Caddyfile by setup.sh). Caddy fetches and renews the
+# HTTPS certificates itself once the domain points at this server.
+idleclash.com {
+	encode zstd gzip
+	header Strict-Transport-Security "max-age=31536000"
+	reverse_proxy 127.0.0.1:3000
+	log {
+		output file /var/log/caddy/idleclash.log {
+			roll_size 20mb
+			roll_keep 5
+		}
+	}
+}
+
+www.idleclash.com {
+	redir https://idleclash.com{uri} permanent
+}

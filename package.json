@@ -12,7 +12,8 @@
     "test": "vitest run",
     "format": "prettier --write .",
     "design:check": "node design/model/checks2.ts",
-    "design:build": "node design/model/build-docs.ts"
+    "design:build": "node design/model/build-docs.ts",
+    "load": "node tools/load/run.ts"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.13.0",

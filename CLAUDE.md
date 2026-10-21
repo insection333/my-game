@@ -15,6 +15,7 @@ The plan is `docs/BRIEF.md`: the pillars, scope, targets, sessions and the owner
 | `pnpm verify` | Decides whether a change is done (nine steps, one line each). `--only 1,4` runs chosen steps |
 | `pnpm test` | The tests alone |
 | `pnpm format` | Formats code with Prettier |
+| `pnpm load` | The load test: 500 players online against the real server on one core (`PLAYERS`, `MINUTES` to change) |
 | `pnpm design:check` | Runs the paper model against every target (writes `design/model/report.md`) |
 | `pnpm design:build` | Rebuilds `GAME_DESIGN.md` from `design/GAME_DESIGN.template.md` and the model |
 
@@ -56,8 +57,9 @@ To change the game design: edit the model in `design/model/` or the template, ru
 - `better-sqlite3` loads its bundled prebuilt binary; its install-time rebuild is switched off in `pnpm-workspace.yaml` (it would download Node headers, which this workspace cannot reach).
 - Browsers for steps 6 to 9: Firefox and WebKit are installed in `/opt/pw-browsers` (downloaded from `cdn.playwright.dev`, which the owner allowed). Playwright's own Chromium is hosted on Google storage, which this workspace cannot reach, so verify falls back to the preinstalled Chromium there. GitHub Actions installs all three itself.
 - See the game yourself: `pnpm --filter @idle-clash/web build`, then `WEB_DIST=../web/dist FEATURES=all DB_PATH=/tmp/ic.db pnpm --filter @idle-clash/server start` and open `http://127.0.0.1:3000`. For live reloading, run the server without `WEB_DIST` and `pnpm --filter @idle-clash/web dev` beside it (Vite passes `/api` to port 3000).
-- The domain is idleclash.com; there is no host yet (session 10). Transactional email stays off (`EMAIL_ENABLED`) until the owner says otherwise.
-- Admins are named in `ADMIN_NAMES` (comma-separated player names). A listed name cannot be signed up for, so the account is made first and its name listed after. Verify's screenshot server lists its veteran player once signed up, so the admin page is checked with players on it.
+- The domain is idleclash.com, served from a VentraIP VPS (`OPERATIONS.md`: setup, deploy, rollback, backups, restore). `main` deploys itself after verify passes, once the server's secrets are in GitHub. Transactional email stays off (`EMAIL_ENABLED`) until the owner says otherwise.
+- The ops tests and step 1 need `sqlite3`, `rclone` and `shellcheck` (`apt-get install sqlite3 rclone shellcheck`; GitHub Actions installs them).
+- Admins are named in `ADMIN_NAMES` (comma-separated player names; on the live server, the GitHub Actions variable of that name, written at each deploy). A listed name cannot be signed up for, so the account is made first and its name listed after. Verify's screenshot server lists its veteran player once signed up, so the admin page is checked with players on it.
 
 ## Progress
 
@@ -73,6 +75,6 @@ To change the game design: edit the model in `design/model/` or the template, ru
 | 7 Mining and Smithing | Done: both skills on the shared machinery, recipes with ingredients and the three weapon kinds, first steps 2 to 4, the fire's lane for a second skill, the Storehouse's items with Comes from and Used in, 43 new icons, the simulation for all three skills; every lane stop says why, a queued action starts while away |
 | 8 Combat | Done: the three styles and Hitpoints, eight foes, the triangle, gear, food, retreat, Your odds from the engine's own fights, first steps 5 and 6, 27 new icons, fighters in the simulation; each style wins where the triangle says, Your odds agrees with engine-run fights, a retreat costs nothing |
 | 9 Goals, the Storehouse and vendor, hiscores, admin | Done: the goals ladder (short goals by pace, a daily goal, milestones), the away recap and Today, the notices tray, the Storehouse's space with selling and the vendor's food, hiscores, account deletion, names refused, privacy and terms, the admin page, the tour, using a Rare find, six skill seals; a fresh player meets the first-hour targets, the recap leads with the best thing, every page passes its spec and budgets (as a newcomer and three weeks in), a deleted account leaves nothing, an admin resets a password |
-| 10 Ship | Next |
+| 10 Ship | In progress: setup, deploy and rollback, backups with a rehearsed restore, the health answer for the uptime check, and the 500-player load test are built and tested; waiting on the server |
 
 Outstanding: nothing beyond the next session. Forgotten passwords are reset from the admin page while email is off; the owner's account is made an admin by naming it in `ADMIN_NAMES` after signing up. The privacy page and terms point to "the contact address shown on idleclash.com", which the site must show before launch.

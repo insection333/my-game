@@ -25,6 +25,7 @@ import { Notices } from './game/notices.ts';
 import { hearWatching, WATCH_EVERY_MS } from './game/watching.ts';
 import { Telemetry } from './telemetry.ts';
 import { webRoutes } from './web.ts';
+import { backupsHealth } from './ops/status.ts';
 
 export interface Built {
   app: FastifyInstance;
@@ -67,7 +68,11 @@ export async function buildApp(
   await app.register(cookie);
   await app.register(websocket, { options: { maxPayload: 4096 } });
 
-  contractRoute(app, ROUTES.health, () => ({ ok: true }));
+  // Up, and the database answers; with how recent the backups are, for the outside uptime check.
+  contractRoute(app, ROUTES.health, () => {
+    store.sqlite.prepare('select 1').get();
+    return { ok: true, backups: backupsHealth(config.backupStatusDir, config.now()) };
+  });
   contractRoute<{ message: string; url: string }>(
     app,
     ROUTES.errors,
