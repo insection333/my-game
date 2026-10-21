@@ -68,6 +68,7 @@ export const ROUTES = {
   }),
   game: route({ id: 'game', method: 'GET', path: PATHS.game, auth: 'player', input: null, example: null }),
   notices: route({ id: 'notices', method: 'GET', path: PATHS.notices, auth: 'player', input: null, example: null }),
+  hiscores: route({ id: 'hiscores', method: 'GET', path: PATHS.hiscores, auth: 'player', input: null, example: null }),
   command: route({
     id: 'command',
     method: 'POST',
@@ -143,6 +144,27 @@ export interface GameResponse {
   now: number;
   /** On reading the game after a quarter of an hour away: what happened meanwhile (the recap). */
   away?: AwaySummary | null;
+}
+/** One hiscore entry: a place on a ladder. */
+export interface HiscoreRow {
+  rank: number;
+  name: string;
+  level: number;
+  xp: number;
+  /** Milestones claimed (shown on the Total ladder). */
+  milestones: number;
+}
+export interface Ladder {
+  /** A skill's id, or 'total'. */
+  skill: string;
+  rows: HiscoreRow[];
+  /** The asking player's own entry, wherever it is; null before their first XP. */
+  you: HiscoreRow | null;
+}
+export interface HiscoresResponse {
+  /** Pages open now. */
+  online: number;
+  ladders: Ladder[];
 }
 /** The notices tray: notable events and lane stops, newest first. */
 export interface NoticesResponse {

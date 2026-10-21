@@ -8,6 +8,7 @@ export const PATHS = {
   signOut: '/api/auth/sign-out',
   game: '/api/game',
   notices: '/api/notices',
+  hiscores: '/api/hiscores',
   command: '/api/game/command',
   errors: '/api/errors',
   setEmail: '/api/account/email',

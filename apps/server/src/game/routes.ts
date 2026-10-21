@@ -7,9 +7,10 @@ import {
   ROUTES,
   type ActResponse,
   type GameResponse,
+  type HiscoresResponse,
   type NoticesResponse,
 } from '@idle-clash/contracts';
-import type { Feature } from '@idle-clash/features';
+import { allSkills, type Feature } from '@idle-clash/features';
 import {
   handle,
   RECAP_AFTER_MS,
@@ -21,6 +22,7 @@ import {
 } from '@idle-clash/kernel';
 import type { FastifyInstance } from 'fastify';
 import { limit, type Ctx } from '../context.ts';
+import { TOTAL } from './hiscores.ts';
 import { contractRoute, fail } from '../http.ts';
 import { identify, requirePlayer } from '../auth/routes.ts';
 
@@ -46,6 +48,7 @@ export function gameRoutes(app: FastifyInstance, ctx: Ctx, features: readonly Fe
     if (events.length) ctx.live.publish(playerId, { type: 'events', events });
     ctx.telemetry.events(playerId, events);
     ctx.notices.add(playerId, events);
+    ctx.hiscores.update(playerId, doc.state, at);
   };
 
   contractRoute(
@@ -59,6 +62,17 @@ export function gameRoutes(app: FastifyInstance, ctx: Ctx, features: readonly Fe
     app,
     ROUTES.notices,
     ({ req }) => ({ notices: ctx.notices.list(req.playerId!) }) satisfies NoticesResponse,
+    requirePlayer(ctx),
+  );
+
+  contractRoute(
+    app,
+    ROUTES.hiscores,
+    ({ req }) =>
+      ({
+        online: ctx.live.online,
+        ladders: [TOTAL, ...allSkills()].map((skill) => ctx.hiscores.ladder(skill, req.playerId!)),
+      }) satisfies HiscoresResponse,
     requirePlayer(ctx),
   );
 

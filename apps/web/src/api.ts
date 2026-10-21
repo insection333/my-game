@@ -9,6 +9,7 @@ import {
   type ErrorCode,
   type ErrorResponse,
   type GameResponse,
+  type HiscoresResponse,
   type NoticesResponse,
   type MeResponse,
 } from '@idle-clash/contracts';
@@ -62,6 +63,7 @@ export const api = {
   signOut: () => post<void>(PATHS.signOut),
   game: () => get<GameResponse>(PATHS.game),
   notices: () => get<NoticesResponse>(PATHS.notices),
+  hiscores: () => get<HiscoresResponse>(PATHS.hiscores),
   command: (id: string, command: Command) =>
     post<ActResponse<CommandResult>>(PATHS.command, { requestId: id, command }),
   feature: <R>(feature: string, route: string, id: string, input: unknown) =>

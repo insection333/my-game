@@ -14,4 +14,6 @@ export const SHELL_SLOTS = [
   'item.panel',
   'welcome.intro',
   'welcome.form',
+  'hiscores.online',
+  'hiscores.ladder',
 ] as const;

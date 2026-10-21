@@ -87,3 +87,35 @@ export function veteran(ctx: Ctx, base: State, now: number): State {
   const goals = FEATURES.find((f) => f.id === 'goals')!;
   return goals.routes.refresh.run(working, {}, now).state;
 }
+
+/** Other players for the hiscores: a dozen invented names at a spread of levels. */
+export const CROWD = [
+  'Ashgrove',
+  'Brindle',
+  'Corrin Vale',
+  'Dunmere',
+  'Elsbeth',
+  'Fenwick',
+  'Gilly Thorn',
+  'Hollin',
+  'Iverna',
+  'Jory Pike',
+  'Kestrel',
+  'Lowenna',
+];
+
+export function crowd(base: State, i: number): State {
+  const level = (n: number) => ({ xp: XP_TABLE[Math.max(1, Math.min(40, n))] + 1 });
+  const top = 34 - i * 2;
+  return {
+    ...base,
+    skills: {
+      woodcutting: level(top),
+      mining: level(top - 3),
+      smithing: level(top - 5),
+      melee: level(top - 4 - (i % 3)),
+      hitpoints: level(top - 6),
+    },
+    features: { ...base.features, goals: { claimed: [], milestones: i < 4 ? ['total-50', 'total-100'] : [] } },
+  };
+}

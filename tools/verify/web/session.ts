@@ -17,8 +17,9 @@ import {
 import { buildApp } from '../../../apps/server/src/app.ts';
 import { flagsFrom } from '../../../apps/server/src/config.ts';
 import type { Ctx } from '../../../apps/server/src/context.ts';
+import type { State } from '@idle-clash/kernel';
 import { exec, ROOT } from '../exec.ts';
-import { veteran } from './veteran.ts';
+import { crowd, CROWD, veteran } from './veteran.ts';
 import { readPageMap, type ViewSpec } from '../ia.ts';
 
 export const DIST = join(ROOT, 'apps/web/dist');
@@ -127,13 +128,22 @@ async function start(): Promise<Served> {
   });
   await app.listen({ port, host: '127.0.0.1' });
   const cookie = await newcomer(url, 'Newcomer');
-  const vet = await newcomer(url, 'Veteran');
-  const me = (await (await fetch(`${url}/api/me`, { headers: { cookie: `${vet.name}=${vet.value}` } })).json()) as {
-    player: { id: string };
-  };
   const now = Date.now();
-  const saved = ctx.store.read(me.player.id, now)!;
-  ctx.store.write(me.player.id, { ...saved.doc, state: veteran(ctx, saved.doc.state, now) }, saved.rev, now);
+  /** Signs a player up and gives their save a history (written as the admin page can). */
+  const settle = async (name: string, make: (s: State) => State) => {
+    const c = await newcomer(url, name);
+    const me = (await (await fetch(`${url}/api/me`, { headers: { cookie: `${c.name}=${c.value}` } })).json()) as {
+      player: { id: string };
+    };
+    const saved = ctx.store.read(me.player.id, now)!;
+    const state = make(saved.doc.state);
+    ctx.store.write(me.player.id, { ...saved.doc, state }, saved.rev, now);
+    ctx.hiscores.update(me.player.id, state, now);
+    return c;
+  };
+  const vet = await settle('Veteran', (s) => veteran(ctx, s, now));
+  // Others on the hiscores, so the ladders read as they will with players on them.
+  for (const [i, name] of CROWD.entries()) await settle(name, (s) => crowd(s, i));
   return {
     url,
     cookie,

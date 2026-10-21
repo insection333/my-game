@@ -19,3 +19,5 @@ export { yourOdds } from './combat/slots.ts';
 export type { CapacityView, FoodView } from './storehouse/index.ts';
 export * as storehouseData from './shared/storehouse.ts';
 export * as recap from './shared/recap.ts';
+export { allSkills, totalLevel } from './goals/ladder.ts';
+export { goalsOf } from './goals/state.ts';
