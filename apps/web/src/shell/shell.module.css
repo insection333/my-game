@@ -225,22 +225,14 @@
   gap: var(--s-2);
 }
 
-/* A big moment sits in the middle of the screen over a faint dimming of the page; only its Close
-   button takes presses, so the page beneath is never blocked. */
+/* A big moment sits in the middle of the screen; only its Close button takes presses, so the page
+   beneath is never blocked. (Nothing dims the page: text under a dimming would lose its contrast.) */
 .centreMoment {
   position: fixed;
   inset: 0;
   display: grid;
   place-items: center;
   padding: var(--gutter);
-  background: radial-gradient(circle, var(--shade), transparent 70%);
-  animation: dim 300ms ease-out both;
-}
-
-@keyframes dim {
-  from {
-    opacity: 0;
-  }
 }
 
 .centreMoment > * {
