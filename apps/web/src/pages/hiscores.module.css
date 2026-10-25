@@ -83,3 +83,28 @@
     display: none;
   }
 }
+
+/* Medals for the first three places, in the metals' own colours (the same in both themes). */
+.medal {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1.5px solid #182024;
+  color: #182024;
+  font-weight: 700;
+  font-size: var(--t-small);
+}
+
+.medal[data-place='1'] {
+  background: #ecc985;
+}
+
+.medal[data-place='2'] {
+  background: #ccd3d7;
+}
+
+.medal[data-place='3'] {
+  background: #d9a774;
+}

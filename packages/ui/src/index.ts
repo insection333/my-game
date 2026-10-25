@@ -15,3 +15,4 @@ export { Field, type FieldProps } from './components/Field.tsx';
 export { TextLink } from './components/TextLink.tsx';
 export { ICONS, REFERENCE_SET, hasIcon, type IconName, type IconFamily } from './icons/index.tsx';
 export { MarchScene } from './art/MarchScene.tsx';
+export { FireSeal } from './icons/mark.tsx';
