@@ -40,23 +40,27 @@ export function ProgressBar({
   label,
   tone = 'moss',
   run,
+  decorative,
 }: {
   value: number;
   label: string;
   tone?: 'moss' | 'woad';
   run?: ProgressRun;
+  /** The words beside it already say how far (a skill's tile): it is drawn, not announced. */
+  decorative?: boolean;
 }) {
   const v = clamp(value);
+  const a11y = decorative
+    ? { 'aria-hidden': true as const }
+    : {
+        role: 'progressbar',
+        'aria-label': label,
+        'aria-valuemin': 0,
+        'aria-valuemax': 100,
+        'aria-valuenow': Math.round(v * 100),
+      };
   return (
-    <div
-      data-ui="ProgressBar"
-      role="progressbar"
-      aria-label={label}
-      aria-valuemin={0}
-      aria-valuemax={100}
-      aria-valuenow={Math.round(v * 100)}
-      className={s.track}
-    >
+    <div data-ui="ProgressBar" {...a11y} className={s.track}>
       <ProgressFill value={v} run={run} className={`${s.fill} ${s[tone]}`} />
     </div>
   );

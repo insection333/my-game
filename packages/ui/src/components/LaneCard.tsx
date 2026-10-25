@@ -20,6 +20,8 @@ export interface LaneCardProps {
   compact?: boolean;
   /** Stopped by itself and waiting for the player: the chip says why and stands out. */
   halted?: boolean;
+  /** What a compact chip is heard as, where it shows something shorter ("Gathering: Resting"). */
+  label?: string;
   onOpen?: () => void;
 }
 
@@ -35,6 +37,7 @@ export function LaneCard({
   compact,
   halted,
   onOpen,
+  label,
 }: LaneCardProps) {
   if (compact) {
     return (
@@ -44,6 +47,7 @@ export function LaneCard({
         className={s.chip}
         data-idle={idle || undefined}
         data-halted={halted || undefined}
+        aria-label={label}
         onClick={onOpen}
       >
         {icon && (
@@ -60,7 +64,7 @@ export function LaneCard({
     );
   }
   return (
-    <div data-ui="LaneCard" className={s.card} data-idle={idle || undefined}>
+    <div data-ui="LaneCard" role="listitem" className={s.card} data-idle={idle || undefined}>
       <div className={s.head}>
         <span className={s.lane}>{lane}</span>
       </div>

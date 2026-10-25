@@ -57,7 +57,7 @@ export function laneViews(state: State, now: number, features: readonly Feature[
 
 export function LaneList({ lanes }: { lanes: LaneView[] }) {
   return (
-    <div data-slot="shell.lane">
+    <div data-slot="shell.lane" role="list">
       {lanes.map((l) => (
         <LaneCard
           key={l.id}
@@ -90,6 +90,7 @@ export function LaneStrip({ lanes }: { lanes: LaneView[] }) {
           compact
           lane={l.name}
           doing={l.halted && l.note ? l.note : l.idle ? l.name : l.doing}
+          label={`${l.name}: ${l.halted && l.note ? l.note : l.doing}`}
           idle={l.idle}
           halted={l.halted}
           progress={l.progress}

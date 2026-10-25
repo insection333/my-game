@@ -96,6 +96,7 @@ export const en: Record<string, string> = {
   'hiscores.milestones': '{count} milestones',
   'hiscores.milestonesOne': '1 milestone',
   'hiscores.unranked': 'Your rank appears after your first level.',
+  'hiscores.empty': 'No one is on this ladder yet.',
   'action.start': 'Start',
   'action.queue': 'Next',
   'action.working': 'In your lane',
