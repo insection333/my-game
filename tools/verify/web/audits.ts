@@ -28,7 +28,12 @@ export async function runAxe(): Promise<{ problems: string[]; checks: number }> 
             .slice(0, 3)
             .map((n) => n.target.join(' '))
             .join(', ');
-          problems.push(`${width}px ${scheme} ${view.path}: ${v.id} (${v.impact ?? 'minor'}): ${v.help} at ${where}`);
+          // What axe measured (for contrast: the two colours and their ratio), so a failure seen only
+          // on GitHub Actions can be read from its log.
+          const why = v.nodes[0]?.any[0]?.message ?? '';
+          problems.push(
+            `${width}px ${scheme} ${view.path}: ${v.id} (${v.impact ?? 'minor'}): ${v.help} at ${where}${why ? ` (${why})` : ''}`,
+          );
         }
       }
       await page.close();
