@@ -68,7 +68,9 @@
   border: 1px solid var(--line);
   border-radius: var(--r-control);
   background: var(--surface-2);
-  color: inherit;
+  /* Named, not inherited from the link: Chromium on GitHub Actions kept an inherited light-theme ink
+     here after the theme changed. */
+  color: var(--ink);
   text-decoration: none;
 }
 

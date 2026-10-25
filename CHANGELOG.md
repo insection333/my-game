@@ -29,3 +29,4 @@
 - Skills shows each skill as a tile with its seal (as IA.md always asked), side by side on wide screens; the triangle's key draws each line between the two styles' seals; on wide screens each Combat column stacks by itself, so the food no longer waits below the foes.
 - Hiscores: each ladder's tab shows its skill's seal (Total, the game's mark), and the first three places wear gold, silver and bronze medals; tabs in the design system may carry a small icon.
 - Verify's accessibility step reads contrast with motion reduced, so a gain caught mid-fade (as GitHub Actions caught one) is no longer judged on that frame.
+- Links drawn as rows and tiles (gear slots, skills, next unlocks) name their ink rather than inheriting it, after GitHub Actions' Chromium kept a light-theme ink on the gear slots once the theme turned dark; verify's accessibility failures now say what axe measured.
