@@ -43,7 +43,7 @@ export function Skills() {
                         <span className={k.name}>{data.name}</span>
                         <span className={k.level}>{data.level}</span>
                       </span>
-                      <ProgressBar value={data.progress} label={data.toNext} />
+                      <ProgressBar value={data.progress} label={data.toNext} decorative />
                       <span className={k.below}>
                         <span className={k.muted}>{data.toNext}</span>
                         {data.nextUnlock && <span>{data.nextUnlock}</span>}

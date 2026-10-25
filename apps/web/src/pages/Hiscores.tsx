@@ -60,7 +60,8 @@ export function Hiscores() {
         <section data-section>
           <Panel flush>
             <Slot id="hiscores.ladder" className={s.ladder}>
-              {ladder && (
+              {ladder && ladder.rows.length === 0 && <p className={s.note}>{t('hiscores.empty')}</p>}
+              {ladder && ladder.rows.length > 0 && (
                 <table className={s.table}>
                   <caption className="visually-hidden">{name(ladder.skill)}</caption>
                   <thead>

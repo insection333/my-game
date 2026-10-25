@@ -1,4 +1,5 @@
 // Part of step 6, in Chromium: the game's feel, in the page itself.
+// - A screen reader hears what things are: a resting lane as resting, Start within its action's row.
 // - Work is seen landing: a newcomer's chop fills its lane's bar smoothly (one running animation),
 //   and the logs and XP it brings rise in the gains feed.
 // - The keyboard holds: in Settings over a working lane, the focus stays where the player put it as
@@ -11,11 +12,16 @@ import { playerWith, say } from './proofs-lanes.ts';
 import type { Served } from './session.ts';
 
 async function workLands(page: Page, problems: string[]) {
-  let step = 'the newcomer starts chopping';
+  let step = 'the newcomer opens Woodcutting';
   try {
     await page.goto(page.url().replace(/\/[^/]*$/, '/skills/woodcutting'));
     await page.waitForFunction(() => document.documentElement.dataset.ready === 'true');
-    await page.getByRole('button', { name: 'Start' }).first().click();
+    step = 'a screen reader hears what each button is for';
+    // A resting lane's chip is heard as resting (not its own name twice), and Start inside its row.
+    if (!(await page.getByRole('button', { name: 'Gathering: Resting' }).count()))
+      problems.push('Screen reader: a resting lane is not heard as resting');
+    step = 'the newcomer starts chopping, by the row it is in';
+    await page.getByRole('group', { name: 'Pine tree' }).getByRole('button', { name: 'Start' }).click();
     step = "the lane's bar runs on its own";
     await page.waitForTimeout(1500);
     const running = await page.evaluate(() =>

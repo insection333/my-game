@@ -33,11 +33,13 @@ function CollectionLog() {
   const groups = fills<CollectionGroup>(features, 'collection.log', state, now);
   return (
     <Slot id="collection.log" className={s.stack}>
-      {groups.map(({ feature, data }) => (
-        <Panel key={feature} title={data.name} aside={data.progress} flush>
-          <FindGrid finds={data.finds} />
-        </Panel>
-      ))}
+      {groups
+        .filter(({ data }) => data.finds.length > 0)
+        .map(({ feature, data }) => (
+          <Panel key={feature} title={data.name} aside={data.progress} flush>
+            <FindGrid finds={data.finds} />
+          </Panel>
+        ))}
     </Slot>
   );
 }
