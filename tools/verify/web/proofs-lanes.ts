@@ -47,8 +47,17 @@ async function stopSaysWhy(served: Served, problems: string[]) {
     await page
       .locator('[data-slot="shell.moment"] [data-ui="Moment"]', { hasText: 'Artisan stopped: out of copper ore' })
       .waitFor({ timeout: 5_000 });
+    // The chip opens the lane, which offers what puts it right: copper ore's panel, saying where it
+    // comes from.
+    await page.getByRole('button', { name: 'Artisan: Out of copper ore' }).click();
+    await page.getByRole('button', { name: 'Where to get copper ore' }).click({ timeout: 5_000 });
+    await page
+      .locator('[data-ui="Sheet"]', { hasText: 'Copper ore' })
+      .getByRole('link', { name: /^Mining: Copper/ })
+      .first()
+      .waitFor({ timeout: 5_000 });
   } catch (err) {
-    problems.push(`Lane stop: the page did not say why the forge stopped (${say(err)})`);
+    problems.push(`Lane stop: the page did not say why the forge stopped, or what puts it right (${say(err)})`);
   } finally {
     await page.close();
   }

@@ -9,10 +9,12 @@ export interface Reason {
 }
 
 /** An item's name inside a sentence: "Out of tin ore", in sentence case. */
-const midSentence = (name: string) => name.charAt(0).toLowerCase() + name.slice(1);
+export const midSentence = (name: string) => name.charAt(0).toLowerCase() + name.slice(1);
 
-export function formatStop(reason: Reason): string {
-  const key = `stop.${reason.code}`;
+/** `short`: the few words a lane's chip has room for ("Out of food"), where a reason has them. */
+export function formatStop(reason: Reason, form: 'full' | 'short' = 'full'): string {
+  const short = `stopShort.${reason.code}`;
+  const key = form === 'short' && templateOf(short) !== undefined ? short : `stop.${reason.code}`;
   const params: Params = {};
   for (const p of placeholders(templateOf(key) ?? '')) {
     const v = reason.detail?.[p];

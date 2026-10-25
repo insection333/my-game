@@ -7,6 +7,8 @@ import {
   emptyLevels,
   fmt,
   formatEffect,
+  formatStop,
+  placeholders,
   levelFor,
   levelProgress,
   masteryStep,
@@ -23,6 +25,7 @@ describe('fmt', () => {
     expect([12_345, 123_456, 2_500_000].map(fmt.short)).toEqual(['12,345', '123.5K', '2.5M']);
     expect(fmt.pct(2.5)).toBe('2.5%');
     expect(fmt.seconds(7.5)).toBe('7.5 s');
+    expect(fmt.seconds(37.74)).toBe('37.7 s');
     expect([45_000, 12 * 60_000, 200 * 60_000, 52 * 3600_000].map(fmt.duration)).toEqual([
       '45 s',
       '12 min',
@@ -52,6 +55,23 @@ describe('t', () => {
       (k) => plural.test(templateOf(k)!) && !neverOne.includes(k) && !allStringKeys().includes(`${k}One`),
     );
     expect(missing).toEqual([]);
+  });
+});
+
+describe('stop reasons', () => {
+  it("have a short form a phone's lane chip can show, beside the full one and needing no more", () => {
+    const shorts = allStringKeys().filter((k) => k.startsWith('stopShort.'));
+    expect(shorts.length).toBeGreaterThan(0);
+    for (const k of shorts) {
+      const full = `stop.${k.slice('stopShort.'.length)}`;
+      expect(allStringKeys(), k).toContain(full);
+      const need = placeholders(templateOf(k)!);
+      expect(placeholders(templateOf(full)!), k).toEqual(expect.arrayContaining(need));
+      expect(templateOf(k)!.replace(/\{level\}/g, '99').length, k).toBeLessThanOrEqual(14);
+    }
+    expect(formatStop({ code: 'retreated', detail: { foe: 'x' } }, 'short')).toBe('Out of food');
+    // A reason short already has no second form; the chip shows it whole.
+    expect(formatStop({ code: 'storehouseFull' }, 'short')).toBe('Storehouse full');
   });
 });
 

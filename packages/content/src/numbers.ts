@@ -3,6 +3,7 @@
 
 const whole = new Intl.NumberFormat('en', { maximumFractionDigits: 0 });
 const decimal = new Intl.NumberFormat('en', { maximumFractionDigits: 2 });
+const tenths = new Intl.NumberFormat('en', { maximumFractionDigits: 1 });
 const compact = new Intl.NumberFormat('en', { notation: 'compact', maximumFractionDigits: 1 });
 const timeOfDay = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit' });
 const day = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
@@ -24,8 +25,8 @@ export const fmt = {
   num: (n: number): string => decimal.format(n),
   /** 2.5 → "2.5%" */
   pct: (n: number): string => `${decimal.format(n)}%`,
-  /** 7.5 → "7.5 s" */
-  seconds: (s: number): string => `${decimal.format(s)} s`,
+  /** 7.5 → "7.5 s"; an action's time to a tenth, never "37.74 s" */
+  seconds: (s: number): string => `${tenths.format(s)} s`,
   /** milliseconds → "45 s", "12 min", "3 h 20 min", "2 d 4 h" */
   duration: (ms: number): string => {
     const s = Math.round(ms / 1000);

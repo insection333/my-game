@@ -61,6 +61,7 @@ export function checkContent({ features, states, literalKeys }: ContentInput): {
       placeholders(templateOf(`stop.${code}`) ?? '').map((p) => [p, p === 'item' ? [...items.keys()][0] : 1]),
     );
     attempt(`Stop "${code}"`, () => formatStop({ code, detail }));
+    attempt(`Stop "${code}", short`, () => formatStop({ code, detail }, 'short'));
   }
 
   for (const f of features) {

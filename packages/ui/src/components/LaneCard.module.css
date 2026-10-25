@@ -31,6 +31,11 @@
   font-size: var(--t-body);
 }
 
+.card[data-halted] .doing {
+  color: var(--alert);
+  font-weight: 600;
+}
+
 .note {
   color: var(--ink-2);
   font-size: var(--t-small);
@@ -49,7 +54,7 @@
   gap: var(--s-2);
   min-height: 36px;
   min-width: 0;
-  padding: 0 var(--s-3);
+  padding: 0 var(--s-2);
   border-radius: var(--r-control);
   border: 1px solid var(--line);
   background: var(--surface);
@@ -68,13 +73,15 @@
   color: var(--alert);
   border-style: solid;
   border-color: var(--alert);
-  font-weight: 700;
 }
 
+/* Up to two lines rather than lose a name's end ("Oak / tree", "Out of / copper ore"). */
 .chipText {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 1.15;
 }
 
 .chipBar {

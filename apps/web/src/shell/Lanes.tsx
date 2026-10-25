@@ -1,6 +1,6 @@
 // The lanes as the shell shows them: full cards in the desktop panel and on the phone's Hearth,
 // chips in the phone's strip. Each lane says what it is doing, how far along, and why it stopped.
-import { formatStop, t } from '@idle-clash/content';
+import { formatStop, midSentence, t } from '@idle-clash/content';
 import type { Feature } from '@idle-clash/features';
 import { LANE_IDS, type ActionRef, type LaneId, type State } from '@idle-clash/kernel';
 import { Button, hasIcon, ItemIcon, LaneCard } from '@idle-clash/ui';
@@ -17,10 +17,23 @@ export interface LaneView {
   /** The current run, so its bar fills smoothly: its start, and the time left. */
   run?: { key: number; msLeft: number };
   note?: string;
+  /** Why it stopped, in the few words a phone's chip has room for. */
+  short?: string;
   /** What the action makes (or the foe fought), for its icon. */
   icon?: string;
   /** Stopped by itself (not by the player), so it needs the player: out of ore, the fire out. */
   halted?: boolean;
+  /** What puts it right, where the page can take the player there: an item's panel, or a page. */
+  fix?: { label: string; item?: string; path?: string };
+}
+
+/** Where a stop is put right: what ran out (its panel says where it comes from), or food. */
+function fixFor(reason: { code: string; detail?: Record<string, string | number> }): LaneView['fix'] {
+  const item = reason.detail?.item;
+  if (reason.code === 'outOfInputs' && typeof item === 'string')
+    return { label: t('lane.fix.item', { item: midSentence(t(`item.${item}`)) }), item };
+  if (reason.code === 'retreated' || reason.code === 'tooHurt') return { label: t('lane.fix.food'), path: '/combat' };
+  return undefined;
 }
 
 const actionName = (a: { feature: string; id: string }) => t(`action.${a.feature}.${a.id}`);
@@ -50,26 +63,39 @@ export function laneViews(state: State, now: number, features: readonly Feature[
       run: run ? { key: run.startedAt, msLeft: run.endsAt - now } : undefined,
       icon: run ? iconOf(features, run.action) : undefined,
       note,
+      short: !run && l.stopped ? formatStop(l.stopped.reason, 'short') : undefined,
       halted: !run && !!l.stopped && l.stopped.reason.code !== 'stoppedByPlayer',
+      fix: !run && !l.next && l.stopped ? fixFor(l.stopped.reason) : undefined,
     };
   });
 }
 
 export function LaneList({ lanes }: { lanes: LaneView[] }) {
+  // A stopped lane leads with why, and offers what puts it right.
+  const fix = (f: NonNullable<LaneView['fix']>) =>
+    navigate(f.item ? `${location.pathname}?panel=item&item=${encodeURIComponent(f.item)}` : f.path!);
   return (
     <div data-slot="shell.lane" role="list">
       {lanes.map((l) => (
         <LaneCard
           key={l.id}
           lane={l.name}
-          doing={l.doing}
+          doing={l.halted && l.note ? l.note : l.doing}
           idle={l.idle}
+          halted={l.halted}
           progress={l.progress}
           run={l.run}
           icon={l.icon && <ItemIcon name={l.icon} size={32} />}
-          note={l.note}
+          note={l.halted ? undefined : l.note}
           actions={
-            !l.idle && (
+            l.idle ? (
+              l.halted &&
+              l.fix && (
+                <Button variant="secondary" onClick={() => fix(l.fix!)}>
+                  {l.fix.label}
+                </Button>
+              )
+            ) : (
               <Button variant="secondary" onClick={() => game.command({ type: 'stop', lane: l.id })}>
                 {t('lane.stop')}
               </Button>
@@ -89,7 +115,7 @@ export function LaneStrip({ lanes }: { lanes: LaneView[] }) {
           key={l.id}
           compact
           lane={l.name}
-          doing={l.halted && l.note ? l.note : l.idle ? l.name : l.doing}
+          doing={l.halted && l.short ? l.short : l.idle ? l.name : l.doing}
           label={`${l.name}: ${l.halted && l.note ? l.note : l.doing}`}
           idle={l.idle}
           halted={l.halted}

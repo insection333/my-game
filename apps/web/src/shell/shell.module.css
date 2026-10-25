@@ -172,7 +172,8 @@
   border-top: 1px solid var(--line);
 }
 
-/* A working lane gets twice the room of a resting one, so its icon and action both show. */
+/* A working lane gets twice the room of a resting one, so its icon and action both show; a stopped
+   one half as much again, so it can say why. */
 .strip {
   display: flex;
   gap: var(--s-2);
@@ -185,6 +186,10 @@
 
 .strip > :not([data-idle]) {
   flex-grow: 2;
+}
+
+.strip > [data-halted] {
+  flex-grow: 1.5;
 }
 
 .main {

@@ -36,6 +36,10 @@ export const combat: Record<string, string> = {
   'stop.noWeapon': 'Wear a weapon first',
   'stop.retreated': 'Retreated from the {foe}: out of food',
   'stop.tooHurt': 'Too hurt to fight, and no food',
+  'stopShort.hitpointsTooLow': 'Needs level {level}',
+  'stopShort.noWeapon': 'No weapon',
+  'stopShort.retreated': 'Out of food',
+  'stopShort.tooHurt': 'Out of food',
   'help.combat.title': 'Combat',
   'help.combat.body':
     'Wear a weapon and fight in the Combat lane. Your weapon sets your style: Melee beats Archery, Archery beats Magic, Magic beats Melee. Food is eaten below half health; with none left you retreat, losing nothing.',

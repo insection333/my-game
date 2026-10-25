@@ -64,7 +64,13 @@ export function LaneCard({
     );
   }
   return (
-    <div data-ui="LaneCard" role="listitem" className={s.card} data-idle={idle || undefined}>
+    <div
+      data-ui="LaneCard"
+      role="listitem"
+      className={s.card}
+      data-idle={idle || undefined}
+      data-halted={halted || undefined}
+    >
       <div className={s.head}>
         <span className={s.lane}>{lane}</span>
       </div>

@@ -35,6 +35,8 @@ export const en: Record<string, string> = {
   'lane.resting': 'Resting',
   'lane.next': 'Next: {action}',
   'lane.stop': 'Stop',
+  'lane.fix.item': 'Where to get {item}',
+  'lane.fix.food': 'Buy food',
 
   // Pages
   'hearth.title': 'Hearth',
@@ -63,6 +65,10 @@ export const en: Record<string, string> = {
   'store.sellOne': 'Sell 1',
   'store.sellTen': 'Sell 10',
   'store.sellAllButOne': 'Sell all but 1',
+  'store.sellAsk': 'Sell {count} for {gold} gold?',
+  'store.sellYes': 'Sell',
+  'store.sellNo': 'Keep them',
+  'store.sold': 'Sold {count} for {gold} gold',
   'store.buyTen': 'Buy 10',
   'food.heals': 'Heals {health}',
   'food.price': '{gold} gold each',
@@ -186,6 +192,12 @@ export const en: Record<string, string> = {
   'stop.levelTooLow': 'Needs level {level}',
   'stop.skillInOtherLane': 'Already working in your other Gathering lane',
   'stop.outOfInputs': 'Out of {item}',
+  // The same, short enough for a lane's chip on a phone (where a reason's full words are longer)
+  'stopShort.unavailable': 'Not available',
+  'stopShort.wrongLane': 'Wrong lane',
+  'stopShort.fireOut': 'Fire went out',
+  'stopShort.mended': 'Stopped',
+  'stopShort.skillInOtherLane': 'Already busy',
 
   // Effects: what perks and mastery do
   'effect.speed': '{pct} faster',
