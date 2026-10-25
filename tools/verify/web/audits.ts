@@ -16,7 +16,9 @@ export async function runAxe(): Promise<{ problems: string[]; checks: number }> 
         timeout: 15_000,
       });
       for (const scheme of ['light', 'dark'] as const) {
-        await page.emulateMedia({ colorScheme: scheme });
+        // Reduced motion, so contrast is read on what settles on screen, not on a frame of a fade (the
+        // gains feed and moments come and go while a lane works).
+        await page.emulateMedia({ colorScheme: scheme, reducedMotion: 'reduce' });
         const result = await new AxeBuilder({ page })
           .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice'])
           .analyze();
