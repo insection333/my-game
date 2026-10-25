@@ -31,7 +31,8 @@ function CombatPage({ combat }: { combat: Feature }) {
   const newest = Math.max(tiers[0] ?? 1, ...all.filter((f) => !f.locked).map((f) => f.tier));
   const tier = tiers.includes(asked) ? asked : newest;
   const foes = all.filter((f) => f.tier === tier);
-  const triangle = fillFor<string[]>(combat, 'combat.triangle', state, now) ?? [];
+  const triangle =
+    fillFor<{ style: string; beats: string; text: string }[]>(combat, 'combat.triangle', state, now) ?? [];
   const fighting = (f: FoeRow) =>
     LANE_IDS.some((l) => state.lanes[l].current && actionKey(state.lanes[l].current.action) === actionKey(f.foe));
   const sheetSlot = panel === 'gear' ? new URLSearchParams(location.search).get('slot') : null;
@@ -125,7 +126,11 @@ function CombatPage({ combat }: { combat: Feature }) {
             <Slot id="combat.triangle">
               <ul className={s.triangle}>
                 {triangle.map((line) => (
-                  <li key={line}>{line}</li>
+                  <li key={line.style}>
+                    <ItemIcon name={line.style} size={24} />
+                    <span>{line.text}</span>
+                    <ItemIcon name={line.beats} size={24} />
+                  </li>
                 ))}
               </ul>
             </Slot>

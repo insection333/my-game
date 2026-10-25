@@ -14,7 +14,13 @@ export interface MomentProps {
 export function Moment({ size, title, body, icon, action }: MomentProps) {
   return (
     <div role="status" data-ui="Moment" data-size={size} className={`${s.moment} ${s[size]}`}>
-      {icon && <div className={s.icon}>{icon}</div>}
+      {icon && (
+        <div className={s.icon}>
+          {/* A big moment's icon stands in a burst of light that opens once and stays still. */}
+          {size === 'centre' && <span className={s.burst} aria-hidden="true" />}
+          {icon}
+        </div>
+      )}
       <div>
         <div className={s.title}>{title}</div>
         {body && <div className={s.body}>{body}</div>}

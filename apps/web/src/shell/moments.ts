@@ -4,6 +4,7 @@
 import { fmt, formatEffect, formatStop, masteryEffects, t } from '@idle-clash/content';
 import { skill as skillKit, type Feature } from '@idle-clash/features';
 import { isNotable, type GameEvent } from '@idle-clash/kernel';
+import { hasIcon } from '@idle-clash/ui';
 
 export type MomentSize = 'centre' | 'banner' | 'toast';
 
@@ -35,6 +36,12 @@ function sizeOf(e: GameEvent): MomentSize {
   return 'toast';
 }
 
+/** An action's icon: what it makes, or the foe fought, when drawn. */
+function actionIcon(a: { feature: string; id: string }, features: readonly Feature[]): string | null {
+  const out = features.find((f) => f.id === a.feature)?.content.actions?.find((x) => x.id === a.id)?.gives?.[0]?.item;
+  return [out, a.id].find((n): n is string => !!n && hasIcon(n)) ?? null;
+}
+
 function describe(
   e: GameEvent,
   features: readonly Feature[],
@@ -47,7 +54,7 @@ function describe(
       return {
         title: t('moment.levelUp', { skill: t(`skill.${e.skill}`), level: fmt.int(e.level) }),
         body: unlocks.length ? t('moment.unlocked', { unlock: unlocks.join('; ') }) : null,
-        icon: null,
+        icon: hasIcon(e.skill) ? e.skill : null,
       };
     }
     case 'find':
@@ -63,7 +70,7 @@ function describe(
           step: fmt.int(e.step),
         }),
         body: masteryEffects(e.step).map(formatEffect).join(', '),
-        icon: null,
+        icon: actionIcon(e.action, features),
       };
     case 'goalDone':
       return { title: t('moment.goalDone', { goal: e.name ?? t(`goal.${e.goal}`) }), body: null, icon: null };

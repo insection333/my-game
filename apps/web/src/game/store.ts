@@ -14,6 +14,7 @@ import {
   type State,
 } from '@idle-clash/kernel';
 import { api, ApiError, requestId } from '../api.ts';
+import { onConnection, setConnected } from './connection.ts';
 import { announceGains } from './gains.ts';
 import { openLive } from './live.ts';
 import { handled, sessionStore, signedOut } from './session.ts';
@@ -88,10 +89,21 @@ async function resync() {
   try {
     const g = await api.game();
     adopt(g.state, g.now);
+    setConnected(true);
   } catch (err) {
-    handled(err);
+    if (!handled(err) && err instanceof ApiError && err.code === 'offline') setConnected(false);
   }
 }
+
+// While the server cannot be reached, the page tries again every few seconds, and at once when the
+// device says it is back online.
+let retrying: ReturnType<typeof setInterval> | null = null;
+onConnection((up) => {
+  if (up && retrying) clearInterval(retrying);
+  if (up) retrying = null;
+  else retrying ??= setInterval(() => void resync(), 5000);
+});
+if (typeof window !== 'undefined') window.addEventListener('online', () => void resync());
 
 /** Loads the save with the features the server has switched on, and opens the live channel. */
 export async function start(flags: Record<string, boolean>): Promise<void> {
@@ -124,10 +136,13 @@ if (typeof document !== 'undefined') {
 async function send<T>(go: () => Promise<T>): Promise<T | null> {
   for (let attempt = 0; attempt < 3; attempt++) {
     try {
-      return await go();
+      const answer = await go();
+      setConnected(true);
+      return answer;
     } catch (err) {
       if (handled(err)) return null;
       if (!(err instanceof ApiError) || err.code !== 'offline') break;
+      if (attempt === 2) setConnected(false);
       await new Promise((r) => setTimeout(r, 500 * 2 ** attempt));
     }
   }

@@ -133,8 +133,10 @@ function foeRow(state: State, foe: Foe): FoeRow {
 export const SLOTS_FILLED: Record<string, SlotFill> = {
   'combat.loadout': ({ state, now }) => loadout(state, now) as unknown as Json,
   'combat.foes': ({ state }) => FOES.map((f) => foeRow(state, f)) as unknown as Json,
+  // Each style, the one it beats, and the line that says so (the page draws their seals beside it).
   'combat.triangle': () =>
-    STYLE_SKILLS.map((s, i) =>
-      t('combat.beats', { style: t(`skill.${s}`), foe: t(`skill.${STYLE_SKILLS[(i + 1) % 3]}`) }),
-    ),
+    STYLE_SKILLS.map((s, i) => {
+      const beats = STYLE_SKILLS[(i + 1) % 3];
+      return { style: s, beats, text: t('combat.beats', { style: t(`skill.${s}`), foe: t(`skill.${beats}`) }) };
+    }),
 };

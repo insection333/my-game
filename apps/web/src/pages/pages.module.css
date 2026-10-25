@@ -69,7 +69,7 @@
   gap: var(--s-1);
   padding: var(--s-3) var(--s-4);
   border-top: 1px solid var(--line);
-  color: inherit;
+  color: var(--ink);
   text-decoration: none;
 }
 

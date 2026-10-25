@@ -1,12 +1,13 @@
-// Skills: every skill, grouped by lane, with its level and what its next level opens.
+// Skills: every skill, grouped by lane, as tiles with its seal, its level and what its next level opens.
 import { t } from '@idle-clash/content';
 import type { SkillSummary } from '@idle-clash/features';
 import { LANE_IDS } from '@idle-clash/kernel';
-import { Panel, ProgressBar } from '@idle-clash/ui';
+import { hasIcon, ItemIcon, Panel, ProgressBar } from '@idle-clash/ui';
 import { useGame } from '../game/hooks.ts';
 import { navigate } from '../router.ts';
 import { fills, Slot } from '../slots.tsx';
 import { PageHead } from './PageHead.tsx';
+import k from './skills.module.css';
 import s from './pages.module.css';
 
 export function Skills() {
@@ -28,22 +29,25 @@ export function Skills() {
           <Slot id="skills.list" className={s.stack}>
             {groups.map((g) => (
               <Panel key={g.lane} title={t(`lane.${g.lane}`)} flush>
-                <div className={s.rows}>
+                <div className={k.tiles}>
                   {g.rows.map(({ feature, data }) => (
                     <a
                       key={feature}
                       href={`/skills/${data.skill}`}
                       data-ui="RowLink"
-                      className={s.row}
+                      className={k.tile}
                       onClick={(e) => (e.preventDefault(), navigate(`/skills/${data.skill}`))}
                     >
-                      <span className={s.rowHead}>
-                        <span className={s.rowName}>{data.name}</span>
-                        <span>{data.level}</span>
+                      <span className={k.seal}>{hasIcon(data.skill) && <ItemIcon name={data.skill} size={48} />}</span>
+                      <span className={k.head}>
+                        <span className={k.name}>{data.name}</span>
+                        <span className={k.level}>{data.level}</span>
                       </span>
                       <ProgressBar value={data.progress} label={data.toNext} />
-                      <span className={s.muted}>{data.toNext}</span>
-                      {data.nextUnlock && <span>{data.nextUnlock}</span>}
+                      <span className={k.below}>
+                        <span className={k.muted}>{data.toNext}</span>
+                        {data.nextUnlock && <span>{data.nextUnlock}</span>}
+                      </span>
                     </a>
                   ))}
                 </div>

@@ -2,7 +2,7 @@
 // entry pinned. The ladders come from the server; the page asks again each minute while it is open.
 import type { HiscoreRow, HiscoresResponse } from '@idle-clash/contracts';
 import { fmt, t } from '@idle-clash/content';
-import { Panel, Pill, Tabs } from '@idle-clash/ui';
+import { FireSeal, hasIcon, ItemIcon, Panel, Pill, Tabs } from '@idle-clash/ui';
 import { useEffect, useState } from 'react';
 import { api } from '../api.ts';
 import { handled } from '../game/session.ts';
@@ -53,6 +53,7 @@ export function Hiscores() {
               href: l.skill === 'total' ? '/hiscores' : `/hiscores?skill=${l.skill}`,
               label: name(l.skill),
               current: l.skill === ladder?.skill,
+              icon: <LadderIcon skill={l.skill} />,
             }))}
           />
         </div>
@@ -95,11 +96,34 @@ export function Hiscores() {
   );
 }
 
+/** A ladder's icon: the skill's seal, or the game's own mark for Total. */
+function LadderIcon({ skill }: { skill: string }) {
+  if (hasIcon(skill)) return <ItemIcon name={skill} size={24} />;
+  return (
+    <svg width={24} height={24} viewBox="0 0 48 48" aria-hidden="true">
+      <FireSeal />
+    </svg>
+  );
+}
+
+/** The first three places wear a medal: gold, silver, bronze. */
+function Place({ rank }: { rank: number }) {
+  return rank <= 3 ? (
+    <span className={s.medal} data-place={rank}>
+      {fmt.int(rank)}
+    </span>
+  ) : (
+    <>{fmt.int(rank)}</>
+  );
+}
+
 /** One place on a ladder; on Total, the milestones claimed under the name. */
 function Row({ row, you, total }: { row: HiscoreRow; you: boolean; total: boolean }) {
   return (
     <tr data-you={you || undefined}>
-      <td>{fmt.int(row.rank)}</td>
+      <td>
+        <Place rank={row.rank} />
+      </td>
       <td>
         <span className={s.player}>{row.name}</span>
         {total && row.milestones > 0 && (

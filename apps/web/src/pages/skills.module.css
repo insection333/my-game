@@ -1,0 +1,59 @@
+/* The skills list: each lane's skills as tiles, side by side where there is room, one per row on a
+   phone. Each tile shows the skill's seal, its level, how far to the next, and what the next opens. */
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  /* Each tile draws its right and bottom lines; the outermost are cut, so lines fall only between. */
+  clip-path: inset(0 1px 1px 0);
+  margin: 0 -1px -1px 0;
+}
+
+.tile {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  column-gap: var(--s-3);
+  row-gap: var(--s-1);
+  align-items: center;
+  padding: var(--s-3) var(--s-4);
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.tile:hover {
+  background: var(--surface-2);
+}
+
+.seal {
+  grid-row: span 2;
+  display: flex;
+}
+
+.head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-2);
+}
+
+.name {
+  font: 500 var(--t-lead) / 1.25 var(--font-book);
+}
+
+.level {
+  color: var(--ink-2);
+  font: 700 var(--t-small) / 1 var(--font-ui);
+  white-space: nowrap;
+}
+
+.below {
+  grid-column: 2;
+  display: grid;
+  gap: 2px;
+  font-size: var(--t-small);
+}
+
+.muted {
+  color: var(--ink-2);
+}

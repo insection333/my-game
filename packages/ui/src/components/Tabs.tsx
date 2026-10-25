@@ -1,11 +1,13 @@
 // Tabs between views of one page (Items and Collection log). Links, so each view has its own address.
-import type { MouseEvent } from 'react';
+import type { MouseEvent, ReactNode } from 'react';
 import s from './Tabs.module.css';
 
 export interface Tab {
   href: string;
   label: string;
   current: boolean;
+  /** A small icon before the label (a skill's seal on the hiscores' ladders). */
+  icon?: ReactNode;
 }
 
 export function Tabs({ tabs, label, onNavigate }: { tabs: Tab[]; label: string; onNavigate: (href: string) => void }) {
@@ -25,6 +27,7 @@ export function Tabs({ tabs, label, onNavigate }: { tabs: Tab[]; label: string; 
           className={s.tab}
           onClick={(e) => go(e, t.href)}
         >
+          {t.icon}
           {t.label}
         </a>
       ))}

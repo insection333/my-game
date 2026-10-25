@@ -11,12 +11,17 @@ export async function runAxe(): Promise<{ problems: string[]; checks: number }> 
     for (const view of views()) {
       // axe needs a page of its own context, which openPage gives.
       const page = await openPage('chromium', view.path, { viewport: { width, height: height(width) } }, view.as);
+      // Reduced motion from the start, so contrast is read on what settles on screen, not on a frame
+      // of a fade (the gains feed and moments come and go while a lane works).
+      await page.emulateMedia({ reducedMotion: 'reduce' });
       await page.goto(viewUrl(url, view.path));
       await page.waitForFunction(() => document.documentElement.dataset.ready === 'true', undefined, {
         timeout: 15_000,
       });
       for (const scheme of ['light', 'dark'] as const) {
-        await page.emulateMedia({ colorScheme: scheme });
+        await page.emulateMedia({ colorScheme: scheme, reducedMotion: 'reduce' });
+        // Two frames for the new theme's colours to reach every element before axe reads them.
+        await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
         const result = await new AxeBuilder({ page })
           .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice'])
           .analyze();
@@ -26,7 +31,12 @@ export async function runAxe(): Promise<{ problems: string[]; checks: number }> 
             .slice(0, 3)
             .map((n) => n.target.join(' '))
             .join(', ');
-          problems.push(`${width}px ${scheme} ${view.path}: ${v.id} (${v.impact ?? 'minor'}): ${v.help} at ${where}`);
+          // What axe measured (for contrast: the two colours and their ratio), so a failure seen only
+          // on GitHub Actions can be read from its log.
+          const why = v.nodes[0]?.any[0]?.message ?? '';
+          problems.push(
+            `${width}px ${scheme} ${view.path}: ${v.id} (${v.impact ?? 'minor'}): ${v.help} at ${where}${why ? ` (${why})` : ''}`,
+          );
         }
       }
       await page.close();

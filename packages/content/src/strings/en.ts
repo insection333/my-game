@@ -16,6 +16,7 @@ export const en: Record<string, string> = {
   'shell.fire.outLabel': 'The fire is out. Stoke it for more XP and a second Gathering lane',
   'shell.fire.burningLabel': 'The fire burns for {time} more. Stoke it to keep it going',
   'shell.gold': '{amount} gold',
+  'shell.reconnecting': 'Reconnecting. Your lanes keep working.',
   'shell.notices': 'Notices',
   'shell.account': 'Account and settings',
   'shell.lanes': 'Lanes',
