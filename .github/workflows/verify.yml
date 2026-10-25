@@ -14,7 +14,8 @@ concurrency:
 jobs:
   verify:
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    # Verify takes about ten minutes; the rest is room for a slow runner's downloads.
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v5
       - uses: pnpm/action-setup@v4
@@ -25,5 +26,15 @@ jobs:
       - run: pnpm install --frozen-lockfile
       # The server's tools, which the ops tests run: SQLite's shell, rclone and shellcheck.
       - run: sudo apt-get install -y sqlite3 rclone shellcheck
-      - run: pnpm exec playwright install --with-deps chromium firefox webkit
+      # The three browsers, kept between runs (a slow download once took 21 minutes); the system
+      # libraries they need are installed either way.
+      - id: browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+      - if: steps.browsers.outputs.cache-hit != 'true'
+        run: pnpm exec playwright install --with-deps chromium firefox webkit
+      - if: steps.browsers.outputs.cache-hit == 'true'
+        run: pnpm exec playwright install-deps chromium firefox webkit
       - run: pnpm verify
