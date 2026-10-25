@@ -18,6 +18,7 @@ const TYPES: Record<string, string> = {
   '.json': 'application/json',
   '.ico': 'image/x-icon',
   '.txt': 'text/plain; charset=utf-8',
+  '.webmanifest': 'application/manifest+json',
 };
 
 interface File {
@@ -35,7 +36,7 @@ function load(dir: string): Map<string, File> {
       else {
         const body = readFileSync(p);
         const type = TYPES[extname(p)] ?? 'application/octet-stream';
-        const gz = /\.(html|js|css|svg|json)$/.test(p) ? gzipSync(body, { level: 9 }) : null;
+        const gz = /\.(html|js|css|svg|json|webmanifest)$/.test(p) ? gzipSync(body, { level: 9 }) : null;
         files.set(`/${relative(dir, p).split('\\').join('/')}`, { body, gz, type });
       }
     }

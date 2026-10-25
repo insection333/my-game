@@ -33,6 +33,9 @@ export function measurePage(): Measured {
   }
   for (const el of Array.from(document.body.querySelectorAll('*'))) {
     if (!shown(el) || hidden(el)) continue;
+    // Inside a drawing, the drawing's own frame clips what runs past it (a cropped scene); the
+    // drawing itself is still measured.
+    if (el instanceof SVGElement && el.ownerSVGElement) continue;
     const r = el.getBoundingClientRect();
     if (r.right > W + 1 || r.left < -1) {
       // Inside a box that scrolls sideways (a wide table), it can be reached; a box that merely hides

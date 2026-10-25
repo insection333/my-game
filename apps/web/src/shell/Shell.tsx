@@ -13,6 +13,7 @@ import { FireBadge } from './FireBadge.tsx';
 import { Bell, Coin, MenuGlyph, Person } from './glyphs.tsx';
 import { LaneList, LaneStrip, laneViews } from './Lanes.tsx';
 import { useCountUp } from './countUp.ts';
+import { Sounds } from '../sound/Sounds.tsx';
 import { Gains } from './Gains.tsx';
 import { Moments } from './Moments.tsx';
 import s from './shell.module.css';
@@ -86,6 +87,7 @@ export function Shell({ children }: { children: ReactNode }) {
         <LaneList lanes={lanes} />
       </aside>
       <Gains />
+      <Sounds />
       <Moments />
       {panel === 'tray' && (
         <Sheet title={t('tray.title')} closeLabel={t('shell.close')} onClose={close} slot="tray.list">

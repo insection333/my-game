@@ -1,5 +1,7 @@
 {
   "extends": "../../tsconfig.dom.json",
-  "compilerOptions": { "types": ["vite/client"] },
-  "include": ["src", "review", "tests", "vite.config.ts"]
+  "compilerOptions": {
+    "types": ["vite/client"]
+  },
+  "include": ["src", "review", "tests", "vite.config.ts", "brand.tsx"]
 }

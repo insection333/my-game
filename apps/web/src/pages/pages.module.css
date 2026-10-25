@@ -14,6 +14,20 @@
   gap: var(--s-4);
 }
 
+/* The region's scene across the top of the Hearth: the world the lanes work in. */
+.banner {
+  height: 88px;
+  margin-bottom: var(--s-4);
+  border: 1px solid var(--line);
+  border-radius: var(--r-panel);
+}
+
+@container main (min-width: 720px) {
+  .banner {
+    height: 132px;
+  }
+}
+
 .pair {
   display: grid;
   gap: var(--s-4);

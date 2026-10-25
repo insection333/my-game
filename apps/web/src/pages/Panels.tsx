@@ -7,6 +7,8 @@ import { useGame } from '../game/hooks.ts';
 import { navigate } from '../router.ts';
 import { noticesOf } from './notices.ts';
 import { account, useSession } from '../game/session.ts';
+import { readSound, type SoundChoice } from '../sound/cues.ts';
+import { play, unlockAudio } from '../sound/synth.ts';
 import { applyTheme, readTheme, THEMES, type Theme } from '../theme.ts';
 import s from './pages.module.css';
 
@@ -142,6 +144,40 @@ function DeleteAccount() {
   );
 }
 
+const SOUNDS: [SoundChoice, string][] = [
+  ['off', 'settings.sound.off'],
+  ['moments', 'settings.sound.moments'],
+  ['all', 'settings.sound.all'],
+];
+
+/** Sound: off until the player chooses (the owner's decision); choosing plays a cue to hear it by. */
+function SoundChoices() {
+  const [sound, setSound] = useState<SoundChoice>(readSound);
+  const choose = (v: SoundChoice) => {
+    setSound(v);
+    try {
+      localStorage.setItem('sound', v);
+    } catch {
+      /* The choice still applies for this visit. */
+    }
+    if (v !== 'off') {
+      unlockAudio();
+      play('goal');
+    }
+  };
+  return (
+    <fieldset className={s.choices}>
+      <legend>{t('settings.sound')}</legend>
+      {SOUNDS.map(([v, label]) => (
+        <label key={v} className={s.choice}>
+          <input type="radio" name="sound" data-ui="Radio" checked={sound === v} onChange={() => choose(v)} />
+          {t(label)}
+        </label>
+      ))}
+    </fieldset>
+  );
+}
+
 export function Settings() {
   const [theme, setTheme] = useState<Theme>(readTheme);
   const choose = (v: Theme) => {
@@ -165,6 +201,7 @@ export function Settings() {
           </label>
         ))}
       </fieldset>
+      <SoundChoices />
       <DeleteAccount />
     </>
   );

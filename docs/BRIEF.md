@@ -229,7 +229,7 @@ These are settled by the owner and are not reopened without asking.
 | Combat | Melee, Archery and Magic in the classic triangle, plus Hitpoints |
 | Pacing | As in Targets; the assistant tunes within 25% |
 | Database | SQLite in one file, through Drizzle so it can move to Postgres |
-| Hosting | One small server (2 cores, 2 GB) at idleclash.com (the domain is registered; no server yet) |
+| Hosting | One small server (2 cores, 2 GB) at idleclash.com: a VentraIP VPS; backups to Cloudflare R2; UptimeRobot watches the site (session 10) |
 | Accounts | Name and password. Email confirmation and recovery are built but switched off until the owner says so; then players are asked to add and confirm an email |
 | Money | None in version 1; cosmetic donations later |
 | Automation | No bot; offline lanes are the idle play |
@@ -241,6 +241,10 @@ These are settled by the owner and are not reopened without asking.
 | Hitpoints | A skill: every level adds health; named perks every fifth level (session 0) |
 | Rare finds | Six per skill, two at each rarity; 36 in the collection log (session 0) |
 | Session order | Account deletion and the admin page are built in session 9, not 5 (session 0) |
+| Launch | Not until the owner is satisfied: the game is held as close to a AAA standard as possible first (session 10) |
+| The region's scene | Behind the welcome page, and as a banner across the top of the Hearth (session 10) |
+| Site icon | The fire, drawn in the icon style on a dark round seal (session 10) |
+| Sound | Made in code; off until each player switches it on in Settings; never intrusive (no wearing sounds for repeated actions or notices) (session 10) |
 
 ## Lessons from the first attempt
 

@@ -16,6 +16,7 @@ function dist() {
   writeFileSync(join(dir, 'index.html'), '<!doctype html><title>Idle Clash</title>');
   writeFileSync(join(dir, 'assets', 'index-abc123.js'), 'console.log(1)');
   writeFileSync(join(dir, 'robots.txt'), 'User-agent: *\n');
+  writeFileSync(join(dir, 'manifest.webmanifest'), '{}');
   return dir;
 }
 const get = (url: string) => s.app.inject({ method: 'GET', url });
@@ -31,6 +32,7 @@ describe('the built page', () => {
     expect(script.body).toBe('console.log(1)');
     const robots = await get('/robots.txt');
     expect(robots.headers['content-type']).toBe('text/plain; charset=utf-8');
+    expect((await get('/manifest.webmanifest')).headers['content-type']).toBe('application/manifest+json');
   });
 
   it('answers a missing file with a 404, not the page', async () => {

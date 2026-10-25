@@ -18,6 +18,7 @@ describe('measurePage', () => {
   it('passes a page that keeps every rule', async () => {
     const m = await measure(`<main data-main><div style="padding:16px">
       <section data-section><p>One</p><p>Two</p><p>Three</p></section>
+      <svg width="200" height="100" viewBox="0 0 400 100" preserveAspectRatio="xMidYMid slice"><rect x="-2000" width="4000" height="100"/></svg>
       <button data-ui="Button" data-variant="primary" style="height:44px">Start</button>
       <button data-ui="Button" data-variant="primary" style="height:44px">Stop</button></div></main>`);
     expect(m.problems).toEqual([]);

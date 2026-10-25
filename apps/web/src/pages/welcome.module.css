@@ -1,7 +1,16 @@
+/* The region's scene: a banner above the page on phones, the whole background on wide screens,
+   where the page sits in the sky above the hills. */
+.scene {
+  height: clamp(180px, 30vh, 260px);
+  margin: calc(-1 * var(--s-5)) calc(-1 * var(--gutter)) 0;
+  width: calc(100% + 2 * var(--gutter));
+}
+
 .page {
+  position: relative;
   min-height: 100dvh;
   display: grid;
-  align-content: center;
+  align-content: start;
   gap: var(--s-5);
   max-width: var(--content-max);
   grid-template-columns: minmax(0, 1fr);
@@ -12,8 +21,27 @@
 @media (min-width: 900px) {
   .page {
     grid-template-columns: minmax(0, 1fr) minmax(0, 400px);
-    align-items: center;
+    align-items: start;
+    align-content: start;
     gap: var(--s-6);
+    padding-top: max(var(--s-6), 10vh);
+  }
+
+  .scene {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .intro {
+    padding-top: var(--s-6);
+  }
+
+  .card {
+    box-shadow: 0 18px 48px var(--shade);
   }
 }
 
