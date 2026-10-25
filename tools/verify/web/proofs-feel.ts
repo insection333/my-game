@@ -92,7 +92,14 @@ async function sellingAsks(served: Served, problems: string[]) {
     ...s,
     items: { ...s.items, 'pine-logs': 50 },
   }));
-  const focused = (name: string) => page.evaluate((n) => document.activeElement?.textContent?.trim() === n, name);
+  // The focus moves on the next frame, so it is given a moment to arrive.
+  const focused = (name: string) =>
+    page
+      .waitForFunction((n) => document.activeElement?.textContent?.trim() === n, name, { timeout: 2_000 })
+      .then(
+        () => true,
+        () => false,
+      );
   try {
     await page.evaluate(() => localStorage.setItem('tourDone', '1'));
     await page.reload();

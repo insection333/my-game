@@ -29,12 +29,18 @@ jobs:
       # The three browsers, kept between runs (a slow download once took 21 minutes); the system
       # libraries they need are installed either way.
       - id: browsers
-        uses: actions/cache@v4
+        uses: actions/cache/restore@v4
         with:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
       - if: steps.browsers.outputs.cache-hit != 'true'
         run: pnpm exec playwright install --with-deps chromium firefox webkit
+      # Saved as soon as they are in, so a failing verify still keeps them for the next run.
+      - if: steps.browsers.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ steps.browsers.outputs.cache-primary-key }}
       - if: steps.browsers.outputs.cache-hit == 'true'
         run: pnpm exec playwright install-deps chromium firefox webkit
       - run: pnpm verify
