@@ -4,6 +4,7 @@
 import { fmt, t } from '@idle-clash/content';
 import { actionsFor, findOf, items, RARE_FIND_COMPLETIONS, type CapacityView } from '@idle-clash/features';
 import { countOf } from '@idle-clash/kernel';
+import { useRef, useState } from 'react';
 import { ActionRow, Button, ItemIcon, Panel, Pill, ProgressBar } from '@idle-clash/ui';
 import { useGame } from '../game/hooks.ts';
 import { game } from '../game/store.ts';
@@ -136,7 +137,7 @@ export function ItemPanel({ item }: { item: string }) {
           {def.value > 0 && <p className={s.muted}>{t('item.panel.sells', { gold: fmt.int(def.value) })}</p>}
         </div>
       </div>
-      <ItemActions item={item} value={def.value} gear={def.kind === 'gear'} />
+      <ItemActions key={item} item={item} value={def.value} gear={def.kind === 'gear'} />
       <UseFind item={item} />
       <Sources title={t('item.panel.comesFrom')} list={items.comesFrom(features, item)} />
       <Sources title={t('item.panel.usedIn')} list={items.usedIn(features, item)} />
@@ -144,39 +145,70 @@ export function ItemPanel({ item }: { item: string }) {
   );
 }
 
-/** Selling to the vendor (one, ten, all but one) and, for gear, wearing it. */
+/** Selling to the vendor (one, ten, all but one) and, for gear, wearing it. Selling all but one asks
+ *  first, saying what it comes to; every sale then says what it brought in. */
 function ItemActions({ item, value, gear }: { item: string; value: number; gear: boolean }) {
   const { state } = useGame();
+  const [asking, setAsking] = useState(false);
+  const [sold, setSold] = useState('');
+  const box = useRef<HTMLDivElement>(null);
   const have = countOf(state, item);
   const worn = Object.values((state.features.combat as { worn?: Record<string, string> } | undefined)?.worn ?? {});
-  const sell = (count: number) => game.act('storehouse', 'sell', { item, count });
+  // Where the focus goes when the button pressed gives way: the question's answer, or back.
+  const focusIn = (selector: string) =>
+    requestAnimationFrame(() => box.current?.querySelector<HTMLElement>(selector)?.focus());
+  const sell = (count: number) => {
+    setAsking(false);
+    const r = game.act('storehouse', 'sell', { item, count }) as { ok: boolean; gold?: number } | null;
+    if (r?.ok) setSold(t('store.sold', { count: fmt.int(count), gold: fmt.int(r.gold ?? 0) }));
+  };
   // Selling never takes the last of something worn; "all but one" leaves one either way.
   const max = worn.includes(item) ? have - 1 : have;
-  if (have === 0 || (value <= 0 && !gear)) return null;
+  const shown = have > 0 && (value > 0 || gear);
   return (
-    <div className={s.actions}>
-      {gear && !worn.includes(item) && (
-        <Button variant="primary" onClick={() => game.act('combat', 'wear', { item })}>
-          {t('gear.wear')}
-        </Button>
+    <div ref={box}>
+      {shown && asking && (
+        <div className={s.ask}>
+          <p>{t('store.sellAsk', { count: fmt.int(have - 1), gold: fmt.int(value * (have - 1)) })}</p>
+          <div className={s.actions}>
+            <Button variant="primary" data-answer onClick={() => (sell(have - 1), focusIn('[data-status]'))}>
+              {t('store.sellYes')}
+            </Button>
+            <Button variant="secondary" onClick={() => (setAsking(false), focusIn('[data-sell-all]'))}>
+              {t('store.sellNo')}
+            </Button>
+          </div>
+        </div>
       )}
-      {value > 0 && (
-        <>
-          <Button variant="secondary" disabled={max < 1} onClick={() => sell(1)}>
-            {t('store.sellOne')}
-          </Button>
-          {have >= 10 && (
-            <Button variant="secondary" disabled={max < 10} onClick={() => sell(10)}>
-              {t('store.sellTen')}
+      {shown && !asking && (
+        <div className={s.actions}>
+          {gear && !worn.includes(item) && (
+            <Button variant="primary" onClick={() => game.act('combat', 'wear', { item })}>
+              {t('gear.wear')}
             </Button>
           )}
-          {have > 2 && (
-            <Button variant="secondary" onClick={() => sell(have - 1)}>
-              {t('store.sellAllButOne')}
-            </Button>
+          {value > 0 && (
+            <>
+              <Button variant="secondary" disabled={max < 1} onClick={() => sell(1)}>
+                {t('store.sellOne')}
+              </Button>
+              {have >= 10 && (
+                <Button variant="secondary" disabled={max < 10} onClick={() => sell(10)}>
+                  {t('store.sellTen')}
+                </Button>
+              )}
+              {have > 2 && (
+                <Button variant="secondary" data-sell-all onClick={() => (setAsking(true), focusIn('[data-answer]'))}>
+                  {t('store.sellAllButOne')}
+                </Button>
+              )}
+            </>
           )}
-        </>
+        </div>
       )}
+      <p role="status" data-status tabIndex={-1} className={s.sold}>
+        {sold}
+      </p>
     </div>
   );
 }

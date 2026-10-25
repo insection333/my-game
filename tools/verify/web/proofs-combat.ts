@@ -65,9 +65,10 @@ async function retreatCostsNothing(served: Served, problems: string[]) {
     ]);
   });
   try {
+    // The phone's chip says it short, and is heard in full.
     await page
-      .locator('[data-slot="shell.lane"]')
-      .getByText('Retreated from the hill troll: out of food')
+      .getByRole('button', { name: 'Combat: Retreated from the hill troll: out of food' })
+      .filter({ hasText: 'Out of food' })
       .first()
       .waitFor({ timeout: 15_000 });
     await page.locator('[data-ui="WeaponSlot"]', { hasText: 'Copper sword' }).waitFor({ timeout: 5_000 });

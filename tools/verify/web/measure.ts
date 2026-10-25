@@ -36,6 +36,14 @@ export function measurePage(): Measured {
     // Inside a drawing, the drawing's own frame clips what runs past it (a cropped scene); the
     // drawing itself is still measured.
     if (el instanceof SVGElement && el.ownerSVGElement) continue;
+    // Words are never cut off: text set to end in "…" when it runs out of room must have the room.
+    const ts = getComputedStyle(el);
+    const clamp = ts.getPropertyValue('-webkit-line-clamp');
+    if (
+      (ts.textOverflow === 'ellipsis' && el.scrollWidth > el.clientWidth + 1) ||
+      (clamp && clamp !== 'none' && el.scrollHeight > el.clientHeight + 1)
+    )
+      problems.push(`${describe(el)} is cut short with "…"`);
     const r = el.getBoundingClientRect();
     if (r.right > W + 1 || r.left < -1) {
       // Inside a box that scrolls sideways (a wide table), it can be reached; a box that merely hides

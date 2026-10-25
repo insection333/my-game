@@ -18,6 +18,7 @@ describe('measurePage', () => {
   it('passes a page that keeps every rule', async () => {
     const m = await measure(`<main data-main><div style="padding:16px">
       <section data-section><p>One</p><p>Two</p><p>Three</p></section>
+      <span style="display:block;width:200px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">Fits</span>
       <svg width="200" height="100" viewBox="0 0 400 100" preserveAspectRatio="xMidYMid slice"><rect x="-2000" width="4000" height="100"/></svg>
       <button data-ui="Button" data-variant="primary" style="height:44px">Start</button>
       <button data-ui="Button" data-variant="primary" style="height:44px">Stop</button></div></main>`);
@@ -32,6 +33,7 @@ describe('measurePage', () => {
       <button data-ui="Button" style="width:20px;height:20px">x</button>
       <button data-ui="Chip" style="height:30px;color:red">A</button>
       <button data-ui="Chip" style="height:30px;color:blue">B</button>
+      <span style="display:block;width:60px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">Cut off at the end</span>
       <nav data-menu>${'<a href="#" data-ui="MenuLink" style="display:inline-block;min-height:44px">m</a>'.repeat(7)}</nav>
       </div></main>`);
     const text = m.problems.join('\n');
@@ -42,6 +44,7 @@ describe('measurePage', () => {
     expect(text).toContain('(one control, two ways)');
     expect(text).toContain('The menu has 7 entries; at most 6');
     expect(text).toContain('A full-width section holds only 1 line(s)');
+    expect(text).toContain('span "Cut off at the end" is cut short');
   }, 30_000);
 
   it('reports where each slot starts and what bars cover the bottom', async () => {

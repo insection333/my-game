@@ -7,6 +7,8 @@
 // - Losing the server is said, and recovering from it too: with the network gone, a change that
 //   cannot get through makes the page say it is reconnecting (after a few seconds, so a blip never
 //   shows); with the network back, the line goes.
+// - A big sale asks first: "Sell all but 1" says what it comes to and waits; "Keep them" keeps them
+//   and hands the focus back; selling says what it brought in, where the focus now is.
 import type { Page } from 'playwright';
 import { playerWith, say } from './proofs-lanes.ts';
 import type { Served } from './session.ts';
@@ -84,6 +86,38 @@ async function connectionSaid(page: Page, problems: string[]) {
   }
 }
 
+async function sellingAsks(served: Served, problems: string[]) {
+  let step = 'a player with 50 pine logs opens their panel';
+  const page = await playerWith(served, 'Sells With Care', '/storehouse?panel=item&item=pine-logs', (s) => ({
+    ...s,
+    items: { ...s.items, 'pine-logs': 50 },
+  }));
+  const focused = (name: string) => page.evaluate((n) => document.activeElement?.textContent?.trim() === n, name);
+  try {
+    await page.evaluate(() => localStorage.setItem('tourDone', '1'));
+    await page.reload();
+    const sheet = page.locator('[data-ui="Sheet"]');
+    step = '"Sell all but 1" asks first, with what the sale comes to';
+    await sheet.getByRole('button', { name: 'Sell all but 1' }).click({ timeout: 10_000 });
+    await sheet.getByText('Sell 49 for 49 gold?').waitFor({ timeout: 3_000 });
+    if (!(await focused('Sell'))) problems.push('Selling: the question does not take the focus to its answer');
+    step = '"Keep them" keeps them';
+    await sheet.getByRole('button', { name: 'Keep them' }).click();
+    await sheet.getByText('You have 50').waitFor({ timeout: 3_000 });
+    if (!(await focused('Sell all but 1'))) problems.push('Selling: "Keep them" loses the focus');
+    step = 'selling says what it brought in';
+    await sheet.getByRole('button', { name: 'Sell all but 1' }).click();
+    await sheet.getByRole('button', { name: 'Sell', exact: true }).click();
+    await sheet.getByRole('status').filter({ hasText: 'Sold 49 for 49 gold' }).waitFor({ timeout: 3_000 });
+    await sheet.getByText('You have 1').waitFor({ timeout: 3_000 });
+    if (!(await focused('Sold 49 for 49 gold'))) problems.push('Selling: after a sale the focus is lost');
+  } catch (err) {
+    problems.push(`Selling: failed where ${step} (${say(err)})`);
+  } finally {
+    await page.close();
+  }
+}
+
 export async function runFeelProofs(served: Served): Promise<string[]> {
   const problems: string[] = [];
   const page = await playerWith(served, 'Feels Right', '/', (s) => s);
@@ -95,5 +129,6 @@ export async function runFeelProofs(served: Served): Promise<string[]> {
   } finally {
     await page.close();
   }
+  await sellingAsks(served, problems);
   return problems;
 }
