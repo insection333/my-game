@@ -14,6 +14,7 @@ import { Bell, Coin, MenuGlyph, Person } from './glyphs.tsx';
 import { LaneList, LaneStrip, laneViews } from './Lanes.tsx';
 import { useCountUp } from './countUp.ts';
 import { Sounds } from '../sound/Sounds.tsx';
+import { Connection } from './Connection.tsx';
 import { Gains } from './Gains.tsx';
 import { Moments } from './Moments.tsx';
 import s from './shell.module.css';
@@ -86,6 +87,7 @@ export function Shell({ children }: { children: ReactNode }) {
         <h2 className={s.lanesTitle}>{t('shell.lanes')}</h2>
         <LaneList lanes={lanes} />
       </aside>
+      <Connection />
       <Gains />
       <Sounds />
       <Moments />

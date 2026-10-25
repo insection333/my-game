@@ -41,7 +41,7 @@ describe('moments', () => {
       size: 'centre',
       title: 'Woodcutting level 10',
       body: "Unlocked: Ash tree. Also: Pine tree: mastery 3; Uncommon find: Bird's nest.",
-      icon: 'birds-nest',
+      icon: 'woodcutting',
       until: T + 4000 + 6000,
     });
     expect(second).toMatchObject({ size: 'toast', title: 'Goal done: Chop a pine' });

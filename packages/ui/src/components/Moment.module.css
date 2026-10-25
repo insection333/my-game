@@ -16,6 +16,37 @@
   padding: var(--s-6) var(--s-5);
 }
 
+.centre .icon {
+  position: relative;
+  display: grid;
+  place-items: center;
+  margin: var(--s-2) 0;
+}
+
+.centre .icon > :not(.burst) {
+  position: relative;
+}
+
+.burst {
+  position: absolute;
+  width: 230%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, var(--burst-core) 0 30%, transparent 62%),
+    repeating-conic-gradient(var(--burst-ray) 0deg 7deg, transparent 7deg 24deg);
+  mask: radial-gradient(circle, #000 25%, transparent 70%);
+  opacity: 0.85;
+  animation: burst 900ms cubic-bezier(0.2, 0.8, 0.3, 1) both;
+}
+
+@keyframes burst {
+  from {
+    transform: scale(0.3) rotate(-50deg);
+    opacity: 0;
+  }
+}
+
 .centre .title {
   font: 500 var(--t-h1) / 1.1 var(--font-book);
 }
@@ -42,7 +73,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .moment {
+  .moment,
+  .burst {
     animation: none;
   }
 }

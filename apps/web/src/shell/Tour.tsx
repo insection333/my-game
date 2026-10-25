@@ -6,6 +6,7 @@ import { Button } from '@idle-clash/ui';
 import { useEffect, useState } from 'react';
 import { useGame } from '../game/hooks.ts';
 import { useLocation } from '../router.ts';
+import { placeCard } from './tourPlace.ts';
 import s from './tour.module.css';
 
 const STEPS = [
@@ -67,8 +68,15 @@ export function Tour() {
     setStep(null);
   };
   const next = () => (step + 1 < STEPS.length ? setStep(step + 1) : end());
-  const below = box.bottom + 160 < window.innerHeight;
-  const left = Math.max(12, Math.min(window.innerWidth - 300 - 12, box.left));
+  // The foot of the screen: the top of the lanes strip and the menu, where they are fixed there.
+  const floor = Math.min(
+    window.innerHeight,
+    ...Array.from(document.querySelectorAll('[data-menu], [data-strip]'))
+      .map((el) => el.getBoundingClientRect())
+      .filter((r) => r.height > 0 && r.bottom >= window.innerHeight - 1)
+      .map((r) => r.top),
+  );
+  const place = placeCard(box, { width: window.innerWidth, height: window.innerHeight }, floor);
   return (
     <>
       <div
@@ -76,13 +84,7 @@ export function Tour() {
         aria-hidden="true"
         style={{ top: box.top - 4, left: box.left - 4, width: box.width + 8, height: box.height + 8 }}
       />
-      <div
-        className={s.card}
-        role="dialog"
-        aria-label={t('tour.title')}
-        data-tour-step={step + 1}
-        style={below ? { top: box.bottom + 10, left } : { bottom: window.innerHeight - box.top + 10, left }}
-      >
+      <div className={s.card} role="dialog" aria-label={t('tour.title')} data-tour-step={step + 1} style={place}>
         <p>{t(STEPS[step].key)}</p>
         <div className={s.buttons}>
           <Button variant="quiet" onClick={end}>

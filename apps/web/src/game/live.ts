@@ -3,6 +3,7 @@
 // fresh read, since changes made while it was closed were not heard.
 import { LIVE_PATH, type LiveMessage } from '@idle-clash/contracts';
 import type { GameEvent, State } from '@idle-clash/kernel';
+import { setConnected } from './connection.ts';
 
 export interface LiveHandlers {
   state: (state: State, now: number) => void;
@@ -24,6 +25,7 @@ export function openLive(on: LiveHandlers): { close: () => void } {
     socket = new WebSocket(`${scheme}//${location.host}${LIVE_PATH}`);
     socket.onopen = () => {
       pause = 1000;
+      setConnected(true);
       if (again) on.reopened();
     };
     socket.onmessage = (e: MessageEvent<string>) => {
@@ -38,6 +40,7 @@ export function openLive(on: LiveHandlers): { close: () => void } {
     socket.onclose = (e: CloseEvent) => {
       if (closed) return;
       if (e.code === 4401) return on.signedOut();
+      setConnected(false);
       retry = setTimeout(() => open(true), pause);
       pause = Math.min(pause * 2, 30_000);
     };
