@@ -53,7 +53,20 @@ export function ItemGrid() {
     <>
       <Capacity />
       <Slot id="store.items" className={s.kinds}>
-        {held.length === 0 && <p className={s.empty}>{t('store.empty')}</p>}
+        {held.length === 0 && (
+          // Empty: the shelves it will fill, what fills them, and where to start.
+          <div className={s.emptyState}>
+            <ul className={s.grid} aria-hidden="true">
+              {Array.from({ length: 6 }, (_, i) => (
+                <li key={i} className={s.ghost} />
+              ))}
+            </ul>
+            <p className={s.empty}>{t('store.empty')}</p>
+            <Button variant="secondary" onClick={() => navigate('/skills/woodcutting')}>
+              {t('store.empty.go')}
+            </Button>
+          </div>
+        )}
         {KINDS.map((kind) => {
           const these = held.filter((i) => i.kind === kind);
           if (!these.length) return null;

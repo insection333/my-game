@@ -2,7 +2,7 @@
 import { t } from '@idle-clash/content';
 import { useEffect } from 'react';
 import type { GoalRow, GoalsView, NextUpRow } from '@idle-clash/features';
-import { ActionRow, Button, MarchScene, Panel, Pill, ProgressBar } from '@idle-clash/ui';
+import { ActionRow, Button, hasIcon, ItemIcon, MarchScene, Panel, Pill, ProgressBar } from '@idle-clash/ui';
 import { useGame } from '../game/hooks.ts';
 import { game } from '../game/store.ts';
 import { navigate } from '../router.ts';
@@ -28,21 +28,24 @@ export function Hearth() {
     <>
       <h1 className="visually-hidden">{t('hearth.title')}</h1>
       <MarchScene className={s.banner} keep="middle" />
-      <div className={s.pair}>
-        <section data-section>
+      {/* Phones: today, goals, then next up. Wide: today and next up on the left, the goals beside them. */}
+      <div className={s.hearth}>
+        <section data-section className={s.todayArea}>
           <Today />
-          {goals && (
-            <Panel title={goals.data.title} aside={goals.data.progress ?? undefined} flush className={s.below}>
+        </section>
+        {goals && (
+          <section data-section className={s.goalsArea}>
+            <Panel title={goals.data.title} aside={goals.data.progress ?? undefined} flush>
               <Slot id="hearth.goals">
                 {goals.data.rows.map((row) => (
                   <Goal key={row.id} row={row} />
                 ))}
               </Slot>
             </Panel>
-          )}
-        </section>
+          </section>
+        )}
         {next.length > 0 && (
-          <section data-section>
+          <section data-section className={s.nextArea}>
             <Panel title={t('hearth.next.title')} flush>
               <Slot id="hearth.nextUp" className={s.rows}>
                 {next.map(({ feature, data }) => (
@@ -54,7 +57,10 @@ export function Hearth() {
                     onClick={(e) => (e.preventDefault(), navigate(`/skills/${data.skill}`))}
                   >
                     <span className={s.rowHead}>
-                      <span className={s.rowName}>{t(`skill.${data.skill}`)}</span>
+                      <span className={s.rowName}>
+                        {hasIcon(data.skill) && <ItemIcon name={data.skill} size={24} />}
+                        {t(`skill.${data.skill}`)}
+                      </span>
                       <span className={s.muted}>{data.away}</span>
                     </span>
                     <span>{data.text}</span>

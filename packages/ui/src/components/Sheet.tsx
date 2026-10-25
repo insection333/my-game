@@ -13,18 +13,42 @@ export interface SheetProps {
   slot?: string;
 }
 
+const FOCUSABLE =
+  'a[href], button:not([disabled]), input:not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])';
+
 export function Sheet({ title, closeLabel, onClose, children, slot }: SheetProps) {
   const ref = useRef<HTMLDivElement>(null);
+  // The latest onClose, so the page drawing again (every second while lanes work) neither moves the
+  // focus nor sets the keys up again.
+  const close = useRef(onClose);
+  useEffect(() => {
+    close.current = onClose;
+  }, [onClose]);
   useEffect(() => {
     const before = document.activeElement as HTMLElement | null;
     ref.current?.focus();
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') return close.current();
+      // Tab stays inside the sheet, as a modal dialog's should.
+      if (e.key !== 'Tab' || !ref.current) return;
+      const all = Array.from(ref.current.querySelectorAll<HTMLElement>(FOCUSABLE));
+      if (!all.length) return;
+      const [first, last] = [all[0], all[all.length - 1]];
+      const at = document.activeElement;
+      if (e.shiftKey && (at === first || at === ref.current)) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && at === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
     window.addEventListener('keydown', onKey);
     return () => {
       window.removeEventListener('keydown', onKey);
       before?.focus();
     };
-  }, [onClose]);
+  }, []);
   return (
     <div className={s.layer}>
       <div className={s.scrim} onClick={onClose} aria-hidden="true" />
