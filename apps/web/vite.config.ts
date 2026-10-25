@@ -1,5 +1,6 @@
 import react from '@vitejs/plugin-react';
 import { defineConfig, type Plugin } from 'vite';
+import { siteIcon } from './brand.tsx';
 
 /** Asks for the three typefaces at once, beside the script, rather than after the first render. */
 const preloadFonts = (): Plugin => ({
@@ -18,7 +19,7 @@ const preloadFonts = (): Plugin => ({
 });
 
 export default defineConfig({
-  plugins: [react(), preloadFonts()],
+  plugins: [react(), preloadFonts(), siteIcon()],
   // In development the page asks the server (pnpm --filter @idle-clash/server start) for the game.
   server: { proxy: { '/api': { target: 'http://127.0.0.1:3000', ws: true } } },
   build: {

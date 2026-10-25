@@ -207,7 +207,7 @@ Opened from the account button; its address is `/?panel=settings`.
 
 | # | Section (slot) | Filled by | Notes |
 | --- | --- | --- | --- |
-| 1 | `settings.account` | the shell | Account name, sign out, links to Privacy and Terms (and Admin, for admins), theme (light, dark, system), and Delete account at the foot: asked for twice, the second time with the password; email and recovery when the owner switches email on |
+| 1 | `settings.account` | the shell | Account name, sign out, links to Privacy and Terms (and Admin, for admins), theme (light, dark, system), sound (off until chosen; levels, finds and goals; or also each action, softly), and Delete account at the foot: asked for twice, the second time with the password; email and recovery when the owner switches email on |
 | 2 | `settings.extras` | later systems | Empty in version 1; the 48-hour upgrade and cosmetic donations arrive here |
 
 ### Privacy and terms

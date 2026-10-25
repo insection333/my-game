@@ -6,9 +6,42 @@
   overflow: hidden;
 }
 
+/* The fill is always full width and scaled, so filling is a transform the compositor can draw. A
+   change of level or mastery eases into place. */
 .fill {
   height: 100%;
   border-radius: 3px;
+}
+
+.still,
+.running {
+  transform-origin: left center;
+}
+
+.still {
+  transition: transform 450ms ease-out;
+}
+
+.running {
+  animation-name: fill-up;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+@keyframes fill-up {
+  from {
+    transform: scaleX(var(--from));
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .running {
+    animation: none;
+    transform: scaleX(var(--now));
+  }
 }
 
 .moss {

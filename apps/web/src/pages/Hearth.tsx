@@ -2,7 +2,7 @@
 import { t } from '@idle-clash/content';
 import { useEffect } from 'react';
 import type { GoalRow, GoalsView, NextUpRow } from '@idle-clash/features';
-import { ActionRow, Button, Panel, Pill, ProgressBar } from '@idle-clash/ui';
+import { ActionRow, Button, MarchScene, Panel, Pill, ProgressBar } from '@idle-clash/ui';
 import { useGame } from '../game/hooks.ts';
 import { game } from '../game/store.ts';
 import { navigate } from '../router.ts';
@@ -27,6 +27,7 @@ export function Hearth() {
   return (
     <>
       <h1 className="visually-hidden">{t('hearth.title')}</h1>
+      <MarchScene className={s.banner} keep="middle" />
       <div className={s.pair}>
         <section data-section>
           <Today />
@@ -67,7 +68,7 @@ export function Hearth() {
       <section data-section className={s.phoneOnly} style={{ marginTop: 'var(--s-4)' }}>
         <Slot id="hearth.lanes">
           <Panel title={t('hearth.lanes.title')} flush>
-            <LaneList lanes={laneViews(state, now)} />
+            <LaneList lanes={laneViews(state, now, features)} />
           </Panel>
         </Slot>
       </section>

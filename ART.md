@@ -56,6 +56,19 @@ Each material has exactly three tones: light, base and shadow.
 - At most three materials in one icon, and at most about five interior marks (grain, rivets, bands).
 - Detail that vanishes at 24 px may stay if it helps at 96 px, but it must not muddy the small size.
 
+## The mark
+
+The game's own mark is the hearth fire on a dark round seal (`icons/mark.tsx`; chosen by the owner on 22 October 2026): a big flame with a bright core over two crossed logs. It is the site's icon in the browser tab and on a phone's home screen, so it is judged at 16 and 32 px first. The build draws `favicon.svg` from it; `node tools/brand.ts` makes the PNG sizes phones ask for (and `--review` a sheet of it at every size on both themes).
+
+## The region's scene
+
+The march, seen from the road (`packages/ui/src/art/MarchScene.tsx`; placed by the owner behind the welcome page and as a banner across the top of the Hearth): far mountains with snow, the near range, wooded hills, the old road winding up to a smoking forge, a waystone, and tall pines framing it. It is drawn by the icon rules at landscape scale:
+
+- **Flat tones, light from the upper left,** with one exception: the sky is a gradient, since a sky this wide needs one and nothing here is seen at 24 px.
+- **Distance is colour:** far layers are paler and cooler and have no outline; only what is near (the pines, the waystone, the forge) has the ink line.
+- **Its colours are CSS variables,** so the light theme is a cool morning and the dark theme is night, with stars, the moon and the forge's glow.
+- **What matters sits in the middle 960 of its 1,600 units,** so any crop (a phone's banner, a wide screen) keeps it; the edges add pines for wider screens.
+
 ## Interface glyphs
 
 The menu and header glyphs (Hearth, Skills, Combat, Storehouse, Hiscores, the bell, the account) are signs, not objects. They are drawn on a 24-unit grid as single lines 1.75 units wide in the text colour, in `apps/web/src/shell/glyphs.tsx`. They never use material tones.

@@ -1,7 +1,7 @@
 // A lane: what it is doing, how far along, and why it stopped. Full on the Hearth and the desktop
 // lanes panel; compact (a chip that opens the lane) in the phone's lanes strip.
 import type { ReactNode } from 'react';
-import { ProgressBar } from './ProgressBar.tsx';
+import { ProgressBar, ProgressFill, type ProgressRun } from './ProgressBar.tsx';
 import s from './LaneCard.module.css';
 
 export interface LaneCardProps {
@@ -11,6 +11,8 @@ export interface LaneCardProps {
   idle: boolean;
   /** 0 to 1 through the current action; omitted when idle. */
   progress?: number;
+  /** The current run, so the bar fills smoothly to its end. */
+  run?: ProgressRun;
   /** A stop reason or the queued Next action, as the player reads it. */
   note?: string;
   icon?: ReactNode;
@@ -21,7 +23,19 @@ export interface LaneCardProps {
   onOpen?: () => void;
 }
 
-export function LaneCard({ lane, doing, idle, progress, note, icon, actions, compact, halted, onOpen }: LaneCardProps) {
+export function LaneCard({
+  lane,
+  doing,
+  idle,
+  progress,
+  run,
+  note,
+  icon,
+  actions,
+  compact,
+  halted,
+  onOpen,
+}: LaneCardProps) {
   if (compact) {
     return (
       <button
@@ -32,12 +46,16 @@ export function LaneCard({ lane, doing, idle, progress, note, icon, actions, com
         data-halted={halted || undefined}
         onClick={onOpen}
       >
-        {icon}
+        {icon && (
+          <span key={run?.key} className={s.icon}>
+            {icon}
+          </span>
+        )}
         <span className={s.chipText}>
           <span className="visually-hidden">{lane}: </span>
           {doing}
         </span>
-        {progress !== undefined && <span className={s.chipBar} style={{ width: `${Math.round(progress * 100)}%` }} />}
+        {progress !== undefined && <ProgressFill value={progress} run={run} className={s.chipBar} />}
       </button>
     );
   }
@@ -45,10 +63,17 @@ export function LaneCard({ lane, doing, idle, progress, note, icon, actions, com
     <div data-ui="LaneCard" className={s.card} data-idle={idle || undefined}>
       <div className={s.head}>
         <span className={s.lane}>{lane}</span>
-        {icon}
       </div>
-      <div className={s.doing}>{doing}</div>
-      {progress !== undefined && <ProgressBar value={progress} label={`${lane}: ${doing}`} />}
+      <div className={s.doing}>
+        {/* Each new run plays the icon's small hit, so the work is seen landing. */}
+        {icon && (
+          <span key={run?.key} className={s.icon}>
+            {icon}
+          </span>
+        )}
+        {doing}
+      </div>
+      {progress !== undefined && <ProgressBar value={progress} run={run} label={`${lane}: ${doing}`} />}
       {note && <div className={s.note}>{note}</div>}
       {actions && <div className={s.actions}>{actions}</div>}
     </div>

@@ -1,0 +1,212 @@
+/* The scene's colours: a cool morning by default, night in the dark theme. Distant layers are paler
+   and cooler (no outlines); near ones are deeper, with the ink line. */
+.scene {
+  display: block;
+  width: 100%;
+  height: 100%;
+  --sky: #b9cfd6;
+  --sky-low: #d8e4e4;
+  --sky-horizon: #ecefe2;
+  --halo: rgb(255 248 222 / 0.3);
+  --range: #95ada9;
+  --grass: #5d7f56;
+  --orb: #f6f0d8;
+  --stars: 0;
+  --far: #a9bcc2;
+  --far-lit: #c3d2d5;
+  --snow: #f4f8f6;
+  --hill-far: #9fb6a4;
+  --forest-far: #7f9d88;
+  --hill-mid: #7f9f80;
+  --ground: #6b8c62;
+  --road: #cdb98f;
+  --pine: #3f6545;
+  --pine-lit: #5d8659;
+  --pine-shade: #2b4a33;
+  --trunk: #5b3f29;
+  --stone: #8e8a80;
+  --stone-lit: #b5b0a5;
+  --wall: #a59c8c;
+  --wall-shade: #7e7668;
+  --roof: #5a3f2c;
+  --roof-lit: #7d5a3f;
+  --window: #e9c27a;
+  --fire: #d4511f;
+  --glow: 0;
+  --smoke: #eef2ef;
+}
+
+@media (prefers-color-scheme: dark) {
+  :global(:root:not([data-theme='light'])) .scene {
+    --sky: #0a1318;
+    --sky-low: #13222a;
+    --sky-horizon: #1d2f35;
+    --halo: rgb(220 236 232 / 0.06);
+    --range: #1c2c30;
+    --grass: #0f1d1c;
+    --orb: #e4ecea;
+    --stars: 0.75;
+    --far: #26363d;
+    --far-lit: #31444b;
+    --snow: #8fa3a6;
+    --hill-far: #1f3130;
+    --forest-far: #172725;
+    --hill-mid: #18292a;
+    --ground: #132322;
+    --road: #3f3d34;
+    --pine: #13261f;
+    --pine-lit: #1d3a2c;
+    --pine-shade: #0b1a15;
+    --trunk: #2a1f17;
+    --stone: #3a3d3c;
+    --stone-lit: #535856;
+    --wall: #4a4a46;
+    --wall-shade: #353531;
+    --roof: #2a1f18;
+    --roof-lit: #3a2b20;
+    --window: #ffbe5c;
+    --fire: #ff7a32;
+    --glow: 0.45;
+    --smoke: #3f4c4f;
+  }
+}
+
+:global(:root[data-theme='dark']) .scene {
+  --sky: #0a1318;
+  --sky-low: #13222a;
+  --sky-horizon: #1d2f35;
+  --halo: rgb(220 236 232 / 0.06);
+  --range: #1c2c30;
+  --grass: #0f1d1c;
+  --orb: #e4ecea;
+  --stars: 0.75;
+  --far: #26363d;
+  --far-lit: #31444b;
+  --snow: #8fa3a6;
+  --hill-far: #1f3130;
+  --forest-far: #172725;
+  --hill-mid: #18292a;
+  --ground: #132322;
+  --road: #3f3d34;
+  --pine: #13261f;
+  --pine-lit: #1d3a2c;
+  --pine-shade: #0b1a15;
+  --trunk: #2a1f17;
+  --stone: #3a3d3c;
+  --stone-lit: #535856;
+  --wall: #4a4a46;
+  --wall-shade: #353531;
+  --roof: #2a1f18;
+  --roof-lit: #3a2b20;
+  --window: #ffbe5c;
+  --fire: #ff7a32;
+  --glow: 0.45;
+  --smoke: #3f4c4f;
+}
+
+.skyTop {
+  stop-color: var(--sky);
+}
+.skyLow {
+  stop-color: var(--sky-low);
+}
+.skyHorizon {
+  stop-color: var(--sky-horizon);
+}
+.halo {
+  fill: var(--halo);
+}
+.range {
+  fill: var(--range);
+}
+.grass {
+  fill: var(--grass);
+}
+.orb {
+  fill: var(--orb);
+}
+.stars {
+  fill: #ffffff;
+  opacity: var(--stars);
+}
+.far {
+  fill: var(--far);
+}
+.farLit {
+  fill: var(--far-lit);
+}
+.snow {
+  fill: var(--snow);
+}
+.hillFar {
+  fill: var(--hill-far);
+}
+.forestFar {
+  fill: var(--forest-far);
+}
+.hillMid {
+  fill: var(--hill-mid);
+}
+.ground {
+  fill: var(--ground);
+}
+.road {
+  fill: var(--road);
+}
+.pine {
+  fill: var(--pine);
+}
+.pineLit {
+  fill: var(--pine-lit);
+}
+.pineShade {
+  fill: var(--pine-shade);
+}
+.trunk {
+  fill: var(--trunk);
+  stroke: #182024;
+  stroke-width: 3;
+}
+.stone {
+  fill: var(--stone);
+}
+.stoneLit {
+  fill: var(--stone-lit);
+}
+.wall {
+  fill: var(--wall);
+}
+.wallShade {
+  fill: var(--wall-shade);
+}
+.roof {
+  fill: var(--roof);
+}
+.roofLit {
+  fill: var(--roof-lit);
+}
+.chimney {
+  fill: var(--wall-shade);
+  stroke: #182024;
+  stroke-width: 2;
+}
+.window {
+  fill: var(--window);
+}
+.fireDoor {
+  fill: var(--fire);
+}
+.glow {
+  fill: var(--fire);
+  opacity: var(--glow);
+  filter: blur(14px);
+}
+.smoke {
+  fill: var(--smoke);
+}
+.ink {
+  fill: none;
+  stroke: #182024;
+  stroke-width: 3;
+  stroke-linejoin: round;
+}
