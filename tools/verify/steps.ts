@@ -181,7 +181,7 @@ async function screenshots(): Promise<StepResult> {
     return fail(`${problems.length} layout or flow problem${problems.length > 1 ? 's' : ''}`, problems.join('\n'));
   const awaiting = r.awaiting.size ? `; ${r.awaiting.size} slots await their features` : '';
   return pass(
-    `${views} views x 3 widths x 3 engines (${r.shots} shots): no overflow, taps 24px+, one design system, specs met; account flows (${flows.steps} checks) work; a newcomer is chopping after ${proofs.newcomerSeconds.toFixed(0)} s at a person's pace; a Rare find has its moment; a stopped lane says why; a queued action ran while away; gear is worn from the page and a retreat costs nothing; the recap leads with the best thing; a deleted account leaves nothing; an admin resets a password; work is seen landing; a lost connection is said and recovered${awaiting}`,
+    `${views} views x 3 widths x 3 engines (${r.shots} shots): no overflow, taps 24px+, one design system, specs met; account flows (${flows.steps} checks) work; a newcomer is chopping after ${proofs.newcomerSeconds.toFixed(0)} s at a person's pace; a Rare find has its moment; a stopped lane says why; a queued action ran while away; gear is worn from the page and a retreat costs nothing; the recap leads with the best thing; a deleted account leaves nothing; an admin resets a password; work is seen landing; the keyboard holds in a sheet; a lost connection is said and recovered${awaiting}`,
   );
 }
 

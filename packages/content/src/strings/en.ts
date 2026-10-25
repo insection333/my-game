@@ -57,6 +57,7 @@ export const en: Record<string, string> = {
   'store.tab.items': 'Items',
   'store.tab.log': 'Collection log',
   'store.empty': 'Logs and ores you gather land here.',
+  'store.empty.go': 'Start in Woodcutting',
   'store.capacity': '{used} of {total} slots',
   'store.enlarge': 'Add {slots} slots for {gold} gold',
   'store.sellOne': 'Sell 1',

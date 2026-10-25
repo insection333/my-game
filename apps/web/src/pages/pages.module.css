@@ -14,6 +14,32 @@
   gap: var(--s-4);
 }
 
+/* The Hearth: phones stack today, goals, then next up; wide screens put today and next up on the
+   left and the goals beside them, so neither column runs long while the other ends early. */
+.hearth {
+  display: grid;
+  gap: var(--s-4);
+  align-items: start;
+  grid-template-areas: 'today' 'goals' 'next';
+}
+.todayArea {
+  grid-area: today;
+}
+.goalsArea {
+  grid-area: goals;
+}
+.nextArea {
+  grid-area: next;
+}
+
+@container main (min-width: 720px) {
+  .hearth {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+    grid-template-areas: 'today goals' 'next goals';
+  }
+}
+
 /* The region's scene across the top of the Hearth: the world the lanes work in. */
 .banner {
   height: 88px;
@@ -89,6 +115,9 @@ a.row:hover {
 }
 
 .rowName {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
   font: 500 var(--t-lead) / 1.25 var(--font-book);
 }
 
