@@ -12,7 +12,7 @@ Plain, warm and brief, with an old-world flavour in names rather than in instruc
 | --- | --- |
 | Action | One thing a lane repeats: chopping a pine, forging a helm, fighting a foe |
 | Advantage | Your style beats the foe's: you deal more damage and take less |
-| Artisan lane | The lane that turns materials into bars and gear (Smithing) |
+| Artisan lane | The lane that turns materials into bars and gear (Smithing) and fish into food (Cooking) |
 | Away | Time you are not on the page; lanes keep working for up to 24 hours |
 | Away recap | What happened while you were away, best thing first |
 | Bar | Metal smelted from ore: copper, bronze, iron, steel |
@@ -20,7 +20,9 @@ Plain, warm and brief, with an old-world flavour in names rather than in instruc
 | Combat lane | The lane that fights; trains your weapon's style and Hitpoints |
 | Collect | Close the away recap: everything in it is already in your Storehouse |
 | Comes from | On an item: every action that produces it |
+| Cooked food | Food Cooking makes from fish and logs; it heals more for its worth than the vendor's |
 | Daily goal | One larger goal a day |
+| Dish | A pie or a stew: Cooking mixes a tier's fish with the one before, and it heals a quarter more |
 | Disadvantage | The foe's style beats yours: you deal less damage and take more |
 | Drop | An item a foe leaves behind |
 | Easy, Fair, Costly, Too strong | Your odds verdicts, by how much food a fight costs and whether you would retreat |
@@ -28,7 +30,7 @@ Plain, warm and brief, with an old-world flavour in names rather than in instruc
 | Find | A rare extra from an action, at one of three rarities |
 | First steps | The six opening goals, each with a button |
 | Foe | Something to fight; each has a style, shown before you fight |
-| Gathering lane | The lane that cuts wood or mines ore; the fire opens a second one |
+| Gathering lane | The lane that cuts wood, mines ore or fishes; the fire opens a second one |
 | Gold | Earned from selling and from foes; buys food and Storehouse space |
 | Health | How much damage you can take; set by Hitpoints |
 | Hearth | The home page |

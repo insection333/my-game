@@ -101,7 +101,7 @@ The list, then one page per skill (`/skills/woodcutting`).
 
 | # | Section (slot) | Filled by | Notes |
 | --- | --- | --- | --- |
-| 1 | `skills.list` | every skill | Seven rows: icon, name, level, a progress bar to the next level, and the next unlock. Grouped by lane |
+| 1 | `skills.list` | every skill | One tile per skill (nine since session 13): seal, name, level, a progress bar to the next level, and the next unlock. Grouped by lane: Gathering (Woodcutting, Mining, Fishing), Artisan (Smithing, Cooking), Combat |
 | — | **A skill's page** | | |
 | 1 | `skill.header` | that skill | Level, XP to next, the next unlock and how far away it is |
 | 2 | `skill.actions` | that skill | ActionRow per action or recipe: name, level, seconds, XP an hour, what it gives or takes, mastery step and bar, Start and Queue next. One tier at a time, under tabs: every tier opened so far and the next one (Tier 1 to 8 over the climb), opening on the newest tier with something open; the next tier's locked actions show their level, never hidden. Each tier's tab carries its resource's icon; when "Tier 1 … Tier 8" will not fit, the tabs show the icons alone and share the width (the name kept for screen readers and on hover), never scrolling sideways |

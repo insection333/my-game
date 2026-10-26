@@ -1,7 +1,9 @@
 // GAME_DESIGN.md's generated tables, from the model's data (used by build-docs.ts).
 // Text comes from numbers through one formatter, as the real effect formatter registry will do.
+import { COOKING } from './cooking.ts';
 import {
   FINDS,
+  FISHING,
   FOES,
   FOODS,
   MASTERY_STEPS,
@@ -52,10 +54,15 @@ const UNLOCK_TABLES = p.splice(0).join('\n');
 
 say('| Action | Skill | Level | Seconds | XP | Gives | Sells for |');
 say('| --- | --- | --- | --- | --- | --- | --- |');
-for (const a of [...WOODCUTTING, ...MINING]) {
-  const v = (a.skill === 'woodcutting' ? VALUE.log : VALUE.ore)[a.tier - 1];
+const GATHER_OF = {
+  woodcutting: ['Woodcutting', VALUE.log],
+  mining: ['Mining', VALUE.ore],
+  fishing: ['Fishing', VALUE.fish],
+} as const;
+for (const a of [...WOODCUTTING, ...MINING, ...FISHING]) {
+  const [skill, values] = GATHER_OF[a.skill];
   say(
-    `| ${a.name} | ${a.skill === 'woodcutting' ? 'Woodcutting' : 'Mining'} | ${a.level} | ${a.seconds} | ${a.xp} | ${a.item} ×${a.qty} | ${v} each |`,
+    `| ${a.name} | ${skill} | ${a.level} | ${a.seconds} | ${a.xp} | ${a.item} ×${a.qty} | ${values[a.tier - 1]} each |`,
   );
 }
 const GATHER = p.splice(0).join('\n');
@@ -70,6 +77,18 @@ for (const r of SMITHING)
   );
 const RECIPES = p.splice(0).join('\n');
 
+say('| Dish | Level | Takes | Makes | Seconds | XP | Heals | Sells for | Heals per gold of worth |');
+say('| --- | --- | --- | --- | --- | --- | --- | --- | --- |');
+for (const r of COOKING)
+  say(
+    `| ${r.name} | ${r.level} | ${Object.entries(r.inputs)
+      .map(([k, v]) => `${k} ×${v}`)
+      .join(
+        ', ',
+      )} | ${r.makes} | ${r.seconds} | ${r.xp} | ${n(r.heals)} | ${r.value} | ${(r.heals / r.value).toFixed(1)} |`,
+  );
+const COOKING_TABLE = p.splice(0).join('\n');
+
 const REGIONS = ['The march', 'The Sunken Fen', 'The Ashen Peaks'];
 say(
   '| Foe | Region | Style | Level | Opens at Hitpoints | Health | Max hit | XP a defeat (style) | Gold a defeat | Drop |',
@@ -83,7 +102,7 @@ const FOE_TABLE = p.splice(0).join('\n');
 
 say('| Food | Heals | Price | Sold from Hitpoints |');
 say('| --- | --- | --- | --- |');
-for (const f of FOODS) say(`| ${f.name} | ${f.heals} | ${f.price} | ${f.level} |`);
+for (const f of FOODS) say(`| ${f.name} | ${n(f.heals)} | ${f.price} | ${f.level} |`);
 const FOOD_TABLE = p.splice(0).join('\n');
 
 say('| Skill | Uncommon (about 1 in 50) | Rare (1 in 500) | Legendary (1 in 5,000) |');
@@ -116,6 +135,7 @@ export const TABLES: Record<string, string> = {
   UNLOCK_TABLES,
   GATHER,
   RECIPES,
+  COOKING_TABLE,
   FOE_TABLE,
   FOOD_TABLE,
   FIND_TABLE,

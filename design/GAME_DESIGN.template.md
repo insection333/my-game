@@ -17,15 +17,16 @@ The three pillars decide everything below:
 ```
  Woodcutting ──logs──┐            ┌── sword (Melee)
                      ├─► Smithing ┼── bow (Archery)  ──► wear ──► Combat ──► gold, drops, finds
- Mining ─────ores──► bars ────────┴── staff (Magic), armour            │
+ Mining ─────ores──► bars ────────┴── staff (Magic), armour  ▲         │
+ Fishing ────fish──► Cooking ──── cooked food ───────────────┘         │
      ▲                                                                  │
      └──────────── gold buys food and Storehouse space ◄────────────────┘
 ```
 
-- **Gathering** (Woodcutting, Mining) turns time into logs and ores.
-- **Artisan** (Smithing) turns ores into bars and bars and logs into gear. It stops, with the reason shown, when an ingredient runs out.
+- **Gathering** (Woodcutting, Mining, Fishing) turns time into logs, ores and fish.
+- **Artisan** (Smithing, Cooking) turns ores into bars and bars and logs into gear, and fish and logs into food. It stops, with the reason shown, when an ingredient runs out.
 - **Combat** (Melee, Archery, Magic, with Hitpoints rising from every fight) turns gear and food into XP, gold and drops.
-- **Gold** comes from selling to the vendor and from foes. It buys food and Storehouse space. Gear is always made, never bought.
+- **Gold** comes from selling to the vendor and from foes. It buys food (or a fighter cooks their own) and Storehouse space. Gear is always made, never bought.
 
 ### Lanes, the queue and time away
 
@@ -43,22 +44,22 @@ The three pillars decide everything below:
 
 ## 3. Skills, tiers and materials
 
-Seven skills: Woodcutting, Mining (Gathering); Smithing (Artisan); Melee, Archery, Magic and Hitpoints (Combat). The top level is **99** (version 1 stopped at 40).
+Nine skills: Woodcutting, Mining and Fishing (Gathering); Smithing and Cooking (Artisan); Melee, Archery, Magic and Hitpoints (Combat). The top level is **99** (version 1 stopped at 40). Fishing and Cooking came with the expansion (session 13); Fletching and Runecraft follow.
 
 Eight tiers open at levels 1, 10, 20, 30, 40, 55, 70 and 85. The first four belong to the march; the next two to the Sunken Fen and the last two to the Ashen Peaks, so the later tiers come further apart and each is earned:
 
-| Tier | Metal | Logs | Ore (Mining opens it) | Bar recipe |
-| --- | --- | --- | --- | --- |
-| 1 | Copper | Pine | Copper ore (1) | 1 copper ore |
-| 2 | Bronze | Ash | Tin ore (10) | 1 copper ore + 1 tin ore |
-| 3 | Iron | Oak | Iron ore (20) | 2 iron ore |
-| 4 | Steel | Yew | Coal (30) | 1 iron ore + 2 coal |
-| 5 | Moonsilver | Maple | Moonsilver ore (40) | 1 moonsilver ore + 1 coal |
-| 6 | Star-iron | Silverbark | Star-iron ore (55) | 1 star-iron ore + 2 coal |
-| 7 | Embersteel | Elderwood | Ember ore (70) | 1 ember ore + 2 coal |
-| 8 | Dawnsteel | Ancient | Dawnstone (85) | 1 dawnstone + 1 moonsilver ore + 2 coal |
+| Tier | Metal | Logs | Ore (Mining opens it) | Bar recipe | Fish |
+| --- | --- | --- | --- | --- | --- |
+| 1 | Copper | Pine | Copper ore (1) | 1 copper ore | Perch |
+| 2 | Bronze | Ash | Tin ore (10) | 1 copper ore + 1 tin ore | Trout |
+| 3 | Iron | Oak | Iron ore (20) | 2 iron ore | Pike |
+| 4 | Steel | Yew | Coal (30) | 1 iron ore + 2 coal | Salmon |
+| 5 | Moonsilver | Maple | Moonsilver ore (40) | 1 moonsilver ore + 1 coal | Moon carp |
+| 6 | Star-iron | Silverbark | Star-iron ore (55) | 1 star-iron ore + 2 coal | Silver eel |
+| 7 | Embersteel | Elderwood | Ember ore (70) | 1 ember ore + 2 coal | Ember char |
+| 8 | Dawnsteel | Ancient | Dawnstone (85) | 1 dawnstone + 1 moonsilver ore + 2 coal | Dawn sturgeon |
 
-That is 24 resources: eight logs, eight ores, eight bars. Bronze, steel and the later metals are alloys, so earlier ores keep their use: coal goes into every bar from steel on, and dawnsteel needs moonsilver.
+That is 32 resources: eight logs, eight ores, eight bars and eight fish. Bronze, steel and the later metals are alloys, so earlier ores keep their use: coal goes into every bar from steel on, and dawnsteel needs moonsilver.
 
 - **Weapons** need the style's level: a sword (Melee), a bow (Archery) or a staff (Magic) of a tier needs that style at the tier's level. Your style is your weapon's.
 - **Armour** (helm, body, legs) is shared by all styles and needs Hitpoints at the tier's level.
@@ -84,6 +85,8 @@ The table is derived, not guessed. To level 40 the model fits per-level times to
 | Materials an hour | 1 per action | about 133% | more with mastery |
 | Rare and Legendary finds an hour | 1x | 1x | 1x |
 
+Fishing is built the same way: each tier's shallows, and its deep pool four levels later ("Perch shallows", "Deep perch pool"). Fish sell for 40% of what the tier's logs fetch, because Fishing pays mostly in the food it saves (section 9).
+
 Rich actions ("Old pine", "Deep copper seam") are slower and give two items each: the choice between XP and materials. Smithing needs more ore than one fresh vein supplies, so rich seams, mastery and the fire's second lane are how a smith keeps the forge fed.
 
 *Generated:*
@@ -97,6 +100,16 @@ Every recipe in a tier pays the same XP an hour, so the choice is about what you
 *Generated:*
 
 {{RECIPES}}
+
+### Cooking
+
+Cooking is the Artisan lane's second skill. Each tier's fish is cooked two at a time over one of that tier's logs; from tier 3 a pie or a stew mixes the tier's fish with the one before (the older catch keeps its use), two at a time. Every recipe pays its tier's XP an hour, as Smithing's do.
+
+Cooked food heals about half the health a fighter has at its tier: the most a meal, eaten below half health, never wastes. A dish heals a quarter more. It sells for what went into it, and for that worth it heals at least 1.2 times what the vendor's food heals for its price from tier 2 on, so feeding yourself is a real choice. One Gathering lane fishing, with the fire's second lane chopping about half the time, keeps the Artisan lane cooking.
+
+*Generated:*
+
+{{COOKING_TABLE}}
 
 ## 7. Mastery
 
@@ -173,7 +186,7 @@ A foe opens at a Hitpoints level, so every style can reach every foe. Foes live 
 
 ### Food
 
-Bought from the vendor; better food is sold as Hitpoints rises. *Generated:*
+Bought from the vendor, or cooked (section 6): better food is sold as Hitpoints rises, and the vendor keeps selling it whatever you cook, as a fallback. A fighter eats the most healing food carried first, cooked or bought. *Generated:*
 
 {{FOOD_TABLE}}
 
@@ -181,7 +194,7 @@ Bought from the vendor; better food is sold as Hitpoints rises. *Generated:*
 
 - **Sources:** selling logs, ores, bars, gear and Uncommon and Rare finds to the vendor; gold and drops from foes.
 - **Sinks:** food, and Storehouse enlargements. Gear is made, never bought.
-- **The Storehouse** holds stacks of any size; slots limit the number of different items. {{STORE}} There are 102 kinds of item (24 resources, 48 gear, 6 foods, 24 sellable finds), so the last enlargement (108 slots) fits them all.
+- **The Storehouse** holds stacks of any size; slots limit the number of different items. {{STORE}} There are 132 kinds of item (32 resources, 48 gear, 20 foods, 32 sellable finds), so the last enlargement (138 slots) fits them all.
 - When a lane would produce an item with no free slot, it stops: "Storehouse full".
 - Every item's panel shows **Comes from** and **Used in**, gathered by asking every feature.
 
@@ -200,7 +213,7 @@ Enlargement costs follow each day's net gold, so one is affordable roughly when 
    6. Defeat a hollow rat (the step's reward, 10 bread, comes first).
 2. **Three short goals**, rolling: each sized to 10–15 minutes of your current pace in one lane ("Cut 60 oak logs", "Reach mastery 4 on Iron vein", "Defeat 25 grave wights", "Forge 3 iron helms"). A new one appears as each is claimed. Reward: a supply cache worth about 10 minutes of that lane's gold.
 3. **A daily goal:** about 40 minutes of play or a day of lanes ("Earn 20,000 Smithing XP today"). Reward: a supply cache worth about an hour of gold.
-4. **Milestones:** total level 50, 100, 150, 200, 250 and 280, then 350, 450, 550, 650 and 693 (every skill at 99); the first item of each of the eight tiers; collection log 12, 24 and 36; the first mastery 10. Reward: gold, and the milestone is shown on your hiscore entry.
+4. **Milestones:** total level 50, 100, 150, 200, 250 and 280, then 350, 450, 550, 650, 693 (the first seven skills at 99), 800 and 891 (all nine at 99); the first item of each of the eight tiers; collection log 12, 24, 36 and 48; the first mastery 10. Reward: gold, and the milestone is shown on your hiscore entry.
 5. **Supply caches** (session 11): half the goal's worth in gold is certain, and one draw adds more: a plain cache (half the time, +30%), a stocked one (3 in 10, +50% as the best food you are sold, for a fighter), a rich one (3 in 20, +100%) or a lucky one (1 in 20, +200%). On average a cache pays 1.05 times the goal's gold, so the economy holds, and opening one is a small moment of its own.
 
 ### Notable moments

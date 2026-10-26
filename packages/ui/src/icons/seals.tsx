@@ -1,7 +1,7 @@
 // The skill seals after Woodcutting's (ART.md, Skills): each skill's tool on the slate seal with the
 // bronze rim that marks the family. The rim and slate are drawn as Woodcutting's are.
 import { useContext, type ReactNode } from 'react';
-import { circle, Glint, INK, M, RimTone, Shape } from './style.tsx';
+import { circle, ellipse, Glint, INK, M, RimTone, Shape } from './style.tsx';
 
 /** The rim (its metal the skill's highest tier) and slate face every seal shares, with the tool on it. */
 function Seal({ children }: { children: ReactNode }) {
@@ -130,6 +130,56 @@ export function HitpointsSeal() {
       >
         <Glint x={16.5} y={16.5} r={1.4} />
       </Shape>
+    </Seal>
+  );
+}
+
+/** Fishing: a hook on its line, a bead of water at the point. */
+export function FishingSeal() {
+  return (
+    <Seal>
+      <path d="M27 7.5 L27 21" stroke={M.feather.base} strokeWidth={1.2} />
+      <path
+        d="M27 20 L27 30 C27 35.5 23.5 38.5 19.5 38.5 C15.5 38.5 13 35.5 13 32 L13 29.5"
+        fill="none"
+        stroke={INK}
+        strokeWidth={4.6}
+        strokeLinecap="round"
+      />
+      <path
+        d="M27 20 L27 30 C27 35.5 23.5 38.5 19.5 38.5 C15.5 38.5 13 35.5 13 32 L13 29.5"
+        fill="none"
+        stroke={M.steel.base}
+        strokeWidth={2.6}
+        strokeLinecap="round"
+      />
+      <path d="M26 21.5 L26 30" stroke={M.steel.light} strokeWidth={0.9} strokeLinecap="round" />
+      <Shape d="M13 27 L16.5 31.5 L13 31.5 Z" tone={M.steel} />
+      <Shape d={circle(27, 19, 2.6)} tone={M.wax} lit={circle(26.2, 18.2, 1.3)} />
+      <Shape d={circle(34, 31, 2.4)} tone={M.moonstone} lit={circle(33.3, 30.3, 1.2)}>
+        <Glint x={33.2} y={30.2} r={0.7} />
+      </Shape>
+    </Seal>
+  );
+}
+
+/** Cooking: a pot on a small flame. */
+export function CookingSeal() {
+  return (
+    <Seal>
+      <Shape
+        d="M20 33 C20 29 22 27 24 24 C26 27 28 29 28 33 C28 35.5 26 37 24 37 C22 37 20 35.5 20 33 Z"
+        tone={M.flame}
+        lit="M20 33 C20 29 22 27 24 24 C23.5 28 22.5 31 23 35.5 C21.2 35.2 20 34.4 20 33 Z"
+      />
+      <Shape
+        d="M11 14 L37 14 L35.5 25 C35 28.5 31 30.5 24 30.5 C17 30.5 13 28.5 12.5 25 Z"
+        tone={M.iron}
+        lit="M11 14 L17 14 L17 29.5 C14.5 28.5 12.8 27 12.5 25 Z"
+        shade="M37 14 L35.5 25 C35 28 32 30 27.5 30.4 C30 27.5 31 21 31 14 Z"
+      />
+      <Shape d={ellipse(24, 14, 13, 3)} tone={M.broth} lit={ellipse(20, 13.2, 6, 1.4)} />
+      <path d="M11 15 L7.5 13.5 M37 15 L40.5 13.5" stroke={INK} strokeWidth={2.4} strokeLinecap="round" />
     </Seal>
   );
 }

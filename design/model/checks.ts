@@ -1,5 +1,6 @@
 // Session 0's proof: every target in the brief, worked through the paper model. Run: node design/model/checks.ts
 import {
+  FISHING,
   FOES,
   MAX_LEVEL,
   MINING,
@@ -98,8 +99,8 @@ for (const s of SKILLS) {
 // 3. Choices and mastery.
 out('\n## Choices at each tier (XP an hour, mid-tier, against the best)');
 const MASTERED = 24000;
-for (const skill of ['woodcutting', 'mining'] as const) {
-  const acts = skill === 'woodcutting' ? WOODCUTTING : MINING;
+for (const skill of ['woodcutting', 'mining', 'fishing'] as const) {
+  const acts = { woodcutting: WOODCUTTING, mining: MINING, fishing: FISHING }[skill];
   for (const { tier, level: opens } of TIERS) {
     // Mid-tier: past the rich action (4 levels in), before the next tier.
     const lvl = opens + (tier < 5 ? 5 : 7);
@@ -125,8 +126,8 @@ for (const skill of ['woodcutting', 'mining'] as const) {
 }
 // Mastery pays: an action unlocked 10 levels below, with the mastery real play gave it (at least a day's use),
 // against the best fresh action at that level.
-for (const skill of ['woodcutting', 'mining'] as const) {
-  const acts = skill === 'woodcutting' ? WOODCUTTING : MINING;
+for (const skill of ['woodcutting', 'mining', 'fishing'] as const) {
+  const acts = { woodcutting: WOODCUTTING, mining: MINING, fishing: FISHING }[skill];
   const sim = simulate(gatherCandidates(skill), { days: DAYS + 10, table });
   for (const old of acts.filter((a) => a.level + 10 <= MAX_LEVEL)) {
     const lvl = old.level + 10;

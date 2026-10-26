@@ -15,6 +15,7 @@ import {
   FOES as MODEL_FOES,
   FOODS as MODEL_FOODS,
   FINDS,
+  FISHING,
   LUCK_GUARANTEE_SECONDS,
   LUCK_STEP as MODEL_LUCK_STEP,
   MINING,
@@ -23,11 +24,26 @@ import {
   STOREHOUSE,
   WOODCUTTING,
 } from '../../../design/model/content.ts';
+import { COOKING } from '../../../design/model/cooking.ts';
 import { fmtUnlock } from '../../../design/model/format.ts';
 import { unlockTable } from '../../../design/model/unlocks.ts';
 
-const DESIGN_SKILLS = ['woodcutting', 'mining', 'smithing', 'melee', 'archery', 'magic', 'hitpoints'] as const;
-const DESIGN_ACTIONS: Record<string, typeof WOODCUTTING> = { woodcutting: WOODCUTTING, mining: MINING };
+const DESIGN_SKILLS = [
+  'woodcutting',
+  'mining',
+  'fishing',
+  'smithing',
+  'cooking',
+  'melee',
+  'archery',
+  'magic',
+  'hitpoints',
+] as const;
+const DESIGN_ACTIONS: Record<string, typeof WOODCUTTING> = {
+  woodcutting: WOODCUTTING,
+  mining: MINING,
+  fishing: FISHING,
+};
 
 export function checkDesign(features: readonly Feature[], modelXp: number[]): string[] {
   const problems: string[] = [];
@@ -106,7 +122,8 @@ export function checkDesign(features: readonly Feature[], modelXp: number[]): st
         );
       }
     }
-    if (sk.id === 'smithing') problems.push(...checkRecipes(f));
+    if (sk.id === 'smithing') problems.push(...checkRecipes(f, SMITHING));
+    if (sk.id === 'cooking') problems.push(...checkRecipes(f, COOKING));
     const designActions = DESIGN_ACTIONS[sk.id];
     if (!designActions) continue;
     for (const d of designActions) {
@@ -126,20 +143,40 @@ export function checkDesign(features: readonly Feature[], modelXp: number[]): st
   return problems;
 }
 
-/** Smithing's recipes against the design: level, seconds, XP, what each takes and what it sells for. */
-function checkRecipes(f: Feature): string[] {
+/** Smithing's and Cooking's recipes against the design: level, seconds, XP, what each takes and makes,
+ *  what it sells for, and (for food) what it heals. */
+function checkRecipes(
+  f: Feature,
+  recipes: readonly ((typeof SMITHING)[number] & { makes?: number; heals?: number })[],
+) {
   const problems: string[] = [];
   const nameOf = (id: string) => t(`item.${id}`);
-  for (const d of SMITHING) {
+  for (const d of recipes) {
     const a = (f.content.actions ?? []).find((x) => t(`action.${f.id}.${x.id}`) === d.name);
     if (!a) {
       problems.push(`Feature "${f.id}" has no recipe named "${d.name}" (GAME_DESIGN.md)`);
       continue;
     }
-    const value = (f.content.items ?? []).find((i) => i.id === a.gives?.[0]?.item)?.value;
+    const item = (f.content.items ?? []).find((i) => i.id === a.gives?.[0]?.item);
     const takes = Object.fromEntries((a.takes ?? []).map((x) => [nameOf(x.item), x.count]));
-    const ours = { level: a.level, seconds: a.seconds, xp: a.xp, takes, value };
-    const theirs = { level: d.level, seconds: d.seconds, xp: d.xp, takes: d.inputs, value: d.value };
+    const ours = {
+      level: a.level,
+      seconds: a.seconds,
+      xp: a.xp,
+      takes,
+      makes: a.gives?.[0]?.count,
+      value: item?.value,
+      heals: item?.heals,
+    };
+    const theirs = {
+      level: d.level,
+      seconds: d.seconds,
+      xp: d.xp,
+      takes: d.inputs,
+      makes: d.makes ?? 1,
+      value: d.value,
+      heals: d.heals,
+    };
     if (JSON.stringify(ours) !== JSON.stringify(theirs))
       problems.push(
         `Feature "${f.id}": "${d.name}" is ${JSON.stringify(ours)}, the design says ${JSON.stringify(theirs)}`,

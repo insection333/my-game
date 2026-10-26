@@ -50,7 +50,16 @@ function bell(freq: number, at: number, ring: number, level: number) {
   }
 }
 
-/** A short knock: filtered noise for wood, a damped high tone for metal, a low thump for a blow. */
+/** Each sound's filtered noise: its centre, sharpness, loudness and length (a splash is soft and wide,
+ *  a sizzle high and faint, so neither stands out). */
+const NOISE = {
+  chop: { type: 'bandpass', hz: 420, q: 4, gain: 0.55, s: 0.09 },
+  hit: { type: 'bandpass', hz: 160, q: 2, gain: 0.7, s: 0.09 },
+  splash: { type: 'bandpass', hz: 700, q: 0.8, gain: 0.32, s: 0.16 },
+  sizzle: { type: 'highpass', hz: 3200, q: 0.7, gain: 0.16, s: 0.14 },
+} as const;
+
+/** A short knock: filtered noise for wood, water, the pan and a blow; a damped high tone for metal. */
 function knock(kind: WorkCue) {
   const a = audio();
   if (!a) return;
@@ -59,18 +68,19 @@ function knock(kind: WorkCue) {
     bell(1320 * vary, 0, 0.18, 0.05);
     return;
   }
-  const len = Math.floor(a.ctx.sampleRate * 0.09);
+  const n = NOISE[kind];
+  const len = Math.floor(a.ctx.sampleRate * n.s);
   const buf = a.ctx.createBuffer(1, len, a.ctx.sampleRate);
   const data = buf.getChannelData(0);
   for (let i = 0; i < len; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / len) ** 3;
   const src = a.ctx.createBufferSource();
   src.buffer = buf;
   const band = a.ctx.createBiquadFilter();
-  band.type = 'bandpass';
-  band.frequency.value = (kind === 'chop' ? 420 : 160) * vary;
-  band.Q.value = kind === 'chop' ? 4 : 2;
+  band.type = n.type;
+  band.frequency.value = n.hz * vary;
+  band.Q.value = n.q;
   const g = a.ctx.createGain();
-  g.gain.value = kind === 'chop' ? 0.55 : 0.7;
+  g.gain.value = n.gain;
   src.connect(band).connect(g).connect(a.out);
   src.start(a.ctx.currentTime);
 }

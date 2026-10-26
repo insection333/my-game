@@ -80,6 +80,7 @@ import {
   StarIronOre,
 } from './tiers-late.tsx';
 import { ArcherySeal, HitpointsSeal, MagicSeal, MeleeSeal, MiningSeal, SmithingSeal } from './seals.tsx';
+import { FOOD_ICONS } from './food-index.tsx';
 import { M, type Tone } from './style.tsx';
 import {
   AshLogs,
@@ -255,11 +256,12 @@ const NAMED = {
   'supply-cache': { draw: SupplyCache, family: 'reward', title: "Supply cache (a goal's reward)" },
 } satisfies Record<string, IconDef>;
 
-export const ICONS: Record<string, IconDef> = { ...GEAR, ...NAMED };
+export const ICONS: Record<string, IconDef> = { ...GEAR, ...NAMED, ...FOOD_ICONS };
 
 export type IconName = string;
 
-/** The reference set, approved by the owner: twelve icons covering every family. */
+/** The reference set, approved by the owner: twelve icons covering every family (20 October 2026), and
+ *  the fish family's four (27 October 2026). */
 export const REFERENCE_SET: IconName[] = [
   'copper-sword',
   'bronze-bow',
@@ -273,6 +275,10 @@ export const REFERENCE_SET: IconName[] = [
   'bread',
   'birds-nest',
   'woodcutting',
+  'perch',
+  'cooked-perch',
+  'salmon',
+  'pike-pie',
 ];
 
 export const hasIcon = (name: string): name is IconName => Object.hasOwn(ICONS, name);

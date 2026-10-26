@@ -49,6 +49,7 @@ Each material has exactly three tones: light, base and shadow.
 | Food | One item, warm and lit | Bread |
 | Finds | The object as it was found. Rarity is shown by a word and a pill beside it, never by colour or a frame alone | Bird's nest |
 | Skills | The skill's tool on a slate seal with a bronze rim, which marks the family | Woodcutting |
+| Fish | On a slant, head low on the left, tail up on the right, so it fills the square as a sword does; back lit, belly in shade, the eye the brightest point. Each kind has its own skin and marks; cooked, it turns golden brown with grill marks and a cloudy eye | Perch, Cooked perch, Salmon, Pike pie (approved 27 October 2026) |
 
 ## Readable at 24 px
 
@@ -69,6 +70,16 @@ Tiers 5 to 8 keep the march's drawings (the log pile, the rock with its nuggets,
 - **Ores lie in their own rock:** moonsilver in blue-grey stone, star-iron's pale flecks in black rock, ember ore glowing out of volcanic glass; dawnstone is a cluster of pale gold crystals.
 - **The Sunken Fen's foes** wear bog-green, reed-gold and drowned-grey, with weed and water about them; **the Ashen Peaks'** are ash, obsidian and fur, with ember cracks and glowing eyes.
 - **The later foods:** roast fowl, a hunter's feast on a board, a warden's raised pie.
+
+## Fishing and Cooking (session 13)
+
+The fish family the owner approved on 27 October 2026 (`icons/fish.tsx`, `fish-late.tsx`, `dishes.tsx`, `finds-food.tsx`):
+
+- **One body, many fish.** Every fish but the eel shares one drawn body, made slimmer or fuller per kind (a pike long and lean, a carp deep) and marked with its own skin: the perch's bars, the trout's pink stripe and spots, the pike's pale spots, the salmon's silver flank under a dark spotted back, the moon carp's big scales and whiskers, the ember char's glowing belly, the dawn sturgeon's row of bony plates and pointed snout. The silver eel is its own long S.
+- **Cooked** fish keep their kind's shape and turn golden brown (the salmon and trout a pinker gold), with three grill marks and a cloudy eye, so raw and cooked read apart at 24 px.
+- **Pies** are the vendor's pie dish with two of the tier's fish heads looking up out of the crust; **stews** are the hearty stew's wooden bowl, the tier's fish tail rising from a broth in the tier's colour.
+- **Finds** come up from the water or out of a cook's keeping: a pearl mussel, a river pearl, a message in a bottle, a drowned signet ring, a great scale of the deep and a fen-king's crown hung with weed; wild herbs, saffron in a tied sack, a grandmother's sealed recipe, a silver ladle, an ever-warm pot and a cauldron of plenty spilling gold.
+- **Seals:** Fishing's hook and line with a red float; Cooking's pot over a small flame.
 
 ## Seals that grow
 

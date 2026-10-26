@@ -6,7 +6,7 @@ import type { GameEvent } from '@idle-clash/kernel';
 
 export type SoundChoice = 'off' | 'moments' | 'all';
 export type Cue = 'legendary' | 'level' | 'rare' | 'newFind' | 'mastery' | 'goal' | 'stopped';
-export type WorkCue = 'chop' | 'strike' | 'hit';
+export type WorkCue = 'chop' | 'strike' | 'hit' | 'splash' | 'sizzle';
 
 /** A moment's cue: the rarest thing wins when several land together. */
 export function cueFor(e: GameEvent): Cue | null {
@@ -39,6 +39,8 @@ export function bestCue(events: readonly GameEvent[]): Cue | null {
 export function workCue(skill: string): WorkCue {
   if (skill === 'woodcutting') return 'chop';
   if (skill === 'mining' || skill === 'smithing') return 'strike';
+  if (skill === 'fishing') return 'splash';
+  if (skill === 'cooking') return 'sizzle';
   return 'hit';
 }
 
