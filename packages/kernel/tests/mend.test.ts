@@ -61,6 +61,19 @@ describe('mend', () => {
     expect(repairs).toContain('The clock time was damaged and was reset');
   });
 
+  it("starts the fire's heat again when it was lit after the clock", () => {
+    const raw = damaged((d) => {
+      d.state.fireSince = d.state.clock + HOUR;
+    });
+    const { doc, repairs } = mend(raw, NOW);
+    expect(doc.state.fireSince).toBeUndefined();
+    expect(repairs).toEqual(["The fire's heat was damaged and starts again"]);
+    const sound = damaged((d) => {
+      d.state.fireSince = d.state.clock - HOUR;
+    }) as Doc;
+    expect(mend(sound, NOW).repairs).toEqual([]);
+  });
+
   it('makes a fresh start from a save that cannot be read at all', () => {
     for (const raw of [undefined, null, 'text', 42, []]) {
       const { doc, repairs } = mend(raw, NOW);

@@ -2,7 +2,7 @@
 // items, XP arrives (more while the fire burns and for each Legendary mark), and levels and mastery
 // steps are announced. Finds roll first, so the luck guarantee counts from the moment before this one.
 import {
-  FIRE_XP_PCT,
+  fireXpPct,
   GREATER_FROM_TIER,
   LEGENDARY_CHANCE,
   LEGENDARY_MARK_PCT,
@@ -94,7 +94,7 @@ export function completeSkillAction(ctx: ActionContext, def: SkillDefinition, ac
     );
 
   const before = skillLevel(state, def.skill);
-  const bonusPct = (ctx.fireBurning ? FIRE_XP_PCT : 0) + LEGENDARY_MARK_PCT * marksIn(state, def.finds);
+  const bonusPct = (ctx.fireBurning ? fireXpPct(ctx.fireMinutes) : 0) + LEGENDARY_MARK_PCT * marksIn(state, def.finds);
   addXp(state, def.skill, act.xp * (1 + bonusPct / 100));
   const after = skillLevel(state, def.skill);
   for (let level = before + 1; level <= after; level++)

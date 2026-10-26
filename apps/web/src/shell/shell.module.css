@@ -100,6 +100,29 @@
   opacity: 0.45;
 }
 
+.fire[data-heat='2'] .fireGlow {
+  opacity: 0.6;
+  transform: scale(1.2);
+}
+
+.fire[data-heat='3'] .fireGlow {
+  opacity: 0.8;
+  transform: scale(1.45);
+}
+
+/* How much the fire's heat adds, beside its time where the header has room. */
+.fireHeat {
+  display: none;
+  color: var(--ember);
+  font-size: var(--t-small);
+}
+
+@media (min-width: 400px) {
+  .fireHeat {
+    display: inline;
+  }
+}
+
 .fire[data-state='dimming'] .fireGlow {
   opacity: 0.25;
   animation: breathe 1.4s ease-in-out infinite;

@@ -2,7 +2,7 @@
 // drew, so it lasts as long as it plays and ends as it began. A defeat pays style and Hitpoints XP for
 // the damage dealt, gold, a drop and maybe a find; a retreat costs nothing but the food eaten (and
 // there is none left by then): the lane stops and says so.
-import { FIRE_XP_PCT, LEGENDARY_MARK_PCT, masteryStep } from '@idle-clash/content';
+import { fireXpPct, LEGENDARY_MARK_PCT, masteryStep } from '@idle-clash/content';
 import { addXp, give, seeded, take, type ActionContext, type ActionRules, type StopReason } from '@idle-clash/kernel';
 import { marksIn, rollFind } from '../shared/complete.ts';
 import {
@@ -34,7 +34,11 @@ function play(ctx: ActionContext, foe: Foe): Fought | null {
 function gainXp(ctx: ActionContext, skill: string, base: number) {
   const marks = skill === HITPOINTS ? 0 : marksIn(ctx.state, STYLE_FINDS[skill as keyof typeof STYLE_FINDS]);
   const before = skillLevel(ctx.state, skill);
-  addXp(ctx.state, skill, base * (1 + ((ctx.fireBurning ? FIRE_XP_PCT : 0) + LEGENDARY_MARK_PCT * marks) / 100));
+  addXp(
+    ctx.state,
+    skill,
+    base * (1 + ((ctx.fireBurning ? fireXpPct(ctx.fireMinutes) : 0) + LEGENDARY_MARK_PCT * marks) / 100),
+  );
   const after = skillLevel(ctx.state, skill);
   for (let level = before + 1; level <= after; level++) ctx.emit({ type: 'levelUp', at: ctx.at, skill, level });
 }

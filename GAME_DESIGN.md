@@ -39,7 +39,8 @@ The three pillars decide everything below:
 
 - Any real input lights it: starting or changing an action, claiming a goal, or the **Stoke** button.
 - It burns for **5 minutes** after your last input. In its last minute it dims and Stoke pulses. An idle open tab therefore falls back to the away rate.
-- While it burns: **+15% XP** in every lane and a **second Gathering lane**, so you can cut wood and mine at once (one skill never runs in both). When it goes out, the second lane stops with "The fire went out".
+- While it burns: **+15% XP** in every lane on average over an hour, and a **second Gathering lane**, so you can cut wood and mine at once (one skill never runs in both). When it goes out, the second lane stops with "The fire went out".
+- **It burns hotter the longer it is kept going** (session 11): +8% XP in its first ten minutes, +14% from ten, +17% from twenty, so an hour of play averages exactly the +15% the model uses. Letting it go out starts the heat again. The badge glows brighter at each step and shows its bonus.
 - Worked through the model, an hour with the fire earns **1.54 times** the XP of an hour away (target 1.5).
 
 ## 3. Skills, tiers and materials

@@ -13,8 +13,8 @@ const pine = { feature: 'woodcutting', id: 'pine-tree' };
 const started = (seed: number) =>
   engine.command(newState(seed, T0), T0, { type: 'start', lane: 'gathering', action: pine }, seeded(seed)).state;
 
-// From GAME_DESIGN.md: Pine tree 7.5 s and 11 XP; +15% XP while the fire burns (5 minutes after the
-// last input); Quick swing 2.5% faster at 2, 7, 12 ...; Practised hands 6% faster mastery at 6, 11 ...;
+// From GAME_DESIGN.md: Pine tree 7.5 s and 11 XP; while the fire burns (5 minutes after the last
+// input) +8% XP in its first ten minutes of heat, which is all these five minutes reach; Quick swing 2.5% faster at 2, 7, 12 ...; Practised hands 6% faster mastery at 6, 11 ...;
 // mastery steps at 30, 90, 210 ... completions, each 3% faster; a Legendary find's mark +2% XP.
 const QUICK = [2, 7, 12, 17, 22, 27, 32, 37];
 const PRACTISED = [6, 11, 16, 21, 26, 31, 36];
@@ -35,7 +35,7 @@ function byHand(markFrom: number) {
     if (t + ms > end) return { n, xp: Math.floor(milli / 1000), part: milli % 1000, nextDue: t + ms };
     t += ms;
     n++;
-    const pct = (t < fireUntil ? 15 : 0) + (t >= markFrom ? 2 : 0);
+    const pct = (t < fireUntil ? 8 : 0) + (t >= markFrom ? 2 : 0);
     milli += Math.round(11 * (1 + pct / 100) * 1000);
   }
 }

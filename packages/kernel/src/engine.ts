@@ -56,6 +56,7 @@ export function createEngine(registry: ActionRegistry, config: KernelConfig = DE
       lane,
       seed,
       fireBurning: at < s.fireUntil,
+      fireMinutes: at < s.fireUntil ? Math.max(0, at - (s.fireSince ?? at)) / 60_000 : 0,
       roll: () => {
         if (!canRoll) throw new Error('rules.check must not roll');
         return rng(lane, s.lanes[lane].rolls++);
@@ -179,6 +180,8 @@ export function createEngine(registry: ActionRegistry, config: KernelConfig = DE
       }
     }
     s.lastSeen = now;
+    // Lit from cold, the fire starts its heat again; kept burning, it keeps it.
+    if (!(now < s.fireUntil)) s.fireSince = now;
     s.fireUntil = Math.max(s.fireUntil, now + config.fireBurns);
   }
 

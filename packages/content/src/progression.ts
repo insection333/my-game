@@ -4,8 +4,21 @@ import type { Effect } from './effects.ts';
 
 export const MAX_LEVEL = 40;
 
-/** Extra XP while the fire burns, in percent. */
+/** Extra XP while the fire burns, on average over an hour of play, in percent: the model's figure. */
 export const FIRE_XP_PCT = 15;
+
+/** The fire burns hotter the longer it is kept from going out (session 11): its extra XP climbs in
+ *  three steps. Over a whole hour of play the steps average exactly FIRE_XP_PCT, so pacing holds. */
+export const FIRE_HEAT: readonly { minutes: number; pct: number }[] = [
+  { minutes: 0, pct: 8 },
+  { minutes: 10, pct: 14 },
+  { minutes: 20, pct: 17 },
+];
+
+/** The fire's step after burning `minutes` without going out: 1, 2 or 3. */
+export const fireHeat = (minutes: number): number => FIRE_HEAT.filter((h) => minutes >= h.minutes).length;
+/** The fire's extra XP after burning `minutes` without going out. */
+export const fireXpPct = (minutes: number): number => FIRE_HEAT[fireHeat(minutes) - 1].pct;
 
 /** Each tier's pace (GAME_DESIGN.md sections 5 and 6): seconds for a standard gathering action, and
  *  per ingredient in Smithing; and the XP an hour that pace pays before perks and mastery. */

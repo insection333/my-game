@@ -13,6 +13,8 @@ export interface ActionContext {
   readonly lane: LaneId;
   /** Whether the fire is burning at this moment. */
   readonly fireBurning: boolean;
+  /** How long it has burned without going out, in minutes (0 when out): its heat. */
+  readonly fireMinutes: number;
   /** The lane's next random number in [0, 1). */
   roll(): number;
   /** For rules marked `seeded`: a number fixed for this repetition, the same in `duration` and
