@@ -11,6 +11,7 @@
 
 .stack {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--s-4);
 }
 
@@ -18,6 +19,7 @@
    left and the goals beside them, so neither column runs long while the other ends early. */
 .hearth {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--s-4);
   align-items: start;
   grid-template-areas: 'today' 'goals' 'next';
@@ -85,6 +87,7 @@
 
 .pair {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--s-4);
   align-items: start;
 }
@@ -107,6 +110,7 @@
 
 .welcome {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--s-3);
   justify-items: start;
 }
@@ -121,8 +125,8 @@
 
 .row {
   display: grid;
-  gap: var(--s-1);
-  padding: var(--s-3) var(--s-4);
+  gap: 2px;
+  padding: var(--s-2) var(--s-4);
   border-top: 1px solid var(--line);
   color: var(--ink);
   text-decoration: none;
@@ -139,8 +143,15 @@ a.row:hover {
 .rowHead {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
   gap: var(--s-3);
+}
+
+/* The line under a row's name, set in under the icon so the name leads. */
+.rowText {
+  padding-left: calc(24px + var(--s-2));
+  color: var(--ink-2);
+  font-size: var(--t-small);
 }
 
 .rowName {

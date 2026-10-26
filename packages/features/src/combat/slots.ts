@@ -1,4 +1,5 @@
-// Combat's slots on the Combat page: the loadout, one row per foe with "Your odds", and the triangle.
+// Combat's slots on the Combat page: the loadout, one row per foe with "Your odds", and the triangle
+// as it bears on your style.
 // Data comes out formatted; the shell draws it.
 import { fmt, GEAR_SLOTS, t, type GearSlot } from '@idle-clash/content';
 import { countOf, type State } from '@idle-clash/kernel';
@@ -28,6 +29,8 @@ export interface LoadoutSlot {
 }
 export interface LoadoutView {
   style: string | null;
+  /** The style's id, for its seal. */
+  styleId: string | null;
   slots: LoadoutSlot[];
   health: number;
   healthText: string;
@@ -40,6 +43,8 @@ export interface FoeRow {
   /** The region it is fought in (a tab of the Combat page), and its name. */
   region: string;
   regionName: string;
+  /** Its short name, for the tab on a narrow screen. */
+  regionShort: string;
   styleId: string;
   style: string;
   level: string;
@@ -87,7 +92,13 @@ function loadout(state: State, now: number): LoadoutView {
       slot,
       label: t(SLOTS[slot]),
       item,
-      name: item ? t(`item.${item}`) : slot === 'weapon' ? t('gear.noWeapon') : t('gear.none'),
+      name: item
+        ? t(`item.${item}`)
+        : slot !== 'weapon'
+          ? t('gear.none')
+          : choices.length
+            ? t('gear.wearWeapon')
+            : t('gear.noWeapon'),
       choices,
     };
   });
@@ -96,11 +107,14 @@ function loadout(state: State, now: number): LoadoutView {
   const meals = mealsOf(state);
   return {
     style: style ? t(`skill.${style}`) : null,
+    styleId: style,
     slots,
     health: health / most,
     healthText: t('combat.health', { now: fmt.int(health), most: fmt.int(most) }),
     food: meals.length
-      ? meals.map((m) => t('action.gives', { item: t(`item.${m.item}`), count: fmt.int(m.count) })).join(', ')
+      ? t('combat.carrying', {
+          food: meals.map((m) => t('action.gives', { item: t(`item.${m.item}`), count: fmt.int(m.count) })).join(', '),
+        })
       : t('combat.noFood'),
   };
 }
@@ -116,6 +130,7 @@ function foeRow(state: State, foe: Foe): FoeRow {
     tier: foe.tier,
     region: regionOf(foe.tier),
     regionName: t(`combat.region.${regionOf(foe.tier)}`),
+    regionShort: t(`combat.region.${regionOf(foe.tier)}.short`),
     styleId: foe.style,
     style: t(`skill.${foe.style}`),
     level: t('skill.level', { level: fmt.int(foe.level) }),
@@ -139,9 +154,26 @@ export const SLOTS_FILLED: Record<string, SlotFill> = {
   'combat.loadout': ({ state, now }) => loadout(state, now) as unknown as Json,
   'combat.foes': ({ state }) => FOES.map((f) => foeRow(state, f)) as unknown as Json,
   // Each style, the one it beats, and the line that says so (the page draws their seals beside it).
-  'combat.triangle': () =>
-    STYLE_SKILLS.map((s, i) => {
-      const beats = STYLE_SKILLS[(i + 1) % 3];
-      return { style: s, beats, text: t('combat.beats', { style: t(`skill.${s}`), foe: t(`skill.${beats}`) }) };
-    }),
+  'combat.triangle': ({ state }) => triangle(styleOf(state)) as unknown as Json,
 };
+
+/** One part of the triangle's line: a style's seal and the words beside it. */
+export interface TrianglePart {
+  seal: string;
+  text: string;
+}
+
+/** The triangle as it bears on you: what your style beats and loses to; without a weapon, all of it. */
+export function triangle(style: string | null): TrianglePart[] {
+  const at = (i: number) => STYLE_SKILLS[(i + 3) % 3];
+  const i = style ? (STYLE_SKILLS as readonly string[]).indexOf(style) : -1;
+  if (i < 0)
+    return STYLE_SKILLS.map((s, n) => ({
+      seal: s,
+      text: t('combat.beats', { style: t(`skill.${s}`), foe: t(`skill.${at(n + 1)}`) }),
+    }));
+  return [
+    { seal: at(i + 1), text: t('combat.strongAgainst', { style: t(`skill.${at(i + 1)}`) }) },
+    { seal: at(i - 1), text: t('combat.weakAgainst', { style: t(`skill.${at(i - 1)}`) }) },
+  ];
+}

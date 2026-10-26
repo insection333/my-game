@@ -18,6 +18,12 @@ function actionIcon(feature: Feature, id: string) {
   return out && hasIcon(out) ? <ItemIcon name={out} size={32} /> : <span className={s.iconCell} />;
 }
 
+/** A tier's tab shows the resource its first action makes. */
+function tierIcon(feature: Feature, id: string) {
+  const out = feature.content.actions?.find((a) => a.id === id)?.gives?.[0]?.item;
+  return out && hasIcon(out) ? <ItemIcon name={out} size={24} /> : undefined;
+}
+
 export function Skill({ id }: { id: string }) {
   const { features } = useGame();
   const feature = features.find((f) => f.content.skill?.id === id);
@@ -76,7 +82,9 @@ function SkillPage({ feature }: { feature: Feature }) {
                   tabs={tiers.map((n) => ({
                     href: `/skills/${id}?tier=${n}`,
                     label: t('skill.tier', { tier: fmt.int(n) }),
+                    short: fmt.int(n),
                     current: n === tier,
+                    icon: tierIcon(feature, all.find((a) => a.tier === n)!.action.id),
                   }))}
                 />
               </div>

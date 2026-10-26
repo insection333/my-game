@@ -104,7 +104,7 @@ The list, then one page per skill (`/skills/woodcutting`).
 | 1 | `skills.list` | every skill | Seven rows: icon, name, level, a progress bar to the next level, and the next unlock. Grouped by lane |
 | — | **A skill's page** | | |
 | 1 | `skill.header` | that skill | Level, XP to next, the next unlock and how far away it is |
-| 2 | `skill.actions` | that skill | ActionRow per action or recipe: name, level, seconds, XP an hour, what it gives or takes, mastery step and bar, Start and Queue next. One tier at a time, under tabs: every tier opened so far and the next one (Tier 1 to 8 over the climb), opening on the newest tier with something open; the next tier's locked actions show their level, never hidden |
+| 2 | `skill.actions` | that skill | ActionRow per action or recipe: name, level, seconds, XP an hour, what it gives or takes, mastery step and bar, Start and Queue next. One tier at a time, under tabs: every tier opened so far and the next one (Tier 1 to 8 over the climb), opening on the newest tier with something open; the next tier's locked actions show their level, never hidden. Each tier's tab carries its resource's icon; when "Tier 1 … Tier 8" will not fit, the tabs show the icons alone and share the width (the name kept for screen readers and on hover), never scrolling sideways |
 | 3 | `skill.finds` | that skill | The six finds, found (with the date) or silhouetted (with where it comes from), with their rarity |
 | 4 | `skill.ladder` | that skill | The unlock ladder 1–99, the current level marked, past unlocks muted |
 
@@ -124,12 +124,13 @@ The list, then one page per skill (`/skills/woodcutting`).
 
 | # | Section (slot) | Filled by | Notes |
 | --- | --- | --- | --- |
-| 1 | `combat.loadout` | combat | Weapon (and so your style) across the top, then helm, body and legs as small tiles; health and food carried on one line. Each slot opens a sheet of the matching gear in the Storehouse to wear or take off; an empty weapon slot with nothing to wear leads to Smithing |
+| 1 | `combat.loadout` | combat | The gear worn on a figure of a person: the helm on the head, the body on the chest, the legs on the legs, the weapon in the hand (each a tile with the piece's icon, named for screen readers and on hover; an empty one names its slot). Beside the figure (below it on a narrow panel): your style with its seal, the triangle as it bears on you (slot 4), health, and the food carried. Each slot opens a sheet of the matching gear in the Storehouse to wear or take off; an empty weapon slot with nothing to wear leads to Smithing |
 | 2 | `combat.foes` | combat | One region at a time, under tabs across the top of the page (the march, the Sunken Fen, the Ashen Peaks; every region shown, so the next is always in view), and in it one tier at a time under tabs (the newest with a foe open first). One row per foe: icon, name, style (as a word, never colour alone), level, the triangle against your style, Your odds verdict with XP, food and gold an hour, Fight and Next. Locked foes show the Hitpoints level that opens them; without a weapon each says to wear one |
-| 3 | `combat.food` | storehouse | The vendor's two best foods for your Hitpoints and the next to open, with prices and how many you carry, and Buy; an older food still carried stays listed |
-| 4 | `combat.triangle` | combat | A small permanent key: Melee beats Archery beats Magic beats Melee |
+| 3 | `combat.food` | storehouse | The vendor's two best foods for your Hitpoints and the next to open, one short row each: icon, name with how many you carry, what it heals and costs, and Buy 10; an older food still carried stays listed |
+| 4 | `combat.triangle` | combat | Inside the loadout, never a box of its own: what your style beats and loses to, each with its seal; without a weapon, the whole key (Melee beats Archery, Archery beats Magic, Magic beats Melee) |
 
-- **At 390:** loadout (one compact row of four gear slots and health) and the first three foes. **At 1,440:** loadout and food side by side, every foe, the triangle key.
+- **At 390:** the loadout (the figure with your style, triangle and health beside it) and the first foes. **At 1,440:** the loadout with the food under it, and every foe of the tier beside them.
+- **Region and tier tabs** never scroll: on a narrow screen the regions shorten (March, Fen, Peaks) and the tiers show their first foe's icon, sharing the width.
 
 **Visible without scrolling** (checked by verify at 390 × 844 and 1,440 × 900; a slot no built feature fills yet is skipped):
 
@@ -165,7 +166,7 @@ Tabs: Items · Collection log.
 | # | Section (slot) | Filled by | Notes |
 | --- | --- | --- | --- |
 | 1 | `hiscores.online` | server | How many are playing now |
-| 2 | `hiscores.ladder` | hiscores | Tabs for Total and each skill; rank, name, level, XP; your own row pinned |
+| 2 | `hiscores.ladder` | hiscores | Tabs for Total and each skill, each with its seal (on a phone, when the names will not fit, the seals alone, sharing the width; beside the ladder on wide screens); rank, name, level, XP; your own row pinned |
 
 - **At 390:** the online count and the first ten rows with your row pinned at the bottom. **At 1,440:** twenty-five rows and the tab list beside them.
 

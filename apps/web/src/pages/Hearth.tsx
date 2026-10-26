@@ -76,7 +76,7 @@ export function Hearth() {
                       </span>
                       <span className={s.muted}>{data.away}</span>
                     </span>
-                    <span>{data.text}</span>
+                    <span className={s.rowText}>{data.text}</span>
                   </a>
                 ))}
               </Slot>

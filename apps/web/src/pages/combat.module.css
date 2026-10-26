@@ -1,7 +1,8 @@
-/* The Combat page. Phones: loadout, foes, food (the triangle's key is for wide screens). Wide: the
-   loadout and food in a column; the foes beside them, with the key under the foes. */
+/* The Combat page. Phones: loadout, foes, food. Wide: the loadout and food in a column, the foes beside
+   them. */
 .layout {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--s-4);
   align-items: start;
   grid-template-areas: 'loadout' 'foes' 'food';
@@ -16,143 +17,19 @@
 .foodArea {
   grid-area: food;
 }
-.keyArea {
-  grid-area: key;
-  display: none;
-}
 
 @container main (min-width: 720px) {
   .layout {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
-    grid-template-rows: auto auto 1fr;
-    /* Each column stacks by itself: the food starts under the loadout, the key under the foes. */
-    grid-template-areas: 'loadout foes' 'food foes' 'food key';
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+    grid-template-rows: auto 1fr;
+    /* Each column stacks by itself: the food starts under the loadout. */
+    grid-template-areas: 'loadout foes' 'food foes';
   }
-  .keyArea {
-    display: block;
-  }
-}
-
-.loadout {
-  display: grid;
-  gap: var(--s-3);
-  padding: var(--s-3) var(--s-4) var(--s-4);
-}
-
-/* The weapon (it sets the style) across the top, then helm, body and legs. */
-.gear {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--s-2);
-}
-
-.slot[data-slot-name='weapon'] {
-  grid-column: 1 / -1;
-}
-
-/* Armour pieces are small tiles: the icon above its slot and name. */
-.slot:not([data-slot-name='weapon']) {
-  flex-direction: column;
-  justify-content: center;
-  text-align: center;
-  padding-block: var(--s-2);
-}
-
-.slot {
-  display: flex;
-  align-items: center;
-  gap: var(--s-2);
-  min-height: var(--tap);
-  min-width: 0;
-  padding: var(--s-1) var(--s-2);
-  border: 1px solid var(--line);
-  border-radius: var(--r-control);
-  background: var(--surface-2);
-  /* Named, not inherited from the link: Chromium on GitHub Actions kept an inherited light-theme ink
-     here after the theme changed. */
-  color: var(--ink);
-  text-decoration: none;
-}
-
-.slot[data-empty] {
-  border-style: dashed;
-  background: transparent;
-}
-
-.slot:hover {
-  border-color: var(--woad);
-}
-
-.emptyIcon {
-  width: 32px;
-  height: 32px;
-  flex: none;
-  border-radius: var(--r-control);
-  border: 1px dashed var(--line-strong);
-}
-
-.slotText {
-  display: grid;
-  min-width: 0;
-}
-
-.slotLabel {
-  font-size: var(--t-small);
-  color: var(--ink-2);
-}
-
-.slotName {
-  font-weight: 700;
-  font-size: var(--t-small);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.health {
-  display: grid;
-  gap: var(--s-1);
-}
-
-.healthLine {
-  display: flex;
-  justify-content: space-between;
-  gap: var(--s-2);
-  color: var(--ink-2);
-  font-size: var(--t-small);
-}
-
-.triangle {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: var(--s-2);
-  font-size: var(--t-body);
-}
-
-/* Each line between the two seals it names: the style, then the one it beats. */
-.triangle li {
-  display: grid;
-  grid-template-columns: 24px auto 24px;
-  justify-content: start;
-  align-items: center;
-  gap: var(--s-2);
 }
 
 .note {
   padding: var(--s-4);
   color: var(--ink-2);
-}
-
-.slot:not([data-slot-name='weapon']) .slotText {
-  width: 100%;
-}
-
-/* A tile's name wraps to a second line rather than losing its end ("Bronze he…"). */
-.slot:not([data-slot-name='weapon']) .slotName {
-  white-space: normal;
-  overflow-wrap: anywhere;
 }
 
 .tierTabs {

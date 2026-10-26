@@ -1,6 +1,7 @@
 /* The admin page: the player search beside the player opened, wide enough to read a save. */
 .layout {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--s-4);
   align-items: start;
 }

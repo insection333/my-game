@@ -1,14 +1,14 @@
-/* Hiscores: the ladders' tabs above the ladder on phones (scrolling sideways in their own strip),
-   beside it on wide screens. */
+/* Hiscores: the ladders' tabs above the ladder on phones (their seals alone when the names do not
+   fit), beside it on wide screens. */
 .layout {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--s-4);
   align-items: start;
 }
 
 .tabs {
   min-width: 0;
-  overflow-x: auto;
 }
 
 @container main (min-width: 720px) {

@@ -23,6 +23,10 @@
   --ember-glow: #f4a13b;
   /* The ember as small text: dark enough to read on the page's ground. */
   --ember-ink: #a8401a;
+  /* The loadout's figure (ART.md): its body, the light on its upper left, the shade on its right. */
+  --figure: #e3e9e2;
+  --figure-lit: #f7f9f5;
+  --figure-shade: #cdd6cf;
   --shade: rgb(16 28 32 / 0.18);
   --scrim: rgb(16 28 32 / 0.45);
   --burst-core: rgb(244 161 59 / 0.35);
@@ -81,6 +85,12 @@
     --ember: #f06a2e;
     --ember-glow: #ffb24d;
     --ember-ink: #f6894f;
+    --figure: #25363c;
+    --figure-lit: #34494f;
+    --figure-shade: #1b282d;
+    --figure: #25363c;
+    --figure-lit: #34494f;
+    --figure-shade: #1b282d;
     --shade: rgb(0 0 0 / 0.4);
     --scrim: rgb(0 0 0 / 0.6);
     --burst-core: rgb(255 178 77 / 0.25);
