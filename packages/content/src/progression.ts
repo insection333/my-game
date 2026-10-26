@@ -10,6 +10,8 @@ export const FIRE_XP_PCT = 15;
 /** Each tier's pace (GAME_DESIGN.md sections 5 and 6): seconds for a standard gathering action, and
  *  per ingredient in Smithing; and the XP an hour that pace pays before perks and mastery. */
 export const TIER_LEVELS: readonly number[] = [1, 10, 20, 30];
+/** The highest tier a level has reached: 1 at level 1, 2 from level 10, and so on. */
+export const tierOf = (level: number): number => TIER_LEVELS.filter((l) => level >= l).length;
 export const TIER_SECONDS: readonly number[] = [7.5, 12.5, 20, 26];
 export const TIER_XP_PER_HOUR: readonly number[] = [5400, 7200, 9300, 12000];
 

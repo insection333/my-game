@@ -41,6 +41,7 @@ export function ProgressBar({
   tone = 'moss',
   run,
   decorative,
+  segments,
 }: {
   value: number;
   label: string;
@@ -48,6 +49,8 @@ export function ProgressBar({
   run?: ProgressRun;
   /** The words beside it already say how far (a skill's tile): it is drawn, not announced. */
   decorative?: boolean;
+  /** Drawn in equal steps (mastery's ten), each step a segment. */
+  segments?: number;
 }) {
   const v = clamp(value);
   const a11y = decorative
@@ -62,6 +65,7 @@ export function ProgressBar({
   return (
     <div data-ui="ProgressBar" {...a11y} className={s.track}>
       <ProgressFill value={v} run={run} className={`${s.fill} ${s[tone]}`} />
+      {segments && <div className={s.notches} style={{ '--n': segments } as CSSProperties} />}
     </div>
   );
 }

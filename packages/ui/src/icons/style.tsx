@@ -1,7 +1,7 @@
 // The art style guide, in code. Every icon is built from Shapes: a base fill, a shadow and a light
 // clipped inside it (light comes from the top left), and one ink outline. Materials have exactly
 // three tones. See ART.md for the rules these encode.
-import { useId, type ReactNode } from 'react';
+import { createContext, useId, type ReactNode } from 'react';
 
 /** The outline: dark enough to hold the silhouette at 24 px on both themes' surfaces. */
 export const INK = '#182024';
@@ -119,3 +119,8 @@ export function Shape({ d, tone: t, lit, shade, children, outline = true }: Shap
 export const Glint = ({ x, y, r = 1.4 }: { x: number; y: number; r?: number }) => (
   <circle cx={x} cy={y} r={r} fill="#ffffff" opacity={0.85} />
 );
+
+/** A skill seal's rim, in the metal of the highest tier its skill has reached: copper, bronze, iron,
+ *  steel. Bronze when no tier is given (the icon sheet, a ladder's tab). */
+export const RIM_TONES: readonly Tone[] = [M.copper, M.bronze, M.iron, M.steel];
+export const RimTone = createContext<Tone>(M.bronze);

@@ -60,6 +60,10 @@ Each material has exactly three tones: light, base and shadow.
 
 The game's own mark is the hearth fire on a dark round seal (`icons/mark.tsx`; chosen by the owner on 22 October 2026): a big flame with a bright core over two crossed logs. It is the site's icon in the browser tab and on a phone's home screen, so it is judged at 16 and 32 px first. The build draws `favicon.svg` from it; `node tools/brand.ts` makes the PNG sizes phones ask for (and `--review` a sheet of it at every size on both themes).
 
+## Seals that grow
+
+A skill's seal is rimmed in the metal of the highest tier its skill has reached: copper, then bronze, iron and steel (later tiers add their own metals). At the top level a small amber star sits on the rim's foot. The icon sheet shows one seal at each tier. Where no player's skill is meant (a ladder's tab, the icon sheet's own entry), the rim is bronze.
+
 ## The region's scene
 
 The march, seen from the road (`packages/ui/src/art/MarchScene.tsx`; placed by the owner behind the welcome page and as a banner across the top of the Hearth): far mountains with snow, the near range, wooded hills, the old road winding up to a smoking forge, a waystone, and tall pines framing it. It is drawn by the icon rules at landscape scale:

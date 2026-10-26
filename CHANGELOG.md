@@ -39,3 +39,4 @@
 - The contact address, admin@idleclash.com, is on the welcome page, the privacy page and the terms, and in the welcome page's "Forgot it?" line.
 - The region's scene moves a little, as the owner asked: smoke rises from the forge, two clouds drift across the sky and now and then birds fly over; it is still with reduced motion, and its moving layer keeps the CPU near idle.
 - The expansion's plan (`docs/EXPANSION.md`), with the owner's decisions of 26 October 2026 recorded in the brief: level 99 over eight tiers, four new skills, expeditions, Rekindling, deeds and titles, then one closed test.
+- Progress you can see: a skill's seal is rimmed in the metal of the highest tier it has reached (copper, bronze, iron, steel) with a star at the top level; the Hearth's banner carries your rank and total level with a bar to the next rank (thirteen ranks, Wanderer to Legend of the Realm); mastery shows as ten segments on every action row.

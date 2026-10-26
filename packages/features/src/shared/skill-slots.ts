@@ -5,7 +5,8 @@ import {
   GREATER_FROM_TIER,
   levelProgress,
   MASTERY_STEPS,
-  TIER_LEVELS,
+  MAX_LEVEL,
+  tierOf,
   t,
   XP_TABLE,
   type Find,
@@ -32,6 +33,9 @@ export interface SkillSummary {
   progress: number;
   toNext: string;
   nextUnlock: string | null;
+  /** The highest tier reached, for the seal's rim, and whether the skill is at the top level. */
+  tier: number;
+  top: boolean;
 }
 export interface SkillActionRow {
   action: { feature: string; id: string };
@@ -46,6 +50,8 @@ export interface SkillActionRow {
   /** What one repetition uses up, or null when it takes nothing. */
   takes: string | null;
   mastery: string;
+  /** The mastery step reached, 0 to 10. */
+  masteryStep: number;
   masteryProgress: number;
 }
 export interface LadderRow {
@@ -104,6 +110,8 @@ export function skillSlots(def: SkillDef): Record<string, SlotFill> {
             unlock: next.unlocks.map((u) => unlockText(feature, ladder, u)).join('; '),
           })
         : null,
+      tier: tierOf(p.level),
+      top: p.level === MAX_LEVEL,
     };
   };
 
@@ -151,7 +159,7 @@ export function skillSlots(def: SkillDef): Record<string, SlotFill> {
         const [from, to] = [MASTERY_STEPS[step - 1] ?? 0, MASTERY_STEPS[step] ?? 0];
         return {
           action: { feature, id: a.id },
-          tier: TIER_LEVELS.filter((l) => a.level >= l).length,
+          tier: tierOf(a.level),
           name: t(`action.${feature}.${a.id}`),
           locked: level < a.level,
           opensAt: level < a.level ? t('action.opensAt', { level: fmt.int(a.level) }) : null,
@@ -168,6 +176,7 @@ export function skillSlots(def: SkillDef): Record<string, SlotFill> {
               })
             : null,
           mastery: t('mastery.step', { step: fmt.int(step) }),
+          masteryStep: step,
           masteryProgress: to ? Math.min(1, (done - from) / (to - from)) : 1,
         };
       });

@@ -53,7 +53,7 @@ function SkillPage({ feature }: { feature: Feature }) {
       {head && (
         <Slot id="skill.header" className={s.skillHead}>
           <div className={s.skillTitle}>
-            {hasIcon(id) && <ItemIcon name={id} size={48} />}
+            {hasIcon(id) && <ItemIcon name={id} size={48} seal={{ tier: head.tier, top: head.top }} />}
             <h1>{head.name}</h1>
             <Pill tone="moss">{head.level}</Pill>
           </div>
@@ -105,7 +105,16 @@ function SkillPage({ feature }: { feature: Feature }) {
                       <Pill tone="moss">{a.mastery}</Pill>
                     )
                   }
-                  progress={!a.locked && <ProgressBar value={a.masteryProgress} label={`${a.name}: ${a.mastery}`} />}
+                  progress={
+                    // Mastery's ten steps as ten segments, the current one filling.
+                    !a.locked && (
+                      <ProgressBar
+                        value={(a.masteryStep + (a.masteryStep < 10 ? a.masteryProgress : 0)) / 10}
+                        segments={10}
+                        label={`${a.name}: ${a.mastery}`}
+                      />
+                    )
+                  }
                   actions={
                     !a.locked && (
                       <>

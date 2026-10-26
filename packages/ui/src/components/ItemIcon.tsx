@@ -3,6 +3,7 @@
 // found) keeps the shape and fills it with one quiet tone.
 import { useId } from 'react';
 import { hasIcon, ICONS } from '../icons/index.tsx';
+import { M, RIM_TONES, RimTone, Shape } from '../icons/style.tsx';
 
 export type IconSize = 24 | 32 | 48 | 96;
 
@@ -11,11 +12,15 @@ export function ItemIcon({
   size = 32,
   label,
   silhouette,
+  seal,
 }: {
   name: string;
   size?: IconSize;
   label?: string;
   silhouette?: boolean;
+  /** For a skill's seal: the highest tier its skill has reached (the rim's metal), and whether it is
+   *  at the top level (a star on the rim). */
+  seal?: { tier: number; top: boolean };
 }) {
   const Draw = hasIcon(name) ? ICONS[name].draw : null;
   const filter = `silhouette-${useId().replace(/[^a-zA-Z0-9_-]/g, '')}`;
@@ -24,6 +29,7 @@ export function ItemIcon({
       data-ui="ItemIcon"
       data-icon={name}
       data-silhouette={silhouette || undefined}
+      data-rim={seal?.tier}
       width={size}
       height={size}
       viewBox="0 0 48 48"
@@ -40,7 +46,14 @@ export function ItemIcon({
       )}
       {Draw ? (
         <g filter={silhouette ? `url(#${filter})` : undefined}>
-          <Draw />
+          {seal ? (
+            <RimTone.Provider value={RIM_TONES[Math.min(RIM_TONES.length, Math.max(1, seal.tier)) - 1]}>
+              <Draw />
+              {seal.top && <TopStar />}
+            </RimTone.Provider>
+          ) : (
+            <Draw />
+          )}
         </g>
       ) : (
         <rect
@@ -56,5 +69,16 @@ export function ItemIcon({
         />
       )}
     </svg>
+  );
+}
+
+/** The star a seal wears on its rim once its skill is at the top level. */
+function TopStar() {
+  return (
+    <Shape
+      d="M24.0 33.4 L25.8 38.1 L30.8 38.4 L26.9 41.6 L28.2 46.4 L24.0 43.7 L19.8 46.4 L21.1 41.6 L17.2 38.4 L22.2 38.1 Z"
+      tone={M.amber}
+      lit="M24.0 33.4 L25.8 38.1 L24 40.6 L17.2 38.4 L22.2 38.1 Z"
+    />
   );
 }

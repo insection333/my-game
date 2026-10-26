@@ -38,7 +38,11 @@ export function Skills() {
                       className={k.tile}
                       onClick={(e) => (e.preventDefault(), navigate(`/skills/${data.skill}`))}
                     >
-                      <span className={k.seal}>{hasIcon(data.skill) && <ItemIcon name={data.skill} size={48} />}</span>
+                      <span className={k.seal}>
+                        {hasIcon(data.skill) && (
+                          <ItemIcon name={data.skill} size={48} seal={{ tier: data.tier, top: data.top }} />
+                        )}
+                      </span>
                       <span className={k.head}>
                         <span className={k.name}>{data.name}</span>
                         <span className={k.level}>{data.level}</span>

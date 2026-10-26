@@ -80,6 +80,7 @@ Each page lists its sections in order, what must be visible without scrolling at
 
 | # | Section (slot) | Filled by | Notes |
 | --- | --- | --- | --- |
+| 0 | `hearth.standing` | goals | Over the region's banner: your rank, your total level, and a thin bar to the next rank ("Warden of the March at 200") |
 | 1 | `hearth.today` | the shell (welcome), recap | On return: the away recap, best thing first, then "Collect". Otherwise: today's notable moments as a compact timeline |
 | 2 | `hearth.goals` | goals | First steps while unfinished (six rows with buttons); afterwards three short goals, the daily goal and the next milestone, each with a progress bar and its reward |
 | 3 | `hearth.lanes` | each lane | Full lane cards with their Next action; on desktop the lanes panel already shows them, so this section is omitted |

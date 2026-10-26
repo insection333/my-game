@@ -49,7 +49,12 @@ describe('woodcutting', () => {
       level: 'Level 14',
       toNext: '12,800 XP to level 15',
       nextUnlock: "Level 15: Woodsman's eye III (Rare and Legendary finds 8% likelier)",
+      tier: 2,
+      top: false,
     });
+    // The seal's rim follows the highest tier reached; a star at the top level.
+    expect(woodcutting.slots['skill.header']({ state: atLevel(20), now: T0 })).toMatchObject({ tier: 3, top: false });
+    expect(woodcutting.slots['skill.header']({ state: atLevel(40), now: T0 })).toMatchObject({ tier: 4, top: true });
     const rows = woodcutting.slots['skill.actions'](ctx) as { name: string; locked: boolean; xpPerHour: string }[];
     expect(rows.map((r) => [r.name, r.locked])).toContainEqual(['Old ash', false]);
     expect(rows.find((r) => r.name === 'Oak tree')).toMatchObject({ locked: true });
