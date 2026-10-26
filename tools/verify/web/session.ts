@@ -19,6 +19,7 @@ import { flagsFrom } from '../../../apps/server/src/config.ts';
 import type { Ctx } from '../../../apps/server/src/context.ts';
 import type { State } from '@idle-clash/kernel';
 import { exec, ROOT } from '../exec.ts';
+import { elder } from './elder.ts';
 import { crowd, CROWD, veteran } from './veteran.ts';
 import { readPageMap, type ViewSpec } from '../ia.ts';
 
@@ -57,16 +58,26 @@ export function views(): View[] {
   const veteran: ViewSpec[] = [
     ...map.views.filter((v) => !signedOut(v.path)).map((v) => ({ ...v, as: 'veteran' as const })),
     { page: 'Combat', path: '/combat?panel=gear&slot=weapon', phone: [], desktop: [], as: 'veteran' },
+    // A region still ahead: its foes locked, each saying the Hitpoints level that opens it.
+    { page: 'Combat', path: '/combat?region=peaks', phone: [], desktop: [], as: 'veteran' },
     { page: 'Skill', path: '/skills/melee', phone: [], desktop: [], as: 'veteran' },
     { page: 'Storehouse', path: '/storehouse?panel=item&item=carved-acorn', phone: [], desktop: [], as: 'veteran' },
   ];
+  // Two months into the climb, in the Sunken Fen: the longest names and the largest numbers.
+  const elders: ViewSpec[] = ['/', '/skills', '/skills/mining', '/combat', '/storehouse'].map((path) => ({
+    page: map.views.find((v) => v.path === path)?.page ?? 'Hearth',
+    path,
+    phone: [],
+    desktop: [],
+    as: 'elder' as const,
+  }));
   // The privacy page and the terms, as a visitor reads them from the welcome page.
   const visitor: ViewSpec[] = map.views
     .filter((v) => v.path === '/privacy' || v.path === '/terms')
     .map((v) => ({ ...v, as: 'visitor' as const }));
   // The admin page is the admin's: a newcomer gets the page that does not exist.
   const newcomer = map.views.filter((v) => v.path !== '/admin');
-  return [...newcomer, ...sheets, ...veteran, ...visitor].map((v) => ({
+  return [...newcomer, ...sheets, ...veteran, ...elders, ...visitor].map((v) => ({
     ...v,
     name: (v.as ? `${v.as}-` : '') + (v.path.replace(/^\//, '').replace(/[^a-z0-9]+/gi, '-') || 'hearth'),
   }));
@@ -88,6 +99,8 @@ export interface Served {
   cookie: { name: string; value: string };
   /** The session cookie of a player three weeks in (`veteran.ts`). */
   veteran: { name: string; value: string };
+  /** And of one two months into the climb (`elder.ts`). */
+  elder: { name: string; value: string };
   /** The server's insides, for flows that set up a save the way the admin page will. */
   ctx: Ctx;
   close: () => Promise<void>;
@@ -151,6 +164,7 @@ async function start(): Promise<Served> {
     return c;
   };
   const vet = await settle('Veteran', (s) => veteran(ctx, s, now));
+  const eld = await settle('Elder', (s) => elder(ctx, s, now));
   // The veteran keeps the game's admin page, so it is screenshot with players on it. Named on the list
   // once signed up, as the owner is: a name already on it cannot be signed up for.
   ctx.config.adminNames.push('Veteran');
@@ -160,6 +174,7 @@ async function start(): Promise<Served> {
     url,
     cookie,
     veteran: vet,
+    elder: eld,
     ctx,
     close: async () => {
       await close();
@@ -179,11 +194,11 @@ export async function openPage(
   engine: Engine,
   path: string,
   options: BrowserContextOptions,
-  as?: 'veteran' | 'visitor',
+  as?: 'veteran' | 'elder' | 'visitor',
 ): Promise<Page> {
   const served = await ensureServer();
   const ctx = await (await browser(engine)).newContext(options);
-  const cookie = as === 'veteran' ? served.veteran : served.cookie;
+  const cookie = as === 'veteran' ? served.veteran : as === 'elder' ? served.elder : served.cookie;
   if (!signedOut(path) && as !== 'visitor') await ctx.addCookies([{ ...cookie, url: served.url }]);
   const page = await ctx.newPage();
   page.on('close', () => void ctx.close().catch(() => undefined));

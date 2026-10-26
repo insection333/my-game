@@ -3,7 +3,7 @@
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { bin, exec, node, ROOT } from './exec.ts';
-import { allStringKeys } from '@idle-clash/content';
+import { allStringKeys, MAX_LEVEL } from '@idle-clash/content';
 import type { Feature } from '@idle-clash/features';
 import { checkContent } from './checks/content.ts';
 import { checkDesign } from './checks/design-sync.ts';
@@ -123,7 +123,7 @@ async function content(): Promise<StepResult> {
   if (stale) problems.push(stale);
   if (problems.length)
     return fail(`${problems.length} content problem${problems.length > 1 ? 's' : ''}`, problems.join('\n'));
-  const levels = features.filter((f) => f.content.skill).length * 40;
+  const levels = features.filter((f) => f.content.skill).length * MAX_LEVEL;
   return pass(`${levels} levels all unlock something; ${strings} strings, all used; content matches GAME_DESIGN.md`);
 }
 

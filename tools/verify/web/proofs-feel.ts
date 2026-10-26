@@ -3,7 +3,8 @@
 // - Work is seen landing: a newcomer's chop fills its lane's bar smoothly (one running animation),
 //   and the logs and XP it brings rise in the gains feed.
 // - The keyboard holds: in Settings over a working lane, the focus stays where the player put it as
-//   the page ticks, Tab stays inside the sheet, and Escape closes it.
+//   the page ticks, Tab stays inside the sheet, the page behind it sleeps (inert), and Escape closes it
+//   and wakes the page.
 // - Losing the server is said, and recovering from it too: with the network gone, a change that
 //   cannot get through makes the page say it is reconnecting (after a few seconds, so a blip never
 //   shows); with the network back, the line goes.
@@ -58,9 +59,14 @@ async function keyboardHolds(page: Page, problems: string[]) {
     for (let i = 0; i < 30; i++) await page.keyboard.press('Tab');
     if (!(await sheet.evaluate((el) => el.contains(document.activeElement))))
       problems.push('Keyboard: Tab left the Settings sheet for the page behind it');
+    step = 'the page behind it sleeps';
+    if (!(await page.evaluate(() => !!document.querySelector('[data-main]')?.closest('[inert]'))))
+      problems.push('Keyboard: the page behind the Settings sheet can still be reached');
     step = 'Escape closes it';
     await page.keyboard.press('Escape');
     await sheet.waitFor({ state: 'detached', timeout: 5_000 });
+    if (await page.evaluate(() => !!document.querySelector('[inert]')))
+      problems.push('Keyboard: the page stays asleep after its sheet closed');
   } catch (err) {
     problems.push(`Keyboard: failed where ${step} (${say(err)})`);
   }

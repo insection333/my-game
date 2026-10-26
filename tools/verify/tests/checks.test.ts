@@ -106,7 +106,7 @@ describe('the content check', () => {
   it('finds every empty level', () => {
     const problems = content([tiny()]);
     expect(problems[0]).toBe(
-      `Feature "woodcutting": levels with nothing to unlock: ${Array.from({ length: 39 }, (_, i) => i + 2).join(', ')}`,
+      `Feature "woodcutting": levels with nothing to unlock: ${Array.from({ length: 98 }, (_, i) => i + 2).join(', ')}`,
     );
   });
 

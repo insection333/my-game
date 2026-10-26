@@ -7,7 +7,11 @@ import { z } from 'zod';
 
 export const START_SLOTS = 24;
 export const SLOTS_PER_ENLARGEMENT = 6;
-export const ENLARGE_COSTS: readonly number[] = [40_000, 90_000, 100_000, 120_000, 180_000, 200_000, 230_000, 250_000];
+/** Eight enlargements over version 1's three weeks, then six more over the climb to 99. */
+export const ENLARGE_COSTS: readonly number[] = [
+  40_000, 90_000, 100_000, 120_000, 180_000, 200_000, 230_000, 250_000, 280_000, 300_000, 340_000, 450_000, 460_000,
+  650_000,
+];
 
 /** Gold is counted in the header, not in a slot. */
 export const SLOTLESS = new Set(['gold']);

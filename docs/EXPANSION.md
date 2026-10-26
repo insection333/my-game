@@ -35,7 +35,7 @@ The first 40 levels keep their present pace, so everything already proven still 
 
 | Target | Measured by |
 | --- | --- |
-| One skill kept in its lane: level 40 in about 3 weeks, 55 in about 5½, 70 in about 7½, 85 in about 10, **99 in about 13 weeks** | The model and the year-long simulation |
+| One skill kept in its lane: level 40 in about 3 weeks, 55 in about 7, 70 in about 10½, 85 in about 13, **99 in about 15 weeks** (a level past 40 takes about two days at first and about one near the top; set in session 12, when 40 at 3 weeks and an XP cost that never falls fixed the shape) | The model and the year-long simulation |
 | **Every skill at 99 in about a year** of daily play (an active hour a day with the fire, the rest away) | The year-long simulation, all lanes busy |
 | A notable event about every 2 minutes of active play **at every stage of the year**, never more than 5 minutes without one | The simulation, sampled at day 1, 7, 30, 90, 180 and 365 |
 | Something new to aim for **every day of the year**: a level, a tier, a deed, a title, a boss, a relic | The simulation's calendar of firsts: no day without one |

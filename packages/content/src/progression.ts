@@ -2,7 +2,8 @@
 // by the paper model; verify fails if the two ever differ.
 import type { Effect } from './effects.ts';
 
-export const MAX_LEVEL = 40;
+/** The top level: version 1 stopped at 40; the expansion's climb goes to 99 (docs/EXPANSION.md). */
+export const MAX_LEVEL = 99;
 
 /** Extra XP while the fire burns, on average over an hour of play, in percent: the model's figure. */
 export const FIRE_XP_PCT = 15;
@@ -21,18 +22,24 @@ export const fireHeat = (minutes: number): number => FIRE_HEAT.filter((h) => min
 export const fireXpPct = (minutes: number): number => FIRE_HEAT[fireHeat(minutes) - 1].pct;
 
 /** Each tier's pace (GAME_DESIGN.md sections 5 and 6): seconds for a standard gathering action, and
- *  per ingredient in Smithing; and the XP an hour that pace pays before perks and mastery. */
-export const TIER_LEVELS: readonly number[] = [1, 10, 20, 30];
+ *  per ingredient in Smithing; and the XP an hour that pace pays before perks and mastery. Tiers 5 to 8
+ *  (the Sunken Fen's and the Ashen Peaks') open further apart. */
+export const TIER_LEVELS: readonly number[] = [1, 10, 20, 30, 40, 55, 70, 85];
 /** The highest tier a level has reached: 1 at level 1, 2 from level 10, and so on. */
 export const tierOf = (level: number): number => TIER_LEVELS.filter((l) => level >= l).length;
-export const TIER_SECONDS: readonly number[] = [7.5, 12.5, 20, 26];
-export const TIER_XP_PER_HOUR: readonly number[] = [5400, 7200, 9300, 12000];
+export const TIER_SECONDS: readonly number[] = [7.5, 12.5, 20, 26, 30, 34, 38, 42];
+export const TIER_XP_PER_HOUR: readonly number[] = [5400, 7200, 9300, 12000, 17000, 22000, 28000, 35000];
 
 /** XP_TABLE[level] is the total XP needed to reach that level; index 0 is unused. */
 export const XP_TABLE: readonly number[] = [
   0, 0, 50, 150, 310, 520, 890, 1490, 2500, 4170, 6790, 10400, 15900, 23800, 34000, 46800, 62100, 79900, 101000, 126000,
   155000, 202000, 265000, 340000, 428000, 531000, 650000, 790000, 951000, 1140000, 1360000, 1650000, 2000000, 2430000,
-  2920000, 3500000, 4170000, 4950000, 5850000, 6900000, 8100000,
+  2920000, 3500000, 4170000, 4950000, 5850000, 6900000, 8100000, 9302000, 10507000, 11714000, 12924000, 14136000,
+  15350000, 16567000, 17786000, 19008000, 20232000, 21459000, 22688000, 23920000, 25154000, 26391000, 27630000,
+  28871000, 30115000, 31361000, 32610000, 33861000, 35115000, 36371000, 37630000, 38891000, 40155000, 41422000,
+  42691000, 43963000, 45237000, 46514000, 47793000, 49075000, 50359000, 51646000, 52935000, 54227000, 55522000,
+  56819000, 58119000, 59421000, 60726000, 62034000, 63344000, 64657000, 65973000, 67291000, 68612000, 69935000,
+  71261000, 72590000, 73921000, 75255000, 76592000, 77931000, 79273000, 80618000, 81965000, 83315000,
 ];
 
 export function levelFor(xp: number): number {

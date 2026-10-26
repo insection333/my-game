@@ -38,10 +38,11 @@ function fixFor(reason: { code: string; detail?: Record<string, string | number>
 
 const actionName = (a: { feature: string; id: string }) => t(`action.${a.feature}.${a.id}`);
 
-/** An action's icon: its first output's, or the action's own (a foe), when drawn. */
+/** An action's icon: a foe's own, or what an action makes, when drawn. */
 function iconOf(features: readonly Feature[], a: ActionRef): string | undefined {
+  // A fight shows its foe (its drop is incidental); any other action what it makes.
   const out = features.find((f) => f.id === a.feature)?.content.actions?.find((x) => x.id === a.id)?.gives?.[0]?.item;
-  return [out, a.id].find((n): n is string => !!n && hasIcon(n));
+  return (a.feature === 'combat' ? [a.id, out] : [out, a.id]).find((n): n is string => !!n && hasIcon(n));
 }
 
 export function laneViews(state: State, now: number, features: readonly Feature[] = []): LaneView[] {

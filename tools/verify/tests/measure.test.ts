@@ -34,6 +34,7 @@ describe('measurePage', () => {
       <button data-ui="Chip" style="height:30px;color:red">A</button>
       <button data-ui="Chip" style="height:30px;color:blue">B</button>
       <span style="display:block;width:60px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">Cut off at the end</span>
+      <span style="display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;width:40px">Silverbarkish</span>
       <nav data-menu>${'<a href="#" data-ui="MenuLink" style="display:inline-block;min-height:44px">m</a>'.repeat(7)}</nav>
       </div></main>`);
     const text = m.problems.join('\n');
@@ -45,6 +46,7 @@ describe('measurePage', () => {
     expect(text).toContain('The menu has 7 entries; at most 6');
     expect(text).toContain('A full-width section holds only 1 line(s)');
     expect(text).toContain('span "Cut off at the end" is cut short');
+    expect(text).toContain('span "Silverbarkish" is cut short');
   }, 30_000);
 
   it('reports where each slot starts and what bars cover the bottom', async () => {

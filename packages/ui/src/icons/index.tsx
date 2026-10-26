@@ -53,6 +53,32 @@ import {
 } from './foes.tsx';
 import { Body, Bow, Helm, Legs, Staff, Sword } from './gear.tsx';
 import { SupplyCache } from './rewards.tsx';
+import { BogLurker, BogWitch, DrownedAcolyte, FenReaver, MireHulk, ReedStalker } from './foes-fen.tsx';
+import {
+  AshShaman,
+  AshTroll,
+  EmberSorcerer,
+  HuntersFeast,
+  ObsidianGolem,
+  PeakSlinger,
+  RoastFowl,
+  SkyReaver,
+  WardensFeast,
+} from './foes-peaks.tsx';
+import {
+  AncientLogs,
+  Dawnstone,
+  DawnsteelBar,
+  ElderwoodLogs,
+  EmberOre,
+  EmbersteelBar,
+  MapleLogs,
+  MoonsilverBar,
+  MoonsilverOre,
+  SilverbarkLogs,
+  StarIronBar,
+  StarIronOre,
+} from './tiers-late.tsx';
 import { ArcherySeal, HitpointsSeal, MagicSeal, MeleeSeal, MiningSeal, SmithingSeal } from './seals.tsx';
 import { M, type Tone } from './style.tsx';
 import {
@@ -89,6 +115,11 @@ const TIERS: [string, Tone, Tone][] = [
   ['bronze', M.bronze, M.ash],
   ['iron', M.iron, M.oak],
   ['steel', M.steel, M.yew],
+  // Tiers 5 to 8 (session 12).
+  ['moonsilver', M.moonsilver, M.mapleWood],
+  ['star-iron', M.starIron, M.silverWood],
+  ['embersteel', M.embersteel, M.elderWood],
+  ['dawnsteel', M.dawnsteel, M.ancientWood],
 ];
 const GEAR: Record<string, IconDef> = Object.fromEntries(
   TIERS.flatMap(([metal, m, wood]) => {
@@ -191,6 +222,35 @@ const NAMED = {
   'wights-ring': { draw: WightsRing, family: 'find', title: "Wight's ring (Rare find)" },
   'star-glass-orb': { draw: StarGlassOrb, family: 'find', title: 'Star-glass orb (Legendary find)' },
   'sorcerers-eye': { draw: SorcerersEye, family: 'find', title: "Sorcerer's eye (Legendary find)" },
+  // Session 12: tiers 5 to 8.
+  'maple-logs': { draw: MapleLogs, family: 'resource', title: 'Maple logs' },
+  'silverbark-logs': { draw: SilverbarkLogs, family: 'resource', title: 'Silverbark logs' },
+  'elderwood-logs': { draw: ElderwoodLogs, family: 'resource', title: 'Elderwood logs' },
+  'ancient-logs': { draw: AncientLogs, family: 'resource', title: 'Ancient logs' },
+  'moonsilver-ore': { draw: MoonsilverOre, family: 'resource', title: 'Moonsilver ore' },
+  'star-iron-ore': { draw: StarIronOre, family: 'resource', title: 'Star-iron ore' },
+  'ember-ore': { draw: EmberOre, family: 'resource', title: 'Ember ore' },
+  dawnstone: { draw: Dawnstone, family: 'resource', title: 'Dawnstone' },
+  'moonsilver-bar': { draw: MoonsilverBar, family: 'resource', title: 'Moonsilver bar' },
+  'star-iron-bar': { draw: StarIronBar, family: 'resource', title: 'Star-iron bar' },
+  'embersteel-bar': { draw: EmbersteelBar, family: 'resource', title: 'Embersteel bar' },
+  'dawnsteel-bar': { draw: DawnsteelBar, family: 'resource', title: 'Dawnsteel bar' },
+  // Session 12: the Sunken Fen's and the Ashen Peaks' foes, and the vendor's later foods.
+  'bog-lurker': { draw: BogLurker, family: 'foe', title: 'Bog lurker' },
+  'reed-stalker': { draw: ReedStalker, family: 'foe', title: 'Reed stalker' },
+  'drowned-acolyte': { draw: DrownedAcolyte, family: 'foe', title: 'Drowned acolyte' },
+  'mire-hulk': { draw: MireHulk, family: 'foe', title: 'Mire hulk' },
+  'fen-reaver': { draw: FenReaver, family: 'foe', title: 'Fen reaver' },
+  'bog-witch': { draw: BogWitch, family: 'foe', title: 'Bog witch' },
+  'ash-troll': { draw: AshTroll, family: 'foe', title: 'Ash troll' },
+  'peak-slinger': { draw: PeakSlinger, family: 'foe', title: 'Peak slinger' },
+  'ash-shaman': { draw: AshShaman, family: 'foe', title: 'Ash shaman' },
+  'obsidian-golem': { draw: ObsidianGolem, family: 'foe', title: 'Obsidian golem' },
+  'sky-reaver': { draw: SkyReaver, family: 'foe', title: 'Sky reaver' },
+  'ember-sorcerer': { draw: EmberSorcerer, family: 'foe', title: 'Ember sorcerer' },
+  'roast-fowl': { draw: RoastFowl, family: 'food', title: 'Roast fowl' },
+  'hunters-feast': { draw: HuntersFeast, family: 'food', title: "Hunter's feast" },
+  'wardens-feast': { draw: WardensFeast, family: 'food', title: "Warden's feast" },
   // Session 11: the cache a goal pays in.
   'supply-cache': { draw: SupplyCache, family: 'reward', title: "Supply cache (a goal's reward)" },
 } satisfies Record<string, IconDef>;

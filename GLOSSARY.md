@@ -44,6 +44,7 @@ Plain, warm and brief, with an old-world flavour in names rather than in instruc
 | Notices | The tray of things that happened and need you |
 | Perk | A lasting bonus unlocked at a level |
 | Supply cache | What short goals and the daily goal pay in: gold for certain, and a draw for more |
+| Region | Where foes are fought: the march, the Sunken Fen and the Ashen Peaks, each a tab of Combat |
 | Rank | Your standing, from Wanderer to Legend of the Realm, rising with your total level |
 | Rare | A find of about 1 in 500 actions |
 | Retreat | Leaving a fight at low health with no food; nothing is lost and the lane stops |

@@ -1,5 +1,5 @@
-// The unlock ladder: what every level 1-40 of every skill gives.
-import { FOES, FOODS, MINING, SMITHING, TIERS, WOODCUTTING, type SkillId } from './content.ts';
+// The unlock ladder: what every level 1-99 of every skill gives.
+import { FOES, FOODS, MAX_LEVEL, MINING, SMITHING, TIERS, WOODCUTTING, type SkillId } from './content.ts';
 
 export type Effect =
   | { kind: 'speed'; pct: number }
@@ -27,25 +27,49 @@ interface PerkLine {
   name: string;
   effect: (rank: number) => Effect;
 }
-const roman = (n: number) => ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'][n - 1];
+const ROMAN: [number, string][] = [
+  [10, 'X'],
+  [9, 'IX'],
+  [5, 'V'],
+  [4, 'IV'],
+  [1, 'I'],
+];
+export const roman = (n: number) => {
+  let out = '';
+  for (const [v, r] of ROMAN)
+    while (n >= v) {
+      out += r;
+      n -= v;
+    }
+  return out;
+};
 
-function fillPerks(table: Map<number, Unlock[]>, lines: PerkLine[], capstone?: Unlock) {
+/** After level 40 (the expansion's climb), a perk line's ranks give half: there are so many more. */
+export const LATE_FROM = 41;
+const half = (e: Effect): Effect => ('pct' in e ? { ...e, pct: e.pct / 2 } : { ...e, amount: e.amount / 2 });
+
+/** Fills every level not already holding an unlock with the next perk line's next rank, in turn;
+ *  the capstones (level 40 and the top) are fixed. */
+function fillPerks(table: Map<number, Unlock[]>, lines: PerkLine[], capstones: Record<number, Unlock> = {}) {
   const ranks = lines.map(() => 0);
   let next = 0;
-  for (let lvl = 2; lvl <= 40; lvl++) {
-    if (lvl === 40 && capstone) {
-      table.get(40)!.push(capstone);
+  for (let lvl = 2; lvl <= MAX_LEVEL; lvl++) {
+    if (capstones[lvl]) {
+      table.get(lvl)!.push(capstones[lvl]);
       continue;
     }
     if (table.get(lvl)!.length) continue;
     const i = next++ % lines.length;
     ranks[i]++;
-    table
-      .get(lvl)!
-      .push({ type: 'perk', name: `${lines[i].name} ${roman(ranks[i])}`, effect: lines[i].effect(ranks[i]) });
+    const effect = lines[i].effect(ranks[i]);
+    table.get(lvl)!.push({
+      type: 'perk',
+      name: `${lines[i].name} ${roman(ranks[i])}`,
+      effect: lvl >= LATE_FROM ? half(effect) : effect,
+    });
   }
 }
-const empty = () => new Map(Array.from({ length: 40 }, (_, i) => [i + 1, [] as Unlock[]]));
+const empty = () => new Map(Array.from({ length: MAX_LEVEL }, (_, i) => [i + 1, [] as Unlock[]]));
 
 const gatherLines = (verb: string, eye: string): PerkLine[] => [
   { name: `Quick ${verb}`, effect: () => ({ kind: 'speed', pct: 2.5 }) },
@@ -60,10 +84,10 @@ export function unlockTable(skill: SkillId): Map<number, Unlock[]> {
     const actions = skill === 'woodcutting' ? WOODCUTTING : MINING;
     for (const a of actions) t.get(a.level)!.push({ type: 'action', name: a.name });
     const [verb, eye] = skill === 'woodcutting' ? ['swing', "Woodsman's eye"] : ['strike', "Prospector's eye"];
+    const who = skill === 'woodcutting' ? 'woodcutter' : 'miner';
     fillPerks(t, gatherLines(verb, eye), {
-      type: 'perk',
-      name: `Master ${skill === 'woodcutting' ? 'woodcutter' : 'miner'}`,
-      effect: { kind: 'extraYield', pct: 10 },
+      40: { type: 'perk', name: `Master ${who}`, effect: { kind: 'extraYield', pct: 10 } },
+      99: { type: 'perk', name: `Grandmaster ${who}`, effect: { kind: 'extraYield', pct: 15 } },
     });
   } else if (skill === 'smithing') {
     for (const r of SMITHING) t.get(r.level)!.push({ type: 'recipe', name: r.name });
@@ -75,20 +99,31 @@ export function unlockTable(skill: SkillId): Map<number, Unlock[]> {
         { name: "Smith's eye", effect: () => ({ kind: 'findChance', pct: 8 }) },
         { name: 'Practised hands', effect: () => ({ kind: 'masteryGain', pct: 8 }) },
       ],
-      { type: 'perk', name: 'Master smith', effect: { kind: 'saveInput', pct: 8 } },
+      {
+        40: { type: 'perk', name: 'Master smith', effect: { kind: 'saveInput', pct: 8 } },
+        99: { type: 'perk', name: 'Grandmaster smith', effect: { kind: 'saveInput', pct: 10 } },
+      },
     );
   } else if (skill === 'hitpoints') {
     for (const tier of TIERS) t.get(tier.level)!.push({ type: 'tier', name: `Wear ${tier.metal} armour` });
     for (const f of FOES) t.get(f.hitpoints)!.push({ type: 'foe', name: f.name });
     for (const fd of FOODS.slice(1)) t.get(fd.level)!.push({ type: 'action', name: `The vendor sells ${fd.name}` });
     const named: Record<number, Unlock> = {
-      5: { type: 'perk', name: 'Second wind', effect: { kind: 'regen', pct: 25 } },
-      15: { type: 'perk', name: 'Iron stomach', effect: { kind: 'foodHeal', pct: 15 } },
-      25: { type: 'perk', name: 'Field dressing', effect: { kind: 'regen', pct: 25 } },
+      5: { type: 'perk', name: 'Second wind I', effect: { kind: 'regen', pct: 25 } },
+      15: { type: 'perk', name: 'Iron stomach I', effect: { kind: 'foodHeal', pct: 15 } },
+      25: { type: 'perk', name: 'Field dressing I', effect: { kind: 'regen', pct: 25 } },
       35: { type: 'perk', name: 'Stubborn', effect: { kind: 'retreatAt', pct: 12 } },
       40: { type: 'perk', name: 'Unbowed', effect: { kind: 'foodHeal', pct: 15 } },
+      // The climb past 40: the same perks again, a rank higher and at half strength.
+      45: { type: 'perk', name: 'Second wind II', effect: { kind: 'regen', pct: 12.5 } },
+      55: { type: 'perk', name: 'Iron stomach II', effect: { kind: 'foodHeal', pct: 7.5 } },
+      65: { type: 'perk', name: 'Field dressing II', effect: { kind: 'regen', pct: 12.5 } },
+      75: { type: 'perk', name: 'Iron stomach III', effect: { kind: 'foodHeal', pct: 7.5 } },
+      85: { type: 'perk', name: 'Second wind III', effect: { kind: 'regen', pct: 12.5 } },
+      95: { type: 'perk', name: 'Field dressing III', effect: { kind: 'regen', pct: 12.5 } },
+      99: { type: 'perk', name: 'Unbroken', effect: { kind: 'foodHeal', pct: 20 } },
     };
-    for (let lvl = 1; lvl <= 40; lvl++) {
+    for (let lvl = 1; lvl <= MAX_LEVEL; lvl++) {
       if (named[lvl]) t.get(lvl)!.push(named[lvl]);
       if (lvl > 1) t.get(lvl)!.push({ type: 'perk', name: 'Toughness', effect: { kind: 'maxHealth', amount: 4 } });
     }
@@ -108,7 +143,10 @@ export function unlockTable(skill: SkillId): Map<number, Unlock[]> {
         { name: names[2], effect: () => ({ kind: 'guard', pct: 2.5 }) },
         { name: names[3], effect: () => ({ kind: 'spoils', pct: 6 }) },
       ],
-      { type: 'perk', name: `Master of ${skill}`, effect: { kind: 'damage', pct: 8 } },
+      {
+        40: { type: 'perk', name: `Master of ${skill}`, effect: { kind: 'damage', pct: 8 } },
+        99: { type: 'perk', name: `Grandmaster of ${skill}`, effect: { kind: 'damage', pct: 10 } },
+      },
     );
   }
   return t;

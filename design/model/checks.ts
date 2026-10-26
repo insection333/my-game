@@ -1,9 +1,21 @@
 // Session 0's proof: every target in the brief, worked through the paper model. Run: node design/model/checks.ts
-import { FOES, MINING, SKILLS, SMITHING, TIER_XP_PER_HOUR, WOODCUTTING, beatenBy, type Style } from './content.ts';
+import {
+  FOES,
+  MAX_LEVEL,
+  MINING,
+  SKILLS,
+  SMITHING,
+  TIER_XP_PER_HOUR,
+  TIERS,
+  WOODCUTTING,
+  beatenBy,
+  type Style,
+} from './content.ts';
 import { actionRate, masteryStep, matchup } from './mechanics.ts';
 import {
   combatCandidates,
   combatOdds,
+  extendTable,
   fitLevelTimes,
   gatherCandidates,
   levelFromTable,
@@ -27,7 +39,10 @@ const check = (ok: boolean, what: string) => {
 
 // 1. The curve.
 const fit = fitLevelTimes();
-const table = roundTable(simulate(gatherCandidates('woodcutting'), { days: 21, T: fit.T }).derived.slice(0, 41));
+const DAYS = 130;
+const table = extendTable(
+  roundTable(simulate(gatherCandidates('woodcutting'), { days: 21, T: fit.T }).derived.slice(0, 41)),
+);
 out('## XP table (total XP to reach each level)');
 out(
   table
@@ -37,29 +52,34 @@ out(
 );
 
 out('\n## Pacing for a skill kept in a lane (one active hour with the fire each day)');
-const targets: Record<number, number> = { 10: 1, 20: 24, 30: 120, 40: 504 };
+// The brief's targets to 40; the expansion's (docs/EXPANSION.md): 55 in about 7 weeks, 70 in 10½, 85
+// in 13 and 99 in about 15 weeks, each later level a little quicker than the one before.
+const targets: Record<number, number> = { 10: 1, 20: 24, 30: 120, 40: 504, 55: 1210, 70: 1764, 85: 2200, 99: 2540 };
+const MARKS = [10, 20, 30, 40, 55, 70, 85, 99];
 const fmt = (h: number) =>
   h < 1 ? `${Math.round(h * 60)} min` : h < 48 ? `${h.toFixed(1)} h` : `${(h / 24).toFixed(1)} days`;
 const runs: [string, () => number[]][] = [
-  ['Woodcutting', () => simulate(gatherCandidates('woodcutting'), { days: 30, table }).reached],
-  ['Mining', () => simulate(gatherCandidates('mining'), { days: 30, table }).reached],
-  ['Smithing', () => simulate(smithingCandidates, { days: 30, table }).reached],
+  ['Woodcutting', () => simulate(gatherCandidates('woodcutting'), { days: DAYS + 10, table }).reached],
+  ['Mining', () => simulate(gatherCandidates('mining'), { days: DAYS + 10, table }).reached],
+  ['Smithing', () => simulate(smithingCandidates, { days: DAYS + 10, table }).reached],
   ...(['melee', 'archery', 'magic'] as Style[]).map((s): [string, () => number[]] => [
     s[0].toUpperCase() + s.slice(1),
     () => {
       let hpXp = 0;
       return simulate(
         combatCandidates(s, () => levelFromTable(table, hpXp)),
-        { days: 30, table, step: 60, onHp: (x) => (hpXp += x) },
+        { days: DAYS + 10, table, step: 60, onHp: (x) => (hpXp += x) },
       ).reached;
     },
   ]),
 ];
 for (const [name, run] of runs) {
   const r = run();
-  out(`${name.padEnd(12)} ${[10, 20, 30, 40].map((l) => `L${l} ${fmt(r[l])} (${pct(r[l], targets[l])})`).join('  ')}`);
-  for (const l of [10, 20, 30, 40])
-    check(Math.abs(r[l] / targets[l] - 1) <= 0.25, `${name} level ${l} within 25% of target`);
+  out(
+    `${name.padEnd(12)} ${MARKS.map((l) => `L${l} ${fmt(r[l] ?? Infinity)} (${pct(r[l] ?? Infinity, targets[l])})`).join('  ')}`,
+  );
+  for (const l of MARKS)
+    check(Math.abs((r[l] ?? Infinity) / targets[l] - 1) <= 0.25, `${name} level ${l} within 25% of target`);
 }
 const firstLevel = Math.ceil(table[2] / WOODCUTTING[0].xp) * WOODCUTTING[0].seconds;
 check(firstLevel < 60, `First level-up after ${firstLevel} s of chopping (target under 1 minute)`);
@@ -71,7 +91,7 @@ for (const s of SKILLS) {
   const emptyLevels = [...t].filter(([, u]) => u.length === 0).map(([l]) => l);
   check(
     emptyLevels.length === 0,
-    `${s.name}: every level 1-40 unlocks something${emptyLevels.length ? ` (empty: ${emptyLevels.join(', ')})` : ''}`,
+    `${s.name}: every level 1-${MAX_LEVEL} unlocks something${emptyLevels.length ? ` (empty: ${emptyLevels.join(', ')})` : ''}`,
   );
 }
 
@@ -80,8 +100,9 @@ out('\n## Choices at each tier (XP an hour, mid-tier, against the best)');
 const MASTERED = 24000;
 for (const skill of ['woodcutting', 'mining'] as const) {
   const acts = skill === 'woodcutting' ? WOODCUTTING : MINING;
-  for (const tier of [1, 2, 3, 4]) {
-    const lvl = [5, 15, 25, 35][tier - 1];
+  for (const { tier, level: opens } of TIERS) {
+    // Mid-tier: past the rich action (4 levels in), before the next tier.
+    const lvl = opens + (tier < 5 ? 5 : 7);
     const rate = (a: (typeof acts)[number], done: number) => {
       const r = actionRate(skill, lvl, a, done, false);
       return (r.xpPerAction / r.secondsPerAction) * 3600;
@@ -106,8 +127,8 @@ for (const skill of ['woodcutting', 'mining'] as const) {
 // against the best fresh action at that level.
 for (const skill of ['woodcutting', 'mining'] as const) {
   const acts = skill === 'woodcutting' ? WOODCUTTING : MINING;
-  const sim = simulate(gatherCandidates(skill), { days: 30, table });
-  for (const old of acts.filter((a) => a.level + 10 <= 40)) {
+  const sim = simulate(gatherCandidates(skill), { days: DAYS + 10, table });
+  for (const old of acts.filter((a) => a.level + 10 <= MAX_LEVEL)) {
     const lvl = old.level + 10;
     const xph = (a: (typeof acts)[number], n: number) => {
       const r = actionRate(skill, lvl, a, n, false);
@@ -158,8 +179,8 @@ for (const f of FOES) {
     `${f.name}: ${beatenBy[f.style]} wins, ${dis.s} loses`,
   );
 }
-for (const tier of [1, 2, 3, 4]) {
-  const lvl = [6, 16, 26, 36][tier - 1];
+for (const { tier, level: opens } of TIERS) {
+  const lvl = opens + (tier < 5 ? 6 : 8);
   const best = (['melee', 'archery', 'magic'] as Style[])
     .flatMap((s) =>
       FOES.filter((f) => f.hitpoints <= lvl).map((f) => ({ f: f.name, s, x: combatOdds(s, lvl, lvl, f.id) })),

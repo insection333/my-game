@@ -31,8 +31,9 @@ function SkillPage({ feature }: { feature: Feature }) {
   const all = fillFor<SkillActionRow[]>(feature, 'skill.actions', state, now) ?? [];
   // One tier at a time, so the list stays short: the tier asked for in the address, or the newest
   // tier with something open.
-  const tiers = [...new Set(all.map((a) => a.tier))].sort((a, b) => a - b);
-  const current = Math.max(tiers[0] ?? 1, ...all.filter((a) => !a.locked).map((a) => a.tier));
+  // The tiers opened so far and the next one, so the next tier is always in view and the rest wait.
+  const current = Math.max(1, ...all.filter((a) => !a.locked).map((a) => a.tier));
+  const tiers = [...new Set(all.map((a) => a.tier))].filter((n) => n <= current + 1).sort((a, b) => a - b);
   const asked = Number(new URLSearchParams(location.search).get('tier'));
   const tier = tiers.includes(asked) ? asked : current;
   const actions = all.filter((a) => a.tier === tier);

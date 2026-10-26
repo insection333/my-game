@@ -75,12 +75,22 @@ export const MILESTONES: readonly Milestone[] = [
     [200, 60_000],
     [250, 100_000],
     [280, 150_000],
+    // The climb past 40 (seven skills at 99 make 693).
+    [350, 220_000],
+    [450, 320_000],
+    [550, 450_000],
+    [650, 600_000],
+    [693, 1_000_000],
   ].map(([level, reward]): Milestone => ({ id: `total-${level}`, kind: 'total', level, reward })),
   ...[
     ['copper', 250],
     ['bronze', 1_000],
     ['iron', 5_000],
     ['steel', 20_000],
+    ['moonsilver', 40_000],
+    ['star-iron', 80_000],
+    ['embersteel', 150_000],
+    ['dawnsteel', 300_000],
   ].map(([metal, reward], i): Milestone => ({
     id: `first-${metal}`,
     kind: 'forged',

@@ -3,12 +3,13 @@
 // completion. Woodcutting and Mining are both built from this, so they read and play alike.
 import {
   buildLadder,
+  fillPerks,
   TIER_LEVELS,
   TIER_SECONDS,
   TIER_XP_PER_HOUR,
+  type Effect,
   type Find,
   type Item,
-  type PerkLine,
 } from '@idle-clash/content';
 import type { ActionRules } from '@idle-clash/kernel';
 import { completeSkillAction, type SkillDefinition } from './complete.ts';
@@ -27,7 +28,9 @@ export interface GatheringSpec {
   feature: string;
   skill: string;
   tiers: GatheringTier[];
-  perks: PerkLine[];
+  /** Four perk lines that take turns on every level holding nothing else, and the two capstones. */
+  perks: { perk: string; effect: Effect }[];
+  capstones: Record<number, { perk: string; effect: Effect }>;
   finds: Find[];
   /** What the vendor pays for each find (Legendary ones are trophies: 0). */
   findValues: Record<string, number>;
@@ -78,7 +81,7 @@ export function gatheringContent(spec: GatheringSpec) {
     ...spec.tiers.map((t): Item => ({ id: t.item, kind: 'resource', value: t.value })),
     ...spec.finds.map((f): Item => ({ id: f.item, kind: 'find', value: spec.findValues[f.item] ?? 0 })),
   ];
-  const ladder = buildLadder(actions, spec.perks);
+  const ladder = fillPerks(buildLadder(actions, []), spec.perks, spec.capstones);
   return { actions, items, ladder };
 }
 

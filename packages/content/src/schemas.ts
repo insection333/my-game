@@ -18,7 +18,7 @@ export type GearSlot = (typeof GEAR_SLOTS)[number];
 export const Gear = z
   .object({
     slot: z.enum(GEAR_SLOTS),
-    tier: z.number().int().min(1).max(4),
+    tier: z.number().int().min(1).max(8),
     style: z.enum(STYLES).optional(),
   })
   .strict()
@@ -49,7 +49,7 @@ export const Unlock = z.discriminatedUnion('type', [
   z
     .object({
       type: z.literal('tier'),
-      tier: z.number().int().min(1).max(4),
+      tier: z.number().int().min(1).max(8),
       use: z.enum(['wield', 'wear']),
       style: z.enum(STYLES).optional(),
     })
@@ -58,7 +58,9 @@ export const Unlock = z.discriminatedUnion('type', [
   z.object({ type: z.literal('foe'), foe: Id }).strict(),
   /** A food the vendor now sells. */
   z.object({ type: z.literal('food'), item: Id }).strict(),
-  z.object({ type: z.literal('perk'), perk: Id, rank: z.number().int().min(1).max(39), effect: Effect }).strict(),
+  z
+    .object({ type: z.literal('perk'), perk: Id, rank: z.number().int().min(1).max(MAX_LEVEL), effect: Effect })
+    .strict(),
 ]);
 export type Unlock = z.infer<typeof Unlock>;
 
@@ -81,6 +83,39 @@ export function buildLadder(actions: { id: string; level: number }[], perks: Per
     line.levels.forEach((level, i) =>
       ladder[level - 1].push({ type: 'perk', perk: line.perk, rank: i + 1, effect: line.effect }),
     );
+  }
+  return ladder;
+}
+
+/** From this level (the expansion's climb past 40) a perk line's ranks give half: there are many more. */
+export const LATE_PERK_FROM = 41;
+const halfOf = (e: Effect): Effect => ('pct' in e ? { ...e, pct: e.pct / 2 } : { ...e, amount: e.amount / 2 });
+
+/** Fills every level from 2 to the top that unlocks nothing yet with the next perk line's next rank, in
+ *  turn (GAME_DESIGN.md section 12); the capstones (at 40 and the top) are fixed. Changes `ladder`. */
+export function fillPerks(
+  ladder: Unlock[][],
+  lines: readonly { perk: string; effect: Effect }[],
+  capstones: Record<number, { perk: string; effect: Effect }>,
+): Ladder {
+  const ranks = lines.map(() => 0);
+  let next = 0;
+  for (let level = 2; level <= MAX_LEVEL; level++) {
+    const cap = capstones[level];
+    if (cap) {
+      ladder[level - 1].push({ type: 'perk', perk: cap.perk, rank: 1, effect: cap.effect });
+      continue;
+    }
+    if (ladder[level - 1].length) continue;
+    const i = next++ % lines.length;
+    ranks[i]++;
+    const e = lines[i].effect;
+    ladder[level - 1].push({
+      type: 'perk',
+      perk: lines[i].perk,
+      rank: ranks[i],
+      effect: level >= LATE_PERK_FROM ? halfOf(e) : { ...e },
+    });
   }
   return ladder;
 }

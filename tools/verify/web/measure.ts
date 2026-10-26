@@ -41,7 +41,7 @@ export function measurePage(): Measured {
     const clamp = ts.getPropertyValue('-webkit-line-clamp');
     if (
       (ts.textOverflow === 'ellipsis' && el.scrollWidth > el.clientWidth + 1) ||
-      (clamp && clamp !== 'none' && el.scrollHeight > el.clientHeight + 1)
+      (clamp && clamp !== 'none' && (el.scrollHeight > el.clientHeight + 1 || el.scrollWidth > el.clientWidth + 1))
     )
       problems.push(`${describe(el)} is cut short with "…"`);
     const r = el.getBoundingClientRect();

@@ -1,6 +1,6 @@
-# Idle Clash: game design (version 1)
+# Idle Clash: game design
 
-Session 0 · October 2026. Every number here comes from the paper model in `design/model/`; the tables marked *generated* are written from its data, and the last section is its report. Change a number in the model, run the checks, then rebuild this file.
+Session 0 · October 2026; the long climb (level 99, eight tiers, three regions) added in session 12 (`docs/EXPANSION.md`). Every number here comes from the paper model in `design/model/`; the tables marked *generated* are written from its data, and the last section is its report. Change a number in the model, run the checks, then rebuild this file.
 
 ## 1. The game in one breath
 
@@ -43,9 +43,9 @@ The three pillars decide everything below:
 
 ## 3. Skills, tiers and materials
 
-Seven skills: Woodcutting, Mining (Gathering); Smithing (Artisan); Melee, Archery, Magic and Hitpoints (Combat). The top level in version 1 is **40**.
+Seven skills: Woodcutting, Mining (Gathering); Smithing (Artisan); Melee, Archery, Magic and Hitpoints (Combat). The top level is **99** (version 1 stopped at 40).
 
-Four tiers open at levels 1, 10, 20 and 30:
+Eight tiers open at levels 1, 10, 20, 30, 40, 55, 70 and 85. The first four belong to the march; the next two to the Sunken Fen and the last two to the Ashen Peaks, so the later tiers come further apart and each is earned:
 
 | Tier | Metal | Logs | Ore (Mining opens it) | Bar recipe |
 | --- | --- | --- | --- | --- |
@@ -53,8 +53,12 @@ Four tiers open at levels 1, 10, 20 and 30:
 | 2 | Bronze | Ash | Tin ore (10) | 1 copper ore + 1 tin ore |
 | 3 | Iron | Oak | Iron ore (20) | 2 iron ore |
 | 4 | Steel | Yew | Coal (30) | 1 iron ore + 2 coal |
+| 5 | Moonsilver | Maple | Moonsilver ore (40) | 1 moonsilver ore + 1 coal |
+| 6 | Star-iron | Silverbark | Star-iron ore (55) | 1 star-iron ore + 2 coal |
+| 7 | Embersteel | Elderwood | Ember ore (70) | 1 ember ore + 2 coal |
+| 8 | Dawnsteel | Ancient | Dawnstone (85) | 1 dawnstone + 1 moonsilver ore + 2 coal |
 
-That is exactly the twelve resources: four logs, four ores, four bars. Bronze and steel are alloys, so earlier ores keep their use.
+That is 24 resources: eight logs, eight ores, eight bars. Bronze, steel and the later metals are alloys, so earlier ores keep their use: coal goes into every bar from steel on, and dawnsteel needs moonsilver.
 
 - **Weapons** need the style's level: a sword (Melee), a bow (Archery) or a staff (Magic) of a tier needs that style at the tier's level. Your style is your weapon's.
 - **Armour** (helm, body, legs) is shared by all styles and needs Hitpoints at the tier's level.
@@ -65,7 +69,9 @@ One XP table serves every skill (total XP to reach each level, *generated*):
 
 {{XP_TABLE}}
 
-The table is derived, not guessed. The model fits per-level times to the targets, then simulates a player keeping one skill in a lane: one active hour with the fire each day, the rest away, always choosing the best action while present. Every skill is then checked against the table (results in section 15).
+The table is derived, not guessed. To level 40 the model fits per-level times to the brief's targets, then simulates a player keeping one skill in a lane: one active hour with the fire each day, the rest away, always choosing the best action while present. Past 40 the table is continued, each level costing a little more XP than the last (0.2% more), never less; the later tiers' faster rates set the pace. Every skill is then checked against the table (results in section 15).
+
+- **The long climb.** A skill kept in its lane reaches 40 in about 3 weeks, 55 in about 7, 70 in about 10½, 85 in about 13 and **99 in about 15 weeks**. A level past 40 takes about two days at first and about one near the top, so the last stretch speeds up. With every lane busy, every skill reaches 99 in about a year.
 
 - **Pacing is per skill kept in a lane.** Three styles share one Combat lane, so a player training all three moves each at about a third of the pace; the triangle makes switching worthwhile.
 - **The first level-up** comes after under 40 seconds of chopping; the first worn sword after about 2 minutes.
@@ -144,13 +150,13 @@ Health and damage are on a ×10 scale so hits read as satisfying numbers.
 
 ### XP from combat
 
-- **Style XP** is earned per point of damage dealt (overkill counts for nothing): 0.30, 0.32, 0.34 and 0.35 a point against tier 1 to 4 foes.
+- **Style XP** is earned per point of damage dealt (overkill counts for nothing): 0.30, 0.32, 0.34 and 0.35 a point against tier 1 to 4 foes, then 0.34, 0.31, 0.30 and 0.28 against tiers 5 to 8.
 - **Easy foes teach less:** for each level a foe stands more than five below your style, 4% less XP, down to 40%. An outlevelled foe is never the best target for long.
-- **Hitpoints XP** is 40% of the style XP from every fight, whatever the style.
+- **Hitpoints XP** equals the style XP from every fight, whatever the style (40% until session 12; past 40 the levels would otherwise leave Hitpoints, and the armour and foes it opens, far behind a player who keeps to one style).
 
 ### Foes and Your odds
 
-A foe opens at a Hitpoints level, so every style can reach every foe. Each foe was calibrated against its intended matchup (the style that beats it, at its level, in that tier's gear) to about 10 food an hour.
+A foe opens at a Hitpoints level, so every style can reach every foe. Foes live in three regions, each a tab of the Combat page: the march (tiers 1 to 4), the Sunken Fen (5 and 6) and the Ashen Peaks (7 and 8), three foes a tier past the march, one of each style. Each foe was calibrated against its intended matchup (the style that beats it, at its level, in that tier's gear) to about 10 food an hour. Past tier 4, style XP per point of damage falls a little with each tier (hits grow faster than the levels they buy), so combat keeps the gathering skills' pace.
 
 *Generated:*
 
@@ -175,11 +181,11 @@ Bought from the vendor; better food is sold as Hitpoints rises. *Generated:*
 
 - **Sources:** selling logs, ores, bars, gear and Uncommon and Rare finds to the vendor; gold and drops from foes.
 - **Sinks:** food, and Storehouse enlargements. Gear is made, never bought.
-- **The Storehouse** holds stacks of any size; slots limit the number of different items. {{STORE}} There are 63 kinds of item in version 1 (12 resources, 24 gear, 3 foods, 24 sellable finds), so the last enlargement fits them all.
+- **The Storehouse** holds stacks of any size; slots limit the number of different items. {{STORE}} There are 102 kinds of item (24 resources, 48 gear, 6 foods, 24 sellable finds), so the last enlargement (108 slots) fits them all.
 - When a lane would produce an item with no free slot, it stops: "Storehouse full".
 - Every item's panel shows **Comes from** and **Used in**, gathered by asking every feature.
 
-Enlargement costs follow each day's net gold, so one is affordable roughly when it is wanted (days 1, 2, 3, 5, 7, 10, 14 and 18). After day 18 gold has no new sink in version 1; the player market (long arc 2) is its home.
+Enlargement costs follow each day's net gold, so one is affordable roughly when it is wanted (days 1, 2, 3, 5, 7, 10, 14 and 18, then 25, 35, 45, 60, 75 and 90 as the climb brings more kinds of item). Later sinks (relics, Rekindling) come with the expansion's endgame.
 
 ## 11. Goals and notable moments
 
@@ -194,7 +200,7 @@ Enlargement costs follow each day's net gold, so one is affordable roughly when 
    6. Defeat a hollow rat (the step's reward, 10 bread, comes first).
 2. **Three short goals**, rolling: each sized to 10–15 minutes of your current pace in one lane ("Cut 60 oak logs", "Reach mastery 4 on Iron vein", "Defeat 25 grave wights", "Forge 3 iron helms"). A new one appears as each is claimed. Reward: a supply cache worth about 10 minutes of that lane's gold.
 3. **A daily goal:** about 40 minutes of play or a day of lanes ("Earn 20,000 Smithing XP today"). Reward: a supply cache worth about an hour of gold.
-4. **Milestones:** total level 50, 100, 150, 200, 250 and 280; the first item of each tier; collection log 12, 24 and 36; the first mastery 10. Reward: gold, and the milestone is shown on your hiscore entry.
+4. **Milestones:** total level 50, 100, 150, 200, 250 and 280, then 350, 450, 550, 650 and 693 (every skill at 99); the first item of each of the eight tiers; collection log 12, 24 and 36; the first mastery 10. Reward: gold, and the milestone is shown on your hiscore entry.
 5. **Supply caches** (session 11): half the goal's worth in gold is certain, and one draw adds more: a plain cache (half the time, +30%), a stocked one (3 in 10, +50% as the best food you are sold, for a fighter), a rich one (3 in 20, +100%) or a lucky one (1 in 20, +200%). On average a cache pays 1.05 times the goal's gold, so the economy holds, and opening one is a small moment of its own.
 
 ### Notable moments
@@ -203,7 +209,7 @@ A level, an unlock, a find, a goal or a mastery step. Moments within 5 seconds o
 
 ## 12. The unlock ladder
 
-Every level 1 to 40 of every skill unlocks something: an action, a recipe, a tier, a foe, a food or a perk. Perk text is generated from its numbers by one formatter. *Generated.*
+Every level 1 to 99 of every skill unlocks something: an action, a recipe, a tier, a foe, a food or a perk. Past 40 a perk line's ranks give half as much (there are so many more of them), and each skill has a second capstone at 99. Perk text is generated from its numbers by one formatter. *Generated.*
 
 {{UNLOCK_TABLES}}
 
@@ -226,7 +232,7 @@ Each must still pass the three tests: it serves a pillar, a newcomer understands
 | --- | --- |
 | The menu | Five entries: Hearth, Skills, Combat, Storehouse, Hiscores. Notices is a tray in the header; Settings sits behind the account button |
 | The fire | Renews on real input, fades after 5 minutes idle; its extra lane is a second Gathering lane |
-| Hitpoints | Kept as a skill: every level +40 health; perks at 5, 15, 25, 35 and 40 |
+| Hitpoints | Kept as a skill: every level +40 health; perks at 5, 15, 25, 35 and 40, then every ten levels to 95, and 99 |
 | Finds | Six per skill (36 in all); art grows to about 86 icons (24 gear, 12 resources, 8 foes, 3 foods, 36 finds, plus 7 skill icons and the region's scene) |
 | Session order | Account deletion and the admin page move from session 5 to session 9 |
 | Hiscores | In version 1 |

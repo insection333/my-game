@@ -1,6 +1,6 @@
 // defineFeature: the one place a feature declares everything it is. The manifest check reads these
 // declarations; a feature missing a part, or filling a slot IA.md does not list, fails verify.
-import { Find, Id, Item, Ladder, type Effect, type EffectKind } from '@idle-clash/content';
+import { Find, Id, Item, Ladder, Level, type Effect, type EffectKind } from '@idle-clash/content';
 import type { ActionRules, GameEvent, State } from '@idle-clash/kernel';
 import { z, type ZodType } from 'zod';
 
@@ -34,7 +34,7 @@ export const defineRoute = <I>(def: RouteDef<I>): RouteDef => def as unknown as 
 export const ContentAction = z
   .object({
     id: Id,
-    level: z.number().int().min(1).max(40),
+    level: Level,
     seconds: z.number().positive().optional(),
     xp: z.number().int().nonnegative().optional(),
     gives: z.array(z.object({ item: Id, count: z.number().int().positive() }).strict()).optional(),
