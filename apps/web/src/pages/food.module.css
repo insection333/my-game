@@ -1,0 +1,59 @@
+/* The vendor's food: one short row each, the icon, the name with how many you carry, what it heals and
+   costs, and Buy 10. */
+.rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-2) var(--s-4);
+}
+
+.row + .row {
+  border-top: 1px solid var(--line);
+}
+
+.row[data-locked] {
+  color: var(--ink-2);
+}
+
+.row[data-locked] > svg {
+  opacity: 0.55;
+}
+
+.text {
+  display: grid;
+  min-width: 0;
+}
+
+.name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 var(--s-2);
+  font: 600 var(--t-body) / 1.3 var(--font-book);
+}
+
+.have {
+  font: 700 var(--t-small) / 1 var(--font-ui);
+  font-variant-numeric: tabular-nums;
+  color: var(--moss);
+}
+
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--s-3);
+  font-size: var(--t-small);
+  color: var(--ink-2);
+}
+
+/* Named on the words, not inherited (Chromium has kept a light-theme ink after the theme changed). */
+.facts span {
+  color: var(--ink-2);
+}

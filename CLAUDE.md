@@ -30,6 +30,8 @@ To change the game design: edit the model in `design/model/` or the template, ru
 - One changelog line per change in `CHANGELOG.md`.
 - A reported problem is reproduced, and its fix confirmed, at the reporter's screen size doing what they did.
 - Pages are compact and held to their spec in `IA.md`: nothing full-width for a line or two, nothing a newcomer needs hidden. A changed page is seen on the review sheet at all three widths before it ships.
+- Nothing on a page is cut off, scrolls sideways or grows its column: grid columns are `minmax(0, 1fr)`, sections never widen for what they hold, and a strip of tabs fits by turning compact (icons or short labels) rather than scrolling. Only a wide table may scroll, inside a box marked `data-scrolls`. Step 6 measures all of this at 320, 390 and 1,440 px.
+- Boxes are sized to what they hold: no panel for a line or two (fold it into a neighbour, as the triangle sits in the loadout), no list taller than its content needs, and gear is shown where it is worn.
 - Art follows `ART.md` and is held to the reference set, never "good enough": shaded forms, consistent light from the top left, readable at 24 px, no flat placeholders. Ask the owner only when a new family of art begins.
 - Every number on screen comes from data through the shared formatter. Every player-facing word lives in the strings file, and new terms go into `GLOSSARY.md`.
 - A feature never imports another feature; it reads shared state through the kernel and announces what happened as events.

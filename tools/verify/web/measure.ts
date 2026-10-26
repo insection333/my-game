@@ -55,6 +55,26 @@ export function measurePage(): Measured {
       }
       if (!scrolls && getComputedStyle(el).position !== 'fixed') problems.push(`${describe(el)} runs off the screen`);
     }
+    // Nothing is cut off by its own box: a box that hides what overflows it (a panel, a card) must
+    // hold everything in it. Inside a box that scrolls, it can be reached (and is judged below).
+    for (let p = el.parentElement; p && p !== document.body; p = p.parentElement) {
+      const o = getComputedStyle(p).overflowX;
+      if (o === 'auto' || o === 'scroll') break;
+      if (o === 'hidden' || o === 'clip') {
+        const pr = p.getBoundingClientRect();
+        if (r.width > 0 && (r.right > pr.right + 1 || r.left < pr.left - 1))
+          problems.push(`${describe(el)} is cut off by its box, ${describe(p)}`);
+        break;
+      }
+    }
+    // A strip that scrolls sideways hides part of itself on a phone; only a box marked to scroll (a
+    // wide table) may. Everything else is laid out to fit.
+    if (
+      (ts.overflowX === 'auto' || ts.overflowX === 'scroll') &&
+      el.scrollWidth > el.clientWidth + 1 &&
+      !el.closest('[data-scrolls]')
+    )
+      problems.push(`${describe(el)} scrolls sideways: what it holds does not fit`);
   }
 
   // Controls: drawn by the design system, large enough to tap, and drawn one way.

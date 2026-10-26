@@ -24,7 +24,10 @@ export interface FoodView {
   shop: {
     item: string;
     name: string;
+    /** What it heals and costs. */
     facts: string[];
+    /** How many are carried ("×12"), when any are. */
+    have: string | null;
     price: number;
     /** How many the player carries. */
     carried: number;
@@ -62,11 +65,8 @@ function foodView(state: State): FoodView {
     shop: FOODS.map((f) => ({
       item: f.id,
       name: t(`item.${f.id}`),
-      facts: [
-        t('food.heals', { health: fmt.int(f.heals) }),
-        t('food.price', { gold: fmt.int(f.price) }),
-        t('item.panel.have', { count: fmt.int(countOf(state, f.id)) }),
-      ],
+      facts: [t('food.heals', { health: fmt.int(f.heals) }), t('food.price', { gold: fmt.int(f.price) })],
+      have: countOf(state, f.id) > 0 ? t('food.have', { count: fmt.int(countOf(state, f.id)) }) : null,
       price: f.price,
       carried: countOf(state, f.id),
       affordable: gold >= f.price * 10,

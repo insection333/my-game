@@ -1,0 +1,118 @@
+/* The loadout: the figure with its gear, and beside it (below it when the panel is narrow) the style,
+   the triangle as it bears on you, health and food. */
+.loadout {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: var(--s-4);
+}
+
+/* The figure's box: the gear slots sit on it at fixed places, so it never stretches. */
+.doll {
+  position: relative;
+  flex: none;
+  width: 164px;
+  height: 236px;
+}
+
+.figure {
+  position: absolute;
+  inset: 0;
+}
+
+.slot {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-control);
+  background: var(--surface);
+  color: var(--ink-2);
+  text-decoration: none;
+  box-shadow: 0 1px 2px var(--shade);
+}
+
+.slot[data-state='empty'] {
+  border-style: dashed;
+  background: var(--surface-2);
+  box-shadow: none;
+}
+
+.slot:hover {
+  border-color: var(--woad);
+}
+
+/* Each piece where it is worn: the helm on the head, the body on the chest, the legs on the legs, the
+   weapon in the hand. */
+.slot[data-slot-name='helm'] {
+  left: 66px;
+  top: 6px;
+}
+.slot[data-slot-name='body'] {
+  left: 66px;
+  top: 76px;
+}
+.slot[data-slot-name='legs'] {
+  left: 66px;
+  top: 160px;
+}
+.slot[data-slot-name='weapon'] {
+  left: 17px;
+  top: 137px;
+}
+
+/* An empty slot names itself, small, so a newcomer sees what goes there. */
+.slotLabel {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.info {
+  flex: 1 1 9rem;
+  display: grid;
+  gap: var(--s-2);
+  align-content: center;
+  min-width: 0;
+}
+
+.style {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  font: 700 var(--t-lead) / 1.2 var(--font-book);
+}
+
+.triangle {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--s-1);
+  font-size: var(--t-small);
+  color: var(--ink-2);
+}
+
+.triangle li {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+/* Named on the words, not inherited: Chromium has kept an inherited light-theme ink here after the
+   theme changed (as on the gear slots before). */
+.triangle span,
+.health span {
+  color: var(--ink-2);
+}
+
+.health {
+  display: grid;
+  gap: var(--s-1);
+  padding-top: var(--s-1);
+  font-size: var(--t-small);
+  color: var(--ink-2);
+}

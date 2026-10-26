@@ -75,6 +75,7 @@ export const en: Record<string, string> = {
   'store.buyTen': 'Buy 10',
   'food.heals': 'Heals {health}',
   'food.price': '{gold} gold each',
+  'food.have': '×{count}',
   'stop.storehouseFull': 'Storehouse full',
   'help.storehouse.title': 'Storehouse',
   'help.storehouse.body':

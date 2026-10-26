@@ -27,7 +27,7 @@ async function wearFromThePage(served: Served, problems: string[]) {
     step = 'the sword is shown worn';
     await choice.getByText('Worn').waitFor({ timeout: 5_000 });
     await page.keyboard.press('Escape');
-    await page.locator('[data-ui="WeaponSlot"]', { hasText: 'Copper sword' }).waitFor({ timeout: 5_000 });
+    await page.locator('[data-ui="WeaponSlot"][aria-label="Weapon: Copper sword"]').waitFor({ timeout: 5_000 });
     step = 'Your odds rates the hollow rat Fair';
     await rat.getByText('Fair').waitFor({ timeout: 5_000 });
     await rat.getByRole('button', { name: 'Fight' }).waitFor({ timeout: 5_000 });
@@ -71,8 +71,8 @@ async function retreatCostsNothing(served: Served, problems: string[]) {
       .filter({ hasText: 'Out of food' })
       .first()
       .waitFor({ timeout: 15_000 });
-    await page.locator('[data-ui="WeaponSlot"]', { hasText: 'Copper sword' }).waitFor({ timeout: 5_000 });
-    await page.locator('[data-ui="GearSlot"]', { hasText: 'Copper helm' }).waitFor({ timeout: 5_000 });
+    await page.locator('[data-ui="WeaponSlot"][aria-label="Weapon: Copper sword"]').waitFor({ timeout: 5_000 });
+    await page.locator('[data-ui="GearSlot"][aria-label="Helm: Copper helm"]').waitFor({ timeout: 5_000 });
     await page.goto(new URL('/storehouse', page.url()).href);
     for (const [name, count] of [
       ['Pine logs', 7],

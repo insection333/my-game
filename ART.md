@@ -84,6 +84,10 @@ The march, seen from the road (`packages/ui/src/art/MarchScene.tsx`; placed by t
 - **What matters sits in the middle 960 of its 1,600 units,** so any crop (a phone's banner, a wide screen) keeps it; the edges add pines for wider screens.
 - **A little moves** (the owner asked for "slightly more animated", 26 October 2026): smoke rises from the forge's chimney, two clouds take minutes to cross the sky, and now and then a few birds fly over, kept above the welcome page's words. What moves is drawn in a layer of its own over the still scene, so only those few shapes are repainted (verify's CPU budget holds); at night the clouds are faint and the birds stay away; with reduced motion nothing moves.
 
+## The loadout's figure
+
+A person seen front on (`packages/ui/src/art/Figure.tsx`, 144 by 200), the Combat page's loadout: the gear tiles sit on it where each piece is worn, the helm on the head, the body on the chest, the legs on the legs and the weapon in the right hand. It is a quiet outline in the surface's own tones (the panel's second surface, the strong line), lit from the upper left like everything else (a lighter shoulder, arm and crown), so the gear's icons on it stay the brightest things in the panel. It is never detailed into a character: it stands for the player, whoever they are.
+
 ## Interface glyphs
 
 The menu and header glyphs (Hearth, Skills, Combat, Storehouse, Hiscores, the bell, the account) are signs, not objects. They are drawn on a 24-unit grid as single lines 1.75 units wide in the text colour, in `apps/web/src/shell/glyphs.tsx`. They never use material tones.

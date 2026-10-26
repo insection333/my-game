@@ -191,7 +191,9 @@ function PlayerPanel({
           </ul>
         )}
         <h3>{t('admin.save')}</h3>
-        <pre className={s.doc}>{JSON.stringify(save.doc, null, 2)}</pre>
+        <pre className={s.doc} data-scrolls>
+          {JSON.stringify(save.doc, null, 2)}
+        </pre>
       </Slot>
     </Panel>
   );

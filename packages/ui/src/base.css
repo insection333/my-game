@@ -59,6 +59,12 @@ a {
   border-radius: 2px;
 }
 
+/* A page's sections never grow wider than their column for what they hold: a strip of tabs or a long
+   name fits the column (or wraps), never pushing the page sideways. */
+[data-section] {
+  min-width: 0;
+}
+
 .visually-hidden {
   position: absolute;
   width: 1px;

@@ -1,16 +1,20 @@
-/* Labels never wrap; when they do not fit (three regions on a phone) the strip scrolls sideways. */
+/* Labels never wrap and the strip never scrolls: when the labels do not fit, the strip is marked
+   compact (Tabs.tsx) and each tab shows its icon or short label, the tabs sharing the width. */
 .tabs {
   display: flex;
   gap: var(--s-1);
+  min-width: 0;
   border-bottom: 1px solid var(--line);
-  overflow-x: auto;
-  scrollbar-width: none;
+  overflow: hidden;
 }
 
 .tab {
+  position: relative;
   min-height: var(--tap);
+  min-width: 0;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: var(--s-2);
   padding: 0 var(--s-3);
   color: var(--ink-2);
@@ -19,6 +23,61 @@
   border-bottom: 2px solid transparent;
   white-space: nowrap;
   flex: none;
+}
+
+.icon {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+}
+
+/* A compact tab's number, on the icon's lower right corner. */
+.badge {
+  display: none;
+  position: absolute;
+  right: -2px;
+  bottom: -4px;
+  min-width: 14px;
+  padding: 0 2px;
+  border-radius: 7px;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  font: 700 0.625rem / 12px var(--font-ui);
+  text-align: center;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.tabs[data-compact] .badge {
+  display: block;
+}
+
+.short {
+  display: none;
+}
+
+.tabs[data-compact] .tab {
+  flex: 1 1 0;
+  padding: 0 var(--s-1);
+}
+
+.tabs[data-compact] .short {
+  display: inline;
+}
+
+/* The full label stays as the tab's name, unseen. */
+.tabs[data-compact] .full {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* With nothing shorter to show, a compact strip without icons wraps onto a second row. */
+.tabs[data-compact]:not(:has(.icon, .short)) {
+  flex-wrap: wrap;
 }
 
 .tab[aria-current='page'] {

@@ -19,6 +19,7 @@ describe('measurePage', () => {
     const m = await measure(`<main data-main><div style="padding:16px">
       <section data-section><p>One</p><p>Two</p><p>Three</p></section>
       <span style="display:block;width:200px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">Fits</span>
+      <div data-scrolls style="width:100px;overflow-x:auto"><span style="display:block;width:300px">A wide table may</span></div>
       <svg width="200" height="100" viewBox="0 0 400 100" preserveAspectRatio="xMidYMid slice"><rect x="-2000" width="4000" height="100"/></svg>
       <button data-ui="Button" data-variant="primary" style="height:44px">Start</button>
       <button data-ui="Button" data-variant="primary" style="height:44px">Stop</button></div></main>`);
@@ -35,6 +36,8 @@ describe('measurePage', () => {
       <button data-ui="Chip" style="height:30px;color:blue">B</button>
       <span style="display:block;width:60px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">Cut off at the end</span>
       <span style="display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;width:40px">Silverbarkish</span>
+      <div style="width:100px;overflow:hidden"><button data-ui="Button" style="width:160px;height:44px">Clipped</button></div>
+      <div style="width:100px;overflow-x:auto"><span style="display:block;width:300px">A strip too wide</span></div>
       <nav data-menu>${'<a href="#" data-ui="MenuLink" style="display:inline-block;min-height:44px">m</a>'.repeat(7)}</nav>
       </div></main>`);
     const text = m.problems.join('\n');
@@ -47,6 +50,8 @@ describe('measurePage', () => {
     expect(text).toContain('A full-width section holds only 1 line(s)');
     expect(text).toContain('span "Cut off at the end" is cut short');
     expect(text).toContain('span "Silverbarkish" is cut short');
+    expect(text).toContain('button[Button] "Clipped" is cut off by its box');
+    expect(text).toContain('div "A strip too wide" scrolls sideways');
   }, 30_000);
 
   it('reports where each slot starts and what bars cover the bottom', async () => {
