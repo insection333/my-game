@@ -147,6 +147,16 @@ export const Glint = ({ x, y, r = 1.4 }: { x: number; y: number; r?: number }) =
 );
 
 /** A skill seal's rim, in the metal of the highest tier its skill has reached: copper, bronze, iron,
- *  steel. Bronze when no tier is given (the icon sheet, a ladder's tab). */
-export const RIM_TONES: readonly Tone[] = [M.copper, M.bronze, M.iron, M.steel];
+ *  steel, then the climb's moonsilver, star-iron, embersteel and dawnsteel. Bronze when no tier is
+ *  given (the icon sheet, a ladder's tab). */
+export const RIM_TONES: readonly Tone[] = [
+  M.copper,
+  M.bronze,
+  M.iron,
+  M.steel,
+  M.moonsilver,
+  M.starIron,
+  M.embersteel,
+  M.dawnsteel,
+];
 export const RimTone = createContext<Tone>(M.bronze);

@@ -72,7 +72,7 @@ Tiers 5 to 8 keep the march's drawings (the log pile, the rock with its nuggets,
 
 ## Seals that grow
 
-A skill's seal is rimmed in the metal of the highest tier its skill has reached: copper, then bronze, iron and steel (later tiers add their own metals). At the top level a small amber star sits on the rim's foot. The icon sheet shows one seal at each tier. Where no player's skill is meant (a ladder's tab, the icon sheet's own entry), the rim is bronze.
+A skill's seal is rimmed in the metal of the highest tier its skill has reached: copper, then bronze, iron and steel, then moonsilver, star-iron, embersteel and dawnsteel. At the top level a small amber star sits on the rim's foot. The icon sheet shows one seal at each tier. Where no player's skill is meant (a ladder's tab, the icon sheet's own entry), the rim is bronze.
 
 ## The region's scene
 

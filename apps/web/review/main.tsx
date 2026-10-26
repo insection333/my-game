@@ -36,17 +36,17 @@ const Sheet = ({ theme }: { theme: 'light' | 'dark' }) => (
       ))}
     </div>
     {/* A seal's rim follows its skill's highest tier, with a star at the top level. */}
-    <div style={{ display: 'flex', gap: 24, alignItems: 'end', marginTop: 32 }}>
-      {[1, 2, 3, 4].map((tier) => (
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 24, alignItems: 'end', marginTop: 32 }}>
+      {[1, 2, 3, 4, 5, 6, 7, 8].map((tier) => (
         <figure key={tier} style={{ margin: 0, display: 'grid', gap: 8, justifyItems: 'center' }}>
           <div style={{ display: 'flex', alignItems: 'end', gap: 12 }}>
-            <ItemIcon name="mining" size={96} seal={{ tier, top: tier === 4 }} />
-            <ItemIcon name="mining" size={48} seal={{ tier, top: tier === 4 }} />
-            <ItemIcon name="mining" size={24} seal={{ tier, top: tier === 4 }} />
+            <ItemIcon name="mining" size={96} seal={{ tier, top: tier === 8 }} />
+            <ItemIcon name="mining" size={48} seal={{ tier, top: tier === 8 }} />
+            <ItemIcon name="mining" size={24} seal={{ tier, top: tier === 8 }} />
           </div>
           <figcaption style={{ font: '13px var(--font-ui)' }}>
             Seal at tier {tier}
-            {tier === 4 ? ', top level' : ''}
+            {tier === 8 ? ', top level' : ''}
           </figcaption>
         </figure>
       ))}
