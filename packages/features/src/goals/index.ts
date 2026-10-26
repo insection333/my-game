@@ -5,10 +5,12 @@ import { z } from 'zod';
 import { defineFeature, defineRoute, type Json } from '../define.ts';
 import { firstStepRows, firstStepsDone } from './first-steps.ts';
 import { ladderRows } from './ladder-view.ts';
+import { standingView } from './ranks.ts';
 import { claim, needsRefresh, refresh } from './rules.ts';
 import type { GoalsView } from './view.ts';
 
 export type { GoalRow, GoalsView } from './view.ts';
+export type { StandingView } from './ranks.ts';
 
 export const goals = defineFeature({
   id: 'goals',
@@ -30,6 +32,7 @@ export const goals = defineFeature({
     }),
   },
   slots: {
+    'hearth.standing': ({ state }) => standingView(state) as unknown as Json,
     'hearth.goals': ({ state, now }) => {
       if (!firstStepsDone(state)) {
         const rows = firstStepRows(state, now);

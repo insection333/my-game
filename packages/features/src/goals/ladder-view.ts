@@ -10,6 +10,8 @@ import { dayOf, goalsOf, type DailyGoal, type ShortGoal } from './state.ts';
 import { inLane, startCommand, workingIn, type GoalRow } from './view.ts';
 
 const gold = (n: number) => t('goals.reward.gold', { amount: fmt.int(n) });
+/** Short goals and the daily goal pay in a supply cache worth about their gold; milestones in gold. */
+const cache = (n: number) => t('goals.reward.cache', { amount: fmt.int(n) });
 const of = (p: { now: number; of: number }) => t('goals.count', { now: fmt.int(p.now), of: fmt.int(p.of) });
 const actionName = (a: { feature: string; id: string }) => t(`action.${a.feature}.${a.id}`);
 
@@ -19,13 +21,18 @@ function row(
   reward: number,
   p: { now: number; of: number },
   todo: () => Pick<GoalRow, 'button' | 'note' | 'state'>,
+  paysIn: 'gold' | 'cache' = 'cache',
 ): GoalRow {
-  const base = { id, name, reward: gold(reward), count: of(p), progress: p.of ? p.now / p.of : 0 };
+  const words = paysIn === 'cache' ? cache(reward) : gold(reward);
+  const base = { id, name, reward: words, count: of(p), progress: p.of ? p.now / p.of : 0 };
   if (p.now >= p.of)
     return {
       ...base,
       state: 'ready',
-      button: { label: t('goals.claim', { reward: gold(reward) }), claim: id },
+      button: {
+        label: paysIn === 'cache' ? t('goals.openCache') : t('goals.claim', { reward: gold(reward) }),
+        claim: id,
+      },
       note: null,
     };
   return { ...base, ...todo() };
@@ -58,7 +65,7 @@ function dailyRow(state: State, now: number, d: DailyGoal): GoalRow {
     return {
       id: 'daily',
       name,
-      reward: gold(d.reward),
+      reward: cache(d.reward),
       progress: 1,
       state: 'claimed',
       button: null,
@@ -96,11 +103,14 @@ export function ladderRows(state: State, now: number): GoalRow[] {
   const m = nextMilestone(state, g);
   if (m)
     rows.push(
-      row(`m-${m.id}`, milestoneName(m), m.reward, milestoneProgress(state, m), () => ({
-        state: 'todo',
-        button: null,
-        note: t('goals.milestone'),
-      })),
+      row(
+        `m-${m.id}`,
+        milestoneName(m),
+        m.reward,
+        milestoneProgress(state, m),
+        () => ({ state: 'todo', button: null, note: t('goals.milestone') }),
+        'gold',
+      ),
     );
   return rows;
 }

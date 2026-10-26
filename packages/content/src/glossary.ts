@@ -41,6 +41,8 @@ export const TERMS: [term: string, meaning: string][] = [
   ['Next action', "The action queued behind a lane's current one; it starts when the current one stops"],
   ['Notices', 'The tray of things that happened and need you'],
   ['Perk', 'A lasting bonus unlocked at a level'],
+  ['Supply cache', 'What short goals and the daily goal pay in: gold for certain, and a draw for more'],
+  ['Rank', 'Your standing, from Wanderer to Legend of the Realm, rising with your total level'],
   ['Rare', 'A find of about 1 in 500 actions'],
   ['Retreat', 'Leaving a fight at low health with no food; nothing is lost and the lane stops'],
   ['Short goals', 'Three rolling goals of 10 to 15 minutes'],

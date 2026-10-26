@@ -2,9 +2,10 @@
 // (see numbers.ts). The content check fails on a missing key, an unused key, or a term GLOSSARY.md
 // says to avoid. Keep sections in order; within a feature's section, keys follow its content. The gathering
 // and artisan skills' words are in en-skills.ts, Combat's in en-combat.ts, the privacy page's and the
-// terms' in en-legal.ts.
+// terms' in en-legal.ts, the goals ladder's, its rewards' and your standing's in en-progress.ts.
 import { combat } from './en-combat.ts';
 import { legal } from './en-legal.ts';
+import { progress } from './en-progress.ts';
 import { skills } from './en-skills.ts';
 
 export const en: Record<string, string> = {
@@ -14,7 +15,9 @@ export const en: Record<string, string> = {
   'shell.skip': 'Skip to the page',
   'shell.fire.out': 'Stoke',
   'shell.fire.outLabel': 'The fire is out. Stoke it for more XP and a second Gathering lane',
-  'shell.fire.burningLabel': 'The fire burns for {time} more. Stoke it to keep it going',
+  'shell.fire.burningLabel':
+    'The fire burns for {time} more, giving {pct}% more XP. Keep it burning and it grows hotter',
+  'shell.fire.heat': '+{pct}%',
   'shell.gold': '{amount} gold',
   'shell.reconnecting': 'Reconnecting. Your lanes keep working.',
   'shell.notices': 'Notices',
@@ -112,7 +115,7 @@ export const en: Record<string, string> = {
   'tour.title': 'Getting started',
   'tour.goals': 'Start here: each first step has a button that starts it, and pays when it is done.',
   'tour.lanes': 'Your lanes do the work, and keep at it for up to a day while you are away.',
-  'tour.fire': 'While you are here the fire burns: 15% more XP, and a second Gathering lane.',
+  'tour.fire': 'While you are here the fire burns: more XP the longer you keep it going, and a second Gathering lane.',
   'tour.notices': 'Notices say when a lane stops and why, and what happened while you were away.',
   'tour.next': 'Next',
   'tour.skip': 'Skip',
@@ -168,7 +171,7 @@ export const en: Record<string, string> = {
   'welcome.password': 'Password',
   'welcome.password.hint': 'At least 10 characters.',
   'welcome.age': 'I am 13 or older',
-  'welcome.forgot': 'Forgot it? An admin can reset it.',
+  'welcome.forgot': 'Forgot it? Write to {address} and an admin can reset it.',
   'welcome.working': 'One moment…',
   'welcome.offline': 'Cannot reach the server. Check your connection.',
   'welcome.retry': 'Try again',
@@ -263,45 +266,6 @@ export const en: Record<string, string> = {
   'recap.xp': '+{xp} XP across {skills} skills',
   'recap.xpOne': '+{xp} {skill} XP',
 
-  // Goals
-  'goals.firstSteps': 'First steps',
-  'goals.title': 'Goals',
-  'goals.count': '{now} of {of}',
-  'goals.start': 'Start',
-  'goals.doneToday': 'Done for today',
-  'goals.milestone': 'Milestone',
-  'goal.short.count': '{skill}: {action} ×{count}',
-  'goal.short.mastery': 'Reach mastery {step} on {action}',
-  'goal.daily': 'Earn {xp} {skill} XP today',
-  'goal.milestone.total': 'Reach total level {level}',
-  'goal.milestone.forged': 'Forge your first {metal} item',
-  'goal.milestone.log': 'Find {count} things for your collection log',
-  'goal.milestone.mastery': 'Reach mastery {step} on any action',
-  'goals.progress': '{done} of {total} done',
-  'goals.reward.gold': '{amount} gold',
-  'goals.reward.items': '{count} {item}',
-  'goals.reward.first': '{reward}, given first',
-  'goals.finish': 'Mark done',
-  'goals.claim': 'Claim {reward}',
-  'goals.claimed': 'Done',
-  'goals.inLane': 'Working in your {lane} lane',
-  'goal.chop-a-pine': 'Chop a pine',
-  'goal.chop-a-pine.start': 'Start chopping',
-  'goal.mine-copper-ore': 'Mine copper ore',
-  'goal.mine-copper-ore.start': 'Start mining',
-  'goal.smelt-a-copper-bar': 'Smelt a copper bar',
-  'goal.smelt-a-copper-bar.start': 'Start smelting',
-  'goal.forge-a-copper-sword': 'Forge a copper sword',
-  'goal.forge-a-copper-sword.start': 'Start forging',
-  'goal.wear-your-sword': 'Wear your sword',
-  'goal.wear-your-sword.start': 'Wear it',
-  'goal.defeat-a-hollow-rat': 'Defeat a hollow rat',
-  'goal.defeat-a-hollow-rat.start': 'Fight',
-  'goals.needs': 'Needs {skill} level {level}',
-  'help.goals.title': 'Goals',
-  'help.goals.body':
-    'Goals show what to aim for next. First steps walk you through the game, each with a button that starts it; claim each for its reward.',
-
   // Finds and the collection log
   'rarity.uncommon': 'Uncommon',
   'rarity.rare': 'Rare',
@@ -314,4 +278,5 @@ export const en: Record<string, string> = {
   ...skills,
   ...combat,
   ...legal,
+  ...progress,
 };

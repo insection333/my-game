@@ -47,6 +47,7 @@ function chop(n: number, act = pine, opts: { fire?: boolean; state?: State; roll
       startedAt: at - 7500,
       lane: 'gathering',
       fireBurning: opts.fire ?? false,
+      fireMinutes: 0,
       roll: opts.rolls ?? (() => rng('gathering', counter++)),
       emit: (e) => events.push(e),
     };

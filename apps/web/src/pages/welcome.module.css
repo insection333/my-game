@@ -150,7 +150,8 @@
 
 .legalLinks {
   display: flex;
-  gap: var(--s-4);
+  flex-wrap: wrap;
+  gap: 0 var(--s-4);
   margin: 0;
   font-size: var(--t-small);
 }

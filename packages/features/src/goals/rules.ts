@@ -2,6 +2,7 @@
 // refreshing the ladder (making the short goals it lacks and today's daily goal). Pure: each takes the
 // state and returns a new one, an answer and the events to announce.
 import { give, noteMoment, type GameEvent, type State } from '@idle-clash/kernel';
+import { cacheFor, openCache, type Cache } from './cache.ts';
 import { FIRST_STEPS, MILESTONES } from './content.ts';
 import { firstStepsDone, isDone, payFirst } from './first-steps.ts';
 import { dailyProgress, makeDaily, makeShort, milestoneProgress, shortProgress } from './ladder.ts';
@@ -53,6 +54,7 @@ export function claim(state: State, goal: string, now: number): Answer<ClaimResu
   const out = structuredClone(state);
   let next: GoalsState;
   let name: string | undefined;
+  let cache: Cache | undefined;
   const step = FIRST_STEPS.find((s) => s.id === goal);
   const short = g.short.find((s) => s.id === goal);
   const milestone = MILESTONES.find((m) => `m-${m.id}` === goal);
@@ -64,16 +66,18 @@ export function claim(state: State, goal: string, now: number): Answer<ClaimResu
   } else if (short) {
     const p = shortProgress(state, short);
     if (p.now < p.of) return refused(state, 'notDone');
-    give(out, 'gold', short.reward);
+    cache = cacheFor(state, short.reward, g.opened);
+    openCache(out, cache);
     name = shortName(short);
-    next = { ...g, short: g.short.filter((s) => s !== short) };
+    next = { ...g, short: g.short.filter((s) => s !== short), opened: g.opened + 1 };
   } else if (goal === 'daily' && g.daily && g.daily.day === dayOf(now)) {
     if (g.daily.claimed) return { state, result: { ok: true }, events: [] };
     const p = dailyProgress(state, g.daily);
     if (p.now < p.of) return refused(state, 'notDone');
-    give(out, 'gold', g.daily.reward);
+    cache = cacheFor(state, g.daily.reward, g.opened);
+    openCache(out, cache);
     name = dailyName(g.daily);
-    next = { ...g, daily: { ...g.daily, claimed: true } };
+    next = { ...g, daily: { ...g.daily, claimed: true }, opened: g.opened + 1 };
   } else if (milestone && !g.milestones.includes(milestone.id)) {
     const p = milestoneProgress(state, milestone);
     if (p.now < p.of) return refused(state, 'notDone');
@@ -83,5 +87,9 @@ export function claim(state: State, goal: string, now: number): Answer<ClaimResu
   } else return refused(state, 'unknown');
   setGoals(out, filled(out, next, now));
   noteMoment(out, now);
-  return { state: out, result: { ok: true }, events: [{ type: 'goalDone', at: now, goal, ...(name ? { name } : {}) }] };
+  return {
+    state: out,
+    result: { ok: true },
+    events: [{ type: 'goalDone', at: now, goal, ...(name ? { name } : {}), ...(cache ? { cache } : {}) }],
+  };
 }

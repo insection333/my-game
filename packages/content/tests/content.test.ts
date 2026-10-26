@@ -16,6 +16,7 @@ import {
   t,
   templateOf,
   allStringKeys,
+  CONTACT_ADDRESS,
   XP_TABLE,
 } from '../src/index.ts';
 
@@ -55,6 +56,14 @@ describe('t', () => {
       (k) => plural.test(templateOf(k)!) && !neverOne.includes(k) && !allStringKeys().includes(`${k}One`),
     );
     expect(missing).toEqual([]);
+  });
+});
+
+describe('the contact address', () => {
+  it('is given wherever a player is told to write to us', () => {
+    for (const k of ['legal.privacy.body', 'legal.terms.body']) expect(templateOf(k), k).toContain(CONTACT_ADDRESS);
+    expect(t('welcome.forgot', { address: CONTACT_ADDRESS })).toContain(CONTACT_ADDRESS);
+    expect(allStringKeys().filter((k) => templateOf(k)!.includes('contact address shown'))).toEqual([]);
   });
 });
 

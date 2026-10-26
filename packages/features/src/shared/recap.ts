@@ -182,7 +182,7 @@ export function noticeLine(e: GameEvent): (RecapLine & { at: number }) | null {
       return {
         kind: 'goal',
         text: t('moment.goalDone', { goal: e.name ?? t(`goal.${e.goal}`) }),
-        icon: null,
+        icon: e.cache ? 'supply-cache' : null,
         href: '/',
         at: e.at,
       };

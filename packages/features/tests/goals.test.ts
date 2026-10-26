@@ -85,3 +85,35 @@ describe('first steps', () => {
     expect(view(s([...all, 'defeat-a-hollow-rat']))).toMatchObject({ title: 'Goals', progress: null, refresh: true });
   });
 });
+
+describe('standing', () => {
+  const standing = (state: State) => goals.slots['hearth.standing']({ state, now: T0 });
+  it("shows a newcomer's rank, total level and the way to the next rank", () => {
+    expect(standing(newState(1, T0))).toEqual({
+      rank: 'Wanderer',
+      total: 'Total level 7',
+      next: 'Settler at 20',
+      progress: 7 / 20,
+    });
+  });
+
+  it('rises with the total level', () => {
+    // Seven skills at level 30: total 210, past Warden of the March (200), short of Master (280).
+    const skills = Object.fromEntries(
+      ['woodcutting', 'mining', 'smithing', 'melee', 'archery', 'magic', 'hitpoints'].map((s) => [
+        s,
+        { xp: 1_360_000 },
+      ]),
+    );
+    expect(standing({ ...newState(1, T0), skills })).toMatchObject({
+      rank: 'Warden of the March',
+      total: 'Total level 210',
+      next: 'Master of the March at 280',
+    });
+    // A rank is reached on its own number: six skills at 29 and one at 26 make exactly 200.
+    const at200 = { ...skills, mining: { xp: 1_140_000 }, smithing: { xp: 1_140_000 }, melee: { xp: 1_140_000 } };
+    Object.assign(at200, { archery: { xp: 1_140_000 }, magic: { xp: 1_140_000 }, hitpoints: { xp: 1_140_000 } });
+    Object.assign(at200, { woodcutting: { xp: 650_000 } });
+    expect(standing({ ...newState(1, T0), skills: at200 })).toMatchObject({ rank: 'Warden of the March', progress: 0 });
+  });
+});

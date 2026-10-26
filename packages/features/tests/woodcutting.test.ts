@@ -16,8 +16,20 @@ describe('woodcutting', () => {
     const s = cmd(newState(11, T0), { type: 'start', lane: 'gathering', action: pine }).state;
     const fire = engine.advance(s, T0 + 75 * SECOND, rng).state;
     expect(fire.items['pine-logs']).toBe(10);
-    // 11 XP and 15% more: 12.65 a chop, carried exactly in thousandths.
-    expect(fire.skills.woodcutting).toEqual({ xp: 126, part: 500 });
+    // 11 XP and 8% more (the fire's first heat): 11.88 a chop, carried exactly in thousandths.
+    expect(fire.skills.woodcutting).toEqual({ xp: 118, part: 800 });
+  });
+
+  it('earns more as the fire burns hotter, kept from going out', () => {
+    // Stoked every four minutes for 25 minutes: the fire's heat climbs from 8% to 14% to 17%.
+    let s = cmd(newState(11, T0), { type: 'start', lane: 'gathering', action: pine }).state;
+    for (let m = 4; m <= 24; m += 4) s = cmd(s, { type: 'stoke' }, T0 + m * 60_000).state;
+    const before = engine.advance(s, T0 + 24 * 60_000, rng).state;
+    const after = engine.advance(before, T0 + 24 * 60_000 + 75 * SECOND, rng).state;
+    const per =
+      (after.skills.woodcutting.xp - before.skills.woodcutting.xp) /
+      (after.mastery['woodcutting:pine-tree'] - before.mastery['woodcutting:pine-tree']);
+    expect(per).toBeGreaterThan(11 * 1.16);
   });
 
   it('refuses a tree above your level, and says why in words', () => {
@@ -49,7 +61,12 @@ describe('woodcutting', () => {
       level: 'Level 14',
       toNext: '12,800 XP to level 15',
       nextUnlock: "Level 15: Woodsman's eye III (Rare and Legendary finds 8% likelier)",
+      tier: 2,
+      top: false,
     });
+    // The seal's rim follows the highest tier reached; a star at the top level.
+    expect(woodcutting.slots['skill.header']({ state: atLevel(20), now: T0 })).toMatchObject({ tier: 3, top: false });
+    expect(woodcutting.slots['skill.header']({ state: atLevel(40), now: T0 })).toMatchObject({ tier: 4, top: true });
     const rows = woodcutting.slots['skill.actions'](ctx) as { name: string; locked: boolean; xpPerHour: string }[];
     expect(rows.map((r) => [r.name, r.locked])).toContainEqual(['Old ash', false]);
     expect(rows.find((r) => r.name === 'Oak tree')).toMatchObject({ locked: true });

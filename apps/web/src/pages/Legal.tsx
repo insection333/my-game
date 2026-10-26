@@ -1,6 +1,6 @@
 // The privacy page and the terms of use: short sections in plain words, readable signed in (inside
 // the shell) or signed out (from the welcome page).
-import { t } from '@idle-clash/content';
+import { CONTACT_ADDRESS, t } from '@idle-clash/content';
 import { TextLink } from '@idle-clash/ui';
 import { navigate } from '../router.ts';
 import { Slot } from '../slots.tsx';
@@ -37,6 +37,7 @@ export function Legal({ page, back, standalone }: { page: LegalPage; back?: stri
             {t('legal.back')}
           </TextLink>
         )}
+        <TextLink href={`mailto:${CONTACT_ADDRESS}`}>{t('legal.contact', { address: CONTACT_ADDRESS })}</TextLink>
         {page === 'privacy' ? (
           <TextLink href="/terms" onNavigate={navigate}>
             {t('legal.terms.title')}

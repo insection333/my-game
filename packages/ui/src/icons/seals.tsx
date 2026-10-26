@@ -1,15 +1,16 @@
 // The skill seals after Woodcutting's (ART.md, Skills): each skill's tool on the slate seal with the
 // bronze rim that marks the family. The rim and slate are drawn as Woodcutting's are.
-import type { ReactNode } from 'react';
-import { circle, Glint, INK, M, Shape } from './style.tsx';
+import { useContext, type ReactNode } from 'react';
+import { circle, Glint, INK, M, RimTone, Shape } from './style.tsx';
 
-/** The bronze rim and slate face every seal shares, with the skill's tool on it. */
+/** The rim (its metal the skill's highest tier) and slate face every seal shares, with the tool on it. */
 function Seal({ children }: { children: ReactNode }) {
+  const rim = useContext(RimTone);
   return (
     <g>
       <Shape
         d={circle(24, 24, 21.5)}
-        tone={M.bronze}
+        tone={rim}
         lit="M2.5 24 A21.5 21.5 0 0 1 24 2.5 L24 6 A18 18 0 0 0 6 24 Z"
         shade="M45.5 24 A21.5 21.5 0 0 1 24 45.5 L24 42 A18 18 0 0 0 42 24 Z"
       >

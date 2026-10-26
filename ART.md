@@ -60,6 +60,10 @@ Each material has exactly three tones: light, base and shadow.
 
 The game's own mark is the hearth fire on a dark round seal (`icons/mark.tsx`; chosen by the owner on 22 October 2026): a big flame with a bright core over two crossed logs. It is the site's icon in the browser tab and on a phone's home screen, so it is judged at 16 and 32 px first. The build draws `favicon.svg` from it; `node tools/brand.ts` makes the PNG sizes phones ask for (and `--review` a sheet of it at every size on both themes).
 
+## Seals that grow
+
+A skill's seal is rimmed in the metal of the highest tier its skill has reached: copper, then bronze, iron and steel (later tiers add their own metals). At the top level a small amber star sits on the rim's foot. The icon sheet shows one seal at each tier. Where no player's skill is meant (a ladder's tab, the icon sheet's own entry), the rim is bronze.
+
 ## The region's scene
 
 The march, seen from the road (`packages/ui/src/art/MarchScene.tsx`; placed by the owner behind the welcome page and as a banner across the top of the Hearth): far mountains with snow, the near range, wooded hills, the old road winding up to a smoking forge, a waystone, and tall pines framing it. It is drawn by the icon rules at landscape scale:
@@ -68,6 +72,7 @@ The march, seen from the road (`packages/ui/src/art/MarchScene.tsx`; placed by t
 - **Distance is colour:** far layers are paler and cooler and have no outline; only what is near (the pines, the waystone, the forge) has the ink line.
 - **Its colours are CSS variables,** so the light theme is a cool morning and the dark theme is night, with stars, the moon and the forge's glow.
 - **What matters sits in the middle 960 of its 1,600 units,** so any crop (a phone's banner, a wide screen) keeps it; the edges add pines for wider screens.
+- **A little moves** (the owner asked for "slightly more animated", 26 October 2026): smoke rises from the forge's chimney, two clouds take minutes to cross the sky, and now and then a few birds fly over, kept above the welcome page's words. What moves is drawn in a layer of its own over the still scene, so only those few shapes are repainted (verify's CPU budget holds); at night the clouds are faint and the birds stay away; with reduced motion nothing moves.
 
 ## Interface glyphs
 

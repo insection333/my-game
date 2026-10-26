@@ -1,6 +1,6 @@
 // The welcome page: what the game is, and creating an account or signing in. Shown at /welcome
 // (create) and /welcome/sign-in, outside the shell, to anyone not signed in.
-import { fmt, t } from '@idle-clash/content';
+import { CONTACT_ADDRESS, fmt, t } from '@idle-clash/content';
 import { NAME_MAX } from '@idle-clash/contracts';
 import { Button, Field, ItemIcon, MarchScene, Tabs, TextLink } from '@idle-clash/ui';
 import { useState, type FormEvent } from 'react';
@@ -137,7 +137,7 @@ export function Welcome({ path, next }: { path: string; next: string }) {
           <Button type="submit" variant="primary" disabled={working} className={s.submit}>
             {working ? t('welcome.working') : create ? t('welcome.create') : t('welcome.signIn')}
           </Button>
-          {!create && <p className={s.hint}>{t('welcome.forgot')}</p>}
+          {!create && <p className={s.hint}>{t('welcome.forgot', { address: CONTACT_ADDRESS })}</p>}
           <p className={s.legalLinks}>
             <TextLink href="/terms" onNavigate={navigate}>
               {t('legal.terms.title')}
@@ -145,6 +145,7 @@ export function Welcome({ path, next }: { path: string; next: string }) {
             <TextLink href="/privacy" onNavigate={navigate}>
               {t('legal.privacy.title')}
             </TextLink>
+            <TextLink href={`mailto:${CONTACT_ADDRESS}`}>{CONTACT_ADDRESS}</TextLink>
           </p>
         </form>
       </section>

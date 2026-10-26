@@ -18,6 +18,9 @@ export async function runAxe(): Promise<{ problems: string[]; checks: number }> 
       await page.waitForFunction(() => document.documentElement.dataset.ready === 'true', undefined, {
         timeout: 15_000,
       });
+      // The fire lit, so its burning badge (its time and its heat) is read too, not only "Stoke".
+      const fire = page.locator('[data-ui="FireBadge"][data-state="out"]');
+      if (await fire.count()) await fire.click();
       for (const scheme of ['light', 'dark'] as const) {
         await page.emulateMedia({ colorScheme: scheme, reducedMotion: 'reduce' });
         // Two frames for the new theme's colours to reach every element before axe reads them.

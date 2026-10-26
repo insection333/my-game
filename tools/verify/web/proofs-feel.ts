@@ -7,6 +7,7 @@
 // - Losing the server is said, and recovering from it too: with the network gone, a change that
 //   cannot get through makes the page say it is reconnecting (after a few seconds, so a blip never
 //   shows); with the network back, the line goes.
+// - A goal pays in a supply cache, opened in a moment that says what it held.
 // - A big sale asks first: "Sell all but 1" says what it comes to and waits; "Keep them" keeps them
 //   and hands the focus back; selling says what it brought in, where the focus now is.
 import type { Page } from 'playwright';
@@ -125,6 +126,61 @@ async function sellingAsks(served: Served, problems: string[]) {
   }
 }
 
+async function cacheOpens(served: Served, problems: string[]) {
+  let step = 'a player with a short goal done opens the Hearth';
+  const page = await playerWith(served, 'Opens Caches', '/', (s) => ({
+    ...s,
+    mastery: { ...s.mastery, 'woodcutting:pine-tree': 12 },
+    features: {
+      ...s.features,
+      goals: {
+        claimed: [
+          'chop-a-pine',
+          'mine-copper-ore',
+          'smelt-a-copper-bar',
+          'forge-a-copper-sword',
+          'wear-your-sword',
+          'defeat-a-hollow-rat',
+        ],
+        short: [
+          {
+            id: 'short-0',
+            kind: 'count',
+            action: { feature: 'woodcutting', id: 'pine-tree' },
+            skill: 'woodcutting',
+            lane: 'gathering',
+            target: 10,
+            base: 0,
+            reward: 400,
+          },
+        ],
+        made: 1,
+        daily: null,
+        milestones: [],
+        opened: 0,
+      },
+    },
+  }));
+  try {
+    await page.evaluate(() => localStorage.setItem('tourDone', '1'));
+    await page.reload();
+    step = 'the goal offers its cache';
+    await page
+      .locator('[data-slot="hearth.goals"]', { hasText: 'A cache, about 400 gold' })
+      .waitFor({ timeout: 10_000 });
+    step = 'opening it shows what it held';
+    await page.getByRole('button', { name: 'Open cache' }).click();
+    const moment = page.locator('[data-ui="Moment"]', { hasText: /cache: [\d,]+ gold/ });
+    await moment.waitFor({ timeout: 5_000 });
+    if (!(await moment.locator('[data-icon="supply-cache"]').count()))
+      problems.push('Caches: the moment does not show the cache');
+  } catch (err) {
+    problems.push(`Caches: failed where ${step} (${say(err)})`);
+  } finally {
+    await page.close();
+  }
+}
+
 export async function runFeelProofs(served: Served): Promise<string[]> {
   const problems: string[] = [];
   const page = await playerWith(served, 'Feels Right', '/', (s) => s);
@@ -137,5 +193,6 @@ export async function runFeelProofs(served: Served): Promise<string[]> {
     await page.close();
   }
   await sellingAsks(served, problems);
+  await cacheOpens(served, problems);
   return problems;
 }

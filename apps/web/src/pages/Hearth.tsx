@@ -1,7 +1,7 @@
 // The Hearth: what is happening, what happened while you were away, and what to aim for next.
 import { t } from '@idle-clash/content';
 import { useEffect } from 'react';
-import type { GoalRow, GoalsView, NextUpRow } from '@idle-clash/features';
+import type { GoalRow, GoalsView, NextUpRow, StandingView } from '@idle-clash/features';
 import { ActionRow, Button, hasIcon, ItemIcon, MarchScene, Panel, Pill, ProgressBar } from '@idle-clash/ui';
 import { useGame } from '../game/hooks.ts';
 import { game } from '../game/store.ts';
@@ -19,6 +19,7 @@ export function Hearth() {
     .sort((a, b) => a.data.xpAway - b.data.xpAway)
     .slice(0, 3);
   const [goals] = fills<GoalsView>(features, 'hearth.goals', state, now);
+  const [standing] = fills<StandingView>(features, 'hearth.standing', state, now);
   // The ladder lacks a goal (a short goal was claimed, or a new day began): the server makes it.
   const wants = goals?.data.refresh ?? false;
   useEffect(() => {
@@ -27,7 +28,19 @@ export function Hearth() {
   return (
     <>
       <h1 className="visually-hidden">{t('hearth.title')}</h1>
-      <MarchScene className={s.banner} keep="middle" />
+      {/* The region's banner, with your standing on it: rank, total level, the way to the next rank. */}
+      <div className={s.bannerBox}>
+        <MarchScene className={s.banner} keep="middle" />
+        {standing && (
+          <Slot id="hearth.standing" className={s.standing}>
+            <span className={s.rank}>{standing.data.rank}</span>
+            <span className={s.total}>{standing.data.total}</span>
+            {standing.data.next && (
+              <ProgressBar value={standing.data.progress} label={standing.data.next} tone="woad" />
+            )}
+          </Slot>
+        )}
+      </div>
       {/* Phones: today, goals, then next up. Wide: today and next up on the left, the goals beside them. */}
       <div className={s.hearth}>
         <section data-section className={s.todayArea}>

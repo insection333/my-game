@@ -91,9 +91,18 @@ function soundAt(doc: SaveDoc, now: number): boolean {
   return (
     st.clock <= ahead &&
     st.fireUntil <= ahead + 10 * 60_000 &&
+    (st.fireSince ?? 0) <= st.clock &&
     st.luck.lastMoment <= st.clock &&
     LANE_IDS.every((l) => (st.lanes[l].current?.startedAt ?? 0) <= st.clock)
   );
+}
+
+/** When the fire was lit, if sound; a time after the clock is dropped (the fire's heat starts again). */
+function fireSinceOf(v: unknown, clock: number, repairs: string[]): { fireSince?: number } {
+  if (v === undefined) return {};
+  if (isTime(v) && v <= clock) return { fireSince: v };
+  repairs.push("The fire's heat was damaged and starts again");
+  return {};
 }
 
 /** How far a save's clock may run ahead of the server's (clock drift between machines). */
@@ -127,6 +136,7 @@ export function mend(raw: unknown, now: number): Mended {
     clock,
     lastSeen: Math.min(time('lastSeen', clock), clock),
     fireUntil: time('fireUntil', clock),
+    ...fireSinceOf(st.fireSince, clock, repairs),
     lanes: Object.fromEntries(
       LANE_IDS.map((l) => [l, mendLane(l, isObject(st.lanes) ? st.lanes[l] : undefined, clock, repairs)]),
     ) as Record<LaneId, Lane>,

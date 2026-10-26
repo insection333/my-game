@@ -79,6 +79,8 @@ export const State = z
     lastSeen: time,
     /** The fire burns while the clock is before this. */
     fireUntil: time,
+    /** When the fire was last lit from cold: it has burned without going out since (its heat). */
+    fireSince: time.optional(),
     lanes: z.object(Object.fromEntries(LANE_IDS.map((l) => [l, Lane])) as Record<LaneId, typeof Lane>).strict(),
     items: z.record(name, count),
     /** XP by skill. `part` carries thousandths of an XP, so bonuses like +15% are exact over time. */

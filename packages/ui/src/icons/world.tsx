@@ -1,6 +1,7 @@
 // Reference icons for the other families: Pine logs, Copper ore, Iron bar (resources), Hollow rat
 // (foe), Bread (food), Bird's nest (find) and Woodcutting (skill, on its seal); and the other logs.
-import { circle, ellipse, Glint, INK, LINE, M, Shape, type Tone } from './style.tsx';
+import { useContext } from 'react';
+import { circle, ellipse, Glint, INK, LINE, M, RimTone, Shape, type Tone } from './style.tsx';
 
 /** One log lying with its cut end towards you: a rounded bark body running back to the upper right. */
 function Log({ x, y, r, wood, bark = M.bark }: { x: number; y: number; r: number; wood: Tone; bark?: Tone }) {
@@ -192,11 +193,12 @@ export function BirdsNest() {
 }
 
 export function WoodcuttingSeal() {
+  const rim = useContext(RimTone);
   return (
     <g>
       <Shape
         d={circle(24, 24, 21.5)}
-        tone={M.bronze}
+        tone={rim}
         lit="M2.5 24 A21.5 21.5 0 0 1 24 2.5 L24 6 A18 18 0 0 0 6 24 Z"
         shade="M45.5 24 A21.5 21.5 0 0 1 24 45.5 L24 42 A18 18 0 0 0 42 24 Z"
       >

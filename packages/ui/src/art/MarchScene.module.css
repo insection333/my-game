@@ -1,9 +1,25 @@
-/* The scene's colours: a cool morning by default, night in the dark theme. Distant layers are paler
-   and cooler (no outlines); near ones are deeper, with the ink line. */
-.scene {
+/* The still scene and, over it, the layer of what moves; both fill the frame the page gives. */
+.wrap {
+  display: grid;
+  grid-template: minmax(0, 1fr) / minmax(0, 1fr);
+  overflow: hidden;
+}
+
+.scene,
+.moving {
+  grid-area: 1 / 1;
   display: block;
   width: 100%;
   height: 100%;
+}
+
+.moving {
+  pointer-events: none;
+}
+
+/* The scene's colours: a cool morning by default, night in the dark theme. Distant layers are paler
+   and cooler (no outlines); near ones are deeper, with the ink line. */
+.wrap {
   --sky: #b9cfd6;
   --sky-low: #d8e4e4;
   --sky-horizon: #ecefe2;
@@ -34,10 +50,13 @@
   --fire: #d4511f;
   --glow: 0;
   --smoke: #eef2ef;
+  --cloud: rgb(255 255 255 / 0.72);
+  --birds: #3a4a4f;
+  --birds-shown: 1;
 }
 
 @media (prefers-color-scheme: dark) {
-  :global(:root:not([data-theme='light'])) .scene {
+  :global(:root:not([data-theme='light'])) .wrap {
     --sky: #0a1318;
     --sky-low: #13222a;
     --sky-horizon: #1d2f35;
@@ -68,10 +87,12 @@
     --fire: #ff7a32;
     --glow: 0.45;
     --smoke: #3f4c4f;
+    --cloud: rgb(150 172 178 / 0.1);
+    --birds-shown: 0;
   }
 }
 
-:global(:root[data-theme='dark']) .scene {
+:global(:root[data-theme='dark']) .wrap {
   --sky: #0a1318;
   --sky-low: #13222a;
   --sky-horizon: #1d2f35;
@@ -102,6 +123,8 @@
   --fire: #ff7a32;
   --glow: 0.45;
   --smoke: #3f4c4f;
+  --cloud: rgb(150 172 178 / 0.1);
+  --birds-shown: 0;
 }
 
 .skyTop {
@@ -209,4 +232,98 @@
   stroke: #182024;
   stroke-width: 3;
   stroke-linejoin: round;
+}
+
+/* What moves. Slow and quiet: a cloud takes minutes to cross, the smoke a few seconds to rise. */
+.cloud {
+  fill: var(--cloud);
+}
+
+.birds {
+  fill: none;
+  stroke: var(--birds);
+  stroke-width: 2;
+  stroke-linecap: round;
+  opacity: 0;
+}
+
+.puff {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .stillSmoke {
+    display: none;
+  }
+
+  .cloudSlow {
+    animation: drift 210s linear infinite;
+    animation-delay: -80s;
+  }
+
+  .cloudFast {
+    animation: drift 150s linear infinite;
+    animation-delay: -20s;
+  }
+
+  .birds {
+    animation: flock 70s linear infinite;
+    animation-delay: -12s;
+  }
+
+  .puff {
+    animation: rise 9s ease-out infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cloudSlow {
+    transform: translateX(520px);
+  }
+
+  .cloudFast {
+    transform: translateX(1250px);
+  }
+}
+
+@keyframes drift {
+  from {
+    transform: translateX(-320px);
+  }
+  to {
+    transform: translateX(1640px);
+  }
+}
+
+/* Birds cross from right to left in the first part of each loop, then the sky is still. */
+@keyframes flock {
+  0% {
+    transform: translate(1660px, 58px) scale(0.75);
+    opacity: var(--birds-shown);
+  }
+  32% {
+    transform: translate(-80px, 34px) scale(0.75);
+    opacity: var(--birds-shown);
+  }
+  32.1%,
+  100% {
+    transform: translate(-80px, 34px) scale(0.75);
+    opacity: 0;
+  }
+}
+
+@keyframes rise {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translate(-60px, -84px) scale(3.2);
+    opacity: 0;
+  }
 }

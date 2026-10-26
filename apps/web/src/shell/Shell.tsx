@@ -46,7 +46,7 @@ export function Shell({ children }: { children: ReactNode }) {
           {t('shell.name')}
         </a>
         <div className={s.tools}>
-          <FireBadge fireUntil={state.fireUntil} now={now} />
+          <FireBadge fireUntil={state.fireUntil} fireSince={state.fireSince} now={now} />
           <span data-slot="shell.gold" className={s.gold}>
             <Pill tone="gold">
               <Coin />

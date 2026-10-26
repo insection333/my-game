@@ -40,10 +40,15 @@
   }
 }
 
-/* The region's scene across the top of the Hearth: the world the lanes work in. */
+/* The region's scene across the top of the Hearth: the world the lanes work in, with the player's
+   standing on a plaque at its foot. */
+.bannerBox {
+  position: relative;
+  margin-bottom: var(--s-4);
+}
+
 .banner {
   height: 88px;
-  margin-bottom: var(--s-4);
   border: 1px solid var(--line);
   border-radius: var(--r-panel);
 }
@@ -52,6 +57,30 @@
   .banner {
     height: 132px;
   }
+}
+
+.standing {
+  position: absolute;
+  left: var(--s-2);
+  bottom: var(--s-2);
+  display: grid;
+  gap: 2px;
+  min-width: 9rem;
+  max-width: calc(100% - 2 * var(--s-2));
+  padding: var(--s-1) var(--s-3) var(--s-2);
+  border: 1px solid var(--line);
+  border-radius: var(--r-control);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+}
+
+.rank {
+  font: 600 var(--t-lead) / 1.2 var(--font-book);
+  color: var(--ink);
+}
+
+.total {
+  font-size: var(--t-small);
+  color: var(--ink-2);
 }
 
 .pair {

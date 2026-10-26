@@ -1,4 +1,5 @@
 .track {
+  position: relative;
   height: 6px;
   border-radius: 3px;
   background: var(--surface-2);
@@ -50,4 +51,15 @@
 
 .woad {
   background: var(--woad);
+}
+
+/* Steps: the track cut into equal segments by gaps in the panel's own colour. */
+.notches {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to right,
+    transparent 0 calc(100% / var(--n) - 2px),
+    var(--surface) calc(100% / var(--n) - 2px) calc(100% / var(--n))
+  );
 }

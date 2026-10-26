@@ -56,6 +56,9 @@ export function addXp(s: State, skill: string, xp: number): void {
 }
 
 export const fireBurning = (s: State, at: number): boolean => at < s.fireUntil;
+/** How long the fire has burned without going out, in minutes, at a moment (0 when out). */
+export const fireMinutes = (s: State, at: number): number =>
+  fireBurning(s, at) ? Math.max(0, at - (s.fireSince ?? at)) / 60_000 : 0;
 
 /**
  * The lane an action of a kind should start in. A gathering action takes the first Gathering lane
