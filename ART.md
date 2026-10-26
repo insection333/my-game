@@ -81,6 +81,10 @@ The fish family the owner approved on 27 October 2026 (`icons/fish.tsx`, `fish-l
 - **Finds** come up from the water or out of a cook's keeping: a pearl mussel, a river pearl, a message in a bottle, a drowned signet ring, a great scale of the deep and a fen-king's crown hung with weed; wild herbs, saffron in a tied sack, a grandmother's sealed recipe, a silver ladle, an ever-warm pot and a cauldron of plenty spilling gold.
 - **Seals:** Fishing's hook and line with a red float; Cooking's pot over a small flame.
 
+## Supplies (session 14)
+
+The owner approved the supplies family's references on 27 October 2026 (`icons/supplies.tsx`): a fanned bundle of three arrows (the tier's metal at the heads, its wood in the shafts), a rune (a flat stone with its carved mark glowing in the tier's light), a whetstone (a gritty stone bound in the tier's metal) and a standing-stone key (the tier's metal, a rune-stone set in its bow). Step 14 draws all eight tiers of each to this standard.
+
 ## Seals that grow
 
 A skill's seal is rimmed in the metal of the highest tier its skill has reached: copper, then bronze, iron and steel, then moonsilver, star-iron, embersteel and dawnsteel. At the top level a small amber star sits on the rim's foot. The icon sheet shows one seal at each tier. Where no player's skill is meant (a ladder's tab, the icon sheet's own entry), the rim is bronze.
