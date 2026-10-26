@@ -9,6 +9,8 @@ import {
   RARITY,
   SMITHING,
   STOREHOUSE,
+  TIER_SECONDS,
+  TIERS,
   VALUE,
   WOODCUTTING,
   FIRE,
@@ -171,6 +173,9 @@ const stages: [string, number][] = [
   ['Day 5', 96],
   ['Day 14', 312],
   ['Day 21', 480],
+  // The expansion's climb: the Fen (day 60) and near the top (day 100).
+  ['Day 60', 1416],
+  ['Day 100', 2376],
 ];
 const states = new Map(stages.map(([n, h]) => [n, stageState(h)]));
 for (const [name] of stages) {
@@ -253,16 +258,22 @@ out('\n## First crafted gear');
 
 out('\n## Gold: does a day pay for a day of food and the next Storehouse enlargement?');
 {
-  // Expected purchase days for the eight enlargements; each costs about 70% of that day's net gold.
-  const buyDays = [1, 2, 3, 5, 7, 10, 14, 18];
-  const tier = (l: number) => [1, 10, 20, 30].filter((x) => x <= l).length;
+  // Expected purchase days for the enlargements; each costs about 70% of that day's net gold. The last
+  // six came with the expansion's climb, a gold sink through its months.
+  const buyDays = [1, 2, 3, 5, 7, 10, 14, 18, 25, 35, 45, 60, 75, 90];
+  const tier = (l: number) => TIERS.filter((x) => x.level <= l).length;
+  // Ores a bar takes for each ore's worth in it (copper 1; bronze's tin is cheaper; iron's two ores).
+  const oreWeight = (t: number) => {
+    const bar = SMITHING.find((x) => x.id === `smithing.bar${t}`)!;
+    return Object.values(bar.inputs).reduce((a, b) => a + b, 0) * (t === 2 ? 1.25 / 2 : t === 4 ? 1.5 / 3 : 1);
+  };
   const dayIncome = (day: number) => {
     const st = stageState(24 * (day - 1) + 12);
     const gT = tier(st.wc);
-    const gather = (3600 / [7.5, 12.5, 20, 26][gT - 1]) * 1.2 * VALUE.log[gT - 1];
+    const gather = (3600 / TIER_SECONDS[gT - 1]) * 1.2 * VALUE.log[gT - 1];
     const sT = tier(st.sm);
     const smithAdd =
-      (3600 / [7.5, 12.5, 20, 26][sT - 1]) * (VALUE.bar[sT - 1] - VALUE.ore[sT - 1] * [1, 1.25, 2, 1.5][sT - 1]) * 0.6;
+      (3600 / TIER_SECONDS[sT - 1]) * Math.max(0, VALUE.bar[sT - 1] - VALUE.ore[sT - 1] * oreWeight(sT)) * 0.6;
     const best = FOES.filter((f) => f.hitpoints <= st.hp)
       .map((f) => combatOdds(STYLE, st.cb, st.hp, f.id))
       .filter((o) => o.verdict === 'Easy' || o.verdict === 'Fair')
@@ -284,10 +295,10 @@ out('\n## Gold: does a day pay for a day of food and the next Storehouse enlarge
 }
 
 out('\n## Supply: can mining keep the forge fed?');
-for (const t of [1, 2, 3, 4]) {
+for (const { tier: t, level: opens } of TIERS) {
   const share = (kind: 'standard' | 'rich', mastery: number) => {
     const mine = MINING.find((a) => a.tier === t && a.kind === kind)!;
-    const r = actionRate('mining', [5, 15, 25, 35][t - 1], mine, mastery, false);
+    const r = actionRate('mining', opens + 5, mine, mastery, false);
     const orePerHour = (3600 / r.secondsPerAction) * r.itemsPerAction;
     const bar = SMITHING.find((x) => x.id === `smithing.bar${t}`)!;
     const oresPerHour = (3600 / bar.seconds) * Object.values(bar.inputs).reduce((a, b) => a + b, 0);

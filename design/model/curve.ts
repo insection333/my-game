@@ -1,5 +1,5 @@
 // The XP curve: derived from the pacing targets, then checked by simulating focused players.
-import { FOES, MINING, SMITHING, WOODCUTTING, type Style } from './content.ts';
+import { FOES, MAX_LEVEL, MINING, SMITHING, WOODCUTTING, type Style } from './content.ts';
 import { actionRate, odds, tierForLevel, HP_XP_SHARE } from './mechanics.ts';
 import { rng } from './rng.ts';
 
@@ -13,6 +13,21 @@ export function levelTimes(rEarly: number, lMid: number, d1 = 30 / 3600): number
     d *= 1.15 + (rEarly - 1.15) / (1 + Math.exp((l - lMid) / 1.2));
   }
   return T;
+}
+
+// Past 40 (the expansion), the table is not fitted to times but continued: each level costs a little
+// more XP than the one before (LATE_GROWTH), never less, so "XP to the next level" only ever rises.
+// The later tiers' faster rates (TIER_XP_PER_HOUR) set how long that takes; the checks hold it to the
+// year's targets (docs/EXPANSION.md).
+export const LATE_GROWTH = 1.002;
+export function extendTable(table40: number[]): number[] {
+  const out = [...table40];
+  let inc = out[40] - out[39];
+  for (let l = 41; l <= MAX_LEVEL; l++) {
+    inc *= LATE_GROWTH;
+    out.push(out[l - 1] + inc);
+  }
+  return out;
 }
 export function fitLevelTimes() {
   let best = { err: Infinity, rE: 0, lm: 0, T: [] as number[] };
@@ -72,7 +87,7 @@ export const combatCandidates =
 
 export const levelFromTable = (table: number[], xp: number) => {
   let l = 1;
-  while (l < 40 && xp >= table[l + 1]) l++;
+  while (l < MAX_LEVEL && xp >= table[l + 1]) l++;
   return l;
 };
 
@@ -95,7 +110,7 @@ export function simulate(
     if (opts.table) level = levelFromTable(opts.table, xp);
     else {
       level = 1;
-      while (level < 40 && t / 3600 >= opts.T![level + 1]) level++;
+      while (level < MAX_LEVEL && t / 3600 >= opts.T![level + 1]) level++;
       while (derived.length <= level) derived.push(xp);
     }
     const list = cands(level, done, active);

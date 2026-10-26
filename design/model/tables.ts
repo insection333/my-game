@@ -14,29 +14,38 @@ import {
   WOODCUTTING,
 } from './content.ts';
 import { unlockTable } from './unlocks.ts';
+import { MAX_LEVEL } from './content.ts';
 import { fmtUnlock } from './format.ts';
 import { maxHealth, XP_PER_DAMAGE_BY_TIER } from './mechanics.ts';
-import { fitLevelTimes, gatherCandidates, roundTable, simulate } from './curve.ts';
+import { extendTable, fitLevelTimes, gatherCandidates, roundTable, simulate } from './curve.ts';
 
 const n = (x: number) => x.toLocaleString('en');
 const p: string[] = [];
 const say = (s = '') => p.push(s);
 
 const fit = fitLevelTimes();
-const table = roundTable(simulate(gatherCandidates('woodcutting'), { days: 21, T: fit.T }).derived.slice(0, 41));
+// Levels 1 to 40 fitted to the brief's targets; past 40, continued (extendTable).
+const table = roundTable(extendTable(simulate(gatherCandidates('woodcutting'), { days: 21, T: fit.T }).derived.slice(0, 41)));
 say('| Level | XP | Level | XP | Level | XP | Level | XP |');
 say('| --- | --- | --- | --- | --- | --- | --- | --- |');
-for (let r = 1; r <= 10; r++) say(`| ${[r, r + 10, r + 20, r + 30].map((l) => `${l} | ${n(table[l])}`).join(' | ')} |`);
+for (let r = 1; r <= 25; r++)
+  say(
+    `| ${[r, r + 25, r + 50, r + 75].map((l) => (l <= MAX_LEVEL ? `${l} | ${n(table[l])}` : ' | ')).join(' | ')} |`,
+  );
 const XP_TABLE = p.splice(0).join('\n');
 
 for (const s of SKILLS) {
   const t = unlockTable(s.id);
   say(`### ${s.name}`);
   say();
-  say('| Levels 1–10 | Levels 11–20 | Levels 21–30 | Levels 31–40 |');
+  say('| Levels 1–25 | Levels 26–50 | Levels 51–75 | Levels 76–99 |');
   say('| --- | --- | --- | --- |');
-  for (let r = 1; r <= 10; r++)
-    say(`| ${[r, r + 10, r + 20, r + 30].map((l) => `**${l}** ${t.get(l)!.map(fmtUnlock).join('; ')}`).join(' | ')} |`);
+  for (let r = 1; r <= 25; r++)
+    say(
+      `| ${[r, r + 25, r + 50, r + 75]
+        .map((l) => (l <= MAX_LEVEL ? `**${l}** ${t.get(l)!.map(fmtUnlock).join('; ')}` : ''))
+        .join(' | ')} |`,
+    );
   say();
 }
 const UNLOCK_TABLES = p.splice(0).join('\n');
@@ -61,11 +70,12 @@ for (const r of SMITHING)
   );
 const RECIPES = p.splice(0).join('\n');
 
-say('| Foe | Style | Level | Opens at Hitpoints | Health | Max hit | XP a defeat (style) | Gold a defeat | Drop |');
-say('| --- | --- | --- | --- | --- | --- | --- | --- | --- |');
+const REGIONS = ['The march', 'The Sunken Fen', 'The Ashen Peaks'];
+say('| Foe | Region | Style | Level | Opens at Hitpoints | Health | Max hit | XP a defeat (style) | Gold a defeat | Drop |');
+say('| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |');
 for (const f of FOES)
   say(
-    `| ${f.name} | ${f.style[0].toUpperCase() + f.style.slice(1)} | ${f.level} | ${f.hitpoints} | ${f.hp} | ${f.maxHit} | ${f.xp} | ${f.gold} | ${f.drop} |`,
+    `| ${f.name} | ${REGIONS[f.region - 1]} | ${f.style[0].toUpperCase() + f.style.slice(1)} | ${f.level} | ${f.hitpoints} | ${f.hp} | ${f.maxHit} | ${f.xp} | ${f.gold} | ${f.drop} |`,
   );
 const FOE_TABLE = p.splice(0).join('\n');
 
@@ -94,7 +104,7 @@ say(
 const MASTERY_TABLE = p.splice(0).join('\n');
 
 const STORE = `Starts with ${STOREHOUSE.startSlots} slots; each enlargement adds ${STOREHOUSE.slotsPerEnlargement}. Costs: ${STOREHOUSE.costs.map(n).join(', ')} gold.`;
-const HEALTH = `Health ${maxHealth(1)} at Hitpoints 1, ${maxHealth(40)} at 40. Style XP per point of damage by foe tier: ${XP_PER_DAMAGE_BY_TIER.join(', ')}.`;
+const HEALTH = `Health ${maxHealth(1)} at Hitpoints 1, ${maxHealth(40)} at 40, ${maxHealth(MAX_LEVEL)} at ${MAX_LEVEL}. Style XP per point of damage by foe tier: ${XP_PER_DAMAGE_BY_TIER.join(', ')}.`;
 
 /** The XP table (index = level), for the content check to compare against packages/content. */
 export const XP_TABLE_FROM_MODEL = table;

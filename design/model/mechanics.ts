@@ -33,8 +33,8 @@ export function actionRate(
 // ---- Combat ----
 // Style XP per point of damage dealt (overkill counts for nothing); higher-tier foes pay more per point,
 // so an outlevelled foe is never the best target for long.
-export const XP_PER_DAMAGE_BY_TIER = [0.3, 0.32, 0.34, 0.35];
-export const HP_XP_SHARE = 0.4;
+export const XP_PER_DAMAGE_BY_TIER = [0.3, 0.32, 0.34, 0.35, 0.34, 0.31, 0.3, 0.28];
+export const HP_XP_SHARE = 1;
 // Foes more than five levels below you teach less: 4% less per level, down to 40%.
 export const easyFoeXp = (you: number, foe: number) => Math.min(1, Math.max(0.4, 1 - 0.04 * (you - foe - 5))); // Hitpoints XP per kill, as a share of the style XP
 const beats: Record<Style, Style> = { melee: 'archery', archery: 'magic', magic: 'melee' };

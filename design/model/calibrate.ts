@@ -6,9 +6,9 @@ import { FOES, TIER_XP_PER_HOUR, beatenBy, type Style } from './content.ts';
 import { odds, tierForLevel, XP_PER_DAMAGE_BY_TIER } from './mechanics.ts';
 import { rng } from './rng.ts';
 
-const KILL_SECONDS = [16, 19, 22, 25];
+const KILL_SECONDS = [16, 19, 22, 25, 27, 29, 31, 33];
 const FOOD_PER_HOUR = 10;
-const GOLD_PER_HOUR = [600, 1500, 3500, 7000]; // a gathering lane's sale value at the tier
+const GOLD_PER_HOUR = [600, 1500, 3500, 7000, 8000, 12000, 17000, 23000]; // a gathering lane's sale value at the tier
 const out: Record<string, [number, number, number, number]> = {};
 for (const f of FOES) {
   const L = Math.max(1, f.level - 1);
@@ -19,7 +19,7 @@ for (const f of FOES) {
   let hp = 100;
   while (3600 / at(hp, 10).killsPerHour < KILL_SECONDS[tier - 1]) hp += 10;
   let maxHit = 10;
-  while (at(hp, maxHit + 5).foodPerHour <= FOOD_PER_HOUR && maxHit < 600) maxHit += 5;
+  while (at(hp, maxHit + 5).foodPerHour <= FOOD_PER_HOUR && maxHit < 2000) maxHit += 5;
   const kph = at(hp, maxHit).killsPerHour;
   const o = at(hp, maxHit);
   out[f.id] = [

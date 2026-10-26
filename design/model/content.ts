@@ -14,23 +14,33 @@ export const SKILLS: { id: SkillId; name: string; lane: 'gathering' | 'artisan' 
   { id: 'hitpoints', name: 'Hitpoints', lane: 'combat' },
 ];
 
+/** The top level (version 1 stopped at 40; the expansion climbs to 99 over eight tiers). */
+export const MAX_LEVEL = 99;
+
+// Tiers 5 to 8 (the expansion, docs/EXPANSION.md): the Sunken Fen's metals and woods, then the Ashen
+// Peaks'. Their gaps grow (15 levels), so the late tiers are earned.
 export const TIERS = [
   { tier: 1, metal: 'Copper', level: 1, log: 'Pine', ore: 'Copper ore' },
   { tier: 2, metal: 'Bronze', level: 10, log: 'Ash', ore: 'Tin ore' },
   { tier: 3, metal: 'Iron', level: 20, log: 'Oak', ore: 'Iron ore' },
   { tier: 4, metal: 'Steel', level: 30, log: 'Yew', ore: 'Coal' },
+  { tier: 5, metal: 'Moonsilver', level: 40, log: 'Maple', ore: 'Moonsilver ore' },
+  { tier: 6, metal: 'Star-iron', level: 55, log: 'Silverbark', ore: 'Star-iron ore' },
+  { tier: 7, metal: 'Embersteel', level: 70, log: 'Elderwood', ore: 'Ember ore' },
+  { tier: 8, metal: 'Dawnsteel', level: 85, log: 'Ancient', ore: 'Dawnstone' },
 ] as const;
 
 // Base pace per tier: seconds for a standard gathering action (and per input unit in Smithing),
 // and the XP per hour that action pays before mastery and perks.
-export const TIER_SECONDS = [7.5, 12.5, 20, 26];
-export const TIER_XP_PER_HOUR = [5400, 7200, 9300, 12000];
+export const TIER_SECONDS = [7.5, 12.5, 20, 26, 30, 34, 38, 42];
+export const TIER_XP_PER_HOUR = [5400, 7200, 9300, 12000, 17000, 22000, 28000, 35000];
 
-// Vendor prices: a gathering lane sells for about 600, 1,500, 3,500 and 7,000 gold an hour by tier.
+// Vendor prices: a gathering lane sells for about 600, 1,500, 3,500 and 7,000 gold an hour by tier,
+// then about 8,000, 12,000, 17,000 and 23,000.
 export const VALUE = {
-  log: [1, 4, 14, 35], // pine, ash, oak, yew
-  ore: [1, 4, 14, 30], // copper, tin, iron, coal
-  bar: [2, 7, 36, 96], // copper, bronze, iron, steel: about 1.3 times their ores
+  log: [1, 4, 14, 35, 70, 115, 180, 270], // pine, ash, oak, yew, maple, silverbark, elderwood, ancient
+  ore: [1, 4, 14, 30, 60, 100, 160, 240], // copper, tin, iron, coal, moonsilver, star-iron, ember, dawnstone
+  bar: [2, 7, 36, 96, 117, 208, 286, 468], // about 1.3 times their ores
 };
 
 export interface GatherAction {
@@ -52,9 +62,10 @@ function gatherActions(skill: 'woodcutting' | 'mining'): GatherAction[] {
   for (const t of TIERS) {
     const i = t.tier - 1;
     const res = skill === 'woodcutting' ? `${t.log} logs` : t.ore;
-    const base = skill === 'woodcutting' ? `${t.log} tree` : `${t.ore.replace(' ore', '')} vein`;
-    const rich =
-      skill === 'woodcutting' ? `Old ${t.log.toLowerCase()}` : `Deep ${t.ore.replace(' ore', '').toLowerCase()} seam`;
+    // The ore's own word: "Copper ore" mines from a copper vein, Dawnstone from a dawnstone vein.
+    const rock = t.ore.replace(' ore', '');
+    const base = skill === 'woodcutting' ? `${t.log} tree` : `${rock} vein`;
+    const rich = skill === 'woodcutting' ? `Old ${t.log.toLowerCase()}` : `Deep ${rock.toLowerCase()} seam`;
     const s = TIER_SECONDS[i];
     const xp = Math.round((TIER_XP_PER_HOUR[i] * s) / 3600);
     out.push({
@@ -114,6 +125,10 @@ const BAR_INPUTS: Record<number, Record<string, number>> = {
   2: { 'Copper ore': 1, 'Tin ore': 1 },
   3: { 'Iron ore': 2 },
   4: { 'Iron ore': 1, Coal: 2 },
+  5: { 'Moonsilver ore': 1, Coal: 1 },
+  6: { 'Star-iron ore': 1, Coal: 2 },
+  7: { 'Ember ore': 1, Coal: 2 },
+  8: { Dawnstone: 1, 'Moonsilver ore': 1, Coal: 2 },
 };
 export const SMITHING: Recipe[] = TIERS.flatMap((t) => {
   const i = t.tier - 1;
@@ -168,6 +183,8 @@ export interface Foe {
   gold: number;
   drop: string;
   tier: number;
+  /** The region it is fought in: the march (1), the Sunken Fen (2), the Ashen Peaks (3). */
+  region: number;
 }
 export const beatenBy: Record<Style, Style> = { archery: 'melee', magic: 'archery', melee: 'magic' };
 // A foe opens at a Hitpoints level, so every style can reach it. hp, maxHit, xp and gold are calibrated
@@ -182,7 +199,8 @@ const foe = (
   tier: number,
 ): Foe => {
   const [hp, maxHit, xp, gold] = FOE_STATS[id] ?? [100, 10, 36, 1];
-  return { id, name, style, level, hitpoints, drop, tier, hp, maxHit, xp, gold };
+  const region = tier <= 4 ? 1 : tier <= 6 ? 2 : 3;
+  return { id, name, style, level, hitpoints, drop, tier, region, hp, maxHit, xp, gold };
 };
 export const FOES: Foe[] = [
   foe('hollow-rat', 'Hollow rat', 'melee', 2, 1, 'Copper ore', 1),
@@ -193,15 +211,32 @@ export const FOES: Foe[] = [
   foe('grave-wight', 'Grave wight', 'magic', 24, 22, 'Iron ore', 3),
   foe('hill-troll', 'Hill troll', 'melee', 29, 27, 'Oak logs', 3),
   foe('fell-huntsman', 'Fell huntsman', 'archery', 37, 34, 'Steel bar', 4),
+  // The Sunken Fen (tiers 5 and 6).
+  foe('bog-lurker', 'Bog lurker', 'melee', 42, 40, 'Maple logs', 5),
+  foe('reed-stalker', 'Reed stalker', 'archery', 46, 44, 'Moonsilver ore', 5),
+  foe('drowned-acolyte', 'Drowned acolyte', 'magic', 51, 49, 'Moonsilver bar', 5),
+  foe('mire-hulk', 'Mire hulk', 'melee', 57, 55, 'Silverbark logs', 6),
+  foe('fen-reaver', 'Fen reaver', 'archery', 62, 60, 'Star-iron ore', 6),
+  foe('bog-witch', 'Bog witch', 'magic', 67, 65, 'Star-iron bar', 6),
+  // The Ashen Peaks (tiers 7 and 8).
+  foe('ash-troll', 'Ash troll', 'melee', 72, 70, 'Elderwood logs', 7),
+  foe('peak-slinger', 'Peak slinger', 'archery', 77, 75, 'Ember ore', 7),
+  foe('ash-shaman', 'Ash shaman', 'magic', 82, 80, 'Embersteel bar', 7),
+  foe('obsidian-golem', 'Obsidian golem', 'melee', 87, 85, 'Ancient logs', 8),
+  foe('sky-reaver', 'Sky reaver', 'archery', 92, 90, 'Dawnstone', 8),
+  foe('ember-sorcerer', 'Ember sorcerer', 'magic', 97, 95, 'Dawnsteel bar', 8),
 ];
 
 export const FOODS = [
   { id: 'bread', name: 'Bread', heals: 140, price: 20, level: 1 },
   { id: 'meat-pie', name: 'Meat pie', heals: 320, price: 50, level: 10 },
   { id: 'hearty-stew', name: 'Hearty stew', heals: 600, price: 110, level: 20 },
+  { id: 'roast-fowl', name: 'Roast fowl', heals: 1000, price: 190, level: 40 },
+  { id: 'hunters-feast', name: "Hunter's feast", heals: 1600, price: 320, level: 60 },
+  { id: 'wardens-feast', name: "Warden's feast", heals: 2300, price: 480, level: 80 },
 ];
 
-// Six finds per skill: a lesser and a greater at each rarity. Greater finds come only from tier 3-4 actions.
+// Six finds per skill: a lesser and a greater at each rarity. Greater finds come only from tier 3 and up.
 // Uncommon finds use luck, shared by all lanes: each action that finds nothing raises the next chance
 // by LUCK_STEP, so finds average 1 in 50 actions but arrive evenly. After LUCK_GUARANTEE_SECONDS of
 // active play with no notable moment, the next action's find is certain. Rare and Legendary are
@@ -253,6 +288,6 @@ export const MASTERY_PER_STEP = { speed: 0.03, extraYield: 0.06, findChance: 0 }
 export const STOREHOUSE = {
   startSlots: 24,
   slotsPerEnlargement: 6,
-  costs: [40000, 90000, 100000, 120000, 180000, 200000, 230000, 250000],
+  costs: [40000, 90000, 100000, 120000, 180000, 200000, 230000, 250000, 280000, 300000, 340000, 450000, 460000, 650000],
 };
 export const FIRE = { xpBonus: 0.15, extraGatheringLanes: 1, idleMinutesBeforeOut: 5 };
