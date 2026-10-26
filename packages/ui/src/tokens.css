@@ -21,6 +21,8 @@
   --alert-soft: #f5dde0;
   --ember: #d4511f;
   --ember-glow: #f4a13b;
+  /* The ember as small text: dark enough to read on the page's ground. */
+  --ember-ink: #a8401a;
   --shade: rgb(16 28 32 / 0.18);
   --scrim: rgb(16 28 32 / 0.45);
   --burst-core: rgb(244 161 59 / 0.35);
@@ -78,10 +80,9 @@
     --alert-soft: #3e2328;
     --ember: #f06a2e;
     --ember-glow: #ffb24d;
+    --ember-ink: #f6894f;
     --shade: rgb(0 0 0 / 0.4);
     --scrim: rgb(0 0 0 / 0.6);
-    --burst-core: rgb(255 178 77 / 0.25);
-    --burst-ray: rgb(216 176 74 / 0.35);
     --burst-core: rgb(255 178 77 / 0.25);
     --burst-ray: rgb(216 176 74 / 0.35);
     color-scheme: dark;
@@ -107,6 +108,7 @@
   --alert-soft: #3e2328;
   --ember: #f06a2e;
   --ember-glow: #ffb24d;
+  --ember-ink: #f6894f;
   --shade: rgb(0 0 0 / 0.4);
   --scrim: rgb(0 0 0 / 0.6);
   --burst-core: rgb(255 178 77 / 0.25);

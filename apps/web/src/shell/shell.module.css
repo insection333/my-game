@@ -113,7 +113,7 @@
 /* How much the fire's heat adds, beside its time where the header has room. */
 .fireHeat {
   display: none;
-  color: var(--ember);
+  color: var(--ember-ink);
   font-size: var(--t-small);
 }
 
