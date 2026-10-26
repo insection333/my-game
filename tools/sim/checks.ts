@@ -10,6 +10,7 @@ import {
   gatherCandidates,
   levelFromTable,
   simulate,
+  cookingCandidates,
   smithingCandidates,
   type Candidates,
 } from '../../design/model/curve.ts';
@@ -52,7 +53,11 @@ const keptSkills = (): [Feature, LaneId][] =>
 
 /** The paper model's focused player for the same skill. */
 const modelFor = (id: string) =>
-  id === 'smithing' ? smithingCandidates : gatherCandidates(id as 'woodcutting' | 'mining');
+  id === 'smithing'
+    ? smithingCandidates
+    : id === 'cooking'
+      ? cookingCandidates
+      : gatherCandidates(id as 'woodcutting' | 'mining' | 'fishing');
 
 /** The paper model's focused fighter, its Hitpoints rising with it. */
 function modelFighter(style: (typeof STYLES)[number], table: number[]) {

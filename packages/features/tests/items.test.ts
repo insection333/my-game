@@ -3,11 +3,21 @@ import { describe, expect, it } from 'vitest';
 import { FEATURES, items } from '../src/index.ts';
 
 describe('item questions', () => {
-  it('says a log comes from its two trees and goes into the bows and staves of its tier', () => {
+  it("says a log comes from its two trees and goes into its tier's bows and staves and the fire under its fish", () => {
     expect(items.comesFrom(FEATURES, 'ash-logs').map((s) => s.action)).toEqual(['ash-tree', 'old-ash']);
     expect(items.usedIn(FEATURES, 'ash-logs').map((s) => [s.action, s.count])).toEqual([
       ['bronze-staff', 1],
       ['bronze-bow', 2],
+      ['cooked-trout', 1],
+    ]);
+  });
+
+  it("says a fish comes from its shallows and pool and goes into its cooking and the next tier's dish", () => {
+    expect(items.comesFrom(FEATURES, 'pike').map((s) => s.action)).toEqual(['pike-shallows', 'deep-pike-pool']);
+    expect(items.usedIn(FEATURES, 'pike').map((s) => [s.action, s.count])).toEqual([
+      ['cooked-pike', 2],
+      ['pike-pie', 1],
+      ['salmon-stew', 1],
     ]);
   });
 

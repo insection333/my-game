@@ -12,6 +12,9 @@ export function setCatalog(list: readonly Item[]): void {
 
 export const itemOf = (id: string): Item | undefined => items.get(id);
 
+/** Every food: the vendor's and what Cooking makes, each with what it heals. */
+export const foods = (): Item[] => [...items.values()].filter((i) => i.kind === 'food' && i.heals !== undefined);
+
 /** A skill's actions as its feature declares them, for features that plan around them (goals). */
 export interface SkillActions {
   feature: string;

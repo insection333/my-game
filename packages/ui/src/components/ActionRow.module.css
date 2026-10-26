@@ -57,6 +57,12 @@
   font-size: var(--t-small);
 }
 
+/* Named on each fact, not inherited: Chromium on GitHub Actions has kept an inherited light-theme ink
+   after the theme changed (as on the loadout and the food rows). */
+.facts > * {
+  color: var(--ink-2);
+}
+
 .progress {
   margin-top: var(--s-2);
   max-width: 240px;

@@ -1,5 +1,6 @@
 // The unlock ladder: what every level 1-99 of every skill gives.
-import { FOES, FOODS, MAX_LEVEL, MINING, SMITHING, TIERS, WOODCUTTING, type SkillId } from './content.ts';
+import { FISHING, FOES, FOODS, MAX_LEVEL, MINING, SMITHING, TIERS, WOODCUTTING, type SkillId } from './content.ts';
+import { COOKING } from './cooking.ts';
 
 export type Effect =
   | { kind: 'speed'; pct: number }
@@ -80,11 +81,14 @@ const gatherLines = (verb: string, eye: string): PerkLine[] => [
 
 export function unlockTable(skill: SkillId): Map<number, Unlock[]> {
   const t = empty();
-  if (skill === 'woodcutting' || skill === 'mining') {
-    const actions = skill === 'woodcutting' ? WOODCUTTING : MINING;
+  if (skill === 'woodcutting' || skill === 'mining' || skill === 'fishing') {
+    const actions = { woodcutting: WOODCUTTING, mining: MINING, fishing: FISHING }[skill];
     for (const a of actions) t.get(a.level)!.push({ type: 'action', name: a.name });
-    const [verb, eye] = skill === 'woodcutting' ? ['swing', "Woodsman's eye"] : ['strike', "Prospector's eye"];
-    const who = skill === 'woodcutting' ? 'woodcutter' : 'miner';
+    const [verb, eye, who] = {
+      woodcutting: ['swing', "Woodsman's eye", 'woodcutter'],
+      mining: ['strike', "Prospector's eye", 'miner'],
+      fishing: ['cast', "Angler's eye", 'angler'],
+    }[skill];
     fillPerks(t, gatherLines(verb, eye), {
       40: { type: 'perk', name: `Master ${who}`, effect: { kind: 'extraYield', pct: 10 } },
       99: { type: 'perk', name: `Grandmaster ${who}`, effect: { kind: 'extraYield', pct: 15 } },
@@ -102,6 +106,21 @@ export function unlockTable(skill: SkillId): Map<number, Unlock[]> {
       {
         40: { type: 'perk', name: 'Master smith', effect: { kind: 'saveInput', pct: 8 } },
         99: { type: 'perk', name: 'Grandmaster smith', effect: { kind: 'saveInput', pct: 10 } },
+      },
+    );
+  } else if (skill === 'cooking') {
+    for (const r of COOKING) t.get(r.level)!.push({ type: 'recipe', name: r.name });
+    fillPerks(
+      t,
+      [
+        { name: 'Steady flame', effect: () => ({ kind: 'speed', pct: 3 }) },
+        { name: 'Thrifty', effect: () => ({ kind: 'saveInput', pct: 4 }) },
+        { name: "Cook's eye", effect: () => ({ kind: 'findChance', pct: 8 }) },
+        { name: 'Practised hands', effect: () => ({ kind: 'masteryGain', pct: 8 }) },
+      ],
+      {
+        40: { type: 'perk', name: 'Master cook', effect: { kind: 'saveInput', pct: 8 } },
+        99: { type: 'perk', name: 'Grandmaster cook', effect: { kind: 'saveInput', pct: 10 } },
       },
     );
   } else if (skill === 'hitpoints') {

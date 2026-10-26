@@ -9,11 +9,12 @@ import { App } from './App.tsx';
 import { reloadOnStaleFiles } from './deploys.ts';
 import { watchErrors } from './errors.ts';
 import { boot } from './game/session.ts';
-import { applyTheme, readTheme } from './theme.ts';
+import { applyTheme, followScheme, readTheme } from './theme.ts';
 
 watchErrors();
 reloadOnStaleFiles();
 applyTheme(readTheme());
+followScheme();
 void boot();
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

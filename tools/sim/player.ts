@@ -2,7 +2,7 @@
 // The focused player keeps one skill in its lane: one active hour a day with the fire (it stokes and
 // picks the best action every minute), then away until the next day.
 import { levelFor } from '@idle-clash/content';
-import { actionRegistry, FEATURES, skill as kit, type Feature } from '@idle-clash/features';
+import { actionRegistry, FEATURES, skill as kit, storehouseData, type Feature } from '@idle-clash/features';
 import {
   createEngine,
   HOUR,
@@ -73,8 +73,16 @@ const ingredients = (f: Feature) => [
 export function focusedPlayer(f: Feature, seed: number, days: number, lane: LaneId = 'gathering'): Played {
   const skillId = f.content.skill!.id;
   const rng = seeded(seed);
-  let state = newState(seed, T0);
   const stock = ingredients(f);
+  // A stocked player's Storehouse is fully enlarged, as one who sells would keep it: sixteen kinds of
+  // fish and logs and fourteen dishes are more than the first slots hold.
+  const fresh = newState(seed, T0);
+  let state: State = stock.length
+    ? {
+        ...fresh,
+        features: { ...fresh.features, storehouse: { enlargements: storehouseData.ENLARGE_COSTS.length } },
+      }
+    : fresh;
   const levelAt = [0, 0];
   const out: Day[] = [];
   let commands = 0;

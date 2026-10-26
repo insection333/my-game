@@ -2,7 +2,9 @@
 import { registryOf, type ActionRegistry } from '@idle-clash/kernel';
 import { archery } from './archery/index.ts';
 import { combat } from './combat/index.ts';
+import { cooking } from './cooking/index.ts';
 import type { Feature } from './define.ts';
+import { fishing } from './fishing/index.ts';
 import { goals } from './goals/index.ts';
 import { hitpoints } from './hitpoints/index.ts';
 import { magic } from './magic/index.ts';
@@ -17,7 +19,9 @@ import { woodcutting } from './woodcutting/index.ts';
 export const FEATURES: readonly Feature[] = [
   woodcutting,
   mining,
+  fishing,
   smithing,
+  cooking,
   melee,
   archery,
   magic,

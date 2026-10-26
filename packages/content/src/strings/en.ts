@@ -2,8 +2,9 @@
 // (see numbers.ts). The content check fails on a missing key, an unused key, or a term GLOSSARY.md
 // says to avoid. Keep sections in order; within a feature's section, keys follow its content. The gathering
 // and artisan skills' words are in en-skills.ts, Combat's in en-combat.ts, the privacy page's and the
-// terms' in en-legal.ts, the goals ladder's, its rewards' and your standing's in en-progress.ts.
+// terms' in en-legal.ts, Fishing's and Cooking's in en-food.ts, the goals ladder's, its rewards' and your standing's in en-progress.ts.
 import { combat } from './en-combat.ts';
+import { food } from './en-food.ts';
 import { legal } from './en-legal.ts';
 import { progress } from './en-progress.ts';
 import { skills } from './en-skills.ts';
@@ -281,6 +282,7 @@ export const en: Record<string, string> = {
   'skill.finds.title': 'Finds',
 
   ...skills,
+  ...food,
   ...combat,
   ...legal,
   ...progress,

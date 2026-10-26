@@ -21,6 +21,14 @@
   text-decoration: none;
 }
 
+/* Two tiles to a row where there is room: an odd lane's last tile takes the whole row, so no row ends
+   in an empty cell (Gathering's three skills). */
+@container main (min-width: 620px) {
+  .tile:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+}
+
 .tile:hover {
   background: var(--surface-2);
 }

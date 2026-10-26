@@ -19,15 +19,16 @@ The three pillars decide everything below:
 ```
  Woodcutting ──logs──┐            ┌── sword (Melee)
                      ├─► Smithing ┼── bow (Archery)  ──► wear ──► Combat ──► gold, drops, finds
- Mining ─────ores──► bars ────────┴── staff (Magic), armour            │
+ Mining ─────ores──► bars ────────┴── staff (Magic), armour  ▲         │
+ Fishing ────fish──► Cooking ──── cooked food ───────────────┘         │
      ▲                                                                  │
      └──────────── gold buys food and Storehouse space ◄────────────────┘
 ```
 
-- **Gathering** (Woodcutting, Mining) turns time into logs and ores.
-- **Artisan** (Smithing) turns ores into bars and bars and logs into gear. It stops, with the reason shown, when an ingredient runs out.
+- **Gathering** (Woodcutting, Mining, Fishing) turns time into logs, ores and fish.
+- **Artisan** (Smithing, Cooking) turns ores into bars and bars and logs into gear, and fish and logs into food. It stops, with the reason shown, when an ingredient runs out.
 - **Combat** (Melee, Archery, Magic, with Hitpoints rising from every fight) turns gear and food into XP, gold and drops.
-- **Gold** comes from selling to the vendor and from foes. It buys food and Storehouse space. Gear is always made, never bought.
+- **Gold** comes from selling to the vendor and from foes. It buys food (or a fighter cooks their own) and Storehouse space. Gear is always made, never bought.
 
 ### Lanes, the queue and time away
 
@@ -45,22 +46,22 @@ The three pillars decide everything below:
 
 ## 3. Skills, tiers and materials
 
-Seven skills: Woodcutting, Mining (Gathering); Smithing (Artisan); Melee, Archery, Magic and Hitpoints (Combat). The top level is **99** (version 1 stopped at 40).
+Nine skills: Woodcutting, Mining and Fishing (Gathering); Smithing and Cooking (Artisan); Melee, Archery, Magic and Hitpoints (Combat). The top level is **99** (version 1 stopped at 40). Fishing and Cooking came with the expansion (session 13); Fletching and Runecraft follow.
 
 Eight tiers open at levels 1, 10, 20, 30, 40, 55, 70 and 85. The first four belong to the march; the next two to the Sunken Fen and the last two to the Ashen Peaks, so the later tiers come further apart and each is earned:
 
-| Tier | Metal | Logs | Ore (Mining opens it) | Bar recipe |
-| --- | --- | --- | --- | --- |
-| 1 | Copper | Pine | Copper ore (1) | 1 copper ore |
-| 2 | Bronze | Ash | Tin ore (10) | 1 copper ore + 1 tin ore |
-| 3 | Iron | Oak | Iron ore (20) | 2 iron ore |
-| 4 | Steel | Yew | Coal (30) | 1 iron ore + 2 coal |
-| 5 | Moonsilver | Maple | Moonsilver ore (40) | 1 moonsilver ore + 1 coal |
-| 6 | Star-iron | Silverbark | Star-iron ore (55) | 1 star-iron ore + 2 coal |
-| 7 | Embersteel | Elderwood | Ember ore (70) | 1 ember ore + 2 coal |
-| 8 | Dawnsteel | Ancient | Dawnstone (85) | 1 dawnstone + 1 moonsilver ore + 2 coal |
+| Tier | Metal | Logs | Ore (Mining opens it) | Bar recipe | Fish |
+| --- | --- | --- | --- | --- | --- |
+| 1 | Copper | Pine | Copper ore (1) | 1 copper ore | Perch |
+| 2 | Bronze | Ash | Tin ore (10) | 1 copper ore + 1 tin ore | Trout |
+| 3 | Iron | Oak | Iron ore (20) | 2 iron ore | Pike |
+| 4 | Steel | Yew | Coal (30) | 1 iron ore + 2 coal | Salmon |
+| 5 | Moonsilver | Maple | Moonsilver ore (40) | 1 moonsilver ore + 1 coal | Moon carp |
+| 6 | Star-iron | Silverbark | Star-iron ore (55) | 1 star-iron ore + 2 coal | Silver eel |
+| 7 | Embersteel | Elderwood | Ember ore (70) | 1 ember ore + 2 coal | Ember char |
+| 8 | Dawnsteel | Ancient | Dawnstone (85) | 1 dawnstone + 1 moonsilver ore + 2 coal | Dawn sturgeon |
 
-That is 24 resources: eight logs, eight ores, eight bars. Bronze, steel and the later metals are alloys, so earlier ores keep their use: coal goes into every bar from steel on, and dawnsteel needs moonsilver.
+That is 32 resources: eight logs, eight ores, eight bars and eight fish. Bronze, steel and the later metals are alloys, so earlier ores keep their use: coal goes into every bar from steel on, and dawnsteel needs moonsilver.
 
 - **Weapons** need the style's level: a sword (Melee), a bow (Archery) or a staff (Magic) of a tier needs that style at the tier's level. Your style is your weapon's.
 - **Armour** (helm, body, legs) is shared by all styles and needs Hitpoints at the tier's level.
@@ -112,6 +113,8 @@ The table is derived, not guessed. To level 40 the model fits per-level times to
 | Materials an hour | 1 per action | about 133% | more with mastery |
 | Rare and Legendary finds an hour | 1x | 1x | 1x |
 
+Fishing is built the same way: each tier's shallows, and its deep pool four levels later ("Perch shallows", "Deep perch pool"). Fish sell for 40% of what the tier's logs fetch, because Fishing pays mostly in the food it saves (section 9).
+
 Rich actions ("Old pine", "Deep copper seam") are slower and give two items each: the choice between XP and materials. Smithing needs more ore than one fresh vein supplies, so rich seams, mastery and the fire's second lane are how a smith keeps the forge fed.
 
 *Generated:*
@@ -150,6 +153,22 @@ Rich actions ("Old pine", "Deep copper seam") are slower and give two items each
 | Deep ember seam | Mining | 74 | 57 | 385 | Ember ore ×2 | 160 each |
 | Dawnstone vein | Mining | 85 | 42 | 408 | Dawnstone ×1 | 240 each |
 | Deep dawnstone seam | Mining | 89 | 63 | 530 | Dawnstone ×2 | 240 each |
+| Perch shallows | Fishing | 1 | 7.5 | 11 | Perch ×1 | 1 each |
+| Deep perch pool | Fishing | 5 | 11.25 | 14 | Perch ×2 | 1 each |
+| Trout shallows | Fishing | 10 | 12.5 | 25 | Trout ×1 | 2 each |
+| Deep trout pool | Fishing | 14 | 18.75 | 33 | Trout ×2 | 2 each |
+| Pike shallows | Fishing | 20 | 20 | 52 | Pike ×1 | 6 each |
+| Deep pike pool | Fishing | 24 | 30 | 68 | Pike ×2 | 6 each |
+| Salmon shallows | Fishing | 30 | 26 | 87 | Salmon ×1 | 14 each |
+| Deep salmon pool | Fishing | 34 | 39 | 113 | Salmon ×2 | 14 each |
+| Moon carp shallows | Fishing | 40 | 30 | 142 | Moon carp ×1 | 28 each |
+| Deep moon carp pool | Fishing | 44 | 45 | 185 | Moon carp ×2 | 28 each |
+| Silver eel shallows | Fishing | 55 | 34 | 208 | Silver eel ×1 | 46 each |
+| Deep silver eel pool | Fishing | 59 | 51 | 270 | Silver eel ×2 | 46 each |
+| Ember char shallows | Fishing | 70 | 38 | 296 | Ember char ×1 | 72 each |
+| Deep ember char pool | Fishing | 74 | 57 | 385 | Ember char ×2 | 72 each |
+| Dawn sturgeon shallows | Fishing | 85 | 42 | 408 | Dawn sturgeon ×1 | 108 each |
+| Deep dawn sturgeon pool | Fishing | 89 | 63 | 530 | Dawn sturgeon ×2 | 108 each |
 
 ## 6. Smithing
 
@@ -216,6 +235,31 @@ Every recipe in a tier pays the same XP an hour, so the choice is about what you
 | Dawnsteel legs | 91 | Dawnsteel bar ×3 | 126 | 1225 | 1966 |
 | Dawnsteel body | 93 | Dawnsteel bar ×5 | 210 | 2042 | 3276 |
 
+### Cooking
+
+Cooking is the Artisan lane's second skill. Each tier's fish is cooked two at a time over one of that tier's logs; from tier 3 a pie or a stew mixes the tier's fish with the one before (the older catch keeps its use), two at a time. Every recipe pays its tier's XP an hour, as Smithing's do.
+
+Cooked food heals about half the health a fighter has at its tier: the most a meal, eaten below half health, never wastes. A dish heals a quarter more. It sells for what went into it, and for that worth it heals at least 1.2 times what the vendor's food heals for its price from tier 2 on, so feeding yourself is a real choice. One Gathering lane fishing, with the fire's second lane chopping about half the time, keeps the Artisan lane cooking.
+
+*Generated:*
+
+| Dish | Level | Takes | Makes | Seconds | XP | Heals | Sells for | Heals per gold of worth |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Cooked perch | 1 | Perch ×2, Pine logs ×1 | 2 | 22.5 | 34 | 150 | 2 | 75.0 |
+| Cooked trout | 10 | Trout ×2, Ash logs ×1 | 2 | 37.5 | 75 | 330 | 4 | 82.5 |
+| Cooked pike | 20 | Pike ×2, Oak logs ×1 | 2 | 60 | 155 | 530 | 13 | 40.8 |
+| Pike pie | 25 | Pike ×1, Trout ×1, Oak logs ×1 | 2 | 60 | 155 | 660 | 11 | 60.0 |
+| Cooked salmon | 30 | Salmon ×2, Yew logs ×1 | 2 | 78 | 260 | 730 | 32 | 22.8 |
+| Salmon stew | 35 | Salmon ×1, Pike ×1, Yew logs ×1 | 2 | 78 | 260 | 910 | 28 | 32.5 |
+| Cooked moon carp | 40 | Moon carp ×2, Maple logs ×1 | 2 | 90 | 425 | 930 | 63 | 14.8 |
+| Carp pie | 45 | Moon carp ×1, Salmon ×1, Maple logs ×1 | 2 | 90 | 425 | 1,160 | 56 | 20.7 |
+| Cooked silver eel | 55 | Silver eel ×2, Silverbark logs ×1 | 2 | 102 | 623 | 1,230 | 104 | 11.8 |
+| Eel stew | 60 | Silver eel ×1, Moon carp ×1, Silverbark logs ×1 | 2 | 102 | 623 | 1,540 | 95 | 16.2 |
+| Cooked ember char | 70 | Ember char ×2, Elderwood logs ×1 | 2 | 114 | 887 | 1,530 | 162 | 9.4 |
+| Char pie | 75 | Ember char ×1, Silver eel ×1, Elderwood logs ×1 | 2 | 114 | 887 | 1,910 | 149 | 12.8 |
+| Cooked dawn sturgeon | 85 | Dawn sturgeon ×2, Ancient logs ×1 | 2 | 126 | 1225 | 1,830 | 243 | 7.5 |
+| Sturgeon stew | 90 | Dawn sturgeon ×1, Ember char ×1, Ancient logs ×1 | 2 | 126 | 1225 | 2,290 | 225 | 10.2 |
+
 ## 7. Mastery
 
 Every action has its own mastery, counted in completions: chopping a pine, forging a bronze helm, defeating an orc raider. Ten steps; each makes the action **3% faster** and adds a **6% chance of an extra item** (for a foe: 3% more damage and 6% more drops). Mastery never raises XP per action; it raises how often you earn it.
@@ -248,6 +292,8 @@ Every completion rolls for a find at three rarities. Each skill has six finds, a
 | --- | --- | --- | --- |
 | Woodcutting | Bird's nest · Amber nugget | Carved acorn · Heartwood knot | Silverbark seed · Crown of the old wood |
 | Mining | Rough garnet · Rough sapphire | Ancient coin · Crystal geode | Star-iron shard · Heart of the mountain |
+| Fishing | Pearl mussel · River pearl | Message in a bottle · Drowned signet | Scale of the deep · Fen-king's crown |
+| Cooking | Wild herbs · Saffron threads | Grandmother's recipe · Silver ladle | Ever-warm pot · Cauldron of plenty |
 | Smithing | Lucky horseshoe · Masterwork rivets | Guild smith's seal · Quenching flask | Ember of the first forge · Old king's hammer |
 | Melee | Battle trophy · Raider's war-horn | Torn banner · Warlord's seal | Shard of a king's blade · Troll-chief's tooth |
 | Archery | Goose fletchings · Hunter's charm | Silver arrowhead · Bowman's ring | Moonlit bowstring · Eagle-feather circlet |
@@ -323,22 +369,22 @@ A foe opens at a Hitpoints level, so every style can reach every foe. Foes live 
 
 ### Food
 
-Bought from the vendor; better food is sold as Hitpoints rises. *Generated:*
+Bought from the vendor, or cooked (section 6): better food is sold as Hitpoints rises, and the vendor keeps selling it whatever you cook, as a fallback. A fighter eats the most healing food carried first, cooked or bought. *Generated:*
 
 | Food | Heals | Price | Sold from Hitpoints |
 | --- | --- | --- | --- |
 | Bread | 140 | 20 | 1 |
 | Meat pie | 320 | 50 | 10 |
 | Hearty stew | 600 | 110 | 20 |
-| Roast fowl | 1000 | 190 | 40 |
-| Hunter's feast | 1600 | 320 | 60 |
-| Warden's feast | 2300 | 480 | 80 |
+| Roast fowl | 1,000 | 190 | 40 |
+| Hunter's feast | 1,600 | 320 | 60 |
+| Warden's feast | 2,300 | 480 | 80 |
 
 ## 10. Gold and the Storehouse
 
 - **Sources:** selling logs, ores, bars, gear and Uncommon and Rare finds to the vendor; gold and drops from foes.
 - **Sinks:** food, and Storehouse enlargements. Gear is made, never bought.
-- **The Storehouse** holds stacks of any size; slots limit the number of different items. Starts with 24 slots; each enlargement adds 6. Costs: 40,000, 90,000, 100,000, 120,000, 180,000, 200,000, 230,000, 250,000, 280,000, 300,000, 340,000, 450,000, 460,000, 650,000 gold. There are 102 kinds of item (24 resources, 48 gear, 6 foods, 24 sellable finds), so the last enlargement (108 slots) fits them all.
+- **The Storehouse** holds stacks of any size; slots limit the number of different items. Starts with 24 slots; each enlargement adds 6. Costs: 40,000, 90,000, 100,000, 120,000, 180,000, 200,000, 230,000, 250,000, 280,000, 300,000, 340,000, 450,000, 460,000, 650,000, 700,000, 750,000, 800,000, 850,000, 900,000 gold. There are 132 kinds of item (32 resources, 48 gear, 20 foods, 32 sellable finds), so the last enlargement (138 slots) fits them all.
 - When a lane would produce an item with no free slot, it stops: "Storehouse full".
 - Every item's panel shows **Comes from** and **Used in**, gathered by asking every feature.
 
@@ -357,7 +403,7 @@ Enlargement costs follow each day's net gold, so one is affordable roughly when 
    6. Defeat a hollow rat (the step's reward, 10 bread, comes first).
 2. **Three short goals**, rolling: each sized to 10–15 minutes of your current pace in one lane ("Cut 60 oak logs", "Reach mastery 4 on Iron vein", "Defeat 25 grave wights", "Forge 3 iron helms"). A new one appears as each is claimed. Reward: a supply cache worth about 10 minutes of that lane's gold.
 3. **A daily goal:** about 40 minutes of play or a day of lanes ("Earn 20,000 Smithing XP today"). Reward: a supply cache worth about an hour of gold.
-4. **Milestones:** total level 50, 100, 150, 200, 250 and 280, then 350, 450, 550, 650 and 693 (every skill at 99); the first item of each of the eight tiers; collection log 12, 24 and 36; the first mastery 10. Reward: gold, and the milestone is shown on your hiscore entry.
+4. **Milestones:** total level 50, 100, 150, 200, 250 and 280, then 350, 450, 550, 650, 693 (the first seven skills at 99), 800 and 891 (all nine at 99); the first item of each of the eight tiers; collection log 12, 24, 36 and 48; the first mastery 10. Reward: gold, and the milestone is shown on your hiscore entry.
 5. **Supply caches** (session 11): half the goal's worth in gold is certain, and one draw adds more: a plain cache (half the time, +30%), a stocked one (3 in 10, +50% as the best food you are sold, for a fighter), a rich one (3 in 20, +100%) or a lucky one (1 in 20, +200%). On average a cache pays 1.05 times the goal's gold, so the economy holds, and opening one is a small moment of its own.
 
 ### Notable moments
@@ -428,6 +474,36 @@ Every level 1 to 99 of every skill unlocks something: an action, a recipe, a tie
 | **24** Deep iron seam | **49** Prospector's eye X (Rare and Legendary finds 4% likelier) | **74** Deep ember seam | **99** Grandmaster miner (+15% chance of an extra item) |
 | **25** Prospector's eye V (Rare and Legendary finds 8% likelier) | **50** Practised hands X (mastery 3% faster) | **75** Quick strike XVI (1.25% faster) |  |
 
+### Fishing
+
+| Levels 1–25 | Levels 26–50 | Levels 51–75 | Levels 76–99 |
+| --- | --- | --- | --- |
+| **1** Perch shallows | **26** Practised hands V (mastery 6% faster) | **51** Quick cast XI (1.25% faster) | **76** Plenty XVI (+1.5% chance of an extra item) |
+| **2** Quick cast I (2.5% faster) | **27** Quick cast VI (2.5% faster) | **52** Plenty XI (+1.5% chance of an extra item) | **77** Angler's eye XVI (Rare and Legendary finds 4% likelier) |
+| **3** Plenty I (+3% chance of an extra item) | **28** Plenty VI (+3% chance of an extra item) | **53** Angler's eye XI (Rare and Legendary finds 4% likelier) | **78** Practised hands XVI (mastery 3% faster) |
+| **4** Angler's eye I (Rare and Legendary finds 8% likelier) | **29** Angler's eye VI (Rare and Legendary finds 8% likelier) | **54** Practised hands XI (mastery 3% faster) | **79** Quick cast XVII (1.25% faster) |
+| **5** Deep perch pool | **30** Salmon shallows | **55** Silver eel shallows | **80** Plenty XVII (+1.5% chance of an extra item) |
+| **6** Practised hands I (mastery 6% faster) | **31** Practised hands VI (mastery 6% faster) | **56** Quick cast XII (1.25% faster) | **81** Angler's eye XVII (Rare and Legendary finds 4% likelier) |
+| **7** Quick cast II (2.5% faster) | **32** Quick cast VII (2.5% faster) | **57** Plenty XII (+1.5% chance of an extra item) | **82** Practised hands XVII (mastery 3% faster) |
+| **8** Plenty II (+3% chance of an extra item) | **33** Plenty VII (+3% chance of an extra item) | **58** Angler's eye XII (Rare and Legendary finds 4% likelier) | **83** Quick cast XVIII (1.25% faster) |
+| **9** Angler's eye II (Rare and Legendary finds 8% likelier) | **34** Deep salmon pool | **59** Deep silver eel pool | **84** Plenty XVIII (+1.5% chance of an extra item) |
+| **10** Trout shallows | **35** Angler's eye VII (Rare and Legendary finds 8% likelier) | **60** Practised hands XII (mastery 3% faster) | **85** Dawn sturgeon shallows |
+| **11** Practised hands II (mastery 6% faster) | **36** Practised hands VII (mastery 6% faster) | **61** Quick cast XIII (1.25% faster) | **86** Angler's eye XVIII (Rare and Legendary finds 4% likelier) |
+| **12** Quick cast III (2.5% faster) | **37** Quick cast VIII (2.5% faster) | **62** Plenty XIII (+1.5% chance of an extra item) | **87** Practised hands XVIII (mastery 3% faster) |
+| **13** Plenty III (+3% chance of an extra item) | **38** Plenty VIII (+3% chance of an extra item) | **63** Angler's eye XIII (Rare and Legendary finds 4% likelier) | **88** Quick cast XIX (1.25% faster) |
+| **14** Deep trout pool | **39** Angler's eye VIII (Rare and Legendary finds 8% likelier) | **64** Practised hands XIII (mastery 3% faster) | **89** Deep dawn sturgeon pool |
+| **15** Angler's eye III (Rare and Legendary finds 8% likelier) | **40** Moon carp shallows; Master angler (+10% chance of an extra item) | **65** Quick cast XIV (1.25% faster) | **90** Plenty XIX (+1.5% chance of an extra item) |
+| **16** Practised hands III (mastery 6% faster) | **41** Practised hands VIII (mastery 3% faster) | **66** Plenty XIV (+1.5% chance of an extra item) | **91** Angler's eye XIX (Rare and Legendary finds 4% likelier) |
+| **17** Quick cast IV (2.5% faster) | **42** Quick cast IX (1.25% faster) | **67** Angler's eye XIV (Rare and Legendary finds 4% likelier) | **92** Practised hands XIX (mastery 3% faster) |
+| **18** Plenty IV (+3% chance of an extra item) | **43** Plenty IX (+1.5% chance of an extra item) | **68** Practised hands XIV (mastery 3% faster) | **93** Quick cast XX (1.25% faster) |
+| **19** Angler's eye IV (Rare and Legendary finds 8% likelier) | **44** Deep moon carp pool | **69** Quick cast XV (1.25% faster) | **94** Plenty XX (+1.5% chance of an extra item) |
+| **20** Pike shallows | **45** Angler's eye IX (Rare and Legendary finds 4% likelier) | **70** Ember char shallows | **95** Angler's eye XX (Rare and Legendary finds 4% likelier) |
+| **21** Practised hands IV (mastery 6% faster) | **46** Practised hands IX (mastery 3% faster) | **71** Plenty XV (+1.5% chance of an extra item) | **96** Practised hands XX (mastery 3% faster) |
+| **22** Quick cast V (2.5% faster) | **47** Quick cast X (1.25% faster) | **72** Angler's eye XV (Rare and Legendary finds 4% likelier) | **97** Quick cast XXI (1.25% faster) |
+| **23** Plenty V (+3% chance of an extra item) | **48** Plenty X (+1.5% chance of an extra item) | **73** Practised hands XV (mastery 3% faster) | **98** Plenty XXI (+1.5% chance of an extra item) |
+| **24** Deep pike pool | **49** Angler's eye X (Rare and Legendary finds 4% likelier) | **74** Deep ember char pool | **99** Grandmaster angler (+15% chance of an extra item) |
+| **25** Angler's eye V (Rare and Legendary finds 8% likelier) | **50** Practised hands X (mastery 3% faster) | **75** Quick cast XVI (1.25% faster) |  |
+
 ### Smithing
 
 | Levels 1–25 | Levels 26–50 | Levels 51–75 | Levels 76–99 |
@@ -457,6 +533,36 @@ Every level 1 to 99 of every skill unlocks something: an action, a recipe, a tie
 | **23** Iron bow | **48** Moonsilver body | **73** Embersteel bow | **98** Thrifty XI (2% chance to save an ingredient) |
 | **24** Thrifty II (4% chance to save an ingredient) | **49** Thrifty IV (2% chance to save an ingredient) | **74** Practised hands VII (mastery 4% faster) | **99** Grandmaster smith (10% chance to save an ingredient) |
 | **25** Iron helm | **50** Smith's eye IV (Rare and Legendary finds 4% likelier) | **75** Embersteel helm |  |
+
+### Cooking
+
+| Levels 1–25 | Levels 26–50 | Levels 51–75 | Levels 76–99 |
+| --- | --- | --- | --- |
+| **1** Cooked perch | **26** Thrifty VI (4% chance to save an ingredient) | **51** Cook's eye XI (Rare and Legendary finds 4% likelier) | **76** Practised hands XVI (mastery 4% faster) |
+| **2** Steady flame I (3% faster) | **27** Cook's eye VI (Rare and Legendary finds 8% likelier) | **52** Practised hands XI (mastery 4% faster) | **77** Steady flame XVII (1.5% faster) |
+| **3** Thrifty I (4% chance to save an ingredient) | **28** Practised hands VI (mastery 8% faster) | **53** Steady flame XII (1.5% faster) | **78** Thrifty XVII (2% chance to save an ingredient) |
+| **4** Cook's eye I (Rare and Legendary finds 8% likelier) | **29** Steady flame VII (3% faster) | **54** Thrifty XII (2% chance to save an ingredient) | **79** Cook's eye XVII (Rare and Legendary finds 4% likelier) |
+| **5** Practised hands I (mastery 8% faster) | **30** Cooked salmon | **55** Cooked silver eel | **80** Practised hands XVII (mastery 4% faster) |
+| **6** Steady flame II (3% faster) | **31** Thrifty VII (4% chance to save an ingredient) | **56** Cook's eye XII (Rare and Legendary finds 4% likelier) | **81** Steady flame XVIII (1.5% faster) |
+| **7** Thrifty II (4% chance to save an ingredient) | **32** Cook's eye VII (Rare and Legendary finds 8% likelier) | **57** Practised hands XII (mastery 4% faster) | **82** Thrifty XVIII (2% chance to save an ingredient) |
+| **8** Cook's eye II (Rare and Legendary finds 8% likelier) | **33** Practised hands VII (mastery 8% faster) | **58** Steady flame XIII (1.5% faster) | **83** Cook's eye XVIII (Rare and Legendary finds 4% likelier) |
+| **9** Practised hands II (mastery 8% faster) | **34** Steady flame VIII (3% faster) | **59** Thrifty XIII (2% chance to save an ingredient) | **84** Practised hands XVIII (mastery 4% faster) |
+| **10** Cooked trout | **35** Salmon stew | **60** Eel stew | **85** Cooked dawn sturgeon |
+| **11** Steady flame III (3% faster) | **36** Thrifty VIII (4% chance to save an ingredient) | **61** Cook's eye XIII (Rare and Legendary finds 4% likelier) | **86** Steady flame XIX (1.5% faster) |
+| **12** Thrifty III (4% chance to save an ingredient) | **37** Cook's eye VIII (Rare and Legendary finds 8% likelier) | **62** Practised hands XIII (mastery 4% faster) | **87** Thrifty XIX (2% chance to save an ingredient) |
+| **13** Cook's eye III (Rare and Legendary finds 8% likelier) | **38** Practised hands VIII (mastery 8% faster) | **63** Steady flame XIV (1.5% faster) | **88** Cook's eye XIX (Rare and Legendary finds 4% likelier) |
+| **14** Practised hands III (mastery 8% faster) | **39** Steady flame IX (3% faster) | **64** Thrifty XIV (2% chance to save an ingredient) | **89** Practised hands XIX (mastery 4% faster) |
+| **15** Steady flame IV (3% faster) | **40** Cooked moon carp; Master cook (8% chance to save an ingredient) | **65** Cook's eye XIV (Rare and Legendary finds 4% likelier) | **90** Sturgeon stew |
+| **16** Thrifty IV (4% chance to save an ingredient) | **41** Thrifty IX (2% chance to save an ingredient) | **66** Practised hands XIV (mastery 4% faster) | **91** Steady flame XX (1.5% faster) |
+| **17** Cook's eye IV (Rare and Legendary finds 8% likelier) | **42** Cook's eye IX (Rare and Legendary finds 4% likelier) | **67** Steady flame XV (1.5% faster) | **92** Thrifty XX (2% chance to save an ingredient) |
+| **18** Practised hands IV (mastery 8% faster) | **43** Practised hands IX (mastery 4% faster) | **68** Thrifty XV (2% chance to save an ingredient) | **93** Cook's eye XX (Rare and Legendary finds 4% likelier) |
+| **19** Steady flame V (3% faster) | **44** Steady flame X (1.5% faster) | **69** Cook's eye XV (Rare and Legendary finds 4% likelier) | **94** Practised hands XX (mastery 4% faster) |
+| **20** Cooked pike | **45** Carp pie | **70** Cooked ember char | **95** Steady flame XXI (1.5% faster) |
+| **21** Thrifty V (4% chance to save an ingredient) | **46** Thrifty X (2% chance to save an ingredient) | **71** Practised hands XV (mastery 4% faster) | **96** Thrifty XXI (2% chance to save an ingredient) |
+| **22** Cook's eye V (Rare and Legendary finds 8% likelier) | **47** Cook's eye X (Rare and Legendary finds 4% likelier) | **72** Steady flame XVI (1.5% faster) | **97** Cook's eye XXI (Rare and Legendary finds 4% likelier) |
+| **23** Practised hands V (mastery 8% faster) | **48** Practised hands X (mastery 4% faster) | **73** Thrifty XVI (2% chance to save an ingredient) | **98** Practised hands XXI (mastery 4% faster) |
+| **24** Steady flame VI (3% faster) | **49** Steady flame XI (1.5% faster) | **74** Cook's eye XVI (Rare and Legendary finds 4% likelier) | **99** Grandmaster cook (10% chance to save an ingredient) |
+| **25** Pike pie | **50** Thrifty XI (2% chance to save an ingredient) | **75** Char pie |  |
 
 ### Melee
 
@@ -675,7 +781,9 @@ PASS  First level-up after 37.5 s of chopping (target under 1 minute)
 Unlocks
 PASS  Woodcutting: every level 1-99 unlocks something
 PASS  Mining: every level 1-99 unlocks something
+PASS  Fishing: every level 1-99 unlocks something
 PASS  Smithing: every level 1-99 unlocks something
+PASS  Cooking: every level 1-99 unlocks something
 PASS  Melee: every level 1-99 unlocks something
 PASS  Archery: every level 1-99 unlocks something
 PASS  Magic: every level 1-99 unlocks something
@@ -714,6 +822,22 @@ mining tier 7: Ember vein 39820 · Deep ember seam 34528 (+100% materials) · St
 PASS  mining tier 7 offers two choices within 20%
 mining tier 8: Dawnstone vein 50971 · Deep dawnstone seam 44141 (+100% materials) · Ember vein mastered 45078
 PASS  mining tier 8 offers two choices within 20%
+fishing tier 1: Perch shallows 6046 · Deep perch pool 5130 (+100% materials)
+PASS  fishing tier 1 offers two choices within 20%
+fishing tier 2: Trout shallows 8604 · Deep trout pool 7572 (+100% materials) · Perch shallows mastered 7102
+PASS  fishing tier 2 offers two choices within 20%
+fishing tier 3: Pike shallows 11653 · Deep pike pool 10159 (+100% materials) · Trout shallows mastered 10044
+PASS  fishing tier 3 offers two choices within 20%
+fishing tier 4: Salmon shallows 15600 · Deep salmon pool 13508 (+100% materials) · Pike shallows mastered 13525
+PASS  fishing tier 4 offers two choices within 20%
+fishing tier 5: Moon carp shallows 22919 · Deep moon carp pool 19906 (+100% materials) · Salmon shallows mastered 18009
+PASS  fishing tier 5 offers two choices within 20%
+fishing tier 6: Silver eel shallows 30448 · Deep silver eel pool 26349 (+100% materials) · Moon carp shallows mastered 26114
+PASS  fishing tier 6 offers two choices within 20%
+fishing tier 7: Ember char shallows 39820 · Deep ember char pool 34528 (+100% materials) · Silver eel shallows mastered 34577
+PASS  fishing tier 7 offers two choices within 20%
+fishing tier 8: Dawn sturgeon shallows 50971 · Deep dawn sturgeon pool 44141 (+100% materials) · Ember char shallows mastered 45078
+PASS  fishing tier 8 offers two choices within 20%
 PASS  Mastery pays: at woodcutting 11, Pine tree (mastery 8) earns 90% of the best fresh action of its kind
 PASS  Mastery pays: at woodcutting 15, Old pine (mastery 8) earns 86% of the best fresh action of its kind
 PASS  Mastery pays: at woodcutting 20, Ash tree (mastery 7) earns 92% of the best fresh action of its kind
@@ -746,6 +870,22 @@ PASS  Mastery pays: at mining 80, Ember vein (mastery 10) earns 123% of the best
 PASS  Mastery pays: at mining 84, Deep ember seam (mastery 5) earns 111% of the best fresh action of its kind
 PASS  Mastery pays: at mining 95, Dawnstone vein (mastery 10) earns 122% of the best fresh action of its kind
 PASS  Mastery pays: at mining 99, Deep dawnstone seam (mastery 5) earns 111% of the best fresh action of its kind
+PASS  Mastery pays: at fishing 11, Perch shallows (mastery 8) earns 90% of the best fresh action of its kind
+PASS  Mastery pays: at fishing 15, Deep perch pool (mastery 8) earns 86% of the best fresh action of its kind
+PASS  Mastery pays: at fishing 20, Trout shallows (mastery 7) earns 92% of the best fresh action of its kind
+PASS  Mastery pays: at fishing 24, Deep trout pool (mastery 7) earns 92% of the best fresh action of its kind
+PASS  Mastery pays: at fishing 30, Pike shallows (mastery 9) earns 96% of the best fresh action of its kind
+PASS  Mastery pays: at fishing 34, Deep pike pool (mastery 6) earns 90% of the best fresh action of its kind
+PASS  Mastery pays: at fishing 40, Salmon shallows (mastery 10) earns 88% of the best fresh action of its kind
+PASS  Mastery pays: at fishing 44, Deep salmon pool (mastery 6) earns 81% of the best fresh action of its kind
+PASS  Mastery pays: at fishing 50, Moon carp shallows (mastery 10) earns 124% of the best fresh action of its kind
+PASS  Mastery pays: at fishing 54, Deep moon carp pool (mastery 6) earns 115% of the best fresh action of its kind
+PASS  Mastery pays: at fishing 65, Silver eel shallows (mastery 10) earns 124% of the best fresh action of its kind
+PASS  Mastery pays: at fishing 69, Deep silver eel pool (mastery 5) earns 112% of the best fresh action of its kind
+PASS  Mastery pays: at fishing 80, Ember char shallows (mastery 10) earns 123% of the best fresh action of its kind
+PASS  Mastery pays: at fishing 84, Deep ember char pool (mastery 5) earns 111% of the best fresh action of its kind
+PASS  Mastery pays: at fishing 95, Dawn sturgeon shallows (mastery 10) earns 122% of the best fresh action of its kind
+PASS  Mastery pays: at fishing 99, Deep dawn sturgeon pool (mastery 5) earns 111% of the best fresh action of its kind
 Smithing: every recipe in a tier pays the same XP an hour; bars are quicker to sell, gear is worth 40% more than its bars.
 PASS  Smithing recipes within 10% of their tier rate
 
@@ -880,7 +1020,17 @@ Day 75  income 750,262 · food 91,904 (12%) · enlargement 13 costs 460,000
 PASS  Day 75: a day's gold covers a day of food and enlargement 13
 Day 90  income 964,805 · food 38,669 (4%) · enlargement 14 costs 650,000
 PASS  Day 90: a day's gold covers a day of food and enlargement 14
-Costs at 70% of each day's net gold would be: 50000, 100000, 95000, 110000, 230000, 240000, 245000, 255000, 280000, 305000, 340000, 450000, 460000, 650000
+Day 105 income 1,243,058 · food 68,533 (6%) · enlargement 15 costs 700,000
+PASS  Day 105: a day's gold covers a day of food and enlargement 15
+Day 120 income 1,151,011 · food 137,772 (12%) · enlargement 16 costs 750,000
+PASS  Day 120: a day's gold covers a day of food and enlargement 16
+Day 140 income 1,151,011 · food 137,772 (12%) · enlargement 17 costs 800,000
+PASS  Day 140: a day's gold covers a day of food and enlargement 17
+Day 160 income 1,151,011 · food 137,772 (12%) · enlargement 18 costs 850,000
+PASS  Day 160: a day's gold covers a day of food and enlargement 18
+Day 180 income 1,151,011 · food 137,772 (12%) · enlargement 19 costs 900,000
+PASS  Day 180: a day's gold covers a day of food and enlargement 19
+Costs at 70% of each day's net gold would be: 50000, 100000, 95000, 110000, 230000, 240000, 245000, 255000, 280000, 305000, 340000, 450000, 460000, 650000, 820000, 710000, 710000, 710000, 710000
 
 Supply: can mining keep the forge fed?
 Tier 1: smelting without pause needs mining 69% of the time on a fresh vein, 42% on a mastered deep seam
@@ -891,4 +1041,53 @@ Tier 5: smelting without pause needs mining 47% of the time on a fresh vein, 30%
 Tier 6: smelting without pause needs mining 45% of the time on a fresh vein, 28% on a mastered deep seam
 Tier 7: smelting without pause needs mining 42% of the time on a fresh vein, 27% on a mastered deep seam
 Tier 8: smelting without pause needs mining 39% of the time on a fresh vein, 25% on a mastered deep seam
+
+The food loop (session 13)
+Tier 1: Cooked perch heals 150 for 2 gold of worth (75.0 a gold); Bread 140 for 20 (7.0)
+PASS  Tier 1: Cooked perch heals no more than half the health at Hitpoints 1
+Tier 2: Cooked trout heals 330 for 4 gold of worth (82.5 a gold); Meat pie 320 for 50 (6.4)
+PASS  Tier 2: home-cooked food heals at least 1.2 times the vendor's for its worth
+PASS  Tier 2: Cooked trout heals no more than half the health at Hitpoints 10
+Tier 3: Cooked pike heals 530 for 13 gold of worth (40.8 a gold); Hearty stew 600 for 110 (5.5); Pike pie heals 660 for 11
+PASS  Tier 3: home-cooked food heals at least 1.2 times the vendor's for its worth
+PASS  Tier 3: Cooked pike heals no more than half the health at Hitpoints 20
+PASS  Tier 3: Pike pie wastes little of its healing
+Tier 4: Cooked salmon heals 730 for 32 gold of worth (22.8 a gold); Hearty stew 600 for 110 (5.5); Salmon stew heals 910 for 28
+PASS  Tier 4: home-cooked food heals at least 1.2 times the vendor's for its worth
+PASS  Tier 4: Cooked salmon heals no more than half the health at Hitpoints 30
+PASS  Tier 4: Salmon stew wastes little of its healing
+Tier 5: Cooked moon carp heals 930 for 63 gold of worth (14.8 a gold); Roast fowl 1000 for 190 (5.3); Carp pie heals 1160 for 56
+PASS  Tier 5: home-cooked food heals at least 1.2 times the vendor's for its worth
+PASS  Tier 5: Cooked moon carp heals no more than half the health at Hitpoints 40
+PASS  Tier 5: Carp pie wastes little of its healing
+Tier 6: Cooked silver eel heals 1230 for 104 gold of worth (11.8 a gold); Roast fowl 1000 for 190 (5.3); Eel stew heals 1540 for 95
+PASS  Tier 6: home-cooked food heals at least 1.2 times the vendor's for its worth
+PASS  Tier 6: Cooked silver eel heals no more than half the health at Hitpoints 55
+PASS  Tier 6: Eel stew wastes little of its healing
+Tier 7: Cooked ember char heals 1530 for 162 gold of worth (9.4 a gold); Hunter's feast 1600 for 320 (5.0); Char pie heals 1910 for 149
+PASS  Tier 7: home-cooked food heals at least 1.2 times the vendor's for its worth
+PASS  Tier 7: Cooked ember char heals no more than half the health at Hitpoints 70
+PASS  Tier 7: Char pie wastes little of its healing
+Tier 8: Cooked dawn sturgeon heals 1830 for 243 gold of worth (7.5 a gold); Warden's feast 2300 for 480 (4.8); Sturgeon stew heals 2290 for 225
+PASS  Tier 8: home-cooked food heals at least 1.2 times the vendor's for its worth
+PASS  Tier 8: Cooked dawn sturgeon heals no more than half the health at Hitpoints 85
+PASS  Tier 8: Sturgeon stew wastes little of its healing
+PASS  Cooking recipes within 10% of their tier rate
+Tier 1: an hour of Woodcutting sells for 698; an hour of Fishing, cooked and eaten, saves 14608 at the vendor
+PASS  Tier 1: Fishing pays at least 80% of Woodcutting
+Tier 2: an hour of Woodcutting sells for 1831; an hour of Fishing, cooked and eaten, saves 22686 at the vendor
+PASS  Tier 2: Fishing pays at least 80% of Woodcutting
+Tier 3: an hour of Woodcutting sells for 4361; an hour of Fishing, cooked and eaten, saves 28087 at the vendor
+PASS  Tier 3: Fishing pays at least 80% of Woodcutting
+Tier 4: an hour of Woodcutting sells for 9100; an hour of Fishing, cooked and eaten, saves 30246 at the vendor
+PASS  Tier 4: Fishing pays at least 80% of Woodcutting
+Tier 5: an hour of Woodcutting sells for 17853; an hour of Fishing, cooked and eaten, saves 36139 at the vendor
+PASS  Tier 5: Fishing pays at least 80% of Woodcutting
+Tier 6: an hour of Woodcutting sells for 27358; an hour of Fishing, cooked and eaten, saves 41917 at the vendor
+PASS  Tier 6: Fishing pays at least 80% of Woodcutting
+Tier 7: an hour of Woodcutting sells for 40802; an hour of Fishing, cooked and eaten, saves 48962 at the vendor
+PASS  Tier 7: Fishing pays at least 80% of Woodcutting
+Tier 8: an hour of Woodcutting sells for 58860; an hour of Fishing, cooked and eaten, saves 53827 at the vendor
+PASS  Tier 8: Fishing pays at least 80% of Woodcutting
+Supply: cooking without pause takes two fish and one log every three of the tier's units, so one Gathering lane fishing and the fire's second lane chopping half the time keep the Artisan lane cooking.
 ```

@@ -5,7 +5,8 @@ import { countOf, type State } from '@idle-clash/kernel';
 import { z } from 'zod';
 import { itemOf } from '../catalog.ts';
 import { perksAt, skillLevel } from '../skill.ts';
-import { FOODS, HITPOINTS, LADDERS, type Foe } from './data.ts';
+import { foods } from '../catalog.ts';
+import { HITPOINTS, LADDERS, type Foe } from './data.ts';
 import { maxHealth, regenPerSecond, type Fighter, type Meal } from './fight.ts';
 
 const ItemId = z.string().regex(/^[a-z0-9][a-z0-9-]{0,63}$/);
@@ -79,12 +80,12 @@ export function fighterOf(state: State, foe: Foe): Fighter | null {
   };
 }
 
-/** Most health first; the food carried, best first. */
+/** The food carried, the most healing first: cooked or bought alike. */
 export const mealsOf = (state: State): Meal[] =>
-  [...FOODS]
-    .sort((a, b) => b.heals - a.heals)
-    .map((f) => ({ item: f.id, heals: f.heals, count: countOf(state, f.id) }))
-    .filter((m) => m.count > 0);
+  foods()
+    .map((f) => ({ item: f.id, heals: f.heals!, count: countOf(state, f.id) }))
+    .filter((m) => m.count > 0)
+    .sort((a, b) => b.heals - a.heals || a.item.localeCompare(b.item));
 
 export const healthMax = (state: State) => maxHealth(hitpointsPart(state));
 

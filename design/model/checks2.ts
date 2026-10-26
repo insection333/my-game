@@ -28,6 +28,7 @@ import {
 } from './curve.ts';
 import { table, check, out, lines, failures as part1Failures } from './checks.ts';
 import { rng } from './rng.ts';
+import { foodChecks } from './checks-food.ts';
 
 let failures = part1Failures;
 const ok = (b: boolean, what: string) => {
@@ -259,8 +260,8 @@ out('\n## First crafted gear');
 out('\n## Gold: does a day pay for a day of food and the next Storehouse enlargement?');
 {
   // Expected purchase days for the enlargements; each costs about 70% of that day's net gold. The last
-  // six came with the expansion's climb, a gold sink through its months.
-  const buyDays = [1, 2, 3, 5, 7, 10, 14, 18, 25, 35, 45, 60, 75, 90];
+  // six came with the expansion's climb, and five more with Fishing and Cooking's thirty kinds of item.
+  const buyDays = [1, 2, 3, 5, 7, 10, 14, 18, 25, 35, 45, 60, 75, 90, 105, 120, 140, 160, 180];
   const tier = (l: number) => TIERS.filter((x) => x.level <= l).length;
   // Ores a bar takes for each ore's worth in it (copper 1; bronze's tin is cheaper; iron's two ores).
   const oreWeight = (t: number) => {
@@ -308,6 +309,8 @@ for (const { tier: t, level: opens } of TIERS) {
     `Tier ${t}: smelting without pause needs mining ${share('standard', 450)}% of the time on a fresh vein, ${share('rich', 3600)}% on a mastered deep seam`,
   );
 }
+
+foodChecks(out, ok);
 
 writeFileSync(new URL('./report.md', import.meta.url), lines.join('\n') + '\n');
 out(`\n${failures === 0 ? 'All checks pass.' : `${failures} check(s) fail.`}`);

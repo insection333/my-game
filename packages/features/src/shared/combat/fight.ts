@@ -3,6 +3,7 @@
 // the seed its repetition drew; "Your odds" plays 1,000 of them with a fixed seed.
 import { BASE_RETREAT_PCT, type Modifiers, type Style } from '@idle-clash/content';
 import { seeded } from '@idle-clash/kernel';
+import { itemOf } from '../catalog.ts';
 import {
   BASE_HEALTH,
   EAT_BELOW,
@@ -141,7 +142,8 @@ export function odds(p: Fighter, foe: Foe, meal: Omit<Meal, 'count'> | null, n =
   const foodPerHour = food * perHour;
   const xpPerHour = styleXp(p, foe, dealt) * perHour;
   const defeats = (n - retreats) * perHour;
-  const price = meal ? (FOODS.find((fd) => fd.id === meal.item)?.price ?? 0) : 0;
+  // A meal costs the vendor's price, or (cooked at home) what it would sell for.
+  const price = meal ? (FOODS.find((fd) => fd.id === meal.item)?.price ?? itemOf(meal.item)?.value ?? 0) : 0;
   const goldPerHour = defeats * foe.gold * (1 + p.perks.spoils / 100) - foodPerHour * price;
   const retreatRate = retreats / n;
   const verdict: Verdict =

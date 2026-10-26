@@ -61,7 +61,9 @@ PASS  First level-up after 37.5 s of chopping (target under 1 minute)
 ## Unlocks
 PASS  Woodcutting: every level 1-99 unlocks something
 PASS  Mining: every level 1-99 unlocks something
+PASS  Fishing: every level 1-99 unlocks something
 PASS  Smithing: every level 1-99 unlocks something
+PASS  Cooking: every level 1-99 unlocks something
 PASS  Melee: every level 1-99 unlocks something
 PASS  Archery: every level 1-99 unlocks something
 PASS  Magic: every level 1-99 unlocks something
@@ -100,6 +102,22 @@ mining tier 7: Ember vein 39820 · Deep ember seam 34528 (+100% materials) · St
 PASS  mining tier 7 offers two choices within 20%
 mining tier 8: Dawnstone vein 50971 · Deep dawnstone seam 44141 (+100% materials) · Ember vein mastered 45078
 PASS  mining tier 8 offers two choices within 20%
+fishing tier 1: Perch shallows 6046 · Deep perch pool 5130 (+100% materials)
+PASS  fishing tier 1 offers two choices within 20%
+fishing tier 2: Trout shallows 8604 · Deep trout pool 7572 (+100% materials) · Perch shallows mastered 7102
+PASS  fishing tier 2 offers two choices within 20%
+fishing tier 3: Pike shallows 11653 · Deep pike pool 10159 (+100% materials) · Trout shallows mastered 10044
+PASS  fishing tier 3 offers two choices within 20%
+fishing tier 4: Salmon shallows 15600 · Deep salmon pool 13508 (+100% materials) · Pike shallows mastered 13525
+PASS  fishing tier 4 offers two choices within 20%
+fishing tier 5: Moon carp shallows 22919 · Deep moon carp pool 19906 (+100% materials) · Salmon shallows mastered 18009
+PASS  fishing tier 5 offers two choices within 20%
+fishing tier 6: Silver eel shallows 30448 · Deep silver eel pool 26349 (+100% materials) · Moon carp shallows mastered 26114
+PASS  fishing tier 6 offers two choices within 20%
+fishing tier 7: Ember char shallows 39820 · Deep ember char pool 34528 (+100% materials) · Silver eel shallows mastered 34577
+PASS  fishing tier 7 offers two choices within 20%
+fishing tier 8: Dawn sturgeon shallows 50971 · Deep dawn sturgeon pool 44141 (+100% materials) · Ember char shallows mastered 45078
+PASS  fishing tier 8 offers two choices within 20%
 PASS  Mastery pays: at woodcutting 11, Pine tree (mastery 8) earns 90% of the best fresh action of its kind
 PASS  Mastery pays: at woodcutting 15, Old pine (mastery 8) earns 86% of the best fresh action of its kind
 PASS  Mastery pays: at woodcutting 20, Ash tree (mastery 7) earns 92% of the best fresh action of its kind
@@ -132,6 +150,22 @@ PASS  Mastery pays: at mining 80, Ember vein (mastery 10) earns 123% of the best
 PASS  Mastery pays: at mining 84, Deep ember seam (mastery 5) earns 111% of the best fresh action of its kind
 PASS  Mastery pays: at mining 95, Dawnstone vein (mastery 10) earns 122% of the best fresh action of its kind
 PASS  Mastery pays: at mining 99, Deep dawnstone seam (mastery 5) earns 111% of the best fresh action of its kind
+PASS  Mastery pays: at fishing 11, Perch shallows (mastery 8) earns 90% of the best fresh action of its kind
+PASS  Mastery pays: at fishing 15, Deep perch pool (mastery 8) earns 86% of the best fresh action of its kind
+PASS  Mastery pays: at fishing 20, Trout shallows (mastery 7) earns 92% of the best fresh action of its kind
+PASS  Mastery pays: at fishing 24, Deep trout pool (mastery 7) earns 92% of the best fresh action of its kind
+PASS  Mastery pays: at fishing 30, Pike shallows (mastery 9) earns 96% of the best fresh action of its kind
+PASS  Mastery pays: at fishing 34, Deep pike pool (mastery 6) earns 90% of the best fresh action of its kind
+PASS  Mastery pays: at fishing 40, Salmon shallows (mastery 10) earns 88% of the best fresh action of its kind
+PASS  Mastery pays: at fishing 44, Deep salmon pool (mastery 6) earns 81% of the best fresh action of its kind
+PASS  Mastery pays: at fishing 50, Moon carp shallows (mastery 10) earns 124% of the best fresh action of its kind
+PASS  Mastery pays: at fishing 54, Deep moon carp pool (mastery 6) earns 115% of the best fresh action of its kind
+PASS  Mastery pays: at fishing 65, Silver eel shallows (mastery 10) earns 124% of the best fresh action of its kind
+PASS  Mastery pays: at fishing 69, Deep silver eel pool (mastery 5) earns 112% of the best fresh action of its kind
+PASS  Mastery pays: at fishing 80, Ember char shallows (mastery 10) earns 123% of the best fresh action of its kind
+PASS  Mastery pays: at fishing 84, Deep ember char pool (mastery 5) earns 111% of the best fresh action of its kind
+PASS  Mastery pays: at fishing 95, Dawn sturgeon shallows (mastery 10) earns 122% of the best fresh action of its kind
+PASS  Mastery pays: at fishing 99, Deep dawn sturgeon pool (mastery 5) earns 111% of the best fresh action of its kind
 Smithing: every recipe in a tier pays the same XP an hour; bars are quicker to sell, gear is worth 40% more than its bars.
 PASS  Smithing recipes within 10% of their tier rate
 
@@ -266,7 +300,17 @@ Day 75  income 750,262 · food 91,904 (12%) · enlargement 13 costs 460,000
 PASS  Day 75: a day's gold covers a day of food and enlargement 13
 Day 90  income 964,805 · food 38,669 (4%) · enlargement 14 costs 650,000
 PASS  Day 90: a day's gold covers a day of food and enlargement 14
-Costs at 70% of each day's net gold would be: 50000, 100000, 95000, 110000, 230000, 240000, 245000, 255000, 280000, 305000, 340000, 450000, 460000, 650000
+Day 105 income 1,243,058 · food 68,533 (6%) · enlargement 15 costs 700,000
+PASS  Day 105: a day's gold covers a day of food and enlargement 15
+Day 120 income 1,151,011 · food 137,772 (12%) · enlargement 16 costs 750,000
+PASS  Day 120: a day's gold covers a day of food and enlargement 16
+Day 140 income 1,151,011 · food 137,772 (12%) · enlargement 17 costs 800,000
+PASS  Day 140: a day's gold covers a day of food and enlargement 17
+Day 160 income 1,151,011 · food 137,772 (12%) · enlargement 18 costs 850,000
+PASS  Day 160: a day's gold covers a day of food and enlargement 18
+Day 180 income 1,151,011 · food 137,772 (12%) · enlargement 19 costs 900,000
+PASS  Day 180: a day's gold covers a day of food and enlargement 19
+Costs at 70% of each day's net gold would be: 50000, 100000, 95000, 110000, 230000, 240000, 245000, 255000, 280000, 305000, 340000, 450000, 460000, 650000, 820000, 710000, 710000, 710000, 710000
 
 ## Supply: can mining keep the forge fed?
 Tier 1: smelting without pause needs mining 69% of the time on a fresh vein, 42% on a mastered deep seam
@@ -277,3 +321,52 @@ Tier 5: smelting without pause needs mining 47% of the time on a fresh vein, 30%
 Tier 6: smelting without pause needs mining 45% of the time on a fresh vein, 28% on a mastered deep seam
 Tier 7: smelting without pause needs mining 42% of the time on a fresh vein, 27% on a mastered deep seam
 Tier 8: smelting without pause needs mining 39% of the time on a fresh vein, 25% on a mastered deep seam
+
+## The food loop (session 13)
+Tier 1: Cooked perch heals 150 for 2 gold of worth (75.0 a gold); Bread 140 for 20 (7.0)
+PASS  Tier 1: Cooked perch heals no more than half the health at Hitpoints 1
+Tier 2: Cooked trout heals 330 for 4 gold of worth (82.5 a gold); Meat pie 320 for 50 (6.4)
+PASS  Tier 2: home-cooked food heals at least 1.2 times the vendor's for its worth
+PASS  Tier 2: Cooked trout heals no more than half the health at Hitpoints 10
+Tier 3: Cooked pike heals 530 for 13 gold of worth (40.8 a gold); Hearty stew 600 for 110 (5.5); Pike pie heals 660 for 11
+PASS  Tier 3: home-cooked food heals at least 1.2 times the vendor's for its worth
+PASS  Tier 3: Cooked pike heals no more than half the health at Hitpoints 20
+PASS  Tier 3: Pike pie wastes little of its healing
+Tier 4: Cooked salmon heals 730 for 32 gold of worth (22.8 a gold); Hearty stew 600 for 110 (5.5); Salmon stew heals 910 for 28
+PASS  Tier 4: home-cooked food heals at least 1.2 times the vendor's for its worth
+PASS  Tier 4: Cooked salmon heals no more than half the health at Hitpoints 30
+PASS  Tier 4: Salmon stew wastes little of its healing
+Tier 5: Cooked moon carp heals 930 for 63 gold of worth (14.8 a gold); Roast fowl 1000 for 190 (5.3); Carp pie heals 1160 for 56
+PASS  Tier 5: home-cooked food heals at least 1.2 times the vendor's for its worth
+PASS  Tier 5: Cooked moon carp heals no more than half the health at Hitpoints 40
+PASS  Tier 5: Carp pie wastes little of its healing
+Tier 6: Cooked silver eel heals 1230 for 104 gold of worth (11.8 a gold); Roast fowl 1000 for 190 (5.3); Eel stew heals 1540 for 95
+PASS  Tier 6: home-cooked food heals at least 1.2 times the vendor's for its worth
+PASS  Tier 6: Cooked silver eel heals no more than half the health at Hitpoints 55
+PASS  Tier 6: Eel stew wastes little of its healing
+Tier 7: Cooked ember char heals 1530 for 162 gold of worth (9.4 a gold); Hunter's feast 1600 for 320 (5.0); Char pie heals 1910 for 149
+PASS  Tier 7: home-cooked food heals at least 1.2 times the vendor's for its worth
+PASS  Tier 7: Cooked ember char heals no more than half the health at Hitpoints 70
+PASS  Tier 7: Char pie wastes little of its healing
+Tier 8: Cooked dawn sturgeon heals 1830 for 243 gold of worth (7.5 a gold); Warden's feast 2300 for 480 (4.8); Sturgeon stew heals 2290 for 225
+PASS  Tier 8: home-cooked food heals at least 1.2 times the vendor's for its worth
+PASS  Tier 8: Cooked dawn sturgeon heals no more than half the health at Hitpoints 85
+PASS  Tier 8: Sturgeon stew wastes little of its healing
+PASS  Cooking recipes within 10% of their tier rate
+Tier 1: an hour of Woodcutting sells for 698; an hour of Fishing, cooked and eaten, saves 14608 at the vendor
+PASS  Tier 1: Fishing pays at least 80% of Woodcutting
+Tier 2: an hour of Woodcutting sells for 1831; an hour of Fishing, cooked and eaten, saves 22686 at the vendor
+PASS  Tier 2: Fishing pays at least 80% of Woodcutting
+Tier 3: an hour of Woodcutting sells for 4361; an hour of Fishing, cooked and eaten, saves 28087 at the vendor
+PASS  Tier 3: Fishing pays at least 80% of Woodcutting
+Tier 4: an hour of Woodcutting sells for 9100; an hour of Fishing, cooked and eaten, saves 30246 at the vendor
+PASS  Tier 4: Fishing pays at least 80% of Woodcutting
+Tier 5: an hour of Woodcutting sells for 17853; an hour of Fishing, cooked and eaten, saves 36139 at the vendor
+PASS  Tier 5: Fishing pays at least 80% of Woodcutting
+Tier 6: an hour of Woodcutting sells for 27358; an hour of Fishing, cooked and eaten, saves 41917 at the vendor
+PASS  Tier 6: Fishing pays at least 80% of Woodcutting
+Tier 7: an hour of Woodcutting sells for 40802; an hour of Fishing, cooked and eaten, saves 48962 at the vendor
+PASS  Tier 7: Fishing pays at least 80% of Woodcutting
+Tier 8: an hour of Woodcutting sells for 58860; an hour of Fishing, cooked and eaten, saves 53827 at the vendor
+PASS  Tier 8: Fishing pays at least 80% of Woodcutting
+Supply: cooking without pause takes two fish and one log every three of the tier's units, so one Gathering lane fishing and the fire's second lane chopping half the time keep the Artisan lane cooking.

@@ -64,8 +64,16 @@ export function views(): View[] {
     { page: 'Storehouse', path: '/storehouse?panel=item&item=carved-acorn', phone: [], desktop: [], as: 'veteran' },
   ];
   // Two months into the climb, in the Sunken Fen: the longest names and the largest numbers.
-  const elders: ViewSpec[] = ['/', '/skills', '/skills/mining', '/combat', '/storehouse'].map((path) => ({
-    page: map.views.find((v) => v.path === path)?.page ?? 'Hearth',
+  const elders: ViewSpec[] = [
+    '/',
+    '/skills',
+    '/skills/mining',
+    '/skills/fishing',
+    '/skills/cooking',
+    '/combat',
+    '/storehouse',
+  ].map((path) => ({
+    page: map.views.find((v) => v.path === path)?.page ?? (path.startsWith('/skills/') ? 'Skill' : 'Hearth'),
     path,
     phone: [],
     desktop: [],

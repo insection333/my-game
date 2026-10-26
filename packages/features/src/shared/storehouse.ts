@@ -7,10 +7,11 @@ import { z } from 'zod';
 
 export const START_SLOTS = 24;
 export const SLOTS_PER_ENLARGEMENT = 6;
-/** Eight enlargements over version 1's three weeks, then six more over the climb to 99. */
+/** Eight enlargements over version 1's three weeks, six more over the climb to 99, and five more for
+ *  Fishing's and Cooking's thirty kinds of item (session 13). */
 export const ENLARGE_COSTS: readonly number[] = [
   40_000, 90_000, 100_000, 120_000, 180_000, 200_000, 230_000, 250_000, 280_000, 300_000, 340_000, 450_000, 460_000,
-  650_000,
+  650_000, 700_000, 750_000, 800_000, 850_000, 900_000,
 ];
 
 /** Gold is counted in the header, not in a slot. */

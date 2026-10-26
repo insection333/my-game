@@ -1,5 +1,5 @@
 // A third player for the screenshots: two months into the climb, in the Sunken Fen. Levels in the
-// fifties to seventies, tier 5 and 6 gear and materials, the later foods, and all three lanes at work
+// fifties to seventies, tier 5 and 6 gear and materials, the later foods (bought and cooked), and all three lanes at work
 // on the Fen's actions. Their names are the longest yet ("Deep star-iron seam", "Grandmaster ..."),
 // and their numbers the largest, so the pages are held to their spec where it is hardest.
 import { XP_TABLE } from '@idle-clash/content';
@@ -10,7 +10,9 @@ import type { Ctx } from '../../../apps/server/src/context.ts';
 const LEVELS: Record<string, number> = {
   woodcutting: 71,
   mining: 64,
+  fishing: 58,
   smithing: 60,
+  cooking: 56,
   melee: 66,
   archery: 48,
   magic: 52,
@@ -35,6 +37,11 @@ const ITEMS: Record<string, number> = {
   'star-iron-legs': 1,
   'roast-fowl': 340,
   'hunters-feast': 120,
+  'moon-carp': 1_204,
+  'silver-eel': 936,
+  'cooked-silver-eel': 264,
+  'carp-pie': 88,
+  'pearl-mussel': 3,
   'amber-nugget': 4,
   'rough-sapphire': 2,
   'heartwood-knot': 1,
@@ -61,6 +68,8 @@ export function elder(ctx: Ctx, base: State, now: number): State {
       'mining:deep-star-iron-seam': 2_150,
       'smithing:star-iron-bar': 1_420,
       'combat:mire-hulk': 3_300,
+      'fishing:silver-eel-shallows': 1_900,
+      'cooking:cooked-moon-carp': 2_400,
     },
     features: {
       ...base.features,

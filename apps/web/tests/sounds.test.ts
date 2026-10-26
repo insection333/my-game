@@ -40,5 +40,6 @@ describe('sound cues', () => {
 
   it('knocks by the kind of work', () => {
     expect([workCue('woodcutting'), workCue('mining'), workCue('melee')]).toEqual(['chop', 'strike', 'hit']);
+    expect([workCue('fishing'), workCue('cooking')]).toEqual(['splash', 'sizzle']);
   });
 });

@@ -1,5 +1,6 @@
 // The XP curve: derived from the pacing targets, then checked by simulating focused players.
-import { FOES, MAX_LEVEL, MINING, SMITHING, WOODCUTTING, type Style } from './content.ts';
+import { FISHING, FOES, MAX_LEVEL, MINING, SMITHING, WOODCUTTING, type GatherSkill, type Style } from './content.ts';
+import { COOKING } from './cooking.ts';
 import { actionRate, odds, tierForLevel, HP_XP_SHARE } from './mechanics.ts';
 import { rng } from './rng.ts';
 
@@ -47,10 +48,11 @@ export interface Candidate {
 }
 export type Candidates = (level: number, done: Map<string, number>, fire: boolean) => Candidate[];
 
+const GATHERED = { woodcutting: WOODCUTTING, mining: MINING, fishing: FISHING };
 export const gatherCandidates =
-  (skill: 'woodcutting' | 'mining'): Candidates =>
+  (skill: GatherSkill): Candidates =>
   (level, done, fire) =>
-    (skill === 'woodcutting' ? WOODCUTTING : MINING)
+    GATHERED[skill]
       .filter((a) => a.level <= level)
       .map((a) => {
         const r = actionRate(skill, level, a, done.get(a.id) ?? 0, fire);
@@ -60,6 +62,12 @@ export const gatherCandidates =
 export const smithingCandidates: Candidates = (level, done, fire) =>
   SMITHING.filter((r) => r.level <= level).map((r) => {
     const rt = actionRate('smithing', level, r, done.get(r.id) ?? 0, fire);
+    return { id: r.id, xpPerSec: rt.xpPerAction / rt.secondsPerAction, spa: rt.secondsPerAction };
+  });
+
+export const cookingCandidates: Candidates = (level, done, fire) =>
+  COOKING.filter((r) => r.level <= level).map((r) => {
+    const rt = actionRate('cooking', level, r, done.get(r.id) ?? 0, fire);
     return { id: r.id, xpPerSec: rt.xpPerAction / rt.secondsPerAction, spa: rt.secondsPerAction };
   });
 
