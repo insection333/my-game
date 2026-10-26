@@ -1,6 +1,15 @@
-// Your standing: the total level and the ranks along the climb (GLOSSARY.md: Rank).
+// Your standing (the total level and the ranks along the climb) and the rewards goals pay in.
 
 export const progress: Record<string, string> = {
+  // Supply caches: what short goals and the daily goal pay in
+  'goals.reward.cache': 'A cache, about {amount} gold',
+  'goals.openCache': 'Open cache',
+  'cache.plain': 'A cache',
+  'cache.stocked': 'A stocked cache',
+  'cache.rich': 'A rich cache',
+  'cache.lucky': 'A lucky cache',
+  'cache.holds': '{cache}: {items}',
+
   'standing.total': 'Total level {level}',
   'standing.next': '{rank} at {level}',
   'rank.wanderer': 'Wanderer',

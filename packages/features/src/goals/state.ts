@@ -44,13 +44,15 @@ export const GoalsState = z
     made: Count.default(0),
     daily: DailyGoal.nullable().default(null),
     milestones: z.array(Key).max(100).default([]),
+    /** Supply caches opened so far: each one's draw comes from this count (session 11). */
+    opened: Count.default(0),
   })
   .strict();
 export type GoalsState = z.infer<typeof GoalsState>;
 
 export function goalsOf(state: State): GoalsState {
   const parsed = GoalsState.safeParse(Object.hasOwn(state.features, 'goals') ? state.features.goals : undefined);
-  return parsed.success ? parsed.data : { claimed: [], short: [], made: 0, daily: null, milestones: [] };
+  return parsed.success ? parsed.data : { claimed: [], short: [], made: 0, daily: null, milestones: [], opened: 0 };
 }
 
 export const setGoals = (state: State, g: GoalsState): void => {

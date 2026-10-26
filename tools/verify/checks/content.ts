@@ -15,7 +15,7 @@ import {
   trackStrings,
   type Effect,
 } from '@idle-clash/content';
-import { effectsIn, RANKS, skill, type Feature, type SlotContext } from '@idle-clash/features';
+import { CACHE_DRAWS, effectsIn, RANKS, skill, type Feature, type SlotContext } from '@idle-clash/features';
 import { KERNEL_STOP_CODES, LANE_IDS } from '@idle-clash/kernel';
 
 export interface ContentInput {
@@ -46,6 +46,7 @@ export function checkContent({ features, states, literalKeys }: ContentInput): {
   }
   for (const lane of LANE_IDS) attempt(`Lane "${lane}"`, () => t(`lane.${lane}`));
   for (const r of RANKS) attempt(`Rank "${r.id}"`, () => t(`rank.${r.id}`));
+  for (const d of CACHE_DRAWS) attempt(`Cache "${d.grade}"`, () => t(`cache.${d.grade}`));
 
   const items = new Map<string, string>();
   for (const f of features) {

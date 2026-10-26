@@ -52,6 +52,7 @@ import {
   OrcRaider,
 } from './foes.tsx';
 import { Body, Bow, Helm, Legs, Staff, Sword } from './gear.tsx';
+import { SupplyCache } from './rewards.tsx';
 import { ArcherySeal, HitpointsSeal, MagicSeal, MeleeSeal, MiningSeal, SmithingSeal } from './seals.tsx';
 import { M, type Tone } from './style.tsx';
 import {
@@ -73,7 +74,7 @@ import {
   YewLogs,
 } from './world.tsx';
 
-export type IconFamily = 'weapon' | 'armour' | 'resource' | 'foe' | 'food' | 'find' | 'skill';
+export type IconFamily = 'weapon' | 'armour' | 'resource' | 'foe' | 'food' | 'find' | 'skill' | 'reward';
 
 export interface IconDef {
   draw: ComponentType;
@@ -190,6 +191,8 @@ const NAMED = {
   'wights-ring': { draw: WightsRing, family: 'find', title: "Wight's ring (Rare find)" },
   'star-glass-orb': { draw: StarGlassOrb, family: 'find', title: 'Star-glass orb (Legendary find)' },
   'sorcerers-eye': { draw: SorcerersEye, family: 'find', title: "Sorcerer's eye (Legendary find)" },
+  // Session 11: the cache a goal pays in.
+  'supply-cache': { draw: SupplyCache, family: 'reward', title: "Supply cache (a goal's reward)" },
 } satisfies Record<string, IconDef>;
 
 export const ICONS: Record<string, IconDef> = { ...GEAR, ...NAMED };

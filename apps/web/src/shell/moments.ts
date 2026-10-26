@@ -32,6 +32,8 @@ function rank(e: GameEvent): number {
 
 function sizeOf(e: GameEvent): MomentSize {
   if (e.type === 'levelUp' || (e.type === 'find' && e.rarity === 'legendary')) return 'centre';
+  // A goal's supply cache is opened in a banner; a lucky one takes the centre.
+  if (e.type === 'goalDone' && e.cache) return e.cache.grade === 'lucky' ? 'centre' : 'banner';
   if (e.type === 'masteryStep' || (e.type === 'find' && e.rarity === 'rare')) return 'banner';
   return 'toast';
 }
@@ -73,10 +75,24 @@ function describe(
         icon: actionIcon(e.action, features),
       };
     case 'goalDone':
-      return { title: t('moment.goalDone', { goal: e.name ?? t(`goal.${e.goal}`) }), body: null, icon: null };
+      return {
+        title: t('moment.goalDone', { goal: e.name ?? t(`goal.${e.goal}`) }),
+        body: e.cache ? cacheText(e.cache) : null,
+        icon: e.cache ? 'supply-cache' : null,
+      };
     default:
       return { title: '', body: null, icon: null };
   }
+}
+
+/** What a cache held, as the moment says it: "A rich cache: 1,650 gold". */
+export function cacheText(cache: { grade: string; items: { item: string; count: number }[] }): string {
+  const items = cache.items.map((i) =>
+    i.item === 'gold'
+      ? t('goals.reward.gold', { amount: fmt.int(i.count) })
+      : t('action.gives', { item: t(`item.${i.item}`), count: fmt.int(i.count) }),
+  );
+  return t('cache.holds', { cache: t(`cache.${cache.grade}`), items: items.join(', ') });
 }
 
 /** The moments to show for events after `since`, newest last. */

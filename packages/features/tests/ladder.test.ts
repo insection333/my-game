@@ -68,8 +68,12 @@ describe('the goals ladder', () => {
     s = engine.advance(s, T0 + HOUR, seeded(1)).state;
     expect(view(s, T0 + HOUR).rows.find((r) => r.id === goal.id)).toMatchObject({ state: 'ready' });
     const paid = claim(s, goal.id, T0 + HOUR);
-    expect(paid.state.items.gold ?? 0).toBe((s.items.gold ?? 0) + goal.reward);
+    // It pays in a supply cache: what the cache held is what arrived, at least half the goal's gold.
+    const event = paid.events?.[0] as { cache: { items: { item: string; count: number }[] } };
     expect(paid.events?.[0]).toMatchObject({ type: 'goalDone', goal: goal.id, name: row.name });
+    const got = event.cache.items.find((i) => i.item === 'gold')!.count;
+    expect(paid.state.items.gold ?? 0).toBe((s.items.gold ?? 0) + got);
+    expect(got).toBeGreaterThanOrEqual(Math.round(goal.reward / 2));
     const after = goalsOf(paid.state).short;
     expect(after).toHaveLength(3);
     expect(after.map((x) => x.id)).not.toContain(goal.id);
@@ -81,9 +85,10 @@ describe('the goals ladder', () => {
     const daily = goalsOf(s).daily!;
     expect(daily.day).toBe('2026-10-21');
     s = { ...s, skills: { ...s.skills, [daily.skill]: { xp: daily.base + daily.target } } };
-    expect(claim(s, 'daily').state.items.gold).toBe(daily.reward);
     const once = claim(s, 'daily').state;
-    expect(claim(once, 'daily').state.items.gold).toBe(daily.reward);
+    const paid = once.items.gold ?? 0;
+    expect(paid).toBeGreaterThanOrEqual(Math.round(daily.reward / 2));
+    expect(claim(once, 'daily').state.items.gold).toBe(paid);
     expect(view(once).rows.find((r) => r.id === 'daily')).toMatchObject({ state: 'claimed' });
     const tomorrow = T0 + 24 * HOUR;
     expect(view(once, tomorrow).refresh).toBe(true);

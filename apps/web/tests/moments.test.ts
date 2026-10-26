@@ -47,6 +47,29 @@ describe('moments', () => {
     expect(second).toMatchObject({ size: 'toast', title: 'Goal done: Chop a pine' });
   });
 
+  it('opens a goal’s supply cache in a banner, and a lucky one in the centre', () => {
+    const cache = (grade: string): GameEvent => ({
+      type: 'goalDone',
+      at: T,
+      goal: 'short-4',
+      name: 'Woodcutting: Oak tree ×50',
+      cache: {
+        grade,
+        items: [
+          { item: 'gold', count: 275 },
+          { item: 'meat-pie', count: 6 },
+        ],
+      },
+    });
+    expect(momentsFrom([cache('stocked')], T - 1, FEATURES)[0]).toMatchObject({
+      size: 'banner',
+      icon: 'supply-cache',
+      title: 'Goal done: Woodcutting: Oak tree ×50',
+      body: 'A stocked cache: 275 gold, Meat pie ×6',
+    });
+    expect(momentsFrom([cache('lucky')], T - 1, FEATURES)[0]).toMatchObject({ size: 'centre' });
+  });
+
   it('shows nothing for what happened before the page opened, or for a lane the player stopped', () => {
     const stop: GameEvent = {
       type: 'laneStopped',

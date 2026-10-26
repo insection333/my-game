@@ -15,8 +15,13 @@ export interface EventMap {
   masteryStep: { action: ActionRef; step: number };
   /** A find; `first` when it is new to the collection log. */
   find: { skill: string; item: string; rarity: Rarity; first: boolean };
-  /** A goal was claimed; `name` is its words when they are made for it (a short goal's count). */
-  goalDone: { goal: string; name?: string };
+  /** A goal was claimed; `name` is its words when they are made for it (a short goal's count), and
+   *  `cache` the supply cache it paid in (its grade and what it held), for its reveal. */
+  goalDone: {
+    goal: string;
+    name?: string;
+    cache?: { grade: string; items: { item: string; count: number }[] };
+  };
   /** A lane stopped; the reason says why, so the page can say what to do. */
   laneStopped: { lane: LaneId; action: ActionRef | null; reason: StopReason };
   /** A command was refused: what was asked, and why not, so the page can say so. */

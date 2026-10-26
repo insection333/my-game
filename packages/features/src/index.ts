@@ -12,6 +12,7 @@ export type {
 } from './shared/skill-slots.ts';
 export type { GoalRow, GoalsView, StandingView } from './goals/index.ts';
 export { RANKS } from './goals/ranks.ts';
+export { CACHE_DRAWS } from './goals/cache.ts';
 export * as items from './shared/items.ts';
 export * as combatData from './shared/combat/data.ts';
 export type { Fighter, Odds, Verdict } from './shared/combat/fight.ts';
