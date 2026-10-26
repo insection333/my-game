@@ -82,6 +82,16 @@
   -webkit-line-clamp: 2;
   overflow: hidden;
   line-height: 1.15;
+  /* A long word ("silverbark") breaks at a hyphen rather than running out of the chip. */
+  hyphens: auto;
+  overflow-wrap: anywhere;
+}
+
+/* On the narrowest phones a chip gives its icon's room to the words ("Old silverbark"). */
+@media (max-width: 359px) {
+  .chip .icon {
+    display: none;
+  }
 }
 
 .chipBar {

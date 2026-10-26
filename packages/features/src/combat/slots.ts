@@ -4,7 +4,7 @@ import { fmt, GEAR_SLOTS, t, type GearSlot } from '@idle-clash/content';
 import { countOf, type State } from '@idle-clash/kernel';
 import type { Json, SlotFill } from '../define.ts';
 import { itemOf } from '../shared/catalog.ts';
-import { FOES, HITPOINTS, matchup, STYLE_SKILLS, type Foe } from '../shared/combat/data.ts';
+import { FOES, HITPOINTS, matchup, regionOf, STYLE_SKILLS, type Foe } from '../shared/combat/data.ts';
 import type { Odds } from '../shared/combat/fight.ts';
 import { oddsFor } from '../shared/combat/odds.ts';
 import { healthAt, healthMax, mealsOf, styleOf, wornIn } from '../shared/combat/state.ts';
@@ -37,6 +37,9 @@ export interface FoeRow {
   foe: { feature: string; id: string };
   name: string;
   tier: number;
+  /** The region it is fought in (a tab of the Combat page), and its name. */
+  region: string;
+  regionName: string;
   styleId: string;
   style: string;
   level: string;
@@ -111,6 +114,8 @@ function foeRow(state: State, foe: Foe): FoeRow {
     foe: { feature: FEATURE, id: foe.id },
     name: t(`action.combat.${foe.id}`),
     tier: foe.tier,
+    region: regionOf(foe.tier),
+    regionName: t(`combat.region.${regionOf(foe.tier)}`),
     styleId: foe.style,
     style: t(`skill.${foe.style}`),
     level: t('skill.level', { level: fmt.int(foe.level) }),

@@ -68,6 +68,32 @@ export const M = {
   bone: tone('#fbf5e3', '#e1d3ad', '#a9976d'),
   feather: tone('#ffffff', '#d8dcd5', '#979f98'),
   eagle: tone('#ddbb8e', '#93693f', '#5b3f24'),
+  /** The expansion's metals (session 12), past steel: moonsilver pale and cool, star-iron dark and blue,
+   *  embersteel black with a hot edge, dawnsteel white-gold. */
+  moonsilver: tone('#f6f9ff', '#bfcbe4', '#7584a8'),
+  embersteel: tone('#c77b5c', '#5c3a36', '#2b1916'),
+  dawnsteel: tone('#ffffff', '#f4ead0', '#c7a865'),
+  /** The expansion's woods, each with its own bark. */
+  mapleWood: tone('#f6c39a', '#d4834f', '#94502b'),
+  mapleBark: tone('#a86a48', '#713f29', '#46261a'),
+  silverWood: tone('#fbf6ea', '#e6dbc1', '#b6a585'),
+  elderWood: tone('#d8a8c6', '#975f86', '#5a3553'),
+  elderBark: tone('#77596d', '#4b3447', '#2c1d2a'),
+  ancientWood: tone('#f0e9a8', '#bfb062', '#7c7033'),
+  ancientBark: tone('#6c7a52', '#424d33', '#252c1d'),
+  /** Their ores in the rock: ember glowing, dawnstone a pale gold crystal. */
+  emberOre: tone('#ffd08a', '#ec6b2c', '#9b3013'),
+  dawnstone: tone('#fff8dc', '#f3d27c', '#b78f37'),
+  /** The cool blue-grey rock moonsilver is found in. */
+  moonrock: tone('#cbd5e6', '#8d99b2', '#535e76'),
+  /** The Sunken Fen's foes and the Ashen Peaks'. */
+  bog: tone('#a9b981', '#62764a', '#39472b'),
+  reed: tone('#e1d293', '#ae9b5d', '#706035'),
+  drowned: tone('#c7e6df', '#7fa9a2', '#4a6d68'),
+  mud: tone('#b49a76', '#7a5f43', '#4a3725'),
+  cinder: tone('#d3d0cb', '#8e8a85', '#55524e'),
+  obsidian: tone('#6f6a80', '#2d2a38', '#141219'),
+  flame: tone('#fff0a8', '#ffa23a', '#d4511f'),
   /** Food: a pie's meat, a stew's broth. */
   meat: tone('#df9474', '#a04c35', '#62291c'),
   broth: tone('#e5ae69', '#ad6d33', '#6c421c'),

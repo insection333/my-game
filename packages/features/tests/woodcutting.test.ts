@@ -66,11 +66,13 @@ describe('woodcutting', () => {
     });
     // The seal's rim follows the highest tier reached; a star at the top level.
     expect(woodcutting.slots['skill.header']({ state: atLevel(20), now: T0 })).toMatchObject({ tier: 3, top: false });
-    expect(woodcutting.slots['skill.header']({ state: atLevel(40), now: T0 })).toMatchObject({ tier: 4, top: true });
+    expect(woodcutting.slots['skill.header']({ state: atLevel(40), now: T0 })).toMatchObject({ tier: 5, top: false });
+    expect(woodcutting.slots['skill.header']({ state: atLevel(99), now: T0 })).toMatchObject({ tier: 8, top: true });
     const rows = woodcutting.slots['skill.actions'](ctx) as { name: string; locked: boolean; xpPerHour: string }[];
     expect(rows.map((r) => [r.name, r.locked])).toContainEqual(['Old ash', false]);
     expect(rows.find((r) => r.name === 'Oak tree')).toMatchObject({ locked: true });
     const ladder = woodcutting.slots['skill.ladder'](ctx) as { unlocks: string[] }[];
-    expect(ladder[39].unlocks).toEqual(['Master woodcutter (+10% chance of an extra item)']);
+    expect(ladder[39].unlocks).toEqual(['Maple tree', 'Master woodcutter (+10% chance of an extra item)']);
+    expect(ladder[98].unlocks).toEqual(['Grandmaster woodcutter (+15% chance of an extra item)']);
   });
 });

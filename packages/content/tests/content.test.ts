@@ -5,6 +5,7 @@ import {
   buildLadder,
   EFFECT_KINDS,
   emptyLevels,
+  fillPerks,
   fmt,
   formatEffect,
   formatStop,
@@ -108,7 +109,12 @@ describe('effects', () => {
 describe('progression', () => {
   it('reads levels from the XP table', () => {
     expect(XP_TABLE).toHaveLength(MAX_LEVEL + 1);
-    expect([0, 49, 50, 6790, 8_100_000, 99_000_000].map(levelFor)).toEqual([1, 1, 2, 10, 40, 40]);
+    expect([0, 49, 50, 6790, 8_100_000, XP_TABLE[99] - 1, XP_TABLE[99], 1e12].map(levelFor)).toEqual([
+      1, 1, 2, 10, 40, 98, 99, 99,
+    ]);
+    // Past 40 a level never costs less XP than the one before it.
+    for (let l = 3; l <= MAX_LEVEL; l++)
+      expect(XP_TABLE[l] - XP_TABLE[l - 1], `level ${l}`).toBeGreaterThanOrEqual(XP_TABLE[l - 1] - XP_TABLE[l - 2]);
     expect(levelProgress(100)).toEqual({ level: 2, into: 50, span: 100, toNext: 50 });
     expect(levelProgress(9e9).toNext).toBe(0);
   });
@@ -126,7 +132,37 @@ describe('ladders', () => {
       [{ perk: 'p', effect: { kind: 'speed', pct: 1 }, levels: [2, 4] }],
     );
     expect(ladder[3]).toEqual([{ type: 'perk', perk: 'p', rank: 2, effect: { kind: 'speed', pct: 1 } }]);
-    expect(emptyLevels(ladder)).toEqual([3, ...Array.from({ length: 36 }, (_, i) => i + 5)]);
+    expect(emptyLevels(ladder)).toEqual([3, ...Array.from({ length: MAX_LEVEL - 4 }, (_, i) => i + 5)]);
+  });
+
+  it('fills every free level with perk lines in turn, at half strength past 40, around the capstones', () => {
+    const ladder = fillPerks(
+      buildLadder(
+        [
+          { id: 'a', level: 1 },
+          { id: 'b', level: 3 },
+        ],
+        [],
+      ),
+      [
+        { perk: 'p', effect: { kind: 'speed', pct: 2 } },
+        { perk: 'q', effect: { kind: 'maxHealth', amount: 40 } },
+      ],
+      { 40: { perk: 'm', effect: { kind: 'damage', pct: 8 } }, 99: { perk: 'g', effect: { kind: 'damage', pct: 10 } } },
+    );
+    expect(emptyLevels(ladder)).toEqual([]);
+    expect(ladder[1]).toEqual([{ type: 'perk', perk: 'p', rank: 1, effect: { kind: 'speed', pct: 2 } }]);
+    expect(ladder[2]).toEqual([{ type: 'action', action: 'b' }]);
+    expect(ladder[3]).toEqual([{ type: 'perk', perk: 'q', rank: 1, effect: { kind: 'maxHealth', amount: 40 } }]);
+    expect(ladder[39]).toEqual([{ type: 'perk', perk: 'm', rank: 1, effect: { kind: 'damage', pct: 8 } }]);
+    // Past 40, each line's rank gives half.
+    expect([ladder[40][0], ladder[41][0]].map((u) => (u.type === 'perk' ? u.effect : null))).toEqual(
+      expect.arrayContaining([
+        { kind: 'speed', pct: 1 },
+        { kind: 'maxHealth', amount: 20 },
+      ]),
+    );
+    expect(ladder[98]).toEqual([{ type: 'perk', perk: 'g', rank: 1, effect: { kind: 'damage', pct: 10 } }]);
   });
 });
 

@@ -60,6 +60,16 @@ Each material has exactly three tones: light, base and shadow.
 
 The game's own mark is the hearth fire on a dark round seal (`icons/mark.tsx`; chosen by the owner on 22 October 2026): a big flame with a bright core over two crossed logs. It is the site's icon in the browser tab and on a phone's home screen, so it is judged at 16 and 32 px first. The build draws `favicon.svg` from it; `node tools/brand.ts` makes the PNG sizes phones ask for (and `--review` a sheet of it at every size on both themes).
 
+## The climb's tiers and regions (session 12)
+
+Tiers 5 to 8 keep the march's drawings (the log pile, the rock with its nuggets, the ingot, each weapon and armour piece) in new materials, and add two regions' foes as busts like the march's:
+
+- **Metals:** moonsilver (pale, cool), star-iron (dark blue), embersteel (near-black with a hot edge; its bar's top glows), dawnsteel (white with gold shadow). The march's rule, warm to cold, gives way to light to dark to hot to bright, so each later tier still reads before its shape.
+- **Woods:** maple (red-orange), silverbark (pale, grey bark), elderwood (plum), ancient (olive-gold, a fleck of light in each cut end).
+- **Ores lie in their own rock:** moonsilver in blue-grey stone, star-iron's pale flecks in black rock, ember ore glowing out of volcanic glass; dawnstone is a cluster of pale gold crystals.
+- **The Sunken Fen's foes** wear bog-green, reed-gold and drowned-grey, with weed and water about them; **the Ashen Peaks'** are ash, obsidian and fur, with ember cracks and glowing eyes.
+- **The later foods:** roast fowl, a hunter's feast on a board, a warden's raised pie.
+
 ## Seals that grow
 
 A skill's seal is rimmed in the metal of the highest tier its skill has reached: copper, then bronze, iron and steel (later tiers add their own metals). At the top level a small amber star sits on the rim's foot. The icon sheet shows one seal at each tier. Where no player's skill is meant (a ladder's tab, the icon sheet's own entry), the rim is bronze.

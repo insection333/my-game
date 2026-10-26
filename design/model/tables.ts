@@ -25,13 +25,13 @@ const say = (s = '') => p.push(s);
 
 const fit = fitLevelTimes();
 // Levels 1 to 40 fitted to the brief's targets; past 40, continued (extendTable).
-const table = roundTable(extendTable(simulate(gatherCandidates('woodcutting'), { days: 21, T: fit.T }).derived.slice(0, 41)));
+const table = extendTable(
+  roundTable(simulate(gatherCandidates('woodcutting'), { days: 21, T: fit.T }).derived.slice(0, 41)),
+);
 say('| Level | XP | Level | XP | Level | XP | Level | XP |');
 say('| --- | --- | --- | --- | --- | --- | --- | --- |');
 for (let r = 1; r <= 25; r++)
-  say(
-    `| ${[r, r + 25, r + 50, r + 75].map((l) => (l <= MAX_LEVEL ? `${l} | ${n(table[l])}` : ' | ')).join(' | ')} |`,
-  );
+  say(`| ${[r, r + 25, r + 50, r + 75].map((l) => (l <= MAX_LEVEL ? `${l} | ${n(table[l])}` : ' | ')).join(' | ')} |`);
 const XP_TABLE = p.splice(0).join('\n');
 
 for (const s of SKILLS) {
@@ -71,7 +71,9 @@ for (const r of SMITHING)
 const RECIPES = p.splice(0).join('\n');
 
 const REGIONS = ['The march', 'The Sunken Fen', 'The Ashen Peaks'];
-say('| Foe | Region | Style | Level | Opens at Hitpoints | Health | Max hit | XP a defeat (style) | Gold a defeat | Drop |');
+say(
+  '| Foe | Region | Style | Level | Opens at Hitpoints | Health | Max hit | XP a defeat (style) | Gold a defeat | Drop |',
+);
 say('| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |');
 for (const f of FOES)
   say(

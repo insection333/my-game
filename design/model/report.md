@@ -1,8 +1,8 @@
 ## XP table (total XP to reach each level)
-1: 0 · 2: 50 · 3: 150 · 4: 310 · 5: 520 · 6: 890 · 7: 1,490 · 8: 2,500 · 9: 4,170 · 10: 6,790 · 11: 10,400 · 12: 15,900 · 13: 23,800 · 14: 34,000 · 15: 46,800 · 16: 62,100 · 17: 79,900 · 18: 101,000 · 19: 126,000 · 20: 155,000 · 21: 202,000 · 22: 265,000 · 23: 340,000 · 24: 428,000 · 25: 531,000 · 26: 650,000 · 27: 790,000 · 28: 951,000 · 29: 1,140,000 · 30: 1,360,000 · 31: 1,650,000 · 32: 2,000,000 · 33: 2,430,000 · 34: 2,920,000 · 35: 3,500,000 · 36: 4,170,000 · 37: 4,950,000 · 38: 5,850,000 · 39: 6,900,000 · 40: 8,100,000 · 41: 9,310,000 · 42: 10,500,000 · 43: 11,700,000 · 44: 12,900,000 · 45: 14,100,000 · 46: 15,400,000 · 47: 16,600,000 · 48: 17,800,000 · 49: 19,000,000 · 50: 20,300,000 · 51: 21,500,000 · 52: 22,700,000 · 53: 23,900,000 · 54: 25,200,000 · 55: 26,400,000 · 56: 27,700,000 · 57: 28,900,000 · 58: 30,200,000 · 59: 31,400,000 · 60: 32,700,000 · 61: 33,900,000 · 62: 35,200,000 · 63: 36,400,000 · 64: 37,700,000 · 65: 38,900,000 · 66: 40,200,000 · 67: 41,500,000 · 68: 42,800,000 · 69: 44,000,000 · 70: 45,300,000 · 71: 46,600,000 · 72: 47,900,000 · 73: 49,100,000 · 74: 50,400,000 · 75: 51,700,000 · 76: 53,000,000 · 77: 54,300,000 · 78: 55,600,000 · 79: 56,900,000 · 80: 58,200,000 · 81: 59,500,000 · 82: 60,800,000 · 83: 62,100,000 · 84: 63,400,000 · 85: 64,800,000 · 86: 66,100,000 · 87: 67,400,000 · 88: 68,700,000 · 89: 70,000,000 · 90: 71,400,000 · 91: 72,700,000 · 92: 74,000,000 · 93: 75,400,000 · 94: 76,700,000 · 95: 78,000,000 · 96: 79,400,000 · 97: 80,700,000 · 98: 82,100,000 · 99: 83,400,000
+1: 0 · 2: 50 · 3: 150 · 4: 310 · 5: 520 · 6: 890 · 7: 1,490 · 8: 2,500 · 9: 4,170 · 10: 6,790 · 11: 10,400 · 12: 15,900 · 13: 23,800 · 14: 34,000 · 15: 46,800 · 16: 62,100 · 17: 79,900 · 18: 101,000 · 19: 126,000 · 20: 155,000 · 21: 202,000 · 22: 265,000 · 23: 340,000 · 24: 428,000 · 25: 531,000 · 26: 650,000 · 27: 790,000 · 28: 951,000 · 29: 1,140,000 · 30: 1,360,000 · 31: 1,650,000 · 32: 2,000,000 · 33: 2,430,000 · 34: 2,920,000 · 35: 3,500,000 · 36: 4,170,000 · 37: 4,950,000 · 38: 5,850,000 · 39: 6,900,000 · 40: 8,100,000 · 41: 9,302,000 · 42: 10,507,000 · 43: 11,714,000 · 44: 12,924,000 · 45: 14,136,000 · 46: 15,350,000 · 47: 16,567,000 · 48: 17,786,000 · 49: 19,008,000 · 50: 20,232,000 · 51: 21,459,000 · 52: 22,688,000 · 53: 23,920,000 · 54: 25,154,000 · 55: 26,391,000 · 56: 27,630,000 · 57: 28,871,000 · 58: 30,115,000 · 59: 31,361,000 · 60: 32,610,000 · 61: 33,861,000 · 62: 35,115,000 · 63: 36,371,000 · 64: 37,630,000 · 65: 38,891,000 · 66: 40,155,000 · 67: 41,422,000 · 68: 42,691,000 · 69: 43,963,000 · 70: 45,237,000 · 71: 46,514,000 · 72: 47,793,000 · 73: 49,075,000 · 74: 50,359,000 · 75: 51,646,000 · 76: 52,935,000 · 77: 54,227,000 · 78: 55,522,000 · 79: 56,819,000 · 80: 58,119,000 · 81: 59,421,000 · 82: 60,726,000 · 83: 62,034,000 · 84: 63,344,000 · 85: 64,657,000 · 86: 65,973,000 · 87: 67,291,000 · 88: 68,612,000 · 89: 69,935,000 · 90: 71,261,000 · 91: 72,590,000 · 92: 73,921,000 · 93: 75,255,000 · 94: 76,592,000 · 95: 77,931,000 · 96: 79,273,000 · 97: 80,618,000 · 98: 81,965,000 · 99: 83,315,000
 
 ## Pacing for a skill kept in a lane (one active hour with the fire each day)
-Woodcutting  L10 1.0 h (+0%)  L20 22.6 h (-6%)  L30 4.9 days (-3%)  L40 20.8 days (-1%)  L55 50.4 days (0%)  L70 73.6 days (+0%)  L85 91.9 days (+0%)  L99 105.7 days (0%)
+Woodcutting  L10 1.0 h (+0%)  L20 22.6 h (-6%)  L30 4.9 days (-3%)  L40 20.8 days (-1%)  L55 50.3 days (0%)  L70 73.5 days (0%)  L85 91.8 days (+0%)  L99 105.6 days (0%)
 PASS  Woodcutting level 10 within 25% of target
 PASS  Woodcutting level 20 within 25% of target
 PASS  Woodcutting level 30 within 25% of target
@@ -11,7 +11,7 @@ PASS  Woodcutting level 55 within 25% of target
 PASS  Woodcutting level 70 within 25% of target
 PASS  Woodcutting level 85 within 25% of target
 PASS  Woodcutting level 99 within 25% of target
-Mining       L10 1.0 h (+0%)  L20 22.6 h (-6%)  L30 4.9 days (-3%)  L40 20.8 days (-1%)  L55 50.4 days (0%)  L70 73.6 days (+0%)  L85 91.9 days (+0%)  L99 105.7 days (0%)
+Mining       L10 1.0 h (+0%)  L20 22.6 h (-6%)  L30 4.9 days (-3%)  L40 20.8 days (-1%)  L55 50.3 days (0%)  L70 73.5 days (0%)  L85 91.8 days (+0%)  L99 105.6 days (0%)
 PASS  Mining level 10 within 25% of target
 PASS  Mining level 20 within 25% of target
 PASS  Mining level 30 within 25% of target
@@ -20,7 +20,7 @@ PASS  Mining level 55 within 25% of target
 PASS  Mining level 70 within 25% of target
 PASS  Mining level 85 within 25% of target
 PASS  Mining level 99 within 25% of target
-Smithing     L10 1.0 h (+1%)  L20 23.1 h (-4%)  L30 5.2 days (+5%)  L40 23.1 days (+10%)  L55 55.9 days (+11%)  L70 81.9 days (+11%)  L85 102.6 days (+12%)  L99 118.5 days (+12%)
+Smithing     L10 1.0 h (+1%)  L20 23.1 h (-4%)  L30 5.2 days (+5%)  L40 23.1 days (+10%)  L55 55.9 days (+11%)  L70 81.8 days (+11%)  L85 102.5 days (+12%)  L99 118.5 days (+12%)
 PASS  Smithing level 10 within 25% of target
 PASS  Smithing level 20 within 25% of target
 PASS  Smithing level 30 within 25% of target
@@ -29,7 +29,7 @@ PASS  Smithing level 55 within 25% of target
 PASS  Smithing level 70 within 25% of target
 PASS  Smithing level 85 within 25% of target
 PASS  Smithing level 99 within 25% of target
-Melee        L10 1.2 h (+18%)  L20 25.7 h (+7%)  L30 5.5 days (+10%)  L40 20.3 days (-3%)  L55 47.9 days (-5%)  L70 72.7 days (-1%)  L85 93.7 days (+2%)  L99 111.2 days (+5%)
+Melee        L10 1.2 h (+18%)  L20 25.7 h (+7%)  L30 5.5 days (+10%)  L40 20.3 days (-3%)  L55 47.9 days (-5%)  L70 72.6 days (-1%)  L85 93.5 days (+2%)  L99 111.1 days (+5%)
 PASS  Melee level 10 within 25% of target
 PASS  Melee level 20 within 25% of target
 PASS  Melee level 30 within 25% of target
@@ -38,7 +38,7 @@ PASS  Melee level 55 within 25% of target
 PASS  Melee level 70 within 25% of target
 PASS  Melee level 85 within 25% of target
 PASS  Melee level 99 within 25% of target
-Archery      L10 1.2 h (+20%)  L20 24.8 h (+3%)  L30 5.0 days (-1%)  L40 21.5 days (+3%)  L55 52.2 days (+4%)  L70 76.6 days (+4%)  L85 97.6 days (+6%)  L99 115.0 days (+9%)
+Archery      L10 1.2 h (+20%)  L20 24.8 h (+3%)  L30 5.0 days (-1%)  L40 21.5 days (+3%)  L55 52.2 days (+3%)  L70 76.5 days (+4%)  L85 97.3 days (+6%)  L99 114.8 days (+8%)
 PASS  Archery level 10 within 25% of target
 PASS  Archery level 20 within 25% of target
 PASS  Archery level 30 within 25% of target
@@ -47,7 +47,7 @@ PASS  Archery level 55 within 25% of target
 PASS  Archery level 70 within 25% of target
 PASS  Archery level 85 within 25% of target
 PASS  Archery level 99 within 25% of target
-Magic        L10 1.2 h (+20%)  L20 26.9 h (+12%)  L30 5.3 days (+5%)  L40 21.3 days (+1%)  L55 50.0 days (-1%)  L70 74.6 days (+2%)  L85 95.8 days (+4%)  L99 113.2 days (+7%)
+Magic        L10 1.2 h (+20%)  L20 26.9 h (+12%)  L30 5.3 days (+5%)  L40 21.3 days (+1%)  L55 50.0 days (-1%)  L70 74.5 days (+1%)  L85 95.6 days (+4%)  L99 113.1 days (+7%)
 PASS  Magic level 10 within 25% of target
 PASS  Magic level 20 within 25% of target
 PASS  Magic level 30 within 25% of target

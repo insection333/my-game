@@ -20,13 +20,12 @@ export function levelTimes(rEarly: number, lMid: number, d1 = 30 / 3600): number
 // The later tiers' faster rates (TIER_XP_PER_HOUR) set how long that takes; the checks hold it to the
 // year's targets (docs/EXPANSION.md).
 export const LATE_GROWTH = 1.002;
+/** Continues a rounded table past 40: each level's XP rounded to a thousand, so it never falls. */
 export function extendTable(table40: number[]): number[] {
   const out = [...table40];
-  let inc = out[40] - out[39];
-  for (let l = 41; l <= MAX_LEVEL; l++) {
-    inc *= LATE_GROWTH;
-    out.push(out[l - 1] + inc);
-  }
+  const first = out[40] - out[39];
+  for (let l = 41; l <= MAX_LEVEL; l++)
+    out.push(out[l - 1] + Math.round((first * LATE_GROWTH ** (l - 40)) / 1000) * 1000);
   return out;
 }
 export function fitLevelTimes() {

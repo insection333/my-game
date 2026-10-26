@@ -3,7 +3,7 @@
 import { circle, ellipse, Glint, INK, LINE, M, Shape } from './style.tsx';
 
 /** A bright eye: ink socket, coloured iris, white core. */
-const Eye = ({ x, y, glow, r = 2.4 }: { x: number; y: number; glow: string; r?: number }) => (
+export const Eye = ({ x, y, glow, r = 2.4 }: { x: number; y: number; glow: string; r?: number }) => (
   <g>
     <ellipse cx={x} cy={y} rx={r + 0.6} ry={r} fill={INK} />
     <circle cx={x - 0.3} cy={y} r={r * 0.6} fill={glow} />
@@ -11,7 +11,7 @@ const Eye = ({ x, y, glow, r = 2.4 }: { x: number; y: number; glow: string; r?: 
   </g>
 );
 
-const shoulders = (top: number) => `M5 46 C6 ${top + 4} 13 ${top} 24 ${top} C35 ${top} 42 ${top + 4} 43 46 Z`;
+export const shoulders = (top: number) => `M5 46 C6 ${top + 4} 13 ${top} 24 ${top} C35 ${top} 42 ${top + 4} 43 46 Z`;
 
 export function GoblinSlinger() {
   return (

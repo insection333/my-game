@@ -4,6 +4,7 @@ import {
   LEGENDARY_CHANCE,
   LUCK_GUARANTEE_MS,
   LUCK_STEP,
+  MAX_LEVEL,
   RARE_CHANCE,
   RARITIES,
   t,
@@ -90,7 +91,7 @@ export function checkDesign(features: readonly Feature[], modelXp: number[]): st
         problems.push(`Feature "${f.id}": finds ${JSON.stringify(names)}, the design ${JSON.stringify(FINDS[id])}`);
     }
     const model = unlockTable(id);
-    for (let level = 1; level <= 40; level++) {
+    for (let level = 1; level <= MAX_LEVEL; level++) {
       let ours: string[];
       try {
         ours = sk.ladder[level - 1].map((u) => skill.unlockText(f.id, sk.ladder, u));

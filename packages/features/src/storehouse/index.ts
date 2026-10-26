@@ -26,6 +26,8 @@ export interface FoodView {
     name: string;
     facts: string[];
     price: number;
+    /** How many the player carries. */
+    carried: number;
     /** Whether the player has the gold for ten. */
     affordable: boolean;
     locked: boolean;
@@ -66,6 +68,7 @@ function foodView(state: State): FoodView {
         t('item.panel.have', { count: fmt.int(countOf(state, f.id)) }),
       ],
       price: f.price,
+      carried: countOf(state, f.id),
       affordable: gold >= f.price * 10,
       locked: f.level > level,
       opensAt: f.level > level ? t('combat.opensAt', { level: fmt.int(f.level) }) : null,

@@ -1,7 +1,15 @@
 // Smithing's content: a bar and six pieces of gear per tier (a sword, a staff and a bow, so each combat
 // style has its weapon; a helm, legs and a body), what each takes, six finds and the unlock ladder.
 // Every recipe in a tier pays the same XP an hour; numbers match GAME_DESIGN.md section 6.
-import { buildLadder, TIER_LEVELS, TIER_SECONDS, TIER_XP_PER_HOUR, type Find, type Item } from '@idle-clash/content';
+import {
+  buildLadder,
+  fillPerks,
+  TIER_LEVELS,
+  TIER_SECONDS,
+  TIER_XP_PER_HOUR,
+  type Find,
+  type Item,
+} from '@idle-clash/content';
 
 export const SKILL = 'smithing';
 
@@ -17,16 +25,30 @@ export interface Recipe {
   findMultiple: number;
 }
 
-const METALS = ['copper', 'bronze', 'iron', 'steel'];
-const LOGS = ['pine-logs', 'ash-logs', 'oak-logs', 'yew-logs'];
+const METALS = ['copper', 'bronze', 'iron', 'steel', 'moonsilver', 'star-iron', 'embersteel', 'dawnsteel'];
+const LOGS = [
+  'pine-logs',
+  'ash-logs',
+  'oak-logs',
+  'yew-logs',
+  'maple-logs',
+  'silverbark-logs',
+  'elderwood-logs',
+  'ancient-logs',
+];
+/** Later bars are alloys, so earlier ores keep their use: coal in every bar from steel on. */
 const BAR_INPUTS: Record<string, number>[] = [
   { 'copper-ore': 1 },
   { 'copper-ore': 1, 'tin-ore': 1 },
   { 'iron-ore': 2 },
   { 'iron-ore': 1, coal: 2 },
+  { 'moonsilver-ore': 1, coal: 1 },
+  { 'star-iron-ore': 1, coal: 2 },
+  { 'ember-ore': 1, coal: 2 },
+  { dawnstone: 1, 'moonsilver-ore': 1, coal: 2 },
 ];
-const BAR_VALUE = [2, 7, 36, 96];
-const LOG_VALUE = [1, 4, 14, 35];
+const BAR_VALUE = [2, 7, 36, 96, 117, 208, 286, 468];
+const LOG_VALUE = [1, 4, 14, 35, 70, 115, 180, 270];
 /** Gear by kind: its level within the tier's ten, and how many bars and logs it takes. */
 const GEAR = [
   { kind: 'sword', offset: 1, bars: 3, logs: 0, slot: 'weapon', style: 'melee' },
@@ -97,10 +119,16 @@ export const ITEMS: Item[] = [
   ...FINDS.map((f): Item => ({ id: f.item, kind: 'find', value: FIND_VALUE[f.item] ?? 0 })),
 ];
 
-export const LADDER = buildLadder(RECIPES, [
-  { perk: 'steady-forge', effect: { kind: 'speed', pct: 3 }, levels: [5, 19, 34] },
-  { perk: 'thrifty', effect: { kind: 'saveInput', pct: 4 }, levels: [8, 24, 37] },
-  { perk: 'smiths-eye', effect: { kind: 'findChance', pct: 8 }, levels: [14, 27, 39] },
-  { perk: 'practised-hands', effect: { kind: 'masteryGain', pct: 8 }, levels: [17, 29] },
-  { perk: 'master-smith', effect: { kind: 'saveInput', pct: 8 }, levels: [40] },
-]);
+export const LADDER = fillPerks(
+  buildLadder(RECIPES, []),
+  [
+    { perk: 'steady-forge', effect: { kind: 'speed', pct: 3 } },
+    { perk: 'thrifty', effect: { kind: 'saveInput', pct: 4 } },
+    { perk: 'smiths-eye', effect: { kind: 'findChance', pct: 8 } },
+    { perk: 'practised-hands', effect: { kind: 'masteryGain', pct: 8 } },
+  ],
+  {
+    40: { perk: 'master-smith', effect: { kind: 'saveInput', pct: 8 } },
+    99: { perk: 'grandmaster-smith', effect: { kind: 'saveInput', pct: 10 } },
+  },
+);

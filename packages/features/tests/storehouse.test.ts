@@ -74,14 +74,14 @@ describe('the Storehouse', () => {
     });
   });
 
-  it('adds six slots for each enlargement, eight in all, at the design prices', () => {
-    let s: State = { ...newState(9, T0), items: { gold: 2_000_000 } };
+  it('adds six slots for each enlargement, fourteen in all, at the design prices', () => {
+    let s: State = { ...newState(9, T0), items: { gold: 5_000_000 } };
     for (const cost of ENLARGE_COSTS) {
       const gold = s.items.gold;
       s = run('enlarge', s, {}).state;
       expect(gold - s.items.gold).toBe(cost);
     }
-    expect(capacity(s)).toBe(24 + 6 * 8);
+    expect(capacity(s)).toBe(24 + 6 * 14);
     expect(run('enlarge', s, {}).result).toMatchObject({ reason: { code: 'fullyEnlarged' } });
     expect(run('enlarge', newState(9, T0), {}).result).toMatchObject({ reason: { code: 'notEnoughGold' } });
   });

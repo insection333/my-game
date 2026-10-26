@@ -36,7 +36,11 @@ const ROMAN: [number, string][] = [
 ];
 export const roman = (n: number) => {
   let out = '';
-  for (const [v, r] of ROMAN) while (n >= v) (out += r), (n -= v);
+  for (const [v, r] of ROMAN)
+    while (n >= v) {
+      out += r;
+      n -= v;
+    }
   return out;
 };
 
@@ -58,9 +62,11 @@ function fillPerks(table: Map<number, Unlock[]>, lines: PerkLine[], capstones: R
     const i = next++ % lines.length;
     ranks[i]++;
     const effect = lines[i].effect(ranks[i]);
-    table
-      .get(lvl)!
-      .push({ type: 'perk', name: `${lines[i].name} ${roman(ranks[i])}`, effect: lvl >= LATE_FROM ? half(effect) : effect });
+    table.get(lvl)!.push({
+      type: 'perk',
+      name: `${lines[i].name} ${roman(ranks[i])}`,
+      effect: lvl >= LATE_FROM ? half(effect) : effect,
+    });
   }
 }
 const empty = () => new Map(Array.from({ length: MAX_LEVEL }, (_, i) => [i + 1, [] as Unlock[]]));
@@ -103,9 +109,9 @@ export function unlockTable(skill: SkillId): Map<number, Unlock[]> {
     for (const f of FOES) t.get(f.hitpoints)!.push({ type: 'foe', name: f.name });
     for (const fd of FOODS.slice(1)) t.get(fd.level)!.push({ type: 'action', name: `The vendor sells ${fd.name}` });
     const named: Record<number, Unlock> = {
-      5: { type: 'perk', name: 'Second wind', effect: { kind: 'regen', pct: 25 } },
-      15: { type: 'perk', name: 'Iron stomach', effect: { kind: 'foodHeal', pct: 15 } },
-      25: { type: 'perk', name: 'Field dressing', effect: { kind: 'regen', pct: 25 } },
+      5: { type: 'perk', name: 'Second wind I', effect: { kind: 'regen', pct: 25 } },
+      15: { type: 'perk', name: 'Iron stomach I', effect: { kind: 'foodHeal', pct: 15 } },
+      25: { type: 'perk', name: 'Field dressing I', effect: { kind: 'regen', pct: 25 } },
       35: { type: 'perk', name: 'Stubborn', effect: { kind: 'retreatAt', pct: 12 } },
       40: { type: 'perk', name: 'Unbowed', effect: { kind: 'foodHeal', pct: 15 } },
       // The climb past 40: the same perks again, a rank higher and at half strength.

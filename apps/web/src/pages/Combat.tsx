@@ -24,12 +24,21 @@ function CombatPage({ combat }: { combat: Feature }) {
   const { state, now } = useGame();
   const { panel } = useLocation();
   const loadout = fillFor<LoadoutView>(combat, 'combat.loadout', state, now)!;
-  const all = fillFor<FoeRow[]>(combat, 'combat.foes', state, now) ?? [];
-  // One tier at a time, as on a skill's page: the tier asked for, or the newest with a foe open.
+  const every = fillFor<FoeRow[]>(combat, 'combat.foes', state, now) ?? [];
+  // One region at a time (the march, the Sunken Fen, the Ashen Peaks), and in it one tier at a time:
+  // those asked for in the address, or the newest with a foe open.
+  const query = new URLSearchParams(location.search);
+  const regions = [...new Map(every.map((f) => [f.region, f.regionName])).entries()];
+  const newestFoe = [...every].reverse().find((f) => !f.locked) ?? every[0];
+  const askedTier = Number(query.get('tier'));
+  const region =
+    regions.find(([id]) => id === query.get('region'))?.[0] ??
+    every.find((f) => f.tier === askedTier)?.region ??
+    newestFoe?.region;
+  const all = every.filter((f) => f.region === region);
   const tiers = [...new Set(all.map((f) => f.tier))].sort((a, b) => a - b);
-  const asked = Number(new URLSearchParams(location.search).get('tier'));
   const newest = Math.max(tiers[0] ?? 1, ...all.filter((f) => !f.locked).map((f) => f.tier));
-  const tier = tiers.includes(asked) ? asked : newest;
+  const tier = tiers.includes(askedTier) ? askedTier : newest;
   const foes = all.filter((f) => f.tier === tier);
   const triangle =
     fillFor<{ style: string; beats: string; text: string }[]>(combat, 'combat.triangle', state, now) ?? [];
@@ -39,7 +48,15 @@ function CombatPage({ combat }: { combat: Feature }) {
   const open = loadout.slots.find((x) => x.slot === sheetSlot);
   return (
     <>
-      <PageHead title={t('combat.title')} />
+      <PageHead title={t('combat.title')}>
+        {regions.length > 1 && (
+          <Tabs
+            label={t('combat.regions')}
+            onNavigate={navigate}
+            tabs={regions.map(([id, name]) => ({ href: `/combat?region=${id}`, label: name, current: id === region }))}
+          />
+        )}
+      </PageHead>
       <div className={s.layout}>
         <section data-section className={s.loadoutArea}>
           <Panel title={t('combat.loadout')} aside={loadout.style ?? undefined} flush>
@@ -67,7 +84,7 @@ function CombatPage({ combat }: { combat: Feature }) {
                   label={t('skill.tiers')}
                   onNavigate={navigate}
                   tabs={tiers.map((n) => ({
-                    href: `/combat?tier=${n}`,
+                    href: `/combat?region=${region}&tier=${n}`,
                     label: t('skill.tier', { tier: fmt.int(n) }),
                     current: n === tier,
                   }))}
@@ -205,10 +222,16 @@ function Food() {
   const { state, now, features } = useGame();
   const [food] = fills<FoodView>(features, 'combat.food', state, now);
   if (!food) return null;
+  // The two best foods on sale to you, and the next one to open: older foods only crowd the list
+  // (one you still carry stays, so it can be seen).
+  const open = food.data.shop.filter((f) => !f.locked);
+  const best = new Set(open.slice(-2).map((f) => f.item));
+  const next = food.data.shop.find((f) => f.locked);
+  const shown = food.data.shop.filter((f) => best.has(f.item) || f === next || (!f.locked && f.carried > 0));
   return (
     <Panel title={t('combat.food')} flush>
       <Slot id="combat.food">
-        {food.data.shop.map((f) => (
+        {shown.map((f) => (
           <ActionRow
             key={f.item}
             icon={<ItemIcon name={f.item} size={32} />}

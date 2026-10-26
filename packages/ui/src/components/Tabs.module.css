@@ -1,7 +1,10 @@
+/* Labels never wrap; when they do not fit (three regions on a phone) the strip scrolls sideways. */
 .tabs {
   display: flex;
   gap: var(--s-1);
   border-bottom: 1px solid var(--line);
+  overflow-x: auto;
+  scrollbar-width: none;
 }
 
 .tab {
@@ -14,7 +17,8 @@
   text-decoration: none;
   font-weight: 600;
   border-bottom: 2px solid transparent;
-  margin-bottom: -1px;
+  white-space: nowrap;
+  flex: none;
 }
 
 .tab[aria-current='page'] {

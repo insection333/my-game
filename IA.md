@@ -104,9 +104,9 @@ The list, then one page per skill (`/skills/woodcutting`).
 | 1 | `skills.list` | every skill | Seven rows: icon, name, level, a progress bar to the next level, and the next unlock. Grouped by lane |
 | — | **A skill's page** | | |
 | 1 | `skill.header` | that skill | Level, XP to next, the next unlock and how far away it is |
-| 2 | `skill.actions` | that skill | ActionRow per action or recipe: name, level, seconds, XP an hour, what it gives or takes, mastery step and bar, Start and Queue next. One tier at a time, under tabs (Tier 1 to 4), opening on the newest tier with something open; locked ones show their level, never hidden |
+| 2 | `skill.actions` | that skill | ActionRow per action or recipe: name, level, seconds, XP an hour, what it gives or takes, mastery step and bar, Start and Queue next. One tier at a time, under tabs: every tier opened so far and the next one (Tier 1 to 8 over the climb), opening on the newest tier with something open; the next tier's locked actions show their level, never hidden |
 | 3 | `skill.finds` | that skill | The six finds, found (with the date) or silhouetted (with where it comes from), with their rarity |
-| 4 | `skill.ladder` | that skill | The unlock ladder 1–40, the current level marked, past unlocks muted |
+| 4 | `skill.ladder` | that skill | The unlock ladder 1–99, the current level marked, past unlocks muted |
 
 - **At 390:** the header and the current tier's actions; the finds come before the long ladder. **At 1,440:** the header, the current tier's actions with the finds under them, and the ladder beside them.
 
@@ -125,8 +125,8 @@ The list, then one page per skill (`/skills/woodcutting`).
 | # | Section (slot) | Filled by | Notes |
 | --- | --- | --- | --- |
 | 1 | `combat.loadout` | combat | Weapon (and so your style) across the top, then helm, body and legs as small tiles; health and food carried on one line. Each slot opens a sheet of the matching gear in the Storehouse to wear or take off; an empty weapon slot with nothing to wear leads to Smithing |
-| 2 | `combat.foes` | combat | One tier at a time under tabs (the newest with a foe open first). One row per foe: icon, name, style (as a word, never colour alone), level, the triangle against your style, Your odds verdict with XP, food and gold an hour, Fight and Next. Locked foes show the Hitpoints level that opens them; without a weapon each says to wear one |
-| 3 | `combat.food` | storehouse | Food carried, the vendor's food with prices, Buy |
+| 2 | `combat.foes` | combat | One region at a time, under tabs across the top of the page (the march, the Sunken Fen, the Ashen Peaks; every region shown, so the next is always in view), and in it one tier at a time under tabs (the newest with a foe open first). One row per foe: icon, name, style (as a word, never colour alone), level, the triangle against your style, Your odds verdict with XP, food and gold an hour, Fight and Next. Locked foes show the Hitpoints level that opens them; without a weapon each says to wear one |
+| 3 | `combat.food` | storehouse | The vendor's two best foods for your Hitpoints and the next to open, with prices and how many you carry, and Buy; an older food still carried stays listed |
 | 4 | `combat.triangle` | combat | A small permanent key: Melee beats Archery beats Magic beats Melee |
 
 - **At 390:** loadout (one compact row of four gear slots and health) and the first three foes. **At 1,440:** loadout and food side by side, every foe, the triangle key.
@@ -251,7 +251,7 @@ No later system adds a menu entry. The free sixth place stays free until the own
 
 | System | Home |
 | --- | --- |
-| New regions and tiers | Region tabs at the top of Combat |
+| New regions and tiers | Region tabs at the top of Combat (built in session 12: the march, the Sunken Fen, the Ashen Peaks) |
 | Fishing, Cooking, Fletching, Runecraft | New rows on Skills, new pages under it; ammunition in the loadout and the Storehouse |
 | Guilds | A tab of Hiscores, which is renamed Realm when guilds arrive |
 | Player market | A tab of the Storehouse |

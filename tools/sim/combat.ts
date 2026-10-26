@@ -22,7 +22,7 @@ import { DAY, EMPTY, T0, type Day, type Played } from './player.ts';
 
 const engine = createEngine(actionRegistry(FEATURES, (f) => f.flag.on));
 const combat = FEATURES.find((f) => f.id === 'combat')!;
-const METALS = ['copper', 'bronze', 'iron', 'steel'];
+const METALS = ['copper', 'bronze', 'iron', 'steel', 'moonsilver', 'star-iron', 'embersteel', 'dawnsteel'];
 const WEAPON: Record<Style, string> = { melee: 'sword', archery: 'bow', magic: 'staff' };
 const tierAt = (level: number) => TIER_LEVELS.filter((l) => l <= level).length;
 

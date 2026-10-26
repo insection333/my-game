@@ -4,7 +4,7 @@ import { useContext } from 'react';
 import { circle, ellipse, Glint, INK, LINE, M, RimTone, Shape, type Tone } from './style.tsx';
 
 /** One log lying with its cut end towards you: a rounded bark body running back to the upper right. */
-function Log({ x, y, r, wood, bark = M.bark }: { x: number; y: number; r: number; wood: Tone; bark?: Tone }) {
+export function Log({ x, y, r, wood, bark = M.bark }: { x: number; y: number; r: number; wood: Tone; bark?: Tone }) {
   const [bx, by] = [x + 7, y - 4.5];
   return (
     <g>
@@ -52,7 +52,7 @@ export const OakLogs = () => pile(M.oakWood, M.oakBark);
 export const YewLogs = () => pile(M.yewWood, M.yewBark);
 
 /** A chunk of rock with nuggets of its ore, faceted, lit on the upper left. */
-export function Ore({ ore }: { ore: Tone }) {
+export function Ore({ ore, rock = M.stone }: { ore: Tone; rock?: Tone }) {
   const nugget = (cx: number, cy: number, r: number) => {
     const pt = (x: number, y: number) => `${cx + x * r} ${cy + y * r}`;
     const d = `M${pt(-1, -0.4)} L${pt(-0.2, -1)} L${pt(0.9, -0.6)} L${pt(1, 0.5)} L${pt(0.1, 1)} L${pt(-0.9, 0.6)} Z`;
@@ -71,14 +71,14 @@ export function Ore({ ore }: { ore: Tone }) {
     <g>
       <Shape
         d="M7 33 L11.5 18 L22 9.5 L35 11.5 L42.5 22.5 L40.5 36.5 L28 42.5 L13.5 40.5 Z"
-        tone={M.stone}
+        tone={rock}
         lit="M7 33 L11.5 18 L22 9.5 L35 11.5 L27 21.5 L15.5 24 Z"
         shade="M35 11.5 L42.5 22.5 L40.5 36.5 L28 42.5 L29.5 30 L27 21.5 Z"
       >
         <path
           d="M15.5 24 L27 21.5 L29.5 30 L28 42.5 M27 21.5 L35 11.5"
           fill="none"
-          stroke={M.stone.shadow}
+          stroke={rock.shadow}
           strokeWidth={1.1}
         />
       </Shape>

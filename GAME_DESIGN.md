@@ -71,31 +71,31 @@ One XP table serves every skill (total XP to reach each level, *generated*):
 
 | Level | XP | Level | XP | Level | XP | Level | XP |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | 0 | 26 | 650,000 | 51 | 21,500,000 | 76 | 53,000,000 |
-| 2 | 50 | 27 | 790,000 | 52 | 22,700,000 | 77 | 54,300,000 |
-| 3 | 150 | 28 | 951,000 | 53 | 23,900,000 | 78 | 55,600,000 |
-| 4 | 310 | 29 | 1,140,000 | 54 | 25,200,000 | 79 | 56,900,000 |
-| 5 | 520 | 30 | 1,360,000 | 55 | 26,400,000 | 80 | 58,200,000 |
-| 6 | 890 | 31 | 1,650,000 | 56 | 27,700,000 | 81 | 59,500,000 |
-| 7 | 1,490 | 32 | 2,000,000 | 57 | 28,900,000 | 82 | 60,800,000 |
-| 8 | 2,500 | 33 | 2,430,000 | 58 | 30,200,000 | 83 | 62,100,000 |
-| 9 | 4,170 | 34 | 2,920,000 | 59 | 31,400,000 | 84 | 63,400,000 |
-| 10 | 6,790 | 35 | 3,500,000 | 60 | 32,700,000 | 85 | 64,800,000 |
-| 11 | 10,400 | 36 | 4,170,000 | 61 | 33,900,000 | 86 | 66,100,000 |
-| 12 | 15,900 | 37 | 4,950,000 | 62 | 35,200,000 | 87 | 67,400,000 |
-| 13 | 23,800 | 38 | 5,850,000 | 63 | 36,400,000 | 88 | 68,700,000 |
-| 14 | 34,000 | 39 | 6,900,000 | 64 | 37,700,000 | 89 | 70,000,000 |
-| 15 | 46,800 | 40 | 8,100,000 | 65 | 38,900,000 | 90 | 71,400,000 |
-| 16 | 62,100 | 41 | 9,310,000 | 66 | 40,200,000 | 91 | 72,700,000 |
-| 17 | 79,900 | 42 | 10,500,000 | 67 | 41,500,000 | 92 | 74,000,000 |
-| 18 | 101,000 | 43 | 11,700,000 | 68 | 42,800,000 | 93 | 75,400,000 |
-| 19 | 126,000 | 44 | 12,900,000 | 69 | 44,000,000 | 94 | 76,700,000 |
-| 20 | 155,000 | 45 | 14,100,000 | 70 | 45,300,000 | 95 | 78,000,000 |
-| 21 | 202,000 | 46 | 15,400,000 | 71 | 46,600,000 | 96 | 79,400,000 |
-| 22 | 265,000 | 47 | 16,600,000 | 72 | 47,900,000 | 97 | 80,700,000 |
-| 23 | 340,000 | 48 | 17,800,000 | 73 | 49,100,000 | 98 | 82,100,000 |
-| 24 | 428,000 | 49 | 19,000,000 | 74 | 50,400,000 | 99 | 83,400,000 |
-| 25 | 531,000 | 50 | 20,300,000 | 75 | 51,700,000 |  |  |
+| 1 | 0 | 26 | 650,000 | 51 | 21,459,000 | 76 | 52,935,000 |
+| 2 | 50 | 27 | 790,000 | 52 | 22,688,000 | 77 | 54,227,000 |
+| 3 | 150 | 28 | 951,000 | 53 | 23,920,000 | 78 | 55,522,000 |
+| 4 | 310 | 29 | 1,140,000 | 54 | 25,154,000 | 79 | 56,819,000 |
+| 5 | 520 | 30 | 1,360,000 | 55 | 26,391,000 | 80 | 58,119,000 |
+| 6 | 890 | 31 | 1,650,000 | 56 | 27,630,000 | 81 | 59,421,000 |
+| 7 | 1,490 | 32 | 2,000,000 | 57 | 28,871,000 | 82 | 60,726,000 |
+| 8 | 2,500 | 33 | 2,430,000 | 58 | 30,115,000 | 83 | 62,034,000 |
+| 9 | 4,170 | 34 | 2,920,000 | 59 | 31,361,000 | 84 | 63,344,000 |
+| 10 | 6,790 | 35 | 3,500,000 | 60 | 32,610,000 | 85 | 64,657,000 |
+| 11 | 10,400 | 36 | 4,170,000 | 61 | 33,861,000 | 86 | 65,973,000 |
+| 12 | 15,900 | 37 | 4,950,000 | 62 | 35,115,000 | 87 | 67,291,000 |
+| 13 | 23,800 | 38 | 5,850,000 | 63 | 36,371,000 | 88 | 68,612,000 |
+| 14 | 34,000 | 39 | 6,900,000 | 64 | 37,630,000 | 89 | 69,935,000 |
+| 15 | 46,800 | 40 | 8,100,000 | 65 | 38,891,000 | 90 | 71,261,000 |
+| 16 | 62,100 | 41 | 9,302,000 | 66 | 40,155,000 | 91 | 72,590,000 |
+| 17 | 79,900 | 42 | 10,507,000 | 67 | 41,422,000 | 92 | 73,921,000 |
+| 18 | 101,000 | 43 | 11,714,000 | 68 | 42,691,000 | 93 | 75,255,000 |
+| 19 | 126,000 | 44 | 12,924,000 | 69 | 43,963,000 | 94 | 76,592,000 |
+| 20 | 155,000 | 45 | 14,136,000 | 70 | 45,237,000 | 95 | 77,931,000 |
+| 21 | 202,000 | 46 | 15,350,000 | 71 | 46,514,000 | 96 | 79,273,000 |
+| 22 | 265,000 | 47 | 16,567,000 | 72 | 47,793,000 | 97 | 80,618,000 |
+| 23 | 340,000 | 48 | 17,786,000 | 73 | 49,075,000 | 98 | 81,965,000 |
+| 24 | 428,000 | 49 | 19,008,000 | 74 | 50,359,000 | 99 | 83,315,000 |
+| 25 | 531,000 | 50 | 20,232,000 | 75 | 51,646,000 |  |  |
 
 The table is derived, not guessed. To level 40 the model fits per-level times to the brief's targets, then simulates a player keeping one skill in a lane: one active hour with the fire each day, the rest away, always choosing the best action while present. Past 40 the table is continued, each level costing a little more XP than the last (0.2% more), never less; the later tiers' faster rates set the pace. Every skill is then checked against the table (results in section 15).
 
@@ -357,7 +357,7 @@ Enlargement costs follow each day's net gold, so one is affordable roughly when 
    6. Defeat a hollow rat (the step's reward, 10 bread, comes first).
 2. **Three short goals**, rolling: each sized to 10–15 minutes of your current pace in one lane ("Cut 60 oak logs", "Reach mastery 4 on Iron vein", "Defeat 25 grave wights", "Forge 3 iron helms"). A new one appears as each is claimed. Reward: a supply cache worth about 10 minutes of that lane's gold.
 3. **A daily goal:** about 40 minutes of play or a day of lanes ("Earn 20,000 Smithing XP today"). Reward: a supply cache worth about an hour of gold.
-4. **Milestones:** total level 50, 100, 150, 200, 250 and 280; the first item of each tier; collection log 12, 24 and 36; the first mastery 10. Reward: gold, and the milestone is shown on your hiscore entry.
+4. **Milestones:** total level 50, 100, 150, 200, 250 and 280, then 350, 450, 550, 650 and 693 (every skill at 99); the first item of each of the eight tiers; collection log 12, 24 and 36; the first mastery 10. Reward: gold, and the milestone is shown on your hiscore entry.
 5. **Supply caches** (session 11): half the goal's worth in gold is certain, and one draw adds more: a plain cache (half the time, +30%), a stocked one (3 in 10, +50% as the best food you are sold, for a fighter), a rich one (3 in 20, +100%) or a lucky one (1 in 20, +200%). On average a cache pays 1.05 times the goal's gold, so the economy holds, and opening one is a small moment of its own.
 
 ### Notable moments
@@ -556,7 +556,7 @@ Every level 1 to 99 of every skill unlocks something: an action, a recipe, a tie
 | **2** Foe: Goblin slinger; Toughness (+40 health) | **27** Foe: Hill troll; Toughness (+40 health) | **52** Toughness (+40 health) | **77** Toughness (+40 health) |
 | **3** Foe: Marsh wisp; Toughness (+40 health) | **28** Toughness (+40 health) | **53** Toughness (+40 health) | **78** Toughness (+40 health) |
 | **4** Toughness (+40 health) | **29** Toughness (+40 health) | **54** Toughness (+40 health) | **79** Toughness (+40 health) |
-| **5** Second wind (health returns 25% faster); Toughness (+40 health) | **30** Wear Steel armour; Toughness (+40 health) | **55** Wear Star-iron armour; Foe: Mire hulk; Iron stomach II (food heals 7.5% more); Toughness (+40 health) | **80** Foe: Ash shaman; The vendor sells Warden's feast; Toughness (+40 health) |
+| **5** Second wind I (health returns 25% faster); Toughness (+40 health) | **30** Wear Steel armour; Toughness (+40 health) | **55** Wear Star-iron armour; Foe: Mire hulk; Iron stomach II (food heals 7.5% more); Toughness (+40 health) | **80** Foe: Ash shaman; The vendor sells Warden's feast; Toughness (+40 health) |
 | **6** Toughness (+40 health) | **31** Toughness (+40 health) | **56** Toughness (+40 health) | **81** Toughness (+40 health) |
 | **7** Toughness (+40 health) | **32** Toughness (+40 health) | **57** Toughness (+40 health) | **82** Toughness (+40 health) |
 | **8** Toughness (+40 health) | **33** Toughness (+40 health) | **58** Toughness (+40 health) | **83** Toughness (+40 health) |
@@ -566,7 +566,7 @@ Every level 1 to 99 of every skill unlocks something: an action, a recipe, a tie
 | **12** Toughness (+40 health) | **37** Toughness (+40 health) | **62** Toughness (+40 health) | **87** Toughness (+40 health) |
 | **13** Toughness (+40 health) | **38** Toughness (+40 health) | **63** Toughness (+40 health) | **88** Toughness (+40 health) |
 | **14** Foe: Orc raider; Toughness (+40 health) | **39** Toughness (+40 health) | **64** Toughness (+40 health) | **89** Toughness (+40 health) |
-| **15** Iron stomach (food heals 15% more); Toughness (+40 health) | **40** Wear Moonsilver armour; Foe: Bog lurker; The vendor sells Roast fowl; Unbowed (food heals 15% more); Toughness (+40 health) | **65** Foe: Bog witch; Field dressing II (health returns 12.5% faster); Toughness (+40 health) | **90** Foe: Sky reaver; Toughness (+40 health) |
+| **15** Iron stomach I (food heals 15% more); Toughness (+40 health) | **40** Wear Moonsilver armour; Foe: Bog lurker; The vendor sells Roast fowl; Unbowed (food heals 15% more); Toughness (+40 health) | **65** Foe: Bog witch; Field dressing II (health returns 12.5% faster); Toughness (+40 health) | **90** Foe: Sky reaver; Toughness (+40 health) |
 | **16** Toughness (+40 health) | **41** Toughness (+40 health) | **66** Toughness (+40 health) | **91** Toughness (+40 health) |
 | **17** Toughness (+40 health) | **42** Toughness (+40 health) | **67** Toughness (+40 health) | **92** Toughness (+40 health) |
 | **18** Foe: Orc bowman; Toughness (+40 health) | **43** Toughness (+40 health) | **68** Toughness (+40 health) | **93** Toughness (+40 health) |
@@ -576,7 +576,7 @@ Every level 1 to 99 of every skill unlocks something: an action, a recipe, a tie
 | **22** Foe: Grave wight; Toughness (+40 health) | **47** Toughness (+40 health) | **72** Toughness (+40 health) | **97** Toughness (+40 health) |
 | **23** Toughness (+40 health) | **48** Toughness (+40 health) | **73** Toughness (+40 health) | **98** Toughness (+40 health) |
 | **24** Toughness (+40 health) | **49** Foe: Drowned acolyte; Toughness (+40 health) | **74** Toughness (+40 health) | **99** Unbroken (food heals 20% more); Toughness (+40 health) |
-| **25** Field dressing (health returns 25% faster); Toughness (+40 health) | **50** Toughness (+40 health) | **75** Foe: Peak slinger; Iron stomach III (food heals 7.5% more); Toughness (+40 health) |  |
+| **25** Field dressing I (health returns 25% faster); Toughness (+40 health) | **50** Toughness (+40 health) | **75** Foe: Peak slinger; Iron stomach III (food heals 7.5% more); Toughness (+40 health) |  |
 
 ## 13. The long arc and where it lives
 
@@ -613,10 +613,10 @@ The paper model's own output, from `node design/model/checks2.ts`. The real simu
 
 ```text
 XP table (total XP to reach each level)
-1: 0 · 2: 50 · 3: 150 · 4: 310 · 5: 520 · 6: 890 · 7: 1,490 · 8: 2,500 · 9: 4,170 · 10: 6,790 · 11: 10,400 · 12: 15,900 · 13: 23,800 · 14: 34,000 · 15: 46,800 · 16: 62,100 · 17: 79,900 · 18: 101,000 · 19: 126,000 · 20: 155,000 · 21: 202,000 · 22: 265,000 · 23: 340,000 · 24: 428,000 · 25: 531,000 · 26: 650,000 · 27: 790,000 · 28: 951,000 · 29: 1,140,000 · 30: 1,360,000 · 31: 1,650,000 · 32: 2,000,000 · 33: 2,430,000 · 34: 2,920,000 · 35: 3,500,000 · 36: 4,170,000 · 37: 4,950,000 · 38: 5,850,000 · 39: 6,900,000 · 40: 8,100,000 · 41: 9,310,000 · 42: 10,500,000 · 43: 11,700,000 · 44: 12,900,000 · 45: 14,100,000 · 46: 15,400,000 · 47: 16,600,000 · 48: 17,800,000 · 49: 19,000,000 · 50: 20,300,000 · 51: 21,500,000 · 52: 22,700,000 · 53: 23,900,000 · 54: 25,200,000 · 55: 26,400,000 · 56: 27,700,000 · 57: 28,900,000 · 58: 30,200,000 · 59: 31,400,000 · 60: 32,700,000 · 61: 33,900,000 · 62: 35,200,000 · 63: 36,400,000 · 64: 37,700,000 · 65: 38,900,000 · 66: 40,200,000 · 67: 41,500,000 · 68: 42,800,000 · 69: 44,000,000 · 70: 45,300,000 · 71: 46,600,000 · 72: 47,900,000 · 73: 49,100,000 · 74: 50,400,000 · 75: 51,700,000 · 76: 53,000,000 · 77: 54,300,000 · 78: 55,600,000 · 79: 56,900,000 · 80: 58,200,000 · 81: 59,500,000 · 82: 60,800,000 · 83: 62,100,000 · 84: 63,400,000 · 85: 64,800,000 · 86: 66,100,000 · 87: 67,400,000 · 88: 68,700,000 · 89: 70,000,000 · 90: 71,400,000 · 91: 72,700,000 · 92: 74,000,000 · 93: 75,400,000 · 94: 76,700,000 · 95: 78,000,000 · 96: 79,400,000 · 97: 80,700,000 · 98: 82,100,000 · 99: 83,400,000
+1: 0 · 2: 50 · 3: 150 · 4: 310 · 5: 520 · 6: 890 · 7: 1,490 · 8: 2,500 · 9: 4,170 · 10: 6,790 · 11: 10,400 · 12: 15,900 · 13: 23,800 · 14: 34,000 · 15: 46,800 · 16: 62,100 · 17: 79,900 · 18: 101,000 · 19: 126,000 · 20: 155,000 · 21: 202,000 · 22: 265,000 · 23: 340,000 · 24: 428,000 · 25: 531,000 · 26: 650,000 · 27: 790,000 · 28: 951,000 · 29: 1,140,000 · 30: 1,360,000 · 31: 1,650,000 · 32: 2,000,000 · 33: 2,430,000 · 34: 2,920,000 · 35: 3,500,000 · 36: 4,170,000 · 37: 4,950,000 · 38: 5,850,000 · 39: 6,900,000 · 40: 8,100,000 · 41: 9,302,000 · 42: 10,507,000 · 43: 11,714,000 · 44: 12,924,000 · 45: 14,136,000 · 46: 15,350,000 · 47: 16,567,000 · 48: 17,786,000 · 49: 19,008,000 · 50: 20,232,000 · 51: 21,459,000 · 52: 22,688,000 · 53: 23,920,000 · 54: 25,154,000 · 55: 26,391,000 · 56: 27,630,000 · 57: 28,871,000 · 58: 30,115,000 · 59: 31,361,000 · 60: 32,610,000 · 61: 33,861,000 · 62: 35,115,000 · 63: 36,371,000 · 64: 37,630,000 · 65: 38,891,000 · 66: 40,155,000 · 67: 41,422,000 · 68: 42,691,000 · 69: 43,963,000 · 70: 45,237,000 · 71: 46,514,000 · 72: 47,793,000 · 73: 49,075,000 · 74: 50,359,000 · 75: 51,646,000 · 76: 52,935,000 · 77: 54,227,000 · 78: 55,522,000 · 79: 56,819,000 · 80: 58,119,000 · 81: 59,421,000 · 82: 60,726,000 · 83: 62,034,000 · 84: 63,344,000 · 85: 64,657,000 · 86: 65,973,000 · 87: 67,291,000 · 88: 68,612,000 · 89: 69,935,000 · 90: 71,261,000 · 91: 72,590,000 · 92: 73,921,000 · 93: 75,255,000 · 94: 76,592,000 · 95: 77,931,000 · 96: 79,273,000 · 97: 80,618,000 · 98: 81,965,000 · 99: 83,315,000
 
 Pacing for a skill kept in a lane (one active hour with the fire each day)
-Woodcutting  L10 1.0 h (+0%)  L20 22.6 h (-6%)  L30 4.9 days (-3%)  L40 20.8 days (-1%)  L55 50.4 days (0%)  L70 73.6 days (+0%)  L85 91.9 days (+0%)  L99 105.7 days (0%)
+Woodcutting  L10 1.0 h (+0%)  L20 22.6 h (-6%)  L30 4.9 days (-3%)  L40 20.8 days (-1%)  L55 50.3 days (0%)  L70 73.5 days (0%)  L85 91.8 days (+0%)  L99 105.6 days (0%)
 PASS  Woodcutting level 10 within 25% of target
 PASS  Woodcutting level 20 within 25% of target
 PASS  Woodcutting level 30 within 25% of target
@@ -625,7 +625,7 @@ PASS  Woodcutting level 55 within 25% of target
 PASS  Woodcutting level 70 within 25% of target
 PASS  Woodcutting level 85 within 25% of target
 PASS  Woodcutting level 99 within 25% of target
-Mining       L10 1.0 h (+0%)  L20 22.6 h (-6%)  L30 4.9 days (-3%)  L40 20.8 days (-1%)  L55 50.4 days (0%)  L70 73.6 days (+0%)  L85 91.9 days (+0%)  L99 105.7 days (0%)
+Mining       L10 1.0 h (+0%)  L20 22.6 h (-6%)  L30 4.9 days (-3%)  L40 20.8 days (-1%)  L55 50.3 days (0%)  L70 73.5 days (0%)  L85 91.8 days (+0%)  L99 105.6 days (0%)
 PASS  Mining level 10 within 25% of target
 PASS  Mining level 20 within 25% of target
 PASS  Mining level 30 within 25% of target
@@ -634,7 +634,7 @@ PASS  Mining level 55 within 25% of target
 PASS  Mining level 70 within 25% of target
 PASS  Mining level 85 within 25% of target
 PASS  Mining level 99 within 25% of target
-Smithing     L10 1.0 h (+1%)  L20 23.1 h (-4%)  L30 5.2 days (+5%)  L40 23.1 days (+10%)  L55 55.9 days (+11%)  L70 81.9 days (+11%)  L85 102.6 days (+12%)  L99 118.5 days (+12%)
+Smithing     L10 1.0 h (+1%)  L20 23.1 h (-4%)  L30 5.2 days (+5%)  L40 23.1 days (+10%)  L55 55.9 days (+11%)  L70 81.8 days (+11%)  L85 102.5 days (+12%)  L99 118.5 days (+12%)
 PASS  Smithing level 10 within 25% of target
 PASS  Smithing level 20 within 25% of target
 PASS  Smithing level 30 within 25% of target
@@ -643,7 +643,7 @@ PASS  Smithing level 55 within 25% of target
 PASS  Smithing level 70 within 25% of target
 PASS  Smithing level 85 within 25% of target
 PASS  Smithing level 99 within 25% of target
-Melee        L10 1.2 h (+18%)  L20 25.7 h (+7%)  L30 5.5 days (+10%)  L40 20.3 days (-3%)  L55 47.9 days (-5%)  L70 72.7 days (-1%)  L85 93.7 days (+2%)  L99 111.2 days (+5%)
+Melee        L10 1.2 h (+18%)  L20 25.7 h (+7%)  L30 5.5 days (+10%)  L40 20.3 days (-3%)  L55 47.9 days (-5%)  L70 72.6 days (-1%)  L85 93.5 days (+2%)  L99 111.1 days (+5%)
 PASS  Melee level 10 within 25% of target
 PASS  Melee level 20 within 25% of target
 PASS  Melee level 30 within 25% of target
@@ -652,7 +652,7 @@ PASS  Melee level 55 within 25% of target
 PASS  Melee level 70 within 25% of target
 PASS  Melee level 85 within 25% of target
 PASS  Melee level 99 within 25% of target
-Archery      L10 1.2 h (+20%)  L20 24.8 h (+3%)  L30 5.0 days (-1%)  L40 21.5 days (+3%)  L55 52.2 days (+4%)  L70 76.6 days (+4%)  L85 97.6 days (+6%)  L99 115.0 days (+9%)
+Archery      L10 1.2 h (+20%)  L20 24.8 h (+3%)  L30 5.0 days (-1%)  L40 21.5 days (+3%)  L55 52.2 days (+3%)  L70 76.5 days (+4%)  L85 97.3 days (+6%)  L99 114.8 days (+8%)
 PASS  Archery level 10 within 25% of target
 PASS  Archery level 20 within 25% of target
 PASS  Archery level 30 within 25% of target
@@ -661,7 +661,7 @@ PASS  Archery level 55 within 25% of target
 PASS  Archery level 70 within 25% of target
 PASS  Archery level 85 within 25% of target
 PASS  Archery level 99 within 25% of target
-Magic        L10 1.2 h (+20%)  L20 26.9 h (+12%)  L30 5.3 days (+5%)  L40 21.3 days (+1%)  L55 50.0 days (-1%)  L70 74.6 days (+2%)  L85 95.8 days (+4%)  L99 113.2 days (+7%)
+Magic        L10 1.2 h (+20%)  L20 26.9 h (+12%)  L30 5.3 days (+5%)  L40 21.3 days (+1%)  L55 50.0 days (-1%)  L70 74.5 days (+1%)  L85 95.6 days (+4%)  L99 113.1 days (+7%)
 PASS  Magic level 10 within 25% of target
 PASS  Magic level 20 within 25% of target
 PASS  Magic level 30 within 25% of target

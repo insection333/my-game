@@ -40,7 +40,9 @@ const check = (ok: boolean, what: string) => {
 // 1. The curve.
 const fit = fitLevelTimes();
 const DAYS = 130;
-const table = roundTable(extendTable(simulate(gatherCandidates('woodcutting'), { days: 21, T: fit.T }).derived.slice(0, 41)));
+const table = extendTable(
+  roundTable(simulate(gatherCandidates('woodcutting'), { days: 21, T: fit.T }).derived.slice(0, 41)),
+);
 out('## XP table (total XP to reach each level)');
 out(
   table
@@ -73,7 +75,9 @@ const runs: [string, () => number[]][] = [
 ];
 for (const [name, run] of runs) {
   const r = run();
-  out(`${name.padEnd(12)} ${MARKS.map((l) => `L${l} ${fmt(r[l] ?? Infinity)} (${pct(r[l] ?? Infinity, targets[l])})`).join('  ')}`);
+  out(
+    `${name.padEnd(12)} ${MARKS.map((l) => `L${l} ${fmt(r[l] ?? Infinity)} (${pct(r[l] ?? Infinity, targets[l])})`).join('  ')}`,
+  );
   for (const l of MARKS)
     check(Math.abs((r[l] ?? Infinity) / targets[l] - 1) <= 0.25, `${name} level ${l} within 25% of target`);
 }

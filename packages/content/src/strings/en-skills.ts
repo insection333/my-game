@@ -17,6 +17,18 @@ export const skills: Record<string, string> = {
   'item.ash-logs': 'Ash logs',
   'item.oak-logs': 'Oak logs',
   'item.yew-logs': 'Yew logs',
+  'action.woodcutting.maple-tree': 'Maple tree',
+  'action.woodcutting.old-maple': 'Old maple',
+  'action.woodcutting.silverbark-tree': 'Silverbark tree',
+  'action.woodcutting.old-silverbark': 'Old silverbark',
+  'action.woodcutting.elderwood-tree': 'Elderwood tree',
+  'action.woodcutting.old-elderwood': 'Old elderwood',
+  'action.woodcutting.ancient-tree': 'Ancient tree',
+  'action.woodcutting.old-ancient': 'Old ancient',
+  'item.maple-logs': 'Maple logs',
+  'item.silverbark-logs': 'Silverbark logs',
+  'item.elderwood-logs': 'Elderwood logs',
+  'item.ancient-logs': 'Ancient logs',
   'item.birds-nest': "Bird's nest",
   'item.amber-nugget': 'Amber nugget',
   'item.carved-acorn': 'Carved acorn',
@@ -28,6 +40,7 @@ export const skills: Record<string, string> = {
   'perk.woodsmans-eye': "Woodsman's eye",
   'perk.practised-hands': 'Practised hands',
   'perk.master-woodcutter': 'Master woodcutter',
+  'perk.grandmaster-woodcutter': 'Grandmaster woodcutter',
 
   // Mining
   'skill.mining': 'Mining',
@@ -46,6 +59,18 @@ export const skills: Record<string, string> = {
   'item.tin-ore': 'Tin ore',
   'item.iron-ore': 'Iron ore',
   'item.coal': 'Coal',
+  'action.mining.moonsilver-vein': 'Moonsilver vein',
+  'action.mining.deep-moonsilver-seam': 'Deep moonsilver seam',
+  'action.mining.star-iron-vein': 'Star-iron vein',
+  'action.mining.deep-star-iron-seam': 'Deep star-iron seam',
+  'action.mining.ember-vein': 'Ember vein',
+  'action.mining.deep-ember-seam': 'Deep ember seam',
+  'action.mining.dawnstone-vein': 'Dawnstone vein',
+  'action.mining.deep-dawnstone-seam': 'Deep dawnstone seam',
+  'item.moonsilver-ore': 'Moonsilver ore',
+  'item.star-iron-ore': 'Star-iron ore',
+  'item.ember-ore': 'Ember ore',
+  'item.dawnstone': 'Dawnstone',
   'item.rough-garnet': 'Rough garnet',
   'item.rough-sapphire': 'Rough sapphire',
   'item.ancient-coin': 'Ancient coin',
@@ -55,6 +80,7 @@ export const skills: Record<string, string> = {
   'perk.quick-strike': 'Quick strike',
   'perk.prospectors-eye': "Prospector's eye",
   'perk.master-miner': 'Master miner',
+  'perk.grandmaster-miner': 'Grandmaster miner',
 
   // Smithing
   'skill.smithing': 'Smithing',
@@ -127,4 +153,21 @@ export const skills: Record<string, string> = {
   'perk.thrifty': 'Thrifty',
   'perk.smiths-eye': "Smith's eye",
   'perk.master-smith': 'Master smith',
+  'perk.grandmaster-smith': 'Grandmaster smith',
+  // Tiers 5 to 8: each metal's bar and its six pieces, the recipe named as what it makes.
+  ...Object.fromEntries(
+    (
+      [
+        ['moonsilver', 'Moonsilver'],
+        ['star-iron', 'Star-iron'],
+        ['embersteel', 'Embersteel'],
+        ['dawnsteel', 'Dawnsteel'],
+      ] as const
+    ).flatMap(([id, name]) =>
+      ['bar', 'sword', 'staff', 'bow', 'helm', 'legs', 'body'].flatMap((kind) => [
+        [`action.smithing.${id}-${kind}`, `${name} ${kind}`],
+        [`item.${id}-${kind}`, `${name} ${kind}`],
+      ]),
+    ),
+  ),
 };
