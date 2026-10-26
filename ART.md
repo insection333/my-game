@@ -68,6 +68,7 @@ The march, seen from the road (`packages/ui/src/art/MarchScene.tsx`; placed by t
 - **Distance is colour:** far layers are paler and cooler and have no outline; only what is near (the pines, the waystone, the forge) has the ink line.
 - **Its colours are CSS variables,** so the light theme is a cool morning and the dark theme is night, with stars, the moon and the forge's glow.
 - **What matters sits in the middle 960 of its 1,600 units,** so any crop (a phone's banner, a wide screen) keeps it; the edges add pines for wider screens.
+- **A little moves** (the owner asked for "slightly more animated", 26 October 2026): smoke rises from the forge's chimney, two clouds take minutes to cross the sky, and now and then a few birds fly over, kept above the welcome page's words. What moves is drawn in a layer of its own over the still scene, so only those few shapes are repainted (verify's CPU budget holds); at night the clouds are faint and the birds stay away; with reduced motion nothing moves.
 
 ## Interface glyphs
 

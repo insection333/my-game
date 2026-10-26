@@ -74,6 +74,8 @@ Version 1 is three trade skills, three combat styles, three lanes, four tiers an
 
 Not in version 1: PvP, guilds, a player market, raids, dungeons, seasons, any restart system, more regions or trade skills, a native app, a bot, and anything paid.
 
+**The expansion before launch (owner, 26 October 2026).** Before launch the game grows to a year of play: level 99 over eight tiers, two more regions with bosses, Fishing and Cooking, Fletching and Runecraft, and three endgame systems: Expeditions, Rekindling, and Deeds and titles. The plan, its targets and its order of work are in `docs/EXPANSION.md` (sessions 11 to 18). Guilds, the market, letters and seasons still wait for real players.
+
 ## Targets
 
 Every pillar has numbers the simulation and real players are measured against; a result outside 25% of a target is a design bug.
@@ -245,6 +247,9 @@ These are settled by the owner and are not reopened without asking.
 | The region's scene | Behind the welcome page, and as a banner across the top of the Hearth (session 10) |
 | Site icon | The fire, drawn in the icon style on a dark round seal (session 10) |
 | Sound | Made in code; off until each player switches it on in Settings; never intrusive (no wearing sounds for repeated actions or notices) (session 10) |
+| Contact address | admin@idleclash.com, shown on the welcome page, the privacy page and the terms (session 10) |
+| The scene's motion | Approved, "slightly more animated": smoke, drifting clouds, birds now and then (session 10) |
+| The expansion | Before launch, as above: level 99 over eight tiers; Fishing, Cooking, Fletching, Runecraft; Expeditions, Rekindling, Deeds and titles first; built first, then one closed test with a handful of players before public launch; the server waits (26 October 2026) |
 
 ## Lessons from the first attempt
 

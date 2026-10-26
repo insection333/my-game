@@ -179,9 +179,47 @@ function Forge() {
         [1110, 274, 11],
         [1092, 258, 12],
       ].map(([cx, cy, r], i) => (
-        <circle key={i} className={s.smoke} cx={cx} cy={cy} r={r} style={{ opacity: 0.6 - i * 0.09 }} />
+        <circle
+          key={i}
+          className={`${s.smoke} ${s.stillSmoke}`}
+          cx={cx}
+          cy={cy}
+          r={r}
+          style={{ opacity: 0.6 - i * 0.09 }}
+        />
       ))}
     </g>
+  );
+}
+
+/** A soft cloud: overlapping rounds on a flat base. */
+const cloud = (x: number, y: number, k: number) =>
+  `M${x},${y} h${200 * k} a${34 * k},${30 * k} 0 0 0 -${40 * k},-${34 * k} a${48 * k},${46 * k} 0 0 0 -${78 * k},-${22 * k} a${40 * k},${38 * k} 0 0 0 -${62 * k},${20 * k} a${30 * k},${26 * k} 0 0 0 -${20 * k},${36 * k} Z`;
+
+/** What moves, drawn over the still scene in a layer of its own, so its few small shapes are all the
+ *  page repaints: smoke rising from the forge, two clouds crossing the sky, now and then birds.
+ *  Nothing moves when the player asks for reduced motion. */
+function Moving({ fit }: { fit: string }) {
+  return (
+    <svg className={s.moving} viewBox={`0 0 ${W} ${H}`} preserveAspectRatio={fit} focusable="false">
+      <path className={`${s.cloud} ${s.cloudSlow}`} d={cloud(0, 70, 0.9)} />
+      <path className={`${s.cloud} ${s.cloudFast}`} d={cloud(0, 150, 0.6)} />
+      <g className={s.birds}>
+        <path d="M0,0 q7,-6 13,0 q6,-6 13,0" />
+        <path d="M22,-14 q6,-5 11,0 q5,-5 11,0" />
+        <path d="M40,6 q5,-4 9,0 q4,-4 9,0" />
+      </g>
+      {[0, 1, 2, 3, 4, 5].map((i) => (
+        <circle
+          key={i}
+          className={`${s.smoke} ${s.puff}`}
+          cx={1144}
+          cy={326}
+          r={5}
+          style={{ animationDelay: `${i * -1.5}s` }}
+        />
+      ))}
+    </svg>
   );
 }
 
@@ -198,88 +236,86 @@ const hillPath = (f: (x: number) => number, bottom: number) => {
  *  mountains, the forest and the forge (a banner). */
 export function MarchScene({ className, keep = 'ground' }: { className?: string; keep?: 'ground' | 'middle' }) {
   const stars = seeded(7);
+  const fit = keep === 'ground' ? 'xMidYMax slice' : 'xMidYMid slice';
   return (
-    <svg
-      className={`${s.scene} ${className ?? ''}`}
-      viewBox={`0 0 ${W} ${H}`}
-      preserveAspectRatio={keep === 'ground' ? 'xMidYMax slice' : 'xMidYMid slice'}
-      aria-hidden="true"
-      focusable="false"
-    >
-      {/* The one gradient: a sky this wide needs it, and nothing here is seen at 24 px. */}
-      <defs>
-        <linearGradient id="march-sky" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" className={s.skyTop} />
-          <stop offset="0.55" className={s.skyLow} />
-          <stop offset="0.75" className={s.skyHorizon} />
-        </linearGradient>
-      </defs>
-      <rect fill="url(#march-sky)" width={W} height={H} />
-      <g className={s.stars}>
-        {Array.from({ length: 60 }, (_, i) => (
-          <circle key={i} cx={stars() * W} cy={stars() * 240} r={0.8 + stars() * 1.4} />
-        ))}
-      </g>
-      <circle className={s.halo} cx={1110} cy={112} r={58} />
-      <circle className={s.orb} cx={1110} cy={112} r={34} />
-      <Mountains />
-      <path className={s.range} d={hillPath(nearRange, H)} />
-      <path className={s.hillFar} d={hillPath(farHill, H)} />
-      <FarForest y={farHill} count={150} seed={3} size={26} />
-      <path className={s.hillMid} d={hillPath(midHill, H)} />
-      <FarForest y={midHill} count={70} seed={11} size={44} />
-      <Forge />
-      {/* The old road, from the viewer up to the forge. */}
-      <path
-        className={s.road}
-        d="M640,600 C720,540 780,500 930,470 C1010,452 1060,440 1096,420 L1112,420 C1086,446 1040,466 960,492 C850,528 840,560 900,600 Z"
-      />
-      <path
-        className={s.ground}
-        d="M0,600 L0,520 C200,498 420,506 600,530 C760,552 980,548 1160,522 C1340,498 1480,500 1600,512 L1600,600 Z"
-      />
-      <path className={s.road} d="M640,600 C700,560 760,540 840,532 L870,532 C850,548 840,570 900,600 Z" />
-      {/* The waystone by the road. */}
-      <polygon
-        className={s.stone}
-        points={poly([
-          [560, 548],
-          [566, 498],
-          [578, 490],
-          [590, 500],
-          [594, 548],
-        ])}
-      />
-      <polygon
-        className={s.stoneLit}
-        points={poly([
-          [560, 548],
-          [566, 498],
-          [578, 490],
-          [574, 548],
-        ])}
-      />
-      <polygon
-        className={s.ink}
-        points={poly([
-          [560, 548],
-          [566, 498],
-          [578, 490],
-          [590, 500],
-          [594, 548],
-        ])}
-      />
-      {/* Grass in the foreground, a shade deeper than the ground. */}
-      <path className={s.grass} d="M0,600 L0,560 C240,548 420,566 560,584 C620,592 640,598 650,600 Z" />
-      <path className={s.grass} d="M930,600 C1040,580 1220,560 1400,556 C1500,554 1560,558 1600,562 L1600,600 Z" />
-      <Pine x={60} base={604} h={460} />
-      <Pine x={190} base={596} h={330} />
-      <Pine x={350} base={604} h={420} />
-      <Pine x={452} base={594} h={250} />
-      <Pine x={1236} base={598} h={300} />
-      <Pine x={1318} base={606} h={440} />
-      <Pine x={1460} base={600} h={360} />
-      <Pine x={1570} base={606} h={480} />
-    </svg>
+    <div className={`${s.wrap} ${className ?? ''}`} aria-hidden="true">
+      <svg className={s.scene} viewBox={`0 0 ${W} ${H}`} preserveAspectRatio={fit} focusable="false">
+        {/* The one gradient: a sky this wide needs it, and nothing here is seen at 24 px. */}
+        <defs>
+          <linearGradient id="march-sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" className={s.skyTop} />
+            <stop offset="0.55" className={s.skyLow} />
+            <stop offset="0.75" className={s.skyHorizon} />
+          </linearGradient>
+        </defs>
+        <rect fill="url(#march-sky)" width={W} height={H} />
+        <g className={s.stars}>
+          {Array.from({ length: 60 }, (_, i) => (
+            <circle key={i} cx={stars() * W} cy={stars() * 240} r={0.8 + stars() * 1.4} />
+          ))}
+        </g>
+        <circle className={s.halo} cx={1110} cy={112} r={58} />
+        <circle className={s.orb} cx={1110} cy={112} r={34} />
+        <Mountains />
+        <path className={s.range} d={hillPath(nearRange, H)} />
+        <path className={s.hillFar} d={hillPath(farHill, H)} />
+        <FarForest y={farHill} count={150} seed={3} size={26} />
+        <path className={s.hillMid} d={hillPath(midHill, H)} />
+        <FarForest y={midHill} count={70} seed={11} size={44} />
+        <Forge />
+        {/* The old road, from the viewer up to the forge. */}
+        <path
+          className={s.road}
+          d="M640,600 C720,540 780,500 930,470 C1010,452 1060,440 1096,420 L1112,420 C1086,446 1040,466 960,492 C850,528 840,560 900,600 Z"
+        />
+        <path
+          className={s.ground}
+          d="M0,600 L0,520 C200,498 420,506 600,530 C760,552 980,548 1160,522 C1340,498 1480,500 1600,512 L1600,600 Z"
+        />
+        <path className={s.road} d="M640,600 C700,560 760,540 840,532 L870,532 C850,548 840,570 900,600 Z" />
+        {/* The waystone by the road. */}
+        <polygon
+          className={s.stone}
+          points={poly([
+            [560, 548],
+            [566, 498],
+            [578, 490],
+            [590, 500],
+            [594, 548],
+          ])}
+        />
+        <polygon
+          className={s.stoneLit}
+          points={poly([
+            [560, 548],
+            [566, 498],
+            [578, 490],
+            [574, 548],
+          ])}
+        />
+        <polygon
+          className={s.ink}
+          points={poly([
+            [560, 548],
+            [566, 498],
+            [578, 490],
+            [590, 500],
+            [594, 548],
+          ])}
+        />
+        {/* Grass in the foreground, a shade deeper than the ground. */}
+        <path className={s.grass} d="M0,600 L0,560 C240,548 420,566 560,584 C620,592 640,598 650,600 Z" />
+        <path className={s.grass} d="M930,600 C1040,580 1220,560 1400,556 C1500,554 1560,558 1600,562 L1600,600 Z" />
+        <Pine x={60} base={604} h={460} />
+        <Pine x={190} base={596} h={330} />
+        <Pine x={350} base={604} h={420} />
+        <Pine x={452} base={594} h={250} />
+        <Pine x={1236} base={598} h={300} />
+        <Pine x={1318} base={606} h={440} />
+        <Pine x={1460} base={600} h={360} />
+        <Pine x={1570} base={606} h={480} />
+      </svg>
+      <Moving fit={fit} />
+    </div>
   );
 }

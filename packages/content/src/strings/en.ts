@@ -168,7 +168,7 @@ export const en: Record<string, string> = {
   'welcome.password': 'Password',
   'welcome.password.hint': 'At least 10 characters.',
   'welcome.age': 'I am 13 or older',
-  'welcome.forgot': 'Forgot it? An admin can reset it.',
+  'welcome.forgot': 'Forgot it? Write to {address} and an admin can reset it.',
   'welcome.working': 'One moment…',
   'welcome.offline': 'Cannot reach the server. Check your connection.',
   'welcome.retry': 'Try again',
