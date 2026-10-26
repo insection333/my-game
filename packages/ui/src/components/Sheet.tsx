@@ -26,6 +26,15 @@ export function Sheet({ title, closeLabel, onClose, children, slot }: SheetProps
   }, [onClose]);
   useEffect(() => {
     const before = document.activeElement as HTMLElement | null;
+    // Everything else on the page sleeps while the sheet is open (inert: not focusable, not read out,
+    // not pressable), as behind any modal dialog; it wakes when the sheet closes.
+    const slept: Element[] = [];
+    for (let el = ref.current?.parentElement; el && el !== document.body; el = el.parentElement)
+      for (const sib of Array.from(el.parentElement?.children ?? []))
+        if (sib !== el && !sib.hasAttribute('inert') && sib.tagName !== 'SCRIPT') {
+          sib.setAttribute('inert', '');
+          slept.push(sib);
+        }
     ref.current?.focus();
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') return close.current();
@@ -46,6 +55,7 @@ export function Sheet({ title, closeLabel, onClose, children, slot }: SheetProps
     window.addEventListener('keydown', onKey);
     return () => {
       window.removeEventListener('keydown', onKey);
+      for (const el of slept) el.removeAttribute('inert');
       before?.focus();
     };
   }, []);
