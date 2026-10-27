@@ -75,6 +75,15 @@
   white-space: nowrap;
 }
 
+/* Too many even when compact: rows of tabs a tap wide each. */
+.tabs[data-wrap] {
+  flex-wrap: wrap;
+}
+
+.tabs[data-wrap] .tab {
+  flex: 1 0 var(--tap);
+}
+
 /* With nothing shorter to show, a compact strip without icons wraps onto a second row. */
 .tabs[data-compact]:not(:has(.icon, .short)) {
   flex-wrap: wrap;

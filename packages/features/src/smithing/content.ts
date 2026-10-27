@@ -1,5 +1,6 @@
 // Smithing's content: a bar and six pieces of gear per tier (a sword, a staff and a bow, so each combat
-// style has its weapon; a helm, legs and a body), what each takes, six finds and the unlock ladder.
+// style has its weapon; a helm, legs and a body), Melee's whetstones and the standing stones' keys, what
+// each takes, six finds and the unlock ladder.
 // Every recipe in a tier pays the same XP an hour; numbers match GAME_DESIGN.md section 6.
 import {
   buildLadder,
@@ -17,7 +18,7 @@ export interface Recipe {
   id: string;
   level: number;
   tier: number;
-  kind: 'bar' | 'sword' | 'staff' | 'bow' | 'helm' | 'legs' | 'body';
+  kind: 'bar' | 'whetstones' | 'key' | 'sword' | 'staff' | 'bow' | 'helm' | 'legs' | 'body';
   takes: { item: string; count: number }[];
   gives: { item: string; count: number }[];
   seconds: number;
@@ -48,6 +49,8 @@ const BAR_INPUTS: Record<string, number>[] = [
   { dawnstone: 1, 'moonsilver-ore': 1, coal: 2 },
 ];
 const BAR_VALUE = [2, 7, 36, 96, 117, 208, 286, 468];
+/** How many whetstones one bar makes. */
+const SUPPLY_BATCH = 25;
 const LOG_VALUE = [1, 4, 14, 35, 70, 115, 180, 270];
 /** Gear by kind: its level within the tier's ten, and how many bars and logs it takes. */
 const GEAR = [
@@ -76,6 +79,35 @@ export const RECIPES: Recipe[] = METALS.flatMap((metal, i) => {
     xp: xpOf(unit * units),
     findMultiple: 1,
   };
+  // Melee's supply, 25 at a time from a bar, and from tier 2 the key to the tier's standing stones (two
+  // bars, kept by Runecraft): both open with the bar, so Smithing's perks stay where they were.
+  const whetstones: Recipe = {
+    id: `${metal}-whetstones`,
+    level: TIER_LEVELS[i],
+    tier: i + 1,
+    kind: 'whetstones',
+    takes: [{ item: `${metal}-bar`, count: 1 }],
+    gives: [{ item: `${metal}-whetstones`, count: SUPPLY_BATCH }],
+    seconds: unit,
+    xp: xpOf(unit),
+    findMultiple: 1,
+  };
+  const key: Recipe[] =
+    i === 0
+      ? []
+      : [
+          {
+            id: `${metal}-key`,
+            level: TIER_LEVELS[i],
+            tier: i + 1,
+            kind: 'key',
+            takes: [{ item: `${metal}-bar`, count: 2 }],
+            gives: [{ item: `${metal}-key`, count: 1 }],
+            seconds: unit * 2,
+            xp: xpOf(unit * 2),
+            findMultiple: 1,
+          },
+        ];
   const gear = GEAR.map((g): Recipe => ({
     id: `${metal}-${g.kind}`,
     level: TIER_LEVELS[i] + g.offset,
@@ -87,7 +119,7 @@ export const RECIPES: Recipe[] = METALS.flatMap((metal, i) => {
     xp: xpOf(unit * (g.bars + g.logs)),
     findMultiple: 1,
   }));
-  return [bar, ...gear];
+  return [bar, whetstones, ...key, ...gear];
 });
 
 export const FINDS: Find[] = [
@@ -105,9 +137,21 @@ const FIND_VALUE: Record<string, number> = {
   'quenching-flask': 30000,
 };
 
-/** Bars and gear (gear is worth 40% more than what it takes), and the finds. */
+/** Bars, whetstones (a supply, each worth its share of the bar), keys and gear (both worth 40% more than
+ *  what they take), and the finds. */
 export const ITEMS: Item[] = [
   ...METALS.map((m, i): Item => ({ id: `${m}-bar`, kind: 'resource', value: BAR_VALUE[i] })),
+  ...METALS.map((m, i): Item => ({
+    id: `${m}-whetstones`,
+    kind: 'supply',
+    value: Math.round(BAR_VALUE[i] / SUPPLY_BATCH),
+    supply: { style: 'melee', tier: i + 1 },
+  })),
+  ...METALS.slice(1).map((m, i): Item => ({
+    id: `${m}-key`,
+    kind: 'resource',
+    value: Math.round(2 * BAR_VALUE[i + 1] * 1.4),
+  })),
   ...METALS.flatMap((m, i) =>
     GEAR.map((g): Item => ({
       id: `${m}-${g.kind}`,

@@ -5,11 +5,13 @@ import { combat } from './combat/index.ts';
 import { cooking } from './cooking/index.ts';
 import type { Feature } from './define.ts';
 import { fishing } from './fishing/index.ts';
+import { fletching } from './fletching/index.ts';
 import { goals } from './goals/index.ts';
 import { hitpoints } from './hitpoints/index.ts';
 import { magic } from './magic/index.ts';
 import { melee } from './melee/index.ts';
 import { mining } from './mining/index.ts';
+import { runecraft } from './runecraft/index.ts';
 import { smithing } from './smithing/index.ts';
 import { setCatalog, setFinds, setSkills } from './shared/catalog.ts';
 import { storehouse } from './storehouse/index.ts';
@@ -20,8 +22,10 @@ export const FEATURES: readonly Feature[] = [
   woodcutting,
   mining,
   fishing,
+  runecraft,
   smithing,
   cooking,
+  fletching,
   melee,
   archery,
   magic,

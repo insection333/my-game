@@ -1,5 +1,17 @@
 // The unlock ladder: what every level 1-99 of every skill gives.
-import { FISHING, FOES, FOODS, MAX_LEVEL, MINING, SMITHING, TIERS, WOODCUTTING, type SkillId } from './content.ts';
+import {
+  FISHING,
+  FOES,
+  FOODS,
+  MAX_LEVEL,
+  MINING,
+  RUNECRAFT,
+  SMITHING,
+  TIERS,
+  WOODCUTTING,
+  type SkillId,
+} from './content.ts';
+import { FLETCHING, SMITHING_SUPPLIES } from './supplies.ts';
 import { COOKING } from './cooking.ts';
 
 export type Effect =
@@ -81,20 +93,22 @@ const gatherLines = (verb: string, eye: string): PerkLine[] => [
 
 export function unlockTable(skill: SkillId): Map<number, Unlock[]> {
   const t = empty();
-  if (skill === 'woodcutting' || skill === 'mining' || skill === 'fishing') {
-    const actions = { woodcutting: WOODCUTTING, mining: MINING, fishing: FISHING }[skill];
+  if (skill === 'woodcutting' || skill === 'mining' || skill === 'fishing' || skill === 'runecraft') {
+    const actions = { woodcutting: WOODCUTTING, mining: MINING, fishing: FISHING, runecraft: RUNECRAFT }[skill];
     for (const a of actions) t.get(a.level)!.push({ type: 'action', name: a.name });
     const [verb, eye, who] = {
       woodcutting: ['swing', "Woodsman's eye", 'woodcutter'],
       mining: ['strike', "Prospector's eye", 'miner'],
       fishing: ['cast', "Angler's eye", 'angler'],
+      runecraft: ['draw', "Seer's eye", 'runecrafter'],
     }[skill];
     fillPerks(t, gatherLines(verb, eye), {
       40: { type: 'perk', name: `Master ${who}`, effect: { kind: 'extraYield', pct: 10 } },
       99: { type: 'perk', name: `Grandmaster ${who}`, effect: { kind: 'extraYield', pct: 15 } },
     });
   } else if (skill === 'smithing') {
-    for (const r of SMITHING) t.get(r.level)!.push({ type: 'recipe', name: r.name });
+    for (const r of [...SMITHING, ...SMITHING_SUPPLIES].sort((a, b) => a.level - b.level))
+      t.get(r.level)!.push({ type: 'recipe', name: r.name });
     fillPerks(
       t,
       [
@@ -106,6 +120,21 @@ export function unlockTable(skill: SkillId): Map<number, Unlock[]> {
       {
         40: { type: 'perk', name: 'Master smith', effect: { kind: 'saveInput', pct: 8 } },
         99: { type: 'perk', name: 'Grandmaster smith', effect: { kind: 'saveInput', pct: 10 } },
+      },
+    );
+  } else if (skill === 'fletching') {
+    for (const r of FLETCHING) t.get(r.level)!.push({ type: 'recipe', name: r.name });
+    fillPerks(
+      t,
+      [
+        { name: 'Fine fletching', effect: () => ({ kind: 'extraYield', pct: 3 }) },
+        { name: 'Thrifty', effect: () => ({ kind: 'saveInput', pct: 4 }) },
+        { name: "Fletcher's eye", effect: () => ({ kind: 'findChance', pct: 8 }) },
+        { name: 'Practised hands', effect: () => ({ kind: 'masteryGain', pct: 8 }) },
+      ],
+      {
+        40: { type: 'perk', name: 'Master fletcher', effect: { kind: 'saveInput', pct: 8 } },
+        99: { type: 'perk', name: 'Grandmaster fletcher', effect: { kind: 'saveInput', pct: 10 } },
       },
     );
   } else if (skill === 'cooking') {

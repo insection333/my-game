@@ -17,6 +17,7 @@ import {
   FINDS,
   FISHING,
   LUCK_GUARANTEE_SECONDS,
+  RUNECRAFT,
   LUCK_STEP as MODEL_LUCK_STEP,
   MINING,
   RARITY,
@@ -25,6 +26,7 @@ import {
   WOODCUTTING,
 } from '../../../design/model/content.ts';
 import { COOKING } from '../../../design/model/cooking.ts';
+import { FLETCHING, SMITHING_SUPPLIES } from '../../../design/model/supplies.ts';
 import { fmtUnlock } from '../../../design/model/format.ts';
 import { unlockTable } from '../../../design/model/unlocks.ts';
 
@@ -32,17 +34,20 @@ const DESIGN_SKILLS = [
   'woodcutting',
   'mining',
   'fishing',
+  'runecraft',
   'smithing',
   'cooking',
+  'fletching',
   'melee',
   'archery',
   'magic',
   'hitpoints',
 ] as const;
-const DESIGN_ACTIONS: Record<string, typeof WOODCUTTING> = {
+const DESIGN_ACTIONS: Record<string, readonly (typeof WOODCUTTING)[number][]> = {
   woodcutting: WOODCUTTING,
   mining: MINING,
   fishing: FISHING,
+  runecraft: RUNECRAFT,
 };
 
 export function checkDesign(features: readonly Feature[], modelXp: number[]): string[] {
@@ -122,7 +127,8 @@ export function checkDesign(features: readonly Feature[], modelXp: number[]): st
         );
       }
     }
-    if (sk.id === 'smithing') problems.push(...checkRecipes(f, SMITHING));
+    if (sk.id === 'smithing') problems.push(...checkRecipes(f, [...SMITHING, ...SMITHING_SUPPLIES]));
+    if (sk.id === 'fletching') problems.push(...checkRecipes(f, FLETCHING));
     if (sk.id === 'cooking') problems.push(...checkRecipes(f, COOKING));
     const designActions = DESIGN_ACTIONS[sk.id];
     if (!designActions) continue;

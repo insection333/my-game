@@ -89,7 +89,7 @@ function SkillPage({ feature }: { feature: Feature }) {
                 />
               </div>
             )}
-            <Slot id="skill.actions">
+            <Slot id="skill.actions" className={s.actionList}>
               {!all.length && (
                 <div className={s.trained}>
                   <span className={s.muted}>{t('combat.trainedHere')}</span>

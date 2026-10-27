@@ -66,6 +66,8 @@ function battle(foe: Foe): ActionRules {
       const p = fighterOf(ctx.state, foe);
       if (!f || !p) return false;
       for (const [item, n] of Object.entries(f.eaten)) take(ctx.state, item, n);
+      // One supply for the foe fought, won or not.
+      if (p.supply) take(ctx.state, p.supply.item, 1);
       const c = combatOf(ctx.state);
       setCombat(ctx.state, {
         ...c,

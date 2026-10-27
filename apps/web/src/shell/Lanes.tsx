@@ -27,10 +27,10 @@ export interface LaneView {
   fix?: { label: string; item?: string; path?: string };
 }
 
-/** Where a stop is put right: what ran out (its panel says where it comes from), or food. */
+/** Where a stop is put right: what ran out or is missing (its panel says where it comes from), or food. */
 function fixFor(reason: { code: string; detail?: Record<string, string | number> }): LaneView['fix'] {
   const item = reason.detail?.item;
-  if (reason.code === 'outOfInputs' && typeof item === 'string')
+  if ((reason.code === 'outOfInputs' || reason.code === 'needsKey') && typeof item === 'string')
     return { label: t('lane.fix.item', { item: midSentence(t(`item.${item}`)) }), item };
   if (reason.code === 'retreated' || reason.code === 'tooHurt') return { label: t('lane.fix.food'), path: '/combat' };
   return undefined;

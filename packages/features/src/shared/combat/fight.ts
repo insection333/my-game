@@ -30,6 +30,8 @@ export interface Fighter {
   hpPerks: Modifiers;
   /** Mastery step on this foe. */
   mastery: number;
+  /** The supply used for this fight (one, whatever its length) and the damage it adds, if any. */
+  supply?: { item: string; pct: number } | null;
 }
 
 export interface Meal {
@@ -60,7 +62,8 @@ export function fight(p: Fighter, foe: Foe, rng: () => number, health: number, m
   const mu = TRIANGLE[matchup(p.style, foe.style)];
   const hit = clamp(0.66 + 0.012 * (p.styleLevel - foe.level) + p.perks.accuracy / 100);
   const maxHit = 10 * (3 + Math.floor(p.styleLevel / 12) + p.weaponTier);
-  const dealtMult = mu.dealt * (1 + p.perks.damage / 100 + (MASTERY_DAMAGE_PER_STEP / 100) * p.mastery);
+  const dealtMult =
+    mu.dealt * (1 + (p.perks.damage + (p.supply?.pct ?? 0)) / 100 + (MASTERY_DAMAGE_PER_STEP / 100) * p.mastery);
   const foeHit = clamp(0.62 + 0.02 * (foe.level - p.hpLevel));
   const guard = (1 - 0.025 * p.armour) * (1 - p.perks.guard / 100) * mu.taken;
   const regen = regenPerSecond(p) * SWING_S;
@@ -144,7 +147,9 @@ export function odds(p: Fighter, foe: Foe, meal: Omit<Meal, 'count'> | null, n =
   const defeats = (n - retreats) * perHour;
   // A meal costs the vendor's price, or (cooked at home) what it would sell for.
   const price = meal ? (FOODS.find((fd) => fd.id === meal.item)?.price ?? itemOf(meal.item)?.value ?? 0) : 0;
-  const goldPerHour = defeats * foe.gold * (1 + p.perks.spoils / 100) - foodPerHour * price;
+  // One supply for each foe fought, at what it would sell for.
+  const supplies = p.supply ? n * perHour * (itemOf(p.supply.item)?.value ?? 0) : 0;
+  const goldPerHour = defeats * foe.gold * (1 + p.perks.spoils / 100) - foodPerHour * price - supplies;
   const retreatRate = retreats / n;
   const verdict: Verdict =
     retreatRate > 0.02 ? 'tooStrong' : foodPerHour < 4 ? 'easy' : foodPerHour < 25 ? 'fair' : 'costly';

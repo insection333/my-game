@@ -41,8 +41,8 @@ export function comesFrom(features: readonly Feature[], item: string): ItemSourc
 
 export function usedIn(features: readonly Feature[], item: string): ItemSource[] {
   return features.flatMap((f) =>
-    (f.content.actions ?? []).flatMap((a) =>
-      (a.takes ?? [])
+    (f.content.actions ?? []).flatMap((a) => [
+      ...(a.takes ?? [])
         .filter((g) => g.item === item)
         .map((g) => ({
           feature: f.id,
@@ -51,7 +51,11 @@ export function usedIn(features: readonly Feature[], item: string): ItemSource[]
           rarity: null,
           count: g.count,
         })),
-    ),
+      // An item an action needs but keeps (a key) counts 0: it is used for the action, never used up.
+      ...(a.needs ?? [])
+        .filter((g) => g.item === item)
+        .map(() => ({ feature: f.id, skill: f.content.skill?.id ?? null, action: a.id, rarity: null, count: 0 })),
+    ]),
   );
 }
 
@@ -60,5 +64,6 @@ export function usedIn(features: readonly Feature[], item: string): ItemSource[]
 export function sourceLabel(src: ItemSource): string {
   const skill = src.skill ? t(`skill.${src.skill}`) : t(`${src.feature}.title`);
   if (src.rarity) return t('item.panel.find', { skill, rarity: t(`rarity.${src.rarity}`) });
+  if (src.count === 0) return t('item.panel.kept', { skill, action: t(`action.${src.feature}.${src.action}`) });
   return t('item.panel.action', { skill, action: t(`action.${src.feature}.${src.action}`), count: fmt.int(src.count) });
 }

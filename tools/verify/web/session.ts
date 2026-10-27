@@ -70,6 +70,8 @@ export function views(): View[] {
     '/skills/mining',
     '/skills/fishing',
     '/skills/cooking',
+    '/skills/runecraft',
+    '/skills/fletching',
     '/combat',
     '/storehouse',
   ].map((path) => ({

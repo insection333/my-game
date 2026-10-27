@@ -47,6 +47,8 @@ export interface Fighter {
   weaponTier: number;
   armourTier: number;
   hpLevel: number;
+  /** A supply used in every fight: the damage it adds (a share) and what one is worth. */
+  supply?: { pct: number; value: number };
 }
 export interface FightResult {
   seconds: number;
@@ -76,7 +78,9 @@ export function fight(
     Math.max(0.2, 0.66 + 0.012 * (p.styleLevel - f.level) + perkTotal(skill, p.styleLevel, 'accuracy') / 100),
   );
   const maxHit = 10 * (3 + Math.floor(p.styleLevel / 12) + p.weaponTier);
-  const dmgMult = youMult * (1 + perkTotal(skill, p.styleLevel, 'damage') / 100 + MASTERY_PER_STEP.speed * mastery);
+  const dmgMult =
+    youMult *
+    (1 + (perkTotal(skill, p.styleLevel, 'damage') + (p.supply?.pct ?? 0)) / 100 + MASTERY_PER_STEP.speed * mastery);
   const foeHit = Math.min(0.95, Math.max(0.2, 0.62 + 0.02 * (f.level - p.hpLevel)));
   const guard = (1 - 0.025 * 3 * p.armourTier) * (1 - perkTotal(skill, p.styleLevel, 'guard') / 100) * foeMult;
   const regenPerSec = (10 / 6) * (1 + perkTotal('hitpoints', p.hpLevel, 'regen') / 100);
@@ -137,7 +141,7 @@ export function odds(p: Fighter, f: Foe, rng: () => number, n = 200, mastery = 0
   const killsPerHour = (3600 * n) / secs;
   const xpPerHour = (dealt / secs) * 3600 * XP_PER_DAMAGE_BY_TIER[f.tier - 1] * easyFoeXp(p.styleLevel, f.level);
   const foodPerHour = (food / n) * killsPerHour;
-  const goldPerHour = killsPerHour * f.gold - foodPerHour * fd.price;
+  const goldPerHour = killsPerHour * (f.gold - (p.supply?.value ?? 0)) - foodPerHour * fd.price;
   const retreatRate = retreats / n;
   const verdict = retreatRate > 0.02 ? 'Too strong' : foodPerHour < 4 ? 'Easy' : foodPerHour < 25 ? 'Fair' : 'Costly';
   return { killsPerHour, xpPerHour, foodPerHour, goldPerHour, verdict, food: fd, retreatRate };

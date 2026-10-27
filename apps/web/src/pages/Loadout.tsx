@@ -1,7 +1,8 @@
-// Combat's loadout: the gear worn on a figure (the helm on the head, the weapon in the hand), and beside
-// it your style with the triangle as it bears on you, your health and the food you carry.
+// Combat's loadout: the gear worn on a figure (the helm on the head, the weapon in one hand and the
+// style's supply in the other), and beside it your style with the triangle as it bears on you, your
+// health, the food you carry and the supply in use.
 import { t } from '@idle-clash/content';
-import type { LoadoutSlot, LoadoutView, TrianglePart } from '@idle-clash/features';
+import type { LoadoutSlot, LoadoutView, SupplyView, TrianglePart } from '@idle-clash/features';
 import { Figure, ItemIcon, Panel, ProgressBar, TextLink } from '@idle-clash/ui';
 import { navigate } from '../router.ts';
 import { Slot } from '../slots.tsx';
@@ -17,6 +18,7 @@ export function Loadout({ loadout, triangle }: { loadout: LoadoutView; triangle:
           {loadout.slots.map((g) => (
             <GearButton key={g.slot} gear={g} />
           ))}
+          {loadout.supply && <SupplyButton supply={loadout.supply} />}
         </div>
         <div className={s.info}>
           {loadout.styleId ? (
@@ -47,10 +49,35 @@ export function Loadout({ loadout, triangle }: { loadout: LoadoutView; triangle:
             <ProgressBar value={loadout.health} label={loadout.healthText} />
             <span>{loadout.healthText}</span>
             <span>{loadout.food}</span>
+            {loadout.supply && (
+              <span>
+                {loadout.supply.name}: {loadout.supply.line}
+              </span>
+            )}
           </div>
         </div>
       </Slot>
     </Panel>
+  );
+}
+
+/** The supply in the other hand: what is used, and a way to the skill that makes more. */
+function SupplyButton({ supply }: { supply: SupplyView }) {
+  const href = `/skills/${supply.skill}`;
+  const name = `${supply.label}: ${supply.name}`;
+  return (
+    <a
+      href={href}
+      data-ui="GearSlot"
+      data-state={supply.item ? undefined : 'empty'}
+      className={s.slot}
+      data-slot-name="supply"
+      aria-label={name}
+      title={name}
+      onClick={(e) => (e.preventDefault(), navigate(href))}
+    >
+      {supply.item ? <ItemIcon name={supply.item} size={32} /> : <span className={s.slotLabel}>{supply.label}</span>}
+    </a>
   );
 }
 

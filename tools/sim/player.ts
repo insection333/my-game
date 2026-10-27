@@ -60,10 +60,10 @@ export interface Played {
   final: State;
 }
 
-/** Every ingredient a feature's actions take: a focused player's stock, kept full (its supply is
- *  someone else's lane). */
+/** Every ingredient a feature's actions take, and every item they need kept (Runecraft's keys): a
+ *  focused player's stock, kept full (its supply is someone else's lane). */
 const ingredients = (f: Feature) => [
-  ...new Set((f.content.actions ?? []).flatMap((a) => (a.takes ?? []).map((t) => t.item))),
+  ...new Set((f.content.actions ?? []).flatMap((a) => [...(a.takes ?? []), ...(a.needs ?? [])].map((t) => t.item))),
 ];
 
 /**

@@ -2,12 +2,13 @@
 // (see numbers.ts). The content check fails on a missing key, an unused key, or a term GLOSSARY.md
 // says to avoid. Keep sections in order; within a feature's section, keys follow its content. The gathering
 // and artisan skills' words are in en-skills.ts, Combat's in en-combat.ts, the privacy page's and the
-// terms' in en-legal.ts, Fishing's and Cooking's in en-food.ts, the goals ladder's, its rewards' and your standing's in en-progress.ts.
+// terms' in en-legal.ts, Fishing's and Cooking's in en-food.ts, Fletching's, Runecraft's and the supplies' in en-supplies.ts, the goals ladder's, its rewards' and your standing's in en-progress.ts.
 import { combat } from './en-combat.ts';
 import { food } from './en-food.ts';
 import { legal } from './en-legal.ts';
 import { progress } from './en-progress.ts';
 import { skills } from './en-skills.ts';
+import { supplies } from './en-supplies.ts';
 
 export const en: Record<string, string> = {
   // The shell: header, menu, lanes, sheets
@@ -82,6 +83,7 @@ export const en: Record<string, string> = {
   'help.storehouse.body':
     'The Storehouse holds any number of each item, but only so many different items. Sell what you do not need to the vendor, buy food, and enlarge it with gold.',
   'store.kind.resource': 'Resources',
+  'store.kind.supply': 'Supplies',
   'store.kind.gear': 'Gear',
   'store.kind.food': 'Food',
   'store.kind.find': 'Finds',
@@ -90,6 +92,7 @@ export const en: Record<string, string> = {
   'item.panel.comesFrom': 'Comes from',
   'item.panel.usedIn': 'Used in',
   'item.panel.action': '{skill}: {action} (×{count})',
+  'item.panel.kept': '{skill}: {action} (kept, never used up)',
   'item.panel.find': '{skill}: {rarity} find',
   'item.panel.nothing': 'Nothing yet.',
   'item.panel.use': 'Or use it: {count} mastery completions on one action',
@@ -197,7 +200,9 @@ export const en: Record<string, string> = {
   'stop.levelTooLow': 'Needs level {level}',
   'stop.skillInOtherLane': 'Already working in your other Gathering lane',
   'stop.outOfInputs': 'Out of {item}',
+  'stop.needsKey': 'Needs a {item}',
   // The same, short enough for a lane's chip on a phone (where a reason's full words are longer)
+  'stopShort.needsKey': 'Needs a key',
   'stopShort.unavailable': 'Not available',
   'stopShort.wrongLane': 'Wrong lane',
   'stopShort.fireOut': 'Fire went out',
@@ -283,6 +288,7 @@ export const en: Record<string, string> = {
 
   ...skills,
   ...food,
+  ...supplies,
   ...combat,
   ...legal,
   ...progress,

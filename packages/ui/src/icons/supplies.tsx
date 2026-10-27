@@ -1,6 +1,6 @@
-// Step 14's supplies, the reference drawings put to the owner before the family is drawn (ART.md):
-// arrows (Archery's), runes (Magic's), whetstones (Melee's) and the keys that open the higher standing
-// stones. Each takes its tier's metal or wood, so a tier reads before its shape.
+// The supplies (session 14; the family the owner approved on 27 October 2026, ART.md): arrows
+// (Archery's), runes (Magic's), whetstones (Melee's) and the keys that open the higher standing stones.
+// Each takes its tier's metal, wood or light, so a tier reads before its shape (supplies-index.tsx).
 import { circle, ellipse, Glint, INK, M, Shape, type Tone } from './style.tsx';
 
 /** A bundle of three arrows on the diagonal: the tier's metal at the heads, its wood in the shafts. */
@@ -24,7 +24,16 @@ export function Arrows({ metal = M.iron, wood = M.oak }: { metal?: Tone; wood?: 
 }
 
 /** A rune: a flat stone, its carved mark glowing in the tier's light. */
-export function Rune({ stone = M.stone, glow = '#9ff7ff' }: { stone?: Tone; glow?: string }) {
+export function Rune({
+  stone = M.stone,
+  glow = '#9ff7ff',
+  mark = 'M24 13 L24 36 M24 18 L32 24 M24 27 L16 21',
+}: {
+  stone?: Tone;
+  glow?: string;
+  /** The rune's carved mark, its own for each tier. */
+  mark?: string;
+}) {
   return (
     <g>
       <Shape
@@ -33,28 +42,9 @@ export function Rune({ stone = M.stone, glow = '#9ff7ff' }: { stone?: Tone; glow
         lit="M10 12 C14 7 34 6 38 11 C30 10 18 11 14 15 C11 19 10.5 30 12 39.5 C11 39 10.5 38.6 10 38 C6 33 6 17 10 12 Z"
         shade="M38 11 C42 16 42 33 38 38 C34 43 14 43 10 38 C18 40 31 40 34.5 36 C37 31 37.5 18 38 11 Z"
       >
-        <path
-          d="M24 13 L24 36 M24 18 L32 24 M24 27 L16 21"
-          fill="none"
-          stroke={glow}
-          strokeWidth={5}
-          strokeLinecap="round"
-          opacity={0.35}
-        />
-        <path
-          d="M24 13 L24 36 M24 18 L32 24 M24 27 L16 21"
-          fill="none"
-          stroke={INK}
-          strokeWidth={2.8}
-          strokeLinecap="round"
-        />
-        <path
-          d="M24 13 L24 36 M24 18 L32 24 M24 27 L16 21"
-          fill="none"
-          stroke={glow}
-          strokeWidth={1.4}
-          strokeLinecap="round"
-        />
+        <path d={mark} fill="none" stroke={glow} strokeWidth={5} strokeLinecap="round" opacity={0.35} />
+        <path d={mark} fill="none" stroke={INK} strokeWidth={2.8} strokeLinecap="round" />
+        <path d={mark} fill="none" stroke={glow} strokeWidth={1.4} strokeLinecap="round" />
       </Shape>
     </g>
   );
@@ -83,8 +73,8 @@ export function Whetstone({ metal = M.iron }: { metal?: Tone }) {
           <circle key={`${x},${y}`} cx={x} cy={y} r={0.8} fill={M.stone.shadow} />
         ))}
       </Shape>
-      <Shape d="M18 24 L25 31 L22 34.5 L15 27.5 Z" tone={metal} lit="M18 24 L25 31 L23.5 32.7 L16.5 25.7 Z">
-        <Glint x={19} y={26} r={0.9} />
+      <Shape d="M17.5 21.5 L27.5 31.5 L23 36 L13 26 Z" tone={metal} lit="M17.5 21.5 L27.5 31.5 L25.8 33.2 L15.8 23.2 Z">
+        <Glint x={18.5} y={24.5} r={1} />
       </Shape>
     </g>
   );

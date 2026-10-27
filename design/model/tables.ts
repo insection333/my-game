@@ -1,10 +1,12 @@
 // GAME_DESIGN.md's generated tables, from the model's data (used by build-docs.ts).
 // Text comes from numbers through one formatter, as the real effect formatter registry will do.
 import { COOKING } from './cooking.ts';
+import { FLETCHING, keyFor, SMITHING_SUPPLIES, SUPPLIES, SUPPLY_DAMAGE } from './supplies.ts';
 import {
   FINDS,
   FISHING,
   FOES,
+  RUNECRAFT,
   FOODS,
   MASTERY_STEPS,
   MASTERY_PER_STEP,
@@ -58,8 +60,9 @@ const GATHER_OF = {
   woodcutting: ['Woodcutting', VALUE.log],
   mining: ['Mining', VALUE.ore],
   fishing: ['Fishing', VALUE.fish],
+  runecraft: ['Runecraft', VALUE.rune],
 } as const;
-for (const a of [...WOODCUTTING, ...MINING, ...FISHING]) {
+for (const a of [...WOODCUTTING, ...MINING, ...FISHING, ...RUNECRAFT]) {
   const [skill, values] = GATHER_OF[a.skill];
   say(
     `| ${a.name} | ${skill} | ${a.level} | ${a.seconds} | ${a.xp} | ${a.item} ×${a.qty} | ${values[a.tier - 1]} each |`,
@@ -76,6 +79,31 @@ for (const r of SMITHING)
       .join(', ')} | ${r.seconds} | ${r.xp} | ${r.value} |`,
   );
 const RECIPES = p.splice(0).join('\n');
+
+say('| Recipe | Skill | Level | Takes | Makes | Seconds | XP | Sells for (each) |');
+say('| --- | --- | --- | --- | --- | --- | --- | --- |');
+for (const [skill, list] of [
+  ['Smithing', SMITHING_SUPPLIES],
+  ['Fletching', FLETCHING],
+] as const)
+  for (const r of list)
+    say(
+      `| ${r.name} | ${skill} | ${r.level} | ${Object.entries(r.inputs)
+        .map(([k, v]) => `${k} ×${v}`)
+        .join(', ')} | ${r.makes ?? 1} | ${r.seconds} | ${r.xp} | ${r.value} |`,
+    );
+const SUPPLY_RECIPES = p.splice(0).join('\n');
+
+say('| Tier | Damage | Melee | Archery | Magic | Its stones need |');
+say('| --- | --- | --- | --- | --- | --- |');
+for (let t = 1; t <= 8; t++) {
+  const of = (style: string) => SUPPLIES.find((x) => x.tier === t && x.style === style)!;
+  const cell = (style: string) => `${of(style).name} (${of(style).value} each)`;
+  say(
+    `| ${t} | +${SUPPLY_DAMAGE[t - 1]}% | ${cell('melee')} | ${cell('archery')} | ${cell('magic')} | ${keyFor(t) ?? 'nothing'} |`,
+  );
+}
+const SUPPLY_TABLE = p.splice(0).join('\n');
 
 say('| Dish | Level | Takes | Makes | Seconds | XP | Heals | Sells for | Heals per gold of worth |');
 say('| --- | --- | --- | --- | --- | --- | --- | --- | --- |');
@@ -136,6 +164,8 @@ export const TABLES: Record<string, string> = {
   GATHER,
   RECIPES,
   COOKING_TABLE,
+  SUPPLY_RECIPES,
+  SUPPLY_TABLE,
   FOE_TABLE,
   FOOD_TABLE,
   FIND_TABLE,

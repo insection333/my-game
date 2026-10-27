@@ -12,9 +12,10 @@ import { navigate } from '../router.ts';
 import { fills, Slot } from '../slots.tsx';
 import s from './items.module.css';
 
-const KINDS = ['resource', 'gear', 'food', 'find'] as const;
+const KINDS = ['resource', 'supply', 'gear', 'food', 'find'] as const;
 const KIND_TITLE: Record<(typeof KINDS)[number], string> = {
   resource: 'store.kind.resource',
+  supply: 'store.kind.supply',
   gear: 'store.kind.gear',
   food: 'store.kind.food',
   find: 'store.kind.find',

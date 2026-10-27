@@ -41,6 +41,8 @@ export const XP_PER_DAMAGE = [0.3, 0.32, 0.34, 0.35, 0.34, 0.31, 0.3, 0.28];
 export const HITPOINTS_XP_SHARE = 1;
 /** Foes more than five levels below you teach less: 4% less a level, down to 40%. */
 export const easyFoeXp = (you: number, foe: number) => Math.min(1, Math.max(0.4, 1 - 0.04 * (you - foe - 5)));
+/** Damage a supply adds, by its tier (GAME_DESIGN.md section 6): one is used for each foe fought. */
+export const SUPPLY_DAMAGE = [5, 7, 9, 11, 13, 15, 17, 20];
 /** Mastery on a foe: 3% more damage and 6% more drops a step. */
 export const MASTERY_DAMAGE_PER_STEP = 3;
 export const MASTERY_DROPS_PER_STEP = 6;

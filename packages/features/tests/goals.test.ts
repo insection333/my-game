@@ -91,14 +91,14 @@ describe('standing', () => {
   it("shows a newcomer's rank, total level and the way to the next rank", () => {
     expect(standing(newState(1, T0))).toEqual({
       rank: 'Wanderer',
-      total: 'Total level 9',
+      total: 'Total level 11',
       next: 'Settler at 20',
-      progress: 9 / 20,
+      progress: 11 / 20,
     });
   });
 
   it('rises with the total level', () => {
-    // Seven skills at level 30 and Fishing and Cooking at 1: total 212, past Warden of the March (200),
+    // Seven skills at level 30 and the four newer ones at 1: total 214, past Warden of the March (200),
     // short of Master (280).
     const skills = Object.fromEntries(
       ['woodcutting', 'mining', 'smithing', 'melee', 'archery', 'magic', 'hitpoints'].map((s) => [
@@ -108,13 +108,13 @@ describe('standing', () => {
     );
     expect(standing({ ...newState(1, T0), skills })).toMatchObject({
       rank: 'Warden of the March',
-      total: 'Total level 212',
+      total: 'Total level 214',
       next: 'Master of the March at 280',
     });
-    // A rank is reached on its own number: six skills at 29, one at 24 and two at 1 make exactly 200.
+    // A rank is reached on its own number: six skills at 29, one at 22 and four at 1 make exactly 200.
     const at200 = { ...skills, mining: { xp: 1_140_000 }, smithing: { xp: 1_140_000 }, melee: { xp: 1_140_000 } };
     Object.assign(at200, { archery: { xp: 1_140_000 }, magic: { xp: 1_140_000 }, hitpoints: { xp: 1_140_000 } });
-    Object.assign(at200, { woodcutting: { xp: 428_000 } });
+    Object.assign(at200, { woodcutting: { xp: 265_000 } });
     expect(standing({ ...newState(1, T0), skills: at200 })).toMatchObject({ rank: 'Warden of the March', progress: 0 });
   });
 });

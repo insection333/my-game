@@ -20,13 +20,14 @@ The three pillars decide everything below:
  Woodcutting ──logs──┐            ┌── sword (Melee)
                      ├─► Smithing ┼── bow (Archery)  ──► wear ──► Combat ──► gold, drops, finds
  Mining ─────ores──► bars ────────┴── staff (Magic), armour  ▲         │
- Fishing ────fish──► Cooking ──── cooked food ───────────────┘         │
+ Fishing ────fish──► Cooking ──── cooked food ───────────────┤         │
+ Runecraft ──runes─► supplies ◄── Fletching, Smithing ───────┘         │
      ▲                                                                  │
      └──────────── gold buys food and Storehouse space ◄────────────────┘
 ```
 
-- **Gathering** (Woodcutting, Mining, Fishing) turns time into logs, ores and fish.
-- **Artisan** (Smithing, Cooking) turns ores into bars and bars and logs into gear, and fish and logs into food. It stops, with the reason shown, when an ingredient runs out.
+- **Gathering** (Woodcutting, Mining, Fishing, Runecraft) turns time into logs, ores, fish and runes.
+- **Artisan** (Smithing, Cooking, Fletching) turns ores into bars and bars and logs into gear, fish and logs into food, and bars and logs into arrows. It stops, with the reason shown, when an ingredient runs out.
 - **Combat** (Melee, Archery, Magic, with Hitpoints rising from every fight) turns gear and food into XP, gold and drops.
 - **Gold** comes from selling to the vendor and from foes. It buys food (or a fighter cooks their own) and Storehouse space. Gear is always made, never bought.
 
@@ -46,22 +47,22 @@ The three pillars decide everything below:
 
 ## 3. Skills, tiers and materials
 
-Nine skills: Woodcutting, Mining and Fishing (Gathering); Smithing and Cooking (Artisan); Melee, Archery, Magic and Hitpoints (Combat). The top level is **99** (version 1 stopped at 40). Fishing and Cooking came with the expansion (session 13); Fletching and Runecraft follow.
+Eleven skills: Woodcutting, Mining, Fishing and Runecraft (Gathering); Smithing, Cooking and Fletching (Artisan); Melee, Archery, Magic and Hitpoints (Combat). The top level is **99** (version 1 stopped at 40). Fishing and Cooking came with the expansion in session 13, Fletching and Runecraft in session 14.
 
 Eight tiers open at levels 1, 10, 20, 30, 40, 55, 70 and 85. The first four belong to the march; the next two to the Sunken Fen and the last two to the Ashen Peaks, so the later tiers come further apart and each is earned:
 
-| Tier | Metal | Logs | Ore (Mining opens it) | Bar recipe | Fish |
-| --- | --- | --- | --- | --- | --- |
-| 1 | Copper | Pine | Copper ore (1) | 1 copper ore | Perch |
-| 2 | Bronze | Ash | Tin ore (10) | 1 copper ore + 1 tin ore | Trout |
-| 3 | Iron | Oak | Iron ore (20) | 2 iron ore | Pike |
-| 4 | Steel | Yew | Coal (30) | 1 iron ore + 2 coal | Salmon |
-| 5 | Moonsilver | Maple | Moonsilver ore (40) | 1 moonsilver ore + 1 coal | Moon carp |
-| 6 | Star-iron | Silverbark | Star-iron ore (55) | 1 star-iron ore + 2 coal | Silver eel |
-| 7 | Embersteel | Elderwood | Ember ore (70) | 1 ember ore + 2 coal | Ember char |
-| 8 | Dawnsteel | Ancient | Dawnstone (85) | 1 dawnstone + 1 moonsilver ore + 2 coal | Dawn sturgeon |
+| Tier | Metal | Logs | Ore (Mining opens it) | Bar recipe | Fish | Rune |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | Copper | Pine | Copper ore (1) | 1 copper ore | Perch | Spark |
+| 2 | Bronze | Ash | Tin ore (10) | 1 copper ore + 1 tin ore | Trout | Gale |
+| 3 | Iron | Oak | Iron ore (20) | 2 iron ore | Pike | Tide |
+| 4 | Steel | Yew | Coal (30) | 1 iron ore + 2 coal | Salmon | Earth |
+| 5 | Moonsilver | Maple | Moonsilver ore (40) | 1 moonsilver ore + 1 coal | Moon carp | Moon |
+| 6 | Star-iron | Silverbark | Star-iron ore (55) | 1 star-iron ore + 2 coal | Silver eel | Star |
+| 7 | Embersteel | Elderwood | Ember ore (70) | 1 ember ore + 2 coal | Ember char | Ember |
+| 8 | Dawnsteel | Ancient | Dawnstone (85) | 1 dawnstone + 1 moonsilver ore + 2 coal | Dawn sturgeon | Dawn |
 
-That is 32 resources: eight logs, eight ores, eight bars and eight fish. Bronze, steel and the later metals are alloys, so earlier ores keep their use: coal goes into every bar from steel on, and dawnsteel needs moonsilver.
+That is 32 resources: eight logs, eight ores, eight bars and eight fish; and 24 supplies (each tier's arrows, runes and whetstones) and seven keys (section 6). Bronze, steel and the later metals are alloys, so earlier ores keep their use: coal goes into every bar from steel on, and dawnsteel needs moonsilver.
 
 - **Weapons** need the style's level: a sword (Melee), a bow (Archery) or a staff (Magic) of a tier needs that style at the tier's level. Your style is your weapon's.
 - **Armour** (helm, body, legs) is shared by all styles and needs Hitpoints at the tier's level.
@@ -114,6 +115,8 @@ The table is derived, not guessed. To level 40 the model fits per-level times to
 | Rare and Legendary finds an hour | 1x | 1x | 1x |
 
 Fishing is built the same way: each tier's shallows, and its deep pool four levels later ("Perch shallows", "Deep perch pool"). Fish sell for 40% of what the tier's logs fetch, because Fishing pays mostly in the food it saves (section 9).
+
+Runecraft is built the same way too: each tier's standing stone, and its ancient stone four levels later ("Spark stone", "Ancient spark stone"). A draw gives eight of the tier's runes (sixteen at an ancient stone), each worth an eighth of the tier's ore, so Runecraft pays as Mining does. Every stone past the first needs that tier's key, which Smithing binds from two bars and which is kept, never used up.
 
 Rich actions ("Old pine", "Deep copper seam") are slower and give two items each: the choice between XP and materials. Smithing needs more ore than one fresh vein supplies, so rich seams, mastery and the fire's second lane are how a smith keeps the forge fed.
 
@@ -169,6 +172,22 @@ Rich actions ("Old pine", "Deep copper seam") are slower and give two items each
 | Deep ember char pool | Fishing | 74 | 57 | 385 | Ember char ×2 | 72 each |
 | Dawn sturgeon shallows | Fishing | 85 | 42 | 408 | Dawn sturgeon ×1 | 108 each |
 | Deep dawn sturgeon pool | Fishing | 89 | 63 | 530 | Dawn sturgeon ×2 | 108 each |
+| Spark stone | Runecraft | 1 | 7.5 | 11 | Spark rune ×8 | 0 each |
+| Ancient spark stone | Runecraft | 5 | 11.25 | 14 | Spark rune ×16 | 0 each |
+| Gale stone | Runecraft | 10 | 12.5 | 25 | Gale rune ×8 | 0 each |
+| Ancient gale stone | Runecraft | 14 | 18.75 | 33 | Gale rune ×16 | 0 each |
+| Tide stone | Runecraft | 20 | 20 | 52 | Tide rune ×8 | 2 each |
+| Ancient tide stone | Runecraft | 24 | 30 | 68 | Tide rune ×16 | 2 each |
+| Earth stone | Runecraft | 30 | 26 | 87 | Earth rune ×8 | 4 each |
+| Ancient earth stone | Runecraft | 34 | 39 | 113 | Earth rune ×16 | 4 each |
+| Moon stone | Runecraft | 40 | 30 | 142 | Moon rune ×8 | 8 each |
+| Ancient moon stone | Runecraft | 44 | 45 | 185 | Moon rune ×16 | 8 each |
+| Star stone | Runecraft | 55 | 34 | 208 | Star rune ×8 | 13 each |
+| Ancient star stone | Runecraft | 59 | 51 | 270 | Star rune ×16 | 13 each |
+| Ember stone | Runecraft | 70 | 38 | 296 | Ember rune ×8 | 20 each |
+| Ancient ember stone | Runecraft | 74 | 57 | 385 | Ember rune ×16 | 20 each |
+| Dawn stone | Runecraft | 85 | 42 | 408 | Dawn rune ×8 | 30 each |
+| Ancient dawn stone | Runecraft | 89 | 63 | 530 | Dawn rune ×16 | 30 each |
 
 ## 6. Smithing
 
@@ -260,6 +279,49 @@ Cooked food heals about half the health a fighter has at its tier: the most a me
 | Cooked dawn sturgeon | 85 | Dawn sturgeon ×2, Ancient logs ×1 | 2 | 126 | 1225 | 1,830 | 243 | 7.5 |
 | Sturgeon stew | 90 | Dawn sturgeon ×1, Ember char ×1, Ancient logs ×1 | 2 | 126 | 1225 | 2,290 | 225 | 10.2 |
 
+### Supplies: whetstones, arrows and runes
+
+Each style has a supply: Melee takes whetstones (Smithing, from a bar), Archery takes arrows (Fletching, the Artisan lane's third skill, from a bar and a log) and Magic takes runes (Runecraft). Whetstones and arrows come 25 at a time. A fighter uses the best supply of their style that their level allows, one per foe fought, without being asked, as they eat; with none carried they fight as before. A supply adds damage by its tier, from +5% to +20%, and every style has its supply at every tier, so the triangle holds (section 15). A supply pays for itself: the extra gold and the extra XP (counted at what an hour of the tier's gathering pays for its XP) are worth more than the supplies used. Supplies of the first two tiers sell for nothing; whetstones and keys open with their tier's bar, so Smithing's perks stay where they were.
+
+*Generated:*
+
+| Tier | Damage | Melee | Archery | Magic | Its stones need |
+| --- | --- | --- | --- | --- | --- |
+| 1 | +5% | Copper whetstones (0 each) | Copper arrows (0 each) | Spark rune (0 each) | nothing |
+| 2 | +7% | Bronze whetstones (0 each) | Bronze arrows (0 each) | Gale rune (0 each) | Bronze key |
+| 3 | +9% | Iron whetstones (1 each) | Iron arrows (2 each) | Tide rune (2 each) | Iron key |
+| 4 | +11% | Steel whetstones (4 each) | Steel arrows (5 each) | Earth rune (4 each) | Steel key |
+| 5 | +13% | Moonsilver whetstones (5 each) | Moonsilver arrows (7 each) | Moon rune (8 each) | Moonsilver key |
+| 6 | +15% | Star-iron whetstones (8 each) | Star-iron arrows (13 each) | Star rune (13 each) | Star-iron key |
+| 7 | +17% | Embersteel whetstones (11 each) | Embersteel arrows (19 each) | Ember rune (20 each) | Embersteel key |
+| 8 | +20% | Dawnsteel whetstones (19 each) | Dawnsteel arrows (30 each) | Dawn rune (30 each) | Dawnsteel key |
+
+| Recipe | Skill | Level | Takes | Makes | Seconds | XP | Sells for (each) |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Copper whetstones | Smithing | 1 | Copper bar ×1 | 25 | 7.5 | 11 | 0 |
+| Bronze whetstones | Smithing | 10 | Bronze bar ×1 | 25 | 12.5 | 25 | 0 |
+| Bronze key | Smithing | 10 | Bronze bar ×2 | 1 | 25 | 50 | 20 |
+| Iron whetstones | Smithing | 20 | Iron bar ×1 | 25 | 20 | 52 | 1 |
+| Iron key | Smithing | 20 | Iron bar ×2 | 1 | 40 | 103 | 101 |
+| Steel whetstones | Smithing | 30 | Steel bar ×1 | 25 | 26 | 87 | 4 |
+| Steel key | Smithing | 30 | Steel bar ×2 | 1 | 52 | 173 | 269 |
+| Moonsilver whetstones | Smithing | 40 | Moonsilver bar ×1 | 25 | 30 | 142 | 5 |
+| Moonsilver key | Smithing | 40 | Moonsilver bar ×2 | 1 | 60 | 283 | 328 |
+| Star-iron whetstones | Smithing | 55 | Star-iron bar ×1 | 25 | 34 | 208 | 8 |
+| Star-iron key | Smithing | 55 | Star-iron bar ×2 | 1 | 68 | 416 | 582 |
+| Embersteel whetstones | Smithing | 70 | Embersteel bar ×1 | 25 | 38 | 296 | 11 |
+| Embersteel key | Smithing | 70 | Embersteel bar ×2 | 1 | 76 | 591 | 801 |
+| Dawnsteel whetstones | Smithing | 85 | Dawnsteel bar ×1 | 25 | 42 | 408 | 19 |
+| Dawnsteel key | Smithing | 85 | Dawnsteel bar ×2 | 1 | 84 | 817 | 1310 |
+| Copper arrows | Fletching | 1 | Copper bar ×1, Pine logs ×1 | 25 | 15 | 23 | 0 |
+| Bronze arrows | Fletching | 10 | Bronze bar ×1, Ash logs ×1 | 25 | 25 | 50 | 0 |
+| Iron arrows | Fletching | 20 | Iron bar ×1, Oak logs ×1 | 25 | 40 | 103 | 2 |
+| Steel arrows | Fletching | 30 | Steel bar ×1, Yew logs ×1 | 25 | 52 | 173 | 5 |
+| Moonsilver arrows | Fletching | 40 | Moonsilver bar ×1, Maple logs ×1 | 25 | 60 | 283 | 7 |
+| Star-iron arrows | Fletching | 55 | Star-iron bar ×1, Silverbark logs ×1 | 25 | 68 | 416 | 13 |
+| Embersteel arrows | Fletching | 70 | Embersteel bar ×1, Elderwood logs ×1 | 25 | 76 | 591 | 19 |
+| Dawnsteel arrows | Fletching | 85 | Dawnsteel bar ×1, Ancient logs ×1 | 25 | 84 | 817 | 30 |
+
 ## 7. Mastery
 
 Every action has its own mastery, counted in completions: chopping a pine, forging a bronze helm, defeating an orc raider. Ten steps; each makes the action **3% faster** and adds a **6% chance of an extra item** (for a foe: 3% more damage and 6% more drops). Mastery never raises XP per action; it raises how often you earn it.
@@ -294,6 +356,8 @@ Every completion rolls for a find at three rarities. Each skill has six finds, a
 | Mining | Rough garnet · Rough sapphire | Ancient coin · Crystal geode | Star-iron shard · Heart of the mountain |
 | Fishing | Pearl mussel · River pearl | Message in a bottle · Drowned signet | Scale of the deep · Fen-king's crown |
 | Cooking | Wild herbs · Saffron threads | Grandmother's recipe · Silver ladle | Ever-warm pot · Cauldron of plenty |
+| Fletching | Heron quill · Hawk feather | Fletcher's knife · Waxed bowstring | Arrow of the first hunt · Quiver of the wild hunt |
+| Runecraft | Chalk stub · Cracked rune | Seer's stone · Rubbing of a lost rune | Rune of the old kings · Star chart of the ancients |
 | Smithing | Lucky horseshoe · Masterwork rivets | Guild smith's seal · Quenching flask | Ember of the first forge · Old king's hammer |
 | Melee | Battle trophy · Raider's war-horn | Torn banner · Warlord's seal | Shard of a king's blade · Troll-chief's tooth |
 | Archery | Goose fletchings · Hunter's charm | Silver arrowhead · Bowman's ring | Moonlit bowstring · Eagle-feather circlet |
@@ -384,7 +448,7 @@ Bought from the vendor, or cooked (section 6): better food is sold as Hitpoints 
 
 - **Sources:** selling logs, ores, bars, gear and Uncommon and Rare finds to the vendor; gold and drops from foes.
 - **Sinks:** food, and Storehouse enlargements. Gear is made, never bought.
-- **The Storehouse** holds stacks of any size; slots limit the number of different items. Starts with 24 slots; each enlargement adds 6. Costs: 40,000, 90,000, 100,000, 120,000, 180,000, 200,000, 230,000, 250,000, 280,000, 300,000, 340,000, 450,000, 460,000, 650,000, 700,000, 750,000, 800,000, 850,000, 900,000 gold. There are 132 kinds of item (32 resources, 48 gear, 20 foods, 32 sellable finds), so the last enlargement (138 slots) fits them all.
+- **The Storehouse** holds stacks of any size; slots limit the number of different items. Starts with 24 slots; each enlargement adds 6. Costs: 40,000, 90,000, 100,000, 120,000, 180,000, 200,000, 230,000, 250,000, 280,000, 300,000, 340,000, 450,000, 460,000, 650,000, 700,000, 750,000, 800,000, 850,000, 900,000, 925,000, 950,000, 975,000, 1,000,000, 1,000,000, 1,000,000 gold. There are 171 kinds of item (32 resources, 24 supplies, 7 keys, 48 gear, 20 foods, 40 sellable finds), so the last enlargement (174 slots) fits them all.
 - When a lane would produce an item with no free slot, it stops: "Storehouse full".
 - Every item's panel shows **Comes from** and **Used in**, gathered by asking every feature.
 
@@ -403,7 +467,7 @@ Enlargement costs follow each day's net gold, so one is affordable roughly when 
    6. Defeat a hollow rat (the step's reward, 10 bread, comes first).
 2. **Three short goals**, rolling: each sized to 10–15 minutes of your current pace in one lane ("Cut 60 oak logs", "Reach mastery 4 on Iron vein", "Defeat 25 grave wights", "Forge 3 iron helms"). A new one appears as each is claimed. Reward: a supply cache worth about 10 minutes of that lane's gold.
 3. **A daily goal:** about 40 minutes of play or a day of lanes ("Earn 20,000 Smithing XP today"). Reward: a supply cache worth about an hour of gold.
-4. **Milestones:** total level 50, 100, 150, 200, 250 and 280, then 350, 450, 550, 650, 693 (the first seven skills at 99), 800 and 891 (all nine at 99); the first item of each of the eight tiers; collection log 12, 24, 36 and 48; the first mastery 10. Reward: gold, and the milestone is shown on your hiscore entry.
+4. **Milestones:** total level 50, 100, 150, 200, 250 and 280, then 350, 450, 550, 650, 693 (the first seven skills at 99), 800, 891 (nine at 99), 1,000 and 1,089 (all eleven at 99); the first item of each of the eight tiers; collection log 12, 24, 36, 48 and 60; the first mastery 10. Reward: gold, and the milestone is shown on your hiscore entry.
 5. **Supply caches** (session 11): half the goal's worth in gold is certain, and one draw adds more: a plain cache (half the time, +30%), a stocked one (3 in 10, +50% as the best food you are sold, for a fighter), a rich one (3 in 20, +100%) or a lucky one (1 in 20, +200%). On average a cache pays 1.05 times the goal's gold, so the economy holds, and opening one is a small moment of its own.
 
 ### Notable moments
@@ -504,30 +568,60 @@ Every level 1 to 99 of every skill unlocks something: an action, a recipe, a tie
 | **24** Deep pike pool | **49** Angler's eye X (Rare and Legendary finds 4% likelier) | **74** Deep ember char pool | **99** Grandmaster angler (+15% chance of an extra item) |
 | **25** Angler's eye V (Rare and Legendary finds 8% likelier) | **50** Practised hands X (mastery 3% faster) | **75** Quick cast XVI (1.25% faster) |  |
 
+### Runecraft
+
+| Levels 1–25 | Levels 26–50 | Levels 51–75 | Levels 76–99 |
+| --- | --- | --- | --- |
+| **1** Spark stone | **26** Practised hands V (mastery 6% faster) | **51** Quick draw XI (1.25% faster) | **76** Plenty XVI (+1.5% chance of an extra item) |
+| **2** Quick draw I (2.5% faster) | **27** Quick draw VI (2.5% faster) | **52** Plenty XI (+1.5% chance of an extra item) | **77** Seer's eye XVI (Rare and Legendary finds 4% likelier) |
+| **3** Plenty I (+3% chance of an extra item) | **28** Plenty VI (+3% chance of an extra item) | **53** Seer's eye XI (Rare and Legendary finds 4% likelier) | **78** Practised hands XVI (mastery 3% faster) |
+| **4** Seer's eye I (Rare and Legendary finds 8% likelier) | **29** Seer's eye VI (Rare and Legendary finds 8% likelier) | **54** Practised hands XI (mastery 3% faster) | **79** Quick draw XVII (1.25% faster) |
+| **5** Ancient spark stone | **30** Earth stone | **55** Star stone | **80** Plenty XVII (+1.5% chance of an extra item) |
+| **6** Practised hands I (mastery 6% faster) | **31** Practised hands VI (mastery 6% faster) | **56** Quick draw XII (1.25% faster) | **81** Seer's eye XVII (Rare and Legendary finds 4% likelier) |
+| **7** Quick draw II (2.5% faster) | **32** Quick draw VII (2.5% faster) | **57** Plenty XII (+1.5% chance of an extra item) | **82** Practised hands XVII (mastery 3% faster) |
+| **8** Plenty II (+3% chance of an extra item) | **33** Plenty VII (+3% chance of an extra item) | **58** Seer's eye XII (Rare and Legendary finds 4% likelier) | **83** Quick draw XVIII (1.25% faster) |
+| **9** Seer's eye II (Rare and Legendary finds 8% likelier) | **34** Ancient earth stone | **59** Ancient star stone | **84** Plenty XVIII (+1.5% chance of an extra item) |
+| **10** Gale stone | **35** Seer's eye VII (Rare and Legendary finds 8% likelier) | **60** Practised hands XII (mastery 3% faster) | **85** Dawn stone |
+| **11** Practised hands II (mastery 6% faster) | **36** Practised hands VII (mastery 6% faster) | **61** Quick draw XIII (1.25% faster) | **86** Seer's eye XVIII (Rare and Legendary finds 4% likelier) |
+| **12** Quick draw III (2.5% faster) | **37** Quick draw VIII (2.5% faster) | **62** Plenty XIII (+1.5% chance of an extra item) | **87** Practised hands XVIII (mastery 3% faster) |
+| **13** Plenty III (+3% chance of an extra item) | **38** Plenty VIII (+3% chance of an extra item) | **63** Seer's eye XIII (Rare and Legendary finds 4% likelier) | **88** Quick draw XIX (1.25% faster) |
+| **14** Ancient gale stone | **39** Seer's eye VIII (Rare and Legendary finds 8% likelier) | **64** Practised hands XIII (mastery 3% faster) | **89** Ancient dawn stone |
+| **15** Seer's eye III (Rare and Legendary finds 8% likelier) | **40** Moon stone; Master runecrafter (+10% chance of an extra item) | **65** Quick draw XIV (1.25% faster) | **90** Plenty XIX (+1.5% chance of an extra item) |
+| **16** Practised hands III (mastery 6% faster) | **41** Practised hands VIII (mastery 3% faster) | **66** Plenty XIV (+1.5% chance of an extra item) | **91** Seer's eye XIX (Rare and Legendary finds 4% likelier) |
+| **17** Quick draw IV (2.5% faster) | **42** Quick draw IX (1.25% faster) | **67** Seer's eye XIV (Rare and Legendary finds 4% likelier) | **92** Practised hands XIX (mastery 3% faster) |
+| **18** Plenty IV (+3% chance of an extra item) | **43** Plenty IX (+1.5% chance of an extra item) | **68** Practised hands XIV (mastery 3% faster) | **93** Quick draw XX (1.25% faster) |
+| **19** Seer's eye IV (Rare and Legendary finds 8% likelier) | **44** Ancient moon stone | **69** Quick draw XV (1.25% faster) | **94** Plenty XX (+1.5% chance of an extra item) |
+| **20** Tide stone | **45** Seer's eye IX (Rare and Legendary finds 4% likelier) | **70** Ember stone | **95** Seer's eye XX (Rare and Legendary finds 4% likelier) |
+| **21** Practised hands IV (mastery 6% faster) | **46** Practised hands IX (mastery 3% faster) | **71** Plenty XV (+1.5% chance of an extra item) | **96** Practised hands XX (mastery 3% faster) |
+| **22** Quick draw V (2.5% faster) | **47** Quick draw X (1.25% faster) | **72** Seer's eye XV (Rare and Legendary finds 4% likelier) | **97** Quick draw XXI (1.25% faster) |
+| **23** Plenty V (+3% chance of an extra item) | **48** Plenty X (+1.5% chance of an extra item) | **73** Practised hands XV (mastery 3% faster) | **98** Plenty XXI (+1.5% chance of an extra item) |
+| **24** Ancient tide stone | **49** Seer's eye X (Rare and Legendary finds 4% likelier) | **74** Ancient ember stone | **99** Grandmaster runecrafter (+15% chance of an extra item) |
+| **25** Seer's eye V (Rare and Legendary finds 8% likelier) | **50** Practised hands X (mastery 3% faster) | **75** Quick draw XVI (1.25% faster) |  |
+
 ### Smithing
 
 | Levels 1–25 | Levels 26–50 | Levels 51–75 | Levels 76–99 |
 | --- | --- | --- | --- |
-| **1** Copper bar | **26** Iron legs | **51** Practised hands IV (mastery 4% faster) | **76** Embersteel legs |
+| **1** Copper bar; Copper whetstones | **26** Iron legs | **51** Practised hands IV (mastery 4% faster) | **76** Embersteel legs |
 | **2** Copper sword | **27** Smith's eye II (Rare and Legendary finds 8% likelier) | **52** Steady forge V (1.5% faster) | **77** Steady forge VIII (1.5% faster) |
 | **3** Copper staff | **28** Iron body | **53** Thrifty V (2% chance to save an ingredient) | **78** Embersteel body |
 | **4** Copper bow | **29** Practised hands II (mastery 8% faster) | **54** Smith's eye V (Rare and Legendary finds 4% likelier) | **79** Thrifty VIII (2% chance to save an ingredient) |
-| **5** Steady forge I (3% faster) | **30** Steel bar | **55** Star-iron bar | **80** Smith's eye VIII (Rare and Legendary finds 4% likelier) |
+| **5** Steady forge I (3% faster) | **30** Steel bar; Steel whetstones; Steel key | **55** Star-iron bar; Star-iron whetstones; Star-iron key | **80** Smith's eye VIII (Rare and Legendary finds 4% likelier) |
 | **6** Copper helm | **31** Steel sword | **56** Star-iron sword | **81** Practised hands VIII (mastery 4% faster) |
 | **7** Copper legs | **32** Steel staff | **57** Star-iron staff | **82** Steady forge IX (1.5% faster) |
 | **8** Thrifty I (4% chance to save an ingredient) | **33** Steel bow | **58** Star-iron bow | **83** Thrifty IX (2% chance to save an ingredient) |
 | **9** Copper body | **34** Steady forge III (3% faster) | **59** Practised hands V (mastery 4% faster) | **84** Smith's eye IX (Rare and Legendary finds 4% likelier) |
-| **10** Bronze bar | **35** Steel helm | **60** Star-iron helm | **85** Dawnsteel bar |
+| **10** Bronze bar; Bronze whetstones; Bronze key | **35** Steel helm | **60** Star-iron helm | **85** Dawnsteel bar; Dawnsteel whetstones; Dawnsteel key |
 | **11** Bronze sword | **36** Steel legs | **61** Star-iron legs | **86** Dawnsteel sword |
 | **12** Bronze staff | **37** Thrifty III (4% chance to save an ingredient) | **62** Steady forge VI (1.5% faster) | **87** Dawnsteel staff |
 | **13** Bronze bow | **38** Steel body | **63** Star-iron body | **88** Dawnsteel bow |
 | **14** Smith's eye I (Rare and Legendary finds 8% likelier) | **39** Smith's eye III (Rare and Legendary finds 8% likelier) | **64** Thrifty VI (2% chance to save an ingredient) | **89** Practised hands IX (mastery 4% faster) |
-| **15** Bronze helm | **40** Moonsilver bar; Master smith (8% chance to save an ingredient) | **65** Smith's eye VI (Rare and Legendary finds 4% likelier) | **90** Dawnsteel helm |
+| **15** Bronze helm | **40** Moonsilver bar; Moonsilver whetstones; Moonsilver key; Master smith (8% chance to save an ingredient) | **65** Smith's eye VI (Rare and Legendary finds 4% likelier) | **90** Dawnsteel helm |
 | **16** Bronze legs | **41** Moonsilver sword | **66** Practised hands VI (mastery 4% faster) | **91** Dawnsteel legs |
 | **17** Practised hands I (mastery 8% faster) | **42** Moonsilver staff | **67** Steady forge VII (1.5% faster) | **92** Steady forge X (1.5% faster) |
 | **18** Bronze body | **43** Moonsilver bow | **68** Thrifty VII (2% chance to save an ingredient) | **93** Dawnsteel body |
 | **19** Steady forge II (3% faster) | **44** Practised hands III (mastery 4% faster) | **69** Smith's eye VII (Rare and Legendary finds 4% likelier) | **94** Thrifty X (2% chance to save an ingredient) |
-| **20** Iron bar | **45** Moonsilver helm | **70** Embersteel bar | **95** Smith's eye X (Rare and Legendary finds 4% likelier) |
+| **20** Iron bar; Iron whetstones; Iron key | **45** Moonsilver helm | **70** Embersteel bar; Embersteel whetstones; Embersteel key | **95** Smith's eye X (Rare and Legendary finds 4% likelier) |
 | **21** Iron sword | **46** Moonsilver legs | **71** Embersteel sword | **96** Practised hands X (mastery 4% faster) |
 | **22** Iron staff | **47** Steady forge IV (1.5% faster) | **72** Embersteel staff | **97** Steady forge XI (1.5% faster) |
 | **23** Iron bow | **48** Moonsilver body | **73** Embersteel bow | **98** Thrifty XI (2% chance to save an ingredient) |
@@ -563,6 +657,36 @@ Every level 1 to 99 of every skill unlocks something: an action, a recipe, a tie
 | **23** Practised hands V (mastery 8% faster) | **48** Practised hands X (mastery 4% faster) | **73** Thrifty XVI (2% chance to save an ingredient) | **98** Practised hands XXI (mastery 4% faster) |
 | **24** Steady flame VI (3% faster) | **49** Steady flame XI (1.5% faster) | **74** Cook's eye XVI (Rare and Legendary finds 4% likelier) | **99** Grandmaster cook (10% chance to save an ingredient) |
 | **25** Pike pie | **50** Thrifty XI (2% chance to save an ingredient) | **75** Char pie |  |
+
+### Fletching
+
+| Levels 1–25 | Levels 26–50 | Levels 51–75 | Levels 76–99 |
+| --- | --- | --- | --- |
+| **1** Copper arrows | **26** Fletcher's eye VI (Rare and Legendary finds 8% likelier) | **51** Thrifty XII (2% chance to save an ingredient) | **76** Fine fletching XVIII (+1.5% chance of an extra item) |
+| **2** Fine fletching I (+3% chance of an extra item) | **27** Practised hands VI (mastery 8% faster) | **52** Fletcher's eye XII (Rare and Legendary finds 4% likelier) | **77** Thrifty XVIII (2% chance to save an ingredient) |
+| **3** Thrifty I (4% chance to save an ingredient) | **28** Fine fletching VII (+3% chance of an extra item) | **53** Practised hands XII (mastery 4% faster) | **78** Fletcher's eye XVIII (Rare and Legendary finds 4% likelier) |
+| **4** Fletcher's eye I (Rare and Legendary finds 8% likelier) | **29** Thrifty VII (4% chance to save an ingredient) | **54** Fine fletching XIII (+1.5% chance of an extra item) | **79** Practised hands XVIII (mastery 4% faster) |
+| **5** Practised hands I (mastery 8% faster) | **30** Steel arrows | **55** Star-iron arrows | **80** Fine fletching XIX (+1.5% chance of an extra item) |
+| **6** Fine fletching II (+3% chance of an extra item) | **31** Fletcher's eye VII (Rare and Legendary finds 8% likelier) | **56** Thrifty XIII (2% chance to save an ingredient) | **81** Thrifty XIX (2% chance to save an ingredient) |
+| **7** Thrifty II (4% chance to save an ingredient) | **32** Practised hands VII (mastery 8% faster) | **57** Fletcher's eye XIII (Rare and Legendary finds 4% likelier) | **82** Fletcher's eye XIX (Rare and Legendary finds 4% likelier) |
+| **8** Fletcher's eye II (Rare and Legendary finds 8% likelier) | **33** Fine fletching VIII (+3% chance of an extra item) | **58** Practised hands XIII (mastery 4% faster) | **83** Practised hands XIX (mastery 4% faster) |
+| **9** Practised hands II (mastery 8% faster) | **34** Thrifty VIII (4% chance to save an ingredient) | **59** Fine fletching XIV (+1.5% chance of an extra item) | **84** Fine fletching XX (+1.5% chance of an extra item) |
+| **10** Bronze arrows | **35** Fletcher's eye VIII (Rare and Legendary finds 8% likelier) | **60** Thrifty XIV (2% chance to save an ingredient) | **85** Dawnsteel arrows |
+| **11** Fine fletching III (+3% chance of an extra item) | **36** Practised hands VIII (mastery 8% faster) | **61** Fletcher's eye XIV (Rare and Legendary finds 4% likelier) | **86** Thrifty XX (2% chance to save an ingredient) |
+| **12** Thrifty III (4% chance to save an ingredient) | **37** Fine fletching IX (+3% chance of an extra item) | **62** Practised hands XIV (mastery 4% faster) | **87** Fletcher's eye XX (Rare and Legendary finds 4% likelier) |
+| **13** Fletcher's eye III (Rare and Legendary finds 8% likelier) | **38** Thrifty IX (4% chance to save an ingredient) | **63** Fine fletching XV (+1.5% chance of an extra item) | **88** Practised hands XX (mastery 4% faster) |
+| **14** Practised hands III (mastery 8% faster) | **39** Fletcher's eye IX (Rare and Legendary finds 8% likelier) | **64** Thrifty XV (2% chance to save an ingredient) | **89** Fine fletching XXI (+1.5% chance of an extra item) |
+| **15** Fine fletching IV (+3% chance of an extra item) | **40** Moonsilver arrows; Master fletcher (8% chance to save an ingredient) | **65** Fletcher's eye XV (Rare and Legendary finds 4% likelier) | **90** Thrifty XXI (2% chance to save an ingredient) |
+| **16** Thrifty IV (4% chance to save an ingredient) | **41** Practised hands IX (mastery 4% faster) | **66** Practised hands XV (mastery 4% faster) | **91** Fletcher's eye XXI (Rare and Legendary finds 4% likelier) |
+| **17** Fletcher's eye IV (Rare and Legendary finds 8% likelier) | **42** Fine fletching X (+1.5% chance of an extra item) | **67** Fine fletching XVI (+1.5% chance of an extra item) | **92** Practised hands XXI (mastery 4% faster) |
+| **18** Practised hands IV (mastery 8% faster) | **43** Thrifty X (2% chance to save an ingredient) | **68** Thrifty XVI (2% chance to save an ingredient) | **93** Fine fletching XXII (+1.5% chance of an extra item) |
+| **19** Fine fletching V (+3% chance of an extra item) | **44** Fletcher's eye X (Rare and Legendary finds 4% likelier) | **69** Fletcher's eye XVI (Rare and Legendary finds 4% likelier) | **94** Thrifty XXII (2% chance to save an ingredient) |
+| **20** Iron arrows | **45** Practised hands X (mastery 4% faster) | **70** Embersteel arrows | **95** Fletcher's eye XXII (Rare and Legendary finds 4% likelier) |
+| **21** Thrifty V (4% chance to save an ingredient) | **46** Fine fletching XI (+1.5% chance of an extra item) | **71** Practised hands XVI (mastery 4% faster) | **96** Practised hands XXII (mastery 4% faster) |
+| **22** Fletcher's eye V (Rare and Legendary finds 8% likelier) | **47** Thrifty XI (2% chance to save an ingredient) | **72** Fine fletching XVII (+1.5% chance of an extra item) | **97** Fine fletching XXIII (+1.5% chance of an extra item) |
+| **23** Practised hands V (mastery 8% faster) | **48** Fletcher's eye XI (Rare and Legendary finds 4% likelier) | **73** Thrifty XVII (2% chance to save an ingredient) | **98** Thrifty XXIII (2% chance to save an ingredient) |
+| **24** Fine fletching VI (+3% chance of an extra item) | **49** Practised hands XI (mastery 4% faster) | **74** Fletcher's eye XVII (Rare and Legendary finds 4% likelier) | **99** Grandmaster fletcher (10% chance to save an ingredient) |
+| **25** Thrifty VI (4% chance to save an ingredient) | **50** Fine fletching XII (+1.5% chance of an extra item) | **75** Practised hands XVII (mastery 4% faster) |  |
 
 ### Melee
 
@@ -782,8 +906,10 @@ Unlocks
 PASS  Woodcutting: every level 1-99 unlocks something
 PASS  Mining: every level 1-99 unlocks something
 PASS  Fishing: every level 1-99 unlocks something
+PASS  Runecraft: every level 1-99 unlocks something
 PASS  Smithing: every level 1-99 unlocks something
 PASS  Cooking: every level 1-99 unlocks something
+PASS  Fletching: every level 1-99 unlocks something
 PASS  Melee: every level 1-99 unlocks something
 PASS  Archery: every level 1-99 unlocks something
 PASS  Magic: every level 1-99 unlocks something
@@ -838,6 +964,22 @@ fishing tier 7: Ember char shallows 39820 · Deep ember char pool 34528 (+100% m
 PASS  fishing tier 7 offers two choices within 20%
 fishing tier 8: Dawn sturgeon shallows 50971 · Deep dawn sturgeon pool 44141 (+100% materials) · Ember char shallows mastered 45078
 PASS  fishing tier 8 offers two choices within 20%
+runecraft tier 1: Spark stone 6046 · Ancient spark stone 5130 (+100% materials)
+PASS  runecraft tier 1 offers two choices within 20%
+runecraft tier 2: Gale stone 8604 · Ancient gale stone 7572 (+100% materials) · Spark stone mastered 7102
+PASS  runecraft tier 2 offers two choices within 20%
+runecraft tier 3: Tide stone 11653 · Ancient tide stone 10159 (+100% materials) · Gale stone mastered 10044
+PASS  runecraft tier 3 offers two choices within 20%
+runecraft tier 4: Earth stone 15600 · Ancient earth stone 13508 (+100% materials) · Tide stone mastered 13525
+PASS  runecraft tier 4 offers two choices within 20%
+runecraft tier 5: Moon stone 22919 · Ancient moon stone 19906 (+100% materials) · Earth stone mastered 18009
+PASS  runecraft tier 5 offers two choices within 20%
+runecraft tier 6: Star stone 30448 · Ancient star stone 26349 (+100% materials) · Moon stone mastered 26114
+PASS  runecraft tier 6 offers two choices within 20%
+runecraft tier 7: Ember stone 39820 · Ancient ember stone 34528 (+100% materials) · Star stone mastered 34577
+PASS  runecraft tier 7 offers two choices within 20%
+runecraft tier 8: Dawn stone 50971 · Ancient dawn stone 44141 (+100% materials) · Ember stone mastered 45078
+PASS  runecraft tier 8 offers two choices within 20%
 PASS  Mastery pays: at woodcutting 11, Pine tree (mastery 8) earns 90% of the best fresh action of its kind
 PASS  Mastery pays: at woodcutting 15, Old pine (mastery 8) earns 86% of the best fresh action of its kind
 PASS  Mastery pays: at woodcutting 20, Ash tree (mastery 7) earns 92% of the best fresh action of its kind
@@ -886,6 +1028,22 @@ PASS  Mastery pays: at fishing 80, Ember char shallows (mastery 10) earns 123% o
 PASS  Mastery pays: at fishing 84, Deep ember char pool (mastery 5) earns 111% of the best fresh action of its kind
 PASS  Mastery pays: at fishing 95, Dawn sturgeon shallows (mastery 10) earns 122% of the best fresh action of its kind
 PASS  Mastery pays: at fishing 99, Deep dawn sturgeon pool (mastery 5) earns 111% of the best fresh action of its kind
+PASS  Mastery pays: at runecraft 11, Spark stone (mastery 8) earns 90% of the best fresh action of its kind
+PASS  Mastery pays: at runecraft 15, Ancient spark stone (mastery 8) earns 86% of the best fresh action of its kind
+PASS  Mastery pays: at runecraft 20, Gale stone (mastery 7) earns 92% of the best fresh action of its kind
+PASS  Mastery pays: at runecraft 24, Ancient gale stone (mastery 7) earns 92% of the best fresh action of its kind
+PASS  Mastery pays: at runecraft 30, Tide stone (mastery 9) earns 96% of the best fresh action of its kind
+PASS  Mastery pays: at runecraft 34, Ancient tide stone (mastery 6) earns 90% of the best fresh action of its kind
+PASS  Mastery pays: at runecraft 40, Earth stone (mastery 10) earns 88% of the best fresh action of its kind
+PASS  Mastery pays: at runecraft 44, Ancient earth stone (mastery 6) earns 81% of the best fresh action of its kind
+PASS  Mastery pays: at runecraft 50, Moon stone (mastery 10) earns 124% of the best fresh action of its kind
+PASS  Mastery pays: at runecraft 54, Ancient moon stone (mastery 6) earns 115% of the best fresh action of its kind
+PASS  Mastery pays: at runecraft 65, Star stone (mastery 10) earns 124% of the best fresh action of its kind
+PASS  Mastery pays: at runecraft 69, Ancient star stone (mastery 5) earns 112% of the best fresh action of its kind
+PASS  Mastery pays: at runecraft 80, Ember stone (mastery 10) earns 123% of the best fresh action of its kind
+PASS  Mastery pays: at runecraft 84, Ancient ember stone (mastery 5) earns 111% of the best fresh action of its kind
+PASS  Mastery pays: at runecraft 95, Dawn stone (mastery 10) earns 122% of the best fresh action of its kind
+PASS  Mastery pays: at runecraft 99, Ancient dawn stone (mastery 5) earns 111% of the best fresh action of its kind
 Smithing: every recipe in a tier pays the same XP an hour; bars are quicker to sell, gear is worth 40% more than its bars.
 PASS  Smithing recipes within 10% of their tier rate
 
@@ -1030,7 +1188,19 @@ Day 160 income 1,151,011 · food 137,772 (12%) · enlargement 18 costs 850,000
 PASS  Day 160: a day's gold covers a day of food and enlargement 18
 Day 180 income 1,151,011 · food 137,772 (12%) · enlargement 19 costs 900,000
 PASS  Day 180: a day's gold covers a day of food and enlargement 19
-Costs at 70% of each day's net gold would be: 50000, 100000, 95000, 110000, 230000, 240000, 245000, 255000, 280000, 305000, 340000, 450000, 460000, 650000, 820000, 710000, 710000, 710000, 710000
+Day 200 income 1,151,011 · food 137,772 (12%) · enlargement 20 costs 925,000
+PASS  Day 200: a day's gold covers a day of food and enlargement 20
+Day 220 income 1,151,011 · food 137,772 (12%) · enlargement 21 costs 950,000
+PASS  Day 220: a day's gold covers a day of food and enlargement 21
+Day 240 income 1,151,011 · food 137,772 (12%) · enlargement 22 costs 975,000
+PASS  Day 240: a day's gold covers a day of food and enlargement 22
+Day 260 income 1,151,011 · food 137,772 (12%) · enlargement 23 costs 1,000,000
+PASS  Day 260: a day's gold covers a day of food and enlargement 23
+Day 280 income 1,151,011 · food 137,772 (12%) · enlargement 24 costs 1,000,000
+PASS  Day 280: a day's gold covers a day of food and enlargement 24
+Day 300 income 1,151,011 · food 137,772 (12%) · enlargement 25 costs 1,000,000
+PASS  Day 300: a day's gold covers a day of food and enlargement 25
+Costs at 70% of each day's net gold would be: 50000, 100000, 95000, 110000, 230000, 240000, 245000, 255000, 280000, 305000, 340000, 450000, 460000, 650000, 820000, 710000, 710000, 710000, 710000, 710000, 710000, 710000, 710000, 710000, 710000
 
 Supply: can mining keep the forge fed?
 Tier 1: smelting without pause needs mining 69% of the time on a fresh vein, 42% on a mastered deep seam
@@ -1090,4 +1260,74 @@ PASS  Tier 7: Fishing pays at least 80% of Woodcutting
 Tier 8: an hour of Woodcutting sells for 58860; an hour of Fishing, cooked and eaten, saves 53827 at the vendor
 PASS  Tier 8: Fishing pays at least 80% of Woodcutting
 Supply: cooking without pause takes two fish and one log every three of the tier's units, so one Gathering lane fishing and the fire's second lane chopping half the time keep the Artisan lane cooking.
+
+Supplies (session 14)
+PASS  Hollow rat: with supplies, magic still wins
+Hollow rat (magic, level 1): +3% XP an hour; supplies worth 0 an hour bring 32
+PASS  Hollow rat: magic's supply pays for itself
+PASS  Goblin slinger: with supplies, melee still wins
+Goblin slinger (melee, level 3): +3% XP an hour; supplies worth 0 an hour bring 32
+PASS  Goblin slinger: melee's supply pays for itself
+PASS  Marsh wisp: with supplies, archery still wins
+Marsh wisp (archery, level 5): +5% XP an hour; supplies worth 0 an hour bring 56
+PASS  Marsh wisp: archery's supply pays for itself
+PASS  Orc raider: with supplies, magic still wins
+Orc raider (magic, level 14): +6% XP an hour; supplies worth 0 an hour bring 189
+PASS  Orc raider: magic's supply pays for itself
+PASS  Orc bowman: with supplies, melee still wins
+Orc bowman (melee, level 18): +6% XP an hour; supplies worth 0 an hour bring 242
+PASS  Orc bowman: melee's supply pays for itself
+PASS  Grave wight: with supplies, archery still wins
+Grave wight (archery, level 23): +8% XP an hour; supplies worth 333 an hour bring 554
+PASS  Grave wight: archery's supply pays for itself
+PASS  Hill troll: with supplies, magic still wins
+Hill troll (magic, level 28): +4% XP an hour; supplies worth 330 an hour bring 381
+PASS  Hill troll: magic's supply pays for itself
+PASS  Fell huntsman: with supplies, melee still wins
+Fell huntsman (melee, level 36): +6% XP an hour; supplies worth 616 an hour bring 1035
+PASS  Fell huntsman: melee's supply pays for itself
+PASS  Bog lurker: with supplies, magic still wins
+Bog lurker (magic, level 41): +7% XP an hour; supplies worth 1156 an hour bring 1679
+PASS  Bog lurker: magic's supply pays for itself
+PASS  Reed stalker: with supplies, melee still wins
+Reed stalker (melee, level 45): +10% XP an hour; supplies worth 733 an hour bring 2152
+PASS  Reed stalker: melee's supply pays for itself
+PASS  Drowned acolyte: with supplies, archery still wins
+Drowned acolyte (archery, level 50): +5% XP an hour; supplies worth 987 an hour bring 1171
+PASS  Drowned acolyte: archery's supply pays for itself
+PASS  Mire hulk: with supplies, magic still wins
+Mire hulk (magic, level 56): +7% XP an hour; supplies worth 1725 an hour bring 2071
+PASS  Mire hulk: magic's supply pays for itself
+PASS  Fen reaver: with supplies, melee still wins
+Fen reaver (melee, level 61): +8% XP an hour; supplies worth 1092 an hour bring 2452
+PASS  Fen reaver: melee's supply pays for itself
+PASS  Bog witch: with supplies, archery still wins
+Bog witch (archery, level 66): +7% XP an hour; supplies worth 1741 an hour bring 2294
+PASS  Bog witch: archery's supply pays for itself
+PASS  Ash troll: with supplies, magic still wins
+Ash troll (magic, level 71): +11% XP an hour; supplies worth 2559 an hour bring 4587
+PASS  Ash troll: magic's supply pays for itself
+PASS  Peak slinger: with supplies, melee still wins
+Peak slinger (melee, level 76): +8% XP an hour; supplies worth 1438 an hour bring 3333
+PASS  Peak slinger: melee's supply pays for itself
+PASS  Ash shaman: with supplies, archery still wins
+Ash shaman (archery, level 81): +8% XP an hour; supplies worth 2466 an hour bring 3725
+PASS  Ash shaman: archery's supply pays for itself
+PASS  Obsidian golem: with supplies, magic still wins
+Obsidian golem (magic, level 86): +11% XP an hour; supplies worth 3691 an hour bring 6412
+PASS  Obsidian golem: magic's supply pays for itself
+PASS  Sky reaver: with supplies, melee still wins
+Sky reaver (melee, level 91): +12% XP an hour; supplies worth 2300 an hour bring 6443
+PASS  Sky reaver: melee's supply pays for itself
+PASS  Ember sorcerer: with supplies, archery still wins
+Ember sorcerer (archery, level 96): +10% XP an hour; supplies worth 3654 an hour bring 5632
+PASS  Ember sorcerer: archery's supply pays for itself
+PASS  Fletching and Smithing supply recipes within 10% of their tier rate
+PASS  Tier 3: a draw of runes sells for about what a vein's ore does (16 and 14)
+PASS  Tier 4: a draw of runes sells for about what a vein's ore does (32 and 30)
+PASS  Tier 5: a draw of runes sells for about what a vein's ore does (64 and 60)
+PASS  Tier 6: a draw of runes sells for about what a vein's ore does (104 and 100)
+PASS  Tier 7: a draw of runes sells for about what a vein's ore does (160 and 160)
+PASS  Tier 8: a draw of runes sells for about what a vein's ore does (240 and 240)
+Supply: an hour of Fletching makes arrows for two to three hours of fights at the same tier; an hour of Runecraft draws runes for three or more.
 ```

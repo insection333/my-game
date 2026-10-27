@@ -83,7 +83,7 @@ The fish family the owner approved on 27 October 2026 (`icons/fish.tsx`, `fish-l
 
 ## Supplies (session 14)
 
-The owner approved the supplies family's references on 27 October 2026 (`icons/supplies.tsx`): a fanned bundle of three arrows (the tier's metal at the heads, its wood in the shafts), a rune (a flat stone with its carved mark glowing in the tier's light), a whetstone (a gritty stone bound in the tier's metal) and a standing-stone key (the tier's metal, a rune-stone set in its bow). Step 14 draws all eight tiers of each to this standard.
+The owner approved the supplies family's references on 27 October 2026 (`icons/supplies.tsx`): a fanned bundle of three arrows (the tier's metal at the heads, its wood in the shafts), a rune (a flat stone with its carved mark glowing in the tier's light), a whetstone (a gritty stone bound in the tier's metal) and a standing-stone key (the tier's metal, a rune-stone set in its bow). Step 14 drew all eight tiers of each to it (`icons/supplies-index.tsx`): arrows in each tier's metal and wood; whetstones bound in its metal; each rune with its own carved mark in its own light (a spark's zigzag, a gale's streams, a tide's waves, the earth's hill, the moon's crescent, a star's rays, an ember's flame, the dawn's sun on the skyline); keys from bronze to dawnsteel, the tier's rune light in the stone of the bow. Fletching's finds are a fletcher's treasures (a heron's quill to the quiver of the wild hunt) and Runecraft's what turns up at the stones (a chalk stub to the ancients' star chart); its seal is a standing stone with a glowing mark, Fletching's an arrow.
 
 ## Seals that grow
 

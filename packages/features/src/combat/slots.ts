@@ -1,14 +1,14 @@
 // Combat's slots on the Combat page: the loadout, one row per foe with "Your odds", and the triangle
 // as it bears on your style.
 // Data comes out formatted; the shell draws it.
-import { fmt, GEAR_SLOTS, t, type GearSlot } from '@idle-clash/content';
+import { fmt, GEAR_SLOTS, midSentence, t, type GearSlot, type Style } from '@idle-clash/content';
 import { countOf, type State } from '@idle-clash/kernel';
 import type { Json, SlotFill } from '../define.ts';
 import { itemOf } from '../shared/catalog.ts';
 import { FOES, HITPOINTS, matchup, regionOf, STYLE_SKILLS, type Foe } from '../shared/combat/data.ts';
 import type { Odds } from '../shared/combat/fight.ts';
 import { oddsFor } from '../shared/combat/odds.ts';
-import { healthAt, healthMax, mealsOf, styleOf, wornIn } from '../shared/combat/state.ts';
+import { healthAt, healthMax, mealsOf, styleOf, supplyOf, wornIn } from '../shared/combat/state.ts';
 import { skillLevel } from '../shared/skill.ts';
 import { wearNeeds } from './gear.ts';
 import { FEATURE } from './rules.ts';
@@ -27,6 +27,16 @@ export interface LoadoutSlot {
   name: string;
   choices: GearChoice[];
 }
+/** The supply in the figure's other hand: what is used, how many are left, or what makes it. */
+export interface SupplyView {
+  item: string | null;
+  label: string;
+  name: string;
+  /** "+9% damage, one a foe" or where to get some. */
+  line: string;
+  /** The skill that makes the style's supply. */
+  skill: string;
+}
 export interface LoadoutView {
   style: string | null;
   /** The style's id, for its seal. */
@@ -35,6 +45,7 @@ export interface LoadoutView {
   health: number;
   healthText: string;
   food: string;
+  supply: SupplyView | null;
 }
 export interface FoeRow {
   foe: { feature: string; id: string };
@@ -111,11 +122,36 @@ function loadout(state: State, now: number): LoadoutView {
     slots,
     health: health / most,
     healthText: t('combat.health', { now: fmt.int(health), most: fmt.int(most) }),
+    supply: style ? supplyView(state, style) : null,
     food: meals.length
       ? t('combat.carrying', {
           food: meals.map((m) => t('action.gives', { item: t(`item.${m.item}`), count: fmt.int(m.count) })).join(', '),
         })
       : t('combat.noFood'),
+  };
+}
+
+/** Which skill makes each style's supply, and its name. */
+const MAKER = { melee: 'smithing', archery: 'fletching', magic: 'runecraft' } as const;
+const SUPPLY_NAME = { melee: 'supply.melee', archery: 'supply.archery', magic: 'supply.magic' } as const;
+
+function supplyView(state: State, style: Style): SupplyView {
+  const s = supplyOf(state, style);
+  const label = t('gear.supply');
+  if (!s)
+    return {
+      item: null,
+      label,
+      name: t('supply.none', { supply: midSentence(t(SUPPLY_NAME[style])) }),
+      line: t('supply.makes', { skill: t(`skill.${MAKER[style]}`) }),
+      skill: MAKER[style],
+    };
+  return {
+    item: s.item,
+    label,
+    name: t('action.gives', { item: t(`item.${s.item}`), count: fmt.int(countOf(state, s.item)) }),
+    line: t('supply.line', { pct: fmt.int(s.pct) }),
+    skill: MAKER[style],
   };
 }
 
