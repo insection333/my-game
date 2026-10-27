@@ -124,14 +124,21 @@ The list, then one page per skill (`/skills/woodcutting`).
 
 ### Combat
 
+Two tabs under the title: **Fight** (`/combat`: the loadout, the foes and the food) and **Expeditions** (`/combat/expeditions`, session 16).
+
 | # | Section (slot) | Filled by | Notes |
 | --- | --- | --- | --- |
 | 1 | `combat.loadout` | combat | The gear worn on a figure of a person: the helm on the head, the body on the chest, the legs on the legs, the weapon in the right hand and the style's supply in the left (each a tile with the piece's icon, named for screen readers and on hover; an empty one names its slot; the supply's leads to the skill that makes it). Beside the figure (below it on a narrow panel): your style with its seal, the triangle as it bears on you (slot 4), health, the food carried, and the supply in use with its damage. Each slot opens a sheet of the matching gear in the Storehouse to wear or take off; an empty weapon slot with nothing to wear leads to Smithing |
 | 2 | `combat.foes` | combat | One region at a time, under tabs across the top of the page (the march, the Sunken Fen, the Ashen Peaks; every region shown, so the next is always in view), and in it one tier at a time under tabs (the newest with a foe open first). One row per foe: icon, name, style (as a word, never colour alone), level, the triangle against your style, Your odds verdict with XP, food and gold an hour, Fight and Next. Locked foes show the Hitpoints level that opens them; without a weapon each says to wear one |
 | 3 | `combat.food` | storehouse | The vendor's two best foods for your Hitpoints and the next to open, one short row each: icon, name with how many you carry, what it heals and costs, and Buy 10; an older food still carried stays listed |
 | 4 | `combat.triangle` | combat | Inside the loadout, never a box of its own: what your style beats and loses to, each with its seal; without a weapon, the whole key (Melee beats Archery, Archery beats Magic, Magic beats Melee) |
+| 5 | `combat.expedition` | expeditions | Expeditions: your marks; tabs for the region (each with its vista) and the length (1, 2, 4 or 8 h); the route that run would take (a line saying how long, how many fight stages and which boss; its twists, each with what it changes; the route as a ribbon, an hour a row: each stage's foe, any cache or camp, the fork, the boss); and the fork's two roads, each with what it changes and a button that sets out by it. Once set out: the run's region, length and road, its twists, a bar and "Stage 4 of 12", the ribbon with the stages done faded and the one under way ringed, the marks so far, and Carry on or Give up (which asks first) |
+| 6 | `combat.bosses` | expeditions | Expeditions: each boss, one row: icon, name, region, style, how often beaten, and Your odds or why not now (opens at a Hitpoints level, or fought today), with Fight once a day |
+| 7 | `combat.relics` | expeditions | Expeditions: your marks, and each relic, one row: icon, name, what it gives at its rank, its rank, and Raise for its next rank's marks; fourteen rows scroll inside their own box |
 
 - **At 390:** the loadout (the figure with your style, triangle and health beside it) and the first foes. **At 1,440:** the loadout with the food under it, and every foe of the tier beside them.
+- **Expeditions at 390:** the run (or the route to choose), then the bosses and the relics. **At 1,440:** the run beside the bosses and the relics.
+- **A run's homecoming** has its moment (the boss beaten takes the centre, otherwise a banner) and its story in the away recap and the notices: "Home from the Sunken Fen: the Drowned Warden beaten. Took the high pass, beat the Drowned Warden, found a sunken locket. 18 marks."
 - **Region and tier tabs** never scroll: on a narrow screen the regions shorten (March, Fen, Peaks) and the tiers show their first foe's icon, sharing the width.
 
 **Visible without scrolling** (checked by verify at 390 × 844 and 1,440 × 900; a slot no built feature fills yet is skipped):
@@ -139,6 +146,7 @@ The list, then one page per skill (`/skills/woodcutting`).
 | View | 390 × 844 | 1,440 × 900 |
 | --- | --- | --- |
 | /combat | `combat.loadout`, `combat.foes` | `combat.loadout`, `combat.foes`, `combat.food`, `combat.triangle` |
+| /combat/expeditions | `combat.expedition` | `combat.expedition`, `combat.bosses`, `combat.relics` |
 - **Newcomer:** an empty weapon slot reading "Forge a weapon in Smithing" that leads there; the hollow rat says "Wear a weapon first", and shows "Fair" once the sword is worn with First steps' ten loaves.
 - **Combat skills' pages** (Melee, Archery, Magic, Hitpoints) have no actions of their own: in place of the actions, "Trained by fighting on the Combat page" and Go to Combat; the ladder and finds as for any skill.
 
@@ -270,7 +278,7 @@ No later system adds a menu entry. The free sixth place stays free until the own
 | Guilds | A tab of Hiscores, which is renamed Realm when guilds arrive |
 | Player market | A tab of the Storehouse |
 | Letters | The notices tray |
-| Expeditions | A tab of Combat |
+| Expeditions | A tab of Combat (built in session 16: runs, bosses and relics) |
 | Seasons | A tab of Realm, with its own ladder |
 | Rekindling | A section of the Hearth, opened by a milestone |
 | The 48-hour upgrade, cosmetic donations | Settings |

@@ -2,7 +2,7 @@
 // gear worn, food carried, finds in the log, and all three lanes at work since 8 hours ago. A page
 // that holds its spec for a newcomer can still overflow once rows carry odds, pills and long names.
 import { XP_TABLE } from '@idle-clash/content';
-import { FEATURES } from '@idle-clash/features';
+import { FEATURES, routeView } from '@idle-clash/features';
 import { seeded, type Command, type State } from '@idle-clash/kernel';
 import type { Ctx } from '../../../apps/server/src/context.ts';
 
@@ -86,7 +86,19 @@ export function veteran(ctx: Ctx, base: State, now: number): State {
   const working = cmds.reduce((st, c) => ctx.engine.command(st, then, c, seeded(st.seed)).state, s);
   // Today's goals already made, so opening the Hearth sends nothing (which would end the time away).
   const goals = FEATURES.find((f) => f.id === 'goals')!;
-  return goals.routes.refresh.run(working, {}, now).state;
+  const ready = goals.routes.refresh.run(working, {}, now).state;
+  // A two-hour run into the march laid down and waiting to set out, a boss beaten, a relic raised.
+  const expeditions = FEATURES.find((f) => f.id === 'expeditions')!;
+  const route = routeView(ready, 'march', 2);
+  const set = expeditions.routes.setOut.run(ready, { region: 'march', hours: 2, road: route!.roads[0].id }, now).state;
+  const e = set.features.expeditions as Record<string, unknown>;
+  return {
+    ...set,
+    features: {
+      ...set.features,
+      expeditions: { ...e, marks: 34, relics: { 'relic-melee': 2 }, wins: { 'troll-chief': 1 } },
+    },
+  };
 }
 
 /** Other players for the hiscores: a dozen invented names at a spread of levels. */

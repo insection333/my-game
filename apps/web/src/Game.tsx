@@ -5,6 +5,7 @@ import { Hearth } from './pages/Hearth.tsx';
 import { Skill } from './pages/Skill.tsx';
 import { Skills } from './pages/Skills.tsx';
 import { Combat } from './pages/Combat.tsx';
+import { Expeditions, EXPEDITIONS_PATH } from './pages/Expeditions.tsx';
 import { Admin } from './pages/Admin.tsx';
 import { Hiscores } from './pages/Hiscores.tsx';
 import { Deeds, DEEDS_PATH } from './pages/Deeds.tsx';
@@ -18,6 +19,7 @@ function Page({ path }: { path: string }) {
   const skill = /^\/skills\/([a-z0-9-]+)$/.exec(path);
   if (skill) return <Skill id={skill[1]} />;
   if (path === '/combat') return <Combat />;
+  if (path === EXPEDITIONS_PATH) return <Expeditions />;
   if (path === '/storehouse' || path === '/storehouse/log') return <Storehouse path={path} />;
   if (path === '/hiscores') return <Hiscores />;
   if (path === DEEDS_PATH) return <Deeds />;

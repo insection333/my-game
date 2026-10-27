@@ -9,7 +9,9 @@ import {
   LENGTHS,
   RELIC_COSTS,
   RELICS,
+  FOE_WEIGHTS,
   ROADS,
+  RUN_PAY,
   SECOND_TWIST,
   STAGE_MARKS,
   STAGE_MINUTES,
@@ -35,16 +37,36 @@ export interface Route {
   fork: number;
 }
 
-/** The foes a run meets: the three strongest of the region that the fighter's Hitpoints level opens. */
-export const runFoes = (region: number, hpLevel: number) =>
-  FOES.filter((f) => f.region === region && f.hitpoints <= hpLevel).slice(-3);
+/** The foes a run meets: the three of the region a fighter fares best against (gold and XP an hour by
+ *  Your odds, none too strong while others are not), best first; for no fighter, the three strongest. */
+const foesCache = new Map<string, Foe[]>();
+export function runFoes(region: number, p: Fighter | null = null): Foe[] {
+  const key = JSON.stringify([region, p]);
+  if (!foesCache.has(key)) foesCache.set(key, rankFoes(region, p));
+  return foesCache.get(key)!;
+}
+function rankFoes(region: number, p: Fighter | null): Foe[] {
+  const open = FOES.filter((f) => f.region === region && f.hitpoints <= (p?.hpLevel ?? 99));
+  if (!p) return open.slice(-3).reverse();
+  const worth = (f: Foe) => {
+    const o = odds(p, f, rng(p.styleLevel * 31 + f.level), 300);
+    return (o.verdict === 'Too strong' ? -1e9 : 0) + o.goldPerHour + o.xpPerHour;
+  };
+  const w = new Map(open.map((f) => [f.id, worth(f)]));
+  return [...open].sort((a, b) => w.get(b.id)! - w.get(a.id)!).slice(0, 3);
+}
 
 /** A route drawn fresh: a foe for every stage, a cache and a camp in every hour, twists and two roads. */
-export function drawRoute(r: () => number, region: number, hours: number, hpLevel = 99): Route {
-  const foes = runFoes(region, hpLevel);
+export function drawRoute(r: () => number, region: number, hours: number, p: Fighter | null = null): Route {
+  const foes = runFoes(region, p);
+  const total = FOE_WEIGHTS.slice(0, foes.length).reduce((a, b) => a + b, 0);
+  const foeAt = (x: number) => {
+    let left = x * total;
+    return foes[FOE_WEIGHTS.findIndex((w) => (left -= w) < 0)] ?? foes[0];
+  };
   const n = hours * STAGES_PER_HOUR;
   const stages = Array.from({ length: n }, () => ({
-    foe: foes[Math.floor(r() * foes.length)].id,
+    foe: foeAt(r()).id,
     after: null as 'cache' | 'camp' | null,
   }));
   for (let h = 0; h < hours; h++) {
@@ -89,9 +111,9 @@ export function playRoute(route: Route, p: Fighter, road: string, r: () => numbe
       const f = fight(p, hard, r, health, food, 0, tw);
       t += f.seconds;
       health = f.health;
-      worth += f.dealt * xpPerDamage(foe) * product(mods, 'xp') * gpx - f.foodUsed * food.price;
+      worth += f.dealt * xpPerDamage(foe) * product(mods, 'xp') * RUN_PAY * gpx - f.foodUsed * food.price;
       if (f.retreated) return { worth, secs: secs + t, won: false, marks };
-      worth += foe.gold;
+      worth += foe.gold * RUN_PAY;
     }
     secs += t;
     marks += STAGE_MARKS * product(mods, 'marks');
@@ -140,7 +162,8 @@ export function expeditionChecks(out: Say, ok: Ok) {
   for (const region of REGIONS)
     for (const hours of LENGTHS) {
       const r = rng(region * 1000 + hours);
-      const seen = new Set(Array.from({ length: 1000 }, () => JSON.stringify(drawRoute(r, region, hours))));
+      const p = fighterAt(region, 'melee');
+      const seen = new Set(Array.from({ length: 1000 }, () => JSON.stringify(drawRoute(r, region, hours, p))));
       ok(seen.size === 1000, `${NAMES[region - 1]}, ${hours} h: 1,000 routes drawn, ${seen.size} different`);
     }
   for (const region of REGIONS) {
@@ -151,7 +174,7 @@ export function expeditionChecks(out: Say, ok: Ok) {
         const r = rng(region * 7 + hours * 131 + style.length);
         let [worth, secs, wins] = [0, 0, 0];
         for (let k = 0; k < 60; k++) {
-          const route = drawRoute(r, region, hours, p.hpLevel);
+          const route = drawRoute(r, region, hours, p);
           const run = playRoute(route, p, route.roads[k % 2], r);
           worth += run.worth;
           secs += run.secs;

@@ -58,16 +58,29 @@ export const regenPerSecond = (p: Pick<Fighter, 'hpPerks'>) => (REGEN_PER_6S / 6
 const clamp = (x: number) => Math.min(0.95, Math.max(0.2, x));
 const round = (x: number) => Math.round(x * 100) / 100;
 
-export function fight(p: Fighter, foe: Foe, rng: () => number, health: number, meals: readonly Meal[]): Fought {
+/** An expedition's twists on a fight: hits land less often (fog), food heals less (hungry wolves). */
+export interface FightTwists {
+  hit?: number;
+  heal?: number;
+}
+
+export function fight(
+  p: Fighter,
+  foe: Foe,
+  rng: () => number,
+  health: number,
+  meals: readonly Meal[],
+  tw: FightTwists = {},
+): Fought {
   const mu = TRIANGLE[matchup(p.style, foe.style)];
-  const hit = clamp(0.66 + 0.012 * (p.styleLevel - foe.level) + p.perks.accuracy / 100);
+  const hit = clamp(0.66 + 0.012 * (p.styleLevel - foe.level) + p.perks.accuracy / 100) * (tw.hit ?? 1);
   const maxHit = 10 * (3 + Math.floor(p.styleLevel / 12) + p.weaponTier);
   const dealtMult =
     mu.dealt * (1 + (p.perks.damage + (p.supply?.pct ?? 0)) / 100 + (MASTERY_DAMAGE_PER_STEP / 100) * p.mastery);
   const foeHit = clamp(0.62 + 0.02 * (foe.level - p.hpLevel));
   const guard = (1 - 0.025 * p.armour) * (1 - p.perks.guard / 100) * mu.taken;
   const regen = regenPerSecond(p) * SWING_S;
-  const heal = 1 + p.hpPerks.foodHeal / 100;
+  const heal = (1 + p.hpPerks.foodHeal / 100) * (tw.heal ?? 1);
   const most = maxHealth(p);
   const retreatAt = retreatShare(p);
   const pantry = meals.filter((m) => m.count > 0).map((m) => ({ ...m }));

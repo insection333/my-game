@@ -10,7 +10,9 @@ import {
   t,
   XP_TABLE,
 } from '@idle-clash/content';
-import { combatData, skill, storehouseData, type Feature } from '@idle-clash/features';
+import { combatData, expeditionData, skill, storehouseData, type Feature } from '@idle-clash/features';
+import * as relicData from '../../../packages/features/src/shared/expeditions/relics.ts';
+import * as MODEL_EXP from '../../../design/model/expeditions.ts';
 import {
   FOES as MODEL_FOES,
   FOODS as MODEL_FOODS,
@@ -96,6 +98,7 @@ export function checkDesign(features: readonly Feature[], modelXp: number[]): st
     if (JSON.stringify(food([...combatData.FOODS])) !== JSON.stringify(food(MODEL_FOODS)))
       problems.push('Foods differ from the design (heals, price, level)');
   }
+  if (features.some((f) => f.id === 'expeditions')) problems.push(...checkExpeditions());
   for (const f of features) {
     const sk = f.content.skill;
     if (!sk) continue;
@@ -189,4 +192,49 @@ function checkRecipes(
       );
   }
   return problems;
+}
+
+/** Expeditions, bosses and relics against the design, number for number. */
+function checkExpeditions(): string[] {
+  const e = expeditionData;
+  const twists = (xs: readonly { id: string }[]) => JSON.stringify(xs.map((x) => ({ ...x })));
+  const ours = {
+    lengths: [...e.LENGTHS],
+    stage: [e.STAGE_MINUTES, e.STAGES_PER_HOUR, e.STAGE_MARKS, e.RUN_PAY, e.SECOND_TWIST, ...e.FOE_WEIGHTS],
+    bosses: e.BOSSES.map((b) => [t(`boss.${b.id}`), b.style, b.level, b.hitpoints, b.hp, b.maxHit, b.gold, b.marks]),
+    caches: [e.CACHE_GOLD.march, e.CACHE_GOLD.fen, e.CACHE_GOLD.peaks],
+    finds: [e.BOSS_FINDS.rare, e.BOSS_FINDS.legendary],
+    twists: twists(e.TWISTS),
+    roads: twists(e.ROADS),
+    relics: [
+      ...relicData.RELIC_COSTS,
+      relicData.SKILL_XP_PER_RANK,
+      relicData.FOOD_HEAL_PER_RANK,
+      relicData.FINDS_PER_RANK,
+      relicData.SLOTS_PER_RANK,
+      relicData.STORE_RANKS,
+    ],
+  };
+  const m = MODEL_EXP;
+  const theirs = {
+    lengths: m.LENGTHS,
+    stage: [m.STAGE_MINUTES, m.STAGES_PER_HOUR, m.STAGE_MARKS, m.RUN_PAY, m.SECOND_TWIST, ...m.FOE_WEIGHTS],
+    bosses: m.BOSSES.map((b) => [b.name, b.style, b.level, b.hitpoints, b.hp, b.maxHit, b.gold, b.marks]),
+    caches: m.CACHE_GOLD,
+    finds: [m.BOSS_FINDS.rare, m.BOSS_FINDS.legendary],
+    twists: twists(m.TWISTS),
+    roads: twists(m.ROADS),
+    relics: [
+      ...m.RELIC_COSTS,
+      m.RELICS.skillXpPerRank,
+      m.RELICS.foodHealPerRank,
+      m.RELICS.findsPerRank,
+      m.RELICS.storeSlotsPerRank,
+      m.RELICS.storeRanks,
+    ],
+  };
+  return Object.keys(ours).flatMap((k) => {
+    const [a, b] = [JSON.stringify(ours[k as keyof typeof ours]), JSON.stringify(theirs[k as keyof typeof theirs])];
+    return a === b ? [] : [`Expeditions' ${k} ${a} differ from the design's ${b}`];
+  });
 }

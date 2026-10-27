@@ -1,6 +1,6 @@
 // The lanes as the shell shows them: full cards in the desktop panel and on the phone's Hearth,
 // chips in the phone's strip. Each lane says what it is doing, how far along, and why it stopped.
-import { formatStop, midSentence, t } from '@idle-clash/content';
+import { formatStop, isQuietStop, midSentence, t } from '@idle-clash/content';
 import type { Feature } from '@idle-clash/features';
 import { LANE_IDS, type ActionRef, type LaneId, type State } from '@idle-clash/kernel';
 import { Button, hasIcon, ItemIcon, LaneCard } from '@idle-clash/ui';
@@ -65,7 +65,7 @@ export function laneViews(state: State, now: number, features: readonly Feature[
       icon: run ? iconOf(features, run.action) : undefined,
       note,
       short: !run && l.stopped ? formatStop(l.stopped.reason, 'short') : undefined,
-      halted: !run && !!l.stopped && l.stopped.reason.code !== 'stoppedByPlayer',
+      halted: !run && !!l.stopped && !isQuietStop(l.stopped.reason.code),
       fix: !run && !l.next && l.stopped ? fixFor(l.stopped.reason) : undefined,
     };
   });

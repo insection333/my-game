@@ -2,6 +2,7 @@
 // for what repeats). Moments get a soft cue scaled to how rare they are; ordinary Uncommon finds,
 // which come by the dozen, and refusals get none. Each action's own small sound plays only for
 // players who chose "Also each action".
+import { isQuietStop } from '@idle-clash/content';
 import type { GameEvent } from '@idle-clash/kernel';
 
 export type SoundChoice = 'off' | 'moments' | 'all';
@@ -20,11 +21,14 @@ export function cueFor(e: GameEvent): Cue | null {
     case 'goalDone':
       // A lucky cache rings like a Rare find; any other goal, its own small chime.
       return e.cache?.grade === 'lucky' ? 'rare' : 'goal';
+    case 'expeditionDone':
+      // A boss beaten at a run's end rings like a Rare find; any other homecoming, the goal's chime.
+      return e.outcome === 'won' ? 'rare' : 'goal';
     case 'deedDone':
       // An elite or master deed rings like a Rare find; the rest, the goal's small chime.
       return e.tier === 'elite' || e.tier === 'master' ? 'rare' : 'goal';
     case 'laneStopped':
-      return e.reason.code === 'stoppedByPlayer' ? null : 'stopped';
+      return isQuietStop(e.reason.code) ? null : 'stopped';
     default:
       return null;
   }

@@ -92,10 +92,18 @@ export function views(): View[] {
     '/hiscores/deeds?view=skills',
     '/hiscores/deeds?view=combat',
     '/hiscores/deeds?panel=honours',
+    // Expeditions two months in: the Fen's longest route, the bosses and the relics.
+    '/combat/expeditions?region=fen&hours=8',
   ].map((path) => ({
     page:
       map.views.find((v) => v.path === path)?.page ??
-      (path.startsWith('/skills/') ? 'Skill' : path.startsWith('/hiscores') ? 'Hiscores' : 'Hearth'),
+      (path.startsWith('/skills/')
+        ? 'Skill'
+        : path.startsWith('/hiscores')
+          ? 'Hiscores'
+          : path.startsWith('/combat')
+            ? 'Combat'
+            : 'Hearth'),
     path,
     phone: [],
     desktop: [],

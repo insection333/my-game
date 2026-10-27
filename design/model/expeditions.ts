@@ -40,7 +40,11 @@ export const BOSSES: Boss[] = [
 export const BOSS_FINDS = { rare: 1 / 12, legendary: 1 / 80 };
 
 /** A cache's worth in gold, by region: the region's top tier of logs, ore or fish. */
-export const CACHE_GOLD = [4_800, 5_600, 7_200];
+export const CACHE_GOLD = [4_800, 7_200, 12_000];
+/** A run's fights pay this much more XP and gold than the lane's: its foes are drawn, not chosen. */
+export const RUN_PAY = 1.25;
+/** How often a stage meets each of the run's three foes, best first: half, a third, a sixth. */
+export const FOE_WEIGHTS = [3, 2, 1];
 /** Marks a fight stage pays. */
 export const STAGE_MARKS = 1;
 
@@ -61,7 +65,7 @@ export interface Twist {
   xp?: number;
 }
 export const TWISTS: Twist[] = [
-  { id: 'fog', hit: 0.8, finds: 2 },
+  { id: 'fog', hit: 0.9, finds: 2 },
   { id: 'wolves', heal: 0.75, drops: 1.5 },
   { id: 'old-roads', stages: 0.75 },
   { id: 'warband', foeHit: 1.15, marks: 1.5 },
@@ -74,7 +78,7 @@ export const SECOND_TWIST = 0.4;
 /** The roads at the fork: each changes the run's second half. */
 export const ROADS: Twist[] = [
   { id: 'high-pass', foeHit: 1.1, caches: 2 },
-  { id: 'low-road', camp: 2 },
+  { id: 'low-road', foeHit: 0.9, marks: 0.75 },
   { id: 'old-shrine', finds: 2 },
   { id: 'hunters-trail', drops: 1.5 },
   { id: 'wardens-gate', marks: 1.5, bossHp: 1.2 },

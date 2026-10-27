@@ -12,7 +12,9 @@ import { choose, refresh } from '../src/deeds/rules.ts';
 import { deedsOf } from '../src/deeds/state.ts';
 import { allFinds, skillActions } from '../src/shared/catalog.ts';
 import { FOES } from '../src/shared/combat/data.ts';
-import { ENLARGE_COSTS } from '../src/shared/storehouse.ts';
+import { capacity, ENLARGE_COSTS } from '../src/shared/storehouse.ts';
+import { BOSSES, TWISTS } from '../src/shared/expeditions/data.ts';
+import { relics } from '../src/shared/expeditions/relics.ts';
 import { allSkills } from '../src/shared/standing.ts';
 
 const T0 = Date.UTC(2026, 9, 27, 10);
@@ -30,17 +32,29 @@ function everything(): State {
   s.found = Object.fromEntries(allFinds().map((f) => [f.item, T0]));
   const best = (slot: string) => items.find((i) => i.gear?.tier === 8 && i.gear.slot === slot)!.id;
   const worn = { helm: best('helm'), body: best('body'), legs: best('legs'), weapon: best('weapon') };
-  const held = items.filter((i) => i.id !== 'gold').slice(0, 24 + 6 * ENLARGE_COSTS.length);
+  // Every boss beaten fifty times, runs of every length home (a hundred in all), every twist met,
+  // and every relic at its last rank.
+  s.features = {
+    combat: { worn, health: null, healthAt: 0, retreated: null },
+    storehouse: { enlargements: ENLARGE_COSTS.length },
+    expeditions: {
+      marks: 0,
+      relics: Object.fromEntries(relics().map((r) => [r.id, r.ranks])),
+      drawn: 0,
+      run: null,
+      bossDay: {},
+      wins: Object.fromEntries(BOSSES.map((b) => [b.id, 50])),
+      runs: { '1': 40, '2': 30, '4': 20, '8': 10 },
+      twists: TWISTS.map((x) => x.id),
+    },
+  };
+  const held = items.filter((i) => i.id !== 'gold').slice(0, capacity(s));
   s.items = {
     ...Object.fromEntries(held.map((i) => [i.id, 1])),
     ...Object.fromEntries(Object.values(worn).map((id) => [id, 1])),
   };
   s.items[held[0].id] = 10_000;
   s.items.gold = 10_000_000;
-  s.features = {
-    combat: { worn, health: null, healthAt: 0, retreated: null },
-    storehouse: { enlargements: ENLARGE_COSTS.length },
-  };
   s.fireSince = T0 - 7 * HOUR;
   s.fireUntil = T0 + 5 * 60_000;
   for (const lane of LANE_IDS)

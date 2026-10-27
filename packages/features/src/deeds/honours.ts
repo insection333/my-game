@@ -54,6 +54,8 @@ export const HONOURS: readonly Honour[] = [
   title('magnate', by('gold-10000000')),
   title('paragon', by('rank-legend')),
   title('equilibrist', by('hidden-even')),
+  title('wyrmslayer', by('boss-ember-wyrm')),
+  title('trailblazer', by('runs-100')),
   // Banners: the woad everyone flies, and a colour for each region cleared and more.
   { id: 'woad', kind: 'banner', unlock: null },
   { id: 'moss', kind: 'banner', unlock: by('region-march') },

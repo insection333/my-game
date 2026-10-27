@@ -83,6 +83,7 @@ import { ArcherySeal, HitpointsSeal, MagicSeal, MeleeSeal, MiningSeal, SmithingS
 import { FOOD_ICONS } from './food-index.tsx';
 import { SUPPLY_FINDS } from './finds-supplies.tsx';
 import { SUPPLY_ICONS } from './supplies-index.tsx';
+import { EXPEDITION_ICONS } from './expeditions-index.tsx';
 import { M, type Tone } from './style.tsx';
 import {
   AshLogs,
@@ -103,7 +104,8 @@ import {
   YewLogs,
 } from './world.tsx';
 
-export type IconFamily = 'weapon' | 'armour' | 'resource' | 'supply' | 'foe' | 'food' | 'find' | 'skill' | 'reward';
+export type IconFamily =
+  'weapon' | 'armour' | 'resource' | 'supply' | 'foe' | 'food' | 'find' | 'skill' | 'reward' | 'relic';
 
 export interface IconDef {
   draw: ComponentType;
@@ -258,7 +260,14 @@ const NAMED = {
   'supply-cache': { draw: SupplyCache, family: 'reward', title: "Supply cache (a goal's reward)" },
 } satisfies Record<string, IconDef>;
 
-export const ICONS: Record<string, IconDef> = { ...GEAR, ...NAMED, ...FOOD_ICONS, ...SUPPLY_ICONS, ...SUPPLY_FINDS };
+export const ICONS: Record<string, IconDef> = {
+  ...GEAR,
+  ...NAMED,
+  ...FOOD_ICONS,
+  ...SUPPLY_ICONS,
+  ...SUPPLY_FINDS,
+  ...EXPEDITION_ICONS,
+};
 
 export type IconName = string;
 

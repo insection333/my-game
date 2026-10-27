@@ -14,6 +14,7 @@ import {
   type Ladder,
 } from '@idle-clash/content';
 import { addXp, countOf, give, take, type ActionContext, type Rarity, type State } from '@idle-clash/kernel';
+import { relicFindPct, relicXpPct } from './expeditions/relics.ts';
 import { actionModifiers, perksAt, skillLevel, yieldOf } from './skill.ts';
 
 export interface SkillDefinition {
@@ -54,7 +55,8 @@ function rollRarity(ctx: ActionContext, findMult: number): Rarity | null {
 }
 
 export function rollFind(ctx: ActionContext, def: SkillDefinition, act: CompletedAction, findChancePct: number) {
-  const rarity = rollRarity(ctx, act.findMultiple * (1 + findChancePct / 100));
+  // A relic, the four-leaf charm, makes every find more likely.
+  const rarity = rollRarity(ctx, act.findMultiple * (1 + (findChancePct + relicFindPct(ctx.state)) / 100));
   if (!rarity) return;
   const choices = def.finds.filter((f) => f.rarity === rarity && (!f.greater || act.tier >= GREATER_FROM_TIER));
   if (!choices.length) return;
@@ -94,7 +96,10 @@ export function completeSkillAction(ctx: ActionContext, def: SkillDefinition, ac
     );
 
   const before = skillLevel(state, def.skill);
-  const bonusPct = (ctx.fireBurning ? fireXpPct(ctx.fireMinutes) : 0) + LEGENDARY_MARK_PCT * marksIn(state, def.finds);
+  const bonusPct =
+    (ctx.fireBurning ? fireXpPct(ctx.fireMinutes) : 0) +
+    LEGENDARY_MARK_PCT * marksIn(state, def.finds) +
+    relicXpPct(state, def.skill);
   addXp(state, def.skill, act.xp * (1 + bonusPct / 100));
   const after = skillLevel(state, def.skill);
   for (let level = before + 1; level <= after; level++)

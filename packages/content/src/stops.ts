@@ -9,6 +9,11 @@ export interface Reason {
 }
 
 /** An item's name inside a sentence: "Out of tin ore", in sentence case. */
+/** Stops that are no trouble: the player stopped the lane, a run came home, a boss was fought for the
+ *  day. Nothing to fix, so no alarm, no notice and no line in the recap. */
+export const QUIET_STOPS: readonly string[] = ['stoppedByPlayer', 'expeditionHome', 'bossRested'];
+export const isQuietStop = (code: string): boolean => QUIET_STOPS.includes(code);
+
 export const midSentence = (name: string) => name.charAt(0).toLowerCase() + name.slice(1);
 
 /** `short`: the few words a lane's chip has room for ("Out of food"), where a reason has them. */

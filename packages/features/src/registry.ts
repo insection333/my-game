@@ -4,6 +4,7 @@ import { archery } from './archery/index.ts';
 import { combat } from './combat/index.ts';
 import { cooking } from './cooking/index.ts';
 import { deeds } from './deeds/index.ts';
+import { expeditions } from './expeditions/index.ts';
 import type { Feature } from './define.ts';
 import { fishing } from './fishing/index.ts';
 import { fletching } from './fletching/index.ts';
@@ -32,23 +33,23 @@ export const FEATURES: readonly Feature[] = [
   magic,
   hitpoints,
   combat,
+  expeditions,
   storehouse,
   goals,
   deeds,
 ];
 // Rules that must know what an item is while playing (a worn sword's tier) read this catalog.
 setCatalog(catalog(FEATURES));
+// Every find, by the skill it belongs to; a feature without a skill (the bosses' finds) is its own.
 setFinds(
   FEATURES.flatMap((f) =>
-    f.content.skill
-      ? (f.content.finds ?? []).map((x) => ({
-          item: x.item,
-          rarity: x.rarity,
-          skill: f.content.skill!.id,
-          feature: f.id,
-          ladder: f.content.skill!.ladder,
-        }))
-      : [],
+    (f.content.finds ?? []).map((x) => ({
+      item: x.item,
+      rarity: x.rarity,
+      skill: f.content.skill?.id ?? f.id,
+      feature: f.id,
+      ladder: f.content.skill?.ladder ?? [],
+    })),
   ),
 );
 setSkills(

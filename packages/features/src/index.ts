@@ -38,3 +38,17 @@ export type {
   PlaqueView,
 } from './deeds/index.ts';
 export { shownHonours } from './deeds/honours.ts';
+export type {
+  BossRow,
+  ExpeditionView,
+  RegionTab,
+  RelicRow,
+  RelicsView,
+  RouteView,
+  RunView,
+  StageChip,
+  TwistView,
+} from './expeditions/index.ts';
+export { routeView } from './expeditions/index.ts';
+export * as expeditionData from './shared/expeditions/data.ts';
+export { storyOf as expeditionStory } from './shared/expeditions/story.ts';

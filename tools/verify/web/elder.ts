@@ -109,5 +109,22 @@ export function elder(ctx: Ctx, base: State, now: number): State {
   ];
   const working = cmds.reduce((st, c) => ctx.engine.command(st, then, c, seeded(st.seed)).state, s);
   const goals = FEATURES.find((f) => f.id === 'goals')!;
-  return goals.routes.refresh.run(working, {}, now).state;
+  const ready = goals.routes.refresh.run(working, {}, now).state;
+  // Weeks of runs: marks in hand, relics raised, the march's boss and the Fen's beaten many times.
+  return {
+    ...ready,
+    features: {
+      ...ready.features,
+      expeditions: {
+        marks: 1_240,
+        relics: { 'relic-woodcutting': 3, 'relic-melee': 5, hearthstone: 4, 'builders-cord': 1, 'four-leaf-charm': 2 },
+        drawn: 41,
+        run: null,
+        bossDay: {},
+        wins: { 'troll-chief': 23, 'drowned-warden': 9 },
+        runs: { '1': 12, '2': 9, '4': 6, '8': 3 },
+        twists: ['fog', 'wolves', 'warband', 'storm'],
+      },
+    },
+  };
 }

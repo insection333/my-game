@@ -500,17 +500,17 @@ PASS  the Ashen Peaks, 1 h: 1,000 routes drawn, 1000 different
 PASS  the Ashen Peaks, 2 h: 1,000 routes drawn, 1000 different
 PASS  the Ashen Peaks, 4 h: 1,000 routes drawn, 1000 different
 PASS  the Ashen Peaks, 8 h: 1,000 routes drawn, 1000 different
-the march, melee at 39: the lane's best 16281 an hour; runs 1 h 19611 (boss 100%), 2 h 18760 (boss 100%), 4 h 17747 (boss 100%), 8 h 18060 (boss 100%)
+the march, melee at 39: the lane's best 16281 an hour; runs 1 h 23753 (boss 100%), 2 h 22951 (boss 100%), 4 h 22727 (boss 100%), 8 h 23082 (boss 100%)
 PASS  the march, melee, 1 h: a run pays at least the lane's best
 PASS  the march, melee, 2 h: a run pays at least the lane's best
 PASS  the march, melee, 4 h: a run pays at least the lane's best
 PASS  the march, melee, 8 h: a run pays at least the lane's best
-the march, archery at 39: the lane's best 12682 an hour; runs 1 h 18471 (boss 100%), 2 h 17881 (boss 100%), 4 h 17799 (boss 100%), 8 h 17514 (boss 100%)
+the march, archery at 39: the lane's best 12682 an hour; runs 1 h 22009 (boss 100%), 2 h 21676 (boss 100%), 4 h 21402 (boss 100%), 8 h 21313 (boss 100%)
 PASS  the march, archery, 1 h: a run pays at least the lane's best
 PASS  the march, archery, 2 h: a run pays at least the lane's best
 PASS  the march, archery, 4 h: a run pays at least the lane's best
 PASS  the march, archery, 8 h: a run pays at least the lane's best
-the march, magic at 39: the lane's best 11638 an hour; runs 1 h 18555 (boss 100%), 2 h 17653 (boss 100%), 4 h 17399 (boss 100%), 8 h 16915 (boss 100%)
+the march, magic at 39: the lane's best 11638 an hour; runs 1 h 22584 (boss 100%), 2 h 21646 (boss 100%), 4 h 21177 (boss 100%), 8 h 20781 (boss 100%)
 PASS  the march, magic, 1 h: a run pays at least the lane's best
 PASS  the march, magic, 2 h: a run pays at least the lane's best
 PASS  the march, magic, 4 h: a run pays at least the lane's best
@@ -518,17 +518,17 @@ PASS  the march, magic, 8 h: a run pays at least the lane's best
 The Troll-chief of the hill: magic at 39 with food wins 100% (0.9 meals a fight); archery without food 0%
 PASS  The Troll-chief of the hill falls to magic at the region's top, nine fights in ten
 PASS  The Troll-chief of the hill beats archery without food more often than not
-the Sunken Fen, melee at 69: the lane's best 30167 an hour; runs 1 h 40075 (boss 100%), 2 h 37002 (boss 100%), 4 h 33131 (boss 100%), 8 h 32543 (boss 100%)
+the Sunken Fen, melee at 69: the lane's best 30167 an hour; runs 1 h 52572 (boss 100%), 2 h 48647 (boss 100%), 4 h 47014 (boss 100%), 8 h 45222 (boss 100%)
 PASS  the Sunken Fen, melee, 1 h: a run pays at least the lane's best
 PASS  the Sunken Fen, melee, 2 h: a run pays at least the lane's best
 PASS  the Sunken Fen, melee, 4 h: a run pays at least the lane's best
 PASS  the Sunken Fen, melee, 8 h: a run pays at least the lane's best
-the Sunken Fen, archery at 69: the lane's best 31128 an hour; runs 1 h 40113 (boss 100%), 2 h 36386 (boss 100%), 4 h 33844 (boss 100%), 8 h 33225 (boss 100%)
+the Sunken Fen, archery at 69: the lane's best 31128 an hour; runs 1 h 53584 (boss 100%), 2 h 49380 (boss 100%), 4 h 46881 (boss 100%), 8 h 46068 (boss 100%)
 PASS  the Sunken Fen, archery, 1 h: a run pays at least the lane's best
 PASS  the Sunken Fen, archery, 2 h: a run pays at least the lane's best
 PASS  the Sunken Fen, archery, 4 h: a run pays at least the lane's best
 PASS  the Sunken Fen, archery, 8 h: a run pays at least the lane's best
-the Sunken Fen, magic at 69: the lane's best 27934 an hour; runs 1 h 38575 (boss 100%), 2 h 35517 (boss 100%), 4 h 33151 (boss 100%), 8 h 32291 (boss 100%)
+the Sunken Fen, magic at 69: the lane's best 27934 an hour; runs 1 h 50108 (boss 100%), 2 h 47956 (boss 100%), 4 h 45210 (boss 100%), 8 h 44975 (boss 100%)
 PASS  the Sunken Fen, magic, 1 h: a run pays at least the lane's best
 PASS  the Sunken Fen, magic, 2 h: a run pays at least the lane's best
 PASS  the Sunken Fen, magic, 4 h: a run pays at least the lane's best
@@ -536,17 +536,17 @@ PASS  the Sunken Fen, magic, 8 h: a run pays at least the lane's best
 The Drowned Warden: melee at 69 with food wins 100% (1.1 meals a fight); magic without food 0%
 PASS  The Drowned Warden falls to melee at the region's top, nine fights in ten
 PASS  The Drowned Warden beats magic without food more often than not
-the Ashen Peaks, melee at 99: the lane's best 55187 an hour; runs 1 h 73934 (boss 100%), 2 h 64141 (boss 100%), 4 h 57605 (boss 100%), 8 h 58004 (boss 100%)
+the Ashen Peaks, melee at 99: the lane's best 55187 an hour; runs 1 h 97081 (boss 100%), 2 h 88511 (boss 100%), 4 h 83597 (boss 100%), 8 h 81134 (boss 100%)
 PASS  the Ashen Peaks, melee, 1 h: a run pays at least the lane's best
 PASS  the Ashen Peaks, melee, 2 h: a run pays at least the lane's best
 PASS  the Ashen Peaks, melee, 4 h: a run pays at least the lane's best
 PASS  the Ashen Peaks, melee, 8 h: a run pays at least the lane's best
-the Ashen Peaks, archery at 99: the lane's best 55702 an hour; runs 1 h 79005 (boss 100%), 2 h 67312 (boss 100%), 4 h 60494 (boss 100%), 8 h 57559 (boss 100%)
+the Ashen Peaks, archery at 99: the lane's best 55702 an hour; runs 1 h 104102 (boss 100%), 2 h 95134 (boss 100%), 4 h 86261 (boss 100%), 8 h 83164 (boss 100%)
 PASS  the Ashen Peaks, archery, 1 h: a run pays at least the lane's best
 PASS  the Ashen Peaks, archery, 2 h: a run pays at least the lane's best
 PASS  the Ashen Peaks, archery, 4 h: a run pays at least the lane's best
 PASS  the Ashen Peaks, archery, 8 h: a run pays at least the lane's best
-the Ashen Peaks, magic at 99: the lane's best 50248 an hour; runs 1 h 77883 (boss 100%), 2 h 66551 (boss 100%), 4 h 60511 (boss 100%), 8 h 56993 (boss 100%)
+the Ashen Peaks, magic at 99: the lane's best 50248 an hour; runs 1 h 98638 (boss 100%), 2 h 89290 (boss 100%), 4 h 82610 (boss 100%), 8 h 80143 (boss 100%)
 PASS  the Ashen Peaks, magic, 1 h: a run pays at least the lane's best
 PASS  the Ashen Peaks, magic, 2 h: a run pays at least the lane's best
 PASS  the Ashen Peaks, magic, 4 h: a run pays at least the lane's best

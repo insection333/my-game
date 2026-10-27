@@ -1,10 +1,12 @@
 // Using a Rare find (GAME_DESIGN.md section 8): instead of selling it, the player spends it on one
 // action of its skill, which gains 500 mastery completions at once. A Woodcutting find goes to a tree,
-// a Smithing find to a recipe; a combat style's find goes to a foe, since foes are what styles train on.
+// a Smithing find to a recipe; a combat style's find goes to a foe, since foes are what styles train on,
+// and a boss's to a foe of its region.
 import { masteryStep } from '@idle-clash/content';
 import { countOf, noteMoment, take, type ActionRef, type GameEvent, type State } from '@idle-clash/kernel';
 import { findOf, skillActions } from '../shared/catalog.ts';
-import { FOES, HITPOINTS, STYLE_SKILLS } from '../shared/combat/data.ts';
+import { FOES, HITPOINTS, regionOf, STYLE_SKILLS } from '../shared/combat/data.ts';
+import { BOSSES } from '../shared/expeditions/data.ts';
 import { perksAt, skillLevel } from '../shared/skill.ts';
 
 export const RARE_FIND_COMPLETIONS = 500;
@@ -21,6 +23,12 @@ export function actionsFor(state: State, item: string): ActionRef[] {
       feature: 'combat',
       id: x.id,
     }));
+  // A boss's find goes to a foe of the boss's region.
+  const boss = BOSSES.find((b) => b.finds.rare === item || b.finds.legendary === item);
+  if (boss)
+    return FOES.filter((x) => regionOf(x.tier) === boss.region && x.hitpoints <= skillLevel(state, HITPOINTS)).map(
+      (x) => ({ feature: 'combat', id: x.id }),
+    );
   const own = skillActions().find((s) => s.skill === f.skill);
   const level = skillLevel(state, f.skill);
   return (own?.actions ?? []).filter((a) => a.level <= level).map((a) => ({ feature: own!.feature, id: a.id }));

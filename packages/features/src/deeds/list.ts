@@ -4,6 +4,7 @@ import type { State } from '@idle-clash/kernel';
 import { POINTS, type Deed } from './content.ts';
 import { combat, craft, skills } from './families.ts';
 import { finds, home } from './families-home.ts';
+import { runs } from './families-runs.ts';
 import { Reader } from './reader.ts';
 import { deedsOf } from './state.ts';
 
@@ -13,13 +14,14 @@ export const CATEGORIES: readonly { id: string; families: readonly string[] }[] 
   { id: 'craft', families: ['work', 'mastery', 'masters'] },
   { id: 'combat', families: ['foe', 'region', 'defeats', 'gear'] },
   { id: 'finds', families: ['legendary', 'log', 'collector'] },
+  { id: 'runs', families: ['bossFirst', 'boss', 'trophy', 'trophies', 'runLength', 'runs', 'twists', 'relic'] },
   { id: 'home', families: ['fire', 'gold', 'store', 'hidden'] },
 ];
 
 let made: { list: Deed[]; byId: Map<string, Deed> } | null = null;
 function make() {
   if (!made) {
-    const list = [...skills(), ...craft(), ...combat(), ...finds(), ...home()];
+    const list = [...skills(), ...craft(), ...combat(), ...finds(), ...runs(), ...home()];
     made = { list, byId: new Map(list.map((d) => [d.id, d])) };
   }
   return made;

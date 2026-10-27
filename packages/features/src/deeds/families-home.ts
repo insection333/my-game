@@ -3,11 +3,13 @@
 // and a few hidden deeds, whose words stay unread until they are done.
 import { fmt, t } from '@idle-clash/content';
 import { allFinds } from '../shared/catalog.ts';
+import { allSkills } from '../shared/standing.ts';
 import { SLOTS_PER_ENLARGEMENT, START_SLOTS } from '../shared/storehouse.ts';
 import { COLLECTOR, deed, FIRE, GOLD, HIDDEN, lower, skillName, STORE, type Deed } from './content.ts';
 
 export function finds(): Deed[] {
-  const all = allFinds();
+  // Skills' finds (the bosses' have deeds of their own, families-runs.ts); the log's totals count all.
+  const all = allFinds().filter((f) => allSkills().includes(f.skill));
   const legendary = all
     .filter((f) => f.rarity === 'legendary')
     .map((f) =>
@@ -38,7 +40,8 @@ export function finds(): Deed[] {
     });
   });
   // The log's totals climb to every find there is, whatever the content holds.
-  const totals = [...COLLECTOR.filter(([n]) => n < all.length), [all.length, 'master'] as const].map(
+  const every = allFinds();
+  const totals = [...COLLECTOR.filter(([n]) => n < every.length), [every.length, 'master'] as const].map(
     ([count, tier], i) =>
       deed({
         id: i === COLLECTOR.length ? 'collector-all' : `collector-${count}`,

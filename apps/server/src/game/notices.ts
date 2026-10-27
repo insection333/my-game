@@ -1,5 +1,6 @@
 // The notices tray's store: each player's notable events and lane stops, as the kernel announced
 // them, the newest 100 kept. The page reads them when it opens; live events add to them after.
+import { isQuietStop } from '@idle-clash/content';
 import { isNotable, type GameEvent } from '@idle-clash/kernel';
 import { and, desc, eq, lt } from 'drizzle-orm';
 import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
@@ -11,7 +12,7 @@ export const NOTICES_KEPT = 100;
  *  by the dozen), and lanes that stopped by themselves. */
 export const isNotice = (e: GameEvent) =>
   (isNotable(e) && !(e.type === 'find' && e.rarity === 'uncommon' && !e.first)) ||
-  (e.type === 'laneStopped' && e.reason.code !== 'stoppedByPlayer');
+  (e.type === 'laneStopped' && !isQuietStop(e.reason.code));
 
 export class Notices {
   private db: BetterSQLite3Database;

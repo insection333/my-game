@@ -1,0 +1,187 @@
+/* The Expeditions tab. Phones: the run, then the bosses and the relics. Wide: the run beside them. */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--s-4);
+  align-items: start;
+}
+
+@container main (min-width: 720px) {
+  .layout {
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  }
+}
+
+.runArea,
+.side {
+  display: grid;
+  gap: var(--s-4);
+  min-width: 0;
+}
+
+.stack {
+  display: grid;
+  gap: var(--s-3);
+  min-width: 0;
+}
+
+.summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--s-2);
+  margin: 0;
+  font: 600 var(--t-lead) / 1.3 var(--font-book);
+}
+
+.note {
+  margin: 0;
+  color: var(--ink-2);
+  font-size: var(--t-small);
+}
+
+.twists {
+  display: grid;
+  gap: var(--s-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--t-small);
+}
+
+.twists li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-1) var(--s-2);
+}
+
+/* The route: an hour a row, its stages as chips. */
+.ribbon {
+  display: grid;
+  gap: var(--s-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hour {
+  display: grid;
+  grid-template-columns: 3.5rem minmax(0, 1fr);
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.hourLabel {
+  font-size: var(--t-small);
+  color: var(--ink-2);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.chip {
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-control);
+  background: var(--surface);
+}
+
+/* A cache or a camp after a stage: smaller, unboxed. */
+.chip[data-small] {
+  width: 24px;
+  border-color: transparent;
+  background: none;
+}
+
+.chip[data-state='done'] {
+  opacity: 0.45;
+}
+
+.chip[data-state='now'] {
+  border: 2px solid var(--woad);
+}
+
+.chip[data-boss] {
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--deed-master);
+}
+
+.subhead {
+  margin: 0 0 var(--s-1);
+  font: 600 var(--t-body) / 1.3 var(--font-ui);
+}
+
+.fork {
+  display: grid;
+  margin: 0 calc(-1 * var(--s-4));
+}
+
+.fork .subhead {
+  padding: 0 var(--s-4);
+}
+
+.finds {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-1);
+  margin: 0;
+}
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+/* Fourteen relics scroll inside their own box. */
+.relics {
+  display: block;
+  max-height: min(30rem, 52dvh);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* Every twist and road, folded away. */
+.legend {
+  font-size: var(--t-small);
+}
+
+.legend summary {
+  display: flex;
+  align-items: center;
+  min-height: var(--tap);
+  color: var(--woad);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.legend dl {
+  display: grid;
+  gap: var(--s-1);
+  margin: 0;
+}
+
+.legend div {
+  display: grid;
+  grid-template-columns: minmax(0, 9rem) minmax(0, 1fr);
+  gap: var(--s-2);
+}
+
+.legend dt {
+  font-weight: 600;
+}
+
+.legend dd {
+  margin: 0;
+  color: var(--ink-2);
+}
