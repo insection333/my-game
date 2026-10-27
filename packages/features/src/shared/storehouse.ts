@@ -2,6 +2,7 @@
 // different items. Every producing action asks here before each repetition, so a lane that would
 // bring a new kind of item into a full Storehouse stops ("Storehouse full") instead of losing it.
 // The storehouse feature writes its part of the save (enlargements); anything may read it.
+import { relicSlots } from './expeditions/relics.ts';
 import { countOf, type State, type StopReason } from '@idle-clash/kernel';
 import { z } from 'zod';
 
@@ -27,7 +28,9 @@ export function storeOf(state: State): StoreState {
   return parsed.success ? parsed.data : { enlargements: 0 };
 }
 
-export const capacity = (state: State): number => START_SLOTS + SLOTS_PER_ENLARGEMENT * storeOf(state).enlargements;
+/** Spaces: the first 24, six for each enlargement, and six for each rank of the builder's cord (a relic). */
+export const capacity = (state: State): number =>
+  START_SLOTS + SLOTS_PER_ENLARGEMENT * storeOf(state).enlargements + relicSlots(state);
 
 /** Different items held (not gold). */
 export const slotsUsed = (state: State): number =>

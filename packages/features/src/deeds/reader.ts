@@ -9,6 +9,9 @@ import { wornIn } from '../shared/combat/state.ts';
 import { skillLevel } from '../shared/skill.ts';
 import { allSkills } from '../shared/standing.ts';
 import { capacity, slotsUsed } from '../shared/storehouse.ts';
+import { BOSSES, TWISTS } from '../shared/expeditions/data.ts';
+import { rankOf, relics } from '../shared/expeditions/relics.ts';
+import { expeditionsOf } from '../shared/expeditions/state.ts';
 
 const GEAR = ['helm', 'body', 'legs', 'weapon'] as const;
 
@@ -92,4 +95,20 @@ export class Reader {
     );
   storeFull = () => (slotsUsed(this.state) >= capacity(this.state) ? 1 : 0);
   lanesBusy = () => LANE_IDS.filter((l) => this.state.lanes[l].current !== null).length;
+
+  // Expeditions and bosses.
+  private exp = () => expeditionsOf(this.state);
+  bossWins = (boss: string) => (Object.hasOwn(this.exp().wins, boss) ? this.exp().wins[boss] : 0);
+  /** Runs of a length brought home with the boss beaten. */
+  runsOf = (hours: number) => {
+    const runs = this.exp().runs;
+    return Object.hasOwn(runs, String(hours)) ? runs[String(hours)] : 0;
+  };
+  runs = () => Object.values(this.exp().runs).reduce((a, b) => a + b, 0);
+  twistsMet = () => this.exp().twists.filter((id) => TWISTS.some((x) => x.id === id)).length;
+  trophies = () =>
+    BOSSES.filter((b) => this.found(b.finds.rare)).length + BOSSES.filter((b) => this.found(b.finds.legendary)).length;
+  /** Ranks bought across every relic, and how many relics are at their last rank. */
+  relicRanks = () => relics().reduce((n, r) => n + rankOf(this.state, r.id), 0);
+  relicsFull = () => relics().filter((r) => rankOf(this.state, r.id) >= r.ranks).length;
 }

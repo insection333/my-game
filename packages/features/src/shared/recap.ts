@@ -2,12 +2,24 @@
 // page lists best first: Legendary finds, new entries in the collection log, levels, Rare finds,
 // mastery steps, Uncommon finds, then what the lanes brought in, then any lane that stopped
 // and why, with where to act. The simulation reads the same lines.
-import { fmt, formatStop, t } from '@idle-clash/content';
+import { fmt, formatStop, isQuietStop, t } from '@idle-clash/content';
 import type { AwaySummary, GameEvent } from '@idle-clash/kernel';
 import { itemOf } from './catalog.ts';
+import { storyOf } from './expeditions/story.ts';
 
 export type RecapKind =
-  'legendary' | 'newFind' | 'level' | 'rare' | 'mastery' | 'deed' | 'goal' | 'uncommon' | 'items' | 'xp' | 'stopped';
+  | 'legendary'
+  | 'newFind'
+  | 'level'
+  | 'rare'
+  | 'expedition'
+  | 'mastery'
+  | 'deed'
+  | 'goal'
+  | 'uncommon'
+  | 'items'
+  | 'xp'
+  | 'stopped';
 
 /** Best first: a line's place in the recap. */
 export const RECAP_ORDER: readonly RecapKind[] = [
@@ -15,6 +27,7 @@ export const RECAP_ORDER: readonly RecapKind[] = [
   'newFind',
   'level',
   'rare',
+  'expedition',
   'mastery',
   'deed',
   'goal',
@@ -91,6 +104,17 @@ export function recapLines(a: AwaySummary): RecapLine[] {
       icon: null,
       href: `/skills/${skill}`,
     });
+  // Each run that came home, its story.
+  for (const e of a.events)
+    if (e.type === 'expeditionDone') {
+      const story = storyOf(e);
+      lines.push({
+        kind: 'expedition',
+        text: `${story.title}. ${story.body}`,
+        icon: e.region,
+        href: '/combat/expeditions',
+      });
+    }
   // Mastery, one line an action: the step it reached.
   const steps = new Map<string, Extract<GameEvent, { type: 'masteryStep' }>>();
   for (const e of a.events) if (e.type === 'masteryStep') steps.set(`${e.action.feature}:${e.action.id}`, e);
@@ -136,7 +160,7 @@ export function recapLines(a: AwaySummary): RecapLine[] {
     lines.push({ kind: 'xp', text, icon: null, href: '/skills' });
   }
   for (const e of a.events)
-    if (e.type === 'laneStopped' && e.reason.code !== 'stoppedByPlayer')
+    if (e.type === 'laneStopped' && !isQuietStop(e.reason.code))
       lines.push({
         kind: 'stopped',
         text: t('moment.laneStopped', { lane: t(`lane.${e.lane}`), reason: lower(formatStop(e.reason)) }),
@@ -187,6 +211,16 @@ export function noticeLine(e: GameEvent): (RecapLine & { at: number }) | null {
         href: '/',
         at: e.at,
       };
+    case 'expeditionDone': {
+      const story = storyOf(e);
+      return {
+        kind: 'expedition',
+        text: `${story.title}. ${story.body}`,
+        icon: e.region,
+        href: '/combat/expeditions',
+        at: e.at,
+      };
+    }
     case 'deedDone':
       return {
         kind: 'deed',
@@ -196,7 +230,7 @@ export function noticeLine(e: GameEvent): (RecapLine & { at: number }) | null {
         at: e.at,
       };
     case 'laneStopped':
-      if (e.reason.code === 'stoppedByPlayer') return null;
+      if (isQuietStop(e.reason.code)) return null;
       return {
         kind: 'stopped',
         text: t('moment.laneStopped', { lane: t(`lane.${e.lane}`), reason: lower(formatStop(e.reason)) }),

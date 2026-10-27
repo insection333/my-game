@@ -95,6 +95,7 @@ function rowHead(d: Deed): { label: string | null; icon: string | null } {
   if (!d.row) return { label: null, icon: null };
   if (hasString(`skill.${d.row}`)) return { label: t(`skill.${d.row}`), icon: d.row };
   if (d.row === 'combat') return { label: t('deeds.row.combat'), icon: null };
+  if (hasString(`boss.${d.row}`)) return { label: t(`boss.${d.row}`), icon: d.row };
   return { label: t(`action.combat.${d.row}`), icon: d.row };
 }
 

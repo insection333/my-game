@@ -5,6 +5,7 @@ import { countOf, type State } from '@idle-clash/kernel';
 import { z } from 'zod';
 import { itemOf } from '../catalog.ts';
 import { perksAt, skillLevel } from '../skill.ts';
+import { relicFoodHeal } from '../expeditions/relics.ts';
 import { foods, supplies } from '../catalog.ts';
 import { HITPOINTS, LADDERS, SUPPLY_DAMAGE, type Foe } from './data.ts';
 import { maxHealth, regenPerSecond, type Fighter, type Meal } from './fight.ts';
@@ -56,7 +57,10 @@ export const styleOf = (state: State): Style | null => {
 
 const hitpointsPart = (state: State) => {
   const hpLevel = skillLevel(state, HITPOINTS);
-  return { hpLevel, hpPerks: perksAt(LADDERS.hitpoints, hpLevel) };
+  const hpPerks = perksAt(LADDERS.hitpoints, hpLevel);
+  // The hearthstone, a relic, makes food heal more.
+  hpPerks.foodHeal += relicFoodHeal(state);
+  return { hpLevel, hpPerks };
 };
 
 /** The supply a style uses: the highest tier carried that its level allows, as for its weapon. */

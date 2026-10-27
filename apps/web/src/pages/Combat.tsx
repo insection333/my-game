@@ -11,7 +11,7 @@ import { navigate, useLocation, withPanel } from '../router.ts';
 import { fillFor, Slot } from '../slots.tsx';
 import { CombatFood } from './CombatFood.tsx';
 import { Loadout } from './Loadout.tsx';
-import { PageHead } from './PageHead.tsx';
+import { CombatHead } from './CombatHead.tsx';
 import { NotFound } from './Simple.tsx';
 import s from './combat.module.css';
 
@@ -50,7 +50,7 @@ function CombatPage({ combat }: { combat: Feature }) {
   const open = loadout.slots.find((x) => x.slot === sheetSlot);
   return (
     <>
-      <PageHead title={t('combat.title')}>
+      <CombatHead>
         {regions.length > 1 && (
           <Tabs
             label={t('combat.regions')}
@@ -63,7 +63,7 @@ function CombatPage({ combat }: { combat: Feature }) {
             }))}
           />
         )}
-      </PageHead>
+      </CombatHead>
       <div className={s.layout}>
         <section data-section className={s.loadoutArea}>
           <Loadout loadout={loadout} triangle={triangle} />

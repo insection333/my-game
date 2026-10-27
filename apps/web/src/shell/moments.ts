@@ -2,8 +2,8 @@
 // other show together, led by the best. Levels, Legendary finds and elite or master deeds take the
 // centre of the screen; Rare finds, mastery steps and hard deeds a banner; Uncommon finds, goals and
 // easy deeds a small toast.
-import { fmt, formatEffect, formatStop, masteryEffects, t } from '@idle-clash/content';
-import { skill as skillKit, type Feature } from '@idle-clash/features';
+import { fmt, formatEffect, formatStop, isQuietStop, masteryEffects, t } from '@idle-clash/content';
+import { expeditionStory as storyOf, skill as skillKit, type Feature } from '@idle-clash/features';
 import { isNotable, type GameEvent } from '@idle-clash/kernel';
 import { hasIcon } from '@idle-clash/ui';
 
@@ -31,6 +31,7 @@ const SIZE_RANK: MomentSize[] = ['toast', 'banner', 'centre'];
 function rank(e: GameEvent): number {
   if (e.type === 'find') return e.rarity === 'legendary' ? 0 : e.first ? 2 : e.rarity === 'rare' ? 4 : 9;
   if (e.type === 'deedDone') return e.tier === 'master' ? 1 : e.tier === 'elite' ? 5 : 7;
+  if (e.type === 'expeditionDone') return e.outcome === 'won' ? 1 : 5;
   return e.type === 'levelUp' ? 3 : e.type === 'masteryStep' ? 6 : 8;
 }
 
@@ -39,6 +40,7 @@ function sizeOf(e: GameEvent): MomentSize {
   // A goal's supply cache is opened in a banner; a lucky one takes the centre.
   if (e.type === 'goalDone' && e.cache) return e.cache.grade === 'lucky' ? 'centre' : 'banner';
   if (e.type === 'deedDone') return e.tier === 'easy' ? 'toast' : e.tier === 'hard' ? 'banner' : 'centre';
+  if (e.type === 'expeditionDone') return e.outcome === 'won' ? 'centre' : 'banner';
   if (e.type === 'masteryStep' || (e.type === 'find' && e.rarity === 'rare')) return 'banner';
   return 'toast';
 }
@@ -85,6 +87,8 @@ function describe(
         body: e.cache ? cacheText(e.cache) : null,
         icon: e.cache ? 'supply-cache' : null,
       };
+    case 'expeditionDone':
+      return { ...storyOf(e), icon: hasIcon(e.boss) ? e.boss : null };
     case 'deedDone': {
       const worth = t('moment.deedPoints', { tier: t(`deeds.tier.${e.tier}`), points: fmt.int(e.points) });
       const unlocked = e.unlocks?.length ? t('moment.deedUnlocks', { honours: e.unlocks.join(', ') }) : null;
@@ -157,7 +161,7 @@ function notices(events: readonly GameEvent[], since: number): MomentView[] {
           until: e.at + SHOW_MS.toast,
         },
       ];
-    if (e.type === 'laneStopped' && e.reason.code !== 'stoppedByPlayer')
+    if (e.type === 'laneStopped' && !isQuietStop(e.reason.code))
       return [
         {
           key: `stopped-${e.lane}-${e.at}`,

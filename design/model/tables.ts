@@ -18,6 +18,7 @@ import {
   WOODCUTTING,
 } from './content.ts';
 import { unlockTable } from './unlocks.ts';
+import { BOSS_FINDS, BOSSES, CACHE_GOLD, RELIC_COSTS, ROADS, TWISTS, type Twist } from './expeditions.ts';
 import { MAX_LEVEL } from './content.ts';
 import { fmtUnlock } from './format.ts';
 import { maxHealth, XP_PER_DAMAGE_BY_TIER } from './mechanics.ts';
@@ -155,6 +156,46 @@ const MASTERY_TABLE = p.splice(0).join('\n');
 const STORE = `Starts with ${STOREHOUSE.startSlots} slots; each enlargement adds ${STOREHOUSE.slotsPerEnlargement}. Costs: ${STOREHOUSE.costs.map(n).join(', ')} gold.`;
 const HEALTH = `Health ${maxHealth(1)} at Hitpoints 1, ${maxHealth(40)} at 40, ${maxHealth(MAX_LEVEL)} at ${MAX_LEVEL}. Style XP per point of damage by foe tier: ${XP_PER_DAMAGE_BY_TIER.join(', ')}.`;
 
+// Expeditions: the bosses, and what each twist and road changes.
+const BOSS_TABLE = [
+  '| Boss | Region | Style | Level | Hitpoints opens | Health | Max hit | Gold | Marks | Cache worth |',
+  '| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |',
+  ...BOSSES.map(
+    (b, i) =>
+      `| ${b.name} | ${['The march', 'The Sunken Fen', 'The Ashen Peaks'][i]} | ${b.style} | ${b.level} | ${b.hitpoints} | ${n(b.hp)} | ${b.maxHit} | ${n(b.gold)} | ${b.marks} | ${n(CACHE_GOLD[i])} |`,
+  ),
+  '',
+  `Each win: a Rare boss find 1 in ${Math.round(1 / BOSS_FINDS.rare)}, a Legendary 1 in ${Math.round(1 / BOSS_FINDS.legendary)}. Relic ranks cost ${RELIC_COSTS.join(', ')} marks.`,
+].join('\n');
+const WORDS: Record<string, (x: number) => string> = {
+  hit: (x) => `hits land ${pct(x)} as often`,
+  heal: (x) => `food heals ${pct(x)}`,
+  foeHit: (x) => `foes hit ${pct(x)} as hard`,
+  stages: (x) => `${pct(x)} of the fight stages`,
+  finds: (x) => `finds ${x} times as likely`,
+  drops: (x) => `drops ×${x}`,
+  caches: (x) => `caches ×${x}`,
+  marks: (x) => `marks ×${x}`,
+  bossHp: (x) => `the boss's health ×${x}`,
+  camp: (x) => `camps heal ${pct(x)}`,
+  xp: (x) => `XP ×${x}`,
+};
+const pct = (x: number) => `${Math.round(x * 100)}%`;
+const twistRow = (t: Twist) =>
+  `| ${t.id} | ${Object.entries(t)
+    .filter(([k]) => k !== 'id')
+    .map(([k, v]) => WORDS[k](v as number))
+    .join('; ')} |`;
+const TWIST_TABLE = [
+  '| Twist | Changes |',
+  '| --- | --- |',
+  ...TWISTS.map(twistRow),
+  '',
+  '| Road at the fork | Changes the second half |',
+  '| --- | --- |',
+  ...ROADS.map(twistRow),
+].join('\n');
+
 /** The XP table (index = level), for the content check to compare against packages/content. */
 export const XP_TABLE_FROM_MODEL = table;
 
@@ -168,6 +209,8 @@ export const TABLES: Record<string, string> = {
   SUPPLY_TABLE,
   FOE_TABLE,
   FOOD_TABLE,
+  BOSS_TABLE,
+  TWIST_TABLE,
   FIND_TABLE,
   MASTERY_TABLE,
   STORE,
