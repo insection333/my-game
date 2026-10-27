@@ -444,6 +444,37 @@ Bought from the vendor, or cooked (section 6): better food is sold as Hitpoints 
 | Hunter's feast | 1,600 | 320 | 60 |
 | Warden's feast | 2,300 | 480 | 80 |
 
+### Expeditions and bosses (step 16)
+
+An expedition is a run into a region for 1, 2, 4 or 8 hours in the Combat lane, played while you are here or away. Each hour holds six fight stages of ten minutes, each against one of the three strongest foes of the region your Hitpoints level has opened, drawn for that stage; a cache of the region's best logs, ore or fish after one stage and a camp that heals after another, at drawn places; one or two twists that hold for the whole run (a second twist two runs in five); and a fork halfway, whose two roads are drawn with the route and one chosen before setting out. The region's boss waits at the end. Retreating ends the run where it stands: what was won is kept, the boss is not reached.
+
+Fight stages pay as the lane does, and each pays a mark; caches and the boss pay on top, so a run of any length pays at least as well as the same time against the region's best foe (section 15), and only runs and bosses give marks and boss finds. Each boss can also be fought once a day in the Combat lane. Marks buy relics, lasting boosts in ranks: +1% XP in one skill a rank (one relic for each skill), food heals 4% more a rank, finds 4% more likely a rank (five ranks each), and six more Storehouse spaces a rank (three ranks). *Generated:*
+
+| Boss | Region | Style | Level | Hitpoints opens | Health | Max hit | Gold | Marks | Cache worth |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| The Troll-chief of the hill | The march | melee | 40 | 37 | 4,200 | 198 | 2,500 | 5 | 4,800 |
+| The Drowned Warden | The Sunken Fen | archery | 70 | 68 | 8,800 | 468 | 12,000 | 10 | 5,600 |
+| The Ember Wyrm | The Ashen Peaks | magic | 100 | 98 | 16,200 | 945 | 30,000 | 15 | 7,200 |
+
+Each win: a Rare boss find 1 in 12, a Legendary 1 in 80. Relic ranks cost 10, 25, 50, 90, 150 marks.
+
+| Twist | Changes |
+| --- | --- |
+| fog | hits land 80% as often; finds 2 times as likely |
+| wolves | food heals 75%; drops ×1.5 |
+| old-roads | 75% of the fight stages |
+| warband | foes hit 115% as hard; marks ×1.5 |
+| caravans | caches ×1.5; the boss's health ×1.25 |
+| storm | camps heal 50%; XP ×1.1 |
+
+| Road at the fork | Changes the second half |
+| --- | --- |
+| high-pass | foes hit 110% as hard; caches ×2 |
+| low-road | camps heal 200% |
+| old-shrine | finds 2 times as likely |
+| hunters-trail | drops ×1.5 |
+| wardens-gate | marks ×1.5; the boss's health ×1.2 |
+
 ## 10. Gold and the Storehouse
 
 - **Sources:** selling logs, ores, bars, gear and Uncommon and Rare finds to the vendor; gold and drops from foes.
@@ -1336,4 +1367,74 @@ PASS  Tier 6: a draw of runes sells for about what a vein's ore does (104 and 10
 PASS  Tier 7: a draw of runes sells for about what a vein's ore does (160 and 160)
 PASS  Tier 8: a draw of runes sells for about what a vein's ore does (240 and 240)
 Supply: an hour of Fletching makes arrows for two to three hours of fights at the same tier; an hour of Runecraft draws runes for three or more.
+
+Expeditions and bosses (step 16)
+PASS  the march, 1 h: 1,000 routes drawn, 1000 different
+PASS  the march, 2 h: 1,000 routes drawn, 1000 different
+PASS  the march, 4 h: 1,000 routes drawn, 1000 different
+PASS  the march, 8 h: 1,000 routes drawn, 1000 different
+PASS  the Sunken Fen, 1 h: 1,000 routes drawn, 1000 different
+PASS  the Sunken Fen, 2 h: 1,000 routes drawn, 1000 different
+PASS  the Sunken Fen, 4 h: 1,000 routes drawn, 1000 different
+PASS  the Sunken Fen, 8 h: 1,000 routes drawn, 1000 different
+PASS  the Ashen Peaks, 1 h: 1,000 routes drawn, 1000 different
+PASS  the Ashen Peaks, 2 h: 1,000 routes drawn, 1000 different
+PASS  the Ashen Peaks, 4 h: 1,000 routes drawn, 1000 different
+PASS  the Ashen Peaks, 8 h: 1,000 routes drawn, 1000 different
+the march, melee at 39: the lane's best 16281 an hour; runs 1 h 19611 (boss 100%), 2 h 18760 (boss 100%), 4 h 17747 (boss 100%), 8 h 18060 (boss 100%)
+PASS  the march, melee, 1 h: a run pays at least the lane's best
+PASS  the march, melee, 2 h: a run pays at least the lane's best
+PASS  the march, melee, 4 h: a run pays at least the lane's best
+PASS  the march, melee, 8 h: a run pays at least the lane's best
+the march, archery at 39: the lane's best 12682 an hour; runs 1 h 18471 (boss 100%), 2 h 17881 (boss 100%), 4 h 17799 (boss 100%), 8 h 17514 (boss 100%)
+PASS  the march, archery, 1 h: a run pays at least the lane's best
+PASS  the march, archery, 2 h: a run pays at least the lane's best
+PASS  the march, archery, 4 h: a run pays at least the lane's best
+PASS  the march, archery, 8 h: a run pays at least the lane's best
+the march, magic at 39: the lane's best 11638 an hour; runs 1 h 18555 (boss 100%), 2 h 17653 (boss 100%), 4 h 17399 (boss 100%), 8 h 16915 (boss 100%)
+PASS  the march, magic, 1 h: a run pays at least the lane's best
+PASS  the march, magic, 2 h: a run pays at least the lane's best
+PASS  the march, magic, 4 h: a run pays at least the lane's best
+PASS  the march, magic, 8 h: a run pays at least the lane's best
+The Troll-chief of the hill: magic at 39 with food wins 100% (0.9 meals a fight); archery without food 0%
+PASS  The Troll-chief of the hill falls to magic at the region's top, nine fights in ten
+PASS  The Troll-chief of the hill beats archery without food more often than not
+the Sunken Fen, melee at 69: the lane's best 30167 an hour; runs 1 h 40075 (boss 100%), 2 h 37002 (boss 100%), 4 h 33131 (boss 100%), 8 h 32543 (boss 100%)
+PASS  the Sunken Fen, melee, 1 h: a run pays at least the lane's best
+PASS  the Sunken Fen, melee, 2 h: a run pays at least the lane's best
+PASS  the Sunken Fen, melee, 4 h: a run pays at least the lane's best
+PASS  the Sunken Fen, melee, 8 h: a run pays at least the lane's best
+the Sunken Fen, archery at 69: the lane's best 31128 an hour; runs 1 h 40113 (boss 100%), 2 h 36386 (boss 100%), 4 h 33844 (boss 100%), 8 h 33225 (boss 100%)
+PASS  the Sunken Fen, archery, 1 h: a run pays at least the lane's best
+PASS  the Sunken Fen, archery, 2 h: a run pays at least the lane's best
+PASS  the Sunken Fen, archery, 4 h: a run pays at least the lane's best
+PASS  the Sunken Fen, archery, 8 h: a run pays at least the lane's best
+the Sunken Fen, magic at 69: the lane's best 27934 an hour; runs 1 h 38575 (boss 100%), 2 h 35517 (boss 100%), 4 h 33151 (boss 100%), 8 h 32291 (boss 100%)
+PASS  the Sunken Fen, magic, 1 h: a run pays at least the lane's best
+PASS  the Sunken Fen, magic, 2 h: a run pays at least the lane's best
+PASS  the Sunken Fen, magic, 4 h: a run pays at least the lane's best
+PASS  the Sunken Fen, magic, 8 h: a run pays at least the lane's best
+The Drowned Warden: melee at 69 with food wins 100% (1.1 meals a fight); magic without food 0%
+PASS  The Drowned Warden falls to melee at the region's top, nine fights in ten
+PASS  The Drowned Warden beats magic without food more often than not
+the Ashen Peaks, melee at 99: the lane's best 55187 an hour; runs 1 h 73934 (boss 100%), 2 h 64141 (boss 100%), 4 h 57605 (boss 100%), 8 h 58004 (boss 100%)
+PASS  the Ashen Peaks, melee, 1 h: a run pays at least the lane's best
+PASS  the Ashen Peaks, melee, 2 h: a run pays at least the lane's best
+PASS  the Ashen Peaks, melee, 4 h: a run pays at least the lane's best
+PASS  the Ashen Peaks, melee, 8 h: a run pays at least the lane's best
+the Ashen Peaks, archery at 99: the lane's best 55702 an hour; runs 1 h 79005 (boss 100%), 2 h 67312 (boss 100%), 4 h 60494 (boss 100%), 8 h 57559 (boss 100%)
+PASS  the Ashen Peaks, archery, 1 h: a run pays at least the lane's best
+PASS  the Ashen Peaks, archery, 2 h: a run pays at least the lane's best
+PASS  the Ashen Peaks, archery, 4 h: a run pays at least the lane's best
+PASS  the Ashen Peaks, archery, 8 h: a run pays at least the lane's best
+the Ashen Peaks, magic at 99: the lane's best 50248 an hour; runs 1 h 77883 (boss 100%), 2 h 66551 (boss 100%), 4 h 60511 (boss 100%), 8 h 56993 (boss 100%)
+PASS  the Ashen Peaks, magic, 1 h: a run pays at least the lane's best
+PASS  the Ashen Peaks, magic, 2 h: a run pays at least the lane's best
+PASS  the Ashen Peaks, magic, 4 h: a run pays at least the lane's best
+PASS  the Ashen Peaks, magic, 8 h: a run pays at least the lane's best
+The Ember Wyrm: archery at 99 with food wins 100% (1.2 meals a fight); melee without food 0%
+PASS  The Ember Wyrm falls to archery at the region's top, nine fights in ten
+PASS  The Ember Wyrm beats melee without food more often than not
+Relics: 4310 marks for every rank of every relic; 78 marks a day at the top; 55 days
+PASS  Every relic at full rank takes two to four months of daily runs at the top
 ```

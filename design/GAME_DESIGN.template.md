@@ -203,6 +203,16 @@ Bought from the vendor, or cooked (section 6): better food is sold as Hitpoints 
 
 {{FOOD_TABLE}}
 
+### Expeditions and bosses (step 16)
+
+An expedition is a run into a region for 1, 2, 4 or 8 hours in the Combat lane, played while you are here or away. Each hour holds six fight stages of ten minutes, each against one of the three strongest foes of the region your Hitpoints level has opened, drawn for that stage; a cache of the region's best logs, ore or fish after one stage and a camp that heals after another, at drawn places; one or two twists that hold for the whole run (a second twist two runs in five); and a fork halfway, whose two roads are drawn with the route and one chosen before setting out. The region's boss waits at the end. Retreating ends the run where it stands: what was won is kept, the boss is not reached.
+
+Fight stages pay as the lane does, and each pays a mark; caches and the boss pay on top, so a run of any length pays at least as well as the same time against the region's best foe (section 15), and only runs and bosses give marks and boss finds. Each boss can also be fought once a day in the Combat lane. Marks buy relics, lasting boosts in ranks: +1% XP in one skill a rank (one relic for each skill), food heals 4% more a rank, finds 4% more likely a rank (five ranks each), and six more Storehouse spaces a rank (three ranks). *Generated:*
+
+{{BOSS_TABLE}}
+
+{{TWIST_TABLE}}
+
 ## 10. Gold and the Storehouse
 
 - **Sources:** selling logs, ores, bars, gear and Uncommon and Rare finds to the vendor; gold and drops from foes.

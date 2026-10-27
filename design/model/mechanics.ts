@@ -68,15 +68,18 @@ export function fight(
   health: number,
   food: { heals: number },
   mastery = 0,
+  /** An expedition's twists: hits land less often (fog), food heals less (hungry wolves). */
+  tw: { hit?: number; heal?: number } = {},
 ): FightResult & { health: number } {
   const skill = p.style as SkillId;
   const mu = matchup(p.style, f.style);
   const youMult = mu === 'advantage' ? 1.25 : mu === 'disadvantage' ? 0.8 : 1;
   const foeMult = mu === 'advantage' ? 0.75 : mu === 'disadvantage' ? 1.25 : 1;
-  const hit = Math.min(
-    0.95,
-    Math.max(0.2, 0.66 + 0.012 * (p.styleLevel - f.level) + perkTotal(skill, p.styleLevel, 'accuracy') / 100),
-  );
+  const hit =
+    Math.min(
+      0.95,
+      Math.max(0.2, 0.66 + 0.012 * (p.styleLevel - f.level) + perkTotal(skill, p.styleLevel, 'accuracy') / 100),
+    ) * (tw.hit ?? 1);
   const maxHit = 10 * (3 + Math.floor(p.styleLevel / 12) + p.weaponTier);
   const dmgMult =
     youMult *
@@ -84,7 +87,7 @@ export function fight(
   const foeHit = Math.min(0.95, Math.max(0.2, 0.62 + 0.02 * (f.level - p.hpLevel)));
   const guard = (1 - 0.025 * 3 * p.armourTier) * (1 - perkTotal(skill, p.styleLevel, 'guard') / 100) * foeMult;
   const regenPerSec = (10 / 6) * (1 + perkTotal('hitpoints', p.hpLevel, 'regen') / 100);
-  const heal = food.heals * (1 + perkTotal('hitpoints', p.hpLevel, 'foodHeal') / 100);
+  const heal = food.heals * (1 + perkTotal('hitpoints', p.hpLevel, 'foodHeal') / 100) * (tw.heal ?? 1);
   const mh = maxHealth(p.hpLevel);
   let foeHp = f.hp,
     t = 0,

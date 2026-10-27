@@ -30,6 +30,7 @@ import { table, check, out, lines, failures as part1Failures } from './checks.ts
 import { rng } from './rng.ts';
 import { foodChecks } from './checks-food.ts';
 import { supplyChecks } from './checks-supply.ts';
+import { expeditionChecks } from './checks-expedition.ts';
 
 let failures = part1Failures;
 const ok = (b: boolean, what: string) => {
@@ -316,6 +317,7 @@ for (const { tier: t, level: opens } of TIERS) {
 
 foodChecks(out, ok);
 supplyChecks(out, ok);
+expeditionChecks(out, ok);
 
 writeFileSync(new URL('./report.md', import.meta.url), lines.join('\n') + '\n');
 out(`\n${failures === 0 ? 'All checks pass.' : `${failures} check(s) fail.`}`);
