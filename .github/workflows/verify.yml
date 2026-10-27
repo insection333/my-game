@@ -33,4 +33,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       # The server's tools, which the ops tests run: SQLite's shell, rclone and shellcheck.
       - run: apt-get update && apt-get install -y --no-install-recommends sqlite3 rclone shellcheck
+      # Firefox in the image refuses a home folder owned by another user (Playwright's documented fix).
       - run: pnpm verify
+        env:
+          HOME: /root
