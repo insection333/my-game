@@ -14,10 +14,17 @@ concurrency:
 jobs:
   verify:
     runs-on: ubuntu-24.04
-    # Verify takes about ten minutes; the rest is room for a slow runner's downloads.
+    # Playwright's own image, which carries the three browsers and the system libraries they need, so
+    # no run waits on the package mirror for them (it twice took over half an hour). Its version is the
+    # lockfile's.
+    container:
+      image: mcr.microsoft.com/playwright:v1.63.0-noble
+    # Verify takes about twenty-five minutes; the rest is room for a slow runner.
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v5
+      # The checkout belongs to another user than the container's root; git is told to trust it.
+      - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v5
         with:
@@ -25,22 +32,5 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       # The server's tools, which the ops tests run: SQLite's shell, rclone and shellcheck.
-      - run: sudo apt-get install -y sqlite3 rclone shellcheck
-      # The three browsers, kept between runs (a slow download once took 21 minutes); the system
-      # libraries they need are installed either way.
-      - id: browsers
-        uses: actions/cache/restore@v4
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
-      - if: steps.browsers.outputs.cache-hit != 'true'
-        run: pnpm exec playwright install --with-deps chromium firefox webkit
-      # Saved as soon as they are in, so a failing verify still keeps them for the next run.
-      - if: steps.browsers.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v4
-        with:
-          path: ~/.cache/ms-playwright
-          key: ${{ steps.browsers.outputs.cache-primary-key }}
-      - if: steps.browsers.outputs.cache-hit == 'true'
-        run: pnpm exec playwright install-deps chromium firefox webkit
+      - run: apt-get update && apt-get install -y --no-install-recommends sqlite3 rclone shellcheck
       - run: pnpm verify
