@@ -20,6 +20,7 @@ import type { Ctx } from '../../../apps/server/src/context.ts';
 import type { State } from '@idle-clash/kernel';
 import { exec, ROOT } from '../exec.ts';
 import { elder } from './elder.ts';
+import { withHonours } from './honours.ts';
 import { crowd, CROWD, veteran } from './veteran.ts';
 import { readPageMap, type ViewSpec } from '../ia.ts';
 
@@ -48,6 +49,18 @@ export function views(): View[] {
       desktop: ['item.panel'],
     },
     {
+      page: 'Hiscores',
+      path: '/hiscores/deeds?panel=honours',
+      phone: ['hiscores.choose'],
+      desktop: ['hiscores.choose'],
+    },
+    {
+      page: 'Hiscores',
+      path: '/hiscores/deeds?view=skills&panel=deed&deed=level-woodcutting-10',
+      phone: ['hiscores.deed'],
+      desktop: ['hiscores.deed'],
+    },
+    {
       page: 'Settings (account menu)',
       path: '/?panel=settings',
       phone: ['settings.account'],
@@ -74,8 +87,15 @@ export function views(): View[] {
     '/skills/fletching',
     '/combat',
     '/storehouse',
+    // Deeds two months in: honours open, families half done, a sheet of choices.
+    '/hiscores/deeds',
+    '/hiscores/deeds?view=skills',
+    '/hiscores/deeds?view=combat',
+    '/hiscores/deeds?panel=honours',
   ].map((path) => ({
-    page: map.views.find((v) => v.path === path)?.page ?? (path.startsWith('/skills/') ? 'Skill' : 'Hearth'),
+    page:
+      map.views.find((v) => v.path === path)?.page ??
+      (path.startsWith('/skills/') ? 'Skill' : path.startsWith('/hiscores') ? 'Hiscores' : 'Hearth'),
     path,
     phone: [],
     desktop: [],
@@ -168,7 +188,8 @@ async function start(): Promise<Served> {
       player: { id: string };
     };
     const saved = ctx.store.read(me.player.id, now)!;
-    const state = make(saved.doc.state);
+    // Deeds done by the time the page opens are recorded, and the best honours shown (honours.ts).
+    const state = withHonours(ctx, make(saved.doc.state), now);
     ctx.store.write(me.player.id, { ...saved.doc, state }, saved.rev, now);
     ctx.hiscores.update(me.player.id, state, now);
     return c;

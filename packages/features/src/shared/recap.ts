@@ -7,7 +7,7 @@ import type { AwaySummary, GameEvent } from '@idle-clash/kernel';
 import { itemOf } from './catalog.ts';
 
 export type RecapKind =
-  'legendary' | 'newFind' | 'level' | 'rare' | 'mastery' | 'goal' | 'uncommon' | 'items' | 'xp' | 'stopped';
+  'legendary' | 'newFind' | 'level' | 'rare' | 'mastery' | 'deed' | 'goal' | 'uncommon' | 'items' | 'xp' | 'stopped';
 
 /** Best first: a line's place in the recap. */
 export const RECAP_ORDER: readonly RecapKind[] = [
@@ -16,6 +16,7 @@ export const RECAP_ORDER: readonly RecapKind[] = [
   'level',
   'rare',
   'mastery',
+  'deed',
   'goal',
   'uncommon',
   'items',
@@ -184,6 +185,14 @@ export function noticeLine(e: GameEvent): (RecapLine & { at: number }) | null {
         text: t('moment.goalDone', { goal: e.name ?? t(`goal.${e.goal}`) }),
         icon: e.cache ? 'supply-cache' : null,
         href: '/',
+        at: e.at,
+      };
+    case 'deedDone':
+      return {
+        kind: 'deed',
+        text: t('moment.deedDone', { deed: e.name }),
+        icon: e.icon,
+        href: '/hiscores/deeds',
         at: e.at,
       };
     case 'laneStopped':

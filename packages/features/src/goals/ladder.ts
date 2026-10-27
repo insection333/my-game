@@ -4,9 +4,7 @@
 // the save's seed and a count, so the server and the page make the same goal.
 import { masteryStep } from '@idle-clash/content';
 import { seeded, xpOf, type State } from '@idle-clash/kernel';
-import { skillActions } from '../shared/catalog.ts';
-import { HITPOINTS, STYLE_SKILLS } from '../shared/combat/data.ts';
-import { skillLevel } from '../shared/skill.ts';
+import { totalLevel } from '../shared/standing.ts';
 import { MILESTONES, type Milestone } from './content.ts';
 import { bestIn, paces, type Pace } from './pace.ts';
 import { dayOf, type DailyGoal, type GoalsState, type ShortGoal } from './state.ts';
@@ -80,12 +78,6 @@ export const dailyProgress = (state: State, d: DailyGoal) => ({
   now: Math.min(d.target, Math.floor(xpOf(state, d.skill) - d.base)),
   of: d.target,
 });
-
-/** Every skill: those with actions of their own, the three styles and Hitpoints. */
-export const allSkills = (): string[] => [...skillActions().map((s) => s.skill), ...STYLE_SKILLS, HITPOINTS];
-
-/** The sum of every skill's level (a newcomer's is 7; the top of version 1 is 280). */
-export const totalLevel = (state: State): number => allSkills().reduce((n, s) => n + skillLevel(state, s), 0);
 
 export function milestoneProgress(state: State, m: Milestone): { now: number; of: number } {
   switch (m.kind) {

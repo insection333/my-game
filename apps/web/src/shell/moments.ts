@@ -1,6 +1,7 @@
 // Notable moments as the page shows them (GAME_DESIGN.md section 11): events within 5 seconds of each
-// other show together, led by the best. Levels and Legendary finds take the centre of the screen;
-// Rare finds and mastery steps a banner; Uncommon finds and goals a small toast.
+// other show together, led by the best. Levels, Legendary finds and elite or master deeds take the
+// centre of the screen; Rare finds, mastery steps and hard deeds a banner; Uncommon finds, goals and
+// easy deeds a small toast.
 import { fmt, formatEffect, formatStop, masteryEffects, t } from '@idle-clash/content';
 import { skill as skillKit, type Feature } from '@idle-clash/features';
 import { isNotable, type GameEvent } from '@idle-clash/kernel';
@@ -21,19 +22,23 @@ export interface MomentView {
 }
 
 const GROUP_MS = 5000;
+const ALSO_NAMED = 4;
 const SHOW_MS: Record<MomentSize, number> = { centre: 6000, banner: 5000, toast: 4000 };
 const SIZE_RANK: MomentSize[] = ['toast', 'banner', 'centre'];
 
-/** Best first: Legendary, a new collection entry, a level, Rare, a mastery step, a goal, Uncommon. */
+/** Best first: Legendary, a master deed, a new collection entry, a level, Rare, an elite deed, a mastery
+ *  step, any other deed, a goal, Uncommon. */
 function rank(e: GameEvent): number {
-  if (e.type === 'find') return e.rarity === 'legendary' ? 0 : e.first ? 1 : e.rarity === 'rare' ? 3 : 6;
-  return e.type === 'levelUp' ? 2 : e.type === 'masteryStep' ? 4 : 5;
+  if (e.type === 'find') return e.rarity === 'legendary' ? 0 : e.first ? 2 : e.rarity === 'rare' ? 4 : 9;
+  if (e.type === 'deedDone') return e.tier === 'master' ? 1 : e.tier === 'elite' ? 5 : 7;
+  return e.type === 'levelUp' ? 3 : e.type === 'masteryStep' ? 6 : 8;
 }
 
 function sizeOf(e: GameEvent): MomentSize {
   if (e.type === 'levelUp' || (e.type === 'find' && e.rarity === 'legendary')) return 'centre';
   // A goal's supply cache is opened in a banner; a lucky one takes the centre.
   if (e.type === 'goalDone' && e.cache) return e.cache.grade === 'lucky' ? 'centre' : 'banner';
+  if (e.type === 'deedDone') return e.tier === 'easy' ? 'toast' : e.tier === 'hard' ? 'banner' : 'centre';
   if (e.type === 'masteryStep' || (e.type === 'find' && e.rarity === 'rare')) return 'banner';
   return 'toast';
 }
@@ -80,6 +85,15 @@ function describe(
         body: e.cache ? cacheText(e.cache) : null,
         icon: e.cache ? 'supply-cache' : null,
       };
+    case 'deedDone': {
+      const worth = t('moment.deedPoints', { tier: t(`deeds.tier.${e.tier}`), points: fmt.int(e.points) });
+      const unlocked = e.unlocks?.length ? t('moment.deedUnlocks', { honours: e.unlocks.join(', ') }) : null;
+      return {
+        title: t('moment.deedDone', { deed: e.name }),
+        body: [worth, unlocked].filter(Boolean).join('. '),
+        icon: e.icon && hasIcon(e.icon) ? e.icon : null,
+      };
+    }
     default:
       return { title: '', body: null, icon: null };
   }
@@ -108,7 +122,12 @@ export function momentsFrom(events: readonly GameEvent[], since: number, feature
     const ordered = [...group].sort((a, b) => rank(a) - rank(b));
     const best = describe(ordered[0], features);
     const size = group.map(sizeOf).reduce((a, b) => (SIZE_RANK.indexOf(b) > SIZE_RANK.indexOf(a) ? b : a));
-    const also = ordered.slice(1).map((e) => describe(e, features).title);
+    // A long run of moments at once (a returning player's deeds) names the first few and counts the rest.
+    const rest = ordered.slice(1);
+    const also = [
+      ...rest.slice(0, ALSO_NAMED).map((e) => describe(e, features).title),
+      ...(rest.length > ALSO_NAMED ? [t('moment.andMore', { count: fmt.int(rest.length - ALSO_NAMED) })] : []),
+    ];
     const body = [best.body, also.length ? t('moment.also', { what: also.join('; ') }) : null].filter(Boolean);
     return {
       key: String(group[0].at),

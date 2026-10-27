@@ -1,0 +1,60 @@
+/* A deed's medallion: a ring in its tier's colour, quiet until done, then filled. */
+.medal {
+  --tone: var(--deed-easy);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--tap);
+  height: var(--tap);
+  padding: 0 var(--s-2);
+  border: 2px solid color-mix(in srgb, var(--tone) 40%, var(--surface));
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink-2);
+  font: 700 var(--t-small) / 1 var(--font-ui);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.medal[data-state^='hard'] {
+  --tone: var(--deed-hard);
+}
+
+.medal[data-state^='elite'] {
+  --tone: var(--deed-elite);
+}
+
+.medal[data-state^='master'] {
+  --tone: var(--deed-master);
+}
+
+.medal[data-state$='-done'] {
+  border-color: var(--tone);
+  background: color-mix(in srgb, var(--tone) 22%, var(--surface));
+  color: var(--ink);
+}
+
+.medal:hover {
+  border-color: var(--tone);
+}
+
+.mark {
+  display: inline-flex;
+}
+
+/* How far along: a short bar at the medallion's foot. */
+.bar {
+  position: absolute;
+  left: 28%;
+  right: 28%;
+  bottom: 5px;
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(
+    to right,
+    var(--tone) calc(var(--p) * 100%),
+    color-mix(in srgb, var(--tone) 20%, var(--surface)) 0
+  );
+}

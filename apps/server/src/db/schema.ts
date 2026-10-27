@@ -15,6 +15,9 @@ export const players = sqliteTable(
     email: text('email'),
     emailConfirmedAt: integer('email_confirmed_at'),
     bannedAt: integer('banned_at'),
+    /** The honours shown beside the name on the hiscores (session 15): a title's id, a banner's. */
+    title: text('title'),
+    banner: text('banner'),
   },
   (t) => [index('players_email').on(t.email)],
 );

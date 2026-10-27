@@ -1,6 +1,6 @@
 // Events: what happened, announced by the kernel and by features. Goals, the away recap, notices,
-// moments, telemetry and the live channel all read the same events. Levels, mastery steps, finds and
-// goals are the notable moments; they are named here because every skill shares them.
+// moments, telemetry and the live channel all read the same events. Levels, mastery steps, finds,
+// goals and deeds are the notable moments; they are named here because every skill shares them.
 //
 // Features add their own kinds by augmenting EventMap:
 //   declare module '@idle-clash/kernel' { interface EventMap { find: { item: string; rarity: string } } }
@@ -22,6 +22,9 @@ export interface EventMap {
     name?: string;
     cache?: { grade: string; items: { item: string; count: number }[] };
   };
+  /** A deed was done (session 15): its words and icon as they were when done, its tier and points, and
+   *  the honours it unlocked (a title, a banner, a frame), by name. */
+  deedDone: { deed: string; name: string; icon: string | null; tier: string; points: number; unlocks?: string[] };
   /** A lane stopped; the reason says why, so the page can say what to do. */
   laneStopped: { lane: LaneId; action: ActionRef | null; reason: StopReason };
   /** A command was refused: what was asked, and why not, so the page can say so. */
@@ -37,5 +40,5 @@ export type GameEvent = {
 export type EventOf<K extends keyof EventMap> = Extract<GameEvent, { type: K }>;
 
 /** The notable moments: what the page celebrates, telemetry counts and the luck guarantee watches. */
-export const NOTABLE_EVENTS: readonly (keyof EventMap)[] = ['levelUp', 'masteryStep', 'find', 'goalDone'];
+export const NOTABLE_EVENTS: readonly (keyof EventMap)[] = ['levelUp', 'masteryStep', 'find', 'goalDone', 'deedDone'];
 export const isNotable = (e: GameEvent): boolean => NOTABLE_EVENTS.includes(e.type);

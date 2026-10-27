@@ -5,8 +5,11 @@ import { fmt, hasString, t } from '@idle-clash/content';
 import { IconButton, Pill, Sheet } from '@idle-clash/ui';
 import { useEffect, useState, type ReactNode } from 'react';
 import { useGame } from '../game/hooks.ts';
+import { game } from '../game/store.ts';
+import { fills } from '../slots.tsx';
 import { navigate, useLocation, withPanel } from '../router.ts';
 import { ItemPanel } from '../pages/Items.tsx';
+import { DeedSheet, HonoursSheet } from '../pages/DeedSheets.tsx';
 import { Settings, Tray, trayReadAt } from '../pages/Panels.tsx';
 import { noticesOf } from '../pages/notices.ts';
 import { FireBadge } from './FireBadge.tsx';
@@ -36,6 +39,11 @@ export function Shell({ children }: { children: ReactNode }) {
   const lanes = laneViews(state, now, features);
   const close = () => navigate(withPanel(null));
   const gold = useCountUp(countOf(state, 'gold'));
+  // Deeds done and not yet recorded, wherever the player is: the server records them, each with its moment.
+  const deeds = fills<{ pending: string }>(features, 'shell.deeds', state, now)[0]?.data.pending ?? '';
+  useEffect(() => {
+    if (deeds) game.act('deeds', 'refresh', {});
+  }, [deeds]);
   return (
     <div className={s.app}>
       <a className={s.skip} href="#main" data-ui="Link">
@@ -97,6 +105,8 @@ export function Shell({ children }: { children: ReactNode }) {
         </Sheet>
       )}
       {panel === 'item' && <ItemSheet onClose={close} />}
+      {panel === 'deed' && <DeedSheet onClose={() => navigate(withoutDeed())} />}
+      {panel === 'honours' && <HonoursSheet onClose={close} />}
       {panel === 'settings' && (
         <Sheet title={t('settings.title')} closeLabel={t('shell.close')} onClose={close} slot="settings.account">
           <Settings />
@@ -109,6 +119,14 @@ export function Shell({ children }: { children: ReactNode }) {
       )}
     </div>
   );
+}
+
+/** The address with a deed's sheet closed (its panel and the deed it named both gone). */
+function withoutDeed(): string {
+  const url = new URL(location.href);
+  url.searchParams.delete('panel');
+  url.searchParams.delete('deed');
+  return url.pathname + url.search;
 }
 
 /** An item's panel: its address carries the item (`?panel=item&item=pine-logs`). */

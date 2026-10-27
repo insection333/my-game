@@ -1,13 +1,14 @@
 // The Hearth: what is happening, what happened while you were away, and what to aim for next.
 import { t } from '@idle-clash/content';
 import { useEffect } from 'react';
-import type { GoalRow, GoalsView, NextUpRow, StandingView } from '@idle-clash/features';
+import type { GoalRow, GoalsView, NextUpRow, PlaqueView, StandingView } from '@idle-clash/features';
 import { ActionRow, Button, hasIcon, ItemIcon, MarchScene, Panel, Pill, ProgressBar } from '@idle-clash/ui';
 import { useGame } from '../game/hooks.ts';
 import { game } from '../game/store.ts';
 import { navigate } from '../router.ts';
 import { LaneList, laneViews } from '../shell/Lanes.tsx';
 import { fills, Slot } from '../slots.tsx';
+import { honourStyle } from './honours-style.ts';
 import s from './pages.module.css';
 import { Tour } from '../shell/Tour.tsx';
 import { Today } from './Today.tsx';
@@ -20,6 +21,7 @@ export function Hearth() {
     .slice(0, 3);
   const [goals] = fills<GoalsView>(features, 'hearth.goals', state, now);
   const [standing] = fills<StandingView>(features, 'hearth.standing', state, now);
+  const [plaque] = fills<PlaqueView>(features, 'hearth.plaque', state, now);
   // The ladder lacks a goal (a short goal was claimed, or a new day began): the server makes it.
   const wants = goals?.data.refresh ?? false;
   useEffect(() => {
@@ -28,17 +30,26 @@ export function Hearth() {
   return (
     <>
       <h1 className="visually-hidden">{t('hearth.title')}</h1>
-      {/* The region's banner, with your standing on it: rank, total level, the way to the next rank. */}
+      {/* The region's banner, with your standing on a plaque in your banner's colour and frame: rank and
+          title, total level, the way to the next rank. */}
       <div className={s.bannerBox}>
         <MarchScene className={s.banner} keep="middle" />
         {standing && (
-          <Slot id="hearth.standing" className={s.standing}>
-            <span className={s.rank}>{standing.data.rank}</span>
+          <div
+            data-slot="hearth.standing"
+            className={s.standing}
+            data-frame={plaque?.data.frame ? true : undefined}
+            style={plaque ? honourStyle(plaque.data.banner, plaque.data.frame) : undefined}
+          >
+            <span className={s.rank}>
+              {standing.data.rank}
+              {plaque?.data.title && <span className={s.plaqueTitle}>{plaque.data.title}</span>}
+            </span>
             <span className={s.total}>{standing.data.total}</span>
             {standing.data.next && (
               <ProgressBar value={standing.data.progress} label={standing.data.next} tone="woad" />
             )}
-          </Slot>
+          </div>
         )}
       </div>
       {/* Phones: today, goals, then next up. Wide: today and next up on the left, the goals beside them. */}

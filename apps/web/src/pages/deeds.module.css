@@ -1,0 +1,250 @@
+/* The Deeds tab: your honours, then the deeds. On wide screens the honours sit beside the list. */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--s-4);
+  align-items: start;
+}
+
+@container main (min-width: 760px) {
+  .layout {
+    grid-template-columns: 17rem minmax(0, 1fr);
+  }
+}
+
+.list {
+  display: grid;
+  gap: var(--s-3);
+  min-width: 0;
+}
+
+.stack {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--s-4);
+}
+
+.honours {
+  display: grid;
+  gap: var(--s-3);
+}
+
+/* What others see: your points and title, on your banner's colour, in your frame. */
+.plaque {
+  display: grid;
+  gap: 2px;
+  padding: var(--s-2) var(--s-3);
+  border: 1px solid var(--line);
+  border-left: 6px solid var(--banner);
+  border-radius: var(--r-control);
+  background: var(--surface-2);
+}
+
+.plaque[data-frame] {
+  border-color: var(--frame);
+  border-width: 2px 2px 2px 6px;
+  border-left-color: var(--banner);
+}
+
+.points {
+  font: 600 var(--t-lead) / 1.2 var(--font-book);
+}
+
+.shown {
+  font-size: var(--t-small);
+  font-style: italic;
+  color: var(--ink-2);
+}
+
+.tiers {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s-1) var(--s-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--t-small);
+}
+
+.tiers li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-2);
+}
+
+/* Each tier's name beside a dot of its colour. */
+.tierName {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-1);
+  font-weight: 600;
+}
+
+.tierName::before {
+  content: '';
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: var(--deed-easy);
+}
+
+[data-tier='hard'] .tierName::before {
+  background: var(--deed-hard);
+}
+
+[data-tier='elite'] .tierName::before {
+  background: var(--deed-elite);
+}
+
+[data-tier='master'] .tierName::before {
+  background: var(--deed-master);
+}
+
+.tierCount {
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.next {
+  display: grid;
+  gap: var(--s-1);
+  font-size: var(--t-small);
+  color: var(--ink-2);
+}
+
+.about {
+  margin: 0 0 var(--s-3);
+  color: var(--ink-2);
+  font-size: var(--t-small);
+}
+
+/* A long family (eleven skills, twenty foes) scrolls inside its own box, as long lists do. */
+.rows {
+  display: grid;
+  gap: var(--s-3);
+  max-height: min(38rem, 56dvh);
+  padding: 2px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* A row: what it is about (a skill, a foe) and its medallions, side by side while they fit (a foe's
+   three) and the medallions below when they do not (a skill's seven on a phone); in a column of its
+   own on wide screens, so the medallions line up. */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-1) var(--s-3);
+}
+
+@container main (min-width: 640px) {
+  .row[data-labelled] {
+    display: grid;
+    grid-template-columns: 9.5rem minmax(0, 1fr);
+  }
+}
+
+.rowHead {
+  flex: 1 1 8rem;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-width: 0;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.medals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-1);
+  min-width: 0;
+}
+
+.pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--s-4);
+  align-items: start;
+}
+
+@container main (min-width: 1000px) {
+  .pair {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.empty {
+  margin: 0;
+  color: var(--ink-2);
+}
+
+/* The sheets: a deed's, padded; the choice of honours, rows flush to its edges. */
+.sheet {
+  display: grid;
+  gap: var(--s-3);
+  padding: var(--s-3) var(--s-4) var(--s-4);
+}
+
+.choices {
+  display: grid;
+  gap: var(--s-2);
+}
+
+.sheetHead {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+
+.worth {
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+.text,
+.count,
+.unlocks {
+  margin: 0;
+}
+
+.count {
+  color: var(--ink-2);
+  font-size: var(--t-small);
+}
+
+.unlocks {
+  color: var(--gold);
+  font-weight: 600;
+}
+
+.choice {
+  display: grid;
+}
+
+.choiceTitle {
+  margin: 0;
+  padding: var(--s-3) var(--s-4) var(--s-1);
+  font: 600 var(--t-small) / 1.3 var(--font-ui);
+  color: var(--ink-2);
+}
+
+/* A banner's colour or a frame's metal, before its name. */
+.swatch {
+  display: block;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--r-control);
+}
+
+.swatch[data-kind='banner'] {
+  background: var(--banner);
+}
+
+.swatch[data-kind='frame'] {
+  border: 3px solid var(--frame);
+  background: var(--surface-2);
+}

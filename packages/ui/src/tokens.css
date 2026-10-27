@@ -23,6 +23,18 @@
   --ember-glow: #f4a13b;
   /* The ember as small text: dark enough to read on the page's ground. */
   --ember-ink: #a8401a;
+  /* Deeds' tiers (their medallions, the plaque's frames) and the banners' colours (session 15). */
+  --deed-easy: #a3562a;
+  --deed-hard: #5f6d78;
+  --deed-elite: #b88a0e;
+  --deed-master: #a63a55;
+  --banner-woad: #2c5a8c;
+  --banner-moss: #2f6b45;
+  --banner-fen: #1d6b66;
+  --banner-ember: #b2441a;
+  --banner-night: #433a86;
+  --banner-gold: #a07c14;
+  --banner-dawn: #b4475e;
   /* The loadout's figure (ART.md): its body, the light on its upper left, the shade on its right. */
   --figure: #e3e9e2;
   --figure-lit: #f7f9f5;
@@ -85,6 +97,17 @@
     --ember: #f06a2e;
     --ember-glow: #ffb24d;
     --ember-ink: #f6894f;
+    --deed-easy: #d9895a;
+    --deed-hard: #b8c4cc;
+    --deed-elite: #f0c94a;
+    --deed-master: #f08aa0;
+    --banner-woad: #8ab6e6;
+    --banner-moss: #7fb68f;
+    --banner-fen: #6cc2bb;
+    --banner-ember: #f6894f;
+    --banner-night: #a49be8;
+    --banner-gold: #d8b04a;
+    --banner-dawn: #f08aa0;
     --figure: #25363c;
     --figure-lit: #34494f;
     --figure-shade: #1b282d;
@@ -119,6 +142,17 @@
   --ember: #f06a2e;
   --ember-glow: #ffb24d;
   --ember-ink: #f6894f;
+  --deed-easy: #d9895a;
+  --deed-hard: #b8c4cc;
+  --deed-elite: #f0c94a;
+  --deed-master: #f08aa0;
+  --banner-woad: #8ab6e6;
+  --banner-moss: #7fb68f;
+  --banner-fen: #6cc2bb;
+  --banner-ember: #f6894f;
+  --banner-night: #a49be8;
+  --banner-gold: #d8b04a;
+  --banner-dawn: #f08aa0;
   --shade: rgb(0 0 0 / 0.4);
   --scrim: rgb(0 0 0 / 0.6);
   --burst-core: rgb(255 178 77 / 0.25);
