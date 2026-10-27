@@ -12,6 +12,9 @@ export function setCatalog(list: readonly Item[]): void {
 
 export const itemOf = (id: string): Item | undefined => items.get(id);
 
+/** Every supply: whetstones, arrows and runes, each with the style that uses it and its tier. */
+export const supplies = (): Item[] => [...items.values()].filter((i) => i.kind === 'supply' && i.supply !== undefined);
+
 /** Every food: the vendor's and what Cooking makes, each with what it heals. */
 export const foods = (): Item[] => [...items.values()].filter((i) => i.kind === 'food' && i.heals !== undefined);
 

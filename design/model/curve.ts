@@ -1,5 +1,18 @@
 // The XP curve: derived from the pacing targets, then checked by simulating focused players.
-import { FISHING, FOES, MAX_LEVEL, MINING, SMITHING, WOODCUTTING, type GatherSkill, type Style } from './content.ts';
+import {
+  FISHING,
+  FOES,
+  MAX_LEVEL,
+  MINING,
+  RUNECRAFT,
+  SMITHING,
+  WOODCUTTING,
+  type GatherSkill,
+  type Recipe,
+  type SkillId,
+  type Style,
+} from './content.ts';
+import { FLETCHING } from './supplies.ts';
 import { COOKING } from './cooking.ts';
 import { actionRate, odds, tierForLevel, HP_XP_SHARE } from './mechanics.ts';
 import { rng } from './rng.ts';
@@ -48,7 +61,7 @@ export interface Candidate {
 }
 export type Candidates = (level: number, done: Map<string, number>, fire: boolean) => Candidate[];
 
-const GATHERED = { woodcutting: WOODCUTTING, mining: MINING, fishing: FISHING };
+const GATHERED = { woodcutting: WOODCUTTING, mining: MINING, fishing: FISHING, runecraft: RUNECRAFT };
 export const gatherCandidates =
   (skill: GatherSkill): Candidates =>
   (level, done, fire) =>
@@ -65,11 +78,18 @@ export const smithingCandidates: Candidates = (level, done, fire) =>
     return { id: r.id, xpPerSec: rt.xpPerAction / rt.secondsPerAction, spa: rt.secondsPerAction };
   });
 
-export const cookingCandidates: Candidates = (level, done, fire) =>
-  COOKING.filter((r) => r.level <= level).map((r) => {
-    const rt = actionRate('cooking', level, r, done.get(r.id) ?? 0, fire);
-    return { id: r.id, xpPerSec: rt.xpPerAction / rt.secondsPerAction, spa: rt.secondsPerAction };
-  });
+/** A focused player of an artisan skill, choosing among its recipes. */
+const recipeCandidates =
+  (skill: SkillId, recipes: readonly Recipe[]): Candidates =>
+  (level, done, fire) =>
+    recipes
+      .filter((r) => r.level <= level)
+      .map((r) => {
+        const rt = actionRate(skill, level, r, done.get(r.id) ?? 0, fire);
+        return { id: r.id, xpPerSec: rt.xpPerAction / rt.secondsPerAction, spa: rt.secondsPerAction };
+      });
+export const cookingCandidates = recipeCandidates('cooking', COOKING);
+export const fletchingCandidates = recipeCandidates('fletching', FLETCHING);
 
 const oddsCache = new Map<string, ReturnType<typeof odds>>();
 export function combatOdds(style: Style, level: number, hpLevel: number, foeId: string) {

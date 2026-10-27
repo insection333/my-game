@@ -11,6 +11,7 @@ import {
   levelFromTable,
   simulate,
   cookingCandidates,
+  fletchingCandidates,
   smithingCandidates,
   type Candidates,
 } from '../../design/model/curve.ts';
@@ -57,7 +58,9 @@ const modelFor = (id: string) =>
     ? smithingCandidates
     : id === 'cooking'
       ? cookingCandidates
-      : gatherCandidates(id as 'woodcutting' | 'mining' | 'fishing');
+      : id === 'fletching'
+        ? fletchingCandidates
+        : gatherCandidates(id as 'woodcutting' | 'mining' | 'fishing' | 'runecraft');
 
 /** The paper model's focused fighter, its Hitpoints rising with it. */
 function modelFighter(style: (typeof STYLES)[number], table: number[]) {
@@ -149,7 +152,10 @@ export function runSimulation(): SimResult {
 
     // Mastery pays (as the model judges it): an action 10 levels behind, with the mastery real play gave
     // it (at least a day's use), against the best fresh action of its kind at that level.
-    const rich = (id: string) => (f.content.actions!.find((x) => x.id === id)?.gives?.[0]?.count ?? 1) > 1;
+    // A rich action gives more than the skill's plainest one (Runecraft's every draw gives eight).
+    const count = (id: string) => f.content.actions!.find((x) => x.id === id)?.gives?.[0]?.count ?? 1;
+    const plain = Math.min(...f.content.actions!.map((x) => count(x.id)));
+    const rich = (id: string) => count(id) > plain;
     // (Gathering only, as in the model: Smithing's older recipes are judged by what they make.)
     for (const a of f.content.actions!.filter((x) => lane === 'gathering' && x.level + 10 <= 40)) {
       const lvl = a.level + 10;

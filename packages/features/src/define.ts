@@ -40,6 +40,8 @@ export const ContentAction = z
     gives: z.array(z.object({ item: Id, count: z.number().int().positive() }).strict()).optional(),
     /** What one completion uses up. */
     takes: z.array(z.object({ item: Id, count: z.number().int().positive() }).strict()).optional(),
+    /** What it needs to have but keeps (a standing stone's key). */
+    needs: z.array(z.object({ item: Id }).strict()).optional(),
   })
   .strict();
 export type ContentAction = z.infer<typeof ContentAction>;

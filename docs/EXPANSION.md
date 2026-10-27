@@ -88,7 +88,7 @@ Regions appear as tabs at the top of Combat, already the home given in the page 
 | Runecraft | Gathering | Runes drawn at the old standing stones; higher stones need a key bound from bars | Magic |
 
 - **Food:** the vendor keeps selling bread, meat pie and stew as a fallback. From tier 2, home-cooked food heals more for its cost, so feeding yourself is a real choice.
-- **Supplies, one slot per style:** Archery takes arrows and Magic takes runes. Melee takes whetstones, which Smithing makes, so the triangle stays fair. Supplies are optional, add damage by tier, and are used one per attack.
+- **Supplies, one slot per style:** Archery takes arrows and Magic takes runes. Melee takes whetstones, which Smithing makes, so the triangle stays fair. Supplies are optional, add damage by tier, and are used one per foe fought (settled in session 14: a swing every 3 seconds would use about 1,200 an hour, more than any lane could make, so a supply covers a whole fight, and arrows and whetstones come 25 at a time, runes eight).
 - **Finds:** each new skill has six finds. With boss finds, the collection log grows from 36 to 66 entries.
 - **Skill count:** eleven skills in all. Gathering holds four (the fire's second lane matters more), Artisan three, and Combat three styles plus Hitpoints.
 

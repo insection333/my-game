@@ -4,6 +4,7 @@ import {
   FOES,
   MAX_LEVEL,
   MINING,
+  RUNECRAFT,
   SKILLS,
   SMITHING,
   TIER_XP_PER_HOUR,
@@ -99,8 +100,8 @@ for (const s of SKILLS) {
 // 3. Choices and mastery.
 out('\n## Choices at each tier (XP an hour, mid-tier, against the best)');
 const MASTERED = 24000;
-for (const skill of ['woodcutting', 'mining', 'fishing'] as const) {
-  const acts = { woodcutting: WOODCUTTING, mining: MINING, fishing: FISHING }[skill];
+for (const skill of ['woodcutting', 'mining', 'fishing', 'runecraft'] as const) {
+  const acts = { woodcutting: WOODCUTTING, mining: MINING, fishing: FISHING, runecraft: RUNECRAFT }[skill];
   for (const { tier, level: opens } of TIERS) {
     // Mid-tier: past the rich action (4 levels in), before the next tier.
     const lvl = opens + (tier < 5 ? 5 : 7);
@@ -126,8 +127,8 @@ for (const skill of ['woodcutting', 'mining', 'fishing'] as const) {
 }
 // Mastery pays: an action unlocked 10 levels below, with the mastery real play gave it (at least a day's use),
 // against the best fresh action at that level.
-for (const skill of ['woodcutting', 'mining', 'fishing'] as const) {
-  const acts = { woodcutting: WOODCUTTING, mining: MINING, fishing: FISHING }[skill];
+for (const skill of ['woodcutting', 'mining', 'fishing', 'runecraft'] as const) {
+  const acts = { woodcutting: WOODCUTTING, mining: MINING, fishing: FISHING, runecraft: RUNECRAFT }[skill];
   const sim = simulate(gatherCandidates(skill), { days: DAYS + 10, table });
   for (const old of acts.filter((a) => a.level + 10 <= MAX_LEVEL)) {
     const lvl = old.level + 10;

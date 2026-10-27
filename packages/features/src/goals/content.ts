@@ -75,7 +75,7 @@ export const MILESTONES: readonly Milestone[] = [
     [200, 60_000],
     [250, 100_000],
     [280, 150_000],
-    // The climb past 40 (seven skills at 99 make 693; with Fishing and Cooking, nine make 891).
+    // The climb past 40 (seven skills at 99 make 693, nine 891, and all eleven 1,089).
     [350, 220_000],
     [450, 320_000],
     [550, 450_000],
@@ -83,6 +83,8 @@ export const MILESTONES: readonly Milestone[] = [
     [693, 1_000_000],
     [800, 1_300_000],
     [891, 1_600_000],
+    [1000, 2_000_000],
+    [1089, 2_500_000],
   ].map(([level, reward]): Milestone => ({ id: `total-${level}`, kind: 'total', level, reward })),
   ...[
     ['copper', 250],
@@ -104,8 +106,9 @@ export const MILESTONES: readonly Milestone[] = [
     [12, 5_000],
     [24, 25_000],
     [36, 75_000],
-    // Fishing's and Cooking's twelve finds make 48.
+    // Fishing's and Cooking's twelve finds make 48; Fletching's and Runecraft's, 60.
     [48, 150_000],
+    [60, 250_000],
   ].map(([count, reward]): Milestone => ({ id: `log-${count}`, kind: 'log', count, reward })),
   { id: 'mastery-10', kind: 'mastery', step: 10, reward: 50_000 },
 ];

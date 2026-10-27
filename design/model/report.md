@@ -62,8 +62,10 @@ PASS  First level-up after 37.5 s of chopping (target under 1 minute)
 PASS  Woodcutting: every level 1-99 unlocks something
 PASS  Mining: every level 1-99 unlocks something
 PASS  Fishing: every level 1-99 unlocks something
+PASS  Runecraft: every level 1-99 unlocks something
 PASS  Smithing: every level 1-99 unlocks something
 PASS  Cooking: every level 1-99 unlocks something
+PASS  Fletching: every level 1-99 unlocks something
 PASS  Melee: every level 1-99 unlocks something
 PASS  Archery: every level 1-99 unlocks something
 PASS  Magic: every level 1-99 unlocks something
@@ -118,6 +120,22 @@ fishing tier 7: Ember char shallows 39820 · Deep ember char pool 34528 (+100% m
 PASS  fishing tier 7 offers two choices within 20%
 fishing tier 8: Dawn sturgeon shallows 50971 · Deep dawn sturgeon pool 44141 (+100% materials) · Ember char shallows mastered 45078
 PASS  fishing tier 8 offers two choices within 20%
+runecraft tier 1: Spark stone 6046 · Ancient spark stone 5130 (+100% materials)
+PASS  runecraft tier 1 offers two choices within 20%
+runecraft tier 2: Gale stone 8604 · Ancient gale stone 7572 (+100% materials) · Spark stone mastered 7102
+PASS  runecraft tier 2 offers two choices within 20%
+runecraft tier 3: Tide stone 11653 · Ancient tide stone 10159 (+100% materials) · Gale stone mastered 10044
+PASS  runecraft tier 3 offers two choices within 20%
+runecraft tier 4: Earth stone 15600 · Ancient earth stone 13508 (+100% materials) · Tide stone mastered 13525
+PASS  runecraft tier 4 offers two choices within 20%
+runecraft tier 5: Moon stone 22919 · Ancient moon stone 19906 (+100% materials) · Earth stone mastered 18009
+PASS  runecraft tier 5 offers two choices within 20%
+runecraft tier 6: Star stone 30448 · Ancient star stone 26349 (+100% materials) · Moon stone mastered 26114
+PASS  runecraft tier 6 offers two choices within 20%
+runecraft tier 7: Ember stone 39820 · Ancient ember stone 34528 (+100% materials) · Star stone mastered 34577
+PASS  runecraft tier 7 offers two choices within 20%
+runecraft tier 8: Dawn stone 50971 · Ancient dawn stone 44141 (+100% materials) · Ember stone mastered 45078
+PASS  runecraft tier 8 offers two choices within 20%
 PASS  Mastery pays: at woodcutting 11, Pine tree (mastery 8) earns 90% of the best fresh action of its kind
 PASS  Mastery pays: at woodcutting 15, Old pine (mastery 8) earns 86% of the best fresh action of its kind
 PASS  Mastery pays: at woodcutting 20, Ash tree (mastery 7) earns 92% of the best fresh action of its kind
@@ -166,6 +184,22 @@ PASS  Mastery pays: at fishing 80, Ember char shallows (mastery 10) earns 123% o
 PASS  Mastery pays: at fishing 84, Deep ember char pool (mastery 5) earns 111% of the best fresh action of its kind
 PASS  Mastery pays: at fishing 95, Dawn sturgeon shallows (mastery 10) earns 122% of the best fresh action of its kind
 PASS  Mastery pays: at fishing 99, Deep dawn sturgeon pool (mastery 5) earns 111% of the best fresh action of its kind
+PASS  Mastery pays: at runecraft 11, Spark stone (mastery 8) earns 90% of the best fresh action of its kind
+PASS  Mastery pays: at runecraft 15, Ancient spark stone (mastery 8) earns 86% of the best fresh action of its kind
+PASS  Mastery pays: at runecraft 20, Gale stone (mastery 7) earns 92% of the best fresh action of its kind
+PASS  Mastery pays: at runecraft 24, Ancient gale stone (mastery 7) earns 92% of the best fresh action of its kind
+PASS  Mastery pays: at runecraft 30, Tide stone (mastery 9) earns 96% of the best fresh action of its kind
+PASS  Mastery pays: at runecraft 34, Ancient tide stone (mastery 6) earns 90% of the best fresh action of its kind
+PASS  Mastery pays: at runecraft 40, Earth stone (mastery 10) earns 88% of the best fresh action of its kind
+PASS  Mastery pays: at runecraft 44, Ancient earth stone (mastery 6) earns 81% of the best fresh action of its kind
+PASS  Mastery pays: at runecraft 50, Moon stone (mastery 10) earns 124% of the best fresh action of its kind
+PASS  Mastery pays: at runecraft 54, Ancient moon stone (mastery 6) earns 115% of the best fresh action of its kind
+PASS  Mastery pays: at runecraft 65, Star stone (mastery 10) earns 124% of the best fresh action of its kind
+PASS  Mastery pays: at runecraft 69, Ancient star stone (mastery 5) earns 112% of the best fresh action of its kind
+PASS  Mastery pays: at runecraft 80, Ember stone (mastery 10) earns 123% of the best fresh action of its kind
+PASS  Mastery pays: at runecraft 84, Ancient ember stone (mastery 5) earns 111% of the best fresh action of its kind
+PASS  Mastery pays: at runecraft 95, Dawn stone (mastery 10) earns 122% of the best fresh action of its kind
+PASS  Mastery pays: at runecraft 99, Ancient dawn stone (mastery 5) earns 111% of the best fresh action of its kind
 Smithing: every recipe in a tier pays the same XP an hour; bars are quicker to sell, gear is worth 40% more than its bars.
 PASS  Smithing recipes within 10% of their tier rate
 
@@ -310,7 +344,19 @@ Day 160 income 1,151,011 · food 137,772 (12%) · enlargement 18 costs 850,000
 PASS  Day 160: a day's gold covers a day of food and enlargement 18
 Day 180 income 1,151,011 · food 137,772 (12%) · enlargement 19 costs 900,000
 PASS  Day 180: a day's gold covers a day of food and enlargement 19
-Costs at 70% of each day's net gold would be: 50000, 100000, 95000, 110000, 230000, 240000, 245000, 255000, 280000, 305000, 340000, 450000, 460000, 650000, 820000, 710000, 710000, 710000, 710000
+Day 200 income 1,151,011 · food 137,772 (12%) · enlargement 20 costs 925,000
+PASS  Day 200: a day's gold covers a day of food and enlargement 20
+Day 220 income 1,151,011 · food 137,772 (12%) · enlargement 21 costs 950,000
+PASS  Day 220: a day's gold covers a day of food and enlargement 21
+Day 240 income 1,151,011 · food 137,772 (12%) · enlargement 22 costs 975,000
+PASS  Day 240: a day's gold covers a day of food and enlargement 22
+Day 260 income 1,151,011 · food 137,772 (12%) · enlargement 23 costs 1,000,000
+PASS  Day 260: a day's gold covers a day of food and enlargement 23
+Day 280 income 1,151,011 · food 137,772 (12%) · enlargement 24 costs 1,000,000
+PASS  Day 280: a day's gold covers a day of food and enlargement 24
+Day 300 income 1,151,011 · food 137,772 (12%) · enlargement 25 costs 1,000,000
+PASS  Day 300: a day's gold covers a day of food and enlargement 25
+Costs at 70% of each day's net gold would be: 50000, 100000, 95000, 110000, 230000, 240000, 245000, 255000, 280000, 305000, 340000, 450000, 460000, 650000, 820000, 710000, 710000, 710000, 710000, 710000, 710000, 710000, 710000, 710000, 710000
 
 ## Supply: can mining keep the forge fed?
 Tier 1: smelting without pause needs mining 69% of the time on a fresh vein, 42% on a mastered deep seam
@@ -370,3 +416,73 @@ PASS  Tier 7: Fishing pays at least 80% of Woodcutting
 Tier 8: an hour of Woodcutting sells for 58860; an hour of Fishing, cooked and eaten, saves 53827 at the vendor
 PASS  Tier 8: Fishing pays at least 80% of Woodcutting
 Supply: cooking without pause takes two fish and one log every three of the tier's units, so one Gathering lane fishing and the fire's second lane chopping half the time keep the Artisan lane cooking.
+
+## Supplies (session 14)
+PASS  Hollow rat: with supplies, magic still wins
+Hollow rat (magic, level 1): +3% XP an hour; supplies worth 0 an hour bring 32
+PASS  Hollow rat: magic's supply pays for itself
+PASS  Goblin slinger: with supplies, melee still wins
+Goblin slinger (melee, level 3): +3% XP an hour; supplies worth 0 an hour bring 32
+PASS  Goblin slinger: melee's supply pays for itself
+PASS  Marsh wisp: with supplies, archery still wins
+Marsh wisp (archery, level 5): +5% XP an hour; supplies worth 0 an hour bring 56
+PASS  Marsh wisp: archery's supply pays for itself
+PASS  Orc raider: with supplies, magic still wins
+Orc raider (magic, level 14): +6% XP an hour; supplies worth 0 an hour bring 189
+PASS  Orc raider: magic's supply pays for itself
+PASS  Orc bowman: with supplies, melee still wins
+Orc bowman (melee, level 18): +6% XP an hour; supplies worth 0 an hour bring 242
+PASS  Orc bowman: melee's supply pays for itself
+PASS  Grave wight: with supplies, archery still wins
+Grave wight (archery, level 23): +8% XP an hour; supplies worth 333 an hour bring 554
+PASS  Grave wight: archery's supply pays for itself
+PASS  Hill troll: with supplies, magic still wins
+Hill troll (magic, level 28): +4% XP an hour; supplies worth 330 an hour bring 381
+PASS  Hill troll: magic's supply pays for itself
+PASS  Fell huntsman: with supplies, melee still wins
+Fell huntsman (melee, level 36): +6% XP an hour; supplies worth 616 an hour bring 1035
+PASS  Fell huntsman: melee's supply pays for itself
+PASS  Bog lurker: with supplies, magic still wins
+Bog lurker (magic, level 41): +7% XP an hour; supplies worth 1156 an hour bring 1679
+PASS  Bog lurker: magic's supply pays for itself
+PASS  Reed stalker: with supplies, melee still wins
+Reed stalker (melee, level 45): +10% XP an hour; supplies worth 733 an hour bring 2152
+PASS  Reed stalker: melee's supply pays for itself
+PASS  Drowned acolyte: with supplies, archery still wins
+Drowned acolyte (archery, level 50): +5% XP an hour; supplies worth 987 an hour bring 1171
+PASS  Drowned acolyte: archery's supply pays for itself
+PASS  Mire hulk: with supplies, magic still wins
+Mire hulk (magic, level 56): +7% XP an hour; supplies worth 1725 an hour bring 2071
+PASS  Mire hulk: magic's supply pays for itself
+PASS  Fen reaver: with supplies, melee still wins
+Fen reaver (melee, level 61): +8% XP an hour; supplies worth 1092 an hour bring 2452
+PASS  Fen reaver: melee's supply pays for itself
+PASS  Bog witch: with supplies, archery still wins
+Bog witch (archery, level 66): +7% XP an hour; supplies worth 1741 an hour bring 2294
+PASS  Bog witch: archery's supply pays for itself
+PASS  Ash troll: with supplies, magic still wins
+Ash troll (magic, level 71): +11% XP an hour; supplies worth 2559 an hour bring 4587
+PASS  Ash troll: magic's supply pays for itself
+PASS  Peak slinger: with supplies, melee still wins
+Peak slinger (melee, level 76): +8% XP an hour; supplies worth 1438 an hour bring 3333
+PASS  Peak slinger: melee's supply pays for itself
+PASS  Ash shaman: with supplies, archery still wins
+Ash shaman (archery, level 81): +8% XP an hour; supplies worth 2466 an hour bring 3725
+PASS  Ash shaman: archery's supply pays for itself
+PASS  Obsidian golem: with supplies, magic still wins
+Obsidian golem (magic, level 86): +11% XP an hour; supplies worth 3691 an hour bring 6412
+PASS  Obsidian golem: magic's supply pays for itself
+PASS  Sky reaver: with supplies, melee still wins
+Sky reaver (melee, level 91): +12% XP an hour; supplies worth 2300 an hour bring 6443
+PASS  Sky reaver: melee's supply pays for itself
+PASS  Ember sorcerer: with supplies, archery still wins
+Ember sorcerer (archery, level 96): +10% XP an hour; supplies worth 3654 an hour bring 5632
+PASS  Ember sorcerer: archery's supply pays for itself
+PASS  Fletching and Smithing supply recipes within 10% of their tier rate
+PASS  Tier 3: a draw of runes sells for about what a vein's ore does (16 and 14)
+PASS  Tier 4: a draw of runes sells for about what a vein's ore does (32 and 30)
+PASS  Tier 5: a draw of runes sells for about what a vein's ore does (64 and 60)
+PASS  Tier 6: a draw of runes sells for about what a vein's ore does (104 and 100)
+PASS  Tier 7: a draw of runes sells for about what a vein's ore does (160 and 160)
+PASS  Tier 8: a draw of runes sells for about what a vein's ore does (240 and 240)
+Supply: an hour of Fletching makes arrows for two to three hours of fights at the same tier; an hour of Runecraft draws runes for three or more.

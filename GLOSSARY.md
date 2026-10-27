@@ -12,7 +12,7 @@ Plain, warm and brief, with an old-world flavour in names rather than in instruc
 | --- | --- |
 | Action | One thing a lane repeats: chopping a pine, forging a helm, fighting a foe |
 | Advantage | Your style beats the foe's: you deal more damage and take less |
-| Artisan lane | The lane that turns materials into bars and gear (Smithing) and fish into food (Cooking) |
+| Artisan lane | The lane that turns materials into bars and gear (Smithing), fish into food (Cooking) and bars and logs into arrows (Fletching) |
 | Away | Time you are not on the page; lanes keep working for up to 24 hours |
 | Away recap | What happened while you were away, best thing first |
 | Bar | Metal smelted from ore: copper, bronze, iron, steel |
@@ -30,7 +30,8 @@ Plain, warm and brief, with an old-world flavour in names rather than in instruc
 | Find | A rare extra from an action, at one of three rarities |
 | First steps | The six opening goals, each with a button |
 | Foe | Something to fight; each has a style, shown before you fight |
-| Gathering lane | The lane that cuts wood, mines ore or fishes; the fire opens a second one |
+| Gathering lane | The lane that cuts wood, mines ore, fishes or draws runes; the fire opens a second one |
+| Key | Opens a tier's standing stones for Runecraft; Smithing binds it from two bars, and it is kept |
 | Gold | Earned from selling and from foes; buys food and Storehouse space |
 | Health | How much damage you can take; set by Hitpoints |
 | Hearth | The home page |
@@ -45,6 +46,7 @@ Plain, warm and brief, with an old-world flavour in names rather than in instruc
 | Next action | The action queued behind a lane's current one; it starts when the current one stops |
 | Notices | The tray of things that happened and need you |
 | Perk | A lasting bonus unlocked at a level |
+| Supply | A style's extra damage, one used a foe: whetstones for Melee, arrows for Archery, runes for Magic |
 | Supply cache | What short goals and the daily goal pay in: gold for certain, and a draw for more |
 | Region | Where foes are fought: the march, the Sunken Fen and the Ashen Peaks, each a tab of Combat |
 | Rank | Your standing, from Wanderer to Legend of the Realm, rising with your total level |

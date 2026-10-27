@@ -183,3 +183,45 @@ export function CookingSeal() {
     </Seal>
   );
 }
+
+/** Fletching: an arrow on the slant, its fletching low and its head high. */
+export function FletchingSeal() {
+  return (
+    <Seal>
+      <path d="M14 34 L33 15" stroke={INK} strokeWidth={4} strokeLinecap="round" />
+      <path d="M14 34 L33 15" stroke={M.ash.base} strokeWidth={2} strokeLinecap="round" />
+      <Shape d="M30 12 L39 9 L36 18 Z" tone={M.iron} lit="M30 12 L39 9 L33 15 Z" />
+      <Shape d="M11 37 L9.5 30 L14.5 33 Z" tone={M.feather} />
+      <Shape d="M11 37 L18 38.5 L15 33.5 Z" tone={M.banner} />
+    </Seal>
+  );
+}
+
+/** Runecraft: a standing stone with a glowing mark. */
+export function RunecraftSeal() {
+  return (
+    <Seal>
+      <Shape
+        d="M17 37 L16 17 C16 12 19.5 9.5 24 9.5 C28.5 9.5 32 12 32 17 L31 37 Z"
+        tone={M.stone}
+        lit="M17 37 L16 17 C16 12 19.5 9.5 24 9.5 C21 11 20 13.5 20 17 L20.5 37 Z"
+        shade="M31 37 L32 17 C32 13 30 10.5 27 9.8 C28.5 12 29 14 29 17 L28.5 37 Z"
+      >
+        <path
+          d="M24 15 L24 31 M24 19 L28.5 23 M24 25 L19.5 21.5"
+          fill="none"
+          stroke={INK}
+          strokeWidth={2.4}
+          strokeLinecap="round"
+        />
+        <path
+          d="M24 15 L24 31 M24 19 L28.5 23 M24 25 L19.5 21.5"
+          fill="none"
+          stroke="#9ff7ff"
+          strokeWidth={1.1}
+          strokeLinecap="round"
+        />
+      </Shape>
+    </Seal>
+  );
+}

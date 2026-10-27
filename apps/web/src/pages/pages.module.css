@@ -189,6 +189,15 @@ a.row:hover {
 }
 
 /* Forty levels scroll inside their panel, opened at the next unlock, so the box never towers. */
+/* A tier's actions scroll inside their own box when there are more than a screen holds (Smithing's
+   nine recipes on a phone), as the ladder does. */
+.actionList {
+  display: block;
+  max-height: min(42rem, 62dvh);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
 .ladder {
   list-style: none;
   margin: 0;

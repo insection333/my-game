@@ -46,7 +46,7 @@
 }
 
 /* Each piece where it is worn: the helm on the head, the body on the chest, the legs on the legs, the
-   weapon in the hand. */
+   weapon in the right hand and the supply in the left. */
 .slot[data-slot-name='helm'] {
   left: 66px;
   top: 6px;
@@ -61,6 +61,10 @@
 }
 .slot[data-slot-name='weapon'] {
   left: 17px;
+  top: 137px;
+}
+.slot[data-slot-name='supply'] {
+  left: 115px;
   top: 137px;
 }
 

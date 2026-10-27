@@ -2,16 +2,28 @@
 // session 3 onward moves it into packages/features/*/content.ts behind Zod schemas.
 
 export type SkillId =
-  'woodcutting' | 'mining' | 'fishing' | 'smithing' | 'cooking' | 'melee' | 'archery' | 'magic' | 'hitpoints';
-export type GatherSkill = 'woodcutting' | 'mining' | 'fishing';
+  | 'woodcutting'
+  | 'mining'
+  | 'fishing'
+  | 'runecraft'
+  | 'smithing'
+  | 'cooking'
+  | 'fletching'
+  | 'melee'
+  | 'archery'
+  | 'magic'
+  | 'hitpoints';
+export type GatherSkill = 'woodcutting' | 'mining' | 'fishing' | 'runecraft';
 export type Style = 'melee' | 'archery' | 'magic';
 
 export const SKILLS: { id: SkillId; name: string; lane: 'gathering' | 'artisan' | 'combat' }[] = [
   { id: 'woodcutting', name: 'Woodcutting', lane: 'gathering' },
   { id: 'mining', name: 'Mining', lane: 'gathering' },
   { id: 'fishing', name: 'Fishing', lane: 'gathering' },
+  { id: 'runecraft', name: 'Runecraft', lane: 'gathering' },
   { id: 'smithing', name: 'Smithing', lane: 'artisan' },
   { id: 'cooking', name: 'Cooking', lane: 'artisan' },
+  { id: 'fletching', name: 'Fletching', lane: 'artisan' },
   { id: 'melee', name: 'Melee', lane: 'combat' },
   { id: 'archery', name: 'Archery', lane: 'combat' },
   { id: 'magic', name: 'Magic', lane: 'combat' },
@@ -24,14 +36,14 @@ export const MAX_LEVEL = 99;
 // Tiers 5 to 8 (the expansion, docs/EXPANSION.md): the Sunken Fen's metals and woods, then the Ashen
 // Peaks'. Their gaps grow (15 levels), so the late tiers are earned.
 export const TIERS = [
-  { tier: 1, metal: 'Copper', level: 1, log: 'Pine', ore: 'Copper ore', fish: 'Perch' },
-  { tier: 2, metal: 'Bronze', level: 10, log: 'Ash', ore: 'Tin ore', fish: 'Trout' },
-  { tier: 3, metal: 'Iron', level: 20, log: 'Oak', ore: 'Iron ore', fish: 'Pike' },
-  { tier: 4, metal: 'Steel', level: 30, log: 'Yew', ore: 'Coal', fish: 'Salmon' },
-  { tier: 5, metal: 'Moonsilver', level: 40, log: 'Maple', ore: 'Moonsilver ore', fish: 'Moon carp' },
-  { tier: 6, metal: 'Star-iron', level: 55, log: 'Silverbark', ore: 'Star-iron ore', fish: 'Silver eel' },
-  { tier: 7, metal: 'Embersteel', level: 70, log: 'Elderwood', ore: 'Ember ore', fish: 'Ember char' },
-  { tier: 8, metal: 'Dawnsteel', level: 85, log: 'Ancient', ore: 'Dawnstone', fish: 'Dawn sturgeon' },
+  { tier: 1, metal: 'Copper', level: 1, log: 'Pine', ore: 'Copper ore', fish: 'Perch', rune: 'Spark' },
+  { tier: 2, metal: 'Bronze', level: 10, log: 'Ash', ore: 'Tin ore', fish: 'Trout', rune: 'Gale' },
+  { tier: 3, metal: 'Iron', level: 20, log: 'Oak', ore: 'Iron ore', fish: 'Pike', rune: 'Tide' },
+  { tier: 4, metal: 'Steel', level: 30, log: 'Yew', ore: 'Coal', fish: 'Salmon', rune: 'Earth' },
+  { tier: 5, metal: 'Moonsilver', level: 40, log: 'Maple', ore: 'Moonsilver ore', fish: 'Moon carp', rune: 'Moon' },
+  { tier: 6, metal: 'Star-iron', level: 55, log: 'Silverbark', ore: 'Star-iron ore', fish: 'Silver eel', rune: 'Star' },
+  { tier: 7, metal: 'Embersteel', level: 70, log: 'Elderwood', ore: 'Ember ore', fish: 'Ember char', rune: 'Ember' },
+  { tier: 8, metal: 'Dawnsteel', level: 85, log: 'Ancient', ore: 'Dawnstone', fish: 'Dawn sturgeon', rune: 'Dawn' },
 ] as const;
 
 // Base pace per tier: seconds for a standard gathering action (and per input unit in Smithing),
@@ -46,6 +58,7 @@ export const VALUE = {
   ore: [1, 4, 14, 30, 60, 100, 160, 240], // copper, tin, iron, coal, moonsilver, star-iron, ember, dawnstone
   bar: [2, 7, 36, 96, 117, 208, 286, 468], // about 1.3 times their ores
   fish: [1, 2, 6, 14, 28, 46, 72, 108], // 40% of logs: Fishing pays mostly in the food it saves
+  rune: [0, 0, 2, 4, 8, 13, 20, 30], // an eighth of ore: a draw gives eight, so Runecraft pays as Mining
 };
 
 export interface GatherAction {
@@ -72,7 +85,9 @@ function gatherActions(skill: GatherSkill): GatherAction[] {
       woodcutting: [`${t.log} logs`, `${t.log} tree`, `Old ${t.log.toLowerCase()}`],
       mining: [t.ore, `${rock} vein`, `Deep ${rock.toLowerCase()} seam`],
       fishing: [t.fish, `${t.fish} shallows`, `Deep ${t.fish.toLowerCase()} pool`],
+      runecraft: [`${t.rune} rune`, `${t.rune} stone`, `Ancient ${t.rune.toLowerCase()} stone`],
     }[skill];
+    const per = skill === 'runecraft' ? 8 : 1;
     const s = TIER_SECONDS[i];
     const xp = Math.round((TIER_XP_PER_HOUR[i] * s) / 3600);
     out.push({
@@ -85,7 +100,7 @@ function gatherActions(skill: GatherSkill): GatherAction[] {
       seconds: s,
       xp,
       item: res,
-      qty: 1,
+      qty: per,
       findMult: 1,
     });
     out.push({
@@ -98,7 +113,7 @@ function gatherActions(skill: GatherSkill): GatherAction[] {
       seconds: s * 1.5,
       xp: Math.round(xp * 1.3),
       item: res,
-      qty: 2,
+      qty: 2 * per,
       findMult: 1.5,
     });
   }
@@ -107,6 +122,7 @@ function gatherActions(skill: GatherSkill): GatherAction[] {
 export const WOODCUTTING = gatherActions('woodcutting');
 export const MINING = gatherActions('mining');
 export const FISHING = gatherActions('fishing');
+export const RUNECRAFT = gatherActions('runecraft');
 
 export interface Recipe {
   id: string;
@@ -118,6 +134,8 @@ export interface Recipe {
   seconds: number;
   xp: number;
   value: number;
+  /** How many one making gives (supplies come 25 at a time). */
+  makes?: number;
 }
 // Offsets within each tier's ten levels: bar 0, sword 1, staff 2, bow 3, helm 5, legs 6, body 8.
 const GEAR: { kind: string; offset: number; bars: number; logs: number }[] = [
@@ -256,48 +274,7 @@ export const RARITY = [
   { id: 'rare', name: 'Rare', chance: 1 / 500 },
   { id: 'legendary', name: 'Legendary', chance: 1 / 5000 },
 ] as const;
-export const FINDS: Record<Exclude<SkillId, 'hitpoints'>, [string, string][]> = {
-  woodcutting: [
-    ["Bird's nest", 'Amber nugget'],
-    ['Carved acorn', 'Heartwood knot'],
-    ['Silverbark seed', 'Crown of the old wood'],
-  ],
-  mining: [
-    ['Rough garnet', 'Rough sapphire'],
-    ['Ancient coin', 'Crystal geode'],
-    ['Star-iron shard', 'Heart of the mountain'],
-  ],
-  fishing: [
-    ['Pearl mussel', 'River pearl'],
-    ['Message in a bottle', 'Drowned signet'],
-    ['Scale of the deep', "Fen-king's crown"],
-  ],
-  cooking: [
-    ['Wild herbs', 'Saffron threads'],
-    ["Grandmother's recipe", 'Silver ladle'],
-    ['Ever-warm pot', 'Cauldron of plenty'],
-  ],
-  smithing: [
-    ['Lucky horseshoe', 'Masterwork rivets'],
-    ["Guild smith's seal", 'Quenching flask'],
-    ['Ember of the first forge', "Old king's hammer"],
-  ],
-  melee: [
-    ['Battle trophy', "Raider's war-horn"],
-    ['Torn banner', "Warlord's seal"],
-    ["Shard of a king's blade", "Troll-chief's tooth"],
-  ],
-  archery: [
-    ['Goose fletchings', "Hunter's charm"],
-    ['Silver arrowhead', "Bowman's ring"],
-    ['Moonlit bowstring', 'Eagle-feather circlet'],
-  ],
-  magic: [
-    ['Glimmer stone', 'Wisp lantern'],
-    ['Rune-scratched tablet', "Wight's ring"],
-    ['Star-glass orb', "Sorcerer's eye"],
-  ],
-};
+export { FINDS } from './finds.ts';
 
 // Mastery: cumulative completions for steps 1-10, and what each step gives.
 export const MASTERY_STEPS = [30, 90, 210, 450, 900, 1800, 3600, 7200, 14400, 28800];
@@ -308,7 +285,7 @@ export const STOREHOUSE = {
   slotsPerEnlargement: 6,
   costs: [
     40000, 90000, 100000, 120000, 180000, 200000, 230000, 250000, 280000, 300000, 340000, 450000, 460000, 650000,
-    700000, 750000, 800000, 850000, 900000,
+    700000, 750000, 800000, 850000, 900000, 925000, 950000, 975000, 1000000, 1000000, 1000000,
   ],
 };
 export const FIRE = { xpBonus: 0.15, extraGatheringLanes: 1, idleMinutesBeforeOut: 5 };

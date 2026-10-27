@@ -81,6 +81,10 @@ The fish family the owner approved on 27 October 2026 (`icons/fish.tsx`, `fish-l
 - **Finds** come up from the water or out of a cook's keeping: a pearl mussel, a river pearl, a message in a bottle, a drowned signet ring, a great scale of the deep and a fen-king's crown hung with weed; wild herbs, saffron in a tied sack, a grandmother's sealed recipe, a silver ladle, an ever-warm pot and a cauldron of plenty spilling gold.
 - **Seals:** Fishing's hook and line with a red float; Cooking's pot over a small flame.
 
+## Supplies (session 14)
+
+The owner approved the supplies family's references on 27 October 2026 (`icons/supplies.tsx`): a fanned bundle of three arrows (the tier's metal at the heads, its wood in the shafts), a rune (a flat stone with its carved mark glowing in the tier's light), a whetstone (a gritty stone bound in the tier's metal) and a standing-stone key (the tier's metal, a rune-stone set in its bow). Step 14 drew all eight tiers of each to it (`icons/supplies-index.tsx`): arrows in each tier's metal and wood; whetstones bound in its metal; each rune with its own carved mark in its own light (a spark's zigzag, a gale's streams, a tide's waves, the earth's hill, the moon's crescent, a star's rays, an ember's flame, the dawn's sun on the skyline); keys from bronze to dawnsteel, the tier's rune light in the stone of the bow. Fletching's finds are a fletcher's treasures (a heron's quill to the quiver of the wild hunt) and Runecraft's what turns up at the stones (a chalk stub to the ancients' star chart); its seal is a standing stone with a glowing mark, Fletching's an arrow.
+
 ## Seals that grow
 
 A skill's seal is rimmed in the metal of the highest tier its skill has reached: copper, then bronze, iron and steel, then moonsilver, star-iron, embersteel and dawnsteel. At the top level a small amber star sits on the rim's foot. The icon sheet shows one seal at each tier. Where no player's skill is meant (a ladder's tab, the icon sheet's own entry), the rim is bronze.

@@ -1,12 +1,12 @@
 // Combat's part of the save: what is worn, health as of a moment (it returns with time), and the
 // last retreat. Combat writes it; the Storehouse and goals read it through these helpers.
-import { masteryStep, type GearSlot, type Style } from '@idle-clash/content';
+import { masteryStep, TIER_LEVELS, type GearSlot, type Style } from '@idle-clash/content';
 import { countOf, type State } from '@idle-clash/kernel';
 import { z } from 'zod';
 import { itemOf } from '../catalog.ts';
 import { perksAt, skillLevel } from '../skill.ts';
-import { foods } from '../catalog.ts';
-import { HITPOINTS, LADDERS, type Foe } from './data.ts';
+import { foods, supplies } from '../catalog.ts';
+import { HITPOINTS, LADDERS, SUPPLY_DAMAGE, type Foe } from './data.ts';
 import { maxHealth, regenPerSecond, type Fighter, type Meal } from './fight.ts';
 
 const ItemId = z.string().regex(/^[a-z0-9][a-z0-9-]{0,63}$/);
@@ -59,6 +59,15 @@ const hitpointsPart = (state: State) => {
   return { hpLevel, hpPerks: perksAt(LADDERS.hitpoints, hpLevel) };
 };
 
+/** The supply a style uses: the highest tier carried that its level allows, as for its weapon. */
+export function supplyOf(state: State, style: Style): { item: string; pct: number } | null {
+  const level = skillLevel(state, style);
+  const best = supplies()
+    .filter((i) => i.supply!.style === style && TIER_LEVELS[i.supply!.tier - 1] <= level && countOf(state, i.id) > 0)
+    .sort((a, b) => b.supply!.tier - a.supply!.tier)[0];
+  return best ? { item: best.id, pct: SUPPLY_DAMAGE[best.supply!.tier - 1] } : null;
+}
+
 /** The fighter the state makes against a foe, or null without a weapon. */
 export function fighterOf(state: State, foe: Foe): Fighter | null {
   const style = styleOf(state);
@@ -77,6 +86,7 @@ export function fighterOf(state: State, foe: Foe): Fighter | null {
     ...hitpointsPart(state),
     perks: perksAt(LADDERS[style], styleLevel),
     mastery: masteryStep(Object.hasOwn(state.mastery, key) ? state.mastery[key] : 0),
+    supply: supplyOf(state, style),
   };
 }
 

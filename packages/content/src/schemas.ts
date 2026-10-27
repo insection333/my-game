@@ -25,18 +25,25 @@ export const Gear = z
   .refine((g) => (g.slot === 'weapon') === (g.style !== undefined), 'a weapon, and only a weapon, has a style');
 export type Gear = z.infer<typeof Gear>;
 
+/** What a supply is: the style that uses it, one per foe fought, and its tier (GAME_DESIGN.md section 6). */
+export const Supply = z.object({ style: z.enum(STYLES), tier: z.number().int().min(1).max(8) }).strict();
+export type Supply = z.infer<typeof Supply>;
+
 export const Item = z
   .object({
     id: Id,
-    kind: z.enum(['resource', 'gear', 'food', 'find']),
+    kind: z.enum(['resource', 'supply', 'gear', 'food', 'find']),
     /** What the vendor pays for one. */
     value: z.number().int().nonnegative(),
     /** Gear only: where it is worn and how good it is. */
     gear: Gear.optional(),
     /** Food only: health one restores (on the ×10 scale). */
     heals: z.number().int().positive().optional(),
+    /** Supplies only: the style that uses it and its tier. */
+    supply: Supply.optional(),
   })
   .strict()
+  .refine((i) => (i.kind === 'supply') === (i.supply !== undefined), 'a supply, and only a supply, says its style')
   .refine((i) => (i.kind === 'gear') === (i.gear !== undefined), 'gear, and only gear, says how it is worn')
   .refine((i) => (i.kind === 'food') === (i.heals !== undefined), 'food, and only food, says how much it heals');
 export type Item = z.infer<typeof Item>;

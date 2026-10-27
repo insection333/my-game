@@ -1,7 +1,8 @@
 // Tabs between views of one page (Items and Collection log). Links, so each view has its own address.
 // A strip never scrolls sideways: when its labels do not fit (eight tiers on a phone) it turns compact,
 // each tab showing its icon or short label and sharing the width equally, the full label kept as the
-// tab's name for screen readers and as its tooltip.
+// tab's name for screen readers and as its tooltip; when even that leaves a tab narrower than a tap, it
+// wraps onto a second row.
 import { useLayoutEffect, useRef, type MouseEvent, type ReactNode } from 'react';
 import s from './Tabs.module.css';
 
@@ -23,7 +24,13 @@ function useFit(ref: React.RefObject<HTMLElement | null>, key: string) {
     if (!el) return;
     const check = () => {
       el.removeAttribute('data-compact');
-      if (el.scrollWidth > el.clientWidth + 1) el.setAttribute('data-compact', '');
+      el.removeAttribute('data-wrap');
+      if (el.scrollWidth <= el.clientWidth + 1) return;
+      el.setAttribute('data-compact', '');
+      // Still too many for one row at a full tap's width each (twelve ladders on a phone): two rows.
+      const tabs = Array.from(el.children) as HTMLElement[];
+      if (el.scrollWidth > el.clientWidth + 1 || tabs.some((t) => t.getBoundingClientRect().width < 44))
+        el.setAttribute('data-wrap', '');
     };
     check();
     const watch = new ResizeObserver(check);

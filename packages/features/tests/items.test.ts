@@ -9,7 +9,19 @@ describe('item questions', () => {
       ['bronze-staff', 1],
       ['bronze-bow', 2],
       ['cooked-trout', 1],
+      ['bronze-arrows', 1],
     ]);
+  });
+
+  it('says a key is made by Smithing and kept by the standing stones it opens', () => {
+    expect(items.comesFrom(FEATURES, 'iron-key').map((s) => s.action)).toEqual(['iron-key']);
+    expect(items.usedIn(FEATURES, 'iron-key').map((s) => [s.action, s.count])).toEqual([
+      ['tide-stone', 0],
+      ['ancient-tide-stone', 0],
+    ]);
+    expect(items.sourceLabel(items.usedIn(FEATURES, 'iron-key')[0])).toBe(
+      'Runecraft: Tide stone (kept, never used up)',
+    );
   });
 
   it("says a fish comes from its shallows and pool and goes into its cooking and the next tier's dish", () => {
@@ -27,12 +39,15 @@ describe('item questions', () => {
     ]);
     expect(items.comesFrom(FEATURES, 'iron-bar').map((s) => s.action)).toEqual(['iron-bar']);
     expect(items.usedIn(FEATURES, 'iron-bar').map((s) => s.action)).toEqual([
+      'iron-whetstones',
+      'iron-key',
       'iron-sword',
       'iron-staff',
       'iron-bow',
       'iron-helm',
       'iron-legs',
       'iron-body',
+      'iron-arrows',
     ]);
   });
 

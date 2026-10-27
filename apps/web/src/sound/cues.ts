@@ -37,8 +37,8 @@ export function bestCue(events: readonly GameEvent[]): Cue | null {
 
 /** The small sound of a lane's work, by the skill that earned the XP. */
 export function workCue(skill: string): WorkCue {
-  if (skill === 'woodcutting') return 'chop';
-  if (skill === 'mining' || skill === 'smithing') return 'strike';
+  if (skill === 'woodcutting' || skill === 'fletching') return 'chop';
+  if (skill === 'mining' || skill === 'smithing' || skill === 'runecraft') return 'strike';
   if (skill === 'fishing') return 'splash';
   if (skill === 'cooking') return 'sizzle';
   return 'hit';
