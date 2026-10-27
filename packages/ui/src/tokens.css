@@ -24,9 +24,9 @@
   /* The ember as small text: dark enough to read on the page's ground. */
   --ember-ink: #a8401a;
   /* Deeds' tiers (their medallions, the plaque's frames) and the banners' colours (session 15). */
-  --deed-easy: #94622f;
+  --deed-easy: #a3562a;
   --deed-hard: #5f6d78;
-  --deed-elite: #7d5e05;
+  --deed-elite: #b88a0e;
   --deed-master: #a63a55;
   --banner-woad: #2c5a8c;
   --banner-moss: #2f6b45;
@@ -97,9 +97,9 @@
     --ember: #f06a2e;
     --ember-glow: #ffb24d;
     --ember-ink: #f6894f;
-    --deed-easy: #d39a62;
+    --deed-easy: #d9895a;
     --deed-hard: #b8c4cc;
-    --deed-elite: #e2bb4f;
+    --deed-elite: #f0c94a;
     --deed-master: #f08aa0;
     --banner-woad: #8ab6e6;
     --banner-moss: #7fb68f;
@@ -142,9 +142,9 @@
   --ember: #f06a2e;
   --ember-glow: #ffb24d;
   --ember-ink: #f6894f;
-  --deed-easy: #d39a62;
+  --deed-easy: #d9895a;
   --deed-hard: #b8c4cc;
-  --deed-elite: #e2bb4f;
+  --deed-elite: #f0c94a;
   --deed-master: #f08aa0;
   --banner-woad: #8ab6e6;
   --banner-moss: #7fb68f;
