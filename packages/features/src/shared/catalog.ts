@@ -51,3 +51,6 @@ export function setFinds(list: readonly FindEntry[]): void {
 }
 
 export const findOf = (item: string): FindEntry | undefined => finds.get(item);
+
+/** Every find, skill by skill, in the order the features declare them. */
+export const allFinds = (): FindEntry[] => [...finds.values()];

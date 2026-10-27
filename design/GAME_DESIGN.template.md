@@ -233,6 +233,12 @@ Enlargement costs follow each day's net gold, so one is affordable roughly when 
 
 A level, an unlock, a find, a goal or a mastery step. Moments within 5 seconds of each other show together. Levels and Legendary finds take the centre of the screen; Rare finds and mastery steps a banner; Uncommon finds and goals a toast in the lane card. Measured in the model: one moment every 1.6 to 2.0 minutes of active play from day 2 onward, never more than 4.3 minutes without one. The first hour runs faster on purpose, at about one a minute, while ten levels come in every skill.
 
+### Deeds and honours (step 15)
+
+Deeds are feats done in the course of play, made from the game's own content so that every skill, foe and find added later brings its deeds with it: each skill's levels from 10 to 99 and the ranks; work done and mastery in every skill with actions; fights won against each foe, every region cleared, a tier of gear worn in every slot; each Legendary find, each skill's page of the log and the log's totals; the fire kept burning, gold held, the Storehouse enlarged; and five hidden deeds whose words appear only once done. Each is easy, hard, elite or master, worth 5, 15, 40 or 100 deed points. A deed's words are its family's strings filled with its own numbers, so they can never disagree with what it asks, and the tests prove that a player who has done everything has done every deed.
+
+Points open six titles from Wayfarer (100 points) to the Mythic (7,500 of the 8,000 or so there are), four frames for the Hearth's plaque, and one banner; particular deeds open the rest: a title for 99 in each skill and for the whole log, 100,000 fights won, the Ashen Peaks cleared and more, and a banner's colour for each region cleared. Your title shows beside your name on every ladder and on your plaque; your banner on both. A deed done has its moment, sized by its tier. How fast deeds come over a year is measured by the year-long simulation (step 18).
+
 ## 12. The unlock ladder
 
 Every level 1 to 99 of every skill unlocks something: an action, a recipe, a tier, a foe, a food or a perk. Past 40 a perk line's ranks give half as much (there are so many more of them), and each skill has a second capstone at 99. Perk text is generated from its numbers by one formatter. *Generated.*

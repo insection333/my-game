@@ -3,6 +3,7 @@ import { registryOf, type ActionRegistry } from '@idle-clash/kernel';
 import { archery } from './archery/index.ts';
 import { combat } from './combat/index.ts';
 import { cooking } from './cooking/index.ts';
+import { deeds } from './deeds/index.ts';
 import type { Feature } from './define.ts';
 import { fishing } from './fishing/index.ts';
 import { fletching } from './fletching/index.ts';
@@ -33,6 +34,7 @@ export const FEATURES: readonly Feature[] = [
   combat,
   storehouse,
   goals,
+  deeds,
 ];
 // Rules that must know what an item is while playing (a worn sword's tier) read this catalog.
 setCatalog(catalog(FEATURES));

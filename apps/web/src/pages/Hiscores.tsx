@@ -1,18 +1,36 @@
-// Hiscores (IA.md): how many are playing now, and a ladder for Total and each skill with your own
-// entry pinned. The ladders come from the server; the page asks again each minute while it is open.
+// Hiscores (IA.md): its Ladders tab, with how many are playing now and a ladder for Total and each
+// skill with your own entry pinned, each player's title and banner beside their name; the Deeds tab is
+// Deeds.tsx. The ladders come from the server; the page asks again each minute while it is open.
 import type { HiscoreRow, HiscoresResponse } from '@idle-clash/contracts';
-import { fmt, t } from '@idle-clash/content';
+import { fmt, hasString, t } from '@idle-clash/content';
 import { FireSeal, hasIcon, ItemIcon, Panel, Pill, Tabs } from '@idle-clash/ui';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { api } from '../api.ts';
 import { handled } from '../game/session.ts';
 import { untilLoaded } from '../Ready.tsx';
 import { navigate, useLocation } from '../router.ts';
 import { Slot } from '../slots.tsx';
+import { bannerStyle } from './honours-style.ts';
 import { PageHead } from './PageHead.tsx';
 import s from './hiscores.module.css';
 
 const PHONE_ROWS = 10;
+
+/** The page's title and its two tabs, Ladders and Deeds. */
+export function HiscoresHead({ deeds, children }: { deeds?: boolean; children?: ReactNode }) {
+  const tabs = [
+    { href: '/hiscores', label: t('deeds.tab.ladders'), current: !deeds },
+    { href: '/hiscores/deeds', label: t('deeds.tab.deeds'), current: !!deeds },
+  ];
+  return (
+    <PageHead title={t('hiscores.title')}>
+      <div className={s.head}>
+        <Tabs tabs={tabs} label={t('hiscores.title')} onNavigate={navigate} />
+        {children}
+      </div>
+    </PageHead>
+  );
+}
 
 export function Hiscores() {
   const [data, setData] = useState<HiscoresResponse | null>(null);
@@ -39,11 +57,11 @@ export function Hiscores() {
   const pinned = you && !shown.slice(0, PHONE_ROWS).some((r) => r.rank === you.rank) ? you : null;
   return (
     <>
-      <PageHead title={t('hiscores.title')}>
+      <HiscoresHead>
         <Slot id="hiscores.online" className={s.online}>
           {data && <Pill tone="moss">{t('hiscores.online', { count: fmt.int(data.online) })}</Pill>}
         </Slot>
-      </PageHead>
+      </HiscoresHead>
       <div className={s.layout}>
         <div className={s.tabs}>
           <Tabs
@@ -118,20 +136,27 @@ function Place({ rank }: { rank: number }) {
   );
 }
 
-/** One place on a ladder; on Total, the milestones claimed under the name. */
+/** One place on a ladder: the player's banner down its edge, their name with their title under it,
+ *  and on Total the milestones claimed. */
 function Row({ row, you, total }: { row: HiscoreRow; you: boolean; total: boolean }) {
+  const title = row.title && hasString(`honour.title.${row.title}`) ? t(`honour.title.${row.title}`) : null;
+  const milestones =
+    total && row.milestones > 0
+      ? row.milestones === 1
+        ? t('hiscores.milestonesOne')
+        : t('hiscores.milestones', { count: fmt.int(row.milestones) })
+      : null;
   return (
-    <tr data-you={you || undefined}>
-      <td>
+    <tr data-you={you || undefined} style={bannerStyle(row.banner)}>
+      <td className={s.place}>
         <Place rank={row.rank} />
       </td>
       <td>
         <span className={s.player}>{row.name}</span>
-        {total && row.milestones > 0 && (
-          <span className={s.milestones}>
-            {row.milestones === 1
-              ? t('hiscores.milestonesOne')
-              : t('hiscores.milestones', { count: fmt.int(row.milestones) })}
+        {(title || milestones) && (
+          <span className={s.honours}>
+            {title && <span className={s.title}>{title}</span>}
+            {milestones && <span className={s.milestones}>{milestones}</span>}
           </span>
         )}
       </td>

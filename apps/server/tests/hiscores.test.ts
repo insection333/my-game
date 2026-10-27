@@ -1,6 +1,7 @@
 // Hiscores: kept as saves change and as pages read them; ranked by XP, ties to whoever got there first; your own entry
 // wherever it is; banned players left out; and how many are online.
 import type { HiscoresResponse } from '@idle-clash/contracts';
+import { XP_TABLE } from '@idle-clash/content';
 import type { State } from '@idle-clash/kernel';
 import { eq } from 'drizzle-orm';
 import { afterEach, describe, expect, it } from 'vitest';
@@ -71,6 +72,28 @@ describe('hiscores', () => {
     const after = (await ladders(a)).ladders.find((l) => l.skill === 'woodcutting')!;
     expect(after.rows.map((r) => r.name)).toEqual(['Alder']);
     expect(after.you).toMatchObject({ rank: 1 });
+  });
+
+  it("shows each player's title and banner beside their name, as their deeds open them", async () => {
+    s = await server();
+    const a = await signUp(s, 'Alder');
+    await record(a, (st) => ({ ...st, skills: { woodcutting: { xp: XP_TABLE[99] } } }), 1);
+    const before = (await ladders(a)).ladders.find((l) => l.skill === 'woodcutting')!;
+    expect(before.you).toMatchObject({ title: null, banner: 'woad' });
+    // A title not yet opened is refused; recording the deeds opens it.
+    const choose = (n: number, kind: string, id: string) =>
+      post(s, '/api/f/deeds/choose', { requestId: `req-honour-${n}`, input: { kind, id } }, a);
+    expect((JSON.parse((await choose(1, 'title', 'forester')).body) as { result: unknown }).result).toEqual({
+      ok: false,
+      reason: 'locked',
+    });
+    await post(s, '/api/f/deeds/refresh', { requestId: 'req-deeds-1', input: {} }, a);
+    expect((JSON.parse((await choose(2, 'title', 'forester')).body) as { result: unknown }).result).toEqual({
+      ok: true,
+    });
+    await choose(3, 'banner', 'dawn');
+    const after = (await ladders(a)).ladders.find((l) => l.skill === 'woodcutting')!;
+    expect(after.rows[0]).toMatchObject({ name: 'Alder', title: 'forester', banner: 'dawn' });
   });
 
   it('gives a tie to whoever reached it first', async () => {

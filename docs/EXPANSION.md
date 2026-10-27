@@ -106,6 +106,7 @@ Regions appear as tabs at the top of Combat, already the home given in the page 
   - and a few hidden ones.
 - **Rewards:** each deed gives deed points. Points and particular deeds unlock **titles** (shown beside your name on the hiscores), **banner colours** and **seal frames**.
 - **Home:** a Deeds tab on Hiscores. A deed done has its moment, like a find.
+- **Built in step 15:** 272 deeds (bosses, expeditions and Rekindlings add theirs in steps 16 and 17), worth about 8,000 points. Titles show beside your name on every ladder and on the Hearth's plaque, which also wears your banner's colour and frame. Deeds are recorded by the page asking the server whenever one is done, wherever the player is; each has its moment (easy a toast, hard a banner, elite and master the centre). Their pace over the year is measured in step 18.
 
 ### Expeditions
 

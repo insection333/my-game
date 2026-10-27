@@ -1,7 +1,7 @@
 // Reading the workspace for the checks: feature folders and their files, package dependencies,
 // sample states to fill slots from, and string keys that appear literally in source code.
 import { MAX_LEVEL, XP_TABLE } from '@idle-clash/content';
-import { load, newState, type State } from '@idle-clash/kernel';
+import { LANE_IDS, laneKind, load, newState, type State } from '@idle-clash/kernel';
 import type { Feature, SlotContext } from '@idle-clash/features';
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
@@ -63,15 +63,31 @@ export function sampleStates(skills: string[] = [], features: readonly Feature[]
       const raw = JSON.parse(readFileSync(join(dir, f), 'utf8')) as { state: { clock: number } };
       return load(raw, raw.state.clock).doc.state;
     });
-  let played: State = {
+  // A player with plenty of everything, then the same player with every lane at work: each runs every
+  // route, so slots and routes show their fullest.
+  const idle: State = {
     ...maxed,
-    items: Object.fromEntries(features.flatMap((f) => (f.content.items ?? []).map((i) => [i.id, 10]))),
+    items: Object.fromEntries(features.flatMap((f) => (f.content.items ?? []).map((i) => [i.id, 10_000]))),
+  };
+  const rules = features.flatMap((f) =>
+    Object.entries(f.rules).map(([id, r]) => ({ feature: f.id, id, kind: r.lane })),
+  );
+  const busy: State = {
+    ...idle,
+    lanes: Object.fromEntries(
+      LANE_IDS.map((lane) => {
+        const a = rules.find((r) => r.kind === laneKind(lane));
+        const current = a ? { action: { feature: a.feature, id: a.id }, startedAt: now, endsAt: now + 5000 } : null;
+        return [lane, { ...idle.lanes[lane], current }];
+      }),
+    ) as State['lanes'],
   };
   const routed: SlotContext[] = [];
-  for (const route of features.flatMap((f) => Object.values(f.routes))) {
-    played = route.run(played, route.example, now).state;
-    routed.push({ state: played, now });
-  }
+  for (let played of [idle, busy])
+    for (const route of features.flatMap((f) => Object.values(f.routes))) {
+      played = route.run(played, route.example, now).state;
+      routed.push({ state: played, now });
+    }
   return [
     { state: newState(1, now), now },
     ...samples.map((state) => ({ state, now: state.clock })),

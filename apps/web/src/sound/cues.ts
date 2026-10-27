@@ -20,6 +20,9 @@ export function cueFor(e: GameEvent): Cue | null {
     case 'goalDone':
       // A lucky cache rings like a Rare find; any other goal, its own small chime.
       return e.cache?.grade === 'lucky' ? 'rare' : 'goal';
+    case 'deedDone':
+      // An elite or master deed rings like a Rare find; the rest, the goal's small chime.
+      return e.tier === 'elite' || e.tier === 'master' ? 'rare' : 'goal';
     case 'laneStopped':
       return e.reason.code === 'stoppedByPlayer' ? null : 'stopped';
     default:

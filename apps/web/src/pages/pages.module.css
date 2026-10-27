@@ -71,13 +71,30 @@
   max-width: calc(100% - 2 * var(--s-2));
   padding: var(--s-1) var(--s-3) var(--s-2);
   border: 1px solid var(--line);
+  border-left: 4px solid var(--banner, var(--line));
   border-radius: var(--r-control);
   background: color-mix(in srgb, var(--surface) 92%, transparent);
 }
 
+/* A frame won with deed points rims the plaque in its metal. */
+.standing[data-frame] {
+  border: 2px solid var(--frame);
+  border-left: 4px solid var(--banner, var(--frame));
+}
+
 .rank {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 var(--s-2);
   font: 600 var(--t-lead) / 1.2 var(--font-book);
   color: var(--ink);
+}
+
+/* The title the player shows, after the rank. */
+.plaqueTitle {
+  font: italic 400 var(--t-small) / 1.2 var(--font-ui);
+  color: var(--ink-2);
 }
 
 .total {

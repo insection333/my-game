@@ -239,6 +239,9 @@ export interface HiscoreRow {
   xp: number;
   /** Milestones claimed (shown on the Total ladder). */
   milestones: number;
+  /** The title the player shows (an honour's id, worded by the page), and their banner's colour. */
+  title: string | null;
+  banner: string | null;
 }
 export interface Ladder {
   /** A skill's id, or 'total'. */

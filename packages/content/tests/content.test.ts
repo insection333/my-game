@@ -50,11 +50,16 @@ describe('t', () => {
   });
 
   it('has a one-form beside every count before a plural, so the page never says "1 milestones"', () => {
-    // Counts that are never 1: the 500 completions a Rare find gives, the log sizes milestones ask for.
+    // Counts that are never 1: the 500 completions a Rare find gives, the log sizes milestones ask for,
+    // and every deed's (the smallest asks for 10).
     const neverOne = ['item.panel.use', 'goal.milestone.log'];
     const plural = /\{(count|skills)\} (?:[A-Za-z]+ )?[a-z]+s\b/;
     const missing = allStringKeys().filter(
-      (k) => plural.test(templateOf(k)!) && !neverOne.includes(k) && !allStringKeys().includes(`${k}One`),
+      (k) =>
+        plural.test(templateOf(k)!) &&
+        !neverOne.includes(k) &&
+        !k.startsWith('deed.') &&
+        !allStringKeys().includes(`${k}One`),
     );
     expect(missing).toEqual([]);
   });

@@ -71,6 +71,7 @@ Between 768 and 1,023 px the rail collapses to icons (64 px) and the lanes panel
 | `shell.tray` | Header | notices | TrayButton |
 | `shell.lane` (×4) | Lanes strip or panel | each lane's current feature | LaneCard (compact on phones) |
 | `shell.moment` | Over everything, centred or as a banner | any feature, through events | Moment |
+| `shell.deeds` | Not drawn: deeds done and not yet recorded, which the shell asks the server to record wherever the player is | deeds | Moment, through events |
 
 ## 3. Pages
 
@@ -81,6 +82,7 @@ Each page lists its sections in order, what must be visible without scrolling at
 | # | Section (slot) | Filled by | Notes |
 | --- | --- | --- | --- |
 | 0 | `hearth.standing` | goals | Over the region's banner: your rank, your total level, and a thin bar to the next rank ("Warden of the March at 200") |
+| 0 | `hearth.plaque` | deeds | The standing's plaque wears your honours: your title after the rank, your banner's colour on its edge, your frame around it |
 | 1 | `hearth.today` | the shell (welcome), recap | On return: the away recap, best thing first, then "Collect". Otherwise: today's notable moments as a compact timeline |
 | 2 | `hearth.goals` | goals | First steps while unfinished (six rows with buttons); afterwards three short goals, the daily goal and the next milestone, each with a progress bar and its reward |
 | 3 | `hearth.lanes` | each lane | Full lane cards with their Next action; on desktop the lanes panel already shows them, so this section is omitted |
@@ -165,17 +167,28 @@ Tabs: Items · Collection log.
 
 | # | Section (slot) | Filled by | Notes |
 | --- | --- | --- | --- |
-| 1 | `hiscores.online` | server | How many are playing now |
-| 2 | `hiscores.ladder` | hiscores | Tabs for Total and each skill, each with its seal (on a phone, when the names will not fit, the seals alone, sharing the width; beside the ladder on wide screens); rank, name, level, XP; your own row pinned |
+Two tabs under the title: **Ladders** (`/hiscores`) and **Deeds** (`/hiscores/deeds`, session 15).
+
+| # | Section (slot) | Filled by | Notes |
+| --- | --- | --- | --- |
+| 1 | `hiscores.online` | server | Ladders: how many are playing now |
+| 2 | `hiscores.ladder` | hiscores | Ladders: tabs for Total and each skill, each with its seal (on a phone, when the names will not fit, the seals alone, sharing the width; beside the ladder on wide screens); rank, name, level, XP; each name with its banner's pennant and its title beneath; your own row pinned |
+| 3 | `hiscores.honours` | deeds | Deeds: your honours. Deed points and title on your banner's colour in your frame, deeds done by tier, the bar to the next title by points, and Choose honours |
+| 4 | `hiscores.deeds` | deeds | Deeds: tabs Next up, Skills, Work, Combat, Finds, Home (short labels on a phone). Next up lists the six deeds nearest to done and the six done last; each other tab, its families (Levels, Foes, the fire…) as panels of rows, each row a skill or a foe with a medallion for each deed, ringed in its tier's colour and filled when done |
+| 5 | `hiscores.deed` | deeds | A deed's sheet (`?panel=deed&deed=…`): its medallion, tier and points, its text, its progress or the day it was done, and what it unlocks. A hidden deed shows only that it is hidden |
+| 6 | `hiscores.choose` | deeds | Choose honours (`?panel=honours`): every title, banner and frame, those open first with Show, the rest saying how they open |
 
 - **At 390:** the online count and the first ten rows with your row pinned at the bottom. **At 1,440:** twenty-five rows and the tab list beside them.
+- **Deeds at 390:** your honours, then the tabs and Next up. **At 1,440:** your honours in a column at the left, the deeds beside them.
 
 **Visible without scrolling** (checked by verify at 390 × 844 and 1,440 × 900; a slot no built feature fills yet is skipped):
 
 | View | 390 × 844 | 1,440 × 900 |
 | --- | --- | --- |
 | /hiscores | `hiscores.online`, `hiscores.ladder` | `hiscores.online`, `hiscores.ladder` |
-- **Newcomer:** your row at the bottom, and "Your rank appears after your first level".
+| /hiscores/deeds | `hiscores.honours`, `hiscores.deeds` | `hiscores.honours`, `hiscores.deeds` |
+- **Newcomer:** your row at the bottom, and "Your rank appears after your first level". On Deeds, no points yet and "Deeds you do appear here".
+- **A deed done** anywhere in the game has its moment, sized by its tier (easy a toast, hard a banner, elite and master the centre), naming any honour it unlocked.
 
 ### Welcome (signed out)
 

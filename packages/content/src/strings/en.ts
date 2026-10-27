@@ -4,6 +4,7 @@
 // and artisan skills' words are in en-skills.ts, Combat's in en-combat.ts, the privacy page's and the
 // terms' in en-legal.ts, Fishing's and Cooking's in en-food.ts, Fletching's, Runecraft's and the supplies' in en-supplies.ts, the goals ladder's, its rewards' and your standing's in en-progress.ts.
 import { combat } from './en-combat.ts';
+import { deeds } from './en-deeds.ts';
 import { food } from './en-food.ts';
 import { legal } from './en-legal.ts';
 import { progress } from './en-progress.ts';
@@ -292,4 +293,5 @@ export const en: Record<string, string> = {
   ...combat,
   ...legal,
   ...progress,
+  ...deeds,
 };

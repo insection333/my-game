@@ -21,6 +21,8 @@ export const fmt = {
   int: (n: number): string => whole.format(Math.round(n)),
   /** Where room is short (the header's gold): 12345 → "12,345", but 123456 → "123.5K", 2500000 → "2.5M" */
   short: (n: number): string => (Math.abs(n) < 100_000 ? whole.format(Math.round(n)) : compact.format(n)),
+  /** Where room is shortest (a deed's medallion): 100 → "100", 1000 → "1K", 2500000 → "2.5M" */
+  compact: (n: number): string => compact.format(n),
   /** 2.5 → "2.5", 1234.5 → "1,234.5" */
   num: (n: number): string => decimal.format(n),
   /** 2.5 → "2.5%" */

@@ -1,8 +1,8 @@
 // Hiscores: each player's level and XP in every skill and in total, kept as their save changes, and
 // the ladders read from them: rank by level, then XP (the total level leads Total), ties to whoever
-// got there first; banned players left out.
+// got there first; banned players left out. Each row carries the player's title and banner (deeds).
 import { levelFor } from '@idle-clash/content';
-import { allSkills, goalsOf, totalLevel } from '@idle-clash/features';
+import { allSkills, goalsOf, shownHonours, totalLevel } from '@idle-clash/features';
 import type { HiscoreRow, Ladder } from '@idle-clash/contracts';
 import { xpOf, type State } from '@idle-clash/kernel';
 import { and, asc, desc, eq, gt, isNull, or, sql } from 'drizzle-orm';
@@ -16,6 +16,8 @@ export class Hiscores {
   private db: BetterSQLite3Database;
   /** When each player's levels were last recorded (since the server started). */
   private heard = new Map<string, number>();
+  /** The honours last written for each player, so an unchanged save writes nothing. */
+  private shown = new Map<string, string>();
   constructor(db: BetterSQLite3Database) {
     this.db = db;
   }
@@ -28,6 +30,16 @@ export class Hiscores {
   /** Records a save's levels: each skill, and the total (total level, all XP, milestones claimed). */
   update(playerId: string, state: State, at: number): void {
     this.heard.set(playerId, at);
+    const honours = shownHonours(state);
+    const key = `${honours.title ?? ''}|${honours.banner}`;
+    if (this.shown.get(playerId) !== key) {
+      this.db
+        .update(players)
+        .set({ title: honours.title, banner: honours.banner })
+        .where(eq(players.id, playerId))
+        .run();
+      this.shown.set(playerId, key);
+    }
     const skills = allSkills();
     const entries = [
       ...skills.map((s) => ({
@@ -75,6 +87,8 @@ export class Hiscores {
         xp: hiscores.xp,
         milestones: hiscores.milestones,
         reachedAt: hiscores.reachedAt,
+        title: players.title,
+        banner: players.banner,
       })
       .from(hiscores)
       .innerJoin(players, eq(players.id, hiscores.playerId))
@@ -93,7 +107,16 @@ export class Hiscores {
       .orderBy(desc(hiscores.level), desc(hiscores.xp), asc(hiscores.reachedAt))
       .limit(LADDER_ROWS)
       .all();
-    const rows = top.map((r, i) => ({ rank: i + 1, name: r.name, level: r.level, xp: r.xp, milestones: r.milestones }));
+    const row = (r: (typeof top)[number], rank: number): HiscoreRow => ({
+      rank,
+      name: r.name,
+      level: r.level,
+      xp: r.xp,
+      milestones: r.milestones,
+      title: r.title,
+      banner: r.banner,
+    });
+    const rows = top.map((r, i) => row(r, i + 1));
     const mine = this.entries(skill, playerId).get();
     let you: HiscoreRow | null = null;
     if (mine) {
@@ -117,13 +140,14 @@ export class Hiscores {
           ),
         )
         .get();
-      you = { rank: (ahead?.n ?? 0) + 1, name: mine.name, level: mine.level, xp: mine.xp, milestones: mine.milestones };
+      you = row(mine, (ahead?.n ?? 0) + 1);
     }
     return { skill, rows, you };
   }
 
   remove(playerId: string): void {
     this.heard.delete(playerId);
+    this.shown.delete(playerId);
     this.db.delete(hiscores).where(eq(hiscores.playerId, playerId)).run();
   }
 }
