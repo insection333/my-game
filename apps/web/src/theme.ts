@@ -29,10 +29,14 @@ export function applyTheme(theme: Theme) {
  * that inherits its colour work it out again. Nothing is painted in between.
  */
 export function repaintInk(root: HTMLElement = document.documentElement) {
-  root.style.color = 'transparent';
-  void getComputedStyle(root).color;
-  root.style.removeProperty('color');
-  void getComputedStyle(root).color;
+  // The body sets the ink the page inherits, so it is repainted too (on GitHub Actions a legal page's
+  // headings once kept the old ink when only the root was).
+  for (const el of [root, root.ownerDocument.body].filter((x): x is HTMLElement => !!x)) {
+    el.style.color = 'transparent';
+    void getComputedStyle(el).color;
+    el.style.removeProperty('color');
+    void getComputedStyle(el).color;
+  }
 }
 
 /** Repaints the ink whenever the device switches between light and dark. */

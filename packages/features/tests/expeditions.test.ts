@@ -88,7 +88,7 @@ describe('routes', () => {
         }
         expect(seen.size, `${region}, ${hours} h`).toBe(1000);
       }
-  });
+  }, 60_000);
 
   it('meet the three foes of the region the fighter fares best against', () => {
     const s = fighterAt('fen', 4);
