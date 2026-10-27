@@ -13,8 +13,9 @@ import {
   type Find,
   type Ladder,
 } from '@idle-clash/content';
-import { addXp, countOf, give, take, type ActionContext, type Rarity, type State } from '@idle-clash/kernel';
+import { addXp, countOf, give, take, xpOf, type ActionContext, type Rarity, type State } from '@idle-clash/kernel';
 import { relicFindPct, relicXpPct } from './expeditions/relics.ts';
+import { announceKindling, pathBonus } from './kindling.ts';
 import { actionModifiers, perksAt, skillLevel, yieldOf } from './skill.ts';
 
 export interface SkillDefinition {
@@ -86,21 +87,26 @@ export function completeSkillAction(ctx: ActionContext, def: SkillDefinition, ac
   const m = actionModifiers(state, def.skill, def.ladder, def.feature, act.id);
   // Ingredients are checked before every repetition starts; should one have gone since, nothing is made.
   if (act.takes?.length && !takeInputs(ctx, act.takes, m.saveInput)) return false;
-  rollFind(ctx, def, act, m.findChance);
+  // A skill on the Path of Fortune finds more; on Bounty, makes more (past 99, see kindling.ts).
+  rollFind(ctx, def, act, m.findChance + pathBonus(state, def.skill, 'finds'));
 
   for (const g of act.gives)
     give(
       state,
       g.item,
-      yieldOf(g.count, m.extraYield, () => ctx.roll()),
+      // Bounty's percent is of the whole stack, so two logs a chop come to 2.3 on +15%.
+      yieldOf(g.count, m.extraYield + pathBonus(state, def.skill, 'items') * g.count, () => ctx.roll()),
     );
 
   const before = skillLevel(state, def.skill);
   const bonusPct =
     (ctx.fireBurning ? fireXpPct(ctx.fireMinutes) : 0) +
     LEGENDARY_MARK_PCT * marksIn(state, def.finds) +
-    relicXpPct(state, def.skill);
+    relicXpPct(state, def.skill) +
+    pathBonus(state, def.skill, 'xp');
+  const xpBefore = xpOf(state, def.skill);
   addXp(state, def.skill, act.xp * (1 + bonusPct / 100));
+  announceKindling(ctx, def.skill, xpBefore);
   const after = skillLevel(state, def.skill);
   for (let level = before + 1; level <= after; level++)
     ctx.emit({ type: 'levelUp', at: ctx.at, skill: def.skill, level });

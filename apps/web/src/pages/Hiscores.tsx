@@ -3,6 +3,7 @@
 // Deeds.tsx. The ladders come from the server; the page asks again each minute while it is open.
 import type { HiscoreRow, HiscoresResponse } from '@idle-clash/contracts';
 import { fmt, hasString, t } from '@idle-clash/content';
+import { kindlingData } from '@idle-clash/features';
 import { FireSeal, hasIcon, ItemIcon, Panel, Pill, Tabs } from '@idle-clash/ui';
 import { useEffect, useState, type ReactNode } from 'react';
 import { api } from '../api.ts';
@@ -146,6 +147,9 @@ function Row({ row, you, total }: { row: HiscoreRow; you: boolean; total: boolea
         ? t('hiscores.milestonesOne')
         : t('hiscores.milestones', { count: fmt.int(row.milestones) })
       : null;
+  // On a skill's ladder, its Kindlings past 99 (worked out from the XP, as the game does).
+  const kindled = total ? 0 : kindlingData.kindlingsIn(row.xp);
+  const kindling = kindled > 0 ? t('hiscores.kindled', { count: fmt.int(kindled) }) : null;
   return (
     <tr data-you={you || undefined} style={bannerStyle(row.banner)}>
       <td className={s.place}>
@@ -153,10 +157,11 @@ function Row({ row, you, total }: { row: HiscoreRow; you: boolean; total: boolea
       </td>
       <td>
         <span className={s.player}>{row.name}</span>
-        {(title || milestones) && (
+        {(title || milestones || kindling) && (
           <span className={s.honours}>
             {title && <span className={s.title}>{title}</span>}
             {milestones && <span className={s.milestones}>{milestones}</span>}
+            {kindling && <span className={s.kindled}>{kindling}</span>}
           </span>
         )}
       </td>

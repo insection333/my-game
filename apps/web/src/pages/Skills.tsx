@@ -40,7 +40,11 @@ export function Skills() {
                     >
                       <span className={k.seal}>
                         {hasIcon(data.skill) && (
-                          <ItemIcon name={data.skill} size={48} seal={{ tier: data.tier, top: data.top }} />
+                          <ItemIcon
+                            name={data.skill}
+                            size={48}
+                            seal={{ tier: data.tier, top: data.top, kindlings: data.kindlings }}
+                          />
                         )}
                       </span>
                       <span className={k.head}>

@@ -51,6 +51,19 @@ const Sheet = ({ theme }: { theme: 'light' | 'dark' }) => (
         </figure>
       ))}
     </div>
+    {/* Each Kindling past 99 sets a flame on the rim's crown, up to five. */}
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 24, alignItems: 'end', marginTop: 32 }}>
+      {[1, 2, 3, 5].map((kindlings) => (
+        <figure key={kindlings} style={{ margin: 0, display: 'grid', gap: 8, justifyItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'end', gap: 12 }}>
+            {([96, 48, 24] as const).map((size) => (
+              <ItemIcon key={size} name="woodcutting" size={size} seal={{ tier: 8, top: true, kindlings }} />
+            ))}
+          </div>
+          <figcaption style={{ font: '13px var(--font-ui)' }}>Kindled {kindlings}</figcaption>
+        </figure>
+      ))}
+    </div>
   </div>
 );
 

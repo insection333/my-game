@@ -10,9 +10,10 @@ import {
   t,
   XP_TABLE,
 } from '@idle-clash/content';
-import { combatData, expeditionData, skill, storehouseData, type Feature } from '@idle-clash/features';
+import { combatData, expeditionData, kindlingData, skill, storehouseData, type Feature } from '@idle-clash/features';
 import * as relicData from '../../../packages/features/src/shared/expeditions/relics.ts';
 import * as MODEL_EXP from '../../../design/model/expeditions.ts';
+import * as MODEL_KINDLING from '../../../design/model/kindling.ts';
 import {
   FOES as MODEL_FOES,
   FOODS as MODEL_FOODS,
@@ -99,6 +100,7 @@ export function checkDesign(features: readonly Feature[], modelXp: number[]): st
       problems.push('Foods differ from the design (heals, price, level)');
   }
   if (features.some((f) => f.id === 'expeditions')) problems.push(...checkExpeditions());
+  if (features.some((f) => f.id === 'kindling')) problems.push(...checkKindling());
   for (const f of features) {
     const sk = f.content.skill;
     if (!sk) continue;
@@ -237,4 +239,13 @@ function checkExpeditions(): string[] {
     const [a, b] = [JSON.stringify(ours[k as keyof typeof ours]), JSON.stringify(theirs[k as keyof typeof theirs])];
     return a === b ? [] : [`Expeditions' ${k} ${a} differ from the design's ${b}`];
   });
+}
+
+/** Kindling's stretch of XP and its Paths against the design. */
+function checkKindling(): string[] {
+  const k = kindlingData;
+  const m = MODEL_KINDLING;
+  const ours = JSON.stringify([k.KINDLE_XP, k.KINDLINGS_THAT_STRENGTHEN, k.PATHS.map((p) => ({ ...p }))]);
+  const theirs = JSON.stringify([m.KINDLE_XP, m.KINDLINGS_THAT_STRENGTHEN, m.PATHS.map((p) => ({ ...p }))]);
+  return ours === theirs ? [] : [`Kindling ${ours} differs from the design's ${theirs}`];
 }

@@ -106,6 +106,22 @@ The table is derived, not guessed. To level 40 the model fits per-level times to
 - **Pacing is per skill kept in a lane.** Three styles share one Combat lane, so a player training all three moves each at about a third of the pace; the triangle makes switching worthwhile.
 - **The first level-up** comes after under 40 seconds of chopping; the first worn sword after about 2 minutes.
 
+### Past 99: Kindling (step 17)
+
+Level 99 is the top, and it stays the top: nothing is ever reset or taken away. A skill's XP keeps counting past it, and each Kindling's worth is sized to take about a quarter of the first climb at the top's pace (section 15). A Kindling is a flame on the skill's seal (up to five drawn), a count on its hiscore row, a deed, and, for the first five, a stronger Path.
+
+At 99 each skill with work of its own, and each of the three styles, takes a Path: Bounty, Lore or Fortune, changed whenever the player likes and free, so a Path is a way to play, never a choice to regret. Hitpoints rises with the styles and takes none. Bounty's percent is of the whole stack (two logs a chop come to 2.3 on +15%), and in combat it raises drops and gold; Fortune multiplies the chance of every find, as luck does. *Generated:*
+
+A Kindling is 37,000,000 XP past level 99; the first 5 strengthen the Path.
+
+| Path | Raises | At 99 | Each Kindling adds | At 5 Kindlings |
+| --- | --- | --- | --- | --- |
+| Bounty | More of what it makes (in combat, drops and gold) | +15% | +3% | +30% |
+| Lore | More XP | +15% | +3% | +30% |
+| Fortune | More finds | +50% | +10% | +100% |
+
+**Why Kindling, not Rekindling (28 October 2026).** The expansion first planned Rekindling: a maxed skill back to level 1, keeping a lasting mark, with a twist for the new climb. Weighed against the pillars at the owner's request, it was set aside. A reset takes away a skill's own tools, unlocks and its materials' use in every other skill, so one choice would ripple through the Storehouse, Combat and the goals; and twists that change how a skill works ("half the materials", "no tier above 4") break rules the rest of the world keeps. Kindling keeps what Rekindling was for (a long reason to play a maxed skill, a choice that changes how it plays, a mark everyone sees) and takes nothing away.
+
 ## 5. Gathering
 
 | | Standard | Rich (opens 4 levels later) | Mastered older action |
@@ -483,7 +499,7 @@ Each win: a Rare boss find 1 in 12, a Legendary 1 in 80. Relic ranks cost 10, 25
 - When a lane would produce an item with no free slot, it stops: "Storehouse full".
 - Every item's panel shows **Comes from** and **Used in**, gathered by asking every feature.
 
-Enlargement costs follow each day's net gold, so one is affordable roughly when it is wanted (days 1, 2, 3, 5, 7, 10, 14 and 18, then 25, 35, 45, 60, 75 and 90 as the climb brings more kinds of item). Later sinks (relics, Rekindling) come with the expansion's endgame.
+Enlargement costs follow each day's net gold, so one is affordable roughly when it is wanted (days 1, 2, 3, 5, 7, 10, 14 and 18, then 25, 35, 45, 60, 75 and 90 as the climb brings more kinds of item). Relics, bought with expedition marks rather than gold, are the expansion's lasting spend.
 
 ## 11. Goals and notable moments
 
@@ -853,7 +869,7 @@ Every level 1 to 99 of every skill unlocks something: an action, a recipe, a tie
 | 2 | Social: guilds, player market, letters | Guild and seasons on the Realm page (today's Hiscores); the market is a tab of the Storehouse; letters arrive in the notices tray |
 | 3 | Expeditions | A tab of Combat |
 | 4 | Seasons | A tab of the Realm page, with its own ladder |
-| 5 | Rekindling | A section of the Hearth, opened by a milestone |
+| 5 | Kindling (in place of Rekindling) | Each skill's own page, from level 99; flames on its seal wherever it is shown |
 | 6 | The 48-hour upgrade; cosmetic donations | Settings (account) |
 
 Each must still pass the three tests: it serves a pillar, a newcomer understands it in one sentence, and it fits the page map without a new menu entry.
@@ -1437,4 +1453,12 @@ PASS  The Ember Wyrm falls to archery at the region's top, nine fights in ten
 PASS  The Ember Wyrm beats melee without food more often than not
 Relics: 4310 marks for every rank of every relic; 78 marks a day at the top; 55 days
 PASS  Every relic at full rank takes two to four months of daily runs at the top
+
+Kindling (step 17)
+Woodcutting: 99 on day 105.6; a quarter of that again earns 37,086,344 XP; a Kindling is 37,000,000 (100% of it)
+PASS  Woodcutting: a Kindling takes about a quarter of the first climb's time (within 25%)
+Smithing: 99 on day 118.5; a quarter of that again earns 37,084,910 XP; a Kindling is 37,000,000 (100% of it)
+PASS  Smithing: a Kindling takes about a quarter of the first climb's time (within 25%)
+Paths at 99, then at five Kindlings: bounty +15% to +30% items; lore +15% to +30% xp; fortune +50% to +100% finds
+PASS  A Path strengthens with the first five Kindlings only
 ```

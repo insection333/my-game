@@ -36,6 +36,7 @@ const title = (id: string, unlock: Unlock): Honour => ({ id, kind: 'title', unlo
 const at = (points: number) => ({ points });
 const by = (deed: string) => ({ deed });
 const ninetyNines = () => allSkills().map((s) => `level-${s}-99`);
+const firstKindlings = () => allSkills().map((s) => `kindled-${s}-1`);
 
 export const HONOURS: readonly Honour[] = [
   // Titles: by points first, then by deed.
@@ -56,6 +57,8 @@ export const HONOURS: readonly Honour[] = [
   title('equilibrist', by('hidden-even')),
   title('wyrmslayer', by('boss-ember-wyrm')),
   title('trailblazer', by('runs-100')),
+  title('kindled', { anyOf: firstKindlings, text: 'honour.unlock.anyKindled' }),
+  title('everflame', by('kindlings-10')),
   // Banners: the woad everyone flies, and a colour for each region cleared and more.
   { id: 'woad', kind: 'banner', unlock: null },
   { id: 'moss', kind: 'banner', unlock: by('region-march') },

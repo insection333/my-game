@@ -6,7 +6,7 @@ The owner wants a game that can be played comfortably for a year without boredom
 
 - **The climb:** level 99, over eight tiers.
 - **New skills:** Fishing and Cooking, Fletching and Runecraft.
-- **Endgame systems first:** Expeditions, Rekindling, and Deeds and titles.
+- **Endgame systems first:** Expeditions, Kindling (in place of Rekindling, see section 3), and Deeds and titles.
 - **Testing:** build first, then test once with a handful of players before public launch.
 
 This file turns those decisions into a plan. Version 1's rules all still hold:
@@ -25,9 +25,9 @@ This file turns those decisions into a plan. Version 1's rules all still hold:
 | First week | Every skill opened; the second tier in most; the first foes of the march beaten with home-made gear and home-cooked fish |
 | First month | Level 40 in a favourite skill; the march's last foe; the Fen opens (tier 5); the first deeds and a first title |
 | Months 2 to 3 | The Fen and the Ashen Peaks; tier 6 and 7 gear; expeditions become the main reason to fight; the first 99 in one skill |
-| Months 3 to 6 | Expedition bosses and their relics; the first Rekindling of a maxed skill, with a twist of the player's choosing; deeds by the hundred |
-| Months 6 to 12 | Every skill climbing to 99; second and third Rekindlings; the rarest finds and deeds; a place on the ladders |
-| After a year | Rekindling never ends; seasons (built after launch with real players) give each eight weeks a fresh ladder |
+| Months 3 to 6 | Expedition bosses and their relics; the first Kindling of a maxed skill, and the Path it walks; deeds by the hundred |
+| Months 6 to 12 | Every skill climbing to 99; second and third Kindlings; the rarest finds and deeds; a place on the ladders |
+| After a year | Kindling never ends; seasons (built after launch with real players) give each eight weeks a fresh ladder |
 
 ## 2. Targets (added to the brief's; a result outside 25% is a design bug)
 
@@ -42,7 +42,7 @@ The first 40 levels keep their present pace, so everything already proven still 
 | At every tier, at least two viable choices (recipe, style, target, route) within 20% of each other | Simulated strategies compared |
 | Home-cooked food beats the vendor's from tier 2 on; ammunition pays for itself in faster kills | The simulation |
 | An expedition of any length pays at least as well as the same time in the plain lanes, and better in rare rewards | The simulation |
-| A Rekindled skill climbs back to its old level in a quarter of the first climb's time, and plays differently | The simulation, one per twist |
+| A Kindling takes about a quarter of the first climb's time at the top's pace, and each Path pays what it says | The model, and the real engine's tests |
 
 ## 3. The new content
 
@@ -101,12 +101,12 @@ Regions appear as tabs at the top of Combat, already the home given in the page 
   - foes defeated, with counts;
   - each boss;
   - expedition routes and twists;
-  - Rekindlings;
+  - Kindlings;
   - the fire kept burning;
   - and a few hidden ones.
 - **Rewards:** each deed gives deed points. Points and particular deeds unlock **titles** (shown beside your name on the hiscores), **banner colours** and **seal frames**.
 - **Home:** a Deeds tab on Hiscores. A deed done has its moment, like a find.
-- **Built in step 15:** 272 deeds (bosses, expeditions and Rekindlings add theirs in steps 16 and 17), worth about 8,000 points. Titles show beside your name on every ladder and on the Hearth's plaque, which also wears your banner's colour and frame. Deeds are recorded by the page asking the server whenever one is done, wherever the player is; each has its moment (easy a toast, hard a banner, elite and master the centre). Their pace over the year is measured in step 18.
+- **Built in step 15:** 272 deeds (bosses, expeditions and Kindlings add theirs in steps 16 and 17), worth about 8,000 points. Titles show beside your name on every ladder and on the Hearth's plaque, which also wears your banner's colour and frame. Deeds are recorded by the page asking the server whenever one is done, wherever the player is; each has its moment (easy a toast, hard a banner, elite and master the centre). Their pace over the year is measured in step 18.
 
 ### Expeditions
 
@@ -124,24 +124,23 @@ Regions appear as tabs at the top of Combat, already the home given in the page 
 - **Home:** a tab of Combat, as the page map already says.
 - **Built in step 16:** stages are ten minutes of fighting, six an hour, against the three foes of the region the fighter fares best against (the best half the time), so a run keeps pace with the lane; its fights pay a quarter more XP and gold than the lane's, and a cache an hour and the boss pay on top, so every length pays at least the lane's best (the model and the real engine both measure it). Caches and camps come after a stage rather than taking time of their own. Twists: fog, hungry wolves, old roads, a warband, laden caravans and storm; roads: the high pass, the low road, the old shrine, the hunters' trail and the warden's gate. Relics: one for each skill (+1% XP a rank), the hearthstone (food), the four-leaf charm (finds) and the builder's cord (Storehouse rows); every relic at full rank takes about two months of daily runs at the top. Each boss's Legendary find makes its wins pay half again as many marks.
 
-### Rekindling
+### Kindling (in place of Rekindling)
 
-- **When:** once a skill reaches 99, you may Rekindle it. It returns to level 1 and keeps:
-  - a **lasting mark** (+5% XP in that skill for each Rekindling, up to five);
-  - its mastery;
-  - its finds.
-- **Twist:** you choose one for the new climb, for example:
-  - "Lean years: half the materials, double the finds";
-  - "Old ways: no tier above 4 until level 60, but all actions 30% faster";
-  - "Ironwood: gear made in this skill never sells, but is 10% stronger".
-- **The seal:** the skill's seal carries a flame for each Rekindling, and its hiscore row counts them.
-- **Home:** the skill's own page, where its next unlock would be. Every Rekindling also appears in a Hearth section.
+- **First planned as Rekindling:** a maxed skill back to level 1, keeping a lasting mark and its mastery and finds, with a twist chosen for the new climb ("Lean years: half the materials, double the finds").
+- **Set aside (28 October 2026):** the owner asked for it to be weighed against immersion and the game as a whole. A reset takes away a skill's tools, unlocks and its materials' place in every other skill, so one choice ripples through the Storehouse, Combat and the goals; twists that change how a skill works break rules the rest of the world keeps. It was replaced by Kindling, which keeps Rekindling's purpose and takes nothing away.
+- **Kindling:** past 99 a skill's XP keeps counting, and each Kindling's worth (about a quarter of the first climb at the top's pace) is a Kindling:
+  - a flame on the skill's seal (up to five drawn), and a count on its hiscore row;
+  - deeds for each skill's first and fifth, and ten across every skill, with two titles;
+  - for the first five, a stronger Path.
+- **Paths:** at 99 each skill with work of its own, and each style, takes one: Bounty (more of what it makes; in combat, drops and gold), Lore (more XP) or Fortune (more finds). It is free and changed whenever the player likes, so it is a way to play, never a choice to regret.
+- **Home:** the skill's own page, above its ladder; every Kindling has its moment and its line in the away recap.
+- **Built in step 17:** Kindlings of 37 million XP; Bounty and Lore +15%, Fortune +50% at 99, rising by a fifth of that with each of the first five Kindlings (the model's numbers are in GAME_DESIGN.md section 4).
 
 ## 4. Feel: progress that is seen and heard
 
 This step comes first, because it makes every later step land harder.
 
-- **Seals that grow:** each skill's seal is framed in the metal of the highest tier reached, from copper to dawnsteel, with a small star at 99 and flames for Rekindlings. Seals are seen on Skills, on each skill's page and on the hiscores.
+- **Seals that grow:** each skill's seal is framed in the metal of the highest tier reached, from copper to dawnsteel, with a small star at 99 and a flame for each Kindling past it. Seals are seen on Skills, on each skill's page and on the hiscores.
 - **Total level and a rank:** your total level, and a rank title that rises with it ("Wanderer" to "Warden of the March"), in the header on wide screens and on the Hearth.
 - **Every completion lands:**
   - the XP earned rises from the lane, "+52 XP" (already in the gains feed, now also on the lane card);
@@ -164,7 +163,7 @@ Each step ends only when its proof is shown, verify is green on GitHub and the w
 | 14 | **Fletching and Runecraft:** supplies for all three styles | Each style still wins where the triangle says; supplies pay for themselves |
 | 15 | **Deeds and titles** | Every deed can be done, and its text comes from its numbers; titles show on the hiscores |
 | 16 | **Expeditions and bosses** | No two runs alike in 1,000 draws; any length pays at least as well as the lanes |
-| 17 | **Rekindling** | Each twist plays differently in the simulation; a Rekindled climb takes about a quarter of the first |
+| 17 | **Kindling** (in place of Rekindling) | A Kindling takes about a quarter of the first climb; each Path pays what it says; nothing is taken away |
 | 18 | **The year:** a 365-day simulation of several kinds of player, balance across every skill, the closed test made ready | Every year target holds; then the closed test with a handful of players |
 
 ## 6. Art

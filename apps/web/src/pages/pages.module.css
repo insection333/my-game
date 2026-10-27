@@ -296,6 +296,15 @@ a.row:hover {
   overflow-wrap: anywhere;
 }
 
+/* Under the ladder below 99: what waits at the top (Kindling). */
+.ladderNote {
+  margin: 0;
+  padding: var(--s-2) var(--s-4) var(--s-3);
+  border-top: 1px solid var(--line);
+  color: var(--ink-2);
+  font-size: var(--t-small);
+}
+
 /* A second panel under the first in the same column. */
 .below {
   margin-top: var(--s-4);

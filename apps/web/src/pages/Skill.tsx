@@ -1,14 +1,15 @@
 // A skill's page: its level, everything it can do (with what each pays), and every level's unlock.
 import { fmt, levelFor, t } from '@idle-clash/content';
-import type { Feature, FindEntry, LadderRow, SkillActionRow, SkillSummary } from '@idle-clash/features';
+import type { Feature, FindEntry, KindlingView, LadderRow, SkillActionRow, SkillSummary } from '@idle-clash/features';
 import { actionKey, laneFor, laneKind, LANE_IDS, xpOf, type LaneId, type State } from '@idle-clash/kernel';
 import { ActionRow, Button, hasIcon, ItemIcon, Panel, Pill, ProgressBar, Tabs } from '@idle-clash/ui';
 import { memo, useEffect, useRef } from 'react';
 import { useGame } from '../game/hooks.ts';
 import { game } from '../game/store.ts';
 import { navigate } from '../router.ts';
-import { fillFor, Slot } from '../slots.tsx';
+import { fillFor, fills, Slot } from '../slots.tsx';
 import { FindGrid } from './Finds.tsx';
+import { KindlingPanel } from './Kindling.tsx';
 import { NotFound } from './Simple.tsx';
 import s from './pages.module.css';
 
@@ -31,8 +32,9 @@ export function Skill({ id }: { id: string }) {
 }
 
 function SkillPage({ feature }: { feature: Feature }) {
-  const { state, now } = useGame();
+  const { state, now, features } = useGame();
   const id = feature.content.skill!.id;
+  const kindling = fills<Record<string, KindlingView>>(features, 'skill.kindling', state, now)[0]?.data[id];
   const head = fillFor<SkillSummary>(feature, 'skill.header', state, now);
   const all = fillFor<SkillActionRow[]>(feature, 'skill.actions', state, now) ?? [];
   // One tier at a time, so the list stays short: the tier asked for in the address, or the newest
@@ -60,7 +62,9 @@ function SkillPage({ feature }: { feature: Feature }) {
       {head && (
         <Slot id="skill.header" className={s.skillHead}>
           <div className={s.skillTitle}>
-            {hasIcon(id) && <ItemIcon name={id} size={48} seal={{ tier: head.tier, top: head.top }} />}
+            {hasIcon(id) && (
+              <ItemIcon name={id} size={48} seal={{ tier: head.tier, top: head.top, kindlings: head.kindlings }} />
+            )}
             <h1>{head.name}</h1>
             <Pill tone="moss">{head.level}</Pill>
           </div>
@@ -150,7 +154,8 @@ function SkillPage({ feature }: { feature: Feature }) {
           <Finds feature={feature} state={state} found={Object.keys(state.found).length} />
         </section>
         <section data-section>
-          <Ladder feature={feature} state={state} xp={xpOf(state, id)} />
+          {kindling?.top && <KindlingPanel view={kindling} />}
+          <Ladder feature={feature} state={state} xp={xpOf(state, id)} note={kindling?.top ? null : kindling?.note} />
         </section>
       </div>
     </>
@@ -175,7 +180,7 @@ const Finds = memo(
 
 /** Every level's unlock, opened a row above the current level; drawn again only when XP changes. */
 const Ladder = memo(
-  function Ladder({ feature, state }: { feature: Feature; state: State; xp: number }) {
+  function Ladder({ feature, state, note }: { feature: Feature; state: State; xp: number; note?: string | null }) {
     const ladder = fillFor<LadderRow[]>(feature, 'skill.ladder', state, state.clock) ?? [];
     const reached = ladder.filter((l) => l.reached).length;
     const ref = useRef<HTMLOListElement>(null);
@@ -198,9 +203,10 @@ const Ladder = memo(
               </li>
             ))}
           </ol>
+          {note && <p className={s.ladderNote}>{note}</p>}
         </Slot>
       </Panel>
     );
   },
-  (a, b) => a.feature === b.feature && levelFor(a.xp) === levelFor(b.xp),
+  (a, b) => a.feature === b.feature && levelFor(a.xp) === levelFor(b.xp) && a.note === b.note,
 );

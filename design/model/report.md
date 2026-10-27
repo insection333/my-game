@@ -556,3 +556,11 @@ PASS  The Ember Wyrm falls to archery at the region's top, nine fights in ten
 PASS  The Ember Wyrm beats melee without food more often than not
 Relics: 4310 marks for every rank of every relic; 78 marks a day at the top; 55 days
 PASS  Every relic at full rank takes two to four months of daily runs at the top
+
+## Kindling (step 17)
+Woodcutting: 99 on day 105.6; a quarter of that again earns 37,086,344 XP; a Kindling is 37,000,000 (100% of it)
+PASS  Woodcutting: a Kindling takes about a quarter of the first climb's time (within 25%)
+Smithing: 99 on day 118.5; a quarter of that again earns 37,084,910 XP; a Kindling is 37,000,000 (100% of it)
+PASS  Smithing: a Kindling takes about a quarter of the first climb's time (within 25%)
+Paths at 99, then at five Kindlings: bounty +15% to +30% items; lore +15% to +30% xp; fortune +50% to +100% finds
+PASS  A Path strengthens with the first five Kindlings only

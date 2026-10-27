@@ -3,7 +3,7 @@
 // centre of the screen; Rare finds, mastery steps and hard deeds a banner; Uncommon finds, goals and
 // easy deeds a small toast.
 import { fmt, formatEffect, formatStop, isQuietStop, masteryEffects, t } from '@idle-clash/content';
-import { expeditionStory as storyOf, skill as skillKit, type Feature } from '@idle-clash/features';
+import { expeditionStory as storyOf, kindlingData, skill as skillKit, type Feature } from '@idle-clash/features';
 import { isNotable, type GameEvent } from '@idle-clash/kernel';
 import { hasIcon } from '@idle-clash/ui';
 
@@ -26,17 +26,18 @@ const ALSO_NAMED = 4;
 const SHOW_MS: Record<MomentSize, number> = { centre: 6000, banner: 5000, toast: 4000 };
 const SIZE_RANK: MomentSize[] = ['toast', 'banner', 'centre'];
 
-/** Best first: Legendary, a master deed, a new collection entry, a level, Rare, an elite deed, a mastery
+/** Best first: Legendary, a Kindling, a master deed, a new collection entry, a level, Rare, an elite deed, a mastery
  *  step, any other deed, a goal, Uncommon. */
 function rank(e: GameEvent): number {
   if (e.type === 'find') return e.rarity === 'legendary' ? 0 : e.first ? 2 : e.rarity === 'rare' ? 4 : 9;
   if (e.type === 'deedDone') return e.tier === 'master' ? 1 : e.tier === 'elite' ? 5 : 7;
   if (e.type === 'expeditionDone') return e.outcome === 'won' ? 1 : 5;
+  if (e.type === 'kindled') return 1;
   return e.type === 'levelUp' ? 3 : e.type === 'masteryStep' ? 6 : 8;
 }
 
 function sizeOf(e: GameEvent): MomentSize {
-  if (e.type === 'levelUp' || (e.type === 'find' && e.rarity === 'legendary')) return 'centre';
+  if (e.type === 'levelUp' || e.type === 'kindled' || (e.type === 'find' && e.rarity === 'legendary')) return 'centre';
   // A goal's supply cache is opened in a banner; a lucky one takes the centre.
   if (e.type === 'goalDone' && e.cache) return e.cache.grade === 'lucky' ? 'centre' : 'banner';
   if (e.type === 'deedDone') return e.tier === 'easy' ? 'toast' : e.tier === 'hard' ? 'banner' : 'centre';
@@ -86,6 +87,17 @@ function describe(
         title: t('moment.goalDone', { goal: e.name ?? t(`goal.${e.goal}`) }),
         body: e.cache ? cacheText(e.cache) : null,
         icon: e.cache ? 'supply-cache' : null,
+      };
+    case 'kindled':
+      return {
+        title: t('moment.kindled', { skill: t(`skill.${e.skill}`) }),
+        body:
+          e.count === 1
+            ? t('moment.kindledFirst')
+            : t(e.count <= kindlingData.KINDLINGS_THAT_STRENGTHEN ? 'moment.kindledStronger' : 'moment.kindledFlame', {
+                count: fmt.int(e.count),
+              }),
+        icon: hasIcon(e.skill) ? e.skill : null,
       };
     case 'expeditionDone':
       return { ...storyOf(e), icon: hasIcon(e.boss) ? e.boss : null };

@@ -15,6 +15,7 @@ import { FOES } from '../src/shared/combat/data.ts';
 import { capacity, ENLARGE_COSTS } from '../src/shared/storehouse.ts';
 import { BOSSES, TWISTS } from '../src/shared/expeditions/data.ts';
 import { relics } from '../src/shared/expeditions/relics.ts';
+import { KINDLE_XP } from '../src/shared/kindling.ts';
 import { allSkills } from '../src/shared/standing.ts';
 
 const T0 = Date.UTC(2026, 9, 27, 10);
@@ -25,7 +26,8 @@ const items = FEATURES.flatMap((f) => f.content.items ?? []);
  *  beaten thousands of times, every find, the best gear worn, the Storehouse full and the fire hot. */
 function everything(): State {
   const s = newState(15, T0);
-  s.skills = Object.fromEntries(allSkills().map((k) => [k, { xp: XP_TABLE[99] }]));
+  // Every skill at 99 and five Kindlings past it.
+  s.skills = Object.fromEntries(allSkills().map((k) => [k, { xp: XP_TABLE[99] + 5 * KINDLE_XP }]));
   for (const { feature, actions } of skillActions())
     for (const [i, a] of actions.entries()) s.mastery[`${feature}:${a.id}`] = i === 0 ? 100_000 : 28_800;
   for (const [i, f] of FOES.entries()) s.mastery[`combat:${f.id}`] = i === 0 ? 28_800 : 5_000;

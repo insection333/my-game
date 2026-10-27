@@ -12,6 +12,7 @@ import { capacity, slotsUsed } from '../shared/storehouse.ts';
 import { BOSSES, TWISTS } from '../shared/expeditions/data.ts';
 import { rankOf, relics } from '../shared/expeditions/relics.ts';
 import { expeditionsOf } from '../shared/expeditions/state.ts';
+import { kindlings } from '../shared/kindling.ts';
 
 const GEAR = ['helm', 'body', 'legs', 'weapon'] as const;
 
@@ -36,6 +37,9 @@ export class Reader {
   private done = (key: string) => (Object.hasOwn(this.state.mastery, key) ? this.state.mastery[key] : 0);
 
   level = (skill: string) => this.once(`level:${skill}`, () => skillLevel(this.state, skill));
+  /** Kindlings past 99 in a skill, and across every skill. */
+  kindlings = (skill: string) => this.once(`kindlings:${skill}`, () => kindlings(this.state, skill));
+  allKindlings = () => this.once('kindlings', () => allSkills().reduce((n, s) => n + this.kindlings(s), 0));
   total = () => this.once('total', () => allSkills().reduce((n, s) => n + this.level(s), 0));
   /** The lowest level among every skill; with `even`, that level only when every skill shares it. */
   lowest = () => this.once('lowest', () => Math.min(...allSkills().map((s) => this.level(s))));

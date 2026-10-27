@@ -103,12 +103,13 @@ The list, then one page per skill (`/skills/woodcutting`).
 
 | # | Section (slot) | Filled by | Notes |
 | --- | --- | --- | --- |
-| 1 | `skills.list` | every skill | One tile per skill (eleven since session 14): seal, name, level, a progress bar to the next level, and the next unlock. Grouped by lane: Gathering (Woodcutting, Mining, Fishing, Runecraft), Artisan (Smithing, Cooking, Fletching), Combat; an odd lane's last tile takes the whole row |
+| 1 | `skills.list` | every skill | One tile per skill (eleven since session 14): seal (with a flame for each Kindling, up to five), name, level, a progress bar to the next level (past 99, to the next Kindling), and the next unlock. Grouped by lane: Gathering (Woodcutting, Mining, Fishing, Runecraft), Artisan (Smithing, Cooking, Fletching), Combat; an odd lane's last tile takes the whole row |
 | — | **A skill's page** | | |
-| 1 | `skill.header` | that skill | Level, XP to next, the next unlock and how far away it is |
+| 1 | `skill.header` | that skill | Seal, level, XP to next, the next unlock and how far away it is; past 99, the bar runs on to the next Kindling and the seal wears its flames |
 | 2 | `skill.actions` | that skill | ActionRow per action or recipe: name, level, seconds, XP an hour, what it gives or takes, mastery step and bar, Start and Queue next. One tier at a time, under tabs: every tier opened so far and the next one (Tier 1 to 8 over the climb), opening on the newest tier with something open; the next tier's locked actions show their level, never hidden. Each tier's tab carries its resource's icon; when "Tier 1 … Tier 8" will not fit, the tabs show the icons alone and share the width (the name kept for screen readers and on hover), never scrolling sideways |
 | 3 | `skill.finds` | that skill | The six finds, found (with the date) or silhouetted (with where it comes from), with their rarity |
-| 4 | `skill.ladder` | that skill | The unlock ladder 1–99, the current level marked, past unlocks muted |
+| 4 | `skill.ladder` | that skill | The unlock ladder 1–99, the current level marked, past unlocks muted; below 99, a line beneath it says what waits at the top (a Path, and Kindlings) |
+| 5 | `skill.kindling` | kindling | From level 99, above the ladder: Kindling, with how many times the skill has been kindled, and the three Paths (Bounty, Lore, Fortune), each with its emblem and what it gives now, one marked Walking; Take this Path on the others and Leave the Path on it, free and changed whenever the player likes. Hitpoints takes no Path and says why |
 
 - **At 390:** the header and the current tier's actions; the finds come before the long ladder. **At 1,440:** the header, the current tier's actions with the finds under them, and the ladder beside them.
 
@@ -180,7 +181,7 @@ Two tabs under the title: **Ladders** (`/hiscores`) and **Deeds** (`/hiscores/de
 | # | Section (slot) | Filled by | Notes |
 | --- | --- | --- | --- |
 | 1 | `hiscores.online` | server | Ladders: how many are playing now |
-| 2 | `hiscores.ladder` | hiscores | Ladders: tabs for Total and each skill, each with its seal (on a phone, when the names will not fit, the seals alone, sharing the width; beside the ladder on wide screens); rank, name, level, XP; each name with its banner's pennant and its title beneath; your own row pinned |
+| 2 | `hiscores.ladder` | hiscores | Ladders: tabs for Total and each skill, each with its seal (on a phone, when the names will not fit, the seals alone, sharing the width; beside the ladder on wide screens); rank, name, level, XP; each name with its banner's pennant and its title beneath (on a skill's ladder, how many times it is kindled); your own row pinned |
 | 3 | `hiscores.honours` | deeds | Deeds: your honours. Deed points and title on your banner's colour in your frame, deeds done by tier, the bar to the next title by points, and Choose honours |
 | 4 | `hiscores.deeds` | deeds | Deeds: tabs Next up, Skills, Work, Combat, Finds, Home (short labels on a phone). Next up lists the six deeds nearest to done and the six done last; each other tab, its families (Levels, Foes, the fire…) as panels of rows, each row a skill or a foe with a medallion for each deed, ringed in its tier's colour and filled when done |
 | 5 | `hiscores.deed` | deeds | A deed's sheet (`?panel=deed&deed=…`): its medallion, tier and points, its text, its progress or the day it was done, and what it unlocks. A hidden deed shows only that it is hidden |
@@ -280,5 +281,5 @@ No later system adds a menu entry. The free sixth place stays free until the own
 | Letters | The notices tray |
 | Expeditions | A tab of Combat (built in session 16: runs, bosses and relics) |
 | Seasons | A tab of Realm, with its own ladder |
-| Rekindling | A section of the Hearth, opened by a milestone |
+| Kindling (in place of Rekindling) | The skill's own page from level 99 (built in session 17), and flames on its seal wherever it is shown |
 | The 48-hour upgrade, cosmetic donations | Settings |

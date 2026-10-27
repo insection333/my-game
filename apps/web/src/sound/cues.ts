@@ -14,6 +14,9 @@ export function cueFor(e: GameEvent): Cue | null {
   switch (e.type) {
     case 'levelUp':
       return 'level';
+    case 'kindled':
+      // As rare as a Legendary find, and as gladly heard.
+      return 'legendary';
     case 'find':
       return e.rarity === 'legendary' ? 'legendary' : e.rarity === 'rare' ? 'rare' : e.first ? 'newFind' : null;
     case 'masteryStep':

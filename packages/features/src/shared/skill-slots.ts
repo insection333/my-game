@@ -12,6 +12,7 @@ import {
   type Find,
   type Ladder,
 } from '@idle-clash/content';
+import { KINDLE_XP, kindlingsIn } from './kindling.ts';
 import { xpOf } from '@idle-clash/kernel';
 import type { Json, SlotFill } from '../define.ts';
 import { actionMastery, actionModifiers, nextUnlock, skillLevel, unlockText } from './skill.ts';
@@ -36,6 +37,8 @@ export interface SkillSummary {
   /** The highest tier reached, for the seal's rim, and whether the skill is at the top level. */
   tier: number;
   top: boolean;
+  /** Kindlings earned past 99: a flame each on the seal. */
+  kindlings: number;
 }
 export interface SkillActionRow {
   action: { feature: string; id: string };
@@ -98,12 +101,17 @@ export function skillSlots(def: SkillDef): Record<string, SlotFill> {
   const summary = (xp: number): { [k: string]: Json } => {
     const p = levelProgress(xp);
     const next = nextUnlock(ladder, p.level);
+    // Past 99 the bar runs on towards the next Kindling.
+    const k = kindlingsIn(xp);
+    const past = p.toNext ? 0 : Math.max(0, xp - XP_TABLE[MAX_LEVEL]) - k * KINDLE_XP;
     return {
       skill,
       name: name(),
       level: t('skill.level', { level: fmt.int(p.level) }),
-      progress: p.span ? p.into / p.span : 1,
-      toNext: p.toNext ? t('skill.toNext', { xp: fmt.int(p.toNext), level: fmt.int(p.level + 1) }) : t('skill.top'),
+      progress: p.span ? p.into / p.span : past / KINDLE_XP,
+      toNext: p.toNext
+        ? t('skill.toNext', { xp: fmt.int(p.toNext), level: fmt.int(p.level + 1) })
+        : t('kindling.toNext', { xp: fmt.int(KINDLE_XP - past) }),
       nextUnlock: next
         ? t('skill.nextUnlock', {
             level: fmt.int(next.level),
@@ -112,6 +120,7 @@ export function skillSlots(def: SkillDef): Record<string, SlotFill> {
         : null,
       tier: tierOf(p.level),
       top: p.level === MAX_LEVEL,
+      kindlings: k,
     };
   };
 

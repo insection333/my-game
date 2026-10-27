@@ -25,6 +25,8 @@ export interface EventMap {
   /** A deed was done (session 15): its words and icon as they were when done, its tier and points, and
    *  the honours it unlocked (a title, a banner, a frame), by name. */
   deedDone: { deed: string; name: string; icon: string | null; tier: string; points: number; unlocks?: string[] };
+  /** A skill past 99 reached another Kindling (step 17): its count so far. */
+  kindled: { skill: string; count: number };
   /** An expedition came home (step 16): where and how long, the road taken, how it ended (the boss
    *  beaten or not, or a retreat before it), the stages cleared of all, the marks and finds it brought. */
   expeditionDone: {
@@ -60,5 +62,6 @@ export const NOTABLE_EVENTS: readonly (keyof EventMap)[] = [
   'goalDone',
   'deedDone',
   'expeditionDone',
+  'kindled',
 ];
 export const isNotable = (e: GameEvent): boolean => NOTABLE_EVENTS.includes(e.type);

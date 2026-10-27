@@ -11,6 +11,7 @@ export type RecapKind =
   | 'legendary'
   | 'newFind'
   | 'level'
+  | 'kindled'
   | 'rare'
   | 'expedition'
   | 'mastery'
@@ -26,6 +27,7 @@ export const RECAP_ORDER: readonly RecapKind[] = [
   'legendary',
   'newFind',
   'level',
+  'kindled',
   'rare',
   'expedition',
   'mastery',
@@ -66,6 +68,13 @@ function stopHref(e: Extract<GameEvent, { type: 'laneStopped' }>): string | null
   }
 }
 
+const kindledLine = (skill: string, count: number): RecapLine => ({
+  kind: 'kindled',
+  text: t('recap.kindled', { skill: t(`skill.${skill}`), count: fmt.int(count) }),
+  icon: null,
+  href: `/skills/${skill}`,
+});
+
 /** Every line of the recap, best first. Lines other than lane stops are the good things. */
 export function recapLines(a: AwaySummary): RecapLine[] {
   const lines: RecapLine[] = [];
@@ -104,6 +113,11 @@ export function recapLines(a: AwaySummary): RecapLine[] {
       icon: null,
       href: `/skills/${skill}`,
     });
+  // Kindlings, one line a skill: the latest.
+  const kindled = new Map<string, number>();
+  for (const e of a.events)
+    if (e.type === 'kindled') kindled.set(e.skill, Math.max(kindled.get(e.skill) ?? 0, e.count));
+  for (const [skill, count] of kindled) lines.push(kindledLine(skill, count));
   // Each run that came home, its story.
   for (const e of a.events)
     if (e.type === 'expeditionDone') {
@@ -211,6 +225,8 @@ export function noticeLine(e: GameEvent): (RecapLine & { at: number }) | null {
         href: '/',
         at: e.at,
       };
+    case 'kindled':
+      return { ...kindledLine(e.skill, e.count), at: e.at };
     case 'expeditionDone': {
       const story = storyOf(e);
       return {

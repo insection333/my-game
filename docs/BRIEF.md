@@ -74,7 +74,7 @@ Version 1 is three trade skills, three combat styles, three lanes, four tiers an
 
 Not in version 1: PvP, guilds, a player market, raids, dungeons, seasons, any restart system, more regions or trade skills, a native app, a bot, and anything paid.
 
-**The expansion before launch (owner, 26 October 2026).** Before launch the game grows to a year of play: level 99 over eight tiers, two more regions with bosses, Fishing and Cooking, Fletching and Runecraft, and three endgame systems: Expeditions, Rekindling, and Deeds and titles. The plan, its targets and its order of work are in `docs/EXPANSION.md` (sessions 11 to 18). Guilds, the market, letters and seasons still wait for real players.
+**The expansion before launch (owner, 26 October 2026).** Before launch the game grows to a year of play: level 99 over eight tiers, two more regions with bosses, Fishing and Cooking, Fletching and Runecraft, and three endgame systems: Expeditions, Kindling (which replaced Rekindling on 28 October 2026: nothing is reset), and Deeds and titles. The plan, its targets and its order of work are in `docs/EXPANSION.md` (sessions 11 to 18). Guilds, the market, letters and seasons still wait for real players.
 
 ## Targets
 
@@ -104,7 +104,7 @@ After version 1, systems arrive one at a time in this order, each tested with pl
 | 2 | Social: guilds with shared goals, a player market, letters | Longevity, fun |
 | 3 | Expeditions: varied runs with routes, modifiers and a boss, different each time | Replayability |
 | 4 | Seasons: every eight weeks or so, a fresh ladder with a twist (a modifier that changes how the season plays) and cosmetic rewards | Replayability |
-| 5 | Rekindling: an optional restart that keeps lasting marks and lets you choose a world modifier for the run, so a second climb plays differently | Replayability |
+| 5 | Kindling (in place of Rekindling, 28 October 2026): past 99 a skill keeps earning Kindlings, flames on its seal, and walks a Path of the player's choosing that changes how it pays; nothing is ever reset | Replayability, longevity |
 | 6 | The very end: the 48-hour offline upgrade, and cosmetic donations | Longevity |
 
 Before any of these is built, it must pass three tests: it serves at least one pillar, a newcomer can understand it in one sentence, and it fits the page map without a new top-level menu entry.
@@ -249,7 +249,7 @@ These are settled by the owner and are not reopened without asking.
 | Sound | Made in code; off until each player switches it on in Settings; never intrusive (no wearing sounds for repeated actions or notices) (session 10) |
 | Contact address | admin@idleclash.com, shown on the welcome page, the privacy page and the terms (session 10) |
 | The scene's motion | Approved, "slightly more animated": smoke, drifting clouds, birds now and then (session 10) |
-| The expansion | Before launch, as above: level 99 over eight tiers; Fishing, Cooking, Fletching, Runecraft; Expeditions, Rekindling, Deeds and titles first; built first, then one closed test with a handful of players before public launch; the server waits (26 October 2026) |
+| The expansion | Before launch, as above: level 99 over eight tiers; Fishing, Cooking, Fletching, Runecraft; Expeditions, Kindling (in place of Rekindling), Deeds and titles first; built first, then one closed test with a handful of players before public launch; the server waits (26 October 2026) |
 
 ## Lessons from the first attempt
 

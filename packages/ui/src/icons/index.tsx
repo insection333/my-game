@@ -84,6 +84,7 @@ import { FOOD_ICONS } from './food-index.tsx';
 import { SUPPLY_FINDS } from './finds-supplies.tsx';
 import { SUPPLY_ICONS } from './supplies-index.tsx';
 import { EXPEDITION_ICONS } from './expeditions-index.tsx';
+import { PathFortune, PathLore, PathBounty } from './kindling.tsx';
 import { M, type Tone } from './style.tsx';
 import {
   AshLogs,
@@ -105,7 +106,7 @@ import {
 } from './world.tsx';
 
 export type IconFamily =
-  'weapon' | 'armour' | 'resource' | 'supply' | 'foe' | 'food' | 'find' | 'skill' | 'reward' | 'relic';
+  'weapon' | 'armour' | 'resource' | 'supply' | 'foe' | 'food' | 'find' | 'skill' | 'reward' | 'relic' | 'path';
 
 export interface IconDef {
   draw: ComponentType;
@@ -267,6 +268,10 @@ export const ICONS: Record<string, IconDef> = {
   ...SUPPLY_ICONS,
   ...SUPPLY_FINDS,
   ...EXPEDITION_ICONS,
+  // Kindling's Paths (session 17).
+  'path-bounty': { draw: PathBounty, family: 'path', title: 'Bounty: a bound sheaf (Path)' },
+  'path-lore': { draw: PathLore, family: 'path', title: 'Lore: an open book (Path)' },
+  'path-fortune': { draw: PathFortune, family: 'path', title: 'Fortune: a starred coin (Path)' },
 };
 
 export type IconName = string;

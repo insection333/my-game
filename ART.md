@@ -52,6 +52,7 @@ Each material has exactly three tones: light, base and shadow.
 | Bosses | Foes, larger and marked out: a crown, a barnacled helm and lantern-light, horns and a jaw of fire; still a bust in left-facing profile with the eye the brightest point | The Troll-chief of the hill (session 16) |
 | Relics | A keepsake hung from a leather cord, which marks the family; below it the thing itself, one object lit from the upper left | Heartwood charm, Hearthstone (session 16) |
 | Regions | A small landscape on a round shield of sky, the region's own land and colour: an expedition's icon | The march, the Sunken Fen, the Ashen Peaks (session 16) |
+| Paths | The Path's emblem on a round ember seal with a fiery inner ring, which marks the family: a bound sheaf for Bounty, an open book for Lore, a starred gold coin for Fortune | Bounty, Lore, Fortune (session 17) |
 | Fish | On a slant, head low on the left, tail up on the right, so it fills the square as a sword does; back lit, belly in shade, the eye the brightest point. Each kind has its own skin and marks; cooked, it turns golden brown with grill marks and a cloudy eye | Perch, Cooked perch, Salmon, Pike pie (approved 27 October 2026) |
 
 ## Readable at 24 px
@@ -90,7 +91,7 @@ The owner approved the supplies family's references on 27 October 2026 (`icons/s
 
 ## Seals that grow
 
-A skill's seal is rimmed in the metal of the highest tier its skill has reached: copper, then bronze, iron and steel, then moonsilver, star-iron, embersteel and dawnsteel. At the top level a small amber star sits on the rim's foot. The icon sheet shows one seal at each tier. Where no player's skill is meant (a ladder's tab, the icon sheet's own entry), the rim is bronze.
+A skill's seal is rimmed in the metal of the highest tier its skill has reached: copper, then bronze, iron and steel, then moonsilver, star-iron, embersteel and dawnsteel. At the top level a small amber star sits on the rim's foot. Each Kindling past 99 sets a small flame on the rim's crown, up to five, spread evenly about the top (session 17). The icon sheet shows one seal at each tier. Where no player's skill is meant (a ladder's tab, the icon sheet's own entry), the rim is bronze.
 
 ## The region's scene
 

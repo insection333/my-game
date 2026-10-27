@@ -19,7 +19,7 @@ import { flagsFrom } from '../../../apps/server/src/config.ts';
 import type { Ctx } from '../../../apps/server/src/context.ts';
 import type { State } from '@idle-clash/kernel';
 import { exec, ROOT } from '../exec.ts';
-import { elder } from './elder.ts';
+import { elder, keeper } from './elder.ts';
 import { withHonours } from './honours.ts';
 import { crowd, CROWD, veteran } from './veteran.ts';
 import { readPageMap, type ViewSpec } from '../ia.ts';
@@ -109,13 +109,26 @@ export function views(): View[] {
     desktop: [],
     as: 'elder' as const,
   }));
+  // A year in: skills at 99, kindled, walking their Paths; the ladder that counts Kindlings.
+  const keepers: ViewSpec[] = [
+    '/skills',
+    '/skills/woodcutting',
+    '/skills/hitpoints',
+    '/hiscores?skill=woodcutting',
+  ].map((path) => ({
+    page: path.startsWith('/skills/') ? 'Skill' : path.startsWith('/hiscores') ? 'Hiscores' : 'Skills',
+    path,
+    phone: [],
+    desktop: [],
+    as: 'keeper' as const,
+  }));
   // The privacy page and the terms, as a visitor reads them from the welcome page.
   const visitor: ViewSpec[] = map.views
     .filter((v) => v.path === '/privacy' || v.path === '/terms')
     .map((v) => ({ ...v, as: 'visitor' as const }));
   // The admin page is the admin's: a newcomer gets the page that does not exist.
   const newcomer = map.views.filter((v) => v.path !== '/admin');
-  return [...newcomer, ...sheets, ...veteran, ...elders, ...visitor].map((v) => ({
+  return [...newcomer, ...sheets, ...veteran, ...elders, ...keepers, ...visitor].map((v) => ({
     ...v,
     name: (v.as ? `${v.as}-` : '') + (v.path.replace(/^\//, '').replace(/[^a-z0-9]+/gi, '-') || 'hearth'),
   }));
@@ -139,6 +152,8 @@ export interface Served {
   veteran: { name: string; value: string };
   /** And of one two months into the climb (`elder.ts`). */
   elder: { name: string; value: string };
+  /** And of one a year in, with skills kindled past 99 (`elder.ts`). */
+  keeper: { name: string; value: string };
   /** The server's insides, for flows that set up a save the way the admin page will. */
   ctx: Ctx;
   close: () => Promise<void>;
@@ -204,6 +219,7 @@ async function start(): Promise<Served> {
   };
   const vet = await settle('Veteran', (s) => veteran(ctx, s, now));
   const eld = await settle('Elder', (s) => elder(ctx, s, now));
+  const kpr = await settle('Keeper', (s) => keeper(ctx, s, now));
   // The veteran keeps the game's admin page, so it is screenshot with players on it. Named on the list
   // once signed up, as the owner is: a name already on it cannot be signed up for.
   ctx.config.adminNames.push('Veteran');
@@ -214,6 +230,7 @@ async function start(): Promise<Served> {
     cookie,
     veteran: vet,
     elder: eld,
+    keeper: kpr,
     ctx,
     close: async () => {
       await close();
@@ -233,11 +250,12 @@ export async function openPage(
   engine: Engine,
   path: string,
   options: BrowserContextOptions,
-  as?: 'veteran' | 'elder' | 'visitor',
+  as?: 'veteran' | 'elder' | 'keeper' | 'visitor',
 ): Promise<Page> {
   const served = await ensureServer();
   const ctx = await (await browser(engine)).newContext(options);
-  const cookie = as === 'veteran' ? served.veteran : as === 'elder' ? served.elder : served.cookie;
+  const players = { veteran: served.veteran, elder: served.elder, keeper: served.keeper };
+  const cookie = as && as !== 'visitor' ? players[as] : served.cookie;
   if (!signedOut(path) && as !== 'visitor') await ctx.addCookies([{ ...cookie, url: served.url }]);
   const page = await ctx.newPage();
   page.on('close', () => void ctx.close().catch(() => undefined));

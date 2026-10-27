@@ -3,9 +3,10 @@
 // a win, gold, the foe's drop and maybe a find. An expedition's fights also count towards each foe's
 // mastery, as the lane's do (the kernel counts the lane's).
 import { fireXpPct, LEGENDARY_MARK_PCT, masteryStep } from '@idle-clash/content';
-import { addXp, give, type ActionContext } from '@idle-clash/kernel';
+import { addXp, give, xpOf, type ActionContext } from '@idle-clash/kernel';
 import { marksIn, rollFind } from '../complete.ts';
 import { relicXpPct } from '../expeditions/relics.ts';
+import { announceKindling, pathBonus } from '../kindling.ts';
 import { skillLevel, yieldOf } from '../skill.ts';
 import { HITPOINTS, HITPOINTS_XP_SHARE, LADDERS, MASTERY_DROPS_PER_STEP, STYLE_FINDS, type Foe } from './data.ts';
 import { styleXp, type Fighter } from './fight.ts';
@@ -15,8 +16,13 @@ function gainXp(ctx: ActionContext, skill: string, base: number) {
   const marks = skill === HITPOINTS ? 0 : marksIn(ctx.state, STYLE_FINDS[skill as keyof typeof STYLE_FINDS]);
   const before = skillLevel(ctx.state, skill);
   const pct =
-    (ctx.fireBurning ? fireXpPct(ctx.fireMinutes) : 0) + LEGENDARY_MARK_PCT * marks + relicXpPct(ctx.state, skill);
+    (ctx.fireBurning ? fireXpPct(ctx.fireMinutes) : 0) +
+    LEGENDARY_MARK_PCT * marks +
+    relicXpPct(ctx.state, skill) +
+    pathBonus(ctx.state, skill, 'xp');
+  const xpBefore = xpOf(ctx.state, skill);
   addXp(ctx.state, skill, base * (1 + pct / 100));
+  announceKindling(ctx, skill, xpBefore);
   const after = skillLevel(ctx.state, skill);
   for (let level = before + 1; level <= after; level++) ctx.emit({ type: 'levelUp', at: ctx.at, skill, level });
 }
@@ -35,8 +41,10 @@ export function spoils(
   foe: Foe,
   more: { drops?: number; finds?: number; gold?: number } = {},
 ) {
-  const extra = p.perks.spoils + MASTERY_DROPS_PER_STEP * p.mastery;
-  give(ctx.state, 'gold', Math.round(foe.gold * (1 + p.perks.spoils / 100) * (more.gold ?? 1)));
+  // A style on the Path of Bounty brings home more gold and drops; on Fortune, more finds (past 99).
+  const bounty = pathBonus(ctx.state, p.style, 'items');
+  const extra = p.perks.spoils + MASTERY_DROPS_PER_STEP * p.mastery + bounty;
+  give(ctx.state, 'gold', Math.round(foe.gold * (1 + p.perks.spoils / 100) * (1 + bounty / 100) * (more.gold ?? 1)));
   // More drops (an expedition's twist) count as more extra yield: ×1.5 is +50%.
   const drops = extra + ((more.drops ?? 1) - 1) * 100;
   give(
@@ -46,7 +54,12 @@ export function spoils(
   );
   const style = { feature: p.style, skill: p.style, ladder: LADDERS[p.style], finds: STYLE_FINDS[p.style] };
   const findMultiple = more.finds ?? 1;
-  rollFind(ctx, style, { id: foe.id, tier: foe.tier, xp: 0, gives: [], findMultiple }, p.perks.findChance);
+  rollFind(
+    ctx,
+    style,
+    { id: foe.id, tier: foe.tier, xp: 0, gives: [], findMultiple },
+    p.perks.findChance + pathBonus(ctx.state, p.style, 'finds'),
+  );
 }
 
 /** One more win against a foe, counted towards its mastery (with the step's moment when it rises). */

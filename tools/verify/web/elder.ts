@@ -3,7 +3,9 @@
 // on the Fen's actions. Their names are the longest yet ("Deep star-iron seam", "Grandmaster ..."),
 // and their numbers the largest, so the pages are held to their spec where it is hardest.
 import { XP_TABLE } from '@idle-clash/content';
-import { FEATURES } from '@idle-clash/features';
+import { FEATURES, kindlingData } from '@idle-clash/features';
+
+const { KINDLE_XP } = kindlingData;
 import { seeded, type Command, type State } from '@idle-clash/kernel';
 import type { Ctx } from '../../../apps/server/src/context.ts';
 
@@ -126,5 +128,23 @@ export function elder(ctx: Ctx, base: State, now: number): State {
         twists: ['fog', 'wolves', 'warband', 'storm'],
       },
     },
+  };
+}
+
+/** A player a year in: the elder's save with four skills at 99, Woodcutting and Hitpoints kindled past
+ *  it and two Paths walked, so the Kindling panel, the seal's flames and the ladders' counts are seen. */
+export function keeper(ctx: Ctx, base: State, now: number): State {
+  const s = elder(ctx, base, now);
+  const top = XP_TABLE[99];
+  return {
+    ...s,
+    skills: {
+      ...s.skills,
+      woodcutting: { xp: Math.round(top + 2.4 * KINDLE_XP) },
+      fishing: { xp: top + 1 },
+      melee: { xp: Math.round(top + 0.6 * KINDLE_XP) },
+      hitpoints: { xp: Math.round(top + 1.3 * KINDLE_XP) },
+    },
+    features: { ...s.features, kindling: { paths: { woodcutting: 'bounty', melee: 'lore' } } },
   };
 }

@@ -67,6 +67,14 @@ export const TERMS: [term: string, meaning: string][] = [
   ['Relic', 'A lasting boost bought with marks, in ranks: XP in a skill, food, finds or Storehouse space'],
   ['Stage', "Ten minutes of an expedition's fighting against one foe; six an hour"],
   ['Twist', 'Something that holds for a whole expedition, giving and taking: fog, hungry wolves, a storm'],
+  [
+    'Kindling',
+    'Each long stretch of XP a skill earns past 99 (the skill page says how far): a flame on its seal and, for the first five, a stronger Path. Nothing is reset',
+  ],
+  [
+    'Path',
+    "A level-99 skill's way of working: Bounty (more of what it makes), Lore (more XP) or Fortune (more finds); free to change",
+  ],
   ['Banner', 'The colour your plaque and your hiscores pennant fly, opened by deeds'],
   ['Frame', 'The metal rim of your plaque on the Hearth, opened by deed points'],
   ['Honours', 'Your title, banner and frame: chosen on the Deeds tab, seen by everyone'],
@@ -106,7 +114,7 @@ export const AVOID: Avoid[] = [
   { words: ['queue', 'queued'], use: 'Next action' },
   { words: ['idle', 'AFK', 'offline'], use: 'Away', except: ['Idle Clash'] },
   { words: ['kill', 'kills', 'killed'], use: 'Defeat' },
-  { words: ['prestige', 'rebirth'], use: 'Rekindling (later)' },
+  { words: ['prestige', 'rebirth', 'rekindle', 'rekindling'], use: 'Kindling (nothing is ever taken away)' },
   { words: ['buff', 'buffs', 'debuff', 'debuffs'], use: 'Perk, or say what it does' },
 ];
 

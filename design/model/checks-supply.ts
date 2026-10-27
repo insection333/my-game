@@ -7,13 +7,14 @@ import {
   FOES,
   MINING,
   RUNECRAFT,
+  SMITHING,
   TIER_SECONDS,
   TIER_XP_PER_HOUR,
   TIERS,
   VALUE,
   type Style,
 } from './content.ts';
-import { odds, tierForLevel, type Fighter } from './mechanics.ts';
+import { actionRate, odds, tierForLevel, type Fighter } from './mechanics.ts';
 import { rng } from './rng.ts';
 import { FLETCHING, SMITHING_SUPPLIES, SUPPLIES, SUPPLY_DAMAGE } from './supplies.ts';
 
@@ -78,4 +79,22 @@ export function supplyChecks(out: Say, ok: Ok) {
   out(
     'Supply: an hour of Fletching makes arrows for two to three hours of fights at the same tier; an hour of Runecraft draws runes for three or more.',
   );
+}
+
+/** The forge's supply: how much of the time Mining must work to keep smelting fed, at each tier. */
+export function forgeSupply(say: Say) {
+  say('\n## Supply: can mining keep the forge fed?');
+  for (const { tier: t, level: opens } of TIERS) {
+    const share = (kind: 'standard' | 'rich', mastery: number) => {
+      const mine = MINING.find((a) => a.tier === t && a.kind === kind)!;
+      const r = actionRate('mining', opens + 5, mine, mastery, false);
+      const orePerHour = (3600 / r.secondsPerAction) * r.itemsPerAction;
+      const bar = SMITHING.find((x) => x.id === `smithing.bar${t}`)!;
+      const oresPerHour = (3600 / bar.seconds) * Object.values(bar.inputs).reduce((a, b) => a + b, 0);
+      return Math.round((oresPerHour / orePerHour) * 100);
+    };
+    say(
+      `Tier ${t}: smelting without pause needs mining ${share('standard', 450)}% of the time on a fresh vein, ${share('rich', 3600)}% on a mastered deep seam`,
+    );
+  }
 }

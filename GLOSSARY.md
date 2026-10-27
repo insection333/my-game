@@ -57,6 +57,8 @@ Plain, warm and brief, with an old-world flavour in names rather than in instruc
 | Relic | A lasting boost bought with marks, in ranks: XP in a skill, food, finds or Storehouse space |
 | Stage | Ten minutes of an expedition's fighting against one foe; six an hour |
 | Twist | Something that holds for a whole expedition, giving and taking: fog, hungry wolves, a storm |
+| Kindling | Each long stretch of XP a skill earns past 99 (the skill page says how far): a flame on its seal and, for the first five, a stronger Path. Nothing is reset |
+| Path | A level-99 skill's way of working: Bounty (more of what it makes), Lore (more XP) or Fortune (more finds); free to change |
 | Banner | The colour your plaque and your hiscores pennant fly, opened by deeds |
 | Frame | The metal rim of your plaque on the Hearth, opened by deed points |
 | Honours | Your title, banner and frame: chosen on the Deeds tab, seen by everyone |
@@ -90,5 +92,5 @@ Plain, warm and brief, with an old-world flavour in names rather than in instruc
 | queue, queued | Next action |  |
 | idle, AFK, offline | Away | Idle Clash |
 | kill, kills, killed | Defeat |  |
-| prestige, rebirth | Rekindling (later) |  |
+| prestige, rebirth, rekindle, rekindling | Kindling (nothing is ever taken away) |  |
 | buff, buffs, debuff, debuffs | Perk, or say what it does |  |

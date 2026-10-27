@@ -29,8 +29,9 @@ import {
 import { table, check, out, lines, failures as part1Failures } from './checks.ts';
 import { rng } from './rng.ts';
 import { foodChecks } from './checks-food.ts';
-import { supplyChecks } from './checks-supply.ts';
+import { forgeSupply, supplyChecks } from './checks-supply.ts';
 import { expeditionChecks } from './checks-expedition.ts';
+import { kindlingChecks } from './checks-kindling.ts';
 
 let failures = part1Failures;
 const ok = (b: boolean, what: string) => {
@@ -300,24 +301,11 @@ out('\n## Gold: does a day pay for a day of food and the next Storehouse enlarge
   out(`Costs at 70% of each day's net gold would be: ${suggested.join(', ')}`);
 }
 
-out('\n## Supply: can mining keep the forge fed?');
-for (const { tier: t, level: opens } of TIERS) {
-  const share = (kind: 'standard' | 'rich', mastery: number) => {
-    const mine = MINING.find((a) => a.tier === t && a.kind === kind)!;
-    const r = actionRate('mining', opens + 5, mine, mastery, false);
-    const orePerHour = (3600 / r.secondsPerAction) * r.itemsPerAction;
-    const bar = SMITHING.find((x) => x.id === `smithing.bar${t}`)!;
-    const oresPerHour = (3600 / bar.seconds) * Object.values(bar.inputs).reduce((a, b) => a + b, 0);
-    return Math.round((oresPerHour / orePerHour) * 100);
-  };
-  out(
-    `Tier ${t}: smelting without pause needs mining ${share('standard', 450)}% of the time on a fresh vein, ${share('rich', 3600)}% on a mastered deep seam`,
-  );
-}
-
+forgeSupply(out);
 foodChecks(out, ok);
 supplyChecks(out, ok);
 expeditionChecks(out, ok);
+kindlingChecks(out, ok, table);
 
 writeFileSync(new URL('./report.md', import.meta.url), lines.join('\n') + '\n');
 out(`\n${failures === 0 ? 'All checks pass.' : `${failures} check(s) fail.`}`);

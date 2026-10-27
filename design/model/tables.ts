@@ -20,6 +20,7 @@ import {
 import { unlockTable } from './unlocks.ts';
 import { BOSS_FINDS, BOSSES, CACHE_GOLD, RELIC_COSTS, ROADS, TWISTS, type Twist } from './expeditions.ts';
 import { MAX_LEVEL } from './content.ts';
+import { KINDLE_XP, KINDLINGS_THAT_STRENGTHEN, PATHS, pathPct } from './kindling.ts';
 import { fmtUnlock } from './format.ts';
 import { maxHealth, XP_PER_DAMAGE_BY_TIER } from './mechanics.ts';
 import { extendTable, fitLevelTimes, gatherCandidates, roundTable, simulate } from './curve.ts';
@@ -196,6 +197,19 @@ const TWIST_TABLE = [
   ...ROADS.map(twistRow),
 ].join('\n');
 
+// Kindling: the stretch of XP past 99, and each Path from 99 to its strongest.
+const RAISES = { items: 'More of what it makes (in combat, drops and gold)', xp: 'More XP', finds: 'More finds' };
+const KINDLING_TABLE = [
+  `A Kindling is ${n(KINDLE_XP)} XP past level ${MAX_LEVEL}; the first ${KINDLINGS_THAT_STRENGTHEN} strengthen the Path.`,
+  '',
+  `| Path | Raises | At ${MAX_LEVEL} | Each Kindling adds | At ${KINDLINGS_THAT_STRENGTHEN} Kindlings |`,
+  '| --- | --- | --- | --- | --- |',
+  ...PATHS.map(
+    (p) =>
+      `| ${p.id[0].toUpperCase()}${p.id.slice(1)} | ${RAISES[p.raises]} | +${p.pct}% | +${p.perKindling}% | +${pathPct(p, KINDLINGS_THAT_STRENGTHEN)}% |`,
+  ),
+].join('\n');
+
 /** The XP table (index = level), for the content check to compare against packages/content. */
 export const XP_TABLE_FROM_MODEL = table;
 
@@ -211,6 +225,7 @@ export const TABLES: Record<string, string> = {
   FOOD_TABLE,
   BOSS_TABLE,
   TWIST_TABLE,
+  KINDLING_TABLE,
   FIND_TABLE,
   MASTERY_TABLE,
   STORE,

@@ -46,7 +46,7 @@ describe('t', () => {
   it('refuses a missing key, a missing parameter and an unknown one', () => {
     expect(() => t('no.such.key')).toThrow('Missing string "no.such.key"');
     expect(() => t('skill.level')).toThrow('needs {level}');
-    expect(() => t('skill.top', { level: '3' })).toThrow('has no {level}');
+    expect(() => t('kindling.pathsNote', { level: '3' })).toThrow('has no {level}');
   });
 
   it('has a one-form beside every count before a plural, so the page never says "1 milestones"', () => {

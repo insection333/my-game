@@ -3,6 +3,7 @@
 // found) keeps the shape and fills it with one quiet tone.
 import { useId } from 'react';
 import { hasIcon, ICONS } from '../icons/index.tsx';
+import { KindledFlames } from '../icons/kindling.tsx';
 import { M, RIM_TONES, RimTone, Shape } from '../icons/style.tsx';
 
 export type IconSize = 24 | 32 | 48 | 96;
@@ -19,8 +20,8 @@ export function ItemIcon({
   label?: string;
   silhouette?: boolean;
   /** For a skill's seal: the highest tier its skill has reached (the rim's metal), and whether it is
-   *  at the top level (a star on the rim). */
-  seal?: { tier: number; top: boolean };
+   *  at the top level (a star on the rim), and its Kindlings (a flame on the rim for each, up to five). */
+  seal?: { tier: number; top: boolean; kindlings?: number };
 }) {
   const Draw = hasIcon(name) ? ICONS[name].draw : null;
   const filter = `silhouette-${useId().replace(/[^a-zA-Z0-9_-]/g, '')}`;
@@ -30,6 +31,7 @@ export function ItemIcon({
       data-icon={name}
       data-silhouette={silhouette || undefined}
       data-rim={seal?.tier}
+      data-kindled={seal?.kindlings || undefined}
       width={size}
       height={size}
       viewBox="0 0 48 48"
@@ -50,6 +52,7 @@ export function ItemIcon({
             <RimTone.Provider value={RIM_TONES[Math.min(RIM_TONES.length, Math.max(1, seal.tier)) - 1]}>
               <Draw />
               {seal.top && <TopStar />}
+              {!!seal.kindlings && <KindledFlames count={seal.kindlings} />}
             </RimTone.Provider>
           ) : (
             <Draw />

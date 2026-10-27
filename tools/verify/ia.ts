@@ -10,7 +10,7 @@ export interface ViewSpec {
   desktop: string[];
   /** Who the page is opened as: the run's newcomer (the default), a player three weeks in, one two
    *  months into the climb, or a visitor who is not signed in. */
-  as?: 'veteran' | 'elder' | 'visitor';
+  as?: 'veteran' | 'elder' | 'keeper' | 'visitor';
 }
 
 export interface PageMap {

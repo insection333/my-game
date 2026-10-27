@@ -1,0 +1,11 @@
+/* Kindling's panel on a skill's page, above the ladder. */
+.panel {
+  margin-bottom: var(--s-4);
+}
+
+.note {
+  color: var(--ink-2);
+  font-size: var(--t-small);
+  margin: 0;
+  padding: var(--s-2) var(--s-4) var(--s-3);
+}

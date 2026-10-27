@@ -9,6 +9,7 @@ import type { Feature } from './define.ts';
 import { fishing } from './fishing/index.ts';
 import { fletching } from './fletching/index.ts';
 import { goals } from './goals/index.ts';
+import { kindling } from './kindling/index.ts';
 import { hitpoints } from './hitpoints/index.ts';
 import { magic } from './magic/index.ts';
 import { melee } from './melee/index.ts';
@@ -37,6 +38,7 @@ export const FEATURES: readonly Feature[] = [
   storehouse,
   goals,
   deeds,
+  kindling,
 ];
 // Rules that must know what an item is while playing (a worn sword's tier) read this catalog.
 setCatalog(catalog(FEATURES));
