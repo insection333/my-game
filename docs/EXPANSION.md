@@ -122,6 +122,7 @@ Regions appear as tabs at the top of Combat, already the home given in the page 
   - deeds.
 - **Recap:** the run's story arrives in the away recap: "Took the high fork, beat the Drowned Warden, found a sunken locket."
 - **Home:** a tab of Combat, as the page map already says.
+- **Built in step 16:** stages are ten minutes of fighting, six an hour, against the three foes of the region the fighter fares best against (the best half the time), so a run keeps pace with the lane; its fights pay a quarter more XP and gold than the lane's, and a cache an hour and the boss pay on top, so every length pays at least the lane's best (the model and the real engine both measure it). Caches and camps come after a stage rather than taking time of their own. Twists: fog, hungry wolves, old roads, a warband, laden caravans and storm; roads: the high pass, the low road, the old shrine, the hunters' trail and the warden's gate. Relics: one for each skill (+1% XP a rank), the hearthstone (food), the four-leaf charm (finds) and the builder's cord (Storehouse rows); every relic at full rank takes about two months of daily runs at the top. Each boss's Legendary find makes its wins pay half again as many marks.
 
 ### Rekindling
 

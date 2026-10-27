@@ -24,19 +24,24 @@ export function Ribbon({ stages, boss }: { stages: StageChip[]; boss: string }) 
   const hours = Math.max(1, Math.ceil(stages.length / 6));
   const forkAt = stages.findIndex((x) => x.afterFork);
   return (
-    <ol className={s.ribbon} aria-label={t('expedition.route')}>
-      {Array.from({ length: hours }, (_, h) => (
-        <li key={h} className={s.hour}>
-          <span className={s.hourLabel}>{t('expedition.hour', { hour: fmt.int(h + 1) })}</span>
-          <span className={s.chips}>
-            {stages.slice(h * 6, h * 6 + 6).map((x, i) => (
-              <Stage key={i} stage={x} fork={h * 6 + i === forkAt} />
-            ))}
-            {h === hours - 1 && <Chip icon={boss} label={t(`boss.${boss}`)} boss />}
-          </span>
-        </li>
-      ))}
-    </ol>
+    // A long route scrolls inside its own box, which takes the keyboard too.
+    <div className={s.ribbonBox} tabIndex={0} role="group" aria-label={t('expedition.route')}>
+      <ol className={s.ribbon}>
+        {Array.from({ length: hours }, (_, h) => (
+          <li key={h} className={s.hour} aria-label={t('expedition.hour', { hour: fmt.int(h + 1) })}>
+            <span className={s.hourLabel} aria-hidden="true">
+              {fmt.int(h + 1)}
+            </span>
+            <span className={s.chips}>
+              {stages.slice(h * 6, h * 6 + 6).map((x, i) => (
+                <Stage key={i} stage={x} fork={h * 6 + i === forkAt} />
+              ))}
+              {h === hours - 1 && <Chip icon={boss} label={t(`boss.${boss}`)} boss />}
+            </span>
+          </li>
+        ))}
+      </ol>
+    </div>
   );
 }
 

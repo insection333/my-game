@@ -49,6 +49,9 @@ Each material has exactly three tones: light, base and shadow.
 | Food | One item, warm and lit | Bread |
 | Finds | The object as it was found. Rarity is shown by a word and a pill beside it, never by colour or a frame alone | Bird's nest |
 | Skills | The skill's tool on a slate seal with a bronze rim, which marks the family | Woodcutting |
+| Bosses | Foes, larger and marked out: a crown, a barnacled helm and lantern-light, horns and a jaw of fire; still a bust in left-facing profile with the eye the brightest point | The Troll-chief of the hill (session 16) |
+| Relics | A keepsake hung from a leather cord, which marks the family; below it the thing itself, one object lit from the upper left | Heartwood charm, Hearthstone (session 16) |
+| Regions | A small landscape on a round shield of sky, the region's own land and colour: an expedition's icon | The march, the Sunken Fen, the Ashen Peaks (session 16) |
 | Fish | On a slant, head low on the left, tail up on the right, so it fills the square as a sword does; back lit, belly in shade, the eye the brightest point. Each kind has its own skin and marks; cooked, it turns golden brown with grill marks and a cloudy eye | Perch, Cooked perch, Salmon, Pike pie (approved 27 October 2026) |
 
 ## Readable at 24 px
