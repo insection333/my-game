@@ -99,3 +99,24 @@
 .tab:hover {
   color: var(--ink);
 }
+
+/* The side variant: on a wide page area, a list down the side of what it switches. */
+@container main (min-width: 720px) {
+  .tabs[data-variant='side'] {
+    flex-direction: column;
+    gap: 0;
+    border-bottom: 0;
+    border-inline-start: 1px solid var(--line);
+  }
+  .tabs[data-variant='side'] .tab {
+    justify-content: flex-start;
+    padding-inline: var(--s-3);
+    border-bottom: 0;
+    margin-inline-start: -1px;
+    border-inline-start: 2px solid transparent;
+  }
+  .tabs[data-variant='side'] .tab[aria-current='page'] {
+    border-inline-start-color: var(--woad);
+    background: var(--woad-soft);
+  }
+}

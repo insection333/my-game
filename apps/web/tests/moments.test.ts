@@ -109,4 +109,30 @@ describe('moments', () => {
     const [m] = momentsFrom([{ type: 'masteryStep', at: T, action: pine, step: 3 }], T - 1, FEATURES);
     expect(m.body).toBe('9% faster, +18% chance of an extra item');
   });
+
+  it('leads with what a cache held when opening it also completes a deed', () => {
+    // A lucky cache's gold lifts the player past 1,000 gold: the deed is recorded a moment later.
+    const events: GameEvent[] = [
+      {
+        type: 'goalDone',
+        at: T,
+        goal: 'short-0',
+        name: 'Chop 10 pine trees',
+        cache: { grade: 'lucky', items: [{ item: 'gold', count: 1000 }] },
+      },
+      {
+        type: 'deedDone',
+        at: T + 40,
+        deed: 'gold-1000',
+        name: 'Hold 1,000 gold',
+        icon: null,
+        tier: 'easy',
+        points: 10,
+      },
+    ];
+    const [moment] = momentsFrom(events, T - 1, FEATURES);
+    expect(moment.body).toContain('A lucky cache: 1,000 gold');
+    expect(moment.icon).toBe('supply-cache');
+    expect(moment.body).toContain('Hold 1,000 gold');
+  });
 });

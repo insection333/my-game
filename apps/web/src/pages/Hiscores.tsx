@@ -72,6 +72,7 @@ export function Hiscores() {
           <Tabs
             label={t('hiscores.ladders')}
             onNavigate={navigate}
+            variant="side"
             tabs={(data?.ladders ?? []).map((l) => ({
               href: l.skill === 'total' ? '/hiscores' : `/hiscores?skill=${l.skill}`,
               label: name(l.skill),

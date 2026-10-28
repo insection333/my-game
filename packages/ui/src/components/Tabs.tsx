@@ -48,7 +48,22 @@ function useFit(ref: React.RefObject<HTMLElement | null>, key: string) {
   }, [ref, key]);
 }
 
-export function Tabs({ tabs, label, onNavigate }: { tabs: Tab[]; label: string; onNavigate: (href: string) => void }) {
+/**
+ * `side`: a strip that becomes a list down the side when the page area is wide (the hiscores'
+ * ladders): seals and names on one edge, the current tab marked by a bar on that edge, as the menu
+ * marks its page.
+ */
+export function Tabs({
+  tabs,
+  label,
+  onNavigate,
+  variant,
+}: {
+  tabs: Tab[];
+  label: string;
+  onNavigate: (href: string) => void;
+  variant?: 'side';
+}) {
   const ref = useRef<HTMLElement>(null);
   useFit(ref, tabs.map((t) => t.label).join('|'));
   const go = (e: MouseEvent<HTMLAnchorElement>, href: string) => {
@@ -57,12 +72,13 @@ export function Tabs({ tabs, label, onNavigate }: { tabs: Tab[]; label: string; 
     onNavigate(href);
   };
   return (
-    <nav aria-label={label} className={s.tabs} ref={ref}>
+    <nav aria-label={label} className={s.tabs} ref={ref} data-variant={variant}>
       {tabs.map((t) => (
         <a
           key={t.href}
           href={t.href}
           data-ui="Tab"
+          data-variant={variant}
           aria-current={t.current ? 'page' : undefined}
           className={s.tab}
           title={t.label}

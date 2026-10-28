@@ -26,9 +26,11 @@ const ALSO_NAMED = 4;
 const SHOW_MS: Record<MomentSize, number> = { centre: 6000, banner: 5000, toast: 4000 };
 const SIZE_RANK: MomentSize[] = ['toast', 'banner', 'centre'];
 
-/** Best first: Legendary, a Kindling, a master deed, a new collection entry, a level, Rare, an elite deed, a mastery
- *  step, any other deed, a goal, Uncommon. */
+/** Best first: a cache the player opened (what it held is what they asked to see, whatever else it set
+ *  off), Legendary, a Kindling, a master deed, a new collection entry, a level, Rare, an elite deed, a
+ *  mastery step, any other deed, a goal, Uncommon. */
 function rank(e: GameEvent): number {
+  if (e.type === 'goalDone' && e.cache) return -1;
   if (e.type === 'find') return e.rarity === 'legendary' ? 0 : e.first ? 2 : e.rarity === 'rare' ? 4 : 9;
   if (e.type === 'deedDone') return e.tier === 'master' ? 1 : e.tier === 'elite' ? 5 : 7;
   if (e.type === 'expeditionDone') return e.outcome === 'won' ? 1 : 5;

@@ -15,25 +15,6 @@
   .layout {
     grid-template-columns: 12rem minmax(0, 1fr);
   }
-  .tabs nav {
-    flex-direction: column;
-    gap: 0;
-    border-bottom: 0;
-    border-inline-start: 1px solid var(--line);
-  }
-  /* A list down the side: seals and names on one edge, the chosen ladder marked by a bar on that
-     edge (as the menu marks its page), not the strip's underline. */
-  .tabs nav [data-ui='Tab'] {
-    justify-content: flex-start;
-    padding-inline: var(--s-3);
-    border-bottom: 0;
-    margin-inline-start: -1px;
-    border-inline-start: 2px solid transparent;
-  }
-  .tabs nav [data-ui='Tab'][aria-current='page'] {
-    border-inline-start-color: var(--woad);
-    background: var(--woad-soft);
-  }
 }
 
 .online {
