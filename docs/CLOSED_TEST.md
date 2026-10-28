@@ -45,7 +45,7 @@ the first deeds and titles, where the year's simulation says the game's shape ch
 
 ## What to watch, each day
 
-The admin page's **Players** and **Feedback** panels:
+The admin page's **Player activity** and **Feedback** panels:
 
 - **Back on day 2 / day 3** for each tester. Anyone not back on day 2: write to them that day and ask,
   kindly, what made them stop. That answer is worth more than any number.
