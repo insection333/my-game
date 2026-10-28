@@ -24,7 +24,16 @@ export async function runAxe(): Promise<{ problems: string[]; checks: number }> 
       if (await fire.count()) await fire.click({ force: true });
       for (const scheme of ['light', 'dark'] as const) {
         await page.emulateMedia({ colorScheme: scheme, reducedMotion: 'reduce' });
-        // Two frames for the new theme's colours to reach every element before axe reads them.
+        // Each theme is read on a page loaded in it, as a player whose device is dark sees it: switched
+        // live, Chromium on GitHub Actions kept the light theme's colour on a few elements, which no
+        // player loading the page would see (the page also restyles itself on a live switch, theme.ts).
+        if (scheme === 'dark') {
+          await page.reload();
+          await page.waitForFunction(() => document.documentElement.dataset.ready === 'true', undefined, {
+            timeout: 15_000,
+          });
+        }
+        // Two frames for the theme's colours to reach every element before axe reads them.
         await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
         const result = await new AxeBuilder({ page })
           .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice'])
