@@ -8,13 +8,16 @@ import { deed, lower, type Deed, type DeedTier, type Steps } from './content.ts'
 import type { Reader } from './reader.ts';
 
 const BOSS_WINS: Steps = [
-  [10, 'elite'],
-  [50, 'master'],
+  [10, 'hard'],
+  [50, 'elite'],
+  [100, 'master'],
 ];
 const LENGTH_TIERS: DeedTier[] = ['easy', 'easy', 'hard', 'elite'];
 const RUNS: Steps = [
   [10, 'hard'],
+  [50, 'hard'],
   [100, 'elite'],
+  [250, 'master'],
 ];
 
 export function runs(): Deed[] {

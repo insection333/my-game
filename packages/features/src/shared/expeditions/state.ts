@@ -8,6 +8,8 @@ import { z } from 'zod';
 const Key = z.string().regex(/^[a-z0-9][a-z0-9-]{0,63}$/);
 const Count = z.number().int().nonnegative();
 const Day = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
+/** The most finds a run's record keeps (each once). */
+export const RUN_FINDS = 50;
 
 export const Stage = z.object({ foe: Key, after: z.enum(['cache', 'camp']).nullable() }).strict();
 export type Stage = z.infer<typeof Stage>;
@@ -33,7 +35,7 @@ export const Run = Route.extend({
   at: Count,
   marks: Count,
   cleared: Count,
-  finds: z.array(Key).max(50),
+  finds: z.array(Key).max(RUN_FINDS),
 }).strict();
 export type Run = z.infer<typeof Run>;
 
@@ -69,7 +71,9 @@ export function expeditionsOf(state: State): ExpeditionState {
   const known = checked.get(raw);
   if (known) return known;
   const parsed = ExpeditionState.safeParse(raw);
-  const e = parsed.success ? parsed.data : EMPTY;
+  // A run's record that does not read costs that run, never the marks, relics and wins beside it.
+  const salvaged = parsed.success ? null : ExpeditionState.safeParse({ ...raw, run: null });
+  const e = parsed.success ? parsed.data : salvaged?.success ? salvaged.data : EMPTY;
   checked.set(raw, e);
   return e;
 }

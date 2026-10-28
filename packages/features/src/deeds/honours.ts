@@ -39,16 +39,17 @@ const ninetyNines = () => allSkills().map((s) => `level-${s}-99`);
 const firstKindlings = () => allSkills().map((s) => `kindled-${s}-1`);
 
 export const HONOURS: readonly Honour[] = [
-  // Titles: by points first, then by deed.
+  // Titles: by points first (spaced over the year, as the year's simulation measures: about day 2, 5,
+  // 30, 120, 265 and 345), then by deed.
   title('wayfarer', at(100)),
-  title('stalwart', at(500)),
-  title('renowned', at(1_500)),
-  title('illustrious', at(3_000)),
-  title('exalted', at(5_000)),
-  title('mythic', at(7_500)),
+  title('stalwart', at(1_000)),
+  title('renowned', at(2_500)),
+  title('illustrious', at(4_500)),
+  title('exalted', at(7_000)),
+  title('mythic', at(10_000)),
   ...Object.entries(SKILL_TITLES).map(([skill, id]) => title(id, by(`level-${skill}-99`))),
-  title('grandmaster', by('masters-50')),
-  title('warlord', by('defeats-100000')),
+  title('grandmaster', by('masters-40')),
+  title('warlord', by('defeats-1000000')),
   title('peakbreaker', by('region-peaks')),
   title('curator', by('collector-all')),
   title('flamekeeper', by('fire-360')),
@@ -56,7 +57,7 @@ export const HONOURS: readonly Honour[] = [
   title('paragon', by('rank-legend')),
   title('equilibrist', by('hidden-even')),
   title('wyrmslayer', by('boss-ember-wyrm')),
-  title('trailblazer', by('runs-100')),
+  title('trailblazer', by('runs-250')),
   title('kindled', { anyOf: firstKindlings, text: 'honour.unlock.anyKindled' }),
   title('everflame', by('kindlings-10')),
   // Banners: the woad everyone flies, and a colour for each region cleared and more.
@@ -68,10 +69,10 @@ export const HONOURS: readonly Honour[] = [
   { id: 'gold', kind: 'banner', unlock: by('gold-1000000') },
   { id: 'dawn', kind: 'banner', unlock: { anyOf: ninetyNines, text: 'honour.unlock.any99' } },
   // Frames: by points.
-  { id: 'bronze', kind: 'frame', unlock: at(250) },
-  { id: 'silver', kind: 'frame', unlock: at(1_000) },
-  { id: 'gold', kind: 'frame', unlock: at(2_500) },
-  { id: 'dawn', kind: 'frame', unlock: at(6_000) },
+  { id: 'bronze', kind: 'frame', unlock: at(500) },
+  { id: 'silver', kind: 'frame', unlock: at(2_000) },
+  { id: 'gold', kind: 'frame', unlock: at(4_000) },
+  { id: 'dawn', kind: 'frame', unlock: at(8_000) },
 ];
 
 export const honourOf = (kind: HonourKind, id: string) => HONOURS.find((h) => h.kind === kind && h.id === id);

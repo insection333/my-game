@@ -38,7 +38,7 @@ The first 40 levels keep their present pace, so everything already proven still 
 | One skill kept in its lane: level 40 in about 3 weeks, 55 in about 7, 70 in about 10½, 85 in about 13, **99 in about 15 weeks** (a level past 40 takes about two days at first and about one near the top; set in session 12, when 40 at 3 weeks and an XP cost that never falls fixed the shape) | The model and the year-long simulation |
 | **Every skill at 99 in about a year** of daily play (an active hour a day with the fire, the rest away) | The year-long simulation, all lanes busy |
 | A notable event about every 2 minutes of active play **at every stage of the year**, never more than 5 minutes without one | The simulation, sampled at day 1, 7, 30, 90, 180 and 365 |
-| Something new to aim for **every day of the year**: a level, a tier, a deed, a title, a boss, a relic | The simulation's calendar of firsts: no day without one |
+| Something new to aim for **every day of the year**: the day's own goal, and a first (a level, a tier, a mastery step, a deed, a title, a boss, a relic, a find, a Kindling) | The year's simulation: a daily goal set and done every day, and a first on all but about one day in fifty, never two days running without one (sharpened in step 18: a level costs about a day of a lane in mid-climb, so no achievement can promise one every single day; the daily goal does) |
 | At every tier, at least two viable choices (recipe, style, target, route) within 20% of each other | Simulated strategies compared |
 | Home-cooked food beats the vendor's from tier 2 on; ammunition pays for itself in faster kills | The simulation |
 | An expedition of any length pays at least as well as the same time in the plain lanes, and better in rare rewards | The simulation |
@@ -106,7 +106,7 @@ Regions appear as tabs at the top of Combat, already the home given in the page 
   - and a few hidden ones.
 - **Rewards:** each deed gives deed points. Points and particular deeds unlock **titles** (shown beside your name on the hiscores), **banner colours** and **seal frames**.
 - **Home:** a Deeds tab on Hiscores. A deed done has its moment, like a find.
-- **Built in step 15:** 272 deeds (bosses, expeditions and Kindlings add theirs in steps 16 and 17), worth about 8,000 points. Titles show beside your name on every ladder and on the Hearth's plaque, which also wears your banner's colour and frame. Deeds are recorded by the page asking the server whenever one is done, wherever the player is; each has its moment (easy a toast, hard a banner, elite and master the centre). Their pace over the year is measured in step 18.
+- **Built in step 15:** 272 deeds (bosses, expeditions and Kindlings add theirs in steps 16 and 17), worth about 8,000 points; step 18 found them done by about day 90 and spread them over the year (levels every five to fifteen past 40, work to 300,000 actions, a million fights, forty actions mastered, 250 runs, each boss a hundred times): about 400, worth about 13,700, the titles by points spaced from day 2 to day 335. Titles show beside your name on every ladder and on the Hearth's plaque, which also wears your banner's colour and frame. Deeds are recorded by the page asking the server whenever one is done, wherever the player is; each has its moment (easy a toast, hard a banner, elite and master the centre). Their pace over the year is measured in step 18.
 
 ### Expeditions
 
@@ -164,7 +164,7 @@ Each step ends only when its proof is shown, verify is green on GitHub and the w
 | 15 | **Deeds and titles** | Every deed can be done, and its text comes from its numbers; titles show on the hiscores |
 | 16 | **Expeditions and bosses** | No two runs alike in 1,000 draws; any length pays at least as well as the lanes |
 | 17 | **Kindling** (in place of Rekindling) | A Kindling takes about a quarter of the first climb; each Path pays what it says; nothing is taken away |
-| 18 | **The year:** a 365-day simulation of several kinds of player, balance across every skill, the closed test made ready | Every year target holds; then the closed test with a handful of players |
+| 18 | **The year:** a 365-day simulation of several kinds of player, balance across every skill, the closed test made ready | Every year target holds; then the closed test with a handful of players. **Built:** the steady and light players' year on the real engine in verify (`.verify/year.md`, GAME_DESIGN.md section 4); goals that follow the lanes; a day's goal paid the next morning; deeds and titles over the whole year; an expedition's record that can no longer cost a player their marks and relics; invites, feedback and the closed test's panel (`docs/CLOSED_TEST.md`) |
 
 ## 6. Art
 

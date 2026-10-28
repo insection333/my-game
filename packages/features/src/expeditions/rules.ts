@@ -7,7 +7,7 @@ import { maxHealth, retreatShare } from '../shared/combat/fight.ts';
 import { fighterOf, healthAt, mealsOf } from '../shared/combat/state.ts';
 import { foeById, HITPOINTS, type Foe } from '../shared/combat/data.ts';
 import { BOSSES, bossIn, REGIONS, STAGE_MINUTES, type Boss, type Region } from '../shared/expeditions/data.ts';
-import { expeditionsOf, setExpeditions, type Run } from '../shared/expeditions/state.ts';
+import { expeditionsOf, RUN_FINDS, setExpeditions, type Run } from '../shared/expeditions/state.ts';
 import { skillLevel } from '../shared/skill.ts';
 import { noRoom } from '../shared/storehouse.ts';
 import { dayOf, fightBoss, playBoss, restedToday } from './boss.ts';
@@ -48,13 +48,15 @@ function home(ctx: ActionContext, run: Run, outcome: 'won' | 'lost' | 'retreated
   });
 }
 
-/** The lane's events, with any find also kept for the run's story. */
+/** The lane's events, with each new find also kept for the run's story. */
 function noting(ctx: ActionContext, finds: string[]): ActionContext {
   return {
     ...ctx,
     roll: () => ctx.roll(),
     emit: (e: GameEvent) => {
-      if (e.type === 'find') finds.push(e.item);
+      // Each find once, as the save keeps a run's record (state.ts): a long run finds the same
+      // Uncommon things many times over.
+      if (e.type === 'find' && !finds.includes(e.item) && finds.length < RUN_FINDS) finds.push(e.item);
       ctx.emit(e);
     },
   };

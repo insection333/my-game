@@ -34,13 +34,20 @@ export interface Deed {
 
 // The numbers each family climbs through, with each step's tier.
 export type Steps = readonly (readonly [number, DeedTier])[];
+// Levels: every tier's opening and the long climb past 40 marked every five to fifteen levels, so the
+// months from 70 to 99 have their deeds too (step 18).
 export const LEVELS: Steps = [
   [10, 'easy'],
   [25, 'easy'],
   [40, 'hard'],
+  [50, 'hard'],
   [55, 'hard'],
+  [60, 'hard'],
   [70, 'elite'],
+  [75, 'elite'],
   [85, 'elite'],
+  [90, 'elite'],
+  [95, 'master'],
   [99, 'master'],
 ];
 export const RANK_TIERS: DeedTier[] = [
@@ -57,11 +64,16 @@ export const RANK_TIERS: DeedTier[] = [
   'master',
   'master',
 ];
+// Work, defeats and mastery climb through the whole year (step 18: the year's simulation found every
+// step done by about day 90 and the deeds falling silent after).
 export const WORK: Steps = [
   [100, 'easy'],
-  [1_000, 'hard'],
-  [10_000, 'elite'],
-  [100_000, 'master'],
+  [1_000, 'easy'],
+  [10_000, 'hard'],
+  [50_000, 'hard'],
+  [100_000, 'elite'],
+  [200_000, 'elite'],
+  [300_000, 'master'],
 ];
 export const MASTERY: Steps = [
   [3, 'easy'],
@@ -69,8 +81,11 @@ export const MASTERY: Steps = [
   [10, 'elite'],
 ];
 export const MASTERED: Steps = [
-  [10, 'elite'],
-  [50, 'master'],
+  [5, 'hard'],
+  [10, 'hard'],
+  [20, 'elite'],
+  [30, 'elite'],
+  [40, 'master'],
 ];
 export const FOE_COUNTS: Steps = [
   [10, 'easy'],
@@ -80,9 +95,12 @@ export const FOE_COUNTS: Steps = [
 export const REGION_TIERS: DeedTier[] = ['easy', 'hard', 'elite'];
 export const DEFEATS: Steps = [
   [100, 'easy'],
-  [1_000, 'hard'],
-  [10_000, 'elite'],
-  [100_000, 'master'],
+  [1_000, 'easy'],
+  [10_000, 'hard'],
+  [100_000, 'hard'],
+  [250_000, 'elite'],
+  [500_000, 'elite'],
+  [1_000_000, 'master'],
 ];
 export const GEAR_TIERS: DeedTier[] = ['easy', 'easy', 'hard', 'hard', 'elite', 'elite', 'master', 'master'];
 export const COLLECTOR: Steps = [

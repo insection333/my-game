@@ -1,13 +1,14 @@
 // Goals' routes: claiming a goal (a first step, a short goal, today's daily goal or a milestone) and
-// refreshing the ladder (making the short goals it lacks and today's daily goal). Pure: each takes the
+// refreshing the ladder (making the short goals it lacks and today's daily goal, once an earlier day's
+// goal done while away has been paid). Pure: each takes the
 // state and returns a new one, an answer and the events to announce.
-import { give, noteMoment, type GameEvent, type State } from '@idle-clash/kernel';
+import { give, LANE_IDS, noteMoment, type GameEvent, type State } from '@idle-clash/kernel';
 import { cacheFor, openCache, type Cache } from './cache.ts';
 import { FIRST_STEPS, MILESTONES } from './content.ts';
 import { firstStepsDone, isDone, payFirst } from './first-steps.ts';
-import { dailyProgress, makeDaily, makeShort, milestoneProgress, shortProgress } from './ladder.ts';
+import { currentDaily, dailyProgress, makeDaily, makeShort, milestoneProgress, shortProgress } from './ladder.ts';
 import { dailyName, milestoneName, shortName } from './ladder-view.ts';
-import { dayOf, goalsOf, setGoals, type GoalsState } from './state.ts';
+import { dayOf, goalsOf, setGoals, type GoalsState, type ShortGoal } from './state.ts';
 
 export type ClaimResult = { ok: true } | { ok: false; reason: 'unknown' | 'notDone' };
 type Answer<R> = { state: State; result: R; events: GameEvent[] };
@@ -20,23 +21,49 @@ const refused = (state: State, reason: 'unknown' | 'notDone'): Answer<ClaimResul
 /** The ladder after First steps, filled: three short goals and today's daily goal. */
 function filled(state: State, g: GoalsState, now: number): GoalsState {
   if (!FIRST_STEPS.every((s) => g.claimed.includes(s.id))) return g;
-  let next = g;
+  let next = retired(state, g, now);
   while (next.short.length < 3) {
-    const made = makeShort(state, next);
+    const made = makeShort(state, next, now);
     if (!made) break;
     next = { ...next, short: [...next.short, made], made: next.made + 1 };
   }
-  if (!next.daily || next.daily.day !== dayOf(now)) {
+  if (!currentDaily(state, next.daily, now) || (next.daily?.claimed && next.daily.day !== dayOf(now))) {
     const daily = makeDaily(state, now);
     if (daily) next = { ...next, daily };
   }
   return next;
 }
 
-/** Whether the ladder lacks a goal (asked on every draw, so it does not work goals out). */
+/** Short goals no lane works at are retired (stale), to make way for the lanes' work; a goal from before
+ *  session 18, which has no time, takes this moment as its own. */
+function retired(state: State, g: GoalsState, now: number): GoalsState {
+  const short = g.short.map((s) => (s.at === undefined ? { ...s, at: now } : s)).filter((s) => !stale(state, s, now));
+  const same = short.length === g.short.length && short.every((s, i) => s.at === g.short[i].at);
+  return same ? g : { ...g, short };
+}
+const DAY_MS = 24 * 3600_000;
+
+/** A short goal no lane is working at: at once when it was made for a lane's work (the lane has moved
+ *  on), after a day when it was a suggestion. */
+function stale(state: State, s: ShortGoal, now: number): boolean {
+  const worked = LANE_IDS.some((l) => {
+    const a = state.lanes[l].current?.action;
+    return a?.feature === s.action.feature && a.id === s.action.id;
+  });
+  if (worked) return false;
+  return s.follows === true || (s.at !== undefined && now - s.at >= DAY_MS);
+}
+
+/** Whether the ladder lacks a goal or holds one to retire (asked on every draw, so it stays cheap). */
 export function needsRefresh(state: State, now: number): boolean {
   const g = goalsOf(state);
-  return firstStepsDone(state) && (g.short.length < 3 || !g.daily || g.daily.day !== dayOf(now));
+  return (
+    firstStepsDone(state) &&
+    (g.short.length < 3 ||
+      !currentDaily(state, g.daily, now) ||
+      (g.daily?.claimed === true && g.daily.day !== dayOf(now)) ||
+      g.short.some((s) => s.at === undefined || stale(state, s, now)))
+  );
 }
 
 export function refresh(state: State, now: number): Answer<{ ok: true }> {
@@ -70,7 +97,7 @@ export function claim(state: State, goal: string, now: number): Answer<ClaimResu
     openCache(out, cache);
     name = shortName(short);
     next = { ...g, short: g.short.filter((s) => s !== short), opened: g.opened + 1 };
-  } else if (goal === 'daily' && g.daily && g.daily.day === dayOf(now)) {
+  } else if (goal === 'daily' && g.daily && currentDaily(state, g.daily, now)) {
     if (g.daily.claimed) return { state, result: { ok: true }, events: [] };
     const p = dailyProgress(state, g.daily);
     if (p.now < p.of) return refused(state, 'notDone');

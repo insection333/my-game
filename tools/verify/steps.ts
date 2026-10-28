@@ -135,30 +135,30 @@ async function tests(): Promise<StepResult> {
 }
 
 async function simulation(): Promise<StepResult> {
-  // The real simulation: simulated players on the real engine for every built skill.
-  const sim = await node('tools/sim/run.ts');
-  mkdirSync(join(ROOT, '.verify'), { recursive: true });
-  writeFileSync(join(ROOT, '.verify/simulation.md'), sim.output);
-  const simPassed = (sim.output.match(/^PASS /gm) ?? []).length;
-  const simFailed = sim.output.split('\n').filter((l) => /^FAIL /.test(l));
-  if (sim.code !== 0)
-    return fail('the simulation misses a target', simFailed.length ? simFailed.join('\n') : sim.output);
-  // The paper model still stands in for what is not built yet (other skills, combat, gold, goals).
+  // The real engine's players (every built skill, then the year, step 18) and the paper model, side by
+  // side on the machine's cores.
   const reportPath = 'design/model/report.md';
   const before = read(reportPath);
-  const r = await node('design/model/checks2.ts');
-  const checks = (r.output.match(/^PASS /gm) ?? []).length;
-  if (r.code !== 0)
-    return fail(
-      'the paper model misses a target',
-      r.output
-        .split('\n')
-        .filter((l) => /^FAIL /.test(l))
-        .join('\n'),
-    );
+  const [sim, year, model] = await Promise.all([
+    node('tools/sim/run.ts'),
+    node('tools/sim/year-run.ts'),
+    node('design/model/checks2.ts'),
+  ]);
+  mkdirSync(join(ROOT, '.verify'), { recursive: true });
+  writeFileSync(join(ROOT, '.verify/simulation.md'), sim.output);
+  writeFileSync(join(ROOT, '.verify/year.md'), year.output);
+  const passes = (out: string) => (out.match(/^PASS /gm) ?? []).length;
+  const failures = (out: string) =>
+    out
+      .split('\n')
+      .filter((l) => /^FAIL /.test(l))
+      .join('\n') || out;
+  if (sim.code !== 0) return fail('the simulation misses a target', failures(sim.output));
+  if (year.code !== 0) return fail('the year misses a target', failures(year.output));
+  if (model.code !== 0) return fail('the paper model misses a target', failures(model.output));
   if (read(reportPath) !== before) return fail("the model's report changed: run pnpm design:build and commit");
   return pass(
-    `real engine: ${simPassed} checks for the built skills (.verify/simulation.md); paper model: ${checks} for the rest`,
+    `real engine: ${passes(sim.output)} checks for the built skills (.verify/simulation.md) and ${passes(year.output)} for the year (.verify/year.md); paper model: ${passes(model.output)}`,
   );
 }
 

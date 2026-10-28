@@ -4,9 +4,9 @@ import { fmt, t } from '@idle-clash/content';
 import type { State } from '@idle-clash/kernel';
 import { combatOf } from '../shared/combat/state.ts';
 import type { Milestone } from './content.ts';
-import { dailyProgress, milestoneProgress, nextMilestone, shortProgress } from './ladder.ts';
+import { currentDaily, dailyProgress, milestoneProgress, nextMilestone, shortProgress } from './ladder.ts';
 import { bestIn, paces } from './pace.ts';
-import { dayOf, goalsOf, type DailyGoal, type ShortGoal } from './state.ts';
+import { goalsOf, type DailyGoal, type ShortGoal } from './state.ts';
 import { inLane, startCommand, workingIn, type GoalRow } from './view.ts';
 
 const gold = (n: number) => t('goals.reward.gold', { amount: fmt.int(n) });
@@ -99,7 +99,8 @@ export const milestoneName = (m: Milestone) => {
 export function ladderRows(state: State, now: number): GoalRow[] {
   const g = goalsOf(state);
   const rows = g.short.map((s) => shortRow(state, now, s));
-  if (g.daily && g.daily.day === dayOf(now)) rows.push(dailyRow(state, now, g.daily));
+  const daily = currentDaily(state, g.daily, now);
+  if (daily) rows.push(dailyRow(state, now, daily));
   const m = nextMilestone(state, g);
   if (m)
     rows.push(

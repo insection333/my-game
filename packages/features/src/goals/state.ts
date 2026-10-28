@@ -19,6 +19,11 @@ export const ShortGoal = z
     target: Count,
     base: Count,
     reward: Count,
+    /** When it was made (session 18): a goal that has not moved in a day is retired. Older saves' goals
+     *  take the moment they are next read. */
+    at: z.number().nonnegative().optional(),
+    /** Made for the work a lane was doing (session 18): it goes when the lane turns to other work. */
+    follows: z.boolean().optional(),
   })
   .strict();
 export type ShortGoal = z.infer<typeof ShortGoal>;

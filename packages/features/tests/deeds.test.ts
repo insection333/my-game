@@ -29,12 +29,12 @@ function everything(): State {
   // Every skill at 99 and five Kindlings past it.
   s.skills = Object.fromEntries(allSkills().map((k) => [k, { xp: XP_TABLE[99] + 5 * KINDLE_XP }]));
   for (const { feature, actions } of skillActions())
-    for (const [i, a] of actions.entries()) s.mastery[`${feature}:${a.id}`] = i === 0 ? 100_000 : 28_800;
-  for (const [i, f] of FOES.entries()) s.mastery[`combat:${f.id}`] = i === 0 ? 28_800 : 5_000;
+    for (const [i, a] of actions.entries()) s.mastery[`${feature}:${a.id}`] = i === 0 ? 300_000 : 28_800;
+  for (const [i, f] of FOES.entries()) s.mastery[`combat:${f.id}`] = i === 0 ? 1_000_000 : 5_000;
   s.found = Object.fromEntries(allFinds().map((f) => [f.item, T0]));
   const best = (slot: string) => items.find((i) => i.gear?.tier === 8 && i.gear.slot === slot)!.id;
   const worn = { helm: best('helm'), body: best('body'), legs: best('legs'), weapon: best('weapon') };
-  // Every boss beaten fifty times, runs of every length home (a hundred in all), every twist met,
+  // Every boss beaten a hundred times, runs of every length home (250 in all), every twist met,
   // and every relic at its last rank.
   s.features = {
     combat: { worn, health: null, healthAt: 0, retreated: null },
@@ -45,8 +45,8 @@ function everything(): State {
       drawn: 0,
       run: null,
       bossDay: {},
-      wins: Object.fromEntries(BOSSES.map((b) => [b.id, 50])),
-      runs: { '1': 40, '2': 30, '4': 20, '8': 10 },
+      wins: Object.fromEntries(BOSSES.map((b) => [b.id, 100])),
+      runs: { '1': 100, '2': 80, '4': 50, '8': 20 },
       twists: TWISTS.map((x) => x.id),
     },
   };
