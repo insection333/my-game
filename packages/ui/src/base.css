@@ -83,3 +83,11 @@ a {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* A theme change: for one style pass every element takes a colour of its own, so the next pass works
+   each colour out afresh (theme.ts, repaintInk). */
+:root[data-repaint] *,
+:root[data-repaint] *::before,
+:root[data-repaint] *::after {
+  color: transparent !important;
+}

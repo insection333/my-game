@@ -23,30 +23,18 @@ export function applyTheme(theme: Theme) {
 }
 
 /**
- * Passes the new theme's ink down the whole page. Chromium has been seen to keep an inherited text
- * colour from the old theme on a few elements after the theme changed (on GitHub Actions, the Combat
- * page's facts and food rows); changing the root's own colour for one style pass makes every element
- * that inherits its colour work it out again. Nothing is painted in between.
+ * Restyles the whole page in the new theme's colours. Chromium has been seen keeping the old theme's
+ * colour on a few elements after the theme changed (on GitHub Actions: the Combat page's facts and food
+ * rows, a gold pill, a resting lane's name, a locked foe's name): elements that inherit their colour
+ * from a parent that takes it from a theme token. For one style pass every element is given a colour of
+ * its own (`data-repaint`, in base.css), then its own again, so each works its colour out afresh.
+ * Reading the layout makes each pass happen at once; nothing is painted in between.
  */
 export function repaintInk(root: HTMLElement = document.documentElement) {
-  // The body sets the ink the page inherits, so it is repainted too (on GitHub Actions a legal page's
-  // headings once kept the old ink when only the root was).
-  for (const el of [root, root.ownerDocument.body].filter((x): x is HTMLElement => !!x)) {
-    el.style.color = 'transparent';
-    void getComputedStyle(el).color;
-    el.style.removeProperty('color');
-    void getComputedStyle(el).color;
-  }
-  // Elements that take a colour straight from a theme token (a gold pill, a resting lane's name) were
-  // seen keeping the old theme's value too: each token is declared once more, for one style pass, so
-  // everything using it works it out again.
-  const now = getComputedStyle(root);
-  const tokens = Array.from(now).filter((p) => p.startsWith('--') && !root.style.getPropertyValue(p));
-  const values = tokens.map((p) => now.getPropertyValue(p));
-  tokens.forEach((p, i) => root.style.setProperty(p, values[i]));
-  void getComputedStyle(root).color;
-  for (const p of tokens) root.style.removeProperty(p);
-  void getComputedStyle(root).color;
+  root.setAttribute('data-repaint', '');
+  void root.offsetHeight;
+  root.removeAttribute('data-repaint');
+  void root.offsetHeight;
 }
 
 /** Repaints the ink whenever the device switches between light and dark. */
