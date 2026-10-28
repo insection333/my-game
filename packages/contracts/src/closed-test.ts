@@ -57,6 +57,8 @@ export interface TesterView {
   totalLevel: number;
   /** What the Hearth asks of them now: their goals, in the game's own words. */
   aims: string[];
+  /** Whether other players see them on the hiscores yet (once they have played a while). */
+  listed: boolean;
 }
 export interface FeedbackView {
   /** The player's name (null once their account is deleted, though their feedback goes with it). */

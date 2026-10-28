@@ -49,6 +49,7 @@ export function gameRoutes(app: FastifyInstance, ctx: Ctx, features: readonly Fe
 
   /** After a change: tell the player's open pages, and record what happened. */
   const announce = (playerId: string, doc: SaveDoc, events: GameEvent[], at: number) => {
+    ctx.hiscores.acted(playerId, at);
     ctx.live.publish(playerId, { type: 'state', state: doc.state, now: at });
     if (events.length) ctx.live.publish(playerId, { type: 'events', events });
     ctx.telemetry.events(playerId, events);
@@ -89,6 +90,7 @@ export function gameRoutes(app: FastifyInstance, ctx: Ctx, features: readonly Fe
       await ctx.queue.run(req.playerId!, () => hear(ctx, req.playerId!, now()));
       return {
         online: ctx.live.online,
+        listed: ctx.hiscores.isListed(req.playerId!),
         ladders: [TOTAL, ...allSkills()].map((skill) => ctx.hiscores.ladder(skill, req.playerId!)),
       } satisfies HiscoresResponse;
     },

@@ -29,8 +29,6 @@ const server = spawn(process.execPath, ['apps/server/src/main.ts'], {
     DB_PATH: join(mkdtempSync(join(tmpdir(), 'ic-load-')), 'load.db'),
     ORIGINS: url,
     LOG: 'false',
-    // The load test makes its 500 players in a minute, far faster than the live server allows.
-    SIGNUPS_PER_HOUR: '1000000',
   },
   stdio: 'inherit',
 });

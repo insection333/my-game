@@ -20,6 +20,10 @@ export const players = sqliteTable(
     /** The honours shown beside the name on the hiscores (session 15): a title's id, a banner's. */
     title: text('title'),
     banner: text('banner'),
+    /** The hiscores show a player once they have played a while (session 20): the time of their first
+     *  action, and when an action came half an hour or more after it. */
+    firstActAt: integer('first_act_at'),
+    listedAt: integer('listed_at'),
   },
   (t) => [index('players_email').on(t.email), index('players_look').on(t.nameLook)],
 );

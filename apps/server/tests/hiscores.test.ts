@@ -1,5 +1,6 @@
 // Hiscores: kept as saves change and as pages read them; ranked by XP, ties to whoever got there first; your own entry
-// wherever it is; banned players left out; and how many are online.
+// wherever it is; banned players left out; and how many are online. A player is listed once one of their actions
+// comes half an hour or more after their first (session 20); until then only they see their place.
 import type { HiscoresResponse } from '@idle-clash/contracts';
 import { XP_TABLE } from '@idle-clash/content';
 import type { State } from '@idle-clash/kernel';
@@ -33,7 +34,9 @@ const chop = async (cookie: string, id: string, minutes: number) => {
     cookie,
   );
 };
-/** Gives a player's save this state and records it on the hiscores at `at`. */
+/** Lists every player now, as if each had played a while. */
+const listAll = () => s.ctx.db.update(players).set({ firstActAt: 0, listedAt: s.clock.now }).run();
+/** Gives a player's save this state and records it on the hiscores at `at`, as a player who has played a while. */
 const record = async (cookie: string, make: (s: State) => State, at: number) => {
   const me = JSON.parse((await s.app.inject({ method: 'GET', url: '/api/me', headers: { cookie } })).body) as {
     player: { id: string };
@@ -42,6 +45,7 @@ const record = async (cookie: string, make: (s: State) => State, at: number) => 
   const state = make(saved.doc.state);
   s.ctx.store.write(me.player.id, { ...saved.doc, state }, saved.rev, s.clock.now);
   s.ctx.hiscores.update(me.player.id, state, at);
+  s.ctx.db.update(players).set({ firstActAt: 0, listedAt: s.clock.now }).where(eq(players.id, me.player.id)).run();
 };
 
 describe('hiscores', () => {
@@ -55,8 +59,8 @@ describe('hiscores', () => {
       rows: [],
       you: null,
     });
-    await chop(a, 'a', 10);
-    await chop(b, 'b', 30);
+    await chop(a, 'a', 30);
+    await chop(b, 'b', 45);
     const wc = (await ladders(a)).ladders.find((l) => l.skill === 'woodcutting')!;
     expect(wc.rows.map((r) => [r.rank, r.name])).toEqual([
       [1, 'Birch'],
@@ -114,7 +118,7 @@ describe('hiscores', () => {
     const a = await signUp(s, 'Alder');
     const b = await signUp(s, 'Birch');
     await chop(a, 'a1', 10);
-    await chop(b, 'b1', 20);
+    await chop(b, 'b1', 30);
     await chop(a, 'a2', 30);
     const wc = (await ladders(b)).ladders.find((l) => l.skill === 'woodcutting')!;
     expect(wc.rows.map((r) => r.name)).toEqual(['Alder', 'Birch']);
@@ -140,6 +144,7 @@ describe('hiscores', () => {
       );
     await start(a, 'a');
     await start(b, 'b');
+    listAll();
     // Alder leaves a page open; Birch has gone. Neither acts for half an hour.
     s.ctx.live.add(await idOf(a), { readyState: 1, send: () => undefined, close: () => undefined });
     s.clock.now += 30 * 60_000;
@@ -170,5 +175,50 @@ describe('hiscores', () => {
       expect(total.rows[0].xp).toBeLessThan(total.rows[1].xp);
       expect((await ladders(b)).ladders.find((l) => l.skill === 'total')!.you).toMatchObject({ rank: 2 });
     })();
+  });
+
+  it('lists a player only once one of their actions comes half an hour after their first', async () => {
+    s = await server();
+    const a = await signUp(s, 'Alder');
+    const b = await signUp(s, 'Birch');
+    // Birch plays a while; Alder looks for ten minutes and goes.
+    await chop(b, 'b', 45);
+    await chop(a, 'a', 10);
+    const theirs = (await ladders(b)).ladders.find((l) => l.skill === 'woodcutting')!;
+    expect(theirs.rows.map((r) => r.name)).toEqual(['Birch']);
+    // Alder still sees his own place, where he would stand, and is told he is not yet listed.
+    const his = await ladders(a);
+    expect(his.listed).toBe(false);
+    expect(his.ladders.find((l) => l.skill === 'woodcutting')).toMatchObject({
+      rows: [{ name: 'Birch', rank: 1 }],
+      you: { name: 'Alder', rank: 2 },
+    });
+    expect((await ladders(b)).listed).toBe(true);
+    // Back the next day, one action lists him: it comes long after his first.
+    s.clock.now += 24 * 3_600_000;
+    await post(s, '/api/game/command', { requestId: 'req-hs-back', command: { type: 'stoke' } }, a);
+    expect((await ladders(a)).listed).toBe(true);
+    expect((await ladders(b)).ladders.find((l) => l.skill === 'woodcutting')!.rows.map((r) => r.name)).toEqual([
+      'Birch',
+      'Alder',
+    ]);
+  });
+
+  it('counts a feature’s route as an action, and a request sent twice once', async () => {
+    s = await server();
+    const a = await signUp(s, 'Alder');
+    await chop(a, 'a', 5);
+    s.clock.now += 30 * 60_000;
+    // The same request again does nothing a second time, so it is no new action.
+    const again = await post(
+      s,
+      '/api/game/command',
+      { requestId: 'req-hs-a-start', command: { type: 'start', lane: 'gathering', action: pine } },
+      a,
+    );
+    expect(JSON.parse(again.body)).toMatchObject({ duplicate: true });
+    expect((await ladders(a)).listed).toBe(false);
+    await post(s, '/api/f/goals/refresh', { requestId: 'req-hs-goals', input: {} }, a);
+    expect((await ladders(a)).listed).toBe(true);
   });
 });

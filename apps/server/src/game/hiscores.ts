@@ -5,12 +5,15 @@ import { levelFor } from '@idle-clash/content';
 import { allSkills, goalsOf, shownHonours, totalLevel } from '@idle-clash/features';
 import type { HiscoreRow, Ladder } from '@idle-clash/contracts';
 import { xpOf, type State } from '@idle-clash/kernel';
-import { and, asc, desc, eq, gt, isNull, or, sql } from 'drizzle-orm';
+import { and, asc, desc, eq, gt, isNotNull, isNull, ne, or, sql } from 'drizzle-orm';
 import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
 import { hiscores, players } from '../db/schema.ts';
 
 export const TOTAL = 'total';
 export const LADDER_ROWS = 25;
+/** A player joins the hiscores once one of their actions comes this long after their first: someone
+ *  who looks for ten minutes and leaves is never listed. */
+export const LISTED_AFTER_MS = 30 * 60_000;
 
 export class Hiscores {
   private db: BetterSQLite3Database;
@@ -18,6 +21,8 @@ export class Hiscores {
   private heard = new Map<string, number>();
   /** The honours last written for each player, so an unchanged save writes nothing. */
   private shown = new Map<string, string>();
+  /** Players known to be listed (a player once listed stays listed). */
+  private listed = new Set<string>();
   constructor(db: BetterSQLite3Database) {
     this.db = db;
   }
@@ -78,7 +83,36 @@ export class Hiscores {
     }
   }
 
-  /** A ladder's entries (one player's, with `only`): XP above nothing, banned players left out. */
+  /** Notes a player's action (a command or a feature route): their first, and once one comes half an
+   *  hour or more after it, they are listed. */
+  acted(playerId: string, at: number): void {
+    if (this.listed.has(playerId)) return;
+    const row = this.db
+      .select({ firstActAt: players.firstActAt, listedAt: players.listedAt })
+      .from(players)
+      .where(eq(players.id, playerId))
+      .get();
+    if (!row) return;
+    if (row.listedAt !== null) return void this.listed.add(playerId);
+    if (row.firstActAt === null) {
+      this.db.update(players).set({ firstActAt: at }).where(eq(players.id, playerId)).run();
+    } else if (at - row.firstActAt >= LISTED_AFTER_MS) {
+      this.db.update(players).set({ listedAt: at }).where(eq(players.id, playerId)).run();
+      this.listed.add(playerId);
+    }
+  }
+
+  /** Whether other players see this player on the hiscores. */
+  isListed(playerId: string): boolean {
+    if (this.listed.has(playerId)) return true;
+    const row = this.db.select({ at: players.listedAt }).from(players).where(eq(players.id, playerId)).get();
+    if (!row || row.at === null) return false;
+    this.listed.add(playerId);
+    return true;
+  }
+
+  /** A ladder's entries (one player's, with `only`, listed or not): XP above nothing, banned players
+   *  and players not yet listed left out. */
   private entries(skill: string, only?: string) {
     return this.db
       .select({
@@ -97,7 +131,7 @@ export class Hiscores {
           eq(hiscores.skill, skill),
           gt(hiscores.xp, 0),
           isNull(players.bannedAt),
-          only ? eq(hiscores.playerId, only) : undefined,
+          only ? eq(hiscores.playerId, only) : isNotNull(players.listedAt),
         ),
       );
   }
@@ -128,6 +162,8 @@ export class Hiscores {
           and(
             eq(hiscores.skill, skill),
             isNull(players.bannedAt),
+            isNotNull(players.listedAt),
+            ne(hiscores.playerId, playerId),
             or(
               gt(hiscores.level, mine.level),
               and(eq(hiscores.level, mine.level), gt(hiscores.xp, mine.xp)),
@@ -147,6 +183,7 @@ export class Hiscores {
 
   remove(playerId: string): void {
     this.heard.delete(playerId);
+    this.listed.delete(playerId);
     this.shown.delete(playerId);
     this.db.delete(hiscores).where(eq(hiscores.playerId, playerId)).run();
   }

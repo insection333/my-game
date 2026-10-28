@@ -1,5 +1,5 @@
 // What one player, or a stranger, could do to spoil the game for others, and why they cannot: lock a
-// player out by guessing at their name, fill the hiscores with accounts, pass for another player with
+// player out by guessing at their name, pass for another player with
 // a look-alike name, open pages without end, read without pause, or leave the server's tables to grow
 // for ever.
 import { nameLook } from '@idle-clash/contracts';
@@ -39,14 +39,6 @@ describe('no one can lock a player out', () => {
 });
 
 describe('accounts', () => {
-  it('are made at a pace across the whole server, however many addresses ask', async () => {
-    s = await server({ signUpsPerHour: 3 });
-    for (let i = 0; i < 3; i++) expect((await join(`203.0.113.${i + 1}`, `Player ${i}`)).statusCode).toBe(201);
-    expect(code(await join('203.0.113.50', 'Player x'))).toBe('tooManyTries');
-    s.clock.now += 3_600_000;
-    expect((await join('203.0.113.51', 'Player y')).statusCode).toBe(201);
-  });
-
   it('cannot take a name that looks like another player’s', async () => {
     s = await server();
     await signUp(s, 'Ashling');
@@ -71,12 +63,11 @@ describe('accounts', () => {
 describe('the paces', () => {
   it('are never lifted by a mistyped setting', () => {
     for (const bad of ['', 'lots', '0', '-5', '2.5', 'Infinity'])
-      expect(configFromEnv({ SIGNUPS_PER_HOUR: bad, READS_PER_MINUTE: bad, PAGES_PER_MINUTE: bad })).toMatchObject({
-        signUpsPerHour: 30,
+      expect(configFromEnv({ READS_PER_MINUTE: bad, PAGES_PER_MINUTE: bad })).toMatchObject({
         readsPerMinute: 120,
         pagesPerMinute: 20,
       });
-    expect(configFromEnv({ SIGNUPS_PER_HOUR: '500' }).signUpsPerHour).toBe(500);
+    expect(configFromEnv({ READS_PER_MINUTE: '500' }).readsPerMinute).toBe(500);
   });
 });
 

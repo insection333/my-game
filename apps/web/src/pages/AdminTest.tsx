@@ -79,6 +79,7 @@ function Tester({ p }: { p: TesterView }) {
         <span className={s.pills}>
           <Back day={2} back={p.day2} />
           <Back day={3} back={p.day3} />
+          {!p.listed && <Pill>{t('admin.test.unlisted')}</Pill>}
         </span>
       }
     />

@@ -55,7 +55,11 @@ export function Hiscores() {
   const name = (skill: string) => (skill === 'total' ? t('hiscores.total') : t(`skill.${skill}`));
   const you = ladder?.you ?? null;
   const shown = ladder?.rows ?? [];
-  const pinned = you && !shown.slice(0, PHONE_ROWS).some((r) => r.rank === you.rank) ? you : null;
+  // A player not yet listed is in no one's rows, their own included: their place is pinned beneath,
+  // where they would stand, and only they see it.
+  const listed = data?.listed ?? true;
+  const mine = (r: HiscoreRow) => listed && you?.rank === r.rank;
+  const pinned = you && !shown.slice(0, PHONE_ROWS).some(mine) ? you : null;
   return (
     <>
       <HiscoresHead>
@@ -79,8 +83,8 @@ export function Hiscores() {
         <section data-section>
           <Panel flush>
             <Slot id="hiscores.ladder" className={s.ladder}>
-              {ladder && ladder.rows.length === 0 && <p className={s.note}>{t('hiscores.empty')}</p>}
-              {ladder && ladder.rows.length > 0 && (
+              {ladder && ladder.rows.length === 0 && !you && <p className={s.note}>{t('hiscores.empty')}</p>}
+              {ladder && (ladder.rows.length > 0 || you) && (
                 <table className={s.table}>
                   <caption className="visually-hidden">{name(ladder.skill)}</caption>
                   <thead>
@@ -97,7 +101,7 @@ export function Hiscores() {
                   </thead>
                   <tbody>
                     {shown.map((r) => (
-                      <Row key={r.rank} row={r} you={you?.rank === r.rank} total={ladder.skill === 'total'} />
+                      <Row key={r.rank} row={r} you={mine(r)} total={ladder.skill === 'total'} />
                     ))}
                   </tbody>
                   {pinned && (
@@ -108,6 +112,7 @@ export function Hiscores() {
                 </table>
               )}
               {data && !you && <p className={s.note}>{t('hiscores.unranked')}</p>}
+              {data && you && !listed && <p className={s.note}>{t('hiscores.unlisted')}</p>}
             </Slot>
           </Panel>
         </section>

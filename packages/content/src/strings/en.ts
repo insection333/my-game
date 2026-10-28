@@ -115,6 +115,8 @@ export const en: Record<string, string> = {
   'hiscores.milestones': '{count} milestones',
   'hiscores.milestonesOne': '1 milestone',
   'hiscores.unranked': 'Your rank appears after your first level.',
+  'hiscores.unlisted':
+    'Others see you here once you have played for half an hour. Until then, only you see your place.',
   'hiscores.empty': 'No one is on this ladder yet.',
   'action.start': 'Start',
   'action.queue': 'Next',
