@@ -122,7 +122,13 @@ describe('feedback and the players’ panel', () => {
     s.clock.now += DAY;
     await visit(back);
     const testers = (await panel(admin)).testers;
-    expect(testers.find((t) => t.name === 'Ashling')).toMatchObject({ daysPlayed: 3, day2: true, day3: true });
+    // Three days of looking, but no action yet: not on the hiscores.
+    expect(testers.find((t) => t.name === 'Ashling')).toMatchObject({
+      daysPlayed: 3,
+      day2: true,
+      day3: true,
+      listed: false,
+    });
     expect(testers.find((t) => t.name === 'Brindle')).toMatchObject({ day2: false, day3: false });
     // The admin is not one of the players.
     expect(testers.map((t) => t.name)).not.toContain('Keeper');

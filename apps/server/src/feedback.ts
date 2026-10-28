@@ -117,6 +117,7 @@ export function feedbackRoutes(app: FastifyInstance, ctx: Ctx, features: readonl
             lastSeen: last ? Date.parse(`${last}T00:00:00Z`) : null,
             totalLevel: totalOf(p.id),
             aims: aimsOf(p.id),
+            listed: p.listedAt !== null,
           };
         });
       const notes: FeedbackView[] = ctx.db

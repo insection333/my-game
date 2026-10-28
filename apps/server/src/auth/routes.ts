@@ -90,8 +90,6 @@ export function authRoutes(app: FastifyInstance, ctx: Ctx): void {
     // first and lists the name after, and a listed name freed by deleting its account stays refused.
     if (!nameAllowed(input.name) || isAdmin(ctx, input.name)) throw fail(422, 'nameNotAllowed');
     if (nameHeld(ctx, input.name)) throw fail(409, 'nameTaken');
-    // However many addresses ask, the server makes accounts at a pace: no one can flood the hiscores.
-    limit(ctx, reply, 'sign-up:all', ctx.config.signUpsPerHour, HOUR);
     const passwordHash = await hashPassword(input.password);
     const now = ctx.config.now();
     const id = randomUUID();

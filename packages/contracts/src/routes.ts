@@ -255,6 +255,9 @@ export interface Ladder {
 export interface HiscoresResponse {
   /** Pages open now. */
   online: number;
+  /** Whether others see the asking player on the ladders: a player is listed once one of their
+   *  actions comes half an hour or more after their first. Until then only they see their place. */
+  listed: boolean;
   ladders: Ladder[];
 }
 /** The notices tray: notable events and lane stops, newest first. */

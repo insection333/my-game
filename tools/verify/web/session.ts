@@ -200,9 +200,8 @@ async function start(): Promise<Served> {
     now: () => Date.now(),
     adminNames: [],
     backupStatusDir: null,
-    // The screenshot run makes its players in a minute and loads every page in three browsers, as the
-    // same few players, all from this machine: far faster than any person, so the paces are lifted here.
-    signUpsPerHour: 1_000_000,
+    // The screenshot run loads every page in three browsers, as the same few players, all from this
+    // machine: far faster than any person, so the paces are lifted here.
     readsPerMinute: 1_000_000,
     pagesPerMinute: 1_000_000,
   });
@@ -220,6 +219,10 @@ async function start(): Promise<Served> {
     const state = withHonours(ctx, make(saved.doc.state), now);
     ctx.store.write(me.player.id, { ...saved.doc, state }, saved.rev, now);
     ctx.hiscores.update(me.player.id, state, now);
+    // A player with a history has played a while, so the hiscores list them (the newcomer is not yet).
+    ctx.store.sqlite
+      .prepare('update players set first_act_at = ?, listed_at = ? where id = ?')
+      .run(now, now, me.player.id);
     return c;
   };
   const vet = await settle('Veteran', (s) => veteran(ctx, s, now));

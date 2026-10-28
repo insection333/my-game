@@ -22,8 +22,6 @@ export interface Config {
   now: () => number;
   /** Players who may open the admin page, by name (any case). */
   adminNames: string[];
-  /** Accounts the whole server makes in an hour, however many addresses ask (SIGNUPS_PER_HOUR). */
-  signUpsPerHour: number;
   /** Reads of the game, notices and hiscores a player may make in a minute (READS_PER_MINUTE). */
   readsPerMinute: number;
   /** New live pages one address may open in a minute (PAGES_PER_MINUTE). */
@@ -68,7 +66,6 @@ export function configFromEnv(env: NodeJS.ProcessEnv = process.env): Config {
       .map((s) => s.trim())
       .filter(Boolean),
     backupStatusDir: env.BACKUP_STATUS_DIR ?? null,
-    signUpsPerHour: pace(env.SIGNUPS_PER_HOUR, 30),
     readsPerMinute: pace(env.READS_PER_MINUTE, 120),
     pagesPerMinute: pace(env.PAGES_PER_MINUTE, 20),
   };
