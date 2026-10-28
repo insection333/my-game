@@ -84,7 +84,7 @@ Each page lists its sections in order, what must be visible without scrolling at
 | 0 | `hearth.standing` | goals | Over the region's banner: your rank, your total level, and a thin bar to the next rank ("Warden of the March at 200") |
 | 0 | `hearth.plaque` | deeds | The standing's plaque wears your honours: your title after the rank, your banner's colour on its edge, your frame around it |
 | 1 | `hearth.today` | the shell (welcome), recap | On return: the away recap, best thing first, then "Collect". Otherwise: today's notable moments as a compact timeline |
-| 2 | `hearth.goals` | goals | First steps while unfinished (six rows with buttons); afterwards three short goals, the daily goal and the next milestone, each with a progress bar and its reward |
+| 2 | `hearth.goals` | goals | First steps while unfinished (six rows with buttons); afterwards three short goals (the lanes' own work, so play finishes them; a suggestion only when every lane's has one), the daily goal (a day's goal done while away waits here, ready, until claimed) and the next milestone, each with a progress bar and its reward |
 | 3 | `hearth.lanes` | each lane | Full lane cards with their Next action; on desktop the lanes panel already shows them, so this section is omitted |
 | 4 | `hearth.nextUp` | every skill | The three nearest unlocks across all skills: "Woodcutting 21: Practised hands IV, 3,400 XP away" |
 
@@ -206,7 +206,7 @@ Anyone not signed in sees this page instead of the shell, at any address; afterw
 | # | Section (slot) | Filled by | Notes |
 | --- | --- | --- | --- |
 | 1 | `welcome.intro` | the shell | The name, one sentence on what the game is, and the loop it is built on drawn as four icons (ore, bar, sword, foe) |
-| 2 | `welcome.form` | the shell | Tabs for Create account and Sign in. Create: name, password, "I am 13 or older", one button. Sign in: name, password, one button, and how a forgotten password is reset. Each field says what it needs; a refusal says why, in place |
+| 2 | `welcome.form` | the shell | Tabs for Create account and Sign in. Create: name, password, "I am 13 or older", one button; while the closed test runs, the invite code first, with a line on why. Sign in: name, password, one button, and how a forgotten password is reset. Each field says what it needs; a refusal says why, in place |
 
 - **At 390:** the intro, then the form, both whole. **At 1,440:** the intro and the form side by side. Verify opens these views signed out.
 
@@ -231,7 +231,7 @@ Opened from the account button; its address is `/?panel=settings`.
 
 | # | Section (slot) | Filled by | Notes |
 | --- | --- | --- | --- |
-| 1 | `settings.account` | the shell | Account name, sign out, links to Privacy and Terms (and Admin, for admins), theme (light, dark, system), sound (off until chosen; levels, finds and goals; or also each action, softly), and Delete account at the foot: asked for twice, the second time with the password; email and recovery when the owner switches email on |
+| 1 | `settings.account` | the shell | Account name, sign out, links to Privacy and Terms (and Admin, for admins), theme (light, dark, system), sound (off until chosen; levels, finds and goals; or also each action, softly), Send feedback (a line that opens a short form: what they write goes to the team with the page they were on, and the form says it arrived), and Delete account at the foot: asked for twice, the second time with the password; email and recovery when the owner switches email on |
 | 2 | `settings.extras` | later systems | Empty in version 1; the 48-hour upgrade and cosmetic donations arrive here |
 
 ### Privacy and terms
@@ -257,6 +257,7 @@ At `/admin`, for players named in the server's admin list only (anyone else sees
 | --- | --- | --- | --- |
 | 1 | `admin.players` | the shell | Find a player by name: name, when they joined, total level, Banned; Open |
 | 2 | `admin.player` | the shell | The player opened: rename, ban or unban, check and mend the save, set a new password (shown once, to pass on), what was repaired, and the save itself in a scrolling box |
+| 3 | `admin.test` | the shell | The closed test (session 18), under the player search: whether signing up takes an invite; Make an invite (the code shown to pass on) and every invite with who used it; each tester with when they joined, the days they played, Back on day 2 and day 3, total level and what the Hearth's goals ask of them; the feedback sent from Settings, newest first. Each list scrolls in its own box |
 
 **Visible without scrolling** (checked by verify at 390 × 844 and 1,440 × 900; a slot no built feature fills yet is skipped):
 

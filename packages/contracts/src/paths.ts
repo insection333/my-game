@@ -22,6 +22,9 @@ export const PATHS = {
   adminBan: '/api/admin/ban',
   adminMend: '/api/admin/mend',
   adminResetPassword: '/api/admin/reset-password',
+  feedback: '/api/feedback',
+  adminTest: '/api/admin/test',
+  adminInvite: '/api/admin/invite',
 } as const;
 
 /** A feature's own route. */

@@ -24,6 +24,8 @@ export interface Config {
   adminNames: string[];
   /** Where the backup and the restore rehearsal mark their success; null where there are none. */
   backupStatusDir: string | null;
+  /** The closed test: signing up takes an invite made on the admin page (INVITES=true). */
+  invitesRequired: boolean;
 }
 
 /** Flags from FEATURES: unset keeps each feature's own flag; "all" turns every built feature on. */
@@ -56,5 +58,6 @@ export function configFromEnv(env: NodeJS.ProcessEnv = process.env): Config {
       .map((s) => s.trim())
       .filter(Boolean),
     backupStatusDir: env.BACKUP_STATUS_DIR ?? null,
+    invitesRequired: env.INVITES === 'true',
   };
 }

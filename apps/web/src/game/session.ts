@@ -17,9 +17,11 @@ export interface Session {
   email: boolean;
   /** Whether this player may open the admin page. */
   admin: boolean;
+  /** Whether signing up takes an invite (the closed test). */
+  invites: boolean;
 }
 
-let session: Session = { phase: 'loading', player: null, flags: {}, email: false, admin: false };
+let session: Session = { phase: 'loading', player: null, flags: {}, email: false, admin: false, invites: false };
 const listeners = new Set<() => void>();
 
 function setSession(next: Partial<Session>) {
@@ -65,7 +67,7 @@ async function enter(player: PlayerView) {
 export async function boot(): Promise<void> {
   try {
     const me = await api.me();
-    setSession({ flags: me.flags, email: me.email.enabled, admin: me.admin });
+    setSession({ flags: me.flags, email: me.email.enabled, admin: me.admin, invites: me.invites });
     if (me.player) await enter(me.player);
     else setSession({ phase: 'signedOut' });
   } catch (err) {
@@ -74,7 +76,8 @@ export async function boot(): Promise<void> {
 }
 
 export const account = {
-  signUp: async (name: string, password: string) => enter((await api.signUp(name, password)).player),
+  signUp: async (name: string, password: string, invite?: string) =>
+    enter((await api.signUp(name, password, invite)).player),
   signIn: async (name: string, password: string) => {
     await enter((await api.signIn(name, password)).player);
     // Whether the page offers the admin page is the server's to say.

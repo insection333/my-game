@@ -87,3 +87,35 @@ export const hiscores = sqliteTable(
   },
   (t) => [primaryKey({ columns: [t.playerId, t.skill] }), index('hiscores_skill_xp').on(t.skill, t.xp)],
 );
+
+/** The closed test (session 18): invites to sign up while invites are required, each used once. */
+export const invites = sqliteTable('invites', {
+  code: text('code').primaryKey(),
+  createdAt: integer('created_at').notNull(),
+  /** The player who signed up with it (cleared, with the code kept spent, if they delete their account). */
+  usedBy: text('used_by'),
+  usedAt: integer('used_at'),
+});
+
+/** Feedback a player sends from Settings: what they wrote and the page they were on. */
+export const feedback = sqliteTable(
+  'feedback',
+  {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    playerId: text('player_id').notNull(),
+    at: integer('at').notNull(),
+    page: text('page').notNull(),
+    text: text('text').notNull(),
+  },
+  (t) => [index('feedback_at').on(t.at)],
+);
+
+/** The days each player came to the game (UTC, 2026-10-28): the closed test's "back on day two". */
+export const visits = sqliteTable(
+  'visits',
+  {
+    playerId: text('player_id').notNull(),
+    day: text('day').notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.playerId, t.day] })],
+);

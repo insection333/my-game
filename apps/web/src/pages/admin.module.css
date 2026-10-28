@@ -88,3 +88,53 @@
   overflow-y: auto;
   border-top: 1px solid var(--line);
 }
+
+/* The closed test's three panels, under the player search. */
+.test {
+  display: grid;
+  gap: var(--s-4);
+  margin-top: var(--s-4);
+}
+
+.inset {
+  display: grid;
+  justify-items: start;
+  gap: var(--s-2);
+  padding: var(--s-3) var(--s-4);
+}
+
+.list {
+  display: grid;
+  gap: var(--s-2);
+  max-height: min(16rem, 35dvh);
+  overflow-y: auto;
+  margin: 0;
+  padding: var(--s-2) var(--s-4) var(--s-3);
+  list-style: none;
+  border-top: 1px solid var(--line);
+  overflow-wrap: anywhere;
+}
+
+.testers {
+  max-height: min(24rem, 50dvh);
+  overflow-y: auto;
+}
+
+.list p {
+  margin: 0;
+}
+
+.muted {
+  color: var(--ink-2);
+  font-size: var(--t-small);
+}
+
+.said {
+  white-space: pre-wrap;
+}
+
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-1);
+}

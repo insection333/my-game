@@ -26,6 +26,7 @@ import { TOTAL } from './hiscores.ts';
 import { hear } from './watching.ts';
 import { contractRoute, fail } from '../http.ts';
 import { identify, requirePlayer } from '../auth/routes.ts';
+import { noteVisit } from '../closed-test.ts';
 
 export function gameRoutes(app: FastifyInstance, ctx: Ctx, features: readonly Feature[]): void {
   const now = () => ctx.config.now();
@@ -36,6 +37,7 @@ export function gameRoutes(app: FastifyInstance, ctx: Ctx, features: readonly Fe
     const saved = ctx.store.read(playerId, now());
     if (!saved) throw fail(404, 'notFound');
     const t = now();
+    noteVisit(ctx, playerId, t);
     const before = saved.doc.state;
     const out = ctx.engine.advance(before, t, seeded(before.seed));
     const away =

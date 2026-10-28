@@ -92,6 +92,15 @@ describe('goals that follow the lanes', () => {
     expect(goalsOf(refresh(turned, T0 + HOUR)).short.map((g) => g.id)).not.toContain(oak.id);
   });
 
+  it("keeps a lane's goal while its lane stands idle (out of ore, say), for the player to take up again", () => {
+    const s = refresh(atWork(1));
+    const smelt = goalsOf(s).short.find((g) => g.action.id === 'iron-bar')!;
+    const idle = { ...s, lanes: { ...s.lanes, artisan: { ...s.lanes.artisan, current: null } } };
+    expect(goals.slots['hearth.goals']({ state: idle, now: T0 + HOUR }) as unknown).toMatchObject({ refresh: false });
+    expect(goalsOf(refresh(idle, T0 + HOUR)).short.map((g) => g.id)).toContain(smelt.id);
+    expect(goalsOf(refresh(idle, T0 + DAY + 1)).short.map((g) => g.id)).not.toContain(smelt.id);
+  });
+
   it('keeps a suggestion a day, then makes way for a fresh one', () => {
     const idle = refresh({ ...atWork(1), lanes: newState(1, T0).lanes });
     const [first] = goalsOf(idle).short;

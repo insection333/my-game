@@ -9,6 +9,7 @@ import { ipOf, limit, type Ctx } from '../context.ts';
 import { players } from '../db/schema.ts';
 import { contractRoute, fail } from '../http.ts';
 import { nameAllowed } from './names.ts';
+import { spendInvite } from '../closed-test.ts';
 import { checkPassword, dummyHash, hashPassword } from './passwords.ts';
 import { SESSION_COOKIE, SESSION_DAYS } from './sessions.ts';
 
@@ -69,30 +70,36 @@ function startSession(ctx: Ctx, reply: FastifyReply, playerId: string) {
 const view = (row: { id: string; name: string }): PlayerView => ({ id: row.id, name: row.name });
 
 export function authRoutes(app: FastifyInstance, ctx: Ctx): void {
-  contractRoute<{ name: string; password: string }>(app, ROUTES.signUp, async ({ req, reply, input }) => {
-    limit(ctx, reply, `sign-up:${ipOf(req)}`, 5, HOUR);
-    const key = nameKey(input.name);
-    // A name on the admin list is refused too: whoever took it would be an admin. The owner signs up
-    // first and lists the name after, and a listed name freed by deleting its account stays refused.
-    if (!nameAllowed(input.name) || isAdmin(ctx, input.name)) throw fail(422, 'nameNotAllowed');
-    if (ctx.db.select({ id: players.id }).from(players).where(eq(players.nameKey, key)).get())
-      throw fail(409, 'nameTaken');
-    const passwordHash = await hashPassword(input.password);
-    const now = ctx.config.now();
-    const id = randomUUID();
-    try {
-      ctx.store.sqlite.transaction(() => {
-        ctx.db.insert(players).values({ id, name: input.name, nameKey: key, passwordHash, createdAt: now }).run();
-        ctx.store.create(id, newState(seedFrom(randomInt(2 ** 31)), now), now);
-      })();
-    } catch (err) {
-      if (String(err).includes('UNIQUE')) throw fail(409, 'nameTaken');
-      throw err;
-    }
-    startSession(ctx, reply, id);
-    ctx.telemetry.record('signUp', id);
-    return reply.code(201).send({ player: view({ id, name: input.name }) } satisfies AuthResponse);
-  });
+  contractRoute<{ name: string; password: string; invite?: string }>(
+    app,
+    ROUTES.signUp,
+    async ({ req, reply, input }) => {
+      limit(ctx, reply, `sign-up:${ipOf(req)}`, 5, HOUR);
+      const key = nameKey(input.name);
+      // A name on the admin list is refused too: whoever took it would be an admin. The owner signs up
+      // first and lists the name after, and a listed name freed by deleting its account stays refused.
+      if (!nameAllowed(input.name) || isAdmin(ctx, input.name)) throw fail(422, 'nameNotAllowed');
+      if (ctx.db.select({ id: players.id }).from(players).where(eq(players.nameKey, key)).get())
+        throw fail(409, 'nameTaken');
+      const passwordHash = await hashPassword(input.password);
+      const now = ctx.config.now();
+      const id = randomUUID();
+      try {
+        ctx.store.sqlite.transaction(() => {
+          // While the closed test runs, an invite is spent in the same step, or nothing is made.
+          if (ctx.config.invitesRequired) spendInvite(ctx, input.invite, id, now);
+          ctx.db.insert(players).values({ id, name: input.name, nameKey: key, passwordHash, createdAt: now }).run();
+          ctx.store.create(id, newState(seedFrom(randomInt(2 ** 31)), now), now);
+        })();
+      } catch (err) {
+        if (String(err).includes('UNIQUE')) throw fail(409, 'nameTaken');
+        throw err;
+      }
+      startSession(ctx, reply, id);
+      ctx.telemetry.record('signUp', id);
+      return reply.code(201).send({ player: view({ id, name: input.name }) } satisfies AuthResponse);
+    },
+  );
 
   contractRoute<{ name: string; password: string }>(app, ROUTES.signIn, async ({ req, reply, input }) => {
     limit(ctx, reply, `sign-in:ip:${ipOf(req)}`, 20, 15 * MIN);
@@ -132,6 +139,7 @@ export function authRoutes(app: FastifyInstance, ctx: Ctx): void {
         flags: ctx.config.flags,
         email: { enabled: ctx.config.emailEnabled },
         admin: row ? isAdmin(ctx, row.name) : false,
+        invites: ctx.config.invitesRequired,
       } satisfies MeResponse;
     },
     identify(ctx),

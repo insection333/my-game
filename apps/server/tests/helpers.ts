@@ -58,6 +58,7 @@ export async function server(
     now: () => clock.now,
     adminNames: [],
     backupStatusDir: null,
+    invitesRequired: false,
     ...over,
   };
   const built = await buildApp(config, { mailer, features });

@@ -42,3 +42,11 @@
   color: var(--alert);
   font-weight: 700;
 }
+
+/* Several lines (feedback): the same field, taller, growing only downwards. */
+.lines {
+  min-height: 7.5rem;
+  padding: var(--s-2) var(--s-3);
+  resize: vertical;
+  font: 400 var(--t-body) / 1.5 var(--font-ui);
+}

@@ -215,6 +215,14 @@
   flex-grow: 1.5;
 }
 
+/* Four lanes (the fire lit) on a phone: the chips give their icons' room to the words, so "Old
+   silverbark" keeps its end. */
+@media (max-width: 479px) {
+  .strip:has(> :nth-child(4)) [data-chip-icon] {
+    display: none;
+  }
+}
+
 .main {
   grid-area: main;
   min-width: 0;

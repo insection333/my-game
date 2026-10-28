@@ -108,6 +108,9 @@ export function LaneList({ lanes }: { lanes: LaneView[] }) {
   );
 }
 
+/** A resting lane's name on its chip: short enough for four chips on a phone ("Fire lane"). */
+const chipName = (id: LaneId) => (id === 'gathering2' ? t('lane.gathering2.chip') : t(`lane.${id}`));
+
 export function LaneStrip({ lanes }: { lanes: LaneView[] }) {
   return (
     <div className={s.strip} data-slot="shell.lane">
@@ -116,7 +119,7 @@ export function LaneStrip({ lanes }: { lanes: LaneView[] }) {
           key={l.id}
           compact
           lane={l.name}
-          doing={l.halted && l.short ? l.short : l.idle ? l.name : l.doing}
+          doing={l.halted && l.short ? l.short : l.idle ? chipName(l.id) : l.doing}
           label={`${l.name}: ${l.halted && l.note ? l.note : l.doing}`}
           idle={l.idle}
           halted={l.halted}

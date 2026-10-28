@@ -1,5 +1,6 @@
 // The admin page (the brief): find a player; rename them, ban or unban them, look at their save and
-// what was mended in it, and set a new password when they have forgotten theirs. Only players on the
+// what was mended in it, and set a new password when they have forgotten theirs; and the closed test's
+// panel (AdminTest.tsx). Only players on the
 // server's admin list reach it; everyone else gets the page that does not exist.
 import type { AdminPlayerView, AdminSaveResponse } from '@idle-clash/contracts';
 import { fmt, t } from '@idle-clash/content';
@@ -9,6 +10,7 @@ import { api, ApiError } from '../api.ts';
 import { handled, useSession } from '../game/session.ts';
 import { untilLoaded } from '../Ready.tsx';
 import { Slot } from '../slots.tsx';
+import { AdminTest } from './AdminTest.tsx';
 import { PageHead } from './PageHead.tsx';
 import { NotFound } from './Simple.tsx';
 import s from './admin.module.css';
@@ -93,6 +95,7 @@ export function Admin() {
               </div>
             </Slot>
           </Panel>
+          <AdminTest />
         </section>
         {save && (
           <section data-section>

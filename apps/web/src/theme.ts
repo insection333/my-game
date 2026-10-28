@@ -37,6 +37,16 @@ export function repaintInk(root: HTMLElement = document.documentElement) {
     el.style.removeProperty('color');
     void getComputedStyle(el).color;
   }
+  // Elements that take a colour straight from a theme token (a gold pill, a resting lane's name) were
+  // seen keeping the old theme's value too: each token is declared once more, for one style pass, so
+  // everything using it works it out again.
+  const now = getComputedStyle(root);
+  const tokens = Array.from(now).filter((p) => p.startsWith('--') && !root.style.getPropertyValue(p));
+  const values = tokens.map((p) => now.getPropertyValue(p));
+  tokens.forEach((p, i) => root.style.setProperty(p, values[i]));
+  void getComputedStyle(root).color;
+  for (const p of tokens) root.style.removeProperty(p);
+  void getComputedStyle(root).color;
 }
 
 /** Repaints the ink whenever the device switches between light and dark. */

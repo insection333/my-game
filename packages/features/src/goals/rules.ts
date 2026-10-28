@@ -43,15 +43,15 @@ function retired(state: State, g: GoalsState, now: number): GoalsState {
 }
 const DAY_MS = 24 * 3600_000;
 
-/** A short goal no lane is working at: at once when it was made for a lane's work (the lane has moved
- *  on), after a day when it was a suggestion. */
+/** A short goal no lane is working at: one made for a lane's work goes as soon as a lane of its kind
+ *  turns to other work (a lane standing idle, out of ore say, keeps it for the player to take up
+ *  again); any other, and one whose lanes stay idle, after a day. */
 function stale(state: State, s: ShortGoal, now: number): boolean {
-  const worked = LANE_IDS.some((l) => {
-    const a = state.lanes[l].current?.action;
-    return a?.feature === s.action.feature && a.id === s.action.id;
-  });
-  if (worked) return false;
-  return s.follows === true || (s.at !== undefined && now - s.at >= DAY_MS);
+  const at = (l: (typeof LANE_IDS)[number]) => state.lanes[l].current?.action;
+  if (LANE_IDS.some((l) => at(l)?.feature === s.action.feature && at(l)?.id === s.action.id)) return false;
+  const kin = LANE_IDS.filter((l) => l === s.lane || (s.lane === 'gathering' && l === 'gathering2'));
+  if (s.follows === true && kin.some((l) => at(l) !== undefined)) return true;
+  return s.at !== undefined && now - s.at >= DAY_MS;
 }
 
 /** Whether the ladder lacks a goal or holds one to retire (asked on every draw, so it stays cheap). */

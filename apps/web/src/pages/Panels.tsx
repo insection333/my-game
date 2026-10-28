@@ -5,6 +5,7 @@ import { useEffect, useState, type FormEvent } from 'react';
 import { ApiError } from '../api.ts';
 import { useGame } from '../game/hooks.ts';
 import { navigate } from '../router.ts';
+import { Feedback } from './Feedback.tsx';
 import { noticesOf } from './notices.ts';
 import { account, useSession } from '../game/session.ts';
 import { readSound, type SoundChoice } from '../sound/cues.ts';
@@ -202,6 +203,7 @@ export function Settings() {
         ))}
       </fieldset>
       <SoundChoices />
+      <Feedback />
       <DeleteAccount />
     </>
   );

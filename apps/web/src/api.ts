@@ -9,7 +9,9 @@ import {
   type ErrorCode,
   type ErrorResponse,
   type GameResponse,
+  type AdminInviteResponse,
   type AdminPlayersResponse,
+  type AdminTestResponse,
   type AdminPlayerView,
   type AdminResetResponse,
   type AdminSaveResponse,
@@ -62,11 +64,15 @@ export const requestId = (): string =>
 
 export const api = {
   me: () => get<MeResponse>(PATHS.me),
-  signUp: (name: string, password: string) => post<AuthResponse>(PATHS.signUp, { name, password, ageConfirmed: true }),
+  signUp: (name: string, password: string, invite?: string) =>
+    post<AuthResponse>(PATHS.signUp, { name, password, ageConfirmed: true, ...(invite ? { invite } : {}) }),
+  feedback: (text: string, page: string) => post<void>(PATHS.feedback, { text, page }),
   signIn: (name: string, password: string) => post<AuthResponse>(PATHS.signIn, { name, password }),
   signOut: () => post<void>(PATHS.signOut),
   deleteAccount: (password: string) => post<void>(PATHS.deleteAccount, { password, confirm: true }),
   admin: {
+    test: () => post<AdminTestResponse>(PATHS.adminTest),
+    invite: () => post<AdminInviteResponse>(PATHS.adminInvite),
     players: (query: string) => post<AdminPlayersResponse>(PATHS.adminPlayers, { query }),
     save: (playerId: string) => post<AdminSaveResponse>(PATHS.adminSave, { playerId }),
     rename: (playerId: string, name: string) => post<AdminPlayerView>(PATHS.adminRename, { playerId, name }),

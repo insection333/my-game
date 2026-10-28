@@ -4,14 +4,15 @@
 export const legal: Record<string, string> = {
   'legal.contact': 'Contact: {address}',
   'legal.privacy.title': 'Privacy',
-  'legal.privacy.updated': 'Last changed 26 October 2026',
+  'legal.privacy.updated': 'Last changed 28 October 2026',
   'legal.privacy.body': [
     'What we keep\nYour player name, your password (only as a one-way hash, never the password itself), your game save, the notices in your tray and your place on the hiscores. We do not ask for your real name, your email address or your age, beyond your word that you are 13 or older.',
     'How it is used\nTo run your game: your lanes keep working while you are away because your save is kept on our server. Your player name and levels are shown to other players on the hiscores.',
-    'Game statistics\nWe count what happens in the game (levels, finds, why a lane stopped, when people sign in) to make it better. These counts hold an anonymous player number, never your name, your address or anything you typed.',
+    'Game statistics\nWe count what happens in the game (levels, finds, why a lane stopped, when people sign in, which days you played) to make it better. These counts hold an anonymous player number, never your name, your address or anything you typed.',
+    'Feedback you send\nIf you send feedback from Settings, we keep what you wrote, the page you were on and when, with your account, so the team can read it and reply in the game. Nothing else you type is kept.',
     'One cookie\nA single cookie keeps you signed in for 30 days. There are no advertising or tracking cookies, and nothing is shared with other companies.',
     'Your address on the internet\nYour connection address is used for a short while to stop people guessing passwords or flooding sign-ups. It is not stored with your account.',
-    'Deleting your account\nYou can delete your account from Settings at any time. Everything we hold about you goes at once: your account, your save, your notices, your hiscores and your game statistics.',
+    'Deleting your account\nYou can delete your account from Settings at any time. Everything we hold about you goes at once: your account, your save, your notices, your hiscores, your game statistics and any feedback you sent.',
     'Questions\nWrite to admin@idleclash.com.',
   ].join('\n\n'),
   'legal.terms.title': 'Terms of use',

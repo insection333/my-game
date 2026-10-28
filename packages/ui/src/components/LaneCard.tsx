@@ -51,7 +51,7 @@ export function LaneCard({
         onClick={onOpen}
       >
         {icon && (
-          <span key={run?.key} className={s.icon}>
+          <span key={run?.key} className={s.icon} data-chip-icon>
             {icon}
           </span>
         )}

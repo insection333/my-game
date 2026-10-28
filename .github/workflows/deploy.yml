@@ -65,6 +65,7 @@ jobs:
         if: steps.server.outputs.ready == 'true' && (env.ACTION == 'deploy' || env.ACTION == 'rollback')
         env:
           ADMIN_NAMES: ${{ vars.ADMIN_NAMES }}
+          INVITES: ${{ vars.INVITES }}
           R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
           R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
           R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
@@ -81,6 +82,7 @@ jobs:
           EMAIL_ENABLED=false
           BACKUP_STATUS_DIR=/var/lib/idleclash/status
           ADMIN_NAMES=$ADMIN_NAMES
+          INVITES=${INVITES:-false}
           EOF
           ssh server 'umask 077; cat >/etc/idleclash/backup.env' <<EOF
           BACKUP_REMOTE=r2:idleclash-backups

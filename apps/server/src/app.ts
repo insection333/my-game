@@ -19,6 +19,7 @@ import { gameRoutes } from './game/routes.ts';
 import { contractRoute, harden } from './http.ts';
 import { RateLimiter } from './security.ts';
 import { adminRoutes } from './admin/routes.ts';
+import { closedTestRoutes } from './closed-test.ts';
 import { accountRoutes } from './auth/account.ts';
 import { Hiscores } from './game/hiscores.ts';
 import { Notices } from './game/notices.ts';
@@ -86,6 +87,7 @@ export async function buildApp(
   authRoutes(app, ctx);
   accountRoutes(app, ctx);
   adminRoutes(app, ctx);
+  closedTestRoutes(app, ctx, features);
   if (config.emailEnabled) emailRoutes(app, ctx);
   gameRoutes(app, ctx, features);
   if (config.webDist) webRoutes(app, config.webDist);
