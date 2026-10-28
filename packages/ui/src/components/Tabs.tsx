@@ -2,7 +2,7 @@
 // A strip never scrolls sideways: when its labels do not fit (eight tiers on a phone) it turns compact,
 // each tab showing its icon or short label and sharing the width equally, the full label kept as the
 // tab's name for screen readers and as its tooltip; when even that leaves a tab narrower than a tap, it
-// wraps onto a second row.
+// wraps into even rows on a grid (twelve ladders as two rows of six, never seven and five).
 import { useLayoutEffect, useRef, type MouseEvent, type ReactNode } from 'react';
 import s from './Tabs.module.css';
 
@@ -17,6 +17,8 @@ export interface Tab {
   short?: string;
 }
 
+const TAP = 44;
+
 /** Turns the strip compact when its full labels would not fit, measured each time it is drawn. */
 function useFit(ref: React.RefObject<HTMLElement | null>, key: string) {
   useLayoutEffect(() => {
@@ -25,12 +27,18 @@ function useFit(ref: React.RefObject<HTMLElement | null>, key: string) {
     const check = () => {
       el.removeAttribute('data-compact');
       el.removeAttribute('data-wrap');
+      el.style.removeProperty('--cols');
       if (el.scrollWidth <= el.clientWidth + 1) return;
       el.setAttribute('data-compact', '');
       // Still too many for one row at a full tap's width each (twelve ladders on a phone): two rows.
       const tabs = Array.from(el.children) as HTMLElement[];
-      if (el.scrollWidth > el.clientWidth + 1 || tabs.some((t) => t.getBoundingClientRect().width < 44))
+      if (el.scrollWidth > el.clientWidth + 1 || tabs.some((t) => t.getBoundingClientRect().width < TAP)) {
+        // As few rows as a tap's width each allows, the tabs shared evenly between them.
+        const perRow = Math.max(1, Math.floor(el.clientWidth / TAP));
+        const rows = Math.ceil(tabs.length / perRow);
+        el.style.setProperty('--cols', String(Math.ceil(tabs.length / rows)));
         el.setAttribute('data-wrap', '');
+      }
     };
     check();
     const watch = new ResizeObserver(check);

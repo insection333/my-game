@@ -7,7 +7,7 @@ export const legal: Record<string, string> = {
   'legal.privacy.updated': 'Last changed 28 October 2026',
   'legal.privacy.body': [
     'What we keep\nYour player name, your password (only as a one-way hash, never the password itself), your game save, the notices in your tray and your place on the hiscores. We do not ask for your real name, your email address or your age, beyond your word that you are 13 or older.',
-    'How it is used\nTo run your game: your lanes keep working while you are away because your save is kept on our server. Your player name and levels are shown to other players on the hiscores, once you have played for half an hour.',
+    'How it is used\nTo run your game: your lanes keep working while you are away because your save is kept on our server. Your player name and levels are shown to other players on the hiscores.',
     'Game statistics\nWe count what happens in the game (levels, finds, why a lane stopped, when people sign in, which days you played) to make it better. These counts hold an anonymous player number, never your name, your address or anything you typed.',
     'Feedback you send\nIf you send feedback from Settings, we keep what you wrote, the page you were on and when, with your account, so the team can read it and reply in the game. Nothing else you type is kept.',
     'One cookie\nA single cookie keeps you signed in for 30 days. There are no advertising or tracking cookies, and nothing is shared with other companies.',
