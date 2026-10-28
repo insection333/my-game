@@ -256,7 +256,8 @@ export interface HiscoresResponse {
   /** Pages open now. */
   online: number;
   /** Whether others see the asking player on the ladders: a player is listed once one of their
-   *  actions comes half an hour or more after their first. Until then only they see their place. */
+   *  actions comes half an hour or more after their first. Until then only they see their place, and
+   *  nothing tells players the rule (it would show those making throwaway accounts how to be seen). */
   listed: boolean;
   ladders: Ladder[];
 }

@@ -15,10 +15,6 @@
   .layout {
     grid-template-columns: 12rem minmax(0, 1fr);
   }
-  .tabs nav {
-    flex-direction: column;
-    border-bottom: 0;
-  }
 }
 
 .online {

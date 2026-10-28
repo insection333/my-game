@@ -56,7 +56,7 @@ export function Hiscores() {
   const you = ladder?.you ?? null;
   const shown = ladder?.rows ?? [];
   // A player not yet listed is in no one's rows, their own included: their place is pinned beneath,
-  // where they would stand, and only they see it.
+  // where they would stand, as any player's below the top rows is. Nothing on the page says why.
   const listed = data?.listed ?? true;
   const mine = (r: HiscoreRow) => listed && you?.rank === r.rank;
   const pinned = you && !shown.slice(0, PHONE_ROWS).some(mine) ? you : null;
@@ -72,6 +72,7 @@ export function Hiscores() {
           <Tabs
             label={t('hiscores.ladders')}
             onNavigate={navigate}
+            variant="side"
             tabs={(data?.ladders ?? []).map((l) => ({
               href: l.skill === 'total' ? '/hiscores' : `/hiscores?skill=${l.skill}`,
               label: name(l.skill),
@@ -112,7 +113,6 @@ export function Hiscores() {
                 </table>
               )}
               {data && !you && <p className={s.note}>{t('hiscores.unranked')}</p>}
-              {data && you && !listed && <p className={s.note}>{t('hiscores.unlisted')}</p>}
             </Slot>
           </Panel>
         </section>

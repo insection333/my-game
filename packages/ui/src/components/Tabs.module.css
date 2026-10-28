@@ -75,13 +75,15 @@
   white-space: nowrap;
 }
 
-/* Too many even when compact: rows of tabs a tap wide each. */
+/* Too many even when compact: even rows on a grid, each column at least a tap wide (Tabs.tsx sets
+   how many columns, so the rows share the tabs evenly). */
 .tabs[data-wrap] {
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 6), minmax(0, 1fr));
 }
 
 .tabs[data-wrap] .tab {
-  flex: 1 0 var(--tap);
+  padding: 0 var(--s-1);
 }
 
 /* With nothing shorter to show, a compact strip without icons wraps onto a second row. */
@@ -96,4 +98,25 @@
 
 .tab:hover {
   color: var(--ink);
+}
+
+/* The side variant: on a wide page area, a list down the side of what it switches. */
+@container main (min-width: 720px) {
+  .tabs[data-variant='side'] {
+    flex-direction: column;
+    gap: 0;
+    border-bottom: 0;
+    border-inline-start: 1px solid var(--line);
+  }
+  .tabs[data-variant='side'] .tab {
+    justify-content: flex-start;
+    padding-inline: var(--s-3);
+    border-bottom: 0;
+    margin-inline-start: -1px;
+    border-inline-start: 2px solid transparent;
+  }
+  .tabs[data-variant='side'] .tab[aria-current='page'] {
+    border-inline-start-color: var(--woad);
+    background: var(--woad-soft);
+  }
 }
