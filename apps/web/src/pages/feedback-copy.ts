@@ -1,10 +1,11 @@
 // Feedback as plain text to copy from the admin page and paste elsewhere (to the team, or to Claude to
 // weigh): a line saying what it is, then each note with who sent it, where they stood, the page and the
-// day, newest first.
+// day, newest first. A player's words are quoted line by line, so nothing they wrote can pass for the
+// words around it.
 import { fmt, t } from '@idle-clash/content';
 import type { FeedbackView } from '@idle-clash/contracts';
 
-/** One note: who sent it and where they stood, then their words as they wrote them. */
+/** One note: who sent it and where they stood, then their words as they wrote them, quoted. */
 export function feedbackNote(f: FeedbackView): string {
   const who = t('admin.test.copyWho', {
     name: f.name ?? t('admin.test.someone'),
@@ -13,7 +14,12 @@ export function feedbackNote(f: FeedbackView): string {
     page: f.page,
     date: fmt.date(f.at),
   });
-  return `${who}\n${f.text.trim()}`;
+  const said = f.text
+    .trim()
+    .split('\n')
+    .map((line) => `> ${line}`.trimEnd())
+    .join('\n');
+  return `${who}\n${said}`;
 }
 
 /** Every note, under a line saying what they are. */

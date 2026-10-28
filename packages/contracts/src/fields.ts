@@ -34,3 +34,16 @@ export const Token = z
 
 /** The key a name is unique by: "Rowan" and "rowan" are the same player. */
 export const nameKey = (name: string) => name.toLowerCase();
+
+/** How a name looks at a glance: no two players may share it, so no one passes for another on the
+ *  hiscores ("AshIing", "Ash1ing" and "Ash_ling" all look like Ashling; "Rnorwen" like Morwen). The
+ *  server's migration 0004 computes the same with SQL's replace, in the same order. */
+export const nameLook = (name: string) =>
+  name
+    .toLowerCase()
+    .replace(/[ _-]/g, '')
+    .replace(/rn/g, 'm')
+    .replace(/vv/g, 'w')
+    .replace(/[1i]/g, 'l')
+    .replace(/0/g, 'o')
+    .replace(/5/g, 's');

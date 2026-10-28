@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "f8aa0522-6523-4c46-8803-110a9859dd16",
+  "id": "ac7e1451-38d7-4070-bf20-cad42345b030",
   "prevId": "83709e38-208b-4af6-ac80-c4bef785e170",
   "tables": {
     "email_tokens": {
@@ -257,6 +257,14 @@
           "notNull": true,
           "autoincrement": false
         },
+        "name_look": {
+          "name": "name_look",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "''"
+        },
         "password_hash": {
           "name": "password_hash",
           "type": "text",
@@ -319,6 +327,13 @@
           "name": "players_email",
           "columns": [
             "email"
+          ],
+          "isUnique": false
+        },
+        "players_look": {
+          "name": "players_look",
+          "columns": [
+            "name_look"
           ],
           "isUnique": false
         }
@@ -425,6 +440,13 @@
           "name": "telemetry_type_at",
           "columns": [
             "type",
+            "at"
+          ],
+          "isUnique": false
+        },
+        "telemetry_at": {
+          "name": "telemetry_at",
+          "columns": [
             "at"
           ],
           "isUnique": false

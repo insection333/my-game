@@ -44,5 +44,12 @@ export function limit(ctx: Ctx, reply: FastifyReply, key: string, max: number, w
   }
 }
 
-/** The client's address as the proxy in front of the server reports it. */
-export const ipOf = (req: FastifyRequest) => req.ip;
+/** The client's address as the proxy in front of the server reports it. A request whose address
+ *  cannot be read (no socket, as in a test's injected page) counts as one shared address. */
+export function ipOf(req: FastifyRequest): string {
+  try {
+    return req.ip;
+  } catch {
+    return 'unknown';
+  }
+}

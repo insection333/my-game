@@ -27,6 +27,7 @@ import { hearWatching, WATCH_EVERY_MS } from './game/watching.ts';
 import { Telemetry } from './telemetry.ts';
 import { webRoutes } from './web.ts';
 import { backupsHealth } from './ops/status.ts';
+import { HOUSEKEEPING_EVERY_MS, keepHouse } from './housekeeping.ts';
 
 export interface Built {
   app: FastifyInstance;
@@ -96,6 +97,14 @@ export async function buildApp(
     WATCH_EVERY_MS,
   );
   watching.unref();
+  const housekeeping = setInterval(() => {
+    try {
+      keepHouse(ctx);
+    } catch (err) {
+      app.log.error({ err }, 'housekeeping');
+    }
+  }, HOUSEKEEPING_EVERY_MS);
+  housekeeping.unref();
   app.setNotFoundHandler((_req, reply) => reply.code(404).send({ error: { code: 'notFound' } }));
 
   return {
@@ -103,6 +112,7 @@ export async function buildApp(
     ctx,
     close: async () => {
       clearInterval(watching);
+      clearInterval(housekeeping);
       ctx.live.closeAll();
       await app.close();
       closeDb();

@@ -9,6 +9,8 @@ export const players = sqliteTable(
     name: text('name').notNull(),
     /** The name in lower case: names are unique regardless of case. */
     nameKey: text('name_key').notNull().unique(),
+    /** How the name looks at a glance (contracts' nameLook): no two players share it. */
+    nameLook: text('name_look').notNull().default(''),
     passwordHash: text('password_hash').notNull(),
     createdAt: integer('created_at').notNull(),
     /** Set only once transactional email is switched on and the player adds one. */
@@ -19,7 +21,7 @@ export const players = sqliteTable(
     title: text('title'),
     banner: text('banner'),
   },
-  (t) => [index('players_email').on(t.email)],
+  (t) => [index('players_email').on(t.email), index('players_look').on(t.nameLook)],
 );
 
 /** A signed-in browser. Only the SHA-256 of the token is stored; the token lives in the cookie. */
@@ -56,7 +58,7 @@ export const telemetry = sqliteTable(
     at: integer('at').notNull(),
     data: text('data'),
   },
-  (t) => [index('telemetry_type_at').on(t.type, t.at)],
+  (t) => [index('telemetry_type_at').on(t.type, t.at), index('telemetry_at').on(t.at)],
 );
 
 /** The notices tray: each player's notable events and lane stops, newest kept (the last 100). */

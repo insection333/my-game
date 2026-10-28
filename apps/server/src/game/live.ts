@@ -8,14 +8,22 @@ interface Socket {
 }
 
 const OPEN = 1;
+/** Pages a player may hold open at once: a new one past this closes their oldest. */
+export const PAGES_PER_PLAYER = 6;
 
 export class LiveHub {
   private sockets = new Map<string, Set<Socket>>();
 
+  /** Holds a page open; past the limit, the player's oldest page is closed (a Set keeps its order). */
   add(playerId: string, socket: Socket): void {
     const set = this.sockets.get(playerId) ?? new Set();
     set.add(socket);
     this.sockets.set(playerId, set);
+    for (const old of set) {
+      if (set.size <= PAGES_PER_PLAYER) break;
+      set.delete(old);
+      old.close(4408, 'opened elsewhere');
+    }
   }
 
   remove(playerId: string, socket: Socket): void {

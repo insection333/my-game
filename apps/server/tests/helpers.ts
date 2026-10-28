@@ -58,6 +58,9 @@ export async function server(
     now: () => clock.now,
     adminNames: [],
     backupStatusDir: null,
+    signUpsPerHour: 30,
+    readsPerMinute: 120,
+    pagesPerMinute: 20,
     ...over,
   };
   const built = await buildApp(config, { mailer, features });

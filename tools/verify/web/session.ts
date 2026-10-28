@@ -200,6 +200,11 @@ async function start(): Promise<Served> {
     now: () => Date.now(),
     adminNames: [],
     backupStatusDir: null,
+    signUpsPerHour: 30,
+    // The screenshot run loads every page in three browsers, as the same few players, all from this
+    // machine: far faster than any person, so the paces for reads and new pages are lifted here.
+    readsPerMinute: 1_000_000,
+    pagesPerMinute: 1_000_000,
   });
   await app.listen({ port, host: '127.0.0.1' });
   const cookie = await newcomer(url, 'Newcomer');
