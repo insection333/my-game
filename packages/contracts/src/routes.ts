@@ -5,18 +5,10 @@ import { Command, type AwaySummary, type GameEvent, type State } from '@idle-cla
 import { z } from 'zod';
 import { Email, Password, plainText, PlayerName, RequestId, Token } from './fields.ts';
 import { PASSWORD_MAX } from './limits.ts';
-import { CLOSED_TEST_ROUTES, InviteCode } from './closed-test.ts';
+import { CLOSED_TEST_ROUTES } from './closed-test.ts';
 import { PATHS } from './paths.ts';
 
-export const SignUp = z
-  .object({
-    name: PlayerName,
-    password: Password,
-    ageConfirmed: z.literal(true),
-    /** Needed while the closed test runs (the server's INVITES switch). */
-    invite: InviteCode.optional(),
-  })
-  .strict();
+export const SignUp = z.object({ name: PlayerName, password: Password, ageConfirmed: z.literal(true) }).strict();
 export const SignIn = z.object({ name: plainText(64), password: plainText(PASSWORD_MAX) }).strict();
 export const CommandRequest = z.object({ requestId: RequestId, command: Command }).strict();
 export const FeatureRequest = z.object({ requestId: RequestId, input: z.unknown() }).strict();
@@ -208,8 +200,6 @@ export interface MeResponse {
   email: { enabled: boolean };
   /** Whether this player may open the admin page. */
   admin: boolean;
-  /** Whether signing up needs an invite (the closed test). */
-  invites: boolean;
 }
 /** A player as the admin page lists them. */
 export interface AdminPlayerView {
@@ -293,8 +283,6 @@ export const ErrorCode = z.enum([
   'nameNotAllowed',
   'wrongPassword',
   'notAdmin',
-  'inviteNeeded',
-  'inviteUnknown',
   'serverError',
 ]);
 export type ErrorCode = z.infer<typeof ErrorCode>;

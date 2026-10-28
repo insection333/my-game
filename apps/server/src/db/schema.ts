@@ -88,15 +88,6 @@ export const hiscores = sqliteTable(
   (t) => [primaryKey({ columns: [t.playerId, t.skill] }), index('hiscores_skill_xp').on(t.skill, t.xp)],
 );
 
-/** The closed test (session 18): invites to sign up while invites are required, each used once. */
-export const invites = sqliteTable('invites', {
-  code: text('code').primaryKey(),
-  createdAt: integer('created_at').notNull(),
-  /** The player who signed up with it (cleared, with the code kept spent, if they delete their account). */
-  usedBy: text('used_by'),
-  usedAt: integer('used_at'),
-});
-
 /** Feedback a player sends from Settings: what they wrote and the page they were on. */
 export const feedback = sqliteTable(
   'feedback',

@@ -9,7 +9,6 @@ import { ipOf, limit, type Ctx } from '../context.ts';
 import { players } from '../db/schema.ts';
 import { contractRoute, fail } from '../http.ts';
 import { nameAllowed } from './names.ts';
-import { spendInvite } from '../closed-test.ts';
 import { checkPassword, dummyHash, hashPassword } from './passwords.ts';
 import { SESSION_COOKIE, SESSION_DAYS } from './sessions.ts';
 
@@ -70,7 +69,7 @@ function startSession(ctx: Ctx, reply: FastifyReply, playerId: string) {
 const view = (row: { id: string; name: string }): PlayerView => ({ id: row.id, name: row.name });
 
 export function authRoutes(app: FastifyInstance, ctx: Ctx): void {
-  contractRoute<{ name: string; password: string; invite?: string }>(
+  contractRoute<{ name: string; password: string }>(
     app,
     ROUTES.signUp,
     async ({ req, reply, input }) => {
@@ -86,8 +85,6 @@ export function authRoutes(app: FastifyInstance, ctx: Ctx): void {
       const id = randomUUID();
       try {
         ctx.store.sqlite.transaction(() => {
-          // While the closed test runs, an invite is spent in the same step, or nothing is made.
-          if (ctx.config.invitesRequired) spendInvite(ctx, input.invite, id, now);
           ctx.db.insert(players).values({ id, name: input.name, nameKey: key, passwordHash, createdAt: now }).run();
           ctx.store.create(id, newState(seedFrom(randomInt(2 ** 31)), now), now);
         })();
@@ -139,7 +136,6 @@ export function authRoutes(app: FastifyInstance, ctx: Ctx): void {
         flags: ctx.config.flags,
         email: { enabled: ctx.config.emailEnabled },
         admin: row ? isAdmin(ctx, row.name) : false,
-        invites: ctx.config.invitesRequired,
       } satisfies MeResponse;
     },
     identify(ctx),

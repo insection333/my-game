@@ -1,12 +1,11 @@
-// The closed test's routes (step 18): a tester's feedback from Settings, and the admin page's panel of
-// invites, testers and feedback. Sign-up takes an invite code while invites are required (routes.ts).
+// Feedback and the players' panel (step 18): a player's feedback from Settings, and the admin page's
+// panels of the players (the days they came back, what they aim for) and their feedback.
 import { z } from 'zod';
-import { CONTROL_CHARS, INVITE_PATTERN } from './limits.ts';
+import { CONTROL_CHARS } from './limits.ts';
 import { PATHS } from './paths.ts';
 import type { RouteContract } from './routes.ts';
 
 export const FEEDBACK_MAX = 2000;
-export const INVITE_LENGTH = 12;
 
 /** Feedback is free text over several lines: line breaks and tabs, but no other control characters. */
 export const FeedbackText = z
@@ -24,7 +23,6 @@ export const Feedback = z
       .regex(/^\/[\w\-/?=&.%]*$/),
   })
   .strict();
-export const InviteCode = z.string().regex(INVITE_PATTERN, 'twelve letters and digits');
 
 const route = (r: RouteContract) => r;
 export const CLOSED_TEST_ROUTES = {
@@ -44,23 +42,8 @@ export const CLOSED_TEST_ROUTES = {
     input: null,
     example: null,
   }),
-  adminInvite: route({
-    id: 'adminInvite',
-    method: 'POST',
-    path: PATHS.adminInvite,
-    auth: 'admin',
-    input: null,
-    example: null,
-  }),
 } satisfies Record<string, RouteContract>;
 
-/** An invite as the admin page lists it: its code, when it was made, and who signed up with it. */
-export interface InviteView {
-  code: string;
-  createdAt: number;
-  usedBy: string | null;
-  usedAt: number | null;
-}
 /** A tester as the closed test's panel shows them. */
 export interface TesterView {
   name: string;
@@ -76,17 +59,16 @@ export interface TesterView {
   aims: string[];
 }
 export interface FeedbackView {
+  /** The player's name (null once their account is deleted, though their feedback goes with it). */
   name: string | null;
   at: number;
   page: string;
   text: string;
+  /** Where the player stood when the admin looked: context for whoever reads it. */
+  totalLevel: number;
+  daysPlayed: number;
 }
 export interface AdminTestResponse {
-  invitesRequired: boolean;
-  invites: InviteView[];
   testers: TesterView[];
   feedback: FeedbackView[];
-}
-export interface AdminInviteResponse {
-  code: string;
 }

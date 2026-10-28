@@ -1,12 +1,6 @@
-// The closed test's words (session 18): the invite on the welcome page, feedback in Settings, and the
-// admin page's panel. Part of the strings file (en.ts).
+// Feedback in Settings, and the admin page's panels of the players and their feedback (session 18;
+// invites went in session 19). Part of the strings file (en.ts).
 export const closedTest = {
-  'welcome.invite': 'Invite code',
-  'welcome.invite.hint': 'Idle Clash is in a closed test: your invite came with a code.',
-  'error.invite': 'An invite code is twelve letters and digits.',
-  'error.inviteNeeded': 'Enter the invite code you were sent.',
-  'error.inviteUnknown': 'That invite code is not one we know, or it has been used.',
-
   'feedback.title': 'Send feedback',
   'feedback.lead': 'What you liked, what puzzled you, what went wrong: it reaches the team with the page you were on.',
   'feedback.label': 'Your feedback',
@@ -14,15 +8,8 @@ export const closedTest = {
   'feedback.sent': 'Sent. Thank you: it is with the team.',
   'feedback.empty': 'Write something first.',
 
-  'admin.test.invitesOn': 'Signing up takes an invite.',
-  'admin.test.invitesOff': 'Signing up is open to anyone: invites are off.',
-  'admin.test.invite': 'Make an invite',
-  'admin.test.invites': 'Invites',
-  'admin.test.noInvites': 'No invites made yet.',
-  'admin.test.unused': 'Not used yet',
-  'admin.test.usedBy': 'Used by {name}, {date}',
-  'admin.test.usedGone': 'Used, account since deleted',
-  'admin.test.testers': 'Testers',
+  'admin.test.testers': 'Players',
+  'admin.test.noPlayers': 'No players yet.',
   'admin.test.days': 'Days played: {days}',
   'admin.test.dayOne': 'Days played: 1',
   'admin.test.day2': 'Back on day 2',
@@ -37,4 +24,15 @@ export const closedTest = {
   'admin.test.noFeedback': 'No feedback yet.',
   'admin.test.from': '{name}, on {page}, {date}',
   'admin.test.someone': 'A deleted account',
+  'admin.test.copy': 'Copy',
+  'admin.test.copyAll': 'Copy all',
+  'admin.test.copied': 'Copied',
+  'admin.test.copyByHand': 'This browser would not copy: the text is selected below, ready to copy.',
+  'admin.test.copyHead':
+    'Feedback from Idle Clash players, newest first ({count} notes). For each: is there merit in it, and what would act on it?',
+  'admin.test.copyHeadOne':
+    'Feedback from an Idle Clash player (1 note). Is there merit in it, and what would act on it?',
+  'admin.test.copyWho': '{name}, total level {level}, {days}, on {page}, {date}:',
+  'admin.test.copyDays': '{days} days played',
+  'admin.test.copyDayOne': '1 day played',
 };

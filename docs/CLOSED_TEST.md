@@ -1,7 +1,9 @@
 # The closed test
 
 The one test with players before launch (the owner's decision, 26 October 2026; `docs/EXPANSION.md`).
-Everything it needs is built (step 18); it starts when the owner puts the server up and says go.
+Everything it needs is built (step 18); it starts when the owner puts the server up and says go. The
+game is not advertised until launch, so the players are the owner's friends, sent the address by the
+owner: signing up is open, and there are no invites (taken out in session 19, the owner's call).
 
 ## What it must show
 
@@ -12,9 +14,7 @@ puzzled them, what they enjoyed, what felt slow, and anything that broke.
 ## Before it starts
 
 1. The server is up (`OPERATIONS.md`), the owner has signed up and is named in `ADMIN_NAMES`.
-2. Set the GitHub variable `INVITES` to `true` and deploy (any commit to `main` does). From then on,
-   signing up takes an invite; anyone already signed up still signs in.
-3. On the admin page, **Make an invite** for each tester. Each code works once; the panel shows who used it.
+2. Send each friend the message below.
 
 ## Who
 
@@ -29,12 +29,11 @@ Everyone must be 13 or older (the terms say so, and the sign-up asks).
 
 ## The message to send each tester
 
-> You're invited to the closed test of Idle Clash, a game you play in a few minutes here and there:
+> You're invited to try Idle Clash before anyone else, a game you play in a few minutes here and there:
 > your workers keep gathering, smithing and fighting while you're away.
 >
 > 1. Go to https://idleclash.com and choose Create account.
-> 2. Your invite code is: **(code)**
-> 3. Play as much or as little as you like for two weeks. Settings has **Send feedback**: use it for
+> 2. Play as much or as little as you like for two weeks. Settings has **Send feedback**: use it for
 >    anything at all, the moment you think of it.
 >
 > We'll ask you three short questions on your third day. Questions or trouble: admin@idleclash.com
@@ -46,13 +45,15 @@ the first deeds and titles, where the year's simulation says the game's shape ch
 
 ## What to watch, each day
 
-The admin page's **Closed test** panel:
+The admin page's **Players** and **Feedback** panels:
 
 - **Back on day 2 / day 3** for each tester. Anyone not back on day 2: write to them that day and ask,
   kindly, what made them stop. That answer is worth more than any number.
 - **Aiming for:** what the Hearth's goals ask of each tester now. Compare it with their own answer on
   day 3: if they name something else, the goals are not pointing where players look.
-- **Feedback**, newest first. Answer each within a day.
+- **Feedback**, newest first. Answer each within a day. **Copy all** (or **Copy** on one note) gives
+  plain text with who sent it, their total level and days played, the page and the day: paste it into
+  a session with Claude to weigh whether each note has merit and act on those that do.
 - **Days played** and **total level**: a tester far behind the others may be stuck rather than busy.
 
 The server's error reports and lane stops are counted in telemetry; a lane that stops for the same
@@ -90,6 +91,6 @@ people to judge:
 
 ## After
 
-Set `INVITES` back to `false` at launch (or keep it on for a slower start). Testers keep their accounts
+Testers keep their accounts
 and saves: they earned them. Each change the test asks for is made the usual way: a session, verify
 green, and a line in the changelog.

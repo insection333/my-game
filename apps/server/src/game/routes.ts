@@ -26,7 +26,7 @@ import { TOTAL } from './hiscores.ts';
 import { hear } from './watching.ts';
 import { contractRoute, fail } from '../http.ts';
 import { identify, requirePlayer } from '../auth/routes.ts';
-import { noteVisit } from '../closed-test.ts';
+import { noteVisit } from '../feedback.ts';
 
 export function gameRoutes(app: FastifyInstance, ctx: Ctx, features: readonly Feature[]): void {
   const now = () => ctx.config.now();
