@@ -106,14 +106,17 @@ describe('sign in and out', () => {
     expect([unknown.statusCode, unknown.body]).toEqual([wrong.statusCode, wrong.body]);
   });
 
-  it('allows ten tries a name in 15 minutes, from any address', async () => {
+  it('allows ten tries a name in 15 minutes from one address, and a hundred from all of them', async () => {
     s = await server();
     await signUp(s, 'Rowan');
-    for (let i = 0; i < 10; i++) expect((await signIn('Rowan', 'wrong guess', `10.0.1.${i}`)).statusCode).toBe(401);
-    const blocked = await signIn('Rowan', PW, '10.0.2.1');
+    for (let i = 0; i < 10; i++) expect((await signIn('Rowan', 'wrong guess', '10.0.1.1')).statusCode).toBe(401);
+    const blocked = await signIn('Rowan', PW, '10.0.1.1');
     expect([blocked.statusCode, code(blocked)]).toEqual([429, 'tooManyTries']);
+    // A crowd of addresses is held too.
+    for (let i = 0; i < 90; i++) await signIn('Rowan', 'wrong guess', `10.0.${2 + (i >> 4)}.${i & 15}`);
+    expect(code(await signIn('Rowan', PW, '10.0.99.1'))).toBe('tooManyTries');
     s.clock.now += 15 * 60_000 + 1;
-    expect((await signIn('Rowan', PW, '10.0.2.1')).statusCode).toBe(200);
+    expect((await signIn('Rowan', PW, '10.0.1.1')).statusCode).toBe(200);
   });
 
   it('allows twenty tries an address in 15 minutes, across names', async () => {
@@ -155,7 +158,6 @@ describe('sign in and out', () => {
       flags: s.config.flags,
       email: { enabled: false },
       admin: false,
-      invites: false,
     });
     const cookie = await signUp(s, 'Rowan');
     const me = JSON.parse((await s.app.inject({ method: 'GET', url: '/api/me', headers: { cookie } })).body) as {

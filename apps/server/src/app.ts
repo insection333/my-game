@@ -19,7 +19,7 @@ import { gameRoutes } from './game/routes.ts';
 import { contractRoute, harden } from './http.ts';
 import { RateLimiter } from './security.ts';
 import { adminRoutes } from './admin/routes.ts';
-import { closedTestRoutes } from './closed-test.ts';
+import { feedbackRoutes } from './feedback.ts';
 import { accountRoutes } from './auth/account.ts';
 import { Hiscores } from './game/hiscores.ts';
 import { Notices } from './game/notices.ts';
@@ -27,6 +27,7 @@ import { hearWatching, WATCH_EVERY_MS } from './game/watching.ts';
 import { Telemetry } from './telemetry.ts';
 import { webRoutes } from './web.ts';
 import { backupsHealth } from './ops/status.ts';
+import { HOUSEKEEPING_EVERY_MS, keepHouse } from './housekeeping.ts';
 
 export interface Built {
   app: FastifyInstance;
@@ -87,7 +88,7 @@ export async function buildApp(
   authRoutes(app, ctx);
   accountRoutes(app, ctx);
   adminRoutes(app, ctx);
-  closedTestRoutes(app, ctx, features);
+  feedbackRoutes(app, ctx, features);
   if (config.emailEnabled) emailRoutes(app, ctx);
   gameRoutes(app, ctx, features);
   if (config.webDist) webRoutes(app, config.webDist);
@@ -96,6 +97,14 @@ export async function buildApp(
     WATCH_EVERY_MS,
   );
   watching.unref();
+  const housekeeping = setInterval(() => {
+    try {
+      keepHouse(ctx);
+    } catch (err) {
+      app.log.error({ err }, 'housekeeping');
+    }
+  }, HOUSEKEEPING_EVERY_MS);
+  housekeeping.unref();
   app.setNotFoundHandler((_req, reply) => reply.code(404).send({ error: { code: 'notFound' } }));
 
   return {
@@ -103,6 +112,7 @@ export async function buildApp(
     ctx,
     close: async () => {
       clearInterval(watching);
+      clearInterval(housekeeping);
       ctx.live.closeAll();
       await app.close();
       closeDb();

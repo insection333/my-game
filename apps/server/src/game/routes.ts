@@ -20,13 +20,13 @@ import {
   type GameEvent,
   type SaveDoc,
 } from '@idle-clash/kernel';
-import type { FastifyInstance } from 'fastify';
-import { limit, type Ctx } from '../context.ts';
+import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
+import { ipOf, limit, type Ctx } from '../context.ts';
 import { TOTAL } from './hiscores.ts';
 import { hear } from './watching.ts';
 import { contractRoute, fail } from '../http.ts';
 import { identify, requirePlayer } from '../auth/routes.ts';
-import { noteVisit } from '../closed-test.ts';
+import { noteVisit } from '../feedback.ts';
 
 export function gameRoutes(app: FastifyInstance, ctx: Ctx, features: readonly Feature[]): void {
   const now = () => ctx.config.now();
@@ -56,24 +56,35 @@ export function gameRoutes(app: FastifyInstance, ctx: Ctx, features: readonly Fe
     ctx.hiscores.update(playerId, doc.state, at);
   };
 
+  /** Reads come at a pace: a page reads a few times a minute, a script reading without pause is held. */
+  const reading = (reply: FastifyReply, playerId: string) =>
+    limit(ctx, reply, `read:${playerId}`, ctx.config.readsPerMinute, 60_000);
+
   contractRoute(
     app,
     ROUTES.game,
-    async ({ req }) => ctx.queue.run(req.playerId!, () => current(req.playerId!, true)),
+    async ({ req, reply }) => {
+      reading(reply, req.playerId!);
+      return ctx.queue.run(req.playerId!, () => current(req.playerId!, true));
+    },
     requirePlayer(ctx),
   );
 
   contractRoute(
     app,
     ROUTES.notices,
-    ({ req }) => ({ notices: ctx.notices.list(req.playerId!) }) satisfies NoticesResponse,
+    ({ req, reply }) => {
+      reading(reply, req.playerId!);
+      return { notices: ctx.notices.list(req.playerId!) } satisfies NoticesResponse;
+    },
     requirePlayer(ctx),
   );
 
   contractRoute(
     app,
     ROUTES.hiscores,
-    async ({ req }) => {
+    async ({ req, reply }) => {
+      reading(reply, req.playerId!);
       // Your own entry as of now, even if the save was last written a while ago.
       await ctx.queue.run(req.playerId!, () => hear(ctx, req.playerId!, now()));
       return {
@@ -155,7 +166,15 @@ export function gameRoutes(app: FastifyInstance, ctx: Ctx, features: readonly Fe
 
   // The live channel. A page that is not signed in is closed at once with code 4401.
   const who = identify(ctx);
-  app.get(LIVE_PATH, { websocket: true }, (socket, req) => {
+  const opening = async (req: FastifyRequest, reply: FastifyReply) => {
+    const r = ctx.limiter.take(`live:${ipOf(req)}`, ctx.config.pagesPerMinute, 60_000, now());
+    if (!r.ok)
+      await reply
+        .code(429)
+        .header('retry-after', String(Math.ceil(r.retryAfterMs / 1000)))
+        .send();
+  };
+  app.get(LIVE_PATH, { websocket: true, preValidation: opening }, (socket, req) => {
     try {
       who(req);
     } catch {

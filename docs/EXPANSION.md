@@ -164,7 +164,7 @@ Each step ends only when its proof is shown, verify is green on GitHub and the w
 | 15 | **Deeds and titles** | Every deed can be done, and its text comes from its numbers; titles show on the hiscores |
 | 16 | **Expeditions and bosses** | No two runs alike in 1,000 draws; any length pays at least as well as the lanes |
 | 17 | **Kindling** (in place of Rekindling) | A Kindling takes about a quarter of the first climb; each Path pays what it says; nothing is taken away |
-| 18 | **The year:** a 365-day simulation of several kinds of player, balance across every skill, the closed test made ready | Every year target holds; then the closed test with a handful of players. **Built:** the steady and light players' year on the real engine in verify (`.verify/year.md`, GAME_DESIGN.md section 4); goals that follow the lanes; a day's goal paid the next morning; deeds and titles over the whole year; an expedition's record that can no longer cost a player their marks and relics; invites, feedback and the closed test's panel (`docs/CLOSED_TEST.md`) |
+| 18 | **The year:** a 365-day simulation of several kinds of player, balance across every skill, the closed test made ready | Every year target holds; then the closed test with a handful of players. **Built:** the steady and light players' year on the real engine in verify (`.verify/year.md`, GAME_DESIGN.md section 4); goals that follow the lanes; a day's goal paid the next morning; deeds and titles over the whole year; an expedition's record that can no longer cost a player their marks and relics; feedback and the closed test's panel (`docs/CLOSED_TEST.md`); invites were built and then taken out in session 19, as the game is shared only with friends until launch |
 
 ## 6. Art
 

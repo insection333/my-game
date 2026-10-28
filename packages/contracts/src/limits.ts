@@ -15,7 +15,3 @@ export const nameOk = (name: string): boolean =>
   name.length >= NAME_MIN && name.length <= NAME_MAX && NAME_PATTERN.test(name);
 export const passwordOk = (password: string): boolean =>
   password.length >= PASSWORD_MIN && password.length <= PASSWORD_MAX && !CONTROL_CHARS.test(password);
-
-/** An invite to the closed test: twelve letters and digits that cannot be mistaken for each other. */
-export const INVITE_PATTERN = /^[a-hj-km-np-z2-9]{12}$/;
-export const inviteOk = (code: string) => INVITE_PATTERN.test(code);

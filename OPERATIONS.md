@@ -27,8 +27,8 @@ curl -fsSL https://raw.githubusercontent.com/insection333/my-game/main/tools/ops
 It prints three values for GitHub's secrets (repository Settings, Secrets and variables, Actions):
 `DEPLOY_HOST`, `DEPLOY_KNOWN_HOSTS` and `DEPLOY_SSH_KEY` (shown once). The deploy also reads
 `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID` and `R2_SECRET_ACCESS_KEY` (the Cloudflare R2 token for the
-`idleclash-backups` bucket), and the variables `ADMIN_NAMES` and `INVITES` (`true` while the closed
-test runs: signing up then takes an invite made on the admin page; see `docs/CLOSED_TEST.md`). Point `idleclash.com` and
+`idleclash-backups` bucket), and the variable `ADMIN_NAMES` (the admins' player names, comma-separated; sign up first, then list
+the name). Point `idleclash.com` and
 `www.idleclash.com` (A records) at the server, then run the deploy.
 
 ## Deploying

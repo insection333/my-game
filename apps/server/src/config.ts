@@ -22,10 +22,14 @@ export interface Config {
   now: () => number;
   /** Players who may open the admin page, by name (any case). */
   adminNames: string[];
+  /** Accounts the whole server makes in an hour, however many addresses ask (SIGNUPS_PER_HOUR). */
+  signUpsPerHour: number;
+  /** Reads of the game, notices and hiscores a player may make in a minute (READS_PER_MINUTE). */
+  readsPerMinute: number;
+  /** New live pages one address may open in a minute (PAGES_PER_MINUTE). */
+  pagesPerMinute: number;
   /** Where the backup and the restore rehearsal mark their success; null where there are none. */
   backupStatusDir: string | null;
-  /** The closed test: signing up takes an invite made on the admin page (INVITES=true). */
-  invitesRequired: boolean;
 }
 
 /** Flags from FEATURES: unset keeps each feature's own flag; "all" turns every built feature on. */
@@ -38,6 +42,12 @@ export function flagsFrom(value: string | undefined): Record<string, boolean> {
   );
   return Object.fromEntries(FEATURES.map((f) => [f.id, on.has('all') || on.has(f.id) || (!value && f.flag.on)]));
 }
+
+/** A pace from the environment: a whole number of at least 1, or the default (a typo never lifts a limit). */
+const pace = (value: string | undefined, fallback: number) => {
+  const n = Number(value);
+  return value !== undefined && Number.isSafeInteger(n) && n >= 1 ? n : fallback;
+};
 
 export function configFromEnv(env: NodeJS.ProcessEnv = process.env): Config {
   return {
@@ -58,6 +68,8 @@ export function configFromEnv(env: NodeJS.ProcessEnv = process.env): Config {
       .map((s) => s.trim())
       .filter(Boolean),
     backupStatusDir: env.BACKUP_STATUS_DIR ?? null,
-    invitesRequired: env.INVITES === 'true',
+    signUpsPerHour: pace(env.SIGNUPS_PER_HOUR, 30),
+    readsPerMinute: pace(env.READS_PER_MINUTE, 120),
+    pagesPerMinute: pace(env.PAGES_PER_MINUTE, 20),
   };
 }

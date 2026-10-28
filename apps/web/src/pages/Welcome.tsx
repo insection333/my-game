@@ -1,11 +1,11 @@
 // The welcome page: what the game is, and creating an account or signing in. Shown at /welcome
 // (create) and /welcome/sign-in, outside the shell, to anyone not signed in.
 import { CONTACT_ADDRESS, fmt, t } from '@idle-clash/content';
-import { INVITE_LENGTH, NAME_MAX } from '@idle-clash/contracts';
+import { NAME_MAX } from '@idle-clash/contracts';
 import { Button, Field, ItemIcon, MarchScene, Tabs, TextLink } from '@idle-clash/ui';
 import { useState, type FormEvent } from 'react';
 import { ApiError } from '../api.ts';
-import { account, loadGame, useSession } from '../game/session.ts';
+import { account, loadGame } from '../game/session.ts';
 import { navigate } from '../router.ts';
 import { check, type Errors } from './welcome-check.ts';
 import s from './welcome.module.css';
@@ -24,10 +24,6 @@ function refusal(err: unknown): string {
       return t('error.wrongNameOrPassword');
     case 'banned':
       return t('error.banned');
-    case 'inviteNeeded':
-      return t('error.inviteNeeded');
-    case 'inviteUnknown':
-      return t('error.inviteUnknown');
     case 'offline':
       return t('error.offline');
     case 'tooManyTries':
@@ -44,24 +40,18 @@ export function Welcome({ path, next }: { path: string; next: string }) {
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [age, setAge] = useState(false);
-  const [invite, setInvite] = useState('');
-  // While the closed test runs, signing up takes the invite a tester was sent.
-  const invites = useSession().invites;
   const [errors, setErrors] = useState<Errors>({});
   const [working, setWorking] = useState(false);
   const keep = next !== '/' ? `?next=${encodeURIComponent(next)}` : '';
 
   const submit = async (e: FormEvent) => {
     e.preventDefault();
-    const code = invite.trim().toLowerCase();
-    const found = check(create, name, password, age, invites ? code : null);
+    const found = check(create, name, password, age);
     setErrors(found);
     if (Object.keys(found).length) return;
     setWorking(true);
     try {
-      await (create
-        ? account.signUp(name.trim(), password, invites ? code : undefined)
-        : account.signIn(name.trim(), password));
+      await (create ? account.signUp(name.trim(), password) : account.signIn(name.trim(), password));
       navigate(next);
     } catch (err) {
       setErrors({ form: refusal(err) });
@@ -97,20 +87,6 @@ export function Welcome({ path, next }: { path: string; next: string }) {
         />
         {/* Typing a name means a sign-in is coming: fetch the game's part of the page meanwhile. */}
         <form className={s.form} onSubmit={(e) => void submit(e)} onFocus={prefetch} noValidate>
-          {create && invites && (
-            <Field
-              label={t('welcome.invite')}
-              hint={t('welcome.invite.hint')}
-              error={errors.invite}
-              value={invite}
-              onChange={(e) => setInvite(e.target.value)}
-              autoComplete="off"
-              autoCapitalize="none"
-              spellCheck={false}
-              maxLength={INVITE_LENGTH + 4}
-              required
-            />
-          )}
           <Field
             label={t('welcome.name')}
             hint={create ? t('welcome.name.hint') : undefined}

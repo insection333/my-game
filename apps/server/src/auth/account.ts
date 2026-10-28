@@ -1,14 +1,14 @@
 // Deleting an account (the brief: "an account and its data can be deleted"). With the password and a
 // confirmation, everything the server holds for the player goes at once: the account, its sessions
 // and email tokens, the save and every damaged copy, notices, hiscores, telemetry, and the feedback and
-// visits of the closed test. Nothing stays.
+// visits. Nothing stays.
 import { ROUTES } from '@idle-clash/contracts';
 import { eq, sql } from 'drizzle-orm';
 import type { FastifyInstance } from 'fastify';
 import { limit, type Ctx } from '../context.ts';
 import { emailTokens, players, sessions, telemetry } from '../db/schema.ts';
 import { contractRoute, fail } from '../http.ts';
-import { eraseTester } from '../closed-test.ts';
+import { eraseFeedback } from '../feedback.ts';
 import { checkPassword } from './passwords.ts';
 import { requirePlayer } from './routes.ts';
 import { SESSION_COOKIE } from './sessions.ts';
@@ -26,7 +26,7 @@ export function erase(ctx: Ctx, playerId: string): void {
       .delete(telemetry)
       .where(sql`instr(${telemetry.data}, ${playerId}) > 0`)
       .run();
-    eraseTester(ctx, playerId);
+    eraseFeedback(ctx, playerId);
     ctx.notices.remove(playerId);
     ctx.hiscores.remove(playerId);
     ctx.store.remove(playerId);

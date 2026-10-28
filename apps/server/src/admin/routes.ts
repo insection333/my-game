@@ -3,29 +3,30 @@
 // each action is recorded in telemetry by player id.
 import {
   nameKey,
+  nameLook,
   ROUTES,
   type AdminPlayersResponse,
   type AdminPlayerView,
   type AdminResetResponse,
   type AdminSaveResponse,
 } from '@idle-clash/contracts';
-import { and, asc, eq, sql } from 'drizzle-orm';
+import { asc, eq, sql } from 'drizzle-orm';
 import type { FastifyInstance } from 'fastify';
 import { randomInt } from 'node:crypto';
 import { hashPassword } from '../auth/passwords.ts';
-import { isAdmin, requireAdmin } from '../auth/routes.ts';
+import { isAdmin, nameHeld, requireAdmin } from '../auth/routes.ts';
 import type { Ctx } from '../context.ts';
-import { hiscores, players } from '../db/schema.ts';
+import { players } from '../db/schema.ts';
 import { contractRoute, fail } from '../http.ts';
+import { totalLevelOf } from '../game/standing.ts';
 
-const view = (ctx: Ctx, p: typeof players.$inferSelect): AdminPlayerView => {
-  const total = ctx.db
-    .select({ level: hiscores.level })
-    .from(hiscores)
-    .where(and(eq(hiscores.playerId, p.id), eq(hiscores.skill, 'total')))
-    .get();
-  return { id: p.id, name: p.name, createdAt: p.createdAt, bannedAt: p.bannedAt, totalLevel: total?.level ?? 7 };
-};
+const view = (ctx: Ctx, p: typeof players.$inferSelect): AdminPlayerView => ({
+  id: p.id,
+  name: p.name,
+  createdAt: p.createdAt,
+  bannedAt: p.bannedAt,
+  totalLevel: totalLevelOf(ctx, p.id),
+});
 
 const playerOf = (ctx: Ctx, id: string) => {
   const row = ctx.db.select().from(players).where(eq(players.id, id)).get();
@@ -78,10 +79,12 @@ export function adminRoutes(app: FastifyInstance, ctx: Ctx): void {
       playerOf(ctx, input.playerId);
       // Renaming someone into a name on the admin list would make them an admin.
       if (isAdmin(ctx, input.name)) throw fail(422, 'nameNotAllowed');
-      const key = nameKey(input.name);
-      const taken = ctx.db.select({ id: players.id }).from(players).where(eq(players.nameKey, key)).get();
-      if (taken && taken.id !== input.playerId) throw fail(409, 'nameTaken');
-      ctx.db.update(players).set({ name: input.name, nameKey: key }).where(eq(players.id, input.playerId)).run();
+      if (nameHeld(ctx, input.name, input.playerId)) throw fail(409, 'nameTaken');
+      ctx.db
+        .update(players)
+        .set({ name: input.name, nameKey: nameKey(input.name), nameLook: nameLook(input.name) })
+        .where(eq(players.id, input.playerId))
+        .run();
       record('rename', req.playerId!, input.playerId);
       return view(ctx, playerOf(ctx, input.playerId));
     },

@@ -206,7 +206,7 @@ Anyone not signed in sees this page instead of the shell, at any address; afterw
 | # | Section (slot) | Filled by | Notes |
 | --- | --- | --- | --- |
 | 1 | `welcome.intro` | the shell | The name, one sentence on what the game is, and the loop it is built on drawn as four icons (ore, bar, sword, foe) |
-| 2 | `welcome.form` | the shell | Tabs for Create account and Sign in. Create: name, password, "I am 13 or older", one button; while the closed test runs, the invite code first, with a line on why. Sign in: name, password, one button, and how a forgotten password is reset. Each field says what it needs; a refusal says why, in place |
+| 2 | `welcome.form` | the shell | Tabs for Create account and Sign in. Create: name, password, "I am 13 or older", one button. Sign in: name, password, one button, and how a forgotten password is reset. Each field says what it needs; a refusal says why, in place |
 
 - **At 390:** the intro, then the form, both whole. **At 1,440:** the intro and the form side by side. Verify opens these views signed out.
 
@@ -257,7 +257,7 @@ At `/admin`, for players named in the server's admin list only (anyone else sees
 | --- | --- | --- | --- |
 | 1 | `admin.players` | the shell | Find a player by name: name, when they joined, total level, Banned; Open |
 | 2 | `admin.player` | the shell | The player opened: rename, ban or unban, check and mend the save, set a new password (shown once, to pass on), what was repaired, and the save itself in a scrolling box |
-| 3 | `admin.test` | the shell | The closed test (session 18), under the player search: whether signing up takes an invite; Make an invite (the code shown to pass on) and every invite with who used it; each tester with when they joined, the days they played, Back on day 2 and day 3, total level and what the Hearth's goals ask of them; the feedback sent from Settings, newest first. Each list scrolls in its own box |
+| 3 | `admin.test` | the shell | The players (sessions 18 and 19), under the player search: each player with when they joined, the days they played, Back on day 2 and day 3, total level and what the Hearth's goals ask of them; the feedback sent from Settings, newest first, each note with Copy and the panel with Copy all (plain text that says who sent it, their total level and days played, the page and the day; where the browser refuses, the text is shown selected to copy by hand). Each list scrolls in its own box |
 
 **Visible without scrolling** (checked by verify at 390 × 844 and 1,440 × 900; a slot no built feature fills yet is skipped):
 

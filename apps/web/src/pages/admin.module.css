@@ -138,3 +138,31 @@
   flex-wrap: wrap;
   gap: var(--s-1);
 }
+
+.noteHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-1) var(--s-2);
+}
+
+.copy {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-1) var(--s-2);
+}
+
+.manual {
+  display: grid;
+  gap: var(--s-1);
+  flex-basis: 100%;
+}
+
+.manual textarea {
+  width: 100%;
+  min-width: 0;
+  font: inherit;
+  font-size: var(--t-small);
+}

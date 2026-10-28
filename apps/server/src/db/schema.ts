@@ -9,6 +9,8 @@ export const players = sqliteTable(
     name: text('name').notNull(),
     /** The name in lower case: names are unique regardless of case. */
     nameKey: text('name_key').notNull().unique(),
+    /** How the name looks at a glance (contracts' nameLook): no two players share it. */
+    nameLook: text('name_look').notNull().default(''),
     passwordHash: text('password_hash').notNull(),
     createdAt: integer('created_at').notNull(),
     /** Set only once transactional email is switched on and the player adds one. */
@@ -19,7 +21,7 @@ export const players = sqliteTable(
     title: text('title'),
     banner: text('banner'),
   },
-  (t) => [index('players_email').on(t.email)],
+  (t) => [index('players_email').on(t.email), index('players_look').on(t.nameLook)],
 );
 
 /** A signed-in browser. Only the SHA-256 of the token is stored; the token lives in the cookie. */
@@ -56,7 +58,7 @@ export const telemetry = sqliteTable(
     at: integer('at').notNull(),
     data: text('data'),
   },
-  (t) => [index('telemetry_type_at').on(t.type, t.at)],
+  (t) => [index('telemetry_type_at').on(t.type, t.at), index('telemetry_at').on(t.at)],
 );
 
 /** The notices tray: each player's notable events and lane stops, newest kept (the last 100). */
@@ -87,15 +89,6 @@ export const hiscores = sqliteTable(
   },
   (t) => [primaryKey({ columns: [t.playerId, t.skill] }), index('hiscores_skill_xp').on(t.skill, t.xp)],
 );
-
-/** The closed test (session 18): invites to sign up while invites are required, each used once. */
-export const invites = sqliteTable('invites', {
-  code: text('code').primaryKey(),
-  createdAt: integer('created_at').notNull(),
-  /** The player who signed up with it (cleared, with the code kept spent, if they delete their account). */
-  usedBy: text('used_by'),
-  usedAt: integer('used_at'),
-});
 
 /** Feedback a player sends from Settings: what they wrote and the page they were on. */
 export const feedback = sqliteTable(

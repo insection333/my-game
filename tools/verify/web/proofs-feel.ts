@@ -177,7 +177,8 @@ async function cacheOpens(served: Served, problems: string[]) {
     step = 'opening it shows what it held';
     await page.getByRole('button', { name: 'Open cache' }).click();
     const moment = page.locator('[data-ui="Moment"]', { hasText: /cache: [\d,]+ gold/ });
-    await moment.waitFor({ timeout: 5_000 });
+    // As long as the goal itself was given: a runner busy with three browsers can take seconds.
+    await moment.waitFor({ timeout: 10_000 });
     if (!(await moment.locator('[data-icon="supply-cache"]').count()))
       problems.push('Caches: the moment does not show the cache');
   } catch (err) {
