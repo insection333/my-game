@@ -8,7 +8,7 @@ export const closedTest = {
   'feedback.sent': 'Sent. Thank you: it is with the team.',
   'feedback.empty': 'Write something first.',
 
-  'admin.test.testers': 'Players',
+  'admin.test.testers': 'Player activity',
   'admin.test.noPlayers': 'No players yet.',
   'admin.test.days': 'Days played: {days}',
   'admin.test.dayOne': 'Days played: 1',

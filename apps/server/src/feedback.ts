@@ -10,7 +10,8 @@ import { and, desc, eq, lt } from 'drizzle-orm';
 import type { FastifyInstance } from 'fastify';
 import { isAdmin, requireAdmin, requirePlayer } from './auth/routes.ts';
 import { limit, type Ctx } from './context.ts';
-import { feedback, hiscores, players, visits } from './db/schema.ts';
+import { feedback, players, visits } from './db/schema.ts';
+import { totalLevelOf } from './game/standing.ts';
 import { contractRoute } from './http.ts';
 
 const HOUR = 3_600_000;
@@ -88,12 +89,7 @@ export function feedbackRoutes(app: FastifyInstance, ctx: Ctx, features: readonl
         .all()
         .map((v) => v.day),
     );
-  const totalOf = (playerId: string) =>
-    ctx.db
-      .select({ level: hiscores.level })
-      .from(hiscores)
-      .where(and(eq(hiscores.playerId, playerId), eq(hiscores.skill, 'total')))
-      .get()?.level ?? 0;
+  const totalOf = (playerId: string) => totalLevelOf(ctx, playerId);
 
   contractRoute(
     app,

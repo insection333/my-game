@@ -200,9 +200,9 @@ async function start(): Promise<Served> {
     now: () => Date.now(),
     adminNames: [],
     backupStatusDir: null,
-    signUpsPerHour: 30,
-    // The screenshot run loads every page in three browsers, as the same few players, all from this
-    // machine: far faster than any person, so the paces for reads and new pages are lifted here.
+    // The screenshot run makes its players in a minute and loads every page in three browsers, as the
+    // same few players, all from this machine: far faster than any person, so the paces are lifted here.
+    signUpsPerHour: 1_000_000,
     readsPerMinute: 1_000_000,
     pagesPerMinute: 1_000_000,
   });
@@ -230,6 +230,19 @@ async function start(): Promise<Served> {
   ctx.config.adminNames.push('Veteran');
   // Others on the hiscores, so the ladders read as they will with players on them.
   for (const [i, name] of CROWD.entries()) await settle(name, (s) => crowd(s, i));
+  // Feedback on the admin page, so its notes and Copy buttons are seen at every width.
+  const say = (c: { name: string; value: string }, text: string, page: string) =>
+    fetch(`${url}/api/feedback`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', origin: url, cookie: `${c.name}=${c.value}` },
+      body: JSON.stringify({ text, page }),
+    });
+  await say(
+    eld,
+    'The Ashen Peaks felt slow until I found the whetstones.\nMaybe the Combat page could point to them?',
+    '/combat',
+  );
+  await say(kpr, 'Love the Kindling flames on the seals.', '/skills/woodcutting');
   return {
     url,
     cookie,

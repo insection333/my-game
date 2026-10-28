@@ -3,6 +3,7 @@
 // what they are aiming for; and deleting an account takes its feedback and visits with it. Signing up
 // takes no invite: the game is shared with friends by word of mouth.
 import type { AdminTestResponse } from '@idle-clash/contracts';
+import { allSkills } from '@idle-clash/features';
 import { afterEach, describe, expect, it } from 'vitest';
 import { FEEDBACK_PACE } from '../src/feedback.ts';
 import { code, post, server, signUp, signUpAdmin, type TestServer } from './helpers.ts';
@@ -50,6 +51,20 @@ describe('feedback and the players’ panel', () => {
         daysPlayed: 1,
       },
     ]);
+  });
+
+  it('gives a player’s true total level, even before their first look at the game', async () => {
+    s = await server();
+    const admin = await signUpAdmin(s, 'Keeper');
+    const player = await signUp(s, 'Ashling');
+    await send(player, 'Straight to feedback');
+    const newcomer = allSkills().length;
+    expect((await panel(admin)).feedback[0].totalLevel).toBe(newcomer);
+    expect((await panel(admin)).testers.find((t) => t.name === 'Ashling')?.totalLevel).toBe(newcomer);
+    const found = JSON.parse((await post(s, '/api/admin/players', { query: 'Ashling' }, admin)).body) as {
+      players: { totalLevel: number }[];
+    };
+    expect(found.players[0].totalLevel).toBe(newcomer);
   });
 
   it('keeps the same words sent twice once', async () => {

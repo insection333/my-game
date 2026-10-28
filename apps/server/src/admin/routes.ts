@@ -10,23 +10,23 @@ import {
   type AdminResetResponse,
   type AdminSaveResponse,
 } from '@idle-clash/contracts';
-import { and, asc, eq, sql } from 'drizzle-orm';
+import { asc, eq, sql } from 'drizzle-orm';
 import type { FastifyInstance } from 'fastify';
 import { randomInt } from 'node:crypto';
 import { hashPassword } from '../auth/passwords.ts';
 import { isAdmin, nameHeld, requireAdmin } from '../auth/routes.ts';
 import type { Ctx } from '../context.ts';
-import { hiscores, players } from '../db/schema.ts';
+import { players } from '../db/schema.ts';
 import { contractRoute, fail } from '../http.ts';
+import { totalLevelOf } from '../game/standing.ts';
 
-const view = (ctx: Ctx, p: typeof players.$inferSelect): AdminPlayerView => {
-  const total = ctx.db
-    .select({ level: hiscores.level })
-    .from(hiscores)
-    .where(and(eq(hiscores.playerId, p.id), eq(hiscores.skill, 'total')))
-    .get();
-  return { id: p.id, name: p.name, createdAt: p.createdAt, bannedAt: p.bannedAt, totalLevel: total?.level ?? 7 };
-};
+const view = (ctx: Ctx, p: typeof players.$inferSelect): AdminPlayerView => ({
+  id: p.id,
+  name: p.name,
+  createdAt: p.createdAt,
+  bannedAt: p.bannedAt,
+  totalLevel: totalLevelOf(ctx, p.id),
+});
 
 const playerOf = (ctx: Ctx, id: string) => {
   const row = ctx.db.select().from(players).where(eq(players.id, id)).get();
