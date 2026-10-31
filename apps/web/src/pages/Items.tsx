@@ -111,8 +111,9 @@ function Sources({ title, list }: { title: string; list: items.ItemSource[] }) {
       ) : (
         <ul>
           {list.map((src, i) => {
-            // A skill's page, or the page of a feature without one (Combat).
-            const href = src.skill ? `/skills/${src.skill}` : `/${src.feature}`;
+            // Where the line leads: its own place (the vendor, the log), a skill's page, or the page of a
+            // feature without one (Combat).
+            const href = src.href ?? (src.skill ? `/skills/${src.skill}` : `/${src.feature}`);
             return (
               <li key={i}>
                 <a href={href} data-ui="RowLink" onClick={(e) => (e.preventDefault(), navigate(href))}>
@@ -185,6 +186,7 @@ function ItemActions({ item, value, gear }: { item: string; value: number; gear:
           </div>
         </div>
       )}
+      {gear && worn.includes(item) && <p className={s.muted}>{t('item.panel.wearing')}</p>}
       {shown && !asking && (
         <div className={s.actions}>
           {gear && !worn.includes(item) && (

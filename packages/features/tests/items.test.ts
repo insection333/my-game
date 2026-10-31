@@ -65,3 +65,26 @@ describe('item questions', () => {
         for (const g of [...(a.gives ?? []), ...(a.takes ?? [])]) expect(known.has(g.item)).toBe(true);
   });
 });
+
+describe('every item says where it comes from and where it goes', () => {
+  it('leaves no item with nothing to say on either side, except a find that is only kept or sold', () => {
+    for (const i of items.catalog(FEATURES)) {
+      expect(items.comesFrom(FEATURES, i.id).length, `${i.id} comes from`).toBeGreaterThan(0);
+      if (i.kind === 'find' && i.value > 0) continue;
+      expect(items.usedIn(FEATURES, i.id).length, `${i.id} is used in`).toBeGreaterThan(0);
+    }
+  });
+
+  it('names the vendor for bought food, and the fight for what a fighter eats, wears or carries', () => {
+    const label = (s: items.ItemSource) => items.sourceLabel(s);
+    expect(items.comesFrom(FEATURES, 'bread').map(label)).toEqual(['The vendor in Combat: 20 gold each']);
+    expect(items.comesFrom(FEATURES, 'wardens-feast').map(label)).toEqual([
+      'The vendor in Combat: 480 gold each, from Hitpoints level 80',
+    ]);
+    expect(items.usedIn(FEATURES, 'bread').map(label)).toEqual(['Combat: eaten by your fighter']);
+    expect(items.usedIn(FEATURES, 'copper-sword').map(label)).toEqual(['Combat: wielded in Melee']);
+    expect(items.usedIn(FEATURES, 'copper-helm').map(label)).toEqual(['Combat: worn on the head']);
+    expect(items.usedIn(FEATURES, 'copper-arrows').map(label)).toEqual(['Combat: carried into Archery fights']);
+    expect(items.usedIn(FEATURES, 'copper-arrows')[0]).toMatchObject({ href: '/combat' });
+  });
+});

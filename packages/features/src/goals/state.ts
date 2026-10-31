@@ -24,6 +24,8 @@ export const ShortGoal = z
     at: z.number().nonnegative().optional(),
     /** Made for the work a lane was doing (session 18): it goes when the lane turns to other work. */
     follows: z.boolean().optional(),
+    /** An invitation to try a skill never trained (session 23): one at a time. */
+    tries: z.boolean().optional(),
   })
   .strict();
 export type ShortGoal = z.infer<typeof ShortGoal>;
