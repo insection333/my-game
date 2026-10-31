@@ -6,6 +6,7 @@ import { fmt, formatStop, isQuietStop, t } from '@idle-clash/content';
 import type { AwaySummary, GameEvent } from '@idle-clash/kernel';
 import { itemOf } from './catalog.ts';
 import { storyOf } from './expeditions/story.ts';
+import { remedyFor } from './remedy.ts';
 
 export type RecapKind =
   | 'legendary'
@@ -51,21 +52,13 @@ export interface RecapLine {
 const lower = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
 const skillHref = (feature: string) => (feature === 'combat' ? '/combat' : `/skills/${feature}`);
 
-/** Where to act on a lane that stopped by itself. */
+/** Where to act on a lane that stopped by itself: where the lanes rail's remedy leads, or the action's
+ *  own page. */
 function stopHref(e: Extract<GameEvent, { type: 'laneStopped' }>): string | null {
-  const item = e.reason.detail?.item;
-  switch (e.reason.code) {
-    case 'outOfInputs':
-      return typeof item === 'string' ? `/storehouse?panel=item&item=${item}` : '/storehouse';
-    case 'storehouseFull':
-      return '/storehouse';
-    case 'retreated':
-    case 'tooHurt':
-    case 'noWeapon':
-      return '/combat';
-    default:
-      return e.action ? skillHref(e.action.feature) : null;
-  }
+  const fix = remedyFor(e.reason, e.action);
+  if (fix?.item) return `/storehouse?panel=item&item=${fix.item}`;
+  if (fix?.path) return fix.path;
+  return e.action ? skillHref(e.action.feature) : null;
 }
 
 const kindledLine = (skill: string, count: number): RecapLine => ({

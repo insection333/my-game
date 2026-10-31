@@ -24,6 +24,7 @@ export { actionsFor, RARE_FIND_COMPLETIONS } from './storehouse/finds.ts';
 export { findOf } from './shared/catalog.ts';
 export * as recap from './shared/recap.ts';
 export { allSkills, totalLevel } from './shared/standing.ts';
+export { remedyFor, type Remedy } from './shared/remedy.ts';
 export { paces, bestIn, type Pace } from './goals/pace.ts';
 export { goalsOf } from './goals/state.ts';
 export type {

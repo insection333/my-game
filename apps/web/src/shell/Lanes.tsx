@@ -1,7 +1,7 @@
 // The lanes as the shell shows them: full cards in the desktop panel and on the phone's Hearth,
 // chips in the phone's strip. Each lane says what it is doing, how far along, and why it stopped.
-import { formatStop, isQuietStop, midSentence, t } from '@idle-clash/content';
-import type { Feature } from '@idle-clash/features';
+import { formatStop, isQuietStop, t } from '@idle-clash/content';
+import { remedyFor, type Feature } from '@idle-clash/features';
 import { LANE_IDS, type ActionRef, type LaneId, type State } from '@idle-clash/kernel';
 import { Button, hasIcon, ItemIcon, LaneCard } from '@idle-clash/ui';
 import { game } from '../game/store.ts';
@@ -27,14 +27,10 @@ export interface LaneView {
   fix?: { label: string; item?: string; path?: string };
 }
 
-/** Where a stop is put right: what ran out or is missing (its panel says where it comes from), or food. */
-function fixFor(reason: { code: string; detail?: Record<string, string | number> }): LaneView['fix'] {
-  const item = reason.detail?.item;
-  if ((reason.code === 'outOfInputs' || reason.code === 'needsKey') && typeof item === 'string')
-    return { label: t('lane.fix.item', { item: midSentence(t(`item.${item}`)) }), item };
-  if (reason.code === 'retreated' || reason.code === 'tooHurt') return { label: t('lane.fix.food'), path: '/combat' };
-  return undefined;
-}
+/** Where a stop is put right (the same remedy the away recap offers): what ran out or is missing (its
+ *  panel says where it comes from), food, a weapon, room in the Storehouse. */
+const fixFor = (reason: { code: string; detail?: Record<string, string | number> }): LaneView['fix'] =>
+  remedyFor(reason, null) ?? undefined;
 
 const actionName = (a: { feature: string; id: string }) => t(`action.${a.feature}.${a.id}`);
 

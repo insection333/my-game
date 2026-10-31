@@ -9,6 +9,7 @@ export const progress: Record<string, string> = {
   'goals.doneToday': 'Done for today',
   'goals.milestone': 'Milestone',
   'goal.short.count': '{skill}: {action} ×{count}',
+  'goal.short.try': 'Try {skill}: {action} ×{count}',
   'goal.short.mastery': 'Reach mastery {step} on {action}',
   'goal.daily': 'Earn {xp} {skill} XP today',
   'goal.milestone.total': 'Reach total level {level}',

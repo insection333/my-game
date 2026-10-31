@@ -41,7 +41,8 @@ describe('the goals ladder', () => {
     expect(g.short).toHaveLength(3);
     expect(new Set(g.short.map((x) => x.skill)).size).toBe(3);
     const pace = paces(s);
-    for (const goal of g.short.filter((x) => x.kind === 'count')) {
+    // An invitation to try a new skill is a taste of it, five completions (goals-try.test.ts).
+    for (const goal of g.short.filter((x) => x.kind === 'count' && !x.tries)) {
       const p = pace.find((x) => x.action.id === goal.action.id)!;
       const minutes = (goal.target * p.secondsEach) / 60;
       expect(minutes).toBeGreaterThanOrEqual(9);

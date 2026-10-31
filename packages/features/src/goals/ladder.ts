@@ -3,7 +3,8 @@
 // goal of about 40 minutes of play paying about an hour's gold; and milestones. Choices are drawn from
 // the save's seed and a count, so the server and the page make the same goal.
 import { masteryStep } from '@idle-clash/content';
-import { LANE_IDS, seeded, xpOf, type State } from '@idle-clash/kernel';
+import { countOf, LANE_IDS, seeded, xpOf, type State } from '@idle-clash/kernel';
+import { skillActions } from '../shared/catalog.ts';
 import { totalLevel } from '../shared/standing.ts';
 import { MILESTONES, type Milestone } from './content.ts';
 import { bestIn, paces, type Pace } from './pace.ts';
@@ -41,8 +42,39 @@ function atWork(state: State, list: readonly Pace[], allDay = false): Pace[] {
 
 /** The next short goal: the work of a lane that has none yet, so the player's own play finishes it;
  *  when every lane's work has one, a trained skill not already asked for, its best action. */
+/** Completions a goal asks of a skill the player tries for the first time. */
+export const TRY_COUNT = 5;
+
+/** Skills with work of their own the player has never trained, whose first action they could do now
+ *  `TRY_COUNT` times (what it takes is held), as paces. */
+function untried(state: State, list: readonly Pace[]): Pace[] {
+  return skillActions().flatMap((s) => {
+    if (xpOf(state, s.skill) > 0) return [];
+    const first = [...s.actions].filter((a) => a.seconds).sort((a, b) => a.level - b.level)[0];
+    if (!first || (first.takes ?? []).some((g) => countOf(state, g.item) < g.count * TRY_COUNT)) return [];
+    return list.filter((p) => p.action.feature === s.feature && p.action.id === first.id);
+  });
+}
+
 export function makeShort(state: State, g: GoalsState, now: number): ShortGoal | null {
   const list = paces(state);
+  // One short goal at a time invites the player to try a skill they have never trained.
+  const newSkills = g.short.some((s) => s.tries) ? [] : untried(state, list);
+  if (newSkills.length) {
+    const p = newSkills[Math.floor(seeded(state.seed)('goals', g.made) * newSkills.length)];
+    return {
+      id: `short-${g.made}`,
+      kind: 'count',
+      action: p.action,
+      skill: p.skill,
+      lane: p.lane,
+      target: TRY_COUNT,
+      base: p.done,
+      reward: Math.max(10, nice((p.goldEach * SHORT_PAY_S) / p.secondsEach)),
+      at: now,
+      tries: true,
+    };
+  }
   const asked = new Set(g.short.map((s) => `${s.action.feature}:${s.action.id}`));
   const lanes = atWork(state, list).filter((p) => !asked.has(`${p.action.feature}:${p.action.id}`));
   const options = trained(state, list);

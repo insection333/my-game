@@ -40,7 +40,11 @@ function row(
 
 export const shortName = (s: ShortGoal) =>
   s.kind === 'count'
-    ? t('goal.short.count', { skill: t(`skill.${s.skill}`), action: actionName(s.action), count: fmt.int(s.target) })
+    ? t(s.tries ? 'goal.short.try' : 'goal.short.count', {
+        skill: t(`skill.${s.skill}`),
+        action: actionName(s.action),
+        count: fmt.int(s.target),
+      })
     : t('goal.short.mastery', { action: actionName(s.action), step: fmt.int(s.target) });
 
 export const dailyName = (d: DailyGoal) => t('goal.daily', { xp: fmt.int(d.target), skill: t(`skill.${d.skill}`) });
