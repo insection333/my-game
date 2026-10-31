@@ -272,7 +272,7 @@ export const LUCK_GUARANTEE_SECONDS = 240;
 export const RARITY = [
   { id: 'uncommon', name: 'Uncommon', chance: 1 / 50 },
   { id: 'rare', name: 'Rare', chance: 1 / 500 },
-  { id: 'legendary', name: 'Legendary', chance: 1 / 5000 },
+  { id: 'legendary', name: 'Legendary', chance: 1 / 60000 },
 ] as const;
 export { FINDS } from './finds.ts';
 

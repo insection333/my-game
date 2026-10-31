@@ -263,31 +263,31 @@ PASS  Combat tier 8 offers two choices (style or target) within 20%
 
 ## Notable events in an hour of active play (four lanes with the fire, three short goals)
 First hour  levels W1 M1 S1 magic1 HP1: one moment every 0.8 min on average; longest gap 3.2 min (worst of 60 runs 4.1)
-            per hour: level 41.1, uncommon 29.3, mastery 13.0, rare 3.1, goal 16.4, legendary 0.3
+            per hour: level 41.1, uncommon 29.3, mastery 13.0, rare 3.3, goal 16.4
 PASS  First hour: never more than 5 minutes without one
 PASS  First hour: a rare find in 100% of fresh players
 Day 2       levels W20 M20 S20 magic19 HP19: one moment every 1.6 min on average; longest gap 4.1 min (worst of 60 runs 4.2)
-            per hour: uncommon 15.2, mastery 9.0, rare 1.4, goal 14.2, legendary 0.2
+            per hour: uncommon 15.2, mastery 9.0, rare 1.6, goal 14.2
 PASS  Day 2: a notable moment about every 2 minutes
 PASS  Day 2: never more than 5 minutes without one
 Day 5       levels W28 M28 S28 magic27 HP27: one moment every 1.8 min on average; longest gap 4.1 min (worst of 60 runs 4.2)
-            per hour: uncommon 16.6, mastery 2.0, rare 1.7, goal 14.2, legendary 0.2
+            per hour: uncommon 16.6, mastery 2.0, rare 1.9, goal 14.2
 PASS  Day 5: a notable moment about every 2 minutes
 PASS  Day 5: never more than 5 minutes without one
 Day 14      levels W36 M36 S35 magic36 HP36: one moment every 2.0 min on average; longest gap 4.1 min (worst of 60 runs 4.3)
-            per hour: uncommon 15.1, rare 1.6, goal 14.2, legendary 0.2
+            per hour: uncommon 15.1, rare 1.8, goal 14.2
 PASS  Day 14: a notable moment about every 2 minutes
 PASS  Day 14: never more than 5 minutes without one
 Day 21      levels W39 M39 S38 magic39 HP39: one moment every 2.0 min on average; longest gap 4.1 min (worst of 60 runs 4.2)
-            per hour: uncommon 15.4, rare 1.7, goal 14.2, legendary 0.2
+            per hour: uncommon 15.4, rare 1.9, goal 14.2
 PASS  Day 21: a notable moment about every 2 minutes
 PASS  Day 21: never more than 5 minutes without one
 Day 60      levels W60 M60 S56 magic60 HP60: one moment every 2.2 min on average; longest gap 4.2 min (worst of 60 runs 4.3)
-            per hour: uncommon 12.3, rare 1.4, goal 14.2, legendary 0.1
+            per hour: uncommon 12.3, rare 1.5, goal 14.2
 PASS  Day 60: a notable moment about every 2 minutes
 PASS  Day 60: never more than 5 minutes without one
 Day 100     levels W92 M92 S82 magic87 HP87: one moment every 2.3 min on average; longest gap 4.2 min (worst of 60 runs 4.4)
-            per hour: uncommon 11.3, rare 1.2, goal 14.2, legendary 0.1
+            per hour: uncommon 11.3, rare 1.3, goal 14.2
 PASS  Day 100: a notable moment about every 2 minutes
 PASS  Day 100: never more than 5 minutes without one
 

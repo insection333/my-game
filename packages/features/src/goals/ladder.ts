@@ -42,6 +42,15 @@ function atWork(state: State, list: readonly Pace[], allDay = false): Pace[] {
 
 /** The next short goal: the work of a lane that has none yet, so the player's own play finishes it;
  *  when every lane's work has one, a trained skill not already asked for, its best action. */
+/** What a second of the player's time is worth (session 24): the best gold among their work that makes
+ *  gold from nothing, gathering and fights. Every goal pays by it, so ten minutes are worth the same in
+ *  any lane: an artisan's work adds little to its ingredients' worth (Cooking's none), and its goals once
+ *  paid next to nothing. */
+export function earning(list: readonly Pace[]): number {
+  const own = list.filter((p) => p.lane !== 'artisan');
+  return Math.max(0, ...(own.length ? own : list).map((p) => p.goldEach / p.secondsEach));
+}
+
 /** Completions a goal asks of a skill the player tries for the first time. */
 export const TRY_COUNT = 5;
 
@@ -70,7 +79,7 @@ export function makeShort(state: State, g: GoalsState, now: number): ShortGoal |
       lane: p.lane,
       target: TRY_COUNT,
       base: p.done,
-      reward: Math.max(10, nice((p.goldEach * SHORT_PAY_S) / p.secondsEach)),
+      reward: Math.max(10, nice(earning(list) * SHORT_PAY_S)),
       at: now,
       tries: true,
     };
@@ -84,7 +93,7 @@ export function makeShort(state: State, g: GoalsState, now: number): ShortGoal |
   const pool = lanes.length ? lanes : fresh.length ? fresh : options;
   const r = seeded(state.seed);
   const p = pool[Math.floor(r('goals', g.made) * pool.length)];
-  const reward = nice((p.goldEach * SHORT_PAY_S) / p.secondsEach);
+  const reward = nice(earning(list) * SHORT_PAY_S);
   const base = {
     id: `short-${g.made}`,
     action: p.action,
@@ -118,7 +127,7 @@ export function makeDaily(state: State, now: number): DailyGoal | null {
     skill: p.skill,
     target: nice(xpPerS * DAILY_S),
     base: xpOf(state, p.skill),
-    reward: nice((p.goldEach * 3600) / p.secondsEach),
+    reward: nice(earning(list) * 3600),
     claimed: false,
   };
 }

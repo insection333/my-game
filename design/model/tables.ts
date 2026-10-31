@@ -135,7 +135,7 @@ say('| --- | --- | --- | --- |');
 for (const f of FOODS) say(`| ${f.name} | ${n(f.heals)} | ${f.price} | ${f.level} |`);
 const FOOD_TABLE = p.splice(0).join('\n');
 
-say('| Skill | Uncommon (about 1 in 50) | Rare (1 in 500) | Legendary (1 in 5,000) |');
+say('| Skill | Uncommon (about 1 in 50) | Rare (1 in 500) | Legendary (1 in 60,000) |');
 say('| --- | --- | --- | --- |');
 for (const [skill, rows] of Object.entries(FINDS))
   say(
