@@ -72,12 +72,12 @@ export function Relics({ relics }: { relics: RelicsView }) {
               key={r.id}
               icon={hasIcon(r.id) ? <ItemIcon name={r.id} size={32} /> : undefined}
               name={r.name}
-              facts={[r.effect, r.rank]}
+              facts={[r.effect, r.rank, ...(r.raise ? [r.raise] : [])]}
               status={r.raise ? undefined : <Pill tone="moss">{t('relic.full')}</Pill>}
               actions={
                 r.raise && (
                   <Button disabled={!r.affordable} onClick={() => game.act('expeditions', 'relic', { relic: r.id })}>
-                    {r.raise}
+                    {t('relic.raise')}
                   </Button>
                 )
               }

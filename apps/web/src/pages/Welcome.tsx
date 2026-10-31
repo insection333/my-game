@@ -2,7 +2,7 @@
 // (create) and /welcome/sign-in, outside the shell, to anyone not signed in.
 import { CONTACT_ADDRESS, fmt, t } from '@idle-clash/content';
 import { NAME_MAX } from '@idle-clash/contracts';
-import { Button, Field, ItemIcon, MarchScene, Tabs, TextLink } from '@idle-clash/ui';
+import { Button, Field, GameMark, ItemIcon, MarchScene, Tabs, TextLink } from '@idle-clash/ui';
 import { useState, type FormEvent } from 'react';
 import { ApiError } from '../api.ts';
 import { account, loadGame } from '../game/session.ts';
@@ -63,7 +63,10 @@ export function Welcome({ path, next }: { path: string; next: string }) {
     <main className={s.page} id="main">
       <MarchScene className={s.scene} />
       <section data-slot="welcome.intro" className={s.intro}>
-        <h1 className={s.title}>{t('welcome.title')}</h1>
+        <h1 className={s.title}>
+          <GameMark size={56} />
+          {t('welcome.title')}
+        </h1>
         <p className={s.lead}>{t('welcome.lead')}</p>
         <ol className={s.loop} aria-hidden="true">
           {LOOP.map((icon) => (
@@ -158,7 +161,10 @@ export function Offline({ retry }: { retry: () => void }) {
   return (
     <main className={s.page} id="main">
       <section className={s.intro}>
-        <h1 className={s.title}>{t('welcome.title')}</h1>
+        <h1 className={s.title}>
+          <GameMark size={56} />
+          {t('welcome.title')}
+        </h1>
         <p className={s.lead}>{t('welcome.offline')}</p>
         <Button variant="primary" onClick={retry}>
           {t('welcome.retry')}

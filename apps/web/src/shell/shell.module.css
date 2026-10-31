@@ -46,6 +46,7 @@
   min-height: var(--tap);
   display: inline-flex;
   align-items: center;
+  gap: var(--s-2);
 }
 
 .tools {
@@ -137,6 +138,15 @@
 @media (max-width: 359px) {
   .wordmark {
     font-size: 1.05rem;
+  }
+  /* The mark stands for the name here; the name stays as the link's words for a screen reader. */
+  .wordmarkName {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
   .gold {
     margin: 0;
