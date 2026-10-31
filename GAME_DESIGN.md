@@ -369,7 +369,7 @@ Every completion rolls for a find at three rarities. Each skill has six finds, a
 | --- | --- | --- |
 | Uncommon | about 1 in 50 actions | Sells for about 50 actions' worth of that tier's material |
 | Rare | 1 in 500 | Use it for 500 mastery completions on an action of that skill, or sell it |
-| Legendary | 1 in 5,000 | Kept as a trophy; its first find grants a lasting mark: +2% XP in that skill |
+| Legendary | 1 in 60,000 | Kept as a trophy; its first find grants a lasting mark: +2% XP in that skill |
 
 - **Luck.** Uncommon finds use one luck counter shared by all lanes: each action that finds nothing raises the next chance slightly (by 0.062 percentage points), so finds still average 1 in 50 but arrive evenly. After **4 minutes of active play** with no notable moment, the next action's Uncommon find is certain. This makes "never 5 minutes without a moment" true by construction.
 - **Perks** ("Woodsman's eye" and the like) raise only Rare and Legendary chances, so the Uncommon rhythm stays steady. Rich actions roll their Rare and Legendary chances at 1.5 times per action (the same per hour).
@@ -377,7 +377,7 @@ Every completion rolls for a find at three rarities. Each skill has six finds, a
 
 *Generated:*
 
-| Skill | Uncommon (about 1 in 50) | Rare (1 in 500) | Legendary (1 in 5,000) |
+| Skill | Uncommon (about 1 in 50) | Rare (1 in 500) | Legendary (1 in 60,000) |
 | --- | --- | --- | --- |
 | Woodcutting | Bird's nest · Amber nugget | Carved acorn · Heartwood knot | Silverbark seed · Crown of the old wood |
 | Mining | Rough garnet · Rough sapphire | Ancient coin · Crystal geode | Star-iron shard · Heart of the mountain |
@@ -523,8 +523,8 @@ Enlargement costs follow each day's net gold, so one is affordable roughly when 
    4. Forge a copper sword (needs Smithing 2).
    5. Wear your sword.
    6. Defeat a hollow rat (the step's reward, 10 bread, comes first).
-2. **Three short goals**, rolling: each sized to 10–15 minutes of your current pace in one lane ("Cut 60 oak logs", "Reach mastery 4 on Iron vein", "Defeat 25 grave wights", "Forge 3 iron helms"). A new one appears as each is claimed. They follow your lanes: each new goal is the work of a lane that has none yet, so your own play finishes them, and only when every lane's work has a goal is one a suggestion of something else. A lane's goal goes when the lane turns to other work, and a suggestion left a day makes way for a fresh one (step 18: the year's simulation found goals drawn at random falling silent from the first month). Reward: a supply cache worth about 10 minutes of that lane's gold.
-3. **A daily goal:** about 40 minutes of play or a day of lanes ("Earn 20,000 Smithing XP today"), in a skill at work in a lane that keeps working all day. Done while you were away, it is still paid on your next visit, and then the day's new one is set. Reward: a supply cache worth about an hour of gold.
+2. **Three short goals**, rolling: each sized to 10–15 minutes of your current pace in one lane ("Cut 60 oak logs", "Reach mastery 4 on Iron vein", "Defeat 25 grave wights", "Forge 3 iron helms"). A new one appears as each is claimed. They follow your lanes: each new goal is the work of a lane that has none yet, so your own play finishes them, and only when every lane's work has a goal is one a suggestion of something else. A lane's goal goes when the lane turns to other work, and a suggestion left a day makes way for a fresh one (step 18: the year's simulation found goals drawn at random falling silent from the first month). Reward: a supply cache worth about 10 minutes of your gold, at your best rate among the work that makes gold from nothing (gathering and fights), so ten minutes are worth the same in every lane (session 24: an artisan goal had paid by the little its work adds to its ingredients, a ten-minute Cooking goal about 7 gold).
+3. **A daily goal:** about 40 minutes of play or a day of lanes ("Earn 20,000 Smithing XP today"), in a skill at work in a lane that keeps working all day. Done while you were away, it is still paid on your next visit, and then the day's new one is set. Reward: a supply cache worth about an hour of your gold, at the same rate.
 4. **Milestones:** total level 50, 100, 150, 200, 250 and 280, then 350, 450, 550, 650, 693 (the first seven skills at 99), 800, 891 (nine at 99), 1,000 and 1,089 (all eleven at 99); the first item of each of the eight tiers; collection log 12, 24, 36, 48 and 60; the first mastery 10. Reward: gold, and the milestone is shown on your hiscore entry.
 5. **Supply caches** (session 11): half the goal's worth in gold is certain, and one draw adds more: a plain cache (half the time, +30%), a stocked one (3 in 10, +50% as the best food you are sold, for a fighter), a rich one (3 in 20, +100%) or a lucky one (1 in 20, +200%). On average a cache pays 1.05 times the goal's gold, so the economy holds, and opening one is a small moment of its own.
 
@@ -1171,31 +1171,31 @@ PASS  Combat tier 8 offers two choices (style or target) within 20%
 
 Notable events in an hour of active play (four lanes with the fire, three short goals)
 First hour  levels W1 M1 S1 magic1 HP1: one moment every 0.8 min on average; longest gap 3.2 min (worst of 60 runs 4.1)
-            per hour: level 41.1, uncommon 29.3, mastery 13.0, rare 3.1, goal 16.4, legendary 0.3
+            per hour: level 41.1, uncommon 29.3, mastery 13.0, rare 3.3, goal 16.4
 PASS  First hour: never more than 5 minutes without one
 PASS  First hour: a rare find in 100% of fresh players
 Day 2       levels W20 M20 S20 magic19 HP19: one moment every 1.6 min on average; longest gap 4.1 min (worst of 60 runs 4.2)
-            per hour: uncommon 15.2, mastery 9.0, rare 1.4, goal 14.2, legendary 0.2
+            per hour: uncommon 15.2, mastery 9.0, rare 1.6, goal 14.2
 PASS  Day 2: a notable moment about every 2 minutes
 PASS  Day 2: never more than 5 minutes without one
 Day 5       levels W28 M28 S28 magic27 HP27: one moment every 1.8 min on average; longest gap 4.1 min (worst of 60 runs 4.2)
-            per hour: uncommon 16.6, mastery 2.0, rare 1.7, goal 14.2, legendary 0.2
+            per hour: uncommon 16.6, mastery 2.0, rare 1.9, goal 14.2
 PASS  Day 5: a notable moment about every 2 minutes
 PASS  Day 5: never more than 5 minutes without one
 Day 14      levels W36 M36 S35 magic36 HP36: one moment every 2.0 min on average; longest gap 4.1 min (worst of 60 runs 4.3)
-            per hour: uncommon 15.1, rare 1.6, goal 14.2, legendary 0.2
+            per hour: uncommon 15.1, rare 1.8, goal 14.2
 PASS  Day 14: a notable moment about every 2 minutes
 PASS  Day 14: never more than 5 minutes without one
 Day 21      levels W39 M39 S38 magic39 HP39: one moment every 2.0 min on average; longest gap 4.1 min (worst of 60 runs 4.2)
-            per hour: uncommon 15.4, rare 1.7, goal 14.2, legendary 0.2
+            per hour: uncommon 15.4, rare 1.9, goal 14.2
 PASS  Day 21: a notable moment about every 2 minutes
 PASS  Day 21: never more than 5 minutes without one
 Day 60      levels W60 M60 S56 magic60 HP60: one moment every 2.2 min on average; longest gap 4.2 min (worst of 60 runs 4.3)
-            per hour: uncommon 12.3, rare 1.4, goal 14.2, legendary 0.1
+            per hour: uncommon 12.3, rare 1.5, goal 14.2
 PASS  Day 60: a notable moment about every 2 minutes
 PASS  Day 60: never more than 5 minutes without one
 Day 100     levels W92 M92 S82 magic87 HP87: one moment every 2.3 min on average; longest gap 4.2 min (worst of 60 runs 4.4)
-            per hour: uncommon 11.3, rare 1.2, goal 14.2, legendary 0.1
+            per hour: uncommon 11.3, rare 1.3, goal 14.2
 PASS  Day 100: a notable moment about every 2 minutes
 PASS  Day 100: never more than 5 minutes without one
 

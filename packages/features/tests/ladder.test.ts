@@ -5,6 +5,7 @@ import { XP_TABLE } from '@idle-clash/content';
 import { createEngine, HOUR, newState, seeded, type State } from '@idle-clash/kernel';
 import { describe, expect, it } from 'vitest';
 import { goals, type GoalsView } from '../src/goals/index.ts';
+import { earning } from '../src/goals/ladder.ts';
 import { paces } from '../src/goals/pace.ts';
 import { goalsOf, type ShortGoal } from '../src/goals/state.ts';
 import { actionRegistry, FEATURES } from '../src/index.ts';
@@ -47,7 +48,8 @@ describe('the goals ladder', () => {
       const minutes = (goal.target * p.secondsEach) / 60;
       expect(minutes).toBeGreaterThanOrEqual(9);
       expect(minutes).toBeLessThanOrEqual(16);
-      const payMinutes = (goal.reward / p.goldEach) * (p.secondsEach / 60);
+      // Paid as ten minutes of the player's best work, whatever the goal's own action (goals-pay.test.ts).
+      const payMinutes = goal.reward / earning(pace) / 60;
       expect(Math.max(10, payMinutes)).toBeLessThanOrEqual(12);
     }
     expect(refresh(player())).toEqual(s);
