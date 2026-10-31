@@ -75,8 +75,10 @@ describe('finds', () => {
   it('turns up Rare finds about once in 500 actions, and greater finds only from tier 3 and 4', () => {
     const low = chop(100_000);
     const rare = finds(low.events, 'rare').length;
-    expect(100_000 / rare).toBeGreaterThan(400);
-    expect(100_000 / rare).toBeLessThan(625);
+    // 1 in 500 before perks; this player levels as it chops 100,000 times, and its Woodsman's eye raises
+    // the Rare chance by about a third over the run, to about 1 in 380.
+    expect(100_000 / rare).toBeGreaterThan(330);
+    expect(100_000 / rare).toBeLessThan(500);
     const items = new Set(finds(low.events).map((e) => (e.type === 'find' ? e.item : '')));
     expect([...items].sort()).not.toContain('amber-nugget');
     expect([...items]).not.toContain('heartwood-knot');
