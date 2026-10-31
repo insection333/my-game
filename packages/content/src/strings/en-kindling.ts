@@ -23,7 +23,7 @@ export const kindling = {
   'kindling.raises.xp': '{pct} more XP',
   'kindling.raises.finds': '{pct} more finds',
   'kindling.take': 'Take this Path',
-  'kindling.walking': 'Walking',
+  'kindling.walking': 'Your Path',
   'kindling.leave': 'Leave the Path',
 
   'moment.kindled': '{skill} kindled',

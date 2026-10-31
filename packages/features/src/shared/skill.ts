@@ -2,12 +2,12 @@
 // uses these, so a perk works and reads the same in every skill. Not a feature; any feature may import it.
 import {
   applyEffects,
-  fmt,
   formatEffect,
   levelFor,
   masteryEffects,
   masteryStep,
   t,
+  type Effect,
   type Ladder,
   type Modifiers,
   type Unlock,
@@ -45,7 +45,9 @@ export const actionMastery = (state: State, ladder: Ladder, skill: string, featu
   return masteryStep(done, perksAt(ladder, skillLevel(state, skill)).masteryGain);
 };
 
-/** An unlock as the player reads it: an action's name, or a perk with its rank and effect. */
+/** An unlock as the player reads it: an action's name, or a perk with its effect. A perk that comes in
+ *  ranks says its first rank as it is, and each later one as the perk now stands, all its ranks so far
+ *  added together ("Quick swing (26.25% faster in all)"). */
 export function unlockText(feature: string, ladder: Ladder, u: Unlock): string {
   if (u.type === 'action') return t(`action.${feature}.${u.action}`);
   if (u.type === 'tier')
@@ -55,10 +57,14 @@ export function unlockText(feature: string, ladder: Ladder, u: Unlock): string {
   if (u.type === 'foe') return t('unlock.foe', { foe: t(`action.combat.${u.foe}`) });
   if (u.type === 'food') return t('unlock.food', { food: t(`item.${u.item}`) });
   const name = t(`perk.${u.perk}`);
-  const ranked = ladder.some((us) => us.some((x) => x.type === 'perk' && x.perk === u.perk && x.rank > 1));
-  return ranked
-    ? t('unlock.perk', { name, rank: fmt.roman(u.rank), effect: formatEffect(u.effect) })
-    : t('unlock.perkOnce', { name, effect: formatEffect(u.effect) });
+  const ranks = ladder.flat().filter((x) => x.type === 'perk' && x.perk === u.perk);
+  if (ranks.length < 2) return t('unlock.perkOnce', { name, effect: formatEffect(u.effect) });
+  if (u.rank === 1) return t('unlock.perkFirst', { name, effect: formatEffect(u.effect) });
+  // A perk's ranks share one kind of effect: their amounts add up.
+  const size = (e: Effect) => ('pct' in e ? e.pct : e.amount);
+  const total = ranks.reduce((n, x) => n + (x.type === 'perk' && x.rank <= u.rank ? size(x.effect) : 0), 0);
+  const effect = 'pct' in u.effect ? { ...u.effect, pct: total } : { ...u.effect, amount: total };
+  return t('unlock.perk', { name, effect: formatEffect(effect) });
 }
 
 /** The first level above `level` and what it unlocks, or null at the top. */

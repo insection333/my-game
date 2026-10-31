@@ -2,7 +2,7 @@
 // main column and features fill slots.
 import { countOf } from '@idle-clash/kernel';
 import { fmt, hasString, t } from '@idle-clash/content';
-import { IconButton, Pill, Sheet } from '@idle-clash/ui';
+import { GameMark, IconButton, Pill, Sheet } from '@idle-clash/ui';
 import { useEffect, useState, type ReactNode } from 'react';
 import { useGame } from '../game/hooks.ts';
 import { game } from '../game/store.ts';
@@ -51,7 +51,8 @@ export function Shell({ children }: { children: ReactNode }) {
       </a>
       <header className={s.header}>
         <a className={s.wordmark} href="/" data-ui="Wordmark" onClick={(e) => (e.preventDefault(), navigate('/'))}>
-          {t('shell.name')}
+          <GameMark size={28} />
+          <span className={s.wordmarkName}>{t('shell.name')}</span>
         </a>
         <div className={s.tools}>
           <FireBadge fireUntil={state.fireUntil} fireSince={state.fireSince} now={now} />

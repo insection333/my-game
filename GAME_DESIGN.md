@@ -546,301 +546,301 @@ Every level 1 to 99 of every skill unlocks something: an action, a recipe, a tie
 
 | Levels 1–25 | Levels 26–50 | Levels 51–75 | Levels 76–99 |
 | --- | --- | --- | --- |
-| **1** Pine tree | **26** Practised hands V (mastery 6% faster) | **51** Quick swing XI (1.25% faster) | **76** Plenty XVI (+1.5% chance of an extra item) |
-| **2** Quick swing I (2.5% faster) | **27** Quick swing VI (2.5% faster) | **52** Plenty XI (+1.5% chance of an extra item) | **77** Woodsman's eye XVI (Rare and Legendary finds 4% likelier) |
-| **3** Plenty I (+3% chance of an extra item) | **28** Plenty VI (+3% chance of an extra item) | **53** Woodsman's eye XI (Rare and Legendary finds 4% likelier) | **78** Practised hands XVI (mastery 3% faster) |
-| **4** Woodsman's eye I (Rare and Legendary finds 8% likelier) | **29** Woodsman's eye VI (Rare and Legendary finds 8% likelier) | **54** Practised hands XI (mastery 3% faster) | **79** Quick swing XVII (1.25% faster) |
-| **5** Old pine | **30** Yew tree | **55** Silverbark tree | **80** Plenty XVII (+1.5% chance of an extra item) |
-| **6** Practised hands I (mastery 6% faster) | **31** Practised hands VI (mastery 6% faster) | **56** Quick swing XII (1.25% faster) | **81** Woodsman's eye XVII (Rare and Legendary finds 4% likelier) |
-| **7** Quick swing II (2.5% faster) | **32** Quick swing VII (2.5% faster) | **57** Plenty XII (+1.5% chance of an extra item) | **82** Practised hands XVII (mastery 3% faster) |
-| **8** Plenty II (+3% chance of an extra item) | **33** Plenty VII (+3% chance of an extra item) | **58** Woodsman's eye XII (Rare and Legendary finds 4% likelier) | **83** Quick swing XVIII (1.25% faster) |
-| **9** Woodsman's eye II (Rare and Legendary finds 8% likelier) | **34** Old yew | **59** Old silverbark | **84** Plenty XVIII (+1.5% chance of an extra item) |
-| **10** Ash tree | **35** Woodsman's eye VII (Rare and Legendary finds 8% likelier) | **60** Practised hands XII (mastery 3% faster) | **85** Ancient tree |
-| **11** Practised hands II (mastery 6% faster) | **36** Practised hands VII (mastery 6% faster) | **61** Quick swing XIII (1.25% faster) | **86** Woodsman's eye XVIII (Rare and Legendary finds 4% likelier) |
-| **12** Quick swing III (2.5% faster) | **37** Quick swing VIII (2.5% faster) | **62** Plenty XIII (+1.5% chance of an extra item) | **87** Practised hands XVIII (mastery 3% faster) |
-| **13** Plenty III (+3% chance of an extra item) | **38** Plenty VIII (+3% chance of an extra item) | **63** Woodsman's eye XIII (Rare and Legendary finds 4% likelier) | **88** Quick swing XIX (1.25% faster) |
-| **14** Old ash | **39** Woodsman's eye VIII (Rare and Legendary finds 8% likelier) | **64** Practised hands XIII (mastery 3% faster) | **89** Old ancient |
-| **15** Woodsman's eye III (Rare and Legendary finds 8% likelier) | **40** Maple tree; Master woodcutter (+10% chance of an extra item) | **65** Quick swing XIV (1.25% faster) | **90** Plenty XIX (+1.5% chance of an extra item) |
-| **16** Practised hands III (mastery 6% faster) | **41** Practised hands VIII (mastery 3% faster) | **66** Plenty XIV (+1.5% chance of an extra item) | **91** Woodsman's eye XIX (Rare and Legendary finds 4% likelier) |
-| **17** Quick swing IV (2.5% faster) | **42** Quick swing IX (1.25% faster) | **67** Woodsman's eye XIV (Rare and Legendary finds 4% likelier) | **92** Practised hands XIX (mastery 3% faster) |
-| **18** Plenty IV (+3% chance of an extra item) | **43** Plenty IX (+1.5% chance of an extra item) | **68** Practised hands XIV (mastery 3% faster) | **93** Quick swing XX (1.25% faster) |
-| **19** Woodsman's eye IV (Rare and Legendary finds 8% likelier) | **44** Old maple | **69** Quick swing XV (1.25% faster) | **94** Plenty XX (+1.5% chance of an extra item) |
-| **20** Oak tree | **45** Woodsman's eye IX (Rare and Legendary finds 4% likelier) | **70** Elderwood tree | **95** Woodsman's eye XX (Rare and Legendary finds 4% likelier) |
-| **21** Practised hands IV (mastery 6% faster) | **46** Practised hands IX (mastery 3% faster) | **71** Plenty XV (+1.5% chance of an extra item) | **96** Practised hands XX (mastery 3% faster) |
-| **22** Quick swing V (2.5% faster) | **47** Quick swing X (1.25% faster) | **72** Woodsman's eye XV (Rare and Legendary finds 4% likelier) | **97** Quick swing XXI (1.25% faster) |
-| **23** Plenty V (+3% chance of an extra item) | **48** Plenty X (+1.5% chance of an extra item) | **73** Practised hands XV (mastery 3% faster) | **98** Plenty XXI (+1.5% chance of an extra item) |
-| **24** Old oak | **49** Woodsman's eye X (Rare and Legendary finds 4% likelier) | **74** Old elderwood | **99** Grandmaster woodcutter (+15% chance of an extra item) |
-| **25** Woodsman's eye V (Rare and Legendary finds 8% likelier) | **50** Practised hands X (mastery 3% faster) | **75** Quick swing XVI (1.25% faster) |  |
+| **1** Pine tree | **26** Practised hands (mastery 30% faster in all) | **51** Quick swing (23.75% faster in all) | **76** Plenty (+36% chance of an extra item in all) |
+| **2** Quick swing (2.5% faster) | **27** Quick swing (15% faster in all) | **52** Plenty (+28.5% chance of an extra item in all) | **77** Woodsman's eye (Rare and Legendary finds 96% likelier in all) |
+| **3** Plenty (+3% chance of an extra item) | **28** Plenty (+18% chance of an extra item in all) | **53** Woodsman's eye (Rare and Legendary finds 76% likelier in all) | **78** Practised hands (mastery 69% faster in all) |
+| **4** Woodsman's eye (Rare and Legendary finds 8% likelier) | **29** Woodsman's eye (Rare and Legendary finds 48% likelier in all) | **54** Practised hands (mastery 54% faster in all) | **79** Quick swing (31.25% faster in all) |
+| **5** Old pine | **30** Yew tree | **55** Silverbark tree | **80** Plenty (+37.5% chance of an extra item in all) |
+| **6** Practised hands (mastery 6% faster) | **31** Practised hands (mastery 36% faster in all) | **56** Quick swing (25% faster in all) | **81** Woodsman's eye (Rare and Legendary finds 100% likelier in all) |
+| **7** Quick swing (5% faster in all) | **32** Quick swing (17.5% faster in all) | **57** Plenty (+30% chance of an extra item in all) | **82** Practised hands (mastery 72% faster in all) |
+| **8** Plenty (+6% chance of an extra item in all) | **33** Plenty (+21% chance of an extra item in all) | **58** Woodsman's eye (Rare and Legendary finds 80% likelier in all) | **83** Quick swing (32.5% faster in all) |
+| **9** Woodsman's eye (Rare and Legendary finds 16% likelier in all) | **34** Old yew | **59** Old silverbark | **84** Plenty (+39% chance of an extra item in all) |
+| **10** Ash tree | **35** Woodsman's eye (Rare and Legendary finds 56% likelier in all) | **60** Practised hands (mastery 57% faster in all) | **85** Ancient tree |
+| **11** Practised hands (mastery 12% faster in all) | **36** Practised hands (mastery 42% faster in all) | **61** Quick swing (26.25% faster in all) | **86** Woodsman's eye (Rare and Legendary finds 104% likelier in all) |
+| **12** Quick swing (7.5% faster in all) | **37** Quick swing (20% faster in all) | **62** Plenty (+31.5% chance of an extra item in all) | **87** Practised hands (mastery 75% faster in all) |
+| **13** Plenty (+9% chance of an extra item in all) | **38** Plenty (+24% chance of an extra item in all) | **63** Woodsman's eye (Rare and Legendary finds 84% likelier in all) | **88** Quick swing (33.75% faster in all) |
+| **14** Old ash | **39** Woodsman's eye (Rare and Legendary finds 64% likelier in all) | **64** Practised hands (mastery 60% faster in all) | **89** Old ancient |
+| **15** Woodsman's eye (Rare and Legendary finds 24% likelier in all) | **40** Maple tree; Master woodcutter (+10% chance of an extra item) | **65** Quick swing (27.5% faster in all) | **90** Plenty (+40.5% chance of an extra item in all) |
+| **16** Practised hands (mastery 18% faster in all) | **41** Practised hands (mastery 45% faster in all) | **66** Plenty (+33% chance of an extra item in all) | **91** Woodsman's eye (Rare and Legendary finds 108% likelier in all) |
+| **17** Quick swing (10% faster in all) | **42** Quick swing (21.25% faster in all) | **67** Woodsman's eye (Rare and Legendary finds 88% likelier in all) | **92** Practised hands (mastery 78% faster in all) |
+| **18** Plenty (+12% chance of an extra item in all) | **43** Plenty (+25.5% chance of an extra item in all) | **68** Practised hands (mastery 63% faster in all) | **93** Quick swing (35% faster in all) |
+| **19** Woodsman's eye (Rare and Legendary finds 32% likelier in all) | **44** Old maple | **69** Quick swing (28.75% faster in all) | **94** Plenty (+42% chance of an extra item in all) |
+| **20** Oak tree | **45** Woodsman's eye (Rare and Legendary finds 68% likelier in all) | **70** Elderwood tree | **95** Woodsman's eye (Rare and Legendary finds 112% likelier in all) |
+| **21** Practised hands (mastery 24% faster in all) | **46** Practised hands (mastery 48% faster in all) | **71** Plenty (+34.5% chance of an extra item in all) | **96** Practised hands (mastery 81% faster in all) |
+| **22** Quick swing (12.5% faster in all) | **47** Quick swing (22.5% faster in all) | **72** Woodsman's eye (Rare and Legendary finds 92% likelier in all) | **97** Quick swing (36.25% faster in all) |
+| **23** Plenty (+15% chance of an extra item in all) | **48** Plenty (+27% chance of an extra item in all) | **73** Practised hands (mastery 66% faster in all) | **98** Plenty (+43.5% chance of an extra item in all) |
+| **24** Old oak | **49** Woodsman's eye (Rare and Legendary finds 72% likelier in all) | **74** Old elderwood | **99** Grandmaster woodcutter (+15% chance of an extra item) |
+| **25** Woodsman's eye (Rare and Legendary finds 40% likelier in all) | **50** Practised hands (mastery 51% faster in all) | **75** Quick swing (30% faster in all) |  |
 
 ### Mining
 
 | Levels 1–25 | Levels 26–50 | Levels 51–75 | Levels 76–99 |
 | --- | --- | --- | --- |
-| **1** Copper vein | **26** Practised hands V (mastery 6% faster) | **51** Quick strike XI (1.25% faster) | **76** Plenty XVI (+1.5% chance of an extra item) |
-| **2** Quick strike I (2.5% faster) | **27** Quick strike VI (2.5% faster) | **52** Plenty XI (+1.5% chance of an extra item) | **77** Prospector's eye XVI (Rare and Legendary finds 4% likelier) |
-| **3** Plenty I (+3% chance of an extra item) | **28** Plenty VI (+3% chance of an extra item) | **53** Prospector's eye XI (Rare and Legendary finds 4% likelier) | **78** Practised hands XVI (mastery 3% faster) |
-| **4** Prospector's eye I (Rare and Legendary finds 8% likelier) | **29** Prospector's eye VI (Rare and Legendary finds 8% likelier) | **54** Practised hands XI (mastery 3% faster) | **79** Quick strike XVII (1.25% faster) |
-| **5** Deep copper seam | **30** Coal vein | **55** Star-iron vein | **80** Plenty XVII (+1.5% chance of an extra item) |
-| **6** Practised hands I (mastery 6% faster) | **31** Practised hands VI (mastery 6% faster) | **56** Quick strike XII (1.25% faster) | **81** Prospector's eye XVII (Rare and Legendary finds 4% likelier) |
-| **7** Quick strike II (2.5% faster) | **32** Quick strike VII (2.5% faster) | **57** Plenty XII (+1.5% chance of an extra item) | **82** Practised hands XVII (mastery 3% faster) |
-| **8** Plenty II (+3% chance of an extra item) | **33** Plenty VII (+3% chance of an extra item) | **58** Prospector's eye XII (Rare and Legendary finds 4% likelier) | **83** Quick strike XVIII (1.25% faster) |
-| **9** Prospector's eye II (Rare and Legendary finds 8% likelier) | **34** Deep coal seam | **59** Deep star-iron seam | **84** Plenty XVIII (+1.5% chance of an extra item) |
-| **10** Tin vein | **35** Prospector's eye VII (Rare and Legendary finds 8% likelier) | **60** Practised hands XII (mastery 3% faster) | **85** Dawnstone vein |
-| **11** Practised hands II (mastery 6% faster) | **36** Practised hands VII (mastery 6% faster) | **61** Quick strike XIII (1.25% faster) | **86** Prospector's eye XVIII (Rare and Legendary finds 4% likelier) |
-| **12** Quick strike III (2.5% faster) | **37** Quick strike VIII (2.5% faster) | **62** Plenty XIII (+1.5% chance of an extra item) | **87** Practised hands XVIII (mastery 3% faster) |
-| **13** Plenty III (+3% chance of an extra item) | **38** Plenty VIII (+3% chance of an extra item) | **63** Prospector's eye XIII (Rare and Legendary finds 4% likelier) | **88** Quick strike XIX (1.25% faster) |
-| **14** Deep tin seam | **39** Prospector's eye VIII (Rare and Legendary finds 8% likelier) | **64** Practised hands XIII (mastery 3% faster) | **89** Deep dawnstone seam |
-| **15** Prospector's eye III (Rare and Legendary finds 8% likelier) | **40** Moonsilver vein; Master miner (+10% chance of an extra item) | **65** Quick strike XIV (1.25% faster) | **90** Plenty XIX (+1.5% chance of an extra item) |
-| **16** Practised hands III (mastery 6% faster) | **41** Practised hands VIII (mastery 3% faster) | **66** Plenty XIV (+1.5% chance of an extra item) | **91** Prospector's eye XIX (Rare and Legendary finds 4% likelier) |
-| **17** Quick strike IV (2.5% faster) | **42** Quick strike IX (1.25% faster) | **67** Prospector's eye XIV (Rare and Legendary finds 4% likelier) | **92** Practised hands XIX (mastery 3% faster) |
-| **18** Plenty IV (+3% chance of an extra item) | **43** Plenty IX (+1.5% chance of an extra item) | **68** Practised hands XIV (mastery 3% faster) | **93** Quick strike XX (1.25% faster) |
-| **19** Prospector's eye IV (Rare and Legendary finds 8% likelier) | **44** Deep moonsilver seam | **69** Quick strike XV (1.25% faster) | **94** Plenty XX (+1.5% chance of an extra item) |
-| **20** Iron vein | **45** Prospector's eye IX (Rare and Legendary finds 4% likelier) | **70** Ember vein | **95** Prospector's eye XX (Rare and Legendary finds 4% likelier) |
-| **21** Practised hands IV (mastery 6% faster) | **46** Practised hands IX (mastery 3% faster) | **71** Plenty XV (+1.5% chance of an extra item) | **96** Practised hands XX (mastery 3% faster) |
-| **22** Quick strike V (2.5% faster) | **47** Quick strike X (1.25% faster) | **72** Prospector's eye XV (Rare and Legendary finds 4% likelier) | **97** Quick strike XXI (1.25% faster) |
-| **23** Plenty V (+3% chance of an extra item) | **48** Plenty X (+1.5% chance of an extra item) | **73** Practised hands XV (mastery 3% faster) | **98** Plenty XXI (+1.5% chance of an extra item) |
-| **24** Deep iron seam | **49** Prospector's eye X (Rare and Legendary finds 4% likelier) | **74** Deep ember seam | **99** Grandmaster miner (+15% chance of an extra item) |
-| **25** Prospector's eye V (Rare and Legendary finds 8% likelier) | **50** Practised hands X (mastery 3% faster) | **75** Quick strike XVI (1.25% faster) |  |
+| **1** Copper vein | **26** Practised hands (mastery 30% faster in all) | **51** Quick strike (23.75% faster in all) | **76** Plenty (+36% chance of an extra item in all) |
+| **2** Quick strike (2.5% faster) | **27** Quick strike (15% faster in all) | **52** Plenty (+28.5% chance of an extra item in all) | **77** Prospector's eye (Rare and Legendary finds 96% likelier in all) |
+| **3** Plenty (+3% chance of an extra item) | **28** Plenty (+18% chance of an extra item in all) | **53** Prospector's eye (Rare and Legendary finds 76% likelier in all) | **78** Practised hands (mastery 69% faster in all) |
+| **4** Prospector's eye (Rare and Legendary finds 8% likelier) | **29** Prospector's eye (Rare and Legendary finds 48% likelier in all) | **54** Practised hands (mastery 54% faster in all) | **79** Quick strike (31.25% faster in all) |
+| **5** Deep copper seam | **30** Coal vein | **55** Star-iron vein | **80** Plenty (+37.5% chance of an extra item in all) |
+| **6** Practised hands (mastery 6% faster) | **31** Practised hands (mastery 36% faster in all) | **56** Quick strike (25% faster in all) | **81** Prospector's eye (Rare and Legendary finds 100% likelier in all) |
+| **7** Quick strike (5% faster in all) | **32** Quick strike (17.5% faster in all) | **57** Plenty (+30% chance of an extra item in all) | **82** Practised hands (mastery 72% faster in all) |
+| **8** Plenty (+6% chance of an extra item in all) | **33** Plenty (+21% chance of an extra item in all) | **58** Prospector's eye (Rare and Legendary finds 80% likelier in all) | **83** Quick strike (32.5% faster in all) |
+| **9** Prospector's eye (Rare and Legendary finds 16% likelier in all) | **34** Deep coal seam | **59** Deep star-iron seam | **84** Plenty (+39% chance of an extra item in all) |
+| **10** Tin vein | **35** Prospector's eye (Rare and Legendary finds 56% likelier in all) | **60** Practised hands (mastery 57% faster in all) | **85** Dawnstone vein |
+| **11** Practised hands (mastery 12% faster in all) | **36** Practised hands (mastery 42% faster in all) | **61** Quick strike (26.25% faster in all) | **86** Prospector's eye (Rare and Legendary finds 104% likelier in all) |
+| **12** Quick strike (7.5% faster in all) | **37** Quick strike (20% faster in all) | **62** Plenty (+31.5% chance of an extra item in all) | **87** Practised hands (mastery 75% faster in all) |
+| **13** Plenty (+9% chance of an extra item in all) | **38** Plenty (+24% chance of an extra item in all) | **63** Prospector's eye (Rare and Legendary finds 84% likelier in all) | **88** Quick strike (33.75% faster in all) |
+| **14** Deep tin seam | **39** Prospector's eye (Rare and Legendary finds 64% likelier in all) | **64** Practised hands (mastery 60% faster in all) | **89** Deep dawnstone seam |
+| **15** Prospector's eye (Rare and Legendary finds 24% likelier in all) | **40** Moonsilver vein; Master miner (+10% chance of an extra item) | **65** Quick strike (27.5% faster in all) | **90** Plenty (+40.5% chance of an extra item in all) |
+| **16** Practised hands (mastery 18% faster in all) | **41** Practised hands (mastery 45% faster in all) | **66** Plenty (+33% chance of an extra item in all) | **91** Prospector's eye (Rare and Legendary finds 108% likelier in all) |
+| **17** Quick strike (10% faster in all) | **42** Quick strike (21.25% faster in all) | **67** Prospector's eye (Rare and Legendary finds 88% likelier in all) | **92** Practised hands (mastery 78% faster in all) |
+| **18** Plenty (+12% chance of an extra item in all) | **43** Plenty (+25.5% chance of an extra item in all) | **68** Practised hands (mastery 63% faster in all) | **93** Quick strike (35% faster in all) |
+| **19** Prospector's eye (Rare and Legendary finds 32% likelier in all) | **44** Deep moonsilver seam | **69** Quick strike (28.75% faster in all) | **94** Plenty (+42% chance of an extra item in all) |
+| **20** Iron vein | **45** Prospector's eye (Rare and Legendary finds 68% likelier in all) | **70** Ember vein | **95** Prospector's eye (Rare and Legendary finds 112% likelier in all) |
+| **21** Practised hands (mastery 24% faster in all) | **46** Practised hands (mastery 48% faster in all) | **71** Plenty (+34.5% chance of an extra item in all) | **96** Practised hands (mastery 81% faster in all) |
+| **22** Quick strike (12.5% faster in all) | **47** Quick strike (22.5% faster in all) | **72** Prospector's eye (Rare and Legendary finds 92% likelier in all) | **97** Quick strike (36.25% faster in all) |
+| **23** Plenty (+15% chance of an extra item in all) | **48** Plenty (+27% chance of an extra item in all) | **73** Practised hands (mastery 66% faster in all) | **98** Plenty (+43.5% chance of an extra item in all) |
+| **24** Deep iron seam | **49** Prospector's eye (Rare and Legendary finds 72% likelier in all) | **74** Deep ember seam | **99** Grandmaster miner (+15% chance of an extra item) |
+| **25** Prospector's eye (Rare and Legendary finds 40% likelier in all) | **50** Practised hands (mastery 51% faster in all) | **75** Quick strike (30% faster in all) |  |
 
 ### Fishing
 
 | Levels 1–25 | Levels 26–50 | Levels 51–75 | Levels 76–99 |
 | --- | --- | --- | --- |
-| **1** Perch shallows | **26** Practised hands V (mastery 6% faster) | **51** Quick cast XI (1.25% faster) | **76** Plenty XVI (+1.5% chance of an extra item) |
-| **2** Quick cast I (2.5% faster) | **27** Quick cast VI (2.5% faster) | **52** Plenty XI (+1.5% chance of an extra item) | **77** Angler's eye XVI (Rare and Legendary finds 4% likelier) |
-| **3** Plenty I (+3% chance of an extra item) | **28** Plenty VI (+3% chance of an extra item) | **53** Angler's eye XI (Rare and Legendary finds 4% likelier) | **78** Practised hands XVI (mastery 3% faster) |
-| **4** Angler's eye I (Rare and Legendary finds 8% likelier) | **29** Angler's eye VI (Rare and Legendary finds 8% likelier) | **54** Practised hands XI (mastery 3% faster) | **79** Quick cast XVII (1.25% faster) |
-| **5** Deep perch pool | **30** Salmon shallows | **55** Silver eel shallows | **80** Plenty XVII (+1.5% chance of an extra item) |
-| **6** Practised hands I (mastery 6% faster) | **31** Practised hands VI (mastery 6% faster) | **56** Quick cast XII (1.25% faster) | **81** Angler's eye XVII (Rare and Legendary finds 4% likelier) |
-| **7** Quick cast II (2.5% faster) | **32** Quick cast VII (2.5% faster) | **57** Plenty XII (+1.5% chance of an extra item) | **82** Practised hands XVII (mastery 3% faster) |
-| **8** Plenty II (+3% chance of an extra item) | **33** Plenty VII (+3% chance of an extra item) | **58** Angler's eye XII (Rare and Legendary finds 4% likelier) | **83** Quick cast XVIII (1.25% faster) |
-| **9** Angler's eye II (Rare and Legendary finds 8% likelier) | **34** Deep salmon pool | **59** Deep silver eel pool | **84** Plenty XVIII (+1.5% chance of an extra item) |
-| **10** Trout shallows | **35** Angler's eye VII (Rare and Legendary finds 8% likelier) | **60** Practised hands XII (mastery 3% faster) | **85** Dawn sturgeon shallows |
-| **11** Practised hands II (mastery 6% faster) | **36** Practised hands VII (mastery 6% faster) | **61** Quick cast XIII (1.25% faster) | **86** Angler's eye XVIII (Rare and Legendary finds 4% likelier) |
-| **12** Quick cast III (2.5% faster) | **37** Quick cast VIII (2.5% faster) | **62** Plenty XIII (+1.5% chance of an extra item) | **87** Practised hands XVIII (mastery 3% faster) |
-| **13** Plenty III (+3% chance of an extra item) | **38** Plenty VIII (+3% chance of an extra item) | **63** Angler's eye XIII (Rare and Legendary finds 4% likelier) | **88** Quick cast XIX (1.25% faster) |
-| **14** Deep trout pool | **39** Angler's eye VIII (Rare and Legendary finds 8% likelier) | **64** Practised hands XIII (mastery 3% faster) | **89** Deep dawn sturgeon pool |
-| **15** Angler's eye III (Rare and Legendary finds 8% likelier) | **40** Moon carp shallows; Master angler (+10% chance of an extra item) | **65** Quick cast XIV (1.25% faster) | **90** Plenty XIX (+1.5% chance of an extra item) |
-| **16** Practised hands III (mastery 6% faster) | **41** Practised hands VIII (mastery 3% faster) | **66** Plenty XIV (+1.5% chance of an extra item) | **91** Angler's eye XIX (Rare and Legendary finds 4% likelier) |
-| **17** Quick cast IV (2.5% faster) | **42** Quick cast IX (1.25% faster) | **67** Angler's eye XIV (Rare and Legendary finds 4% likelier) | **92** Practised hands XIX (mastery 3% faster) |
-| **18** Plenty IV (+3% chance of an extra item) | **43** Plenty IX (+1.5% chance of an extra item) | **68** Practised hands XIV (mastery 3% faster) | **93** Quick cast XX (1.25% faster) |
-| **19** Angler's eye IV (Rare and Legendary finds 8% likelier) | **44** Deep moon carp pool | **69** Quick cast XV (1.25% faster) | **94** Plenty XX (+1.5% chance of an extra item) |
-| **20** Pike shallows | **45** Angler's eye IX (Rare and Legendary finds 4% likelier) | **70** Ember char shallows | **95** Angler's eye XX (Rare and Legendary finds 4% likelier) |
-| **21** Practised hands IV (mastery 6% faster) | **46** Practised hands IX (mastery 3% faster) | **71** Plenty XV (+1.5% chance of an extra item) | **96** Practised hands XX (mastery 3% faster) |
-| **22** Quick cast V (2.5% faster) | **47** Quick cast X (1.25% faster) | **72** Angler's eye XV (Rare and Legendary finds 4% likelier) | **97** Quick cast XXI (1.25% faster) |
-| **23** Plenty V (+3% chance of an extra item) | **48** Plenty X (+1.5% chance of an extra item) | **73** Practised hands XV (mastery 3% faster) | **98** Plenty XXI (+1.5% chance of an extra item) |
-| **24** Deep pike pool | **49** Angler's eye X (Rare and Legendary finds 4% likelier) | **74** Deep ember char pool | **99** Grandmaster angler (+15% chance of an extra item) |
-| **25** Angler's eye V (Rare and Legendary finds 8% likelier) | **50** Practised hands X (mastery 3% faster) | **75** Quick cast XVI (1.25% faster) |  |
+| **1** Perch shallows | **26** Practised hands (mastery 30% faster in all) | **51** Quick cast (23.75% faster in all) | **76** Plenty (+36% chance of an extra item in all) |
+| **2** Quick cast (2.5% faster) | **27** Quick cast (15% faster in all) | **52** Plenty (+28.5% chance of an extra item in all) | **77** Angler's eye (Rare and Legendary finds 96% likelier in all) |
+| **3** Plenty (+3% chance of an extra item) | **28** Plenty (+18% chance of an extra item in all) | **53** Angler's eye (Rare and Legendary finds 76% likelier in all) | **78** Practised hands (mastery 69% faster in all) |
+| **4** Angler's eye (Rare and Legendary finds 8% likelier) | **29** Angler's eye (Rare and Legendary finds 48% likelier in all) | **54** Practised hands (mastery 54% faster in all) | **79** Quick cast (31.25% faster in all) |
+| **5** Deep perch pool | **30** Salmon shallows | **55** Silver eel shallows | **80** Plenty (+37.5% chance of an extra item in all) |
+| **6** Practised hands (mastery 6% faster) | **31** Practised hands (mastery 36% faster in all) | **56** Quick cast (25% faster in all) | **81** Angler's eye (Rare and Legendary finds 100% likelier in all) |
+| **7** Quick cast (5% faster in all) | **32** Quick cast (17.5% faster in all) | **57** Plenty (+30% chance of an extra item in all) | **82** Practised hands (mastery 72% faster in all) |
+| **8** Plenty (+6% chance of an extra item in all) | **33** Plenty (+21% chance of an extra item in all) | **58** Angler's eye (Rare and Legendary finds 80% likelier in all) | **83** Quick cast (32.5% faster in all) |
+| **9** Angler's eye (Rare and Legendary finds 16% likelier in all) | **34** Deep salmon pool | **59** Deep silver eel pool | **84** Plenty (+39% chance of an extra item in all) |
+| **10** Trout shallows | **35** Angler's eye (Rare and Legendary finds 56% likelier in all) | **60** Practised hands (mastery 57% faster in all) | **85** Dawn sturgeon shallows |
+| **11** Practised hands (mastery 12% faster in all) | **36** Practised hands (mastery 42% faster in all) | **61** Quick cast (26.25% faster in all) | **86** Angler's eye (Rare and Legendary finds 104% likelier in all) |
+| **12** Quick cast (7.5% faster in all) | **37** Quick cast (20% faster in all) | **62** Plenty (+31.5% chance of an extra item in all) | **87** Practised hands (mastery 75% faster in all) |
+| **13** Plenty (+9% chance of an extra item in all) | **38** Plenty (+24% chance of an extra item in all) | **63** Angler's eye (Rare and Legendary finds 84% likelier in all) | **88** Quick cast (33.75% faster in all) |
+| **14** Deep trout pool | **39** Angler's eye (Rare and Legendary finds 64% likelier in all) | **64** Practised hands (mastery 60% faster in all) | **89** Deep dawn sturgeon pool |
+| **15** Angler's eye (Rare and Legendary finds 24% likelier in all) | **40** Moon carp shallows; Master angler (+10% chance of an extra item) | **65** Quick cast (27.5% faster in all) | **90** Plenty (+40.5% chance of an extra item in all) |
+| **16** Practised hands (mastery 18% faster in all) | **41** Practised hands (mastery 45% faster in all) | **66** Plenty (+33% chance of an extra item in all) | **91** Angler's eye (Rare and Legendary finds 108% likelier in all) |
+| **17** Quick cast (10% faster in all) | **42** Quick cast (21.25% faster in all) | **67** Angler's eye (Rare and Legendary finds 88% likelier in all) | **92** Practised hands (mastery 78% faster in all) |
+| **18** Plenty (+12% chance of an extra item in all) | **43** Plenty (+25.5% chance of an extra item in all) | **68** Practised hands (mastery 63% faster in all) | **93** Quick cast (35% faster in all) |
+| **19** Angler's eye (Rare and Legendary finds 32% likelier in all) | **44** Deep moon carp pool | **69** Quick cast (28.75% faster in all) | **94** Plenty (+42% chance of an extra item in all) |
+| **20** Pike shallows | **45** Angler's eye (Rare and Legendary finds 68% likelier in all) | **70** Ember char shallows | **95** Angler's eye (Rare and Legendary finds 112% likelier in all) |
+| **21** Practised hands (mastery 24% faster in all) | **46** Practised hands (mastery 48% faster in all) | **71** Plenty (+34.5% chance of an extra item in all) | **96** Practised hands (mastery 81% faster in all) |
+| **22** Quick cast (12.5% faster in all) | **47** Quick cast (22.5% faster in all) | **72** Angler's eye (Rare and Legendary finds 92% likelier in all) | **97** Quick cast (36.25% faster in all) |
+| **23** Plenty (+15% chance of an extra item in all) | **48** Plenty (+27% chance of an extra item in all) | **73** Practised hands (mastery 66% faster in all) | **98** Plenty (+43.5% chance of an extra item in all) |
+| **24** Deep pike pool | **49** Angler's eye (Rare and Legendary finds 72% likelier in all) | **74** Deep ember char pool | **99** Grandmaster angler (+15% chance of an extra item) |
+| **25** Angler's eye (Rare and Legendary finds 40% likelier in all) | **50** Practised hands (mastery 51% faster in all) | **75** Quick cast (30% faster in all) |  |
 
 ### Runecraft
 
 | Levels 1–25 | Levels 26–50 | Levels 51–75 | Levels 76–99 |
 | --- | --- | --- | --- |
-| **1** Spark stone | **26** Practised hands V (mastery 6% faster) | **51** Quick draw XI (1.25% faster) | **76** Plenty XVI (+1.5% chance of an extra item) |
-| **2** Quick draw I (2.5% faster) | **27** Quick draw VI (2.5% faster) | **52** Plenty XI (+1.5% chance of an extra item) | **77** Seer's eye XVI (Rare and Legendary finds 4% likelier) |
-| **3** Plenty I (+3% chance of an extra item) | **28** Plenty VI (+3% chance of an extra item) | **53** Seer's eye XI (Rare and Legendary finds 4% likelier) | **78** Practised hands XVI (mastery 3% faster) |
-| **4** Seer's eye I (Rare and Legendary finds 8% likelier) | **29** Seer's eye VI (Rare and Legendary finds 8% likelier) | **54** Practised hands XI (mastery 3% faster) | **79** Quick draw XVII (1.25% faster) |
-| **5** Ancient spark stone | **30** Earth stone | **55** Star stone | **80** Plenty XVII (+1.5% chance of an extra item) |
-| **6** Practised hands I (mastery 6% faster) | **31** Practised hands VI (mastery 6% faster) | **56** Quick draw XII (1.25% faster) | **81** Seer's eye XVII (Rare and Legendary finds 4% likelier) |
-| **7** Quick draw II (2.5% faster) | **32** Quick draw VII (2.5% faster) | **57** Plenty XII (+1.5% chance of an extra item) | **82** Practised hands XVII (mastery 3% faster) |
-| **8** Plenty II (+3% chance of an extra item) | **33** Plenty VII (+3% chance of an extra item) | **58** Seer's eye XII (Rare and Legendary finds 4% likelier) | **83** Quick draw XVIII (1.25% faster) |
-| **9** Seer's eye II (Rare and Legendary finds 8% likelier) | **34** Ancient earth stone | **59** Ancient star stone | **84** Plenty XVIII (+1.5% chance of an extra item) |
-| **10** Gale stone | **35** Seer's eye VII (Rare and Legendary finds 8% likelier) | **60** Practised hands XII (mastery 3% faster) | **85** Dawn stone |
-| **11** Practised hands II (mastery 6% faster) | **36** Practised hands VII (mastery 6% faster) | **61** Quick draw XIII (1.25% faster) | **86** Seer's eye XVIII (Rare and Legendary finds 4% likelier) |
-| **12** Quick draw III (2.5% faster) | **37** Quick draw VIII (2.5% faster) | **62** Plenty XIII (+1.5% chance of an extra item) | **87** Practised hands XVIII (mastery 3% faster) |
-| **13** Plenty III (+3% chance of an extra item) | **38** Plenty VIII (+3% chance of an extra item) | **63** Seer's eye XIII (Rare and Legendary finds 4% likelier) | **88** Quick draw XIX (1.25% faster) |
-| **14** Ancient gale stone | **39** Seer's eye VIII (Rare and Legendary finds 8% likelier) | **64** Practised hands XIII (mastery 3% faster) | **89** Ancient dawn stone |
-| **15** Seer's eye III (Rare and Legendary finds 8% likelier) | **40** Moon stone; Master runecrafter (+10% chance of an extra item) | **65** Quick draw XIV (1.25% faster) | **90** Plenty XIX (+1.5% chance of an extra item) |
-| **16** Practised hands III (mastery 6% faster) | **41** Practised hands VIII (mastery 3% faster) | **66** Plenty XIV (+1.5% chance of an extra item) | **91** Seer's eye XIX (Rare and Legendary finds 4% likelier) |
-| **17** Quick draw IV (2.5% faster) | **42** Quick draw IX (1.25% faster) | **67** Seer's eye XIV (Rare and Legendary finds 4% likelier) | **92** Practised hands XIX (mastery 3% faster) |
-| **18** Plenty IV (+3% chance of an extra item) | **43** Plenty IX (+1.5% chance of an extra item) | **68** Practised hands XIV (mastery 3% faster) | **93** Quick draw XX (1.25% faster) |
-| **19** Seer's eye IV (Rare and Legendary finds 8% likelier) | **44** Ancient moon stone | **69** Quick draw XV (1.25% faster) | **94** Plenty XX (+1.5% chance of an extra item) |
-| **20** Tide stone | **45** Seer's eye IX (Rare and Legendary finds 4% likelier) | **70** Ember stone | **95** Seer's eye XX (Rare and Legendary finds 4% likelier) |
-| **21** Practised hands IV (mastery 6% faster) | **46** Practised hands IX (mastery 3% faster) | **71** Plenty XV (+1.5% chance of an extra item) | **96** Practised hands XX (mastery 3% faster) |
-| **22** Quick draw V (2.5% faster) | **47** Quick draw X (1.25% faster) | **72** Seer's eye XV (Rare and Legendary finds 4% likelier) | **97** Quick draw XXI (1.25% faster) |
-| **23** Plenty V (+3% chance of an extra item) | **48** Plenty X (+1.5% chance of an extra item) | **73** Practised hands XV (mastery 3% faster) | **98** Plenty XXI (+1.5% chance of an extra item) |
-| **24** Ancient tide stone | **49** Seer's eye X (Rare and Legendary finds 4% likelier) | **74** Ancient ember stone | **99** Grandmaster runecrafter (+15% chance of an extra item) |
-| **25** Seer's eye V (Rare and Legendary finds 8% likelier) | **50** Practised hands X (mastery 3% faster) | **75** Quick draw XVI (1.25% faster) |  |
+| **1** Spark stone | **26** Practised hands (mastery 30% faster in all) | **51** Quick draw (23.75% faster in all) | **76** Plenty (+36% chance of an extra item in all) |
+| **2** Quick draw (2.5% faster) | **27** Quick draw (15% faster in all) | **52** Plenty (+28.5% chance of an extra item in all) | **77** Seer's eye (Rare and Legendary finds 96% likelier in all) |
+| **3** Plenty (+3% chance of an extra item) | **28** Plenty (+18% chance of an extra item in all) | **53** Seer's eye (Rare and Legendary finds 76% likelier in all) | **78** Practised hands (mastery 69% faster in all) |
+| **4** Seer's eye (Rare and Legendary finds 8% likelier) | **29** Seer's eye (Rare and Legendary finds 48% likelier in all) | **54** Practised hands (mastery 54% faster in all) | **79** Quick draw (31.25% faster in all) |
+| **5** Ancient spark stone | **30** Earth stone | **55** Star stone | **80** Plenty (+37.5% chance of an extra item in all) |
+| **6** Practised hands (mastery 6% faster) | **31** Practised hands (mastery 36% faster in all) | **56** Quick draw (25% faster in all) | **81** Seer's eye (Rare and Legendary finds 100% likelier in all) |
+| **7** Quick draw (5% faster in all) | **32** Quick draw (17.5% faster in all) | **57** Plenty (+30% chance of an extra item in all) | **82** Practised hands (mastery 72% faster in all) |
+| **8** Plenty (+6% chance of an extra item in all) | **33** Plenty (+21% chance of an extra item in all) | **58** Seer's eye (Rare and Legendary finds 80% likelier in all) | **83** Quick draw (32.5% faster in all) |
+| **9** Seer's eye (Rare and Legendary finds 16% likelier in all) | **34** Ancient earth stone | **59** Ancient star stone | **84** Plenty (+39% chance of an extra item in all) |
+| **10** Gale stone | **35** Seer's eye (Rare and Legendary finds 56% likelier in all) | **60** Practised hands (mastery 57% faster in all) | **85** Dawn stone |
+| **11** Practised hands (mastery 12% faster in all) | **36** Practised hands (mastery 42% faster in all) | **61** Quick draw (26.25% faster in all) | **86** Seer's eye (Rare and Legendary finds 104% likelier in all) |
+| **12** Quick draw (7.5% faster in all) | **37** Quick draw (20% faster in all) | **62** Plenty (+31.5% chance of an extra item in all) | **87** Practised hands (mastery 75% faster in all) |
+| **13** Plenty (+9% chance of an extra item in all) | **38** Plenty (+24% chance of an extra item in all) | **63** Seer's eye (Rare and Legendary finds 84% likelier in all) | **88** Quick draw (33.75% faster in all) |
+| **14** Ancient gale stone | **39** Seer's eye (Rare and Legendary finds 64% likelier in all) | **64** Practised hands (mastery 60% faster in all) | **89** Ancient dawn stone |
+| **15** Seer's eye (Rare and Legendary finds 24% likelier in all) | **40** Moon stone; Master runecrafter (+10% chance of an extra item) | **65** Quick draw (27.5% faster in all) | **90** Plenty (+40.5% chance of an extra item in all) |
+| **16** Practised hands (mastery 18% faster in all) | **41** Practised hands (mastery 45% faster in all) | **66** Plenty (+33% chance of an extra item in all) | **91** Seer's eye (Rare and Legendary finds 108% likelier in all) |
+| **17** Quick draw (10% faster in all) | **42** Quick draw (21.25% faster in all) | **67** Seer's eye (Rare and Legendary finds 88% likelier in all) | **92** Practised hands (mastery 78% faster in all) |
+| **18** Plenty (+12% chance of an extra item in all) | **43** Plenty (+25.5% chance of an extra item in all) | **68** Practised hands (mastery 63% faster in all) | **93** Quick draw (35% faster in all) |
+| **19** Seer's eye (Rare and Legendary finds 32% likelier in all) | **44** Ancient moon stone | **69** Quick draw (28.75% faster in all) | **94** Plenty (+42% chance of an extra item in all) |
+| **20** Tide stone | **45** Seer's eye (Rare and Legendary finds 68% likelier in all) | **70** Ember stone | **95** Seer's eye (Rare and Legendary finds 112% likelier in all) |
+| **21** Practised hands (mastery 24% faster in all) | **46** Practised hands (mastery 48% faster in all) | **71** Plenty (+34.5% chance of an extra item in all) | **96** Practised hands (mastery 81% faster in all) |
+| **22** Quick draw (12.5% faster in all) | **47** Quick draw (22.5% faster in all) | **72** Seer's eye (Rare and Legendary finds 92% likelier in all) | **97** Quick draw (36.25% faster in all) |
+| **23** Plenty (+15% chance of an extra item in all) | **48** Plenty (+27% chance of an extra item in all) | **73** Practised hands (mastery 66% faster in all) | **98** Plenty (+43.5% chance of an extra item in all) |
+| **24** Ancient tide stone | **49** Seer's eye (Rare and Legendary finds 72% likelier in all) | **74** Ancient ember stone | **99** Grandmaster runecrafter (+15% chance of an extra item) |
+| **25** Seer's eye (Rare and Legendary finds 40% likelier in all) | **50** Practised hands (mastery 51% faster in all) | **75** Quick draw (30% faster in all) |  |
 
 ### Smithing
 
 | Levels 1–25 | Levels 26–50 | Levels 51–75 | Levels 76–99 |
 | --- | --- | --- | --- |
-| **1** Copper bar; Copper whetstones | **26** Iron legs | **51** Practised hands IV (mastery 4% faster) | **76** Embersteel legs |
-| **2** Copper sword | **27** Smith's eye II (Rare and Legendary finds 8% likelier) | **52** Steady forge V (1.5% faster) | **77** Steady forge VIII (1.5% faster) |
-| **3** Copper staff | **28** Iron body | **53** Thrifty V (2% chance to save an ingredient) | **78** Embersteel body |
-| **4** Copper bow | **29** Practised hands II (mastery 8% faster) | **54** Smith's eye V (Rare and Legendary finds 4% likelier) | **79** Thrifty VIII (2% chance to save an ingredient) |
-| **5** Steady forge I (3% faster) | **30** Steel bar; Steel whetstones; Steel key | **55** Star-iron bar; Star-iron whetstones; Star-iron key | **80** Smith's eye VIII (Rare and Legendary finds 4% likelier) |
-| **6** Copper helm | **31** Steel sword | **56** Star-iron sword | **81** Practised hands VIII (mastery 4% faster) |
-| **7** Copper legs | **32** Steel staff | **57** Star-iron staff | **82** Steady forge IX (1.5% faster) |
-| **8** Thrifty I (4% chance to save an ingredient) | **33** Steel bow | **58** Star-iron bow | **83** Thrifty IX (2% chance to save an ingredient) |
-| **9** Copper body | **34** Steady forge III (3% faster) | **59** Practised hands V (mastery 4% faster) | **84** Smith's eye IX (Rare and Legendary finds 4% likelier) |
+| **1** Copper bar; Copper whetstones | **26** Iron legs | **51** Practised hands (mastery 24% faster in all) | **76** Embersteel legs |
+| **2** Copper sword | **27** Smith's eye (Rare and Legendary finds 16% likelier in all) | **52** Steady forge (12% faster in all) | **77** Steady forge (16.5% faster in all) |
+| **3** Copper staff | **28** Iron body | **53** Thrifty (16% chance to save an ingredient in all) | **78** Embersteel body |
+| **4** Copper bow | **29** Practised hands (mastery 16% faster in all) | **54** Smith's eye (Rare and Legendary finds 32% likelier in all) | **79** Thrifty (22% chance to save an ingredient in all) |
+| **5** Steady forge (3% faster) | **30** Steel bar; Steel whetstones; Steel key | **55** Star-iron bar; Star-iron whetstones; Star-iron key | **80** Smith's eye (Rare and Legendary finds 44% likelier in all) |
+| **6** Copper helm | **31** Steel sword | **56** Star-iron sword | **81** Practised hands (mastery 40% faster in all) |
+| **7** Copper legs | **32** Steel staff | **57** Star-iron staff | **82** Steady forge (18% faster in all) |
+| **8** Thrifty (4% chance to save an ingredient) | **33** Steel bow | **58** Star-iron bow | **83** Thrifty (24% chance to save an ingredient in all) |
+| **9** Copper body | **34** Steady forge (9% faster in all) | **59** Practised hands (mastery 28% faster in all) | **84** Smith's eye (Rare and Legendary finds 48% likelier in all) |
 | **10** Bronze bar; Bronze whetstones; Bronze key | **35** Steel helm | **60** Star-iron helm | **85** Dawnsteel bar; Dawnsteel whetstones; Dawnsteel key |
 | **11** Bronze sword | **36** Steel legs | **61** Star-iron legs | **86** Dawnsteel sword |
-| **12** Bronze staff | **37** Thrifty III (4% chance to save an ingredient) | **62** Steady forge VI (1.5% faster) | **87** Dawnsteel staff |
+| **12** Bronze staff | **37** Thrifty (12% chance to save an ingredient in all) | **62** Steady forge (13.5% faster in all) | **87** Dawnsteel staff |
 | **13** Bronze bow | **38** Steel body | **63** Star-iron body | **88** Dawnsteel bow |
-| **14** Smith's eye I (Rare and Legendary finds 8% likelier) | **39** Smith's eye III (Rare and Legendary finds 8% likelier) | **64** Thrifty VI (2% chance to save an ingredient) | **89** Practised hands IX (mastery 4% faster) |
-| **15** Bronze helm | **40** Moonsilver bar; Moonsilver whetstones; Moonsilver key; Master smith (8% chance to save an ingredient) | **65** Smith's eye VI (Rare and Legendary finds 4% likelier) | **90** Dawnsteel helm |
-| **16** Bronze legs | **41** Moonsilver sword | **66** Practised hands VI (mastery 4% faster) | **91** Dawnsteel legs |
-| **17** Practised hands I (mastery 8% faster) | **42** Moonsilver staff | **67** Steady forge VII (1.5% faster) | **92** Steady forge X (1.5% faster) |
-| **18** Bronze body | **43** Moonsilver bow | **68** Thrifty VII (2% chance to save an ingredient) | **93** Dawnsteel body |
-| **19** Steady forge II (3% faster) | **44** Practised hands III (mastery 4% faster) | **69** Smith's eye VII (Rare and Legendary finds 4% likelier) | **94** Thrifty X (2% chance to save an ingredient) |
-| **20** Iron bar; Iron whetstones; Iron key | **45** Moonsilver helm | **70** Embersteel bar; Embersteel whetstones; Embersteel key | **95** Smith's eye X (Rare and Legendary finds 4% likelier) |
-| **21** Iron sword | **46** Moonsilver legs | **71** Embersteel sword | **96** Practised hands X (mastery 4% faster) |
-| **22** Iron staff | **47** Steady forge IV (1.5% faster) | **72** Embersteel staff | **97** Steady forge XI (1.5% faster) |
-| **23** Iron bow | **48** Moonsilver body | **73** Embersteel bow | **98** Thrifty XI (2% chance to save an ingredient) |
-| **24** Thrifty II (4% chance to save an ingredient) | **49** Thrifty IV (2% chance to save an ingredient) | **74** Practised hands VII (mastery 4% faster) | **99** Grandmaster smith (10% chance to save an ingredient) |
-| **25** Iron helm | **50** Smith's eye IV (Rare and Legendary finds 4% likelier) | **75** Embersteel helm |  |
+| **14** Smith's eye (Rare and Legendary finds 8% likelier) | **39** Smith's eye (Rare and Legendary finds 24% likelier in all) | **64** Thrifty (18% chance to save an ingredient in all) | **89** Practised hands (mastery 44% faster in all) |
+| **15** Bronze helm | **40** Moonsilver bar; Moonsilver whetstones; Moonsilver key; Master smith (8% chance to save an ingredient) | **65** Smith's eye (Rare and Legendary finds 36% likelier in all) | **90** Dawnsteel helm |
+| **16** Bronze legs | **41** Moonsilver sword | **66** Practised hands (mastery 32% faster in all) | **91** Dawnsteel legs |
+| **17** Practised hands (mastery 8% faster) | **42** Moonsilver staff | **67** Steady forge (15% faster in all) | **92** Steady forge (19.5% faster in all) |
+| **18** Bronze body | **43** Moonsilver bow | **68** Thrifty (20% chance to save an ingredient in all) | **93** Dawnsteel body |
+| **19** Steady forge (6% faster in all) | **44** Practised hands (mastery 20% faster in all) | **69** Smith's eye (Rare and Legendary finds 40% likelier in all) | **94** Thrifty (26% chance to save an ingredient in all) |
+| **20** Iron bar; Iron whetstones; Iron key | **45** Moonsilver helm | **70** Embersteel bar; Embersteel whetstones; Embersteel key | **95** Smith's eye (Rare and Legendary finds 52% likelier in all) |
+| **21** Iron sword | **46** Moonsilver legs | **71** Embersteel sword | **96** Practised hands (mastery 48% faster in all) |
+| **22** Iron staff | **47** Steady forge (10.5% faster in all) | **72** Embersteel staff | **97** Steady forge (21% faster in all) |
+| **23** Iron bow | **48** Moonsilver body | **73** Embersteel bow | **98** Thrifty (28% chance to save an ingredient in all) |
+| **24** Thrifty (8% chance to save an ingredient in all) | **49** Thrifty (14% chance to save an ingredient in all) | **74** Practised hands (mastery 36% faster in all) | **99** Grandmaster smith (10% chance to save an ingredient) |
+| **25** Iron helm | **50** Smith's eye (Rare and Legendary finds 28% likelier in all) | **75** Embersteel helm |  |
 
 ### Cooking
 
 | Levels 1–25 | Levels 26–50 | Levels 51–75 | Levels 76–99 |
 | --- | --- | --- | --- |
-| **1** Cooked perch | **26** Thrifty VI (4% chance to save an ingredient) | **51** Cook's eye XI (Rare and Legendary finds 4% likelier) | **76** Practised hands XVI (mastery 4% faster) |
-| **2** Steady flame I (3% faster) | **27** Cook's eye VI (Rare and Legendary finds 8% likelier) | **52** Practised hands XI (mastery 4% faster) | **77** Steady flame XVII (1.5% faster) |
-| **3** Thrifty I (4% chance to save an ingredient) | **28** Practised hands VI (mastery 8% faster) | **53** Steady flame XII (1.5% faster) | **78** Thrifty XVII (2% chance to save an ingredient) |
-| **4** Cook's eye I (Rare and Legendary finds 8% likelier) | **29** Steady flame VII (3% faster) | **54** Thrifty XII (2% chance to save an ingredient) | **79** Cook's eye XVII (Rare and Legendary finds 4% likelier) |
-| **5** Practised hands I (mastery 8% faster) | **30** Cooked salmon | **55** Cooked silver eel | **80** Practised hands XVII (mastery 4% faster) |
-| **6** Steady flame II (3% faster) | **31** Thrifty VII (4% chance to save an ingredient) | **56** Cook's eye XII (Rare and Legendary finds 4% likelier) | **81** Steady flame XVIII (1.5% faster) |
-| **7** Thrifty II (4% chance to save an ingredient) | **32** Cook's eye VII (Rare and Legendary finds 8% likelier) | **57** Practised hands XII (mastery 4% faster) | **82** Thrifty XVIII (2% chance to save an ingredient) |
-| **8** Cook's eye II (Rare and Legendary finds 8% likelier) | **33** Practised hands VII (mastery 8% faster) | **58** Steady flame XIII (1.5% faster) | **83** Cook's eye XVIII (Rare and Legendary finds 4% likelier) |
-| **9** Practised hands II (mastery 8% faster) | **34** Steady flame VIII (3% faster) | **59** Thrifty XIII (2% chance to save an ingredient) | **84** Practised hands XVIII (mastery 4% faster) |
+| **1** Cooked perch | **26** Thrifty (24% chance to save an ingredient in all) | **51** Cook's eye (Rare and Legendary finds 76% likelier in all) | **76** Practised hands (mastery 96% faster in all) |
+| **2** Steady flame (3% faster) | **27** Cook's eye (Rare and Legendary finds 48% likelier in all) | **52** Practised hands (mastery 76% faster in all) | **77** Steady flame (39% faster in all) |
+| **3** Thrifty (4% chance to save an ingredient) | **28** Practised hands (mastery 48% faster in all) | **53** Steady flame (31.5% faster in all) | **78** Thrifty (50% chance to save an ingredient in all) |
+| **4** Cook's eye (Rare and Legendary finds 8% likelier) | **29** Steady flame (21% faster in all) | **54** Thrifty (40% chance to save an ingredient in all) | **79** Cook's eye (Rare and Legendary finds 100% likelier in all) |
+| **5** Practised hands (mastery 8% faster) | **30** Cooked salmon | **55** Cooked silver eel | **80** Practised hands (mastery 100% faster in all) |
+| **6** Steady flame (6% faster in all) | **31** Thrifty (28% chance to save an ingredient in all) | **56** Cook's eye (Rare and Legendary finds 80% likelier in all) | **81** Steady flame (40.5% faster in all) |
+| **7** Thrifty (8% chance to save an ingredient in all) | **32** Cook's eye (Rare and Legendary finds 56% likelier in all) | **57** Practised hands (mastery 80% faster in all) | **82** Thrifty (52% chance to save an ingredient in all) |
+| **8** Cook's eye (Rare and Legendary finds 16% likelier in all) | **33** Practised hands (mastery 56% faster in all) | **58** Steady flame (33% faster in all) | **83** Cook's eye (Rare and Legendary finds 104% likelier in all) |
+| **9** Practised hands (mastery 16% faster in all) | **34** Steady flame (24% faster in all) | **59** Thrifty (42% chance to save an ingredient in all) | **84** Practised hands (mastery 104% faster in all) |
 | **10** Cooked trout | **35** Salmon stew | **60** Eel stew | **85** Cooked dawn sturgeon |
-| **11** Steady flame III (3% faster) | **36** Thrifty VIII (4% chance to save an ingredient) | **61** Cook's eye XIII (Rare and Legendary finds 4% likelier) | **86** Steady flame XIX (1.5% faster) |
-| **12** Thrifty III (4% chance to save an ingredient) | **37** Cook's eye VIII (Rare and Legendary finds 8% likelier) | **62** Practised hands XIII (mastery 4% faster) | **87** Thrifty XIX (2% chance to save an ingredient) |
-| **13** Cook's eye III (Rare and Legendary finds 8% likelier) | **38** Practised hands VIII (mastery 8% faster) | **63** Steady flame XIV (1.5% faster) | **88** Cook's eye XIX (Rare and Legendary finds 4% likelier) |
-| **14** Practised hands III (mastery 8% faster) | **39** Steady flame IX (3% faster) | **64** Thrifty XIV (2% chance to save an ingredient) | **89** Practised hands XIX (mastery 4% faster) |
-| **15** Steady flame IV (3% faster) | **40** Cooked moon carp; Master cook (8% chance to save an ingredient) | **65** Cook's eye XIV (Rare and Legendary finds 4% likelier) | **90** Sturgeon stew |
-| **16** Thrifty IV (4% chance to save an ingredient) | **41** Thrifty IX (2% chance to save an ingredient) | **66** Practised hands XIV (mastery 4% faster) | **91** Steady flame XX (1.5% faster) |
-| **17** Cook's eye IV (Rare and Legendary finds 8% likelier) | **42** Cook's eye IX (Rare and Legendary finds 4% likelier) | **67** Steady flame XV (1.5% faster) | **92** Thrifty XX (2% chance to save an ingredient) |
-| **18** Practised hands IV (mastery 8% faster) | **43** Practised hands IX (mastery 4% faster) | **68** Thrifty XV (2% chance to save an ingredient) | **93** Cook's eye XX (Rare and Legendary finds 4% likelier) |
-| **19** Steady flame V (3% faster) | **44** Steady flame X (1.5% faster) | **69** Cook's eye XV (Rare and Legendary finds 4% likelier) | **94** Practised hands XX (mastery 4% faster) |
-| **20** Cooked pike | **45** Carp pie | **70** Cooked ember char | **95** Steady flame XXI (1.5% faster) |
-| **21** Thrifty V (4% chance to save an ingredient) | **46** Thrifty X (2% chance to save an ingredient) | **71** Practised hands XV (mastery 4% faster) | **96** Thrifty XXI (2% chance to save an ingredient) |
-| **22** Cook's eye V (Rare and Legendary finds 8% likelier) | **47** Cook's eye X (Rare and Legendary finds 4% likelier) | **72** Steady flame XVI (1.5% faster) | **97** Cook's eye XXI (Rare and Legendary finds 4% likelier) |
-| **23** Practised hands V (mastery 8% faster) | **48** Practised hands X (mastery 4% faster) | **73** Thrifty XVI (2% chance to save an ingredient) | **98** Practised hands XXI (mastery 4% faster) |
-| **24** Steady flame VI (3% faster) | **49** Steady flame XI (1.5% faster) | **74** Cook's eye XVI (Rare and Legendary finds 4% likelier) | **99** Grandmaster cook (10% chance to save an ingredient) |
-| **25** Pike pie | **50** Thrifty XI (2% chance to save an ingredient) | **75** Char pie |  |
+| **11** Steady flame (9% faster in all) | **36** Thrifty (32% chance to save an ingredient in all) | **61** Cook's eye (Rare and Legendary finds 84% likelier in all) | **86** Steady flame (42% faster in all) |
+| **12** Thrifty (12% chance to save an ingredient in all) | **37** Cook's eye (Rare and Legendary finds 64% likelier in all) | **62** Practised hands (mastery 84% faster in all) | **87** Thrifty (54% chance to save an ingredient in all) |
+| **13** Cook's eye (Rare and Legendary finds 24% likelier in all) | **38** Practised hands (mastery 64% faster in all) | **63** Steady flame (34.5% faster in all) | **88** Cook's eye (Rare and Legendary finds 108% likelier in all) |
+| **14** Practised hands (mastery 24% faster in all) | **39** Steady flame (27% faster in all) | **64** Thrifty (44% chance to save an ingredient in all) | **89** Practised hands (mastery 108% faster in all) |
+| **15** Steady flame (12% faster in all) | **40** Cooked moon carp; Master cook (8% chance to save an ingredient) | **65** Cook's eye (Rare and Legendary finds 88% likelier in all) | **90** Sturgeon stew |
+| **16** Thrifty (16% chance to save an ingredient in all) | **41** Thrifty (34% chance to save an ingredient in all) | **66** Practised hands (mastery 88% faster in all) | **91** Steady flame (43.5% faster in all) |
+| **17** Cook's eye (Rare and Legendary finds 32% likelier in all) | **42** Cook's eye (Rare and Legendary finds 68% likelier in all) | **67** Steady flame (36% faster in all) | **92** Thrifty (56% chance to save an ingredient in all) |
+| **18** Practised hands (mastery 32% faster in all) | **43** Practised hands (mastery 68% faster in all) | **68** Thrifty (46% chance to save an ingredient in all) | **93** Cook's eye (Rare and Legendary finds 112% likelier in all) |
+| **19** Steady flame (15% faster in all) | **44** Steady flame (28.5% faster in all) | **69** Cook's eye (Rare and Legendary finds 92% likelier in all) | **94** Practised hands (mastery 112% faster in all) |
+| **20** Cooked pike | **45** Carp pie | **70** Cooked ember char | **95** Steady flame (45% faster in all) |
+| **21** Thrifty (20% chance to save an ingredient in all) | **46** Thrifty (36% chance to save an ingredient in all) | **71** Practised hands (mastery 92% faster in all) | **96** Thrifty (58% chance to save an ingredient in all) |
+| **22** Cook's eye (Rare and Legendary finds 40% likelier in all) | **47** Cook's eye (Rare and Legendary finds 72% likelier in all) | **72** Steady flame (37.5% faster in all) | **97** Cook's eye (Rare and Legendary finds 116% likelier in all) |
+| **23** Practised hands (mastery 40% faster in all) | **48** Practised hands (mastery 72% faster in all) | **73** Thrifty (48% chance to save an ingredient in all) | **98** Practised hands (mastery 116% faster in all) |
+| **24** Steady flame (18% faster in all) | **49** Steady flame (30% faster in all) | **74** Cook's eye (Rare and Legendary finds 96% likelier in all) | **99** Grandmaster cook (10% chance to save an ingredient) |
+| **25** Pike pie | **50** Thrifty (38% chance to save an ingredient in all) | **75** Char pie |  |
 
 ### Fletching
 
 | Levels 1–25 | Levels 26–50 | Levels 51–75 | Levels 76–99 |
 | --- | --- | --- | --- |
-| **1** Copper arrows | **26** Fletcher's eye VI (Rare and Legendary finds 8% likelier) | **51** Thrifty XII (2% chance to save an ingredient) | **76** Fine fletching XVIII (+1.5% chance of an extra item) |
-| **2** Fine fletching I (+3% chance of an extra item) | **27** Practised hands VI (mastery 8% faster) | **52** Fletcher's eye XII (Rare and Legendary finds 4% likelier) | **77** Thrifty XVIII (2% chance to save an ingredient) |
-| **3** Thrifty I (4% chance to save an ingredient) | **28** Fine fletching VII (+3% chance of an extra item) | **53** Practised hands XII (mastery 4% faster) | **78** Fletcher's eye XVIII (Rare and Legendary finds 4% likelier) |
-| **4** Fletcher's eye I (Rare and Legendary finds 8% likelier) | **29** Thrifty VII (4% chance to save an ingredient) | **54** Fine fletching XIII (+1.5% chance of an extra item) | **79** Practised hands XVIII (mastery 4% faster) |
-| **5** Practised hands I (mastery 8% faster) | **30** Steel arrows | **55** Star-iron arrows | **80** Fine fletching XIX (+1.5% chance of an extra item) |
-| **6** Fine fletching II (+3% chance of an extra item) | **31** Fletcher's eye VII (Rare and Legendary finds 8% likelier) | **56** Thrifty XIII (2% chance to save an ingredient) | **81** Thrifty XIX (2% chance to save an ingredient) |
-| **7** Thrifty II (4% chance to save an ingredient) | **32** Practised hands VII (mastery 8% faster) | **57** Fletcher's eye XIII (Rare and Legendary finds 4% likelier) | **82** Fletcher's eye XIX (Rare and Legendary finds 4% likelier) |
-| **8** Fletcher's eye II (Rare and Legendary finds 8% likelier) | **33** Fine fletching VIII (+3% chance of an extra item) | **58** Practised hands XIII (mastery 4% faster) | **83** Practised hands XIX (mastery 4% faster) |
-| **9** Practised hands II (mastery 8% faster) | **34** Thrifty VIII (4% chance to save an ingredient) | **59** Fine fletching XIV (+1.5% chance of an extra item) | **84** Fine fletching XX (+1.5% chance of an extra item) |
-| **10** Bronze arrows | **35** Fletcher's eye VIII (Rare and Legendary finds 8% likelier) | **60** Thrifty XIV (2% chance to save an ingredient) | **85** Dawnsteel arrows |
-| **11** Fine fletching III (+3% chance of an extra item) | **36** Practised hands VIII (mastery 8% faster) | **61** Fletcher's eye XIV (Rare and Legendary finds 4% likelier) | **86** Thrifty XX (2% chance to save an ingredient) |
-| **12** Thrifty III (4% chance to save an ingredient) | **37** Fine fletching IX (+3% chance of an extra item) | **62** Practised hands XIV (mastery 4% faster) | **87** Fletcher's eye XX (Rare and Legendary finds 4% likelier) |
-| **13** Fletcher's eye III (Rare and Legendary finds 8% likelier) | **38** Thrifty IX (4% chance to save an ingredient) | **63** Fine fletching XV (+1.5% chance of an extra item) | **88** Practised hands XX (mastery 4% faster) |
-| **14** Practised hands III (mastery 8% faster) | **39** Fletcher's eye IX (Rare and Legendary finds 8% likelier) | **64** Thrifty XV (2% chance to save an ingredient) | **89** Fine fletching XXI (+1.5% chance of an extra item) |
-| **15** Fine fletching IV (+3% chance of an extra item) | **40** Moonsilver arrows; Master fletcher (8% chance to save an ingredient) | **65** Fletcher's eye XV (Rare and Legendary finds 4% likelier) | **90** Thrifty XXI (2% chance to save an ingredient) |
-| **16** Thrifty IV (4% chance to save an ingredient) | **41** Practised hands IX (mastery 4% faster) | **66** Practised hands XV (mastery 4% faster) | **91** Fletcher's eye XXI (Rare and Legendary finds 4% likelier) |
-| **17** Fletcher's eye IV (Rare and Legendary finds 8% likelier) | **42** Fine fletching X (+1.5% chance of an extra item) | **67** Fine fletching XVI (+1.5% chance of an extra item) | **92** Practised hands XXI (mastery 4% faster) |
-| **18** Practised hands IV (mastery 8% faster) | **43** Thrifty X (2% chance to save an ingredient) | **68** Thrifty XVI (2% chance to save an ingredient) | **93** Fine fletching XXII (+1.5% chance of an extra item) |
-| **19** Fine fletching V (+3% chance of an extra item) | **44** Fletcher's eye X (Rare and Legendary finds 4% likelier) | **69** Fletcher's eye XVI (Rare and Legendary finds 4% likelier) | **94** Thrifty XXII (2% chance to save an ingredient) |
-| **20** Iron arrows | **45** Practised hands X (mastery 4% faster) | **70** Embersteel arrows | **95** Fletcher's eye XXII (Rare and Legendary finds 4% likelier) |
-| **21** Thrifty V (4% chance to save an ingredient) | **46** Fine fletching XI (+1.5% chance of an extra item) | **71** Practised hands XVI (mastery 4% faster) | **96** Practised hands XXII (mastery 4% faster) |
-| **22** Fletcher's eye V (Rare and Legendary finds 8% likelier) | **47** Thrifty XI (2% chance to save an ingredient) | **72** Fine fletching XVII (+1.5% chance of an extra item) | **97** Fine fletching XXIII (+1.5% chance of an extra item) |
-| **23** Practised hands V (mastery 8% faster) | **48** Fletcher's eye XI (Rare and Legendary finds 4% likelier) | **73** Thrifty XVII (2% chance to save an ingredient) | **98** Thrifty XXIII (2% chance to save an ingredient) |
-| **24** Fine fletching VI (+3% chance of an extra item) | **49** Practised hands XI (mastery 4% faster) | **74** Fletcher's eye XVII (Rare and Legendary finds 4% likelier) | **99** Grandmaster fletcher (10% chance to save an ingredient) |
-| **25** Thrifty VI (4% chance to save an ingredient) | **50** Fine fletching XII (+1.5% chance of an extra item) | **75** Practised hands XVII (mastery 4% faster) |  |
+| **1** Copper arrows | **26** Fletcher's eye (Rare and Legendary finds 48% likelier in all) | **51** Thrifty (42% chance to save an ingredient in all) | **76** Fine fletching (+40.5% chance of an extra item in all) |
+| **2** Fine fletching (+3% chance of an extra item) | **27** Practised hands (mastery 48% faster in all) | **52** Fletcher's eye (Rare and Legendary finds 84% likelier in all) | **77** Thrifty (54% chance to save an ingredient in all) |
+| **3** Thrifty (4% chance to save an ingredient) | **28** Fine fletching (+21% chance of an extra item in all) | **53** Practised hands (mastery 80% faster in all) | **78** Fletcher's eye (Rare and Legendary finds 108% likelier in all) |
+| **4** Fletcher's eye (Rare and Legendary finds 8% likelier) | **29** Thrifty (28% chance to save an ingredient in all) | **54** Fine fletching (+33% chance of an extra item in all) | **79** Practised hands (mastery 104% faster in all) |
+| **5** Practised hands (mastery 8% faster) | **30** Steel arrows | **55** Star-iron arrows | **80** Fine fletching (+42% chance of an extra item in all) |
+| **6** Fine fletching (+6% chance of an extra item in all) | **31** Fletcher's eye (Rare and Legendary finds 56% likelier in all) | **56** Thrifty (44% chance to save an ingredient in all) | **81** Thrifty (56% chance to save an ingredient in all) |
+| **7** Thrifty (8% chance to save an ingredient in all) | **32** Practised hands (mastery 56% faster in all) | **57** Fletcher's eye (Rare and Legendary finds 88% likelier in all) | **82** Fletcher's eye (Rare and Legendary finds 112% likelier in all) |
+| **8** Fletcher's eye (Rare and Legendary finds 16% likelier in all) | **33** Fine fletching (+24% chance of an extra item in all) | **58** Practised hands (mastery 84% faster in all) | **83** Practised hands (mastery 108% faster in all) |
+| **9** Practised hands (mastery 16% faster in all) | **34** Thrifty (32% chance to save an ingredient in all) | **59** Fine fletching (+34.5% chance of an extra item in all) | **84** Fine fletching (+43.5% chance of an extra item in all) |
+| **10** Bronze arrows | **35** Fletcher's eye (Rare and Legendary finds 64% likelier in all) | **60** Thrifty (46% chance to save an ingredient in all) | **85** Dawnsteel arrows |
+| **11** Fine fletching (+9% chance of an extra item in all) | **36** Practised hands (mastery 64% faster in all) | **61** Fletcher's eye (Rare and Legendary finds 92% likelier in all) | **86** Thrifty (58% chance to save an ingredient in all) |
+| **12** Thrifty (12% chance to save an ingredient in all) | **37** Fine fletching (+27% chance of an extra item in all) | **62** Practised hands (mastery 88% faster in all) | **87** Fletcher's eye (Rare and Legendary finds 116% likelier in all) |
+| **13** Fletcher's eye (Rare and Legendary finds 24% likelier in all) | **38** Thrifty (36% chance to save an ingredient in all) | **63** Fine fletching (+36% chance of an extra item in all) | **88** Practised hands (mastery 112% faster in all) |
+| **14** Practised hands (mastery 24% faster in all) | **39** Fletcher's eye (Rare and Legendary finds 72% likelier in all) | **64** Thrifty (48% chance to save an ingredient in all) | **89** Fine fletching (+45% chance of an extra item in all) |
+| **15** Fine fletching (+12% chance of an extra item in all) | **40** Moonsilver arrows; Master fletcher (8% chance to save an ingredient) | **65** Fletcher's eye (Rare and Legendary finds 96% likelier in all) | **90** Thrifty (60% chance to save an ingredient in all) |
+| **16** Thrifty (16% chance to save an ingredient in all) | **41** Practised hands (mastery 68% faster in all) | **66** Practised hands (mastery 92% faster in all) | **91** Fletcher's eye (Rare and Legendary finds 120% likelier in all) |
+| **17** Fletcher's eye (Rare and Legendary finds 32% likelier in all) | **42** Fine fletching (+28.5% chance of an extra item in all) | **67** Fine fletching (+37.5% chance of an extra item in all) | **92** Practised hands (mastery 116% faster in all) |
+| **18** Practised hands (mastery 32% faster in all) | **43** Thrifty (38% chance to save an ingredient in all) | **68** Thrifty (50% chance to save an ingredient in all) | **93** Fine fletching (+46.5% chance of an extra item in all) |
+| **19** Fine fletching (+15% chance of an extra item in all) | **44** Fletcher's eye (Rare and Legendary finds 76% likelier in all) | **69** Fletcher's eye (Rare and Legendary finds 100% likelier in all) | **94** Thrifty (62% chance to save an ingredient in all) |
+| **20** Iron arrows | **45** Practised hands (mastery 72% faster in all) | **70** Embersteel arrows | **95** Fletcher's eye (Rare and Legendary finds 124% likelier in all) |
+| **21** Thrifty (20% chance to save an ingredient in all) | **46** Fine fletching (+30% chance of an extra item in all) | **71** Practised hands (mastery 96% faster in all) | **96** Practised hands (mastery 120% faster in all) |
+| **22** Fletcher's eye (Rare and Legendary finds 40% likelier in all) | **47** Thrifty (40% chance to save an ingredient in all) | **72** Fine fletching (+39% chance of an extra item in all) | **97** Fine fletching (+48% chance of an extra item in all) |
+| **23** Practised hands (mastery 40% faster in all) | **48** Fletcher's eye (Rare and Legendary finds 80% likelier in all) | **73** Thrifty (52% chance to save an ingredient in all) | **98** Thrifty (64% chance to save an ingredient in all) |
+| **24** Fine fletching (+18% chance of an extra item in all) | **49** Practised hands (mastery 76% faster in all) | **74** Fletcher's eye (Rare and Legendary finds 104% likelier in all) | **99** Grandmaster fletcher (10% chance to save an ingredient) |
+| **25** Thrifty (24% chance to save an ingredient in all) | **50** Fine fletching (+31.5% chance of an extra item in all) | **75** Practised hands (mastery 100% faster in all) |  |
 
 ### Melee
 
 | Levels 1–25 | Levels 26–50 | Levels 51–75 | Levels 76–99 |
 | --- | --- | --- | --- |
-| **1** Wield Copper swords | **26** Parry VI (2.5% less damage taken) | **51** Sure strike XII (+1% to hit) | **76** Heavy blows XVIII (+1.5% damage) |
-| **2** Heavy blows I (+3% damage) | **27** Spoils of war VI (+6% gold and drops) | **52** Parry XII (1.25% less damage taken) | **77** Sure strike XVIII (+1% to hit) |
-| **3** Sure strike I (+2% to hit) | **28** Heavy blows VII (+3% damage) | **53** Spoils of war XII (+3% gold and drops) | **78** Parry XVIII (1.25% less damage taken) |
-| **4** Parry I (2.5% less damage taken) | **29** Sure strike VII (+2% to hit) | **54** Heavy blows XIII (+1.5% damage) | **79** Spoils of war XVIII (+3% gold and drops) |
-| **5** Spoils of war I (+6% gold and drops) | **30** Wield Steel swords | **55** Wield Star-iron swords | **80** Heavy blows XIX (+1.5% damage) |
-| **6** Heavy blows II (+3% damage) | **31** Parry VII (2.5% less damage taken) | **56** Sure strike XIII (+1% to hit) | **81** Sure strike XIX (+1% to hit) |
-| **7** Sure strike II (+2% to hit) | **32** Spoils of war VII (+6% gold and drops) | **57** Parry XIII (1.25% less damage taken) | **82** Parry XIX (1.25% less damage taken) |
-| **8** Parry II (2.5% less damage taken) | **33** Heavy blows VIII (+3% damage) | **58** Spoils of war XIII (+3% gold and drops) | **83** Spoils of war XIX (+3% gold and drops) |
-| **9** Spoils of war II (+6% gold and drops) | **34** Sure strike VIII (+2% to hit) | **59** Heavy blows XIV (+1.5% damage) | **84** Heavy blows XX (+1.5% damage) |
-| **10** Wield Bronze swords | **35** Parry VIII (2.5% less damage taken) | **60** Sure strike XIV (+1% to hit) | **85** Wield Dawnsteel swords |
-| **11** Heavy blows III (+3% damage) | **36** Spoils of war VIII (+6% gold and drops) | **61** Parry XIV (1.25% less damage taken) | **86** Sure strike XX (+1% to hit) |
-| **12** Sure strike III (+2% to hit) | **37** Heavy blows IX (+3% damage) | **62** Spoils of war XIV (+3% gold and drops) | **87** Parry XX (1.25% less damage taken) |
-| **13** Parry III (2.5% less damage taken) | **38** Sure strike IX (+2% to hit) | **63** Heavy blows XV (+1.5% damage) | **88** Spoils of war XX (+3% gold and drops) |
-| **14** Spoils of war III (+6% gold and drops) | **39** Parry IX (2.5% less damage taken) | **64** Sure strike XV (+1% to hit) | **89** Heavy blows XXI (+1.5% damage) |
-| **15** Heavy blows IV (+3% damage) | **40** Wield Moonsilver swords; Master of melee (+8% damage) | **65** Parry XV (1.25% less damage taken) | **90** Sure strike XXI (+1% to hit) |
-| **16** Sure strike IV (+2% to hit) | **41** Spoils of war IX (+3% gold and drops) | **66** Spoils of war XV (+3% gold and drops) | **91** Parry XXI (1.25% less damage taken) |
-| **17** Parry IV (2.5% less damage taken) | **42** Heavy blows X (+1.5% damage) | **67** Heavy blows XVI (+1.5% damage) | **92** Spoils of war XXI (+3% gold and drops) |
-| **18** Spoils of war IV (+6% gold and drops) | **43** Sure strike X (+1% to hit) | **68** Sure strike XVI (+1% to hit) | **93** Heavy blows XXII (+1.5% damage) |
-| **19** Heavy blows V (+3% damage) | **44** Parry X (1.25% less damage taken) | **69** Parry XVI (1.25% less damage taken) | **94** Sure strike XXII (+1% to hit) |
-| **20** Wield Iron swords | **45** Spoils of war X (+3% gold and drops) | **70** Wield Embersteel swords | **95** Parry XXII (1.25% less damage taken) |
-| **21** Sure strike V (+2% to hit) | **46** Heavy blows XI (+1.5% damage) | **71** Spoils of war XVI (+3% gold and drops) | **96** Spoils of war XXII (+3% gold and drops) |
-| **22** Parry V (2.5% less damage taken) | **47** Sure strike XI (+1% to hit) | **72** Heavy blows XVII (+1.5% damage) | **97** Heavy blows XXIII (+1.5% damage) |
-| **23** Spoils of war V (+6% gold and drops) | **48** Parry XI (1.25% less damage taken) | **73** Sure strike XVII (+1% to hit) | **98** Sure strike XXIII (+1% to hit) |
-| **24** Heavy blows VI (+3% damage) | **49** Spoils of war XI (+3% gold and drops) | **74** Parry XVII (1.25% less damage taken) | **99** Grandmaster of melee (+10% damage) |
-| **25** Sure strike VI (+2% to hit) | **50** Heavy blows XII (+1.5% damage) | **75** Spoils of war XVII (+3% gold and drops) |  |
+| **1** Wield Copper swords | **26** Parry (15% less damage taken in all) | **51** Sure strike (+21% to hit in all) | **76** Heavy blows (+40.5% damage in all) |
+| **2** Heavy blows (+3% damage) | **27** Spoils of war (+36% gold and drops in all) | **52** Parry (26.25% less damage taken in all) | **77** Sure strike (+27% to hit in all) |
+| **3** Sure strike (+2% to hit) | **28** Heavy blows (+21% damage in all) | **53** Spoils of war (+60% gold and drops in all) | **78** Parry (33.75% less damage taken in all) |
+| **4** Parry (2.5% less damage taken) | **29** Sure strike (+14% to hit in all) | **54** Heavy blows (+33% damage in all) | **79** Spoils of war (+78% gold and drops in all) |
+| **5** Spoils of war (+6% gold and drops) | **30** Wield Steel swords | **55** Wield Star-iron swords | **80** Heavy blows (+42% damage in all) |
+| **6** Heavy blows (+6% damage in all) | **31** Parry (17.5% less damage taken in all) | **56** Sure strike (+22% to hit in all) | **81** Sure strike (+28% to hit in all) |
+| **7** Sure strike (+4% to hit in all) | **32** Spoils of war (+42% gold and drops in all) | **57** Parry (27.5% less damage taken in all) | **82** Parry (35% less damage taken in all) |
+| **8** Parry (5% less damage taken in all) | **33** Heavy blows (+24% damage in all) | **58** Spoils of war (+63% gold and drops in all) | **83** Spoils of war (+81% gold and drops in all) |
+| **9** Spoils of war (+12% gold and drops in all) | **34** Sure strike (+16% to hit in all) | **59** Heavy blows (+34.5% damage in all) | **84** Heavy blows (+43.5% damage in all) |
+| **10** Wield Bronze swords | **35** Parry (20% less damage taken in all) | **60** Sure strike (+23% to hit in all) | **85** Wield Dawnsteel swords |
+| **11** Heavy blows (+9% damage in all) | **36** Spoils of war (+48% gold and drops in all) | **61** Parry (28.75% less damage taken in all) | **86** Sure strike (+29% to hit in all) |
+| **12** Sure strike (+6% to hit in all) | **37** Heavy blows (+27% damage in all) | **62** Spoils of war (+66% gold and drops in all) | **87** Parry (36.25% less damage taken in all) |
+| **13** Parry (7.5% less damage taken in all) | **38** Sure strike (+18% to hit in all) | **63** Heavy blows (+36% damage in all) | **88** Spoils of war (+84% gold and drops in all) |
+| **14** Spoils of war (+18% gold and drops in all) | **39** Parry (22.5% less damage taken in all) | **64** Sure strike (+24% to hit in all) | **89** Heavy blows (+45% damage in all) |
+| **15** Heavy blows (+12% damage in all) | **40** Wield Moonsilver swords; Master of melee (+8% damage) | **65** Parry (30% less damage taken in all) | **90** Sure strike (+30% to hit in all) |
+| **16** Sure strike (+8% to hit in all) | **41** Spoils of war (+51% gold and drops in all) | **66** Spoils of war (+69% gold and drops in all) | **91** Parry (37.5% less damage taken in all) |
+| **17** Parry (10% less damage taken in all) | **42** Heavy blows (+28.5% damage in all) | **67** Heavy blows (+37.5% damage in all) | **92** Spoils of war (+87% gold and drops in all) |
+| **18** Spoils of war (+24% gold and drops in all) | **43** Sure strike (+19% to hit in all) | **68** Sure strike (+25% to hit in all) | **93** Heavy blows (+46.5% damage in all) |
+| **19** Heavy blows (+15% damage in all) | **44** Parry (23.75% less damage taken in all) | **69** Parry (31.25% less damage taken in all) | **94** Sure strike (+31% to hit in all) |
+| **20** Wield Iron swords | **45** Spoils of war (+54% gold and drops in all) | **70** Wield Embersteel swords | **95** Parry (38.75% less damage taken in all) |
+| **21** Sure strike (+10% to hit in all) | **46** Heavy blows (+30% damage in all) | **71** Spoils of war (+72% gold and drops in all) | **96** Spoils of war (+90% gold and drops in all) |
+| **22** Parry (12.5% less damage taken in all) | **47** Sure strike (+20% to hit in all) | **72** Heavy blows (+39% damage in all) | **97** Heavy blows (+48% damage in all) |
+| **23** Spoils of war (+30% gold and drops in all) | **48** Parry (25% less damage taken in all) | **73** Sure strike (+26% to hit in all) | **98** Sure strike (+32% to hit in all) |
+| **24** Heavy blows (+18% damage in all) | **49** Spoils of war (+57% gold and drops in all) | **74** Parry (32.5% less damage taken in all) | **99** Grandmaster of melee (+10% damage) |
+| **25** Sure strike (+12% to hit in all) | **50** Heavy blows (+31.5% damage in all) | **75** Spoils of war (+75% gold and drops in all) |  |
 
 ### Archery
 
 | Levels 1–25 | Levels 26–50 | Levels 51–75 | Levels 76–99 |
 | --- | --- | --- | --- |
-| **1** Wield Copper bows | **26** Light step VI (2.5% less damage taken) | **51** Steady aim XII (+1% to hit) | **76** Drawn deep XVIII (+1.5% damage) |
-| **2** Drawn deep I (+3% damage) | **27** Spoils of the hunt VI (+6% gold and drops) | **52** Light step XII (1.25% less damage taken) | **77** Steady aim XVIII (+1% to hit) |
-| **3** Steady aim I (+2% to hit) | **28** Drawn deep VII (+3% damage) | **53** Spoils of the hunt XII (+3% gold and drops) | **78** Light step XVIII (1.25% less damage taken) |
-| **4** Light step I (2.5% less damage taken) | **29** Steady aim VII (+2% to hit) | **54** Drawn deep XIII (+1.5% damage) | **79** Spoils of the hunt XVIII (+3% gold and drops) |
-| **5** Spoils of the hunt I (+6% gold and drops) | **30** Wield Steel bows | **55** Wield Star-iron bows | **80** Drawn deep XIX (+1.5% damage) |
-| **6** Drawn deep II (+3% damage) | **31** Light step VII (2.5% less damage taken) | **56** Steady aim XIII (+1% to hit) | **81** Steady aim XIX (+1% to hit) |
-| **7** Steady aim II (+2% to hit) | **32** Spoils of the hunt VII (+6% gold and drops) | **57** Light step XIII (1.25% less damage taken) | **82** Light step XIX (1.25% less damage taken) |
-| **8** Light step II (2.5% less damage taken) | **33** Drawn deep VIII (+3% damage) | **58** Spoils of the hunt XIII (+3% gold and drops) | **83** Spoils of the hunt XIX (+3% gold and drops) |
-| **9** Spoils of the hunt II (+6% gold and drops) | **34** Steady aim VIII (+2% to hit) | **59** Drawn deep XIV (+1.5% damage) | **84** Drawn deep XX (+1.5% damage) |
-| **10** Wield Bronze bows | **35** Light step VIII (2.5% less damage taken) | **60** Steady aim XIV (+1% to hit) | **85** Wield Dawnsteel bows |
-| **11** Drawn deep III (+3% damage) | **36** Spoils of the hunt VIII (+6% gold and drops) | **61** Light step XIV (1.25% less damage taken) | **86** Steady aim XX (+1% to hit) |
-| **12** Steady aim III (+2% to hit) | **37** Drawn deep IX (+3% damage) | **62** Spoils of the hunt XIV (+3% gold and drops) | **87** Light step XX (1.25% less damage taken) |
-| **13** Light step III (2.5% less damage taken) | **38** Steady aim IX (+2% to hit) | **63** Drawn deep XV (+1.5% damage) | **88** Spoils of the hunt XX (+3% gold and drops) |
-| **14** Spoils of the hunt III (+6% gold and drops) | **39** Light step IX (2.5% less damage taken) | **64** Steady aim XV (+1% to hit) | **89** Drawn deep XXI (+1.5% damage) |
-| **15** Drawn deep IV (+3% damage) | **40** Wield Moonsilver bows; Master of archery (+8% damage) | **65** Light step XV (1.25% less damage taken) | **90** Steady aim XXI (+1% to hit) |
-| **16** Steady aim IV (+2% to hit) | **41** Spoils of the hunt IX (+3% gold and drops) | **66** Spoils of the hunt XV (+3% gold and drops) | **91** Light step XXI (1.25% less damage taken) |
-| **17** Light step IV (2.5% less damage taken) | **42** Drawn deep X (+1.5% damage) | **67** Drawn deep XVI (+1.5% damage) | **92** Spoils of the hunt XXI (+3% gold and drops) |
-| **18** Spoils of the hunt IV (+6% gold and drops) | **43** Steady aim X (+1% to hit) | **68** Steady aim XVI (+1% to hit) | **93** Drawn deep XXII (+1.5% damage) |
-| **19** Drawn deep V (+3% damage) | **44** Light step X (1.25% less damage taken) | **69** Light step XVI (1.25% less damage taken) | **94** Steady aim XXII (+1% to hit) |
-| **20** Wield Iron bows | **45** Spoils of the hunt X (+3% gold and drops) | **70** Wield Embersteel bows | **95** Light step XXII (1.25% less damage taken) |
-| **21** Steady aim V (+2% to hit) | **46** Drawn deep XI (+1.5% damage) | **71** Spoils of the hunt XVI (+3% gold and drops) | **96** Spoils of the hunt XXII (+3% gold and drops) |
-| **22** Light step V (2.5% less damage taken) | **47** Steady aim XI (+1% to hit) | **72** Drawn deep XVII (+1.5% damage) | **97** Drawn deep XXIII (+1.5% damage) |
-| **23** Spoils of the hunt V (+6% gold and drops) | **48** Light step XI (1.25% less damage taken) | **73** Steady aim XVII (+1% to hit) | **98** Steady aim XXIII (+1% to hit) |
-| **24** Drawn deep VI (+3% damage) | **49** Spoils of the hunt XI (+3% gold and drops) | **74** Light step XVII (1.25% less damage taken) | **99** Grandmaster of archery (+10% damage) |
-| **25** Steady aim VI (+2% to hit) | **50** Drawn deep XII (+1.5% damage) | **75** Spoils of the hunt XVII (+3% gold and drops) |  |
+| **1** Wield Copper bows | **26** Light step (15% less damage taken in all) | **51** Steady aim (+21% to hit in all) | **76** Drawn deep (+40.5% damage in all) |
+| **2** Drawn deep (+3% damage) | **27** Spoils of the hunt (+36% gold and drops in all) | **52** Light step (26.25% less damage taken in all) | **77** Steady aim (+27% to hit in all) |
+| **3** Steady aim (+2% to hit) | **28** Drawn deep (+21% damage in all) | **53** Spoils of the hunt (+60% gold and drops in all) | **78** Light step (33.75% less damage taken in all) |
+| **4** Light step (2.5% less damage taken) | **29** Steady aim (+14% to hit in all) | **54** Drawn deep (+33% damage in all) | **79** Spoils of the hunt (+78% gold and drops in all) |
+| **5** Spoils of the hunt (+6% gold and drops) | **30** Wield Steel bows | **55** Wield Star-iron bows | **80** Drawn deep (+42% damage in all) |
+| **6** Drawn deep (+6% damage in all) | **31** Light step (17.5% less damage taken in all) | **56** Steady aim (+22% to hit in all) | **81** Steady aim (+28% to hit in all) |
+| **7** Steady aim (+4% to hit in all) | **32** Spoils of the hunt (+42% gold and drops in all) | **57** Light step (27.5% less damage taken in all) | **82** Light step (35% less damage taken in all) |
+| **8** Light step (5% less damage taken in all) | **33** Drawn deep (+24% damage in all) | **58** Spoils of the hunt (+63% gold and drops in all) | **83** Spoils of the hunt (+81% gold and drops in all) |
+| **9** Spoils of the hunt (+12% gold and drops in all) | **34** Steady aim (+16% to hit in all) | **59** Drawn deep (+34.5% damage in all) | **84** Drawn deep (+43.5% damage in all) |
+| **10** Wield Bronze bows | **35** Light step (20% less damage taken in all) | **60** Steady aim (+23% to hit in all) | **85** Wield Dawnsteel bows |
+| **11** Drawn deep (+9% damage in all) | **36** Spoils of the hunt (+48% gold and drops in all) | **61** Light step (28.75% less damage taken in all) | **86** Steady aim (+29% to hit in all) |
+| **12** Steady aim (+6% to hit in all) | **37** Drawn deep (+27% damage in all) | **62** Spoils of the hunt (+66% gold and drops in all) | **87** Light step (36.25% less damage taken in all) |
+| **13** Light step (7.5% less damage taken in all) | **38** Steady aim (+18% to hit in all) | **63** Drawn deep (+36% damage in all) | **88** Spoils of the hunt (+84% gold and drops in all) |
+| **14** Spoils of the hunt (+18% gold and drops in all) | **39** Light step (22.5% less damage taken in all) | **64** Steady aim (+24% to hit in all) | **89** Drawn deep (+45% damage in all) |
+| **15** Drawn deep (+12% damage in all) | **40** Wield Moonsilver bows; Master of archery (+8% damage) | **65** Light step (30% less damage taken in all) | **90** Steady aim (+30% to hit in all) |
+| **16** Steady aim (+8% to hit in all) | **41** Spoils of the hunt (+51% gold and drops in all) | **66** Spoils of the hunt (+69% gold and drops in all) | **91** Light step (37.5% less damage taken in all) |
+| **17** Light step (10% less damage taken in all) | **42** Drawn deep (+28.5% damage in all) | **67** Drawn deep (+37.5% damage in all) | **92** Spoils of the hunt (+87% gold and drops in all) |
+| **18** Spoils of the hunt (+24% gold and drops in all) | **43** Steady aim (+19% to hit in all) | **68** Steady aim (+25% to hit in all) | **93** Drawn deep (+46.5% damage in all) |
+| **19** Drawn deep (+15% damage in all) | **44** Light step (23.75% less damage taken in all) | **69** Light step (31.25% less damage taken in all) | **94** Steady aim (+31% to hit in all) |
+| **20** Wield Iron bows | **45** Spoils of the hunt (+54% gold and drops in all) | **70** Wield Embersteel bows | **95** Light step (38.75% less damage taken in all) |
+| **21** Steady aim (+10% to hit in all) | **46** Drawn deep (+30% damage in all) | **71** Spoils of the hunt (+72% gold and drops in all) | **96** Spoils of the hunt (+90% gold and drops in all) |
+| **22** Light step (12.5% less damage taken in all) | **47** Steady aim (+20% to hit in all) | **72** Drawn deep (+39% damage in all) | **97** Drawn deep (+48% damage in all) |
+| **23** Spoils of the hunt (+30% gold and drops in all) | **48** Light step (25% less damage taken in all) | **73** Steady aim (+26% to hit in all) | **98** Steady aim (+32% to hit in all) |
+| **24** Drawn deep (+18% damage in all) | **49** Spoils of the hunt (+57% gold and drops in all) | **74** Light step (32.5% less damage taken in all) | **99** Grandmaster of archery (+10% damage) |
+| **25** Steady aim (+12% to hit in all) | **50** Drawn deep (+31.5% damage in all) | **75** Spoils of the hunt (+75% gold and drops in all) |  |
 
 ### Magic
 
 | Levels 1–25 | Levels 26–50 | Levels 51–75 | Levels 76–99 |
 | --- | --- | --- | --- |
-| **1** Wield Copper staves | **26** Ward VI (2.5% less damage taken) | **51** Focus XII (+1% to hit) | **76** Kindled will XVIII (+1.5% damage) |
-| **2** Kindled will I (+3% damage) | **27** Spoils of the wild VI (+6% gold and drops) | **52** Ward XII (1.25% less damage taken) | **77** Focus XVIII (+1% to hit) |
-| **3** Focus I (+2% to hit) | **28** Kindled will VII (+3% damage) | **53** Spoils of the wild XII (+3% gold and drops) | **78** Ward XVIII (1.25% less damage taken) |
-| **4** Ward I (2.5% less damage taken) | **29** Focus VII (+2% to hit) | **54** Kindled will XIII (+1.5% damage) | **79** Spoils of the wild XVIII (+3% gold and drops) |
-| **5** Spoils of the wild I (+6% gold and drops) | **30** Wield Steel staves | **55** Wield Star-iron staves | **80** Kindled will XIX (+1.5% damage) |
-| **6** Kindled will II (+3% damage) | **31** Ward VII (2.5% less damage taken) | **56** Focus XIII (+1% to hit) | **81** Focus XIX (+1% to hit) |
-| **7** Focus II (+2% to hit) | **32** Spoils of the wild VII (+6% gold and drops) | **57** Ward XIII (1.25% less damage taken) | **82** Ward XIX (1.25% less damage taken) |
-| **8** Ward II (2.5% less damage taken) | **33** Kindled will VIII (+3% damage) | **58** Spoils of the wild XIII (+3% gold and drops) | **83** Spoils of the wild XIX (+3% gold and drops) |
-| **9** Spoils of the wild II (+6% gold and drops) | **34** Focus VIII (+2% to hit) | **59** Kindled will XIV (+1.5% damage) | **84** Kindled will XX (+1.5% damage) |
-| **10** Wield Bronze staves | **35** Ward VIII (2.5% less damage taken) | **60** Focus XIV (+1% to hit) | **85** Wield Dawnsteel staves |
-| **11** Kindled will III (+3% damage) | **36** Spoils of the wild VIII (+6% gold and drops) | **61** Ward XIV (1.25% less damage taken) | **86** Focus XX (+1% to hit) |
-| **12** Focus III (+2% to hit) | **37** Kindled will IX (+3% damage) | **62** Spoils of the wild XIV (+3% gold and drops) | **87** Ward XX (1.25% less damage taken) |
-| **13** Ward III (2.5% less damage taken) | **38** Focus IX (+2% to hit) | **63** Kindled will XV (+1.5% damage) | **88** Spoils of the wild XX (+3% gold and drops) |
-| **14** Spoils of the wild III (+6% gold and drops) | **39** Ward IX (2.5% less damage taken) | **64** Focus XV (+1% to hit) | **89** Kindled will XXI (+1.5% damage) |
-| **15** Kindled will IV (+3% damage) | **40** Wield Moonsilver staves; Master of magic (+8% damage) | **65** Ward XV (1.25% less damage taken) | **90** Focus XXI (+1% to hit) |
-| **16** Focus IV (+2% to hit) | **41** Spoils of the wild IX (+3% gold and drops) | **66** Spoils of the wild XV (+3% gold and drops) | **91** Ward XXI (1.25% less damage taken) |
-| **17** Ward IV (2.5% less damage taken) | **42** Kindled will X (+1.5% damage) | **67** Kindled will XVI (+1.5% damage) | **92** Spoils of the wild XXI (+3% gold and drops) |
-| **18** Spoils of the wild IV (+6% gold and drops) | **43** Focus X (+1% to hit) | **68** Focus XVI (+1% to hit) | **93** Kindled will XXII (+1.5% damage) |
-| **19** Kindled will V (+3% damage) | **44** Ward X (1.25% less damage taken) | **69** Ward XVI (1.25% less damage taken) | **94** Focus XXII (+1% to hit) |
-| **20** Wield Iron staves | **45** Spoils of the wild X (+3% gold and drops) | **70** Wield Embersteel staves | **95** Ward XXII (1.25% less damage taken) |
-| **21** Focus V (+2% to hit) | **46** Kindled will XI (+1.5% damage) | **71** Spoils of the wild XVI (+3% gold and drops) | **96** Spoils of the wild XXII (+3% gold and drops) |
-| **22** Ward V (2.5% less damage taken) | **47** Focus XI (+1% to hit) | **72** Kindled will XVII (+1.5% damage) | **97** Kindled will XXIII (+1.5% damage) |
-| **23** Spoils of the wild V (+6% gold and drops) | **48** Ward XI (1.25% less damage taken) | **73** Focus XVII (+1% to hit) | **98** Focus XXIII (+1% to hit) |
-| **24** Kindled will VI (+3% damage) | **49** Spoils of the wild XI (+3% gold and drops) | **74** Ward XVII (1.25% less damage taken) | **99** Grandmaster of magic (+10% damage) |
-| **25** Focus VI (+2% to hit) | **50** Kindled will XII (+1.5% damage) | **75** Spoils of the wild XVII (+3% gold and drops) |  |
+| **1** Wield Copper staves | **26** Ward (15% less damage taken in all) | **51** Focus (+21% to hit in all) | **76** Kindled will (+40.5% damage in all) |
+| **2** Kindled will (+3% damage) | **27** Spoils of the wild (+36% gold and drops in all) | **52** Ward (26.25% less damage taken in all) | **77** Focus (+27% to hit in all) |
+| **3** Focus (+2% to hit) | **28** Kindled will (+21% damage in all) | **53** Spoils of the wild (+60% gold and drops in all) | **78** Ward (33.75% less damage taken in all) |
+| **4** Ward (2.5% less damage taken) | **29** Focus (+14% to hit in all) | **54** Kindled will (+33% damage in all) | **79** Spoils of the wild (+78% gold and drops in all) |
+| **5** Spoils of the wild (+6% gold and drops) | **30** Wield Steel staves | **55** Wield Star-iron staves | **80** Kindled will (+42% damage in all) |
+| **6** Kindled will (+6% damage in all) | **31** Ward (17.5% less damage taken in all) | **56** Focus (+22% to hit in all) | **81** Focus (+28% to hit in all) |
+| **7** Focus (+4% to hit in all) | **32** Spoils of the wild (+42% gold and drops in all) | **57** Ward (27.5% less damage taken in all) | **82** Ward (35% less damage taken in all) |
+| **8** Ward (5% less damage taken in all) | **33** Kindled will (+24% damage in all) | **58** Spoils of the wild (+63% gold and drops in all) | **83** Spoils of the wild (+81% gold and drops in all) |
+| **9** Spoils of the wild (+12% gold and drops in all) | **34** Focus (+16% to hit in all) | **59** Kindled will (+34.5% damage in all) | **84** Kindled will (+43.5% damage in all) |
+| **10** Wield Bronze staves | **35** Ward (20% less damage taken in all) | **60** Focus (+23% to hit in all) | **85** Wield Dawnsteel staves |
+| **11** Kindled will (+9% damage in all) | **36** Spoils of the wild (+48% gold and drops in all) | **61** Ward (28.75% less damage taken in all) | **86** Focus (+29% to hit in all) |
+| **12** Focus (+6% to hit in all) | **37** Kindled will (+27% damage in all) | **62** Spoils of the wild (+66% gold and drops in all) | **87** Ward (36.25% less damage taken in all) |
+| **13** Ward (7.5% less damage taken in all) | **38** Focus (+18% to hit in all) | **63** Kindled will (+36% damage in all) | **88** Spoils of the wild (+84% gold and drops in all) |
+| **14** Spoils of the wild (+18% gold and drops in all) | **39** Ward (22.5% less damage taken in all) | **64** Focus (+24% to hit in all) | **89** Kindled will (+45% damage in all) |
+| **15** Kindled will (+12% damage in all) | **40** Wield Moonsilver staves; Master of magic (+8% damage) | **65** Ward (30% less damage taken in all) | **90** Focus (+30% to hit in all) |
+| **16** Focus (+8% to hit in all) | **41** Spoils of the wild (+51% gold and drops in all) | **66** Spoils of the wild (+69% gold and drops in all) | **91** Ward (37.5% less damage taken in all) |
+| **17** Ward (10% less damage taken in all) | **42** Kindled will (+28.5% damage in all) | **67** Kindled will (+37.5% damage in all) | **92** Spoils of the wild (+87% gold and drops in all) |
+| **18** Spoils of the wild (+24% gold and drops in all) | **43** Focus (+19% to hit in all) | **68** Focus (+25% to hit in all) | **93** Kindled will (+46.5% damage in all) |
+| **19** Kindled will (+15% damage in all) | **44** Ward (23.75% less damage taken in all) | **69** Ward (31.25% less damage taken in all) | **94** Focus (+31% to hit in all) |
+| **20** Wield Iron staves | **45** Spoils of the wild (+54% gold and drops in all) | **70** Wield Embersteel staves | **95** Ward (38.75% less damage taken in all) |
+| **21** Focus (+10% to hit in all) | **46** Kindled will (+30% damage in all) | **71** Spoils of the wild (+72% gold and drops in all) | **96** Spoils of the wild (+90% gold and drops in all) |
+| **22** Ward (12.5% less damage taken in all) | **47** Focus (+20% to hit in all) | **72** Kindled will (+39% damage in all) | **97** Kindled will (+48% damage in all) |
+| **23** Spoils of the wild (+30% gold and drops in all) | **48** Ward (25% less damage taken in all) | **73** Focus (+26% to hit in all) | **98** Focus (+32% to hit in all) |
+| **24** Kindled will (+18% damage in all) | **49** Spoils of the wild (+57% gold and drops in all) | **74** Ward (32.5% less damage taken in all) | **99** Grandmaster of magic (+10% damage) |
+| **25** Focus (+12% to hit in all) | **50** Kindled will (+31.5% damage in all) | **75** Spoils of the wild (+75% gold and drops in all) |  |
 
 ### Hitpoints
 
@@ -850,27 +850,27 @@ Every level 1 to 99 of every skill unlocks something: an action, a recipe, a tie
 | **2** Foe: Goblin slinger; Toughness (+40 health) | **27** Foe: Hill troll; Toughness (+40 health) | **52** Toughness (+40 health) | **77** Toughness (+40 health) |
 | **3** Foe: Marsh wisp; Toughness (+40 health) | **28** Toughness (+40 health) | **53** Toughness (+40 health) | **78** Toughness (+40 health) |
 | **4** Toughness (+40 health) | **29** Toughness (+40 health) | **54** Toughness (+40 health) | **79** Toughness (+40 health) |
-| **5** Second wind I (health returns 25% faster); Toughness (+40 health) | **30** Wear Steel armour; Toughness (+40 health) | **55** Wear Star-iron armour; Foe: Mire hulk; Iron stomach II (food heals 7.5% more); Toughness (+40 health) | **80** Foe: Ash shaman; The vendor sells Warden's feast; Toughness (+40 health) |
+| **5** Second wind (health returns 25% faster); Toughness (+40 health) | **30** Wear Steel armour; Toughness (+40 health) | **55** Wear Star-iron armour; Foe: Mire hulk; Iron stomach (food heals 22.5% more in all); Toughness (+40 health) | **80** Foe: Ash shaman; The vendor sells Warden's feast; Toughness (+40 health) |
 | **6** Toughness (+40 health) | **31** Toughness (+40 health) | **56** Toughness (+40 health) | **81** Toughness (+40 health) |
 | **7** Toughness (+40 health) | **32** Toughness (+40 health) | **57** Toughness (+40 health) | **82** Toughness (+40 health) |
 | **8** Toughness (+40 health) | **33** Toughness (+40 health) | **58** Toughness (+40 health) | **83** Toughness (+40 health) |
 | **9** Toughness (+40 health) | **34** Foe: Fell huntsman; Toughness (+40 health) | **59** Toughness (+40 health) | **84** Toughness (+40 health) |
-| **10** Wear Bronze armour; The vendor sells Meat pie; Toughness (+40 health) | **35** Stubborn (retreat at 12% health instead of 20%); Toughness (+40 health) | **60** Foe: Fen reaver; The vendor sells Hunter's feast; Toughness (+40 health) | **85** Wear Dawnsteel armour; Foe: Obsidian golem; Second wind III (health returns 12.5% faster); Toughness (+40 health) |
+| **10** Wear Bronze armour; The vendor sells Meat pie; Toughness (+40 health) | **35** Stubborn (retreat at 12% health instead of 20%); Toughness (+40 health) | **60** Foe: Fen reaver; The vendor sells Hunter's feast; Toughness (+40 health) | **85** Wear Dawnsteel armour; Foe: Obsidian golem; Second wind (health returns 50% faster in all); Toughness (+40 health) |
 | **11** Toughness (+40 health) | **36** Toughness (+40 health) | **61** Toughness (+40 health) | **86** Toughness (+40 health) |
 | **12** Toughness (+40 health) | **37** Toughness (+40 health) | **62** Toughness (+40 health) | **87** Toughness (+40 health) |
 | **13** Toughness (+40 health) | **38** Toughness (+40 health) | **63** Toughness (+40 health) | **88** Toughness (+40 health) |
 | **14** Foe: Orc raider; Toughness (+40 health) | **39** Toughness (+40 health) | **64** Toughness (+40 health) | **89** Toughness (+40 health) |
-| **15** Iron stomach I (food heals 15% more); Toughness (+40 health) | **40** Wear Moonsilver armour; Foe: Bog lurker; The vendor sells Roast fowl; Unbowed (food heals 15% more); Toughness (+40 health) | **65** Foe: Bog witch; Field dressing II (health returns 12.5% faster); Toughness (+40 health) | **90** Foe: Sky reaver; Toughness (+40 health) |
+| **15** Iron stomach (food heals 15% more); Toughness (+40 health) | **40** Wear Moonsilver armour; Foe: Bog lurker; The vendor sells Roast fowl; Unbowed (food heals 15% more); Toughness (+40 health) | **65** Foe: Bog witch; Field dressing (health returns 37.5% faster in all); Toughness (+40 health) | **90** Foe: Sky reaver; Toughness (+40 health) |
 | **16** Toughness (+40 health) | **41** Toughness (+40 health) | **66** Toughness (+40 health) | **91** Toughness (+40 health) |
 | **17** Toughness (+40 health) | **42** Toughness (+40 health) | **67** Toughness (+40 health) | **92** Toughness (+40 health) |
 | **18** Foe: Orc bowman; Toughness (+40 health) | **43** Toughness (+40 health) | **68** Toughness (+40 health) | **93** Toughness (+40 health) |
 | **19** Toughness (+40 health) | **44** Foe: Reed stalker; Toughness (+40 health) | **69** Toughness (+40 health) | **94** Toughness (+40 health) |
-| **20** Wear Iron armour; The vendor sells Hearty stew; Toughness (+40 health) | **45** Second wind II (health returns 12.5% faster); Toughness (+40 health) | **70** Wear Embersteel armour; Foe: Ash troll; Toughness (+40 health) | **95** Foe: Ember sorcerer; Field dressing III (health returns 12.5% faster); Toughness (+40 health) |
+| **20** Wear Iron armour; The vendor sells Hearty stew; Toughness (+40 health) | **45** Second wind (health returns 37.5% faster in all); Toughness (+40 health) | **70** Wear Embersteel armour; Foe: Ash troll; Toughness (+40 health) | **95** Foe: Ember sorcerer; Field dressing (health returns 50% faster in all); Toughness (+40 health) |
 | **21** Toughness (+40 health) | **46** Toughness (+40 health) | **71** Toughness (+40 health) | **96** Toughness (+40 health) |
 | **22** Foe: Grave wight; Toughness (+40 health) | **47** Toughness (+40 health) | **72** Toughness (+40 health) | **97** Toughness (+40 health) |
 | **23** Toughness (+40 health) | **48** Toughness (+40 health) | **73** Toughness (+40 health) | **98** Toughness (+40 health) |
 | **24** Toughness (+40 health) | **49** Foe: Drowned acolyte; Toughness (+40 health) | **74** Toughness (+40 health) | **99** Unbroken (food heals 20% more); Toughness (+40 health) |
-| **25** Field dressing I (health returns 25% faster); Toughness (+40 health) | **50** Toughness (+40 health) | **75** Foe: Peak slinger; Iron stomach III (food heals 7.5% more); Toughness (+40 health) |  |
+| **25** Field dressing (health returns 25% faster); Toughness (+40 health) | **50** Toughness (+40 health) | **75** Foe: Peak slinger; Iron stomach (food heals 30% more in all); Toughness (+40 health) |  |
 
 ## 13. The long arc and where it lives
 

@@ -42,7 +42,7 @@ describe('woodcutting', () => {
     if (!out.result.ok) expect(formatStop(out.result.reason)).toBe('Needs level 5');
   });
 
-  it('chops faster with Quick swing I at level 2', () => {
+  it('chops faster with Quick swing at level 2', () => {
     const s = cmd(atLevel(2), { type: 'start', lane: 'gathering', action: pine }).state;
     const run = s.lanes.gathering.current!;
     expect(run.endsAt - run.startedAt).toBe(Math.round(7500 / 1.025));
@@ -60,7 +60,7 @@ describe('woodcutting', () => {
       name: 'Woodcutting',
       level: 'Level 14',
       toNext: '12,800 XP to level 15',
-      nextUnlock: "Level 15: Woodsman's eye III (Rare and Legendary finds 8% likelier)",
+      nextUnlock: "Level 15: Woodsman's eye (Rare and Legendary finds 24% likelier in all)",
       tier: 2,
       top: false,
     });

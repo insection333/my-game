@@ -14,7 +14,7 @@ export interface RelicRow {
   rank: string;
   /** What it gives at its rank now ("+2% Woodcutting XP"), or at its first rank while unbought. */
   effect: string;
-  /** "Raise for 50 marks", or null at its last rank. */
+  /** What its next rank costs ("Next rank: 50 marks"), or null at its last rank. */
   raise: string | null;
   affordable: boolean;
 }
@@ -49,7 +49,7 @@ export function relicsView(state: State): RelicsView {
         name: t(`relic.${r.id}`),
         rank: t('relic.rank', { rank: fmt.int(rank), ranks: fmt.int(r.ranks) }),
         effect: effectText(r.effect, rank),
-        raise: cost === null ? null : t('relic.raise', { marks: fmt.int(cost) }),
+        raise: cost === null ? null : t('relic.next', { marks: fmt.int(cost) }),
         affordable: cost !== null && marks >= cost,
       };
     }),

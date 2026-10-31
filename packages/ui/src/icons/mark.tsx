@@ -45,3 +45,19 @@ export function FireSeal() {
     </g>
   );
 }
+
+/** The mark as a picture of its own, beside the game's name in the header and on the welcome page. */
+export function GameMark({ size }: { size: number }) {
+  return (
+    <svg
+      data-ui="GameMark"
+      width={size}
+      height={size}
+      viewBox="0 0 48 48"
+      aria-hidden
+      style={{ display: 'block', flex: 'none' }}
+    >
+      <FireSeal />
+    </svg>
+  );
+}

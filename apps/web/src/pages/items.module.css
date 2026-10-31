@@ -53,12 +53,26 @@
   border-color: var(--line-strong);
 }
 
+.art {
+  position: relative;
+  display: block;
+}
+
+/* The count on a chip at the icon's lower corner. */
 .count {
   position: absolute;
-  top: var(--s-1);
-  right: var(--s-2);
-  font: 700 var(--t-small) / 1 var(--font-ui);
+  right: -0.875rem;
+  bottom: -0.25rem;
+  min-width: 1.25rem;
+  padding: 0.125rem 0.3125rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  font: 700 0.6875rem / 1 var(--font-ui);
   font-variant-numeric: tabular-nums;
+  text-align: center;
+  white-space: nowrap;
 }
 
 .name {

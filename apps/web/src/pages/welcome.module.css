@@ -54,6 +54,9 @@
 .title {
   font: 500 var(--t-h1) / 1.1 var(--font-book);
   margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
 }
 
 @media (min-width: 900px) {

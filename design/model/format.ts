@@ -33,4 +33,10 @@ export function formatEffect(e: Effect): string {
   }
 }
 export const fmtUnlock = (u: Unlock) =>
-  u.type === 'perk' ? `${u.name} (${formatEffect(u.effect)})` : u.type === 'foe' ? `Foe: ${u.name}` : u.name;
+  u.type === 'perk'
+    ? u.total
+      ? `${u.name} (${formatEffect(u.total)} in all)`
+      : `${u.name} (${formatEffect(u.effect)})`
+    : u.type === 'foe'
+      ? `Foe: ${u.name}`
+      : u.name;

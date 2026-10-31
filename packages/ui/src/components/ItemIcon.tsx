@@ -1,6 +1,7 @@
 // An icon at one of four sizes. Named icons draw from the registry; an unknown name draws a quiet
 // placeholder so a missing icon is visible but never breaks a page. A silhouette (a find not yet
-// found) keeps the shape and fills it with one quiet tone.
+// found) keeps the shape and its inner lines, in grey and faded: a coin still reads as a coin, a rune
+// stone as a rune stone, but nothing of its colour is given away.
 import { useId } from 'react';
 import { hasIcon, ICONS } from '../icons/index.tsx';
 import { KindledFlames } from '../icons/kindling.tsx';
@@ -38,12 +39,18 @@ export function ItemIcon({
       role={label ? 'img' : undefined}
       aria-label={label}
       aria-hidden={label ? undefined : true}
-      style={{ display: 'block', flex: 'none', color: silhouette ? 'var(--line-strong)' : undefined }}
+      style={{ display: 'block', flex: 'none' }}
     >
       {silhouette && (
-        <filter id={filter}>
-          <feFlood floodColor="currentColor" />
-          <feComposite in2="SourceAlpha" operator="in" />
+        <filter id={filter} colorInterpolationFilters="sRGB">
+          {/* Grey, its tones drawn together (the ink stays darkest, the lights a soft grey), and faded. */}
+          <feColorMatrix type="saturate" values="0" />
+          <feComponentTransfer>
+            <feFuncR type="linear" slope="0.45" intercept="0.36" />
+            <feFuncG type="linear" slope="0.45" intercept="0.38" />
+            <feFuncB type="linear" slope="0.45" intercept="0.4" />
+            <feFuncA type="linear" slope="0.7" />
+          </feComponentTransfer>
         </filter>
       )}
       {Draw ? (

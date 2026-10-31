@@ -83,8 +83,12 @@ export function ItemGrid() {
                       className={s.tile}
                       onClick={(e) => (e.preventDefault(), navigate(itemHref(i.id)))}
                     >
-                      <ItemIcon name={i.id} size={48} />
-                      <span className={s.count}>{fmt.int(countOf(state, i.id))}</span>
+                      <span className={s.art}>
+                        <ItemIcon name={i.id} size={48} />
+                        {/* On its own chip at the icon's corner, never over the art; large counts shortened
+                            from 100,000 (the item's panel gives the exact number). */}
+                        <span className={s.count}>{fmt.short(countOf(state, i.id))}</span>
+                      </span>
                       <span className={s.name}>{t(`item.${i.id}`)}</span>
                     </a>
                   </li>

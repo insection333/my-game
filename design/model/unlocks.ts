@@ -34,37 +34,29 @@ export type Unlock =
   | { type: 'recipe'; name: string }
   | { type: 'tier'; name: string }
   | { type: 'foe'; name: string }
-  | { type: 'perk'; name: string; effect: Effect };
+  /** A perk: what a rank adds (`effect`), and for a perk's later ranks what all its ranks so far add
+   *  up to (`total`), which is how the game words it. */
+  | { type: 'perk'; name: string; effect: Effect; total?: Effect };
 
 interface PerkLine {
   name: string;
   effect: (rank: number) => Effect;
 }
-const ROMAN: [number, string][] = [
-  [10, 'X'],
-  [9, 'IX'],
-  [5, 'V'],
-  [4, 'IV'],
-  [1, 'I'],
-];
-export const roman = (n: number) => {
-  let out = '';
-  for (const [v, r] of ROMAN)
-    while (n >= v) {
-      out += r;
-      n -= v;
-    }
-  return out;
-};
-
 /** After level 40 (the expansion's climb), a perk line's ranks give half: there are so many more. */
 export const LATE_FROM = 41;
 const half = (e: Effect): Effect => ('pct' in e ? { ...e, pct: e.pct / 2 } : { ...e, amount: e.amount / 2 });
+const add = (a: Effect, b: Effect): Effect =>
+  'pct' in a && 'pct' in b
+    ? { ...a, pct: a.pct + b.pct }
+    : 'amount' in a && 'amount' in b
+      ? { ...a, amount: a.amount + b.amount }
+      : a;
 
 /** Fills every level not already holding an unlock with the next perk line's next rank, in turn;
  *  the capstones (level 40 and the top) are fixed. */
 function fillPerks(table: Map<number, Unlock[]>, lines: PerkLine[], capstones: Record<number, Unlock> = {}) {
   const ranks = lines.map(() => 0);
+  const totals: (Effect | null)[] = lines.map(() => null);
   let next = 0;
   for (let lvl = 2; lvl <= MAX_LEVEL; lvl++) {
     if (capstones[lvl]) {
@@ -74,12 +66,11 @@ function fillPerks(table: Map<number, Unlock[]>, lines: PerkLine[], capstones: R
     if (table.get(lvl)!.length) continue;
     const i = next++ % lines.length;
     ranks[i]++;
-    const effect = lines[i].effect(ranks[i]);
-    table.get(lvl)!.push({
-      type: 'perk',
-      name: `${lines[i].name} ${roman(ranks[i])}`,
-      effect: lvl >= LATE_FROM ? half(effect) : effect,
-    });
+    const given = lines[i].effect(ranks[i]);
+    const effect = lvl >= LATE_FROM ? half(given) : given;
+    const before = totals[i];
+    totals[i] = before ? add(before, effect) : effect;
+    table.get(lvl)!.push({ type: 'perk', name: lines[i].name, effect, ...(before ? { total: totals[i] } : {}) });
   }
 }
 const empty = () => new Map(Array.from({ length: MAX_LEVEL }, (_, i) => [i + 1, [] as Unlock[]]));
@@ -157,18 +148,49 @@ export function unlockTable(skill: SkillId): Map<number, Unlock[]> {
     for (const f of FOES) t.get(f.hitpoints)!.push({ type: 'foe', name: f.name });
     for (const fd of FOODS.slice(1)) t.get(fd.level)!.push({ type: 'action', name: `The vendor sells ${fd.name}` });
     const named: Record<number, Unlock> = {
-      5: { type: 'perk', name: 'Second wind I', effect: { kind: 'regen', pct: 25 } },
-      15: { type: 'perk', name: 'Iron stomach I', effect: { kind: 'foodHeal', pct: 15 } },
-      25: { type: 'perk', name: 'Field dressing I', effect: { kind: 'regen', pct: 25 } },
+      5: { type: 'perk', name: 'Second wind', effect: { kind: 'regen', pct: 25 } },
+      15: { type: 'perk', name: 'Iron stomach', effect: { kind: 'foodHeal', pct: 15 } },
+      25: { type: 'perk', name: 'Field dressing', effect: { kind: 'regen', pct: 25 } },
       35: { type: 'perk', name: 'Stubborn', effect: { kind: 'retreatAt', pct: 12 } },
       40: { type: 'perk', name: 'Unbowed', effect: { kind: 'foodHeal', pct: 15 } },
-      // The climb past 40: the same perks again, a rank higher and at half strength.
-      45: { type: 'perk', name: 'Second wind II', effect: { kind: 'regen', pct: 12.5 } },
-      55: { type: 'perk', name: 'Iron stomach II', effect: { kind: 'foodHeal', pct: 7.5 } },
-      65: { type: 'perk', name: 'Field dressing II', effect: { kind: 'regen', pct: 12.5 } },
-      75: { type: 'perk', name: 'Iron stomach III', effect: { kind: 'foodHeal', pct: 7.5 } },
-      85: { type: 'perk', name: 'Second wind III', effect: { kind: 'regen', pct: 12.5 } },
-      95: { type: 'perk', name: 'Field dressing III', effect: { kind: 'regen', pct: 12.5 } },
+      // The climb past 40: the same perks again, a rank higher and at half strength (worded by what
+      // the ranks so far add up to).
+      45: {
+        type: 'perk',
+        name: 'Second wind',
+        effect: { kind: 'regen', pct: 12.5 },
+        total: { kind: 'regen', pct: 37.5 },
+      },
+      55: {
+        type: 'perk',
+        name: 'Iron stomach',
+        effect: { kind: 'foodHeal', pct: 7.5 },
+        total: { kind: 'foodHeal', pct: 22.5 },
+      },
+      65: {
+        type: 'perk',
+        name: 'Field dressing',
+        effect: { kind: 'regen', pct: 12.5 },
+        total: { kind: 'regen', pct: 37.5 },
+      },
+      75: {
+        type: 'perk',
+        name: 'Iron stomach',
+        effect: { kind: 'foodHeal', pct: 7.5 },
+        total: { kind: 'foodHeal', pct: 30 },
+      },
+      85: {
+        type: 'perk',
+        name: 'Second wind',
+        effect: { kind: 'regen', pct: 12.5 },
+        total: { kind: 'regen', pct: 50 },
+      },
+      95: {
+        type: 'perk',
+        name: 'Field dressing',
+        effect: { kind: 'regen', pct: 12.5 },
+        total: { kind: 'regen', pct: 50 },
+      },
       99: { type: 'perk', name: 'Unbroken', effect: { kind: 'foodHeal', pct: 20 } },
     };
     for (let lvl = 1; lvl <= MAX_LEVEL; lvl++) {
