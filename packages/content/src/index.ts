@@ -9,3 +9,4 @@ export * from './glossary.ts';
 export * from './stops.ts';
 export * from './finds.ts';
 export * from './contact.ts';
+export * from './castle/index.ts';

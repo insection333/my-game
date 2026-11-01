@@ -1,12 +1,13 @@
 // Deleting an account (the brief: "an account and its data can be deleted"). With the password and a
 // confirmation, everything the server holds for the player goes at once: the account, its sessions
-// and email tokens, the save and every damaged copy, notices, hiscores, telemetry, and the feedback and
-// visits. Nothing stays.
+// and email tokens, the save and every damaged copy, notices, hiscores, telemetry, the feedback and
+// visits, and their castle (Castle Clash). Nothing stays: another castle's reports and pair limits that
+// named them keep the entry, with the id replaced by "departed".
 import { ROUTES } from '@idle-clash/contracts';
 import { eq, sql } from 'drizzle-orm';
 import type { FastifyInstance } from 'fastify';
 import { limit, type Ctx } from '../context.ts';
-import { emailTokens, players, sessions, telemetry } from '../db/schema.ts';
+import { bastionLogs, emailTokens, playerBastions, players, sessions, telemetry } from '../db/schema.ts';
 import { contractRoute, fail } from '../http.ts';
 import { eraseFeedback } from '../feedback.ts';
 import { checkPassword } from './passwords.ts';
@@ -27,6 +28,18 @@ export function erase(ctx: Ctx, playerId: string): void {
       .where(sql`instr(${telemetry.data}, ${playerId}) > 0`)
       .run();
     eraseFeedback(ctx, playerId);
+    ctx.db.delete(playerBastions).where(eq(playerBastions.userId, playerId)).run();
+    ctx.db.delete(bastionLogs).where(eq(bastionLogs.userId, playerId)).run();
+    ctx.db
+      .update(bastionLogs)
+      .set({ data: sql`replace(${bastionLogs.data}, ${playerId}, 'departed')` })
+      .where(sql`instr(${bastionLogs.data}, ${playerId}) > 0`)
+      .run();
+    ctx.db
+      .update(playerBastions)
+      .set({ pairLimits: sql`replace(${playerBastions.pairLimits}, ${playerId}, 'departed')` })
+      .where(sql`instr(${playerBastions.pairLimits}, ${playerId}) > 0`)
+      .run();
     ctx.notices.remove(playerId);
     ctx.hiscores.remove(playerId);
     ctx.store.remove(playerId);

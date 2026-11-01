@@ -43,6 +43,13 @@
       "when": 1793188462190,
       "tag": "0005_session20",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1793538508015,
+      "tag": "0006_castle",
+      "breakpoints": true
     }
   ]
 }
