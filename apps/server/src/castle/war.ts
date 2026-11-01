@@ -4,7 +4,7 @@
 import { SIEGE } from '@idle-clash/content';
 import { castleEngine as E } from '@idle-clash/features';
 import { totalLevelOf } from '../game/standing.ts';
-import { loadSynced, purseOf, roll, setPurse, store, type Io, type Outcome } from './service.ts';
+import { loadSynced, purseOf, roll, setPurse, store, tell, type Io, type Outcome } from './service.ts';
 
 type Castle = E.Castle;
 
@@ -54,6 +54,23 @@ export function siege(io: Io, att: Castle, target: string): Outcome {
     truce: r.truce,
     consumed: r.consumed,
   });
+  const names = io.castles.names([io.playerId, target]);
+  io.events.push({
+    type: 'castleSiege',
+    at: io.now,
+    foe: names.get(target) ?? '',
+    outcome: r.outcome,
+    gold: r.spoils.toAttacker,
+    marks: r.attackerMarks,
+  });
+  tell(io, target, {
+    type: 'castleBesieged',
+    at: io.now,
+    foe: names.get(io.playerId) ?? '',
+    outcome: r.outcome,
+    lost: r.outcome === 'repelled' ? 0 : r.spoils.raided,
+    marks: r.defenderMarks,
+  });
   return { ok: true, ...shared, gold: r.spoils.toAttacker, marks: r.attackerMarks, fee: costs.gold };
 }
 
@@ -81,6 +98,14 @@ function mercenarySiege(io: Io, att: Castle, target: string): Outcome {
     fee: costs.gold,
   };
   io.castles.log(io.playerId, io.now, 'mercenary', data);
+  io.events.push({
+    type: 'castleSiege',
+    at: io.now,
+    foe: E.mercName(m.first, m.second),
+    outcome: r.outcome,
+    gold: r.bounty,
+    marks: r.marks,
+  });
   return { ok: true, ...data };
 }
 
@@ -102,7 +127,10 @@ export function spy(io: Io, att: Castle, target: string, missionId: string): Out
   store(io, r.defender);
   const report = r.success && missionId === 'scout' ? E.scoutReport(r.defender, io.now) : null;
   io.castles.log(io.playerId, io.now, 'spyOut', { foe: target, mission: missionId, success: r.success, report });
-  if (!r.success)
+  if (!r.success) {
     io.castles.log(target, io.now, 'spyIn', { foe: io.playerId, mission: missionId, marks: r.defenderMarks });
+    const foe = io.castles.names([io.playerId]).get(io.playerId) ?? '';
+    tell(io, target, { type: 'castleSpyCaught', at: io.now, foe, marks: r.defenderMarks });
+  }
   return { ok: true, success: r.success, report, bribe: costs.gold };
 }

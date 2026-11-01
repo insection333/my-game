@@ -1,21 +1,14 @@
 // Castle Clash's reports (the War room, and a target's sheet): each siege, spy mission, mercenary battle
 // and incursion, newest first, in one line with what it moved.
-import { fmt, MERCENARY_NAMES, t } from '@idle-clash/content';
-import type { castleEngine as E } from '@idle-clash/features';
+import { fmt, t } from '@idle-clash/content';
+import { castleEngine } from '@idle-clash/features';
 import { Panel, Pill } from '@idle-clash/ui';
-import { fortressName, mercFirst, mercSecond, missionName, outcomeName, trapName } from './labels.ts';
+import { fortressName, mercName, missionName, outcomeName, trapName } from './labels.ts';
 import s from './castle.module.css';
 
-type Report = E.CastleReport;
+type Report = castleEngine.CastleReport;
 const num = (x: unknown): number => (typeof x === 'number' && Number.isFinite(x) ? x : 0);
 const str = (x: unknown): string => (typeof x === 'string' ? x : '');
-
-/** A stronghold's name from its two parts. */
-export const mercName = (first: number, second: number): string =>
-  t('castle.merc.name', {
-    first: mercFirst(MERCENARY_NAMES.first[first]),
-    second: mercSecond(MERCENARY_NAMES.second[second]),
-  });
 
 /** When: the time today, or the date. */
 export const when = (at: number, now: number): string =>
@@ -87,10 +80,11 @@ export function readReport(r: Report): { line: string; facts: string[] } {
 export function ReportRow({ report, now }: { report: Report; now: number }) {
   const r = readReport(report);
   if (!r.line) return null;
+  const line = castleEngine.sentence(r.line);
   return (
     <li className={s.report}>
       <span className={s.reportHead}>
-        <span>{r.line}</span>
+        <span>{line}</span>
         <span className={s.reportWhen}>{when(report.at, now)}</span>
       </span>
       {r.facts.length > 0 && <span className={s.muted}>{r.facts.join(', ')}</span>}

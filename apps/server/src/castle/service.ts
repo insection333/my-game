@@ -22,6 +22,15 @@ export interface Io {
   state: State;
   now: number;
   totalLevel: number;
+  /** Events for the acting lord (their moments and notices), and for others (a lord they besieged, or
+   *  whose castle caught their spy): told once the change is written. */
+  events: GameEvent[];
+  told: Map<string, GameEvent[]>;
+}
+
+/** Tells another lord of something done to their castle, once the change is written. */
+export function tell(io: Io, playerId: string, e: GameEvent): void {
+  io.told.set(playerId, [...(io.told.get(playerId) ?? []), e]);
 }
 
 export const purseOf = (io: Io): number => countOf(io.state, 'gold');
@@ -29,11 +38,16 @@ export function setPurse(io: Io, gold: number): void {
   io.state = { ...io.state, items: { ...io.state.items, gold: Math.max(0, Math.floor(gold)) } };
 }
 
-/** The castle synced to now, its upkeep burned into the ledger. */
+/** The castle synced to now, its upkeep burned into the ledger. A castle whose upkeep burned is written
+ *  back at once, whatever the action then does: a refused action must not count gold as burned (5% of it
+ *  into the war chest) that the treasury still holds. */
 export function loadSynced(io: Io, id: string, castle: Castle | null = io.castles.read(id)): Castle | null {
   if (!castle) return null;
   const { castle: synced, burned } = E.syncCastle(castle, io.now);
-  io.castles.burn(burned);
+  if (burned > 0) {
+    io.castles.burn(burned);
+    io.castles.write(synced);
+  }
   return synced;
 }
 
@@ -49,6 +63,7 @@ export interface Handled {
   duplicate: boolean;
   doc: SaveDoc;
   events: GameEvent[];
+  told: Map<string, GameEvent[]>;
 }
 
 /** Runs one castle request for a player: in their queue, in one transaction, acting once per request id. */
@@ -64,17 +79,26 @@ export function castleRequest(
       const saved = ctx.store.read(playerId, now);
       if (!saved) throw fail(404, 'notFound');
       const seen = saved.doc.requests.find((r) => r.id === requestId);
-      if (seen) return { result: seen.result as Outcome, duplicate: true, doc: saved.doc, events: [] };
+      if (seen) return { result: seen.result as Outcome, duplicate: true, doc: saved.doc, events: [], told: new Map() };
       const castles = new CastleStore(ctx);
       const start = mirrored(saved.doc.state, castles.read(playerId), now);
       const arrived = ctx.engine.input(start, now, seeded(start.seed));
-      const io: Io = { ctx, castles, playerId, state: arrived.state, now, totalLevel: totalLevel(arrived.state) };
+      const io: Io = {
+        ctx,
+        castles,
+        playerId,
+        state: arrived.state,
+        now,
+        totalLevel: totalLevel(arrived.state),
+        events: [],
+        told: new Map(),
+      };
       const result = fn(io);
       const state = mirrored(io.state, castles.read(playerId), now);
       const requests = [...saved.doc.requests, { id: requestId, at: now, result }].slice(-REMEMBERED_REQUESTS);
       const doc: SaveDoc = { ...saved.doc, state, requests };
       ctx.store.write(playerId, doc, saved.rev, now);
-      return { result, duplicate: false, doc, events: arrived.events };
+      return { result, duplicate: false, doc, events: [...arrived.events, ...io.events], told: io.told };
     })(),
   );
 }
@@ -155,6 +179,7 @@ function incursion(io: Io, c: Castle): Outcome {
   store(io, r.castle);
   const data = { tier, fortress: E.fortressAt(tier).id, won: r.won, r: r.r, marks: r.marks, drillXp: r.drillXp };
   io.castles.log(io.playerId, io.now, 'incursion', data);
+  io.events.push({ type: 'castleIncursion', at: io.now, fortress: data.fortress, tier, won: r.won, marks: r.marks });
   return { ok: true, ...data };
 }
 

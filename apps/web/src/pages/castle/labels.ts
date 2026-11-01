@@ -1,6 +1,9 @@
 // Castle Clash's ids to their strings, each written out, so every key is literal and checked (verify's
 // content step), and an unknown id reads as nothing rather than a key.
 import { t } from '@idle-clash/content';
+import { castleEngine } from '@idle-clash/features';
+
+export const { fortressName, outcomeName, mercName } = castleEngine;
 
 const read = (map: Record<string, string>) => (id: string | null | undefined, params?: Record<string, string>) =>
   id && Object.hasOwn(map, id) ? t(map[id], params) : '';
@@ -92,14 +95,6 @@ export const missionDoes = read({
   sabotage: 'castle.mission.sabotage.does',
   forge: 'castle.mission.forge.does',
 });
-export const fortressName = read({
-  'ashen-redoubt': 'castle.fortress.ashen-redoubt',
-  'citadel-of-the-blind-wyrm': 'castle.fortress.citadel-of-the-blind-wyrm',
-  'sunken-reliquary': 'castle.fortress.sunken-reliquary',
-  'thornwall-keep': 'castle.fortress.thornwall-keep',
-  'gloaming-spire': 'castle.fortress.gloaming-spire',
-  'hollow-crown-hold': 'castle.fortress.hollow-crown-hold',
-});
 export const relicName = read({
   'banner-of-the-first-king': 'castle.relic.banner-of-the-first-king',
   'aegis-shard': 'castle.relic.aegis-shard',
@@ -121,31 +116,6 @@ export const relicGives = read({
   penetration: 'castle.relic.gives.penetration',
   recovery: 'castle.relic.gives.recovery',
   apRate: 'castle.relic.gives.apRate',
-});
-export const mercFirst = read({
-  grey: 'castle.merc.first.grey',
-  red: 'castle.merc.first.red',
-  hollow: 'castle.merc.first.hollow',
-  broken: 'castle.merc.first.broken',
-  iron: 'castle.merc.first.iron',
-  black: 'castle.merc.first.black',
-  thorn: 'castle.merc.first.thorn',
-  salt: 'castle.merc.first.salt',
-});
-export const mercSecond = read({
-  banner: 'castle.merc.second.banner',
-  hand: 'castle.merc.second.hand',
-  company: 'castle.merc.second.company',
-  oath: 'castle.merc.second.oath',
-  fang: 'castle.merc.second.fang',
-  wolves: 'castle.merc.second.wolves',
-  lances: 'castle.merc.second.lances',
-  crows: 'castle.merc.second.crows',
-});
-export const outcomeName = read({
-  repelled: 'castle.outcome.repelled',
-  graze: 'castle.outcome.graze',
-  decisive: 'castle.outcome.decisive',
 });
 export const refusal = read({
   gold: 'castle.refused.gold',

@@ -73,8 +73,10 @@ function Treasury() {
   const { castle, now, purse, totalLevel, busy } = useSyncedCastle();
   const [amount, setAmount] = useState('');
   if (!castle) return null;
-  const gold = Math.floor(Number(amount.replace(/[^\d]/g, '')));
-  const valid = Number.isFinite(gold) && gold > 0;
+  // Whole gold, with any spaces or thousands commas a player types; anything else is not an amount.
+  const digits = amount.replace(/[\s,_]/g, '');
+  const gold = /^\d{1,15}$/.test(digits) ? Number(digits) : 0;
+  const valid = gold > 0;
   const locked = castle.withdrawLockdownUntil !== null && castle.withdrawLockdownUntil > now;
   const move = async (type: 'deposit' | 'withdraw') => {
     if (await castleAct({ type, gold })) setAmount('');

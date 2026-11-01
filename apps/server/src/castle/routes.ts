@@ -58,7 +58,15 @@ export function castleRoutes(app: FastifyInstance, ctx: Ctx): void {
   const reading = (reply: Parameters<typeof limit>[1], player: string) =>
     limit(ctx, reply, `read:${player}`, ctx.config.readsPerMinute, 60_000);
   const after = (player: string, out: Handled, at: number) => {
-    if (!out.duplicate) announce(ctx, player, out.doc, out.events, at);
+    if (!out.duplicate) {
+      announce(ctx, player, out.doc, out.events, at);
+      // A lord besieged, or whose castle caught a spy: their open pages hear it, and their tray keeps it.
+      for (const [other, events] of out.told) {
+        ctx.live.publish(other, { type: 'events', events });
+        ctx.notices.add(other, events);
+        ctx.telemetry.events(other, events);
+      }
+    }
     return { result: out.result, duplicate: out.duplicate, castle: castleView(ctx, player, at) };
   };
 

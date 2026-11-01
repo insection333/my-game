@@ -6,8 +6,8 @@ import { castleEngine as E } from '@idle-clash/features';
 import { ActionRow, Button, Panel, Pill, Sheet } from '@idle-clash/ui';
 import { useEffect } from 'react';
 import { navigate, useLocation, withPanel } from '../../router.ts';
-import { missionDoes, missionName, outcomeName } from './labels.ts';
-import { garrisonLine, mercName, ReportRow, Reports, when } from './Reports.tsx';
+import { mercName, missionDoes, missionName, outcomeName, refusal } from './labels.ts';
+import { garrisonLine, ReportRow, Reports, when } from './Reports.tsx';
 import { castleAct, loadTargets } from './store.ts';
 import { affords, hasAp, useSyncedCastle } from './synced.ts';
 import s from './castle.module.css';
@@ -84,7 +84,7 @@ function sameMerc(logged: unknown, m: E.Mercenary): boolean {
 }
 
 function TargetSheet({ target, onClose }: { target: Target; onClose: () => void }) {
-  const { castle, view, now, purse, busy } = useSyncedCastle();
+  const { castle, view, now, purse, busy, refused } = useSyncedCastle();
   if (!castle) return null;
   const about = (view?.logs ?? []).filter((l) =>
     target.merc ? sameMerc(l.data.merc, target.merc) : l.data.foe === target.id,
@@ -93,7 +93,7 @@ function TargetSheet({ target, onClose }: { target: Target; onClose: () => void 
   const costs = target.merc
     ? E.mercenaryCosts(castle, target.merc, now)
     : E.siegeCosts(castle, E.brRatio(castle, { rating: target.rating }), now);
-  const refusal = E.siegeRefusal(castle, target.id, false, costs.ap, now);
+  const blocked = E.siegeRefusal(castle, target.id, false, costs.ap, now);
   const odds = target.merc
     ? E.combatRatio(E.castleSide(castle, now, 'attack'), E.mercenarySide(target.merc), 0.5).r
     : null;
@@ -104,6 +104,12 @@ function TargetSheet({ target, onClose }: { target: Target; onClose: () => void 
           <Pill tone="woad">{t('castle.target.rating', { rating: fmt.int(target.rating) })}</Pill>
           {target.merc && <Pill>{t('castle.target.mercenary')}</Pill>}
         </div>
+        {/* The header is behind the sheet: a refusal is said here too. */}
+        {refused && (
+          <p className={s.refused} role="status">
+            {refusal(refused)}
+          </p>
+        )}
         <div className={s.sheetSection}>
           <h3>{t('castle.siege.title')}</h3>
           {odds !== null ? (
@@ -124,12 +130,12 @@ function TargetSheet({ target, onClose }: { target: Target; onClose: () => void 
           <div className={s.save}>
             <Button
               variant="primary"
-              disabled={busy || refusal !== null || !hasAp(castle, costs.ap) || !affords(castle, purse, costs.gold)}
+              disabled={busy || blocked !== null || !hasAp(castle, costs.ap) || !affords(castle, purse, costs.gold)}
               onClick={() => void castleAct({ type: 'siege', target: target.id })}
             >
               {t('castle.siege', { gold: fmt.short(costs.gold), ap: fmt.int(costs.ap) })}
             </Button>
-            {refusal === 'pairLimit' && <span className={s.muted}>{t('castle.refused.pairLimit')}</span>}
+            {blocked === 'pairLimit' && <span className={s.muted}>{t('castle.refused.pairLimit')}</span>}
           </div>
         </div>
         {!target.merc && <Missions target={target} />}

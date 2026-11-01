@@ -23,8 +23,9 @@ export class Telemetry {
   events(playerId: string, events: GameEvent[]): void {
     for (const e of events) {
       if (!isNotable(e) && e.type !== 'laneStopped') continue;
-      // Goal names are words made for the goal, not ids: they stay out.
-      const { type, ...data } = e.type === 'goalDone' ? { type: e.type, at: e.at, goal: e.goal } : e;
+      // Goal names are words made for the goal, not ids, and a castle's foe is a player's name: both stay out.
+      const { type, ...data } =
+        e.type === 'goalDone' ? { type: e.type, at: e.at, goal: e.goal } : 'foe' in e ? { ...e, foe: undefined } : e;
       this.db
         .insert(telemetry)
         .values({ type: `game.${type}`, playerId, at: e.at, data: JSON.stringify(data) })
