@@ -1,9 +1,10 @@
-// Incursions (IA.md, Castle Clash): the fortress at your tier, scouted or not, the likely outcome of your
-// attack formation against it once scouted, what taking it gives, and the last assaults.
+// Incursions (IA.md, Castle Clash): the fortress at your tier, scouted or not; once scouted, its garrison
+// and trap, your attack's chance against it with Set against them; what taking it gives; the last assaults.
 import { SINKS, fmt, t } from '@idle-clash/content';
 import { castleEngine as E } from '@idle-clash/features';
 import { ActionRow, Button, Panel, Pill } from '@idle-clash/ui';
-import { fortressName, outcomeName, trapName } from './labels.ts';
+import { fortressName, trapName } from './labels.ts';
+import { AttackPlan } from './Plan.tsx';
 import { ReportRow } from './Reports.tsx';
 import { castleAct } from './store.ts';
 import { hasAp, useSyncedCastle } from './synced.ts';
@@ -15,7 +16,6 @@ export function Incursions() {
   const tier = castle.incursionTier;
   const fortress = E.fortressAt(tier);
   const scouted = castle.incursionScoutedTier === tier;
-  const odds = E.combatRatio(E.castleSide(castle, now, 'attack'), E.fortressSide(tier), 0.5).r;
   const marks = Math.round(
     (SINKS.INCURSION_MARKS_BASE + Math.floor(tier / 2)) * E.lift(E.modifiers(castle, now).marks),
   );
@@ -41,16 +41,7 @@ export function Incursions() {
                     })
                   : t('castle.incursion.unscouted')
               }
-              facts={
-                scouted
-                  ? [
-                      t('castle.incursion.odds', {
-                        outcome: outcomeName(E.outcomeOf(odds)),
-                        r: fmt.num(Math.round(odds * 100) / 100),
-                      }),
-                    ]
-                  : []
-              }
+              facts={[]}
               actions={
                 scouted ? undefined : (
                   <Button
@@ -62,6 +53,11 @@ export function Incursions() {
                 )
               }
             />
+            {scouted && (
+              <div className={s.planBlock}>
+                <AttackPlan def={E.fortressSide(tier)} />
+              </div>
+            )}
             <ActionRow
               name={t('castle.incursion.rewards', { marks: fmt.int(marks) })}
               facts={[]}

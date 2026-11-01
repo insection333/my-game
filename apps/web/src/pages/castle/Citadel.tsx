@@ -5,11 +5,13 @@ import { BUILDINGS, EDICTS, ECONOMY, fmt, t } from '@idle-clash/content';
 import { castleEngine as E } from '@idle-clash/features';
 import { ActionRow, Button, Field, Panel, Pill } from '@idle-clash/ui';
 import { useState } from 'react';
-import { buildingDoes, buildingName, edictGives, edictName } from './labels.ts';
+import { buildingDoes, buildingName, decreeDoes, edictGives, edictName } from './labels.ts';
 import { castleAct } from './store.ts';
 import { affords, hasAp, useSyncedCastle } from './synced.ts';
 import s from './castle.module.css';
 
+/** The treasury the Top up button fills to: half again what the edict needs. */
+const TOP_UP = 1.5;
 const pct = (n: number) => fmt.pct(Math.round(n * 10) / 10);
 
 export function Citadel() {
@@ -78,6 +80,9 @@ function Treasury() {
   const gold = /^\d{1,15}$/.test(digits) ? Number(digits) : 0;
   const valid = gold > 0;
   const locked = castle.withdrawLockdownUntil !== null && castle.withdrawLockdownUntil > now;
+  const required = E.requiredTreasury(castle, totalLevel);
+  const target = Math.ceil(required * TOP_UP);
+  const topUp = Math.max(0, target - castle.treasury);
   const move = async (type: 'deposit' | 'withdraw') => {
     if (await castleAct({ type, gold })) setAmount('');
   };
@@ -85,8 +90,27 @@ function Treasury() {
     <section data-section>
       <Panel title={t('castle.treasury.title')}>
         <div data-slot="castle.treasury" className={s.treasury}>
-          <p>{t('castle.treasury.required', { gold: fmt.short(E.requiredTreasury(castle, totalLevel)) })}</p>
+          <p className={s.held}>
+            {t('castle.treasuryHeld', {
+              gold: fmt.short(castle.treasury),
+              raidable: fmt.short(E.raidableGold(castle, now)),
+            })}
+          </p>
+          <p>{t('castle.treasury.required', { gold: fmt.short(required) })}</p>
           <p className={s.muted}>{t('castle.treasury.upkeep')}</p>
+          <p className={s.muted}>{t('castle.decree.does', { does: decreeDoes(E.decreeOf(now).id) })}</p>
+          {topUp > 0 && (
+            <div className={s.save}>
+              <Button
+                variant="primary"
+                disabled={busy || purse < 1}
+                onClick={() => void castleAct({ type: 'deposit', gold: Math.min(topUp, Math.floor(purse)) })}
+              >
+                {t('castle.topUp', { target: fmt.short(target) })}
+              </Button>
+              <span className={s.muted}>{t('castle.topUp.hint')}</span>
+            </div>
+          )}
           <div className={s.move}>
             <Field
               label={t('castle.treasury.amount')}
@@ -125,8 +149,16 @@ function Treasury() {
 function does(c: E.Castle, id: string, now: number): string {
   if (id === 'walls') return buildingDoes(id, { pct: pct(E.wallBonus(c.levels.walls, c.wallIntegrity) * 100) });
   if (id === 'deepVault') return buildingDoes(id, { gold: fmt.short(E.protectedGold(c, now)) });
-  if (id === 'watchtower') return buildingDoes(id, { n: fmt.int(E.detection(c, now)) });
-  return buildingDoes(id, { n: fmt.int(E.stealth(c, '', now)) });
+  // Spying against a castle of the same level: the guild's chance against the tower, as the War room shows.
+  const vs = (guild: number, tower: number) =>
+    E.spyChance(
+      { ...c, userId: 'spy', levels: { ...c.levels, spyGuild: guild } },
+      { ...c, userId: 'held', levels: { ...c.levels, watchtower: tower } },
+      now,
+    );
+  if (id === 'watchtower')
+    return buildingDoes(id, { pct: fmt.pct(Math.round((1 - vs(c.levels.watchtower, c.levels.watchtower)) * 100)) });
+  return buildingDoes(id, { pct: fmt.pct(Math.round(vs(c.levels.spyGuild, c.levels.spyGuild) * 100)) });
 }
 
 function Buildings() {

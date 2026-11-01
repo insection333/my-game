@@ -4,7 +4,14 @@
 import { createEngine, HOUR, newState, seeded, type State } from '@idle-clash/kernel';
 import { describe, expect, it } from 'vitest';
 import { actionRegistry, FEATURES } from '../src/index.ts';
-import { mirrorFor, mirrorOf, newCastle, requiredTreasury, type CastleMirror } from '../src/shared/castle/index.ts';
+import {
+  callAwaits,
+  mirrorFor,
+  mirrorOf,
+  newCastle,
+  requiredTreasury,
+  type CastleMirror,
+} from '../src/shared/castle/index.ts';
 import { fighterAt, T0 } from './helpers/expedition.ts';
 
 const engine = createEngine(actionRegistry(FEATURES, () => true));
@@ -60,6 +67,20 @@ describe('a Sovereign Edict in the rest of the game', () => {
   });
   it("carries the castle's standing for the deeds, edict or none", () => {
     const c = { ...newCastle('lord', T0), incursionTier: 8, warMarksEarned: 120, relics: { 'aegis-shard': 2 } };
-    expect(mirrorFor(c, 0, T0).standing).toEqual({ level: 1, taken: 7, marks: 120, relics: 2, studies: 0 });
+    expect(mirrorFor(c, 0, T0).standing).toEqual({
+      level: 1,
+      taken: 7,
+      marks: 120,
+      relics: 2,
+      studies: 0,
+      called: null,
+    });
+    // The Hearth's reminder: until today's call is answered.
+    const state = newState(1, T0);
+    state.features.castle = mirrorFor(c, 0, T0);
+    expect(callAwaits(state, T0)).toBe(true);
+    state.features.castle = mirrorFor({ ...c, lastCtaDateUtc: new Date(T0).toISOString().slice(0, 10) }, 0, T0);
+    expect(callAwaits(state, T0)).toBe(false);
+    expect(callAwaits(newState(1, T0), T0)).toBe(false);
   });
 });

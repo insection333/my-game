@@ -6,7 +6,8 @@ import { castleEngine as E } from '@idle-clash/features';
 import { ActionRow, Button, Panel, Pill, Sheet } from '@idle-clash/ui';
 import { useEffect } from 'react';
 import { navigate, useLocation, withPanel } from '../../router.ts';
-import { mercName, missionDoes, missionName, outcomeName, refusal, trapName } from './labels.ts';
+import { mercName, missionDoes, missionName, refusal, trapName } from './labels.ts';
+import { AttackPlan } from './Plan.tsx';
 import { garrisonLine, ReportRow, Reports, when } from './Reports.tsx';
 import { castleAct, loadTargets } from './store.ts';
 import { affords, hasAp, useSyncedCastle } from './synced.ts';
@@ -94,9 +95,22 @@ function TargetSheet({ target, onClose }: { target: Target; onClose: () => void 
     ? E.mercenaryCosts(castle, target.merc, now)
     : E.siegeCosts(castle, E.brRatio(castle, { rating: target.rating }), now);
   const blocked = E.siegeRefusal(castle, target.id, false, costs.ap, now);
-  const odds = target.merc
-    ? E.combatRatio(E.castleSide(castle, now, 'attack'), E.mercenarySide(target.merc), 0.5).r
-    : null;
+  const report = scouted?.data.report as Record<string, unknown> | undefined;
+  // What the attack meets: a stronghold as it is, a lord as the last scouting saw them.
+  const def = target.merc
+    ? E.mercenarySide(target.merc)
+    : report
+      ? E.estimatedDefence(
+          castle,
+          {
+            defense: Array.isArray(report.defense) ? report.defense.map(Number) : [34, 33, 33],
+            trap: typeof report.trap === 'string' ? report.trap : null,
+            castellan: typeof report.castellan === 'string' ? report.castellan : null,
+          },
+          target.rating,
+          now,
+        )
+      : null;
   return (
     <Sheet title={target.name} closeLabel={t('shell.close')} onClose={onClose} slot="castle.target">
       <div className={s.sheet}>
@@ -122,18 +136,13 @@ function TargetSheet({ target, onClose }: { target: Target; onClose: () => void 
               })}
             </p>
           )}
-          {odds !== null ? (
+          {!target.merc && scouted && (
             <p>
-              {t('castle.siege.odds', {
-                outcome: outcomeName(E.outcomeOf(odds)),
-                r: fmt.num(Math.round(odds * 100) / 100),
-              })}
+              {t('castle.siege.scouted', { when: when(scouted.at, now) })}: {garrisonLine(report!)}
             </p>
-          ) : scouted ? (
-            <p>
-              {t('castle.siege.scouted', { when: when(scouted.at, now) })}:{' '}
-              {garrisonLine(scouted.data.report as Record<string, unknown>)}
-            </p>
+          )}
+          {def ? (
+            <AttackPlan def={def} estimate={!target.merc} />
           ) : (
             <p className={s.muted}>{t('castle.siege.unscouted')}</p>
           )}

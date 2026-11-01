@@ -1,21 +1,23 @@
-// The Garrison (IA.md, Castle Clash): the three troops, each raised with gold and drilled with AP, their
-// wounds and healing, and the War College; beside them the formations, the trap and the castellan
-// (Formation.tsx).
-import { EVOLUTION_LEVELS, ECONOMY, SINKS, TECH, TECHS, UNITS, fmt, t } from '@idle-clash/content';
+// The Garrison (IA.md, Castle Clash): the three troops, each raised with gold and drilled with AP (once,
+// or five times at a press), their wounds and healing; beside them the formations, the trap and the
+// castellan (Formation.tsx). The War College is in the Halls, beside the Reliquary.
+import { EVOLUTION_LEVELS, ECONOMY, SINKS, UNITS, fmt, t } from '@idle-clash/content';
 import { castleEngine as E } from '@idle-clash/features';
 import { ActionRow, Button, Panel, Pill } from '@idle-clash/ui';
 import { Defences, Formations } from './Formation.tsx';
-import { evolutionName, techDoes, techName, unitName } from './labels.ts';
+import { evolutionName, unitName } from './labels.ts';
 import { castleAct } from './store.ts';
 import { affords, hasAp, useSyncedCastle } from './synced.ts';
 import s from './castle.module.css';
+
+/** Drills at one press, for AP saved up. */
+const DRILL_MANY = 5;
 
 export function Garrison() {
   return (
     <div className={s.grid}>
       <div className={s.column}>
         <Troops />
-        <College />
       </div>
       <div className={s.column}>
         <Formations />
@@ -32,7 +34,7 @@ function Troops() {
   return (
     <section data-section>
       <Panel title={t('castle.units.title')} flush>
-        <div data-slot="castle.units">
+        <div data-slot="castle.units" className={s.relics} data-scrollbox>
           {UNITS.map((u) => {
             const level = castle.levels[u.id];
             const stage = E.evolutionOf(level);
@@ -56,8 +58,8 @@ function Troops() {
                         }),
                       ]),
                 ]}
-                actions={
-                  <>
+                progress={
+                  <div className={s.drills}>
                     <Button
                       variant="quiet"
                       disabled={busy || !hasAp(castle, SINKS.DRILL_AP)}
@@ -65,6 +67,17 @@ function Troops() {
                     >
                       {t('castle.drill', { ap: fmt.int(SINKS.DRILL_AP) })}
                     </Button>
+                    <Button
+                      variant="quiet"
+                      disabled={busy || !hasAp(castle, SINKS.DRILL_AP * DRILL_MANY)}
+                      onClick={() => void castleAct({ type: 'drill', unit: u.id, times: DRILL_MANY })}
+                    >
+                      {t('castle.drillMany', { times: fmt.int(DRILL_MANY) })}
+                    </Button>
+                  </div>
+                }
+                actions={
+                  <>
                     {level >= ECONOMY.MAX_LEVEL ? (
                       <Pill tone="moss">{t('castle.highest')}</Pill>
                     ) : (
@@ -95,43 +108,6 @@ function Troops() {
             </div>
           </div>
         )}
-      </Panel>
-    </section>
-  );
-}
-
-function College() {
-  const { castle, now, purse, busy } = useSyncedCastle();
-  if (!castle) return null;
-  return (
-    <section data-section>
-      <Panel title={t('castle.college.title')} flush>
-        <div data-slot="castle.college" className={s.college} data-scrollbox>
-          {TECHS.map((x) => {
-            const cost = E.techCost(castle, x.id, now);
-            const rank = castle.techs[x.id];
-            return (
-              <ActionRow
-                key={x.id}
-                name={techName(x.id)}
-                status={<Pill>{t('castle.rank', { rank: fmt.int(rank), ranks: fmt.int(TECH.RANKS) })}</Pill>}
-                facts={[techDoes(x.id)]}
-                actions={
-                  cost ? (
-                    <Button
-                      disabled={busy || castle.warMarks < cost.marks || !affords(castle, purse, cost.gold)}
-                      onClick={() => void castleAct({ type: 'research', tech: x.id })}
-                    >
-                      {t('castle.study', { gold: fmt.short(cost.gold), marks: fmt.int(cost.marks) })}
-                    </Button>
-                  ) : (
-                    <Pill tone="moss">{t('castle.highest')}</Pill>
-                  )
-                }
-              />
-            );
-          })}
-        </div>
       </Panel>
     </section>
   );

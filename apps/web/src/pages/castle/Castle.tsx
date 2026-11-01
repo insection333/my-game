@@ -11,21 +11,21 @@ import { Citadel } from './Citadel.tsx';
 import { Garrison } from './Garrison.tsx';
 import { Header } from './Header.tsx';
 import { Incursions } from './Incursions.tsx';
-import { Reliquary } from './Reliquary.tsx';
+import { Halls } from './Halls.tsx';
 import { Reports } from './Reports.tsx';
 import { castleAct, useCastleLoad } from './store.ts';
 import { useSyncedCastle } from './synced.ts';
 import { WarRoom } from './WarRoom.tsx';
 import s from './castle.module.css';
 
-export const CASTLE_TABS = ['citadel', 'garrison', 'warRoom', 'incursions', 'reliquary'] as const;
+export const CASTLE_TABS = ['citadel', 'garrison', 'warRoom', 'incursions', 'halls'] as const;
 type Tab = (typeof CASTLE_TABS)[number];
 const PATH: Record<Tab, string> = {
   citadel: '/castle',
   garrison: '/castle/garrison',
   warRoom: '/castle/war-room',
   incursions: '/castle/incursions',
-  reliquary: '/castle/reliquary',
+  halls: '/castle/halls',
 };
 export const castleTab = (path: string): Tab | null =>
   (Object.entries(PATH).find(([, p]) => p === path)?.[0] as Tab | undefined) ?? null;
@@ -35,12 +35,11 @@ const LABEL: Record<Tab, string> = {
   garrison: 'castle.tab.garrison',
   warRoom: 'castle.tab.warRoom',
   incursions: 'castle.tab.incursions',
-  reliquary: 'castle.tab.reliquary',
+  halls: 'castle.tab.halls',
 };
 const SHORT: Partial<Record<Tab, string>> = {
   warRoom: 'castle.tab.warRoom.short',
   incursions: 'castle.tab.incursions.short',
-  reliquary: 'castle.tab.reliquary.short',
 };
 
 export function Castle({ path }: { path: string }) {
@@ -105,7 +104,7 @@ export function Castle({ path }: { path: string }) {
         ) : tab === 'incursions' ? (
           <Incursions />
         ) : (
-          <Reliquary />
+          <Halls />
         )}
       </div>
     </>
@@ -120,5 +119,5 @@ function opens(c: E.Castle, tab: Tab): string {
       level: fmt.int(UNLOCKS.WAR_ROOM_AVG_LEVEL),
       now: fmt.num(Math.floor(E.avgLevel(c) * 10) / 10),
     });
-  return t('castle.opens.reliquary');
+  return t('castle.opens.halls');
 }
