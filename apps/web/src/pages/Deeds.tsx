@@ -118,7 +118,7 @@ function Family({ family }: { family: DeedFamily }) {
   return (
     <Panel title={family.name} aside={family.done}>
       <p className={s.about}>{family.about}</p>
-      <div className={s.rows}>
+      <div className={s.rows} data-scrollbox>
         {family.rows.map((row) => (
           <div key={row.id} className={s.row} data-labelled={row.label ? true : undefined}>
             {row.label && (

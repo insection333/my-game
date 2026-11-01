@@ -66,7 +66,7 @@ export function Relics({ relics }: { relics: RelicsView }) {
     <Panel title={t('relic.title')} aside={relics.marks} flush>
       <Slot id="combat.relics">
         {/* Fourteen rows scroll inside their own box, which takes the keyboard too. */}
-        <div className={s.relics} tabIndex={0} role="group" aria-label={t('relic.title')}>
+        <div className={s.relics} data-scrollbox tabIndex={0} role="group" aria-label={t('relic.title')}>
           {relics.relics.map((r) => (
             <ActionRow
               key={r.id}

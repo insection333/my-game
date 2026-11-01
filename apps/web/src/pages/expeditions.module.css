@@ -58,8 +58,6 @@
 /* The route: an hour a row (numbered), its stages as chips; a long one scrolls in its own box. */
 .ribbonBox {
   max-height: min(18rem, 34dvh);
-  overflow-y: auto;
-  overscroll-behavior: contain;
 }
 
 .ribbon {
@@ -145,8 +143,6 @@
 .relics {
   display: block;
   max-height: min(30rem, 52dvh);
-  overflow-y: auto;
-  overscroll-behavior: contain;
 }
 
 /* Every twist and road, folded away. */

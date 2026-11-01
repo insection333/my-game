@@ -75,7 +75,7 @@ export function Admin() {
               </form>
               {found?.length === 0 && <p className={s.note}>{t('admin.none')}</p>}
               {/* Up to 25 players: the list scrolls in its own box, reachable from the keyboard. */}
-              <div className={s.results} tabIndex={0} aria-label={t('admin.players')}>
+              <div className={s.results} data-scrollbox tabIndex={0} aria-label={t('admin.players')}>
                 {found?.map((p) => (
                   <ActionRow
                     key={p.id}
