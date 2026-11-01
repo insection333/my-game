@@ -127,7 +127,7 @@ export class Lordship {
       if (!apply(E.drill(wallet(), unit, 1))) break;
     }
     // Relics with spare war marks: the attack's banner and the Aegis first, then the rest.
-    if (E.tabOpen(c, 'reliquary'))
+    if (E.tabOpen(c, 'halls'))
       for (const r of RELICS) {
         const cost = E.relicCost(c, r.id);
         if (cost && c.warMarks >= cost.marks && purse * share >= cost.gold) apply(E.forgeRelic(wallet(), r.id));

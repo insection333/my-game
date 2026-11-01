@@ -177,19 +177,19 @@ Tabs: Items · Collection log.
 
 ### Castle Clash
 
-The owner's castle system (`docs/castle-clash/`), between Storehouse and Hiscores. It opens at total level 100; before that the page says how far there is to go and what a castle brings. At 100 a lord raises their castle here. Then five tabs under the title, each opening as the castle grows: **Citadel** (`/castle`), **Garrison** (`/castle/garrison`), **War room** (`/castle/war-room`, short "War"), **Incursions** (`/castle/incursions`, short "Raids") and **Reliquary** (`/castle/reliquary`, short "Relics"). A closed tab says, under the header, what opens it; a closed War room still lists the lord's reports, since others may attack them first.
+The owner's castle system (`docs/castle-clash/`), between Storehouse and Hiscores. It opens at total level 100; before that the page says how far there is to go and what a castle brings. At 100 a lord raises their castle here. Then five tabs under the title, each opening as the castle grows: **Citadel** (`/castle`), **Garrison** (`/castle/garrison`), **War room** (`/castle/war-room`, short "War"), **Incursions** (`/castle/incursions`, short "Raids") and **Halls** (`/castle/halls`: the War College and the Reliquary, where war marks are spent). A closed tab says, under the header, what opens it; a closed War room still lists the lord's reports, since others may attack them first.
 
 | # | Section (slot) | Filled by | Notes |
 | --- | --- | --- | --- |
 | 1 | `castle.lead` | the page | Before a castle: total level against 100 with its bar, what a castle brings in three lines, and Raise your castle at 100 |
-| 2 | `castle.header` | the page | Above every tab: AP of the cap with its bar and the reserve, the Call to arms and its streak; pills for the rating, war marks, this week's decree, the treasury, what the vault keeps safe and what is raidable, a shield and vigilance; why the last action was refused |
+| 2 | `castle.header` | the page | Above every tab, in two short rows: AP of the cap with its bar, the Call to arms (with the AP it brings) or Answered today, and the streak; pills for the rating, war marks, this week's decree, a shield and vigilance; why the last action was refused, or what opens the tab shown |
 | 3 | `castle.edict` | the page | Citadel: the three edicts, each with what it lifts now, the one in force (or the treasury it needs) |
-| 4 | `castle.treasury` | the page | Citadel: what an edict needs and costs, the amount with Deposit and Withdraw (a fifth lost; barred after a scouting), whether costs come from the purse or the treasury |
+| 4 | `castle.treasury` | the page | Citadel: what the treasury holds and what of it is raidable, what an edict needs and costs, this week's decree, Top up (to half again what the edict needs) in one press, the amount with Deposit and Withdraw (a fifth lost; barred after a scouting), whether costs come from the purse or the treasury |
 | 5 | `castle.buildings` | the page | Citadel: walls, deep vault, beacon tower and spy guild, each with its level, what it does and Raise for its gold; the walls' integrity and Repair |
 | 6 | `castle.dig` | the page | Citadel: the deep foundations' depth, its multiplier on the edict and AP, and Dig |
-| 7 | `castle.units` | the page | Garrison: the three troops by their evolution's name, level, drill and the next evolution, Drill and Raise; wounds and Heal |
-| 8 | `castle.college` | the page | Garrison: the War College's four studies, rank of ten, what a rank gives, Study for gold and war marks |
-| 9 | `castle.offense` | the page | Garrison: the attack formation, each share stepped by five, the flank warning past 60%, Save (free) |
+| 7 | `castle.units` | the page | Garrison: the three troops by their evolution's name, level, drill and the next evolution, Drill (once or five times) and Raise; wounds and Heal |
+| 8 | `castle.college` | the page | Halls: the War College's four studies, rank of ten, what a rank gives, Study for gold and war marks |
+| 9 | `castle.offense` | the page | Garrison: the attack formation, presets (Even, Shield wall, Lancers, Siege train), each share stepped by five, the flank warning past 60%, Save (free) |
 | 10 | `castle.defense` | the page | Garrison: the garrison, as the attack's, Save for 1% of the required treasury, then two hours' rest (pinned after a scouting) |
 | 11 | `castle.trap` | the page | Garrison: the three traps, the one set, Choose |
 | 12 | `castle.castellan` | the page | Garrison: the three castellans and what each does, Choose |
@@ -197,11 +197,12 @@ The owner's castle system (`docs/castle-clash/`), between Storehouse and Hiscore
 | 14 | `castle.reports` | the server | War room: sieges, spies, mercenary battles and incursions, newest first, with what each moved |
 | 15 | `castle.target` | the page | A target's sheet (`?panel=target&target=…`): its rating, what is known of it (a scouting's findings, or a stronghold's likely outcome), the siege with its fee and AP, and the last reports about it |
 | 16 | `castle.missions` | the page | In a lord's sheet: the four spy missions, what each does, the chance, Send |
-| 17 | `castle.incursion` | the page | Incursions: the fortress at your tier, its garrison and trap once scouted with the likely outcome, what taking it gives, Scout and Assault |
-| 18 | `castle.relics` | the page | Reliquary: the nine war relics, level of five, what each gives, Forge or raise, Wear and Take off, worn of three |
+| 17 | `castle.plan` | the page | In a target's sheet and an incursion: the attack formation, its chance to win (about, for a lord: from their rating and the scouting), and Set against them, which sets the attack formation that does best against the garrison known |
+| 18 | `castle.incursion` | the page | Incursions: the fortress at your tier, its garrison and trap once scouted with the likely outcome, what taking it gives, Scout and Assault |
+| 19 | `castle.relics` | the page | Halls: the nine war relics, level of five, what each gives, Forge or raise, Wear and Take off, worn of three |
 
 - **At 390:** the header, then each tab's panels in one column. **At 1,440:** the header across, the tab's panels in two columns.
-- **Elsewhere:** the edict in force shows as a gold pill beside a skill's level on its page (Vigor's XP, Fortune's finds) and under Combat's tabs (any edict, Harvest's fight gold too). Castle Clash's deeds are on the Combat tab of Deeds.
+- **Elsewhere:** until the day's Call to arms is answered, the Hearth's Next up leads with it, linking here. The edict in force shows as a gold pill beside a skill's level on its page (Vigor's XP, Fortune's finds) and under Combat's tabs (any edict, Harvest's fight gold too). Castle Clash's deeds are on the Combat tab of Deeds.
 
 **Visible without scrolling** (checked by verify at 390 × 844 and 1,440 × 900; a slot no built feature fills yet is skipped):
 

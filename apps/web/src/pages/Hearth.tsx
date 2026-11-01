@@ -1,7 +1,15 @@
 // The Hearth: what is happening, what happened while you were away, and what to aim for next.
 import { t } from '@idle-clash/content';
 import { useEffect } from 'react';
-import type { GoalRow, GoalsView, NextUpRow, PlaqueView, StandingView, SteadingView } from '@idle-clash/features';
+import {
+  castleEngine,
+  type GoalRow,
+  type GoalsView,
+  type NextUpRow,
+  type PlaqueView,
+  type StandingView,
+  type SteadingView,
+} from '@idle-clash/features';
 import { ActionRow, Button, hasIcon, ItemIcon, MarchScene, Panel, Pill, ProgressBar } from '@idle-clash/ui';
 import { useGame } from '../game/hooks.ts';
 import { game } from '../game/store.ts';
@@ -24,6 +32,7 @@ export function Hearth() {
   const [standing] = fills<StandingView>(features, 'hearth.standing', state, now);
   const [plaque] = fills<PlaqueView>(features, 'hearth.plaque', state, now);
   const [steading] = fills<SteadingView>(features, 'hearth.steading', state, now);
+  const call = castleEngine.callAwaits(state, now);
   // The ladder lacks a goal (a short goal was claimed, or a new day began): the server makes it.
   const wants = goals?.data.refresh ?? false;
   useEffect(() => {
@@ -70,10 +79,24 @@ export function Hearth() {
             </Panel>
           </section>
         )}
-        {next.length > 0 && (
+        {(next.length > 0 || call) && (
           <section data-section className={s.nextArea}>
             <Panel title={t('hearth.next.title')} flush>
               <Slot id="hearth.nextUp" className={s.rows}>
+                {/* The day's Call to arms, until it is answered (Castle Clash). */}
+                {call && (
+                  <a
+                    href="/castle"
+                    data-ui="RowLink"
+                    className={s.row}
+                    onClick={(e) => (e.preventDefault(), navigate('/castle'))}
+                  >
+                    <span className={s.rowHead}>
+                      <span className={s.rowName}>{t('menu.castle')}</span>
+                    </span>
+                    <span className={s.rowText}>{t('castle.nudge')}</span>
+                  </a>
+                )}
                 {next.map(({ feature, data }) => (
                   <a
                     key={feature}

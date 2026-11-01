@@ -1,9 +1,10 @@
-// The Reliquary (IA.md, Castle Clash): the nine war relics, each forged and raised with war marks and gold,
-// three worn at once. A relic's three best count towards the rating worn or not; only worn ones give.
-import { RELIC, RELIC_SOCKETS, RELICS, fmt, t, type CastleEffect } from '@idle-clash/content';
+// The Halls (IA.md, Castle Clash): where war marks are spent. The War College's four studies, and the
+// Reliquary's nine war relics, each forged and raised with war marks and gold, three worn at once (a
+// castle's three best relics count towards its rating, worn or not; only worn ones give).
+import { RELIC, RELIC_SOCKETS, RELICS, TECH, TECHS, fmt, t, type CastleEffect } from '@idle-clash/content';
 import { castleEngine as E } from '@idle-clash/features';
 import { ActionRow, Button, Panel, Pill } from '@idle-clash/ui';
-import { relicGives, relicName } from './labels.ts';
+import { relicGives, relicName, techDoes, techName } from './labels.ts';
 import { castleAct } from './store.ts';
 import { affords, useSyncedCastle } from './synced.ts';
 import s from './castle.module.css';
@@ -14,7 +15,53 @@ function gives(effect: CastleEffect, level: number): string {
   return relicGives(effect.kind, { pct: fmt.pct(Math.round(pct * 10) / 10) });
 }
 
-export function Reliquary() {
+export function Halls() {
+  return (
+    <div className={s.grid}>
+      <College />
+      <Reliquary />
+    </div>
+  );
+}
+
+function College() {
+  const { castle, now, purse, busy } = useSyncedCastle();
+  if (!castle) return null;
+  return (
+    <section data-section>
+      <Panel title={t('castle.college.title')} flush>
+        <div data-slot="castle.college" className={s.college} data-scrollbox>
+          {TECHS.map((x) => {
+            const cost = E.techCost(castle, x.id, now);
+            const rank = castle.techs[x.id];
+            return (
+              <ActionRow
+                key={x.id}
+                name={techName(x.id)}
+                status={<Pill>{t('castle.rank', { rank: fmt.int(rank), ranks: fmt.int(TECH.RANKS) })}</Pill>}
+                facts={[techDoes(x.id)]}
+                actions={
+                  cost ? (
+                    <Button
+                      disabled={busy || castle.warMarks < cost.marks || !affords(castle, purse, cost.gold)}
+                      onClick={() => void castleAct({ type: 'research', tech: x.id })}
+                    >
+                      {t('castle.study', { gold: fmt.short(cost.gold), marks: fmt.int(cost.marks) })}
+                    </Button>
+                  ) : (
+                    <Pill tone="moss">{t('castle.highest')}</Pill>
+                  )
+                }
+              />
+            );
+          })}
+        </div>
+      </Panel>
+    </section>
+  );
+}
+
+function Reliquary() {
   const { castle } = useSyncedCastle();
   if (!castle) return null;
   return (

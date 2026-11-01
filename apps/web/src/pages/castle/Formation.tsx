@@ -5,11 +5,19 @@ import { COMBAT, DOCTRINES, TRAPS, UNIT_IDS, fmt, t } from '@idle-clash/content'
 import { castleEngine as E } from '@idle-clash/features';
 import { ActionRow, Button, Panel, Pill } from '@idle-clash/ui';
 import { useState } from 'react';
-import { castellanDoes, castellanName, trapName, unitName } from './labels.ts';
+import { castellanDoes, castellanName, presetName, trapName, unitName } from './labels.ts';
 import { castleAct } from './store.ts';
 import { step, type Three } from './shares.ts';
 import { affords, useSyncedCastle } from './synced.ts';
 import s from './castle.module.css';
+
+/** Formations at a press: even, or one troop at 60% (the most before it is flanked). */
+const PRESETS: readonly (readonly [string, Three])[] = [
+  ['even', [34, 33, 33]],
+  ['vanguard', [60, 20, 20]],
+  ['outriders', [20, 60, 20]],
+  ['siege', [20, 20, 60]],
+];
 
 /** Why the garrison, trap and castellan cannot change now, or null. */
 export function defenceWait(c: E.Castle, now: number): string | null {
@@ -68,6 +76,18 @@ function Formation(props: {
   const changed = draft.some((x, i) => x !== props.saved[i]);
   return (
     <div data-slot={props.slot} className={s.formation}>
+      <div className={s.presets}>
+        {PRESETS.map(([key, shares]) => (
+          <Button
+            key={key}
+            variant="quiet"
+            aria-pressed={draft.every((x, i) => x === shares[i])}
+            onClick={() => setDraft([...shares])}
+          >
+            {presetName(key)}
+          </Button>
+        ))}
+      </div>
       {UNIT_IDS.map((u, i) => {
         const name = unitName(u);
         return (

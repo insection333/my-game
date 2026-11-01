@@ -17,3 +17,4 @@ export * from './unlocks.ts';
 export * from './mirror.ts';
 export * from './view.ts';
 export * from './words.ts';
+export * from './tactics.ts';

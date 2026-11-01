@@ -44,6 +44,12 @@ export const trapName = read({
   'spiked-palisades': 'castle.trap.spiked-palisades',
   'counter-battery': 'castle.trap.counter-battery',
 });
+export const presetName = read({
+  even: 'castle.preset.even',
+  vanguard: 'castle.preset.vanguard',
+  outriders: 'castle.preset.outriders',
+  siege: 'castle.preset.siege',
+});
 export const castellanName = read({
   'iron-marshal': 'castle.castellan.iron-marshal',
   'whisper-weaver': 'castle.castellan.whisper-weaver',
@@ -70,6 +76,13 @@ export const decreeName = read({
   'open-coffers': 'castle.decree.open-coffers',
   'war-banners': 'castle.decree.war-banners',
   'forge-fires': 'castle.decree.forge-fires',
+});
+export const decreeDoes = read({
+  'iron-ramparts': 'castle.decree.does.iron-ramparts',
+  'long-shadows': 'castle.decree.does.long-shadows',
+  'open-coffers': 'castle.decree.does.open-coffers',
+  'war-banners': 'castle.decree.does.war-banners',
+  'forge-fires': 'castle.decree.does.forge-fires',
 });
 export const techName = read({
   logistics: 'castle.tech.logistics',

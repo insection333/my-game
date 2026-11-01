@@ -13,7 +13,19 @@ const Count = z.number().int().min(0).max(1e9);
 /** The castle's standing, for the deeds that read it (session 33): its average level (whole), fortresses
  *  taken, war marks earned, relic levels forged and War College ranks studied. */
 export const CastleStanding = z
-  .object({ level: Count, taken: Count, marks: Count, relics: Count, studies: Count })
+  .object({
+    level: Count,
+    taken: Count,
+    marks: Count,
+    relics: Count,
+    studies: Count,
+    /** The day of the last Call to arms answered, for the Hearth's reminder. */
+    called: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/)
+      .nullable()
+      .optional(),
+  })
   .strict();
 export type CastleStanding = z.infer<typeof CastleStanding>;
 
@@ -37,6 +49,12 @@ export function mirrorOf(state: State): CastleMirror {
   return parsed.success ? parsed.data : NO_EDICT;
 }
 
+/** Whether a lord with a castle has yet to answer today's Call to arms, as their save last heard. */
+export const callAwaits = (state: State, now: number): boolean => {
+  const standing = mirrorOf(state).standing;
+  return !!standing && standing.called !== new Date(now).toISOString().slice(0, 10);
+};
+
 /** A lord's castle standing as their save holds it, or null before their castle is raised. */
 export const castleStanding = (state: State): CastleStanding | null => mirrorOf(state).standing ?? null;
 
@@ -49,6 +67,7 @@ export function standingOf(c: Castle): CastleStanding {
     marks: Math.floor(c.warMarksEarned),
     relics: sum(c.relics),
     studies: sum(c.techs),
+    called: c.lastCtaDateUtc,
   };
 }
 

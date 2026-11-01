@@ -110,7 +110,7 @@ export function views(): View[] {
     '/castle/war-room',
     `/castle/war-room?panel=target&target=merc:${new Date().toISOString().slice(0, 10)}:0`,
     '/castle/incursions',
-    '/castle/reliquary',
+    '/castle/halls',
   ].map((path) => ({
     page:
       map.views.find((v) => v.path === path)?.page ??
