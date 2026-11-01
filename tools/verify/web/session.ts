@@ -19,6 +19,8 @@ import { flagsFrom } from '../../../apps/server/src/config.ts';
 import type { Ctx } from '../../../apps/server/src/context.ts';
 import type { State } from '@idle-clash/kernel';
 import { exec, ROOT } from '../exec.ts';
+import { totalLevel } from '@idle-clash/features';
+import { castles } from './castles.ts';
 import { elder, keeper } from './elder.ts';
 import { withHonours } from './honours.ts';
 import { crowd, CROWD, veteran } from './veteran.ts';
@@ -102,6 +104,13 @@ export function views(): View[] {
     '/hiscores/deeds?panel=honours',
     // Expeditions two months in: the Fen's longest route, the bosses and the relics.
     '/combat/expeditions?region=fen&hours=8',
+    // Castle Clash weeks after raising: every tab, and a stronghold's sheet (today's first).
+    '/castle',
+    '/castle/garrison',
+    '/castle/war-room',
+    `/castle/war-room?panel=target&target=merc:${new Date().toISOString().slice(0, 10)}:0`,
+    '/castle/incursions',
+    '/castle/reliquary',
   ].map((path) => ({
     page:
       map.views.find((v) => v.path === path)?.page ??
@@ -111,7 +120,9 @@ export function views(): View[] {
           ? 'Hiscores'
           : path.startsWith('/combat')
             ? 'Combat'
-            : 'Hearth'),
+            : path.startsWith('/castle')
+              ? 'Castle Clash'
+              : 'Hearth'),
     path,
     phone: [],
     desktop: [],
@@ -216,12 +227,14 @@ async function start(): Promise<Served> {
   await app.listen({ port, host: '127.0.0.1' });
   const cookie = await newcomer(url, 'Newcomer');
   const now = Date.now();
+  const ids = new Map<string, string>();
   /** Signs a player up and gives their save a history (written as the admin page can). */
   const settle = async (name: string, make: (s: State) => State) => {
     const c = await newcomer(url, name);
     const me = (await (await fetch(`${url}/api/me`, { headers: { cookie: `${c.name}=${c.value}` } })).json()) as {
       player: { id: string };
     };
+    ids.set(name, me.player.id);
     const saved = ctx.store.read(me.player.id, now)!;
     // Deeds done by the time the page opens are recorded, and the best honours shown (honours.ts).
     const state = withHonours(ctx, make(saved.doc.state), now);
@@ -236,6 +249,14 @@ async function start(): Promise<Served> {
   const vet = await settle('Veteran', (s) => veteran(ctx, s, now));
   const eld = await settle('Elder', (s) => elder(ctx, s, now));
   const kpr = await settle('Keeper', (s) => keeper(ctx, s, now));
+  // Castle Clash: the elder's castle raised for weeks, and the keeper's beside it as a rival lord.
+  const elderId = ids.get('Elder')!;
+  castles(
+    ctx,
+    { elder: elderId, keeper: ids.get('Keeper')! },
+    now,
+    totalLevel(ctx.store.read(elderId, now)!.doc.state),
+  );
   // The veteran keeps the game's admin page, so it is screenshot with players on it. Named on the list
   // once signed up, as the owner is: a name already on it cannot be signed up for.
   ctx.config.adminNames.push('Veteran');

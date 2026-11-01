@@ -4,7 +4,7 @@
 // both lords read the siege in their reports.
 import { XP_TABLE } from '@idle-clash/content';
 import { allSkills, castleEngine as E } from '@idle-clash/features';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { CastleStore } from '../src/castle/store.ts';
 import { code, post, server, signUp, type TestServer } from './helpers.ts';
 
@@ -191,7 +191,10 @@ describe('Castle Clash over HTTP', () => {
       },
     });
     raise(def, 6, { levels: { ...E.newCastle('x', 0).levels, watchtower: 100 } });
-    const r = await result(att, { type: 'spy', target: def.id, mission: 'scout' });
+    // A spy's chance never passes 90%, so a roll of 0.95 is caught whatever the castles (the server rolls
+    // with Math.random: a fair roll needs no seed, and a test pins it).
+    const rolls = vi.spyOn(Math, 'random').mockReturnValue(0.95);
+    const r = await result(att, { type: 'spy', target: def.id, mission: 'scout' }).finally(() => rolls.mockRestore());
     expect(r).toMatchObject({ ok: true, success: false });
     const seen = await view(def);
     expect(seen.logs[0]).toMatchObject({ kind: 'spyIn', foeName: 'Snoop' });

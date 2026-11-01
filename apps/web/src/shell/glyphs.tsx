@@ -21,6 +21,7 @@ export const MENU_GLYPHS: Record<string, string> = {
   skills: 'M5 20V14M10 20V10M15 20V6M20 20V3M3 20h19',
   combat: 'M5 4l9.5 9.5M14.5 13.5l2 2M16 19l-1.5-1.5 4-4L20 15M19 4L9.5 13.5M9.5 13.5l-2 2M8 19l1.5-1.5-4-4L4 15',
   storehouse: 'M3 10h18v10H3zM3 10l2-5h14l2 5M10 14h4',
+  castle: 'M4 21V7h3v2h2V7h6v2h2V7h3v14M3 21h18M10 21v-3.5a2 2 0 0 1 4 0V21M12 7V3l3 1.2-3 1.2',
   hiscores: 'M6 3h12v6a6 6 0 0 1-12 0zM6 5H3v2a3 3 0 0 0 3 3M18 5h3v2a3 3 0 0 1-3 3M12 15v3M8 21h8M9 18h6',
 };
 

@@ -19,4 +19,5 @@ export const SHELL_SLOTS = [
   'legal.text',
   'admin.players',
   'admin.player',
+  'castle.lead',
 ] as const;
