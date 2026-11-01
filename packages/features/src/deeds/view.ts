@@ -16,6 +16,8 @@ export interface DeedStep {
   tier: DeedTier;
   name: string;
   text: string;
+  /** Its words beside its name in a list, or null where the name already says them ("Woodcutting 40"). */
+  aside: string | null;
   /** "Hard, 15 points" */
   worth: string;
   /** "Done 20 Oct 2026", or null while not done. */
@@ -36,7 +38,6 @@ export interface DeedRow {
 export interface DeedFamily {
   id: string;
   name: string;
-  about: string;
   done: string;
   rows: DeedRow[];
 }
@@ -81,6 +82,7 @@ export function stepOf(d: Deed, r: Reader, doneAt: number | undefined): DeedStep
     tier: d.tier,
     name: secret ? t('deeds.secret.name') : wordsOf(d, 'name'),
     text: secret ? t('deeds.secret.text') : wordsOf(d, 'text'),
+    aside: secret ? t('deeds.secret.text') : d.brief ? null : wordsOf(d, 'text'),
     worth: t('deeds.worth', { tier: t(`deeds.tier.${d.tier}`), points: fmt.int(POINTS[d.tier]) }),
     done: doneAt === undefined ? null : t('deeds.doneOn', { date: fmt.date(doneAt) }),
     progress: doneAt === undefined ? Math.min(1, Math.max(0, measured / d.target)) : 1,
@@ -123,7 +125,6 @@ export function deedsView(state: State, now: number): DeedsView {
         return {
           id: family,
           name: t(`deeds.family.${family}`),
-          about: t(`deeds.family.${family}.about`),
           done: of(doneIn(list), list.length),
           rows,
         };

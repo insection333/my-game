@@ -27,6 +27,8 @@ export interface Deed {
   icon: string | null;
   /** Its words stay unread until it is done. */
   hidden: boolean;
+  /** Its name already says what it asks ("Woodcutting 40"), so lists show the name alone. */
+  brief: boolean;
   /** How its progress reads: a count, a time (minutes), or simply done or not. */
   shows: 'count' | 'minutes' | 'none';
   measure: (r: Reader) => number;
@@ -135,10 +137,11 @@ export const HIDDEN = { jack: 25, even: 10, hoard: 10_000 };
 export const lower = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
 export const skillName = (s: string) => t(`skill.${s}`);
 
-type Defaults = 'hidden' | 'shows' | 'icon' | 'key' | 'row';
+type Defaults = 'hidden' | 'brief' | 'shows' | 'icon' | 'key' | 'row';
 /** A deed, with the usual defaults: shown, counted, no icon, its family's strings, one row. */
 export const deed = (d: Omit<Deed, Defaults> & Partial<Pick<Deed, Defaults>>): Deed => ({
   hidden: false,
+  brief: false,
   shows: 'count',
   icon: null,
   key: `deed.${d.family}`,

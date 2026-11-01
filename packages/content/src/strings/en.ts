@@ -55,7 +55,7 @@ export const en: Record<string, string> = {
   // Pages
   'hearth.title': 'Hearth',
   'hearth.welcome.title': 'Welcome to the march',
-  'hearth.welcome.body': 'Your lanes keep working while you are away, for up to a day.',
+  'hearth.welcome.body': 'Levels, finds and goals you reach today show here, newest first. Start with a first step.',
   'hearth.next.title': 'Next up',
   'hearth.today.title': 'Today',
   'tray.today': 'Today',
@@ -101,7 +101,7 @@ export const en: Record<string, string> = {
   'item.panel.comesFrom': 'Comes from',
   'item.panel.usedIn': 'Used in',
   'item.panel.action': '{skill}: {action} (×{count})',
-  'item.panel.kept': '{skill}: {action} (kept, never used up)',
+  'item.panel.kept': '{skill}: {action} (not used up)',
   'item.panel.find': '{skill}: {rarity} find',
   'item.panel.nothing': 'Nothing yet.',
   'item.panel.wearing': 'Your fighter wears it now: the one worn is never sold.',

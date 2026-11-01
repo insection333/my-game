@@ -113,12 +113,6 @@
   color: var(--ink-2);
 }
 
-.about {
-  margin: 0 0 var(--s-3);
-  color: var(--ink-2);
-  font-size: var(--t-small);
-}
-
 /* A long family (eleven skills, twenty foes) scrolls inside its own box, as long lists do. */
 .rows {
   display: grid;

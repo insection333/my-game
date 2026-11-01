@@ -113,11 +113,10 @@ function Honours({ view }: { view: HonoursView }) {
   );
 }
 
-/** One family: a row of medallions for each skill or foe (or one row), under what the family counts. */
+/** One family: a row of medallions for each skill or foe (or one row). */
 function Family({ family }: { family: DeedFamily }) {
   return (
     <Panel title={family.name} aside={family.done}>
-      <p className={s.about}>{family.about}</p>
       <div className={s.rows} data-scrollbox>
         {family.rows.map((row) => (
           <div key={row.id} className={s.row} data-labelled={row.label ? true : undefined}>
@@ -167,7 +166,7 @@ function DeedLine({ step }: { step: DeedStep }) {
     <ActionRow
       icon={<DeedMedal step={step} />}
       name={step.name}
-      facts={[step.text]}
+      facts={step.aside ? [step.aside] : []}
       status={step.done ? <Pill tone="moss">{step.done}</Pill> : step.count ? <Pill>{step.count}</Pill> : undefined}
       progress={!step.done && <ProgressBar value={step.progress} label={step.name} />}
     />

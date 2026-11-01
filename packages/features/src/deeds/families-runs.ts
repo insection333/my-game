@@ -26,6 +26,7 @@ export function runs(): Deed[] {
     deed({
       id: `boss-${b.id}`,
       family: 'bossFirst',
+      brief: true,
       tier: 'hard',
       target: 1,
       words: boss(b.id),

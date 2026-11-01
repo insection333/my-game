@@ -7,7 +7,7 @@ import { describe, expect, it } from 'vitest';
 import { FEATURES } from '../src/index.ts';
 import { POINTS, wordsOf } from '../src/deeds/content.ts';
 import { HONOURS, shownHonours } from '../src/deeds/honours.ts';
-import { allPoints, deedList, pending, pointsOf } from '../src/deeds/list.ts';
+import { allPoints, deedById, deedList, pending, pointsOf } from '../src/deeds/list.ts';
 import { choose, refresh } from '../src/deeds/rules.ts';
 import { deedsOf } from '../src/deeds/state.ts';
 import { allFinds, skillActions } from '../src/shared/catalog.ts';
@@ -18,6 +18,8 @@ import { relics } from '../src/shared/expeditions/relics.ts';
 import { KINDLE_XP } from '../src/shared/kindling.ts';
 import { allSkills } from '../src/shared/standing.ts';
 import { STAGES, WORKS } from '../src/shared/steading.ts';
+import { Reader } from '../src/deeds/reader.ts';
+import { stepOf } from '../src/deeds/view.ts';
 
 const T0 = Date.UTC(2026, 9, 27, 10);
 const HOUR = 3_600_000;
@@ -96,6 +98,16 @@ describe('deeds', () => {
       if (d.shows === 'count') expect(text, d.id).toContain(fmt.int(d.target));
       if (d.shows === 'minutes') expect(text, d.id).toContain(fmt.duration(d.target * 60_000));
     }
+  });
+
+  it('list a deed by its name alone where the name already says what it asks, and keep its words for its sheet', () => {
+    const r = new Reader(newState(15, T0), T0);
+    const level = stepOf(deedById('level-woodcutting-40')!, r, undefined);
+    expect(level.name).toBe('Woodcutting 40');
+    expect(level.aside).toBeNull();
+    expect(level.text).toBe('Reach level 40 in Woodcutting.');
+    const feller = stepOf(deedById('work-woodcutting-10000')!, r, undefined);
+    expect(feller.aside).toBe(feller.text);
   });
 
   it('give points by tier: easy 5, hard 15, elite 40, master 100', () => {

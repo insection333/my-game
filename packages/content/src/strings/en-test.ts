@@ -2,10 +2,10 @@
 // invites went in session 19). Part of the strings file (en.ts).
 export const closedTest = {
   'feedback.title': 'Send feedback',
-  'feedback.lead': 'What you liked, what puzzled you, what went wrong: it reaches the team with the page you were on.',
+  'feedback.lead': 'The team reads it with the page you sent it from.',
   'feedback.label': 'Your feedback',
   'feedback.send': 'Send feedback',
-  'feedback.sent': 'Sent. Thank you: it is with the team.',
+  'feedback.sent': 'Sent. Thank you.',
   'feedback.empty': 'Write something first.',
 
   'admin.test.testers': 'Player activity',
