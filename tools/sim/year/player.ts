@@ -18,6 +18,7 @@ import {
 import { nextRoute } from '../../../packages/features/src/expeditions/route.ts';
 import { bestFoe } from '../combat.ts';
 import { DAY, T0 } from '../player.ts';
+import { Lordship, type CastleDay } from './castle.ts';
 import { equip, feed, goalsAndDeeds, raiseRelics, raiseWorks, styleToTrain, takePaths, tidy } from './house.ts';
 import { artisanPlan, artisanStock, behind, bestGather, gatherFor, scarcest } from './plan.ts';
 import { ACTS, ALL_SKILLS, GATHERING, type Act } from './world.ts';
@@ -31,8 +32,15 @@ export interface Kind {
   visits: { hour: number; minutes: number }[];
   /** From which day it sends its fighter on expeditions overnight. */
   expeditionsFrom: number;
+  /** Whether it raises a castle at total level 100 and keeps its edict (Castle Clash, session 33). */
+  castle: boolean;
 }
-export const STEADY: Kind = { name: 'The steady player', visits: [{ hour: 0, minutes: 60 }], expeditionsFrom: 14 };
+export const STEADY: Kind = {
+  name: 'The steady player',
+  visits: [{ hour: 0, minutes: 60 }],
+  expeditionsFrom: 14,
+  castle: true,
+};
 export const LIGHT: Kind = {
   name: 'The light player',
   visits: [
@@ -40,6 +48,7 @@ export const LIGHT: Kind = {
     { hour: 12, minutes: 5 },
   ],
   expeditionsFrom: 21,
+  castle: true,
 };
 
 export interface YearDay {
@@ -56,6 +65,8 @@ export interface YearDay {
   slots: [number, number];
   /** What each lane was left running (and what was queued). */
   lanes?: Record<string, string>;
+  /** The castle at the day's last visit, once raised. */
+  castle?: CastleDay;
 }
 export interface Year {
   kind: Kind;
@@ -80,6 +91,7 @@ export function playYear(kind: Kind, seed: number, days: number, onDay?: (day: n
   let left = T0;
   let today: YearDay | null = null;
   let making: string | null = null;
+  const lord = kind.castle ? new Lordship(seed) : null;
   const note = (events: readonly GameEvent[], during: [number, number] | null) => {
     const day = today!;
     for (const e of events) {
@@ -131,6 +143,8 @@ export function playYear(kind: Kind, seed: number, days: number, onDay?: (day: n
       const window: [number, number] = [from, from + v.minutes * MINUTE];
       for (let m = 0; m < v.minutes; m++) {
         const t = from + m * MINUTE;
+        // The castle's edict as the castle pays for it now, before time away is played (the server's way).
+        if (m === 0 && lord) state = lord.arrive(state, t);
         const arrived = engine.input(state, t, rng);
         state = arrived.state;
         note(arrived.events, window);
@@ -178,6 +192,12 @@ export function playYear(kind: Kind, seed: number, days: number, onDay?: (day: n
       const built = raiseWorks(state, t);
       if (built !== state) dayFirst('work');
       state = built;
+      if (lord) {
+        const kept = lord.keep(state, t);
+        state = kept.state;
+        if (kept.day && today) today.castle = kept.day;
+        for (const f of kept.firsts) dayFirst(f);
+      }
     }
     // Gathering: feed the artisan lane while it holds under half a day's work; otherwise level.
     const low = artisanStock(state) < 12 * 3600 ? scarcest(state) : null;

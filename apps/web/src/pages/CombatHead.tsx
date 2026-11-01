@@ -1,6 +1,7 @@
 // The Combat page's title and its two tabs, Fight and Expeditions (IA.md); a tab's own strip (the
 // regions on Fight) sits under them.
 import { t } from '@idle-clash/content';
+import { EdictPill } from './castle/EdictPill.tsx';
 import { Tabs } from '@idle-clash/ui';
 import type { ReactNode } from 'react';
 import { navigate } from '../router.ts';
@@ -14,6 +15,7 @@ export function CombatHead({ expeditions, children }: { expeditions?: boolean; c
   return (
     <PageHead title={t('combat.title')}>
       <Tabs tabs={tabs} label={t('combat.title')} onNavigate={navigate} />
+      <EdictPill fights />
       {children}
     </PageHead>
   );

@@ -108,7 +108,7 @@ describe('Castle Clash over HTTP', () => {
     const castles = new CastleStore(s.ctx);
     castles.write({ ...castles.read(keeper.id)!, treasury: 0 });
     await post(s, '/api/game/command', { requestId: 'req-stoke-0001', command: { type: 'stoke' } }, keeper.cookie);
-    expect(mirror()).toEqual({ edict: null, pct: 0, until: 0 });
+    expect(mirror()).toMatchObject({ edict: null, pct: 0, until: 0 });
   });
 
   it('settles a siege between two lords: both castles, both reports, the chest, and no gold made', async () => {

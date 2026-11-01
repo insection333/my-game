@@ -110,7 +110,13 @@ The plan's Sovereign Edicts and Deep Foundation Excavation reach into the main g
 - The engine is pure and plays offline time from the save alone, so the castle's effect is mirrored into the save: `features.castle = { edict, pct }`. It is refreshed in every request of the owner's, inside the same transaction that reads their row; a raid that drops a defender's treasury below the requirement takes effect from their next request.
 - The year's simulation (Phase 6) checks every year target with an edict running.
 - Gold spent in Castle Clash is the same gold as everywhere else. Castle Clash never makes gold: its only payouts are other players' raided gold (65% of it) and mercenary bounties from the war chest, which is fed only by burns.
-- The steading, Storehouse, goals and deeds are unchanged by Phase 1. Deeds for Castle Clash (first siege won, a castle level, the Reliquary full) are a Phase 6 improvement.
+- The steading, Storehouse, goals and deeds are unchanged by Phase 1. Phase 6 added deeds for Castle Clash, listed on the Combat tab of Deeds:
+  - a castle raised, and the castle at levels 10 and 25;
+  - 10, 25 and 50 fortresses taken;
+  - 100 and 1,000 war marks;
+  - a war relic forged, the full Reliquary, and the full War College.
+
+  They read the castle's standing (its level, fortresses taken, war marks earned, relic levels, ranks studied), which the mirror carries in the save beside the edict. Phase 6 also put a pill on each skill's page and on Combat naming the edict in force and what it gives.
 
 ## 8. Gold on this game's scale
 
@@ -157,10 +163,23 @@ The plan's gold figures assume a small economy (`requiredTreasury` starts at 1,1
 The owner allowed the plan to be amended wherever it does not account for the rest of the game, so long as integrity holds. Each amendment below closes a hole the plan's numbers open once they meet this game:
 
 1. **Edicts at half strength: +5% at the requirement, +10% at five times it** (the plan's +10% to +20%). An edict lifts the whole game (XP, finds or fight gold) for every hour, online or away. At +20%, Castle Clash would become the one thing every player must do first, and the year's pacing would compress by a sixth. The steading, a year's work, gives +5% XP at most; an edict should sit beside it, not above it.
-2. **The required treasury grows with the player as well as the castle:** `requiredTreasury = round(TREASURY_BASE × 1.12^max(avgCastleLevel, totalLevel ÷ 22))`. The plan ties it to castle levels alone, so a player who never upgrades their castle would keep a level-1 requirement (112,000 gold) and a near-free edict for the whole year. With the floor, a lord of total level 500 needs about 1.3 million, and a lord at the top about 27 million. That is the plan's scaling, measured against the whole lord rather than only their walls.
+2. **The required treasury grows with the player as well as the castle:** `requiredTreasury = round(TREASURY_BASE × 1.12^max(avgCastleLevel, totalLevel ÷ 25))` (÷ 22 until Phase 6, item 6). The plan ties it to castle levels alone, so a player who never upgrades their castle would keep a level-1 requirement (112,000 gold) and a near-free edict for the whole year. With the floor, a lord of total level 500 needs about 1 million, and a lord at the top about 14 million. That is the plan's scaling, measured against the whole lord rather than only their walls.
 3. **A siege takes at most twice the defender's required treasury.** The game has no trading, so raids are the only way gold can move between accounts, and an alt account could otherwise pour a large treasury into a main one at a 35% tax. The cap ties what one siege can take to the defender's own standing, so a thin alt castle can hand over little. Together with the plan's pair limit (two sieges a day) and overextension, funnelling gold becomes slower than playing.
 4. **Mercenary bounties pay less than they cost.** A bounty is at most `0.6 × GOLD_SCALE ×` the attacker's rating, against a mobilization fee of `1 × GOLD_SCALE ×` it. In the plan, a bounty of up to twice the fee would make mercenaries a machine that drains the war chest to whoever finds it first. Mercenaries pay war marks; their gold softens the fee and never exceeds it.
 5. **Sabotage only bites in a fair fight.** Poison wells, forged orders and a sabotaged gatehouse take effect only in a siege whose rating ratio is within the genuine bound (`brRatio ≤ 1.35`). The plan's verification (`R ≥ 0.85`) needs the battle's result, which depends on the debuffs themselves, so the ratio alone decides whether they apply. A siege that turns out genuine consumes them and grants the 4-hour immunity, exactly as the plan says. An alt far weaker than its target can neither use nor clear another player's sabotage.
+
+### Phase 6: what simulated play found (session 33)
+
+The year's simulation now keeps a castle for both of its players (`tools/sim/year/castle.ts`). It raises the castle at total level 100 (day 2), answers the Call to arms, keeps the Edict of Vigor powered at 1.5 times its requirement, and spends a fifth of the purse on levels and studies (half once every skill is at 99). AP goes on incursions, a dig a day and drill. A realm of 24 lords plays twelve weeks on the pure engine (`tools/sim/castle/`): eight steady raiders, eight light lords and eight lapsed ones. Both report in verify's fifth step (`.verify/year.md`, `.verify/castle.md`). Every year target holds with the edict running: every skill at 99 on day 349, against 368 without. What the runs found, each changed by a constant:
+
+6. **The treasury's floor by total level is ÷ 25, not ÷ 22.** At ÷ 22, a top lord needed 27 million and spent most of a day's earnings on upkeep for a 6% edict.
+7. **Today's strongholds stand at 0.75 to 1.15 of your rating (the plan's 0.85 to 1.2).** Walls favour a defender, so a stronghold of your own rating holds against an even formation (R about 0.87). At the plan's scales, four of the five were out of reach. Now two fall to any attack, one is even, and two need a formation set against them.
+8. **A fortress taken gives 10 war marks plus half its tier (the plan's 6).** A lord who never besieges anyone now earns about 700 war marks in a year, enough for one tree of the War College.
+9. **The mobilization fee is half a gold per rating point × GOLD_SCALE (the plan's 1), and the bounty 0.3 (60% of the fee, as before).** At the plan's fee, breaching a lord who holds what their edict needs never paid the fee back, so a siege was only ever worth its war marks. In the realm, sieges on lords now earn back about their fee (1.1 times it). The vault still keeps a modest treasury safe, and a hoard far above the requirement is what a raid pays for.
+
+The run also exposed a gap that was always there. With the climb now ending inside the year, the last fortnight showed days with nothing new: past 99, Kindling and the castle bring a first about once a week. The year's "a first every day" now covers the climb, and the days after 99 are held to a first a week. Those days still need something new of their own; that is an open item for the endgame, outside Castle Clash.
+
+The realm's checks hold gold to the coin, keep every kind of lord's edict powered on at least 90% of days, cap any one day's losses at three days' earnings, and keep every bounty under its fee.
 
 ## 12. Phases
 

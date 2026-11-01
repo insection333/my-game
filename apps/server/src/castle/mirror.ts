@@ -14,8 +14,7 @@ export function mirrored(state: State, castle: castleEngine.Castle | null, now: 
     return { ...state, features: rest };
   }
   const m = castleEngine.mirrorFor(castleEngine.syncCastle(castle, now).castle, totalLevel(state), now);
-  const old = castleEngine.mirrorOf(state);
-  if (has && old.edict === m.edict && old.pct === m.pct && old.until === m.until) return state;
+  if (has && JSON.stringify(castleEngine.mirrorOf(state)) === JSON.stringify(m)) return state;
   return { ...state, features: { ...state.features, castle: m } };
 }
 

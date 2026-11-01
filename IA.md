@@ -201,6 +201,7 @@ The owner's castle system (`docs/castle-clash/`), between Storehouse and Hiscore
 | 18 | `castle.relics` | the page | Reliquary: the nine war relics, level of five, what each gives, Forge or raise, Wear and Take off, worn of three |
 
 - **At 390:** the header, then each tab's panels in one column. **At 1,440:** the header across, the tab's panels in two columns.
+- **Elsewhere:** the edict in force shows as a gold pill beside a skill's level on its page (Vigor's XP, Fortune's finds) and under Combat's tabs (any edict, Harvest's fight gold too). Castle Clash's deeds are on the Combat tab of Deeds.
 
 **Visible without scrolling** (checked by verify at 390 × 844 and 1,440 × 900; a slot no built feature fills yet is skipped):
 
