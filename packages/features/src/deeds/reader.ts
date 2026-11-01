@@ -13,6 +13,7 @@ import { BOSSES, TWISTS } from '../shared/expeditions/data.ts';
 import { rankOf, relics } from '../shared/expeditions/relics.ts';
 import { expeditionsOf } from '../shared/expeditions/state.ts';
 import { kindlings } from '../shared/kindling.ts';
+import { STAGES, stageOf, WORKS } from '../shared/steading.ts';
 
 const GEAR = ['helm', 'body', 'legs', 'weapon'] as const;
 
@@ -40,6 +41,9 @@ export class Reader {
   /** Kindlings past 99 in a skill, and across every skill. */
   kindlings = (skill: string) => this.once(`kindlings:${skill}`, () => kindlings(this.state, skill));
   allKindlings = () => this.once('kindlings', () => allSkills().reduce((n, s) => n + this.kindlings(s), 0));
+  /** A work's stage in the steading, and how many works are fully raised. */
+  stage = (work: string) => this.once(`stage:${work}`, () => stageOf(this.state, work));
+  worksRaised = () => this.once('worksRaised', () => WORKS.filter((w) => this.stage(w.id) === STAGES).length);
   total = () => this.once('total', () => allSkills().reduce((n, s) => n + this.level(s), 0));
   /** The lowest level among every skill; with `even`, that level only when every skill shares it. */
   lowest = () => this.once('lowest', () => Math.min(...allSkills().map((s) => this.level(s))));

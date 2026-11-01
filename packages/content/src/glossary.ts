@@ -75,6 +75,11 @@ export const TERMS: [term: string, meaning: string][] = [
     'Path',
     "A level-99 skill's way of working: Bounty (more of what it makes), Lore (more XP) or Fortune (more finds); free to change",
   ],
+  [
+    'Steading',
+    "The works you raise around your Hearth with gold and your own materials, each a lasting gain shown in the Hearth's scene",
+  ],
+  ['Work', 'One of the six buildings of the steading, raised five times, each time for a little more'],
   ['Banner', 'The colour your plaque and your hiscores pennant fly, opened by deeds'],
   ['Frame', 'The metal rim of your plaque on the Hearth, opened by deed points'],
   ['Honours', 'Your title, banner and frame: chosen on the Deeds tab, seen by everyone'],

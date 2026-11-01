@@ -18,7 +18,7 @@ import {
 import { nextRoute } from '../../../packages/features/src/expeditions/route.ts';
 import { bestFoe } from '../combat.ts';
 import { DAY, T0 } from '../player.ts';
-import { equip, feed, goalsAndDeeds, raiseRelics, styleToTrain, takePaths, tidy } from './house.ts';
+import { equip, feed, goalsAndDeeds, raiseRelics, raiseWorks, styleToTrain, takePaths, tidy } from './house.ts';
 import { artisanPlan, artisanStock, behind, bestGather, gatherFor, scarcest } from './plan.ts';
 import { ACTS, ALL_SKILLS, GATHERING, type Act } from './world.ts';
 
@@ -175,6 +175,9 @@ export function playYear(kind: Kind, seed: number, days: number, onDay?: (day: n
       const r = raiseRelics(state, t);
       state = r.state;
       if (r.bought) dayFirst('relic');
+      const built = raiseWorks(state, t);
+      if (built !== state) dayFirst('work');
+      state = built;
     }
     // Gathering: feed the artisan lane while it holds under half a day's work; otherwise level.
     const low = artisanStock(state) < 12 * 3600 ? scarcest(state) : null;

@@ -48,6 +48,7 @@
   --roof-lit: #7d5a3f;
   --window: #e9c27a;
   --fire: #d4511f;
+  --pennant: #2e5b8a;
   --glow: 0;
   --smoke: #eef2ef;
   --cloud: rgb(255 255 255 / 0.72);
@@ -85,6 +86,7 @@
     --roof-lit: #3a2b20;
     --window: #ffbe5c;
     --fire: #ff7a32;
+    --pennant: #7fa9d8;
     --glow: 0.45;
     --smoke: #3f4c4f;
     --cloud: rgb(150 172 178 / 0.1);
@@ -121,6 +123,7 @@
   --roof-lit: #3a2b20;
   --window: #ffbe5c;
   --fire: #ff7a32;
+  --pennant: #7fa9d8;
   --glow: 0.45;
   --smoke: #3f4c4f;
   --cloud: rgb(150 172 178 / 0.1);
@@ -218,6 +221,16 @@
 }
 .fireDoor {
   fill: var(--fire);
+}
+
+/* The steading's works are drawn a size up (Works.tsx): their ink thinned to match the forge's. */
+.works .ink {
+  stroke-width: 2.3;
+}
+
+/* A work raised five times flies a pennant in the game's blue. */
+.pennant {
+  fill: var(--pennant);
 }
 .glow {
   fill: var(--fire);

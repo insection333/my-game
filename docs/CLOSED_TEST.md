@@ -79,10 +79,9 @@ On the last day: what did you like most, what would you change first, and would 
 The year-long simulation (`GAME_DESIGN.md` section 4) holds every target, and it raised these for
 people to judge:
 
-- **Gold piles up.** Once the Storehouse is fully enlarged, around the second month, gold has nothing
-  left to buy; a steady player holds about 18 million by day 30 and close to a billion by the year's
-  end. Testers will not reach this in two weeks, but whether gold already feels pointless is a fair
-  question. A gold sink is a decision for the owner.
+- **Gold and the steading.** Once the Storehouse is fully enlarged, around the second month, gold
+  goes to the steading's works (session 25), which take about 470 million over the year. Whether the
+  first raisings come soon enough to matter in a two-week test is worth asking.
 - **Combat finishes first.** Fighting reaches 99 in all three styles around day 255, months before
   the gathering skills (about day 375); Hitpoints reaches 99 around day 120. Kindling keeps those
   skills going, but whether the fighters feel done early is worth asking later players.

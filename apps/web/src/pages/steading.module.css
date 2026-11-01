@@ -1,0 +1,102 @@
+/* The steading's works as tiles: two to a row on a phone, three where there is room (as the Skills
+   page's tiles: each draws its right and bottom lines, the outermost cut, so lines fall only between). */
+.works {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 136px), 1fr));
+  clip-path: inset(0 1px 1px 0);
+  margin: 0 -1px -1px 0;
+}
+
+@container main (max-width: 359px) {
+  .works {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+
+.work {
+  display: grid;
+  align-content: start;
+  gap: var(--s-2);
+  padding: var(--s-3) var(--s-4);
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.work:hover {
+  background: var(--surface-2);
+}
+
+/* A work whose next raising is held in full says so in moss, the colour of progress. */
+.work[data-variant='ready'] .below {
+  color: var(--moss);
+  font-weight: 700;
+}
+
+.head {
+  display: grid;
+  gap: 2px;
+}
+
+.name {
+  font: 500 var(--t-lead) / 1.25 var(--font-book);
+}
+
+.short {
+  color: var(--ink-2);
+  font: 700 var(--t-small) / 1.25 var(--font-ui);
+  white-space: nowrap;
+}
+
+.below {
+  color: var(--ink-2);
+  font-size: var(--t-small);
+}
+
+/* A work's sheet: where it stands, what it gives, and its next raising's cost against what is held. */
+.sheet {
+  display: grid;
+  justify-items: start;
+  gap: var(--s-3);
+  padding: var(--s-3) var(--s-4) var(--s-4);
+}
+
+.sheet > [data-ui='ProgressBar'] {
+  justify-self: stretch;
+}
+
+.now {
+  margin: 0;
+}
+
+.costs {
+  display: grid;
+  justify-self: stretch;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line);
+}
+
+.cost {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0 var(--s-3);
+  padding: var(--s-2) 0;
+  border-bottom: 1px solid var(--line);
+  font-variant-numeric: tabular-nums;
+}
+
+.held {
+  color: var(--ink-2);
+  font-size: var(--t-small);
+}
+
+/* A part of the cost not yet held, in ember and underlined, so it reads without the colour. */
+.cost[data-short] > :first-child {
+  color: var(--ember-ink, var(--ink));
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+}

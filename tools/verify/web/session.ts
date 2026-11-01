@@ -61,6 +61,12 @@ export function views(): View[] {
       desktop: ['hiscores.deed'],
     },
     {
+      page: 'Hearth',
+      path: '/?panel=work&work=woodyard',
+      phone: ['hearth.work'],
+      desktop: ['hearth.work'],
+    },
+    {
       page: 'Settings (account menu)',
       path: '/?panel=settings',
       phone: ['settings.account'],
@@ -79,6 +85,8 @@ export function views(): View[] {
   // Two months into the climb, in the Sunken Fen: the longest names and the largest numbers.
   const elders: ViewSpec[] = [
     '/',
+    // A work half raised: its next raising, part of its cost held and part not.
+    '/?panel=work&work=smokehouse',
     '/skills',
     '/skills/mining',
     '/skills/fishing',

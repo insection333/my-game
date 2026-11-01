@@ -6,6 +6,7 @@ import { combat, craft, skills } from './families.ts';
 import { finds, home } from './families-home.ts';
 import { kindlingDeeds } from './families-kindling.ts';
 import { runs } from './families-runs.ts';
+import { steadingDeeds } from './families-steading.ts';
 import { Reader } from './reader.ts';
 import { deedsOf } from './state.ts';
 
@@ -16,13 +17,22 @@ export const CATEGORIES: readonly { id: string; families: readonly string[] }[] 
   { id: 'combat', families: ['foe', 'region', 'defeats', 'gear'] },
   { id: 'finds', families: ['legendary', 'log', 'collector'] },
   { id: 'runs', families: ['bossFirst', 'boss', 'trophy', 'trophies', 'runLength', 'runs', 'twists', 'relic'] },
-  { id: 'home', families: ['fire', 'gold', 'store', 'hidden'] },
+  { id: 'home', families: ['fire', 'gold', 'store', 'works', 'steading', 'hidden'] },
 ];
 
 let made: { list: Deed[]; byId: Map<string, Deed> } | null = null;
 function make() {
   if (!made) {
-    const list = [...skills(), ...kindlingDeeds(), ...craft(), ...combat(), ...finds(), ...runs(), ...home()];
+    const list = [
+      ...skills(),
+      ...kindlingDeeds(),
+      ...craft(),
+      ...combat(),
+      ...finds(),
+      ...runs(),
+      ...home(),
+      ...steadingDeeds(),
+    ];
     made = { list, byId: new Map(list.map((d) => [d.id, d])) };
   }
   return made;

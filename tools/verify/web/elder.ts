@@ -127,12 +127,17 @@ export function elder(ctx: Ctx, base: State, now: number): State {
         runs: { '1': 12, '2': 9, '4': 6, '8': 3 },
         twists: ['fog', 'wolves', 'warband', 'storm'],
       },
+      // The steading part raised, so the Hearth's works and their scene are seen half built.
+      steading: {
+        stages: { woodyard: 3, workshop: 2, 'training-yard': 2, smokehouse: 1, watchtower: 2, shrine: 1 },
+      },
     },
   };
 }
 
 /** A player a year in: the elder's save with four skills at 99, Woodcutting and Hitpoints kindled past
- *  it and two Paths walked, so the Kindling panel, the seal's flames and the ladders' counts are seen. */
+ *  it and two Paths walked, so the Kindling panel, the seal's flames and the ladders' counts are seen;
+ *  and the steading nearly all raised. */
 export function keeper(ctx: Ctx, base: State, now: number): State {
   const s = elder(ctx, base, now);
   const top = XP_TABLE[99];
@@ -145,6 +150,13 @@ export function keeper(ctx: Ctx, base: State, now: number): State {
       melee: { xp: Math.round(top + 0.6 * KINDLE_XP) },
       hitpoints: { xp: Math.round(top + 1.3 * KINDLE_XP) },
     },
-    features: { ...s.features, kindling: { paths: { woodcutting: 'bounty', melee: 'lore' } } },
+    features: {
+      ...s.features,
+      kindling: { paths: { woodcutting: 'bounty', melee: 'lore' } },
+      // A year's gold has raised most of the steading; two works wait on their last raising.
+      steading: {
+        stages: { woodyard: 5, workshop: 5, 'training-yard': 4, smokehouse: 5, watchtower: 5, shrine: 4 },
+      },
+    },
   };
 }

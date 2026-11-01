@@ -32,9 +32,10 @@ export function fighterAt(region: Region, seed = 1, style: 'melee' | 'archery' |
   };
 }
 
-/** Runs one expedition from setting out to coming home: the state after, how long, and its story. */
-export function runOnce(region: Region, hours: Hours, seed: number) {
-  let s = fighterAt(region, seed);
+/** Runs one expedition from setting out to coming home (the fighter made ready by `prepare`): the state
+ *  after, how long, and its story. */
+export function runOnce(region: Region, hours: Hours, seed: number, prepare: (s: State) => State = (s) => s) {
+  let s = prepare(fighterAt(region, seed));
   const road = nextRoute(s, region, hours)!.roads[seed % 2];
   s = setOut(s, region, hours, road).state;
   s = engine.command(

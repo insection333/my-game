@@ -17,6 +17,7 @@ import { BOSSES, TWISTS } from '../src/shared/expeditions/data.ts';
 import { relics } from '../src/shared/expeditions/relics.ts';
 import { KINDLE_XP } from '../src/shared/kindling.ts';
 import { allSkills } from '../src/shared/standing.ts';
+import { STAGES, WORKS } from '../src/shared/steading.ts';
 
 const T0 = Date.UTC(2026, 9, 27, 10);
 const HOUR = 3_600_000;
@@ -35,8 +36,9 @@ function everything(): State {
   const best = (slot: string) => items.find((i) => i.gear?.tier === 8 && i.gear.slot === slot)!.id;
   const worn = { helm: best('helm'), body: best('body'), legs: best('legs'), weapon: best('weapon') };
   // Every boss beaten a hundred times, runs of every length home (250 in all), every twist met,
-  // and every relic at its last rank.
+  // every relic at its last rank, and every work of the steading fully raised.
   s.features = {
+    steading: { stages: Object.fromEntries(WORKS.map((w) => [w.id, STAGES])) },
     combat: { worn, health: null, healthAt: 0, retreated: null },
     storehouse: { enlargements: ENLARGE_COSTS.length },
     expeditions: {

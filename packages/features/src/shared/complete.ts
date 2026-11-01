@@ -15,6 +15,7 @@ import {
 } from '@idle-clash/content';
 import { addXp, countOf, give, take, xpOf, type ActionContext, type Rarity, type State } from '@idle-clash/kernel';
 import { relicFindPct, relicXpPct } from './expeditions/relics.ts';
+import { steadingSavePct, steadingXpPct, steadingYieldPct } from './steading.ts';
 import { announceKindling, pathBonus } from './kindling.ts';
 import { actionModifiers, perksAt, skillLevel, yieldOf } from './skill.ts';
 
@@ -86,7 +87,10 @@ export function completeSkillAction(ctx: ActionContext, def: SkillDefinition, ac
   const { state } = ctx;
   const m = actionModifiers(state, def.skill, def.ladder, def.feature, act.id);
   // Ingredients are checked before every repetition starts; should one have gone since, nothing is made.
-  if (act.takes?.length && !takeInputs(ctx, act.takes, m.saveInput)) return false;
+  // The Workshop keeps an ingredient now and then; the Woodyard brings more of what gathering makes.
+  const artisan = !!act.takes?.length;
+  if (artisan && !takeInputs(ctx, act.takes!, m.saveInput + steadingSavePct(state))) return false;
+  const yard = artisan ? 0 : steadingYieldPct(state);
   // A skill on the Path of Fortune finds more; on Bounty, makes more (past 99, see kindling.ts).
   rollFind(ctx, def, act, m.findChance + pathBonus(state, def.skill, 'finds'));
 
@@ -95,7 +99,7 @@ export function completeSkillAction(ctx: ActionContext, def: SkillDefinition, ac
       state,
       g.item,
       // Bounty's percent is of the whole stack, so two logs a chop come to 2.3 on +15%.
-      yieldOf(g.count, m.extraYield + pathBonus(state, def.skill, 'items') * g.count, () => ctx.roll()),
+      yieldOf(g.count, m.extraYield + yard + pathBonus(state, def.skill, 'items') * g.count, () => ctx.roll()),
     );
 
   const before = skillLevel(state, def.skill);
@@ -103,6 +107,7 @@ export function completeSkillAction(ctx: ActionContext, def: SkillDefinition, ac
     (ctx.fireBurning ? fireXpPct(ctx.fireMinutes) : 0) +
     LEGENDARY_MARK_PCT * marksIn(state, def.finds) +
     relicXpPct(state, def.skill) +
+    steadingXpPct(state) +
     pathBonus(state, def.skill, 'xp');
   const xpBefore = xpOf(state, def.skill);
   addXp(state, def.skill, act.xp * (1 + bonusPct / 100));

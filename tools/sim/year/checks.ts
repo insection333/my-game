@@ -5,6 +5,7 @@ import { HOUR, MINUTE } from '@idle-clash/kernel';
 import { FEATURES } from '@idle-clash/features';
 import { HONOURS } from '../../../packages/features/src/deeds/honours.ts';
 import { pointsOf } from '../../../packages/features/src/deeds/list.ts';
+import { stageOf, WORKS } from '../../../packages/features/src/shared/steading.ts';
 import { fighter } from '../combat.ts';
 import { DAY, focusedPlayer, gaps, T0 } from '../player.ts';
 import { LIGHT, playYear, STEADY, type Year } from './player.ts';
@@ -33,7 +34,12 @@ const firstOf = (y: Year, skills: readonly string[]) => Math.min(...skills.map((
 
 export function yearChecks(check: Check, lines: string[]): { steady: Year; light: Year } {
   const points: number[] = [];
-  const steady = playYear(STEADY, SEED, LATE, (day, state) => (points[day] = pointsOf(state)));
+  /** The day each work of the steading reached each of its stages. */
+  const raised: Record<string, number[]> = Object.fromEntries(WORKS.map((w) => [w.id, []]));
+  const steady = playYear(STEADY, SEED, LATE, (day, state) => {
+    points[day] = pointsOf(state);
+    for (const w of WORKS) for (let n = raised[w.id].length; n < stageOf(state, w.id); n++) raised[w.id].push(day);
+  });
   const light = playYear(LIGHT, SEED, LATE);
 
   for (const y of [steady, light]) {
@@ -60,10 +66,12 @@ export function yearChecks(check: Check, lines: string[]): { steady: Year; light
     );
   }
 
-  // Gold over the year: what it comes to once the Storehouse is fully enlarged (a finding for the owner,
-  // not a target: gold has nothing left to buy after the last enlargement).
+  // Gold over the year, once the Storehouse is fully enlarged and the steading takes the rest.
   const gold = [30, 90, 180, 365].map((n) => `day ${n} ${((steady.days[n - 1]?.gold ?? 0) / 1e6).toFixed(0)}M`);
   lines.push(`\nThe steady player's gold: ${gold.join(', ')}`);
+  // Where it goes instead: the steading's works, raised as the materials and the gold come (session 25).
+  const works = WORKS.map((w) => `${w.id} ${raised[w.id].join(', ') || 'never'}`);
+  lines.push(`The steady player's works, raised on days: ${works.join('; ')}`);
 
   // Every skill at 99 in about a year, for the steady player; the light player not far behind.
   const all = lastOf(steady, ALL_SKILLS);
