@@ -98,3 +98,9 @@
     - A stronghold's sheet shows its garrison and trap.
     - Garrisons read in words ("50% vanguard").
 - Session 34, Castle Clash's layout reworked after a critique: the header is two short rows (the Call to arms names the AP it brings); the treasury shows what it holds and what is raidable, this week's decree, and Top up in one press; Drill ×5; formation presets; the War College beside the Reliquary in a new Halls tab; every target and fortress shows your attack, its chance to win as a percentage and Set against them (the best counter-formation, from the engine); a scouted lord's chance is estimated from their rating and the scouting; spy buildings say their odds in words; the Hearth's Next up leads with an unanswered Call to arms.
+- Session 35, Castle Clash's luck and endless play:
+  - **The battle's roll is ±10% (it was ±4%).** Close fights are real gambles, a stronghold just out of reach falls now and then, and an equal castle's walls still hold.
+  - **Relic tempering, without end:** war marks and gold for a chance at another temper of a relic at its last level. The chance starts at 60%, falls 15% each time and never goes below 5%. A masterstroke tempers twice. Each temper adds strength, approaching +50%.
+  - **The hidden armoury:** a fortress taken now and then yields its war marks twice over, and rarely a war hoard worth five times over.
+  - Moments, notices, two deeds and glossary terms for both.
+  - The realm's checks now run half a year, including the tempering chase.

@@ -4,8 +4,9 @@
 import { RELIC, RELIC_SOCKETS, RELICS, TECH, TECHS, fmt, t, type CastleEffect } from '@idle-clash/content';
 import { castleEngine as E } from '@idle-clash/features';
 import { ActionRow, Button, Panel, Pill } from '@idle-clash/ui';
+import { useState } from 'react';
 import { relicGives, relicName, techDoes, techName } from './labels.ts';
-import { castleAct } from './store.ts';
+import { castleAct, castleRun } from './store.ts';
 import { affords, useSyncedCastle } from './synced.ts';
 import s from './castle.module.css';
 
@@ -90,14 +91,24 @@ function Reliquary() {
 
 function Relic({ id }: { id: string }) {
   const { castle, purse, busy } = useSyncedCastle();
+  // A temper that did not take is said on its row until the next try.
+  const [held, setHeld] = useState(false);
   if (!castle) return null;
   const worn = castle.equippedRelics;
   const wear = (relics: string[]) => void castleAct({ type: 'equipRelics', relics });
   const relic = RELICS.find((r) => r.id === id)!;
   const level = Object.hasOwn(castle.relics, id) ? castle.relics[id] : 0;
+  const tempers = E.temperOf(castle, id);
+  const mult = E.temperMult(tempers);
   const cost = E.relicCost(castle, id);
+  const temper = E.temperCost(castle, id);
   const isWorn = worn.includes(id);
   const levelText = t('castle.relic.level', { level: fmt.int(level), levels: fmt.int(RELIC.LEVELS) });
+  const tryTemper = async () => {
+    setHeld(false);
+    const r = await castleRun({ type: 'temperRelic', relic: id });
+    setHeld(r?.ok === true && r.outcome === 'held');
+  };
   return (
     <ActionRow
       name={relicName(id)}
@@ -108,7 +119,15 @@ function Relic({ id }: { id: string }) {
           <Pill>{t('castle.relic.unforged')}</Pill>
         )
       }
-      facts={[gives(relic.perLevel, Math.max(1, level)), ...(isWorn ? [levelText] : [])]}
+      facts={[
+        gives(relic.perLevel, Math.max(1, level) * mult),
+        ...(isWorn ? [levelText] : []),
+        ...(tempers > 0
+          ? [t('castle.relic.tempers', { tempers: fmt.int(tempers), pct: fmt.pct(Math.round((mult - 1) * 100)) })]
+          : []),
+        ...(temper ? [t('castle.temper.cost', { gold: fmt.short(temper.gold), marks: fmt.int(temper.marks) })] : []),
+        ...(held ? [t('castle.temper.held')] : []),
+      ]}
       actions={
         <>
           {level > 0 &&
@@ -131,6 +150,13 @@ function Relic({ id }: { id: string }) {
               onClick={() => void castleAct({ type: 'forgeRelic', relic: id })}
             >
               {t('castle.relic.forge', { gold: fmt.short(cost.gold), marks: fmt.int(cost.marks) })}
+            </Button>
+          ) : temper ? (
+            <Button
+              disabled={busy || castle.warMarks < temper.marks || !affords(castle, purse, temper.gold)}
+              onClick={() => void tryTemper()}
+            >
+              {t('castle.temper', { pct: fmt.pct(Math.round(E.temperChance(tempers) * 100)) })}
             </Button>
           ) : (
             <Pill tone="moss">{t('castle.highest')}</Pill>

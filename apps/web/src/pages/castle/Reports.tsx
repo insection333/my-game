@@ -70,7 +70,15 @@ export function readReport(r: Report): { line: string; facts: string[] } {
     case 'incursion':
       return {
         line: t('castle.report.incursion', { fortress: fortressName(str(d.fortress)), tier: fmt.int(num(d.tier)) }),
-        facts: [d.won === true ? t('castle.report.won') : t('castle.report.lostIncursion'), ...marks],
+        facts: [
+          d.won === true ? t('castle.report.won') : t('castle.report.lostIncursion'),
+          ...(d.spoils === 'hoard'
+            ? [t('castle.spoils.hoard')]
+            : d.spoils === 'armoury'
+              ? [t('castle.spoils.armoury')]
+              : []),
+          ...marks,
+        ],
       };
     default:
       return { line: '', facts: [] };

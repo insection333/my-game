@@ -89,8 +89,10 @@ export const COMBAT = {
   /** Being scouted pins the garrison for 15 minutes and the treasury for 30 (DESIGN.md section 5.1). */
   RECON_LOCK_MS: 15 * MINUTE,
   WITHDRAW_LOCK_MS: 30 * MINUTE,
-  /** R = attacker × uniform(0.96, 1.04) ÷ defender. */
-  ROLL_SPREAD: 0.04,
+  /** R = attacker × uniform(0.9, 1.1) ÷ defender. ±10%, not the plan's ±4%: at ±4% almost every battle
+   *  was settled before it began; now a close fight is a real gamble and the frontier fortress a coin
+   *  flip, while walls still hold an equal castle (DESIGN.md 11.10). */
+  ROLL_SPREAD: 0.1,
 } as const;
 
 /** Section 4D: espionage and the pair-scoped rules against collusion. */
@@ -183,6 +185,34 @@ export const RECOVERY = {
   /** Instant repair or healing: AP, and GOLD_SCALE × 20 gold per point restored per average level. */
   INSTANT_AP: 10,
   INSTANT_GOLD_PER_POINT_LEVEL: 20 * GOLD_SCALE,
+} as const;
+
+/** Tempering a war relic at its last level (session 35, DESIGN.md 11.11): war marks and gold for a chance
+ *  of another temper, without end. The chance falls by 15% with each temper, never below 5%; a success is
+ *  now and then a masterstroke worth two. Each temper adds to the relic's effect, approaching +50%. */
+export const TEMPER = {
+  CHANCE_BASE: 0.6,
+  CHANCE_DECAY: 0.85,
+  CHANCE_MIN: 0.05,
+  /** Of successes, the share that are masterstrokes (two tempers at once). */
+  MASTERSTROKE: 0.06,
+  /** The relic's effect × (1 + BONUS_MAX × (1 − BONUS_DECAY^temper)). */
+  BONUS_MAX: 0.5,
+  BONUS_DECAY: 0.9,
+  /** War marks: 15 + 5 × temper. Gold: 1.6 million × 1.15^temper (a level-5 relic's own price, growing). */
+  MARKS_BASE: 15,
+  MARKS_PER: 5,
+  GOLD_BASE: 16_000 * GOLD_SCALE,
+  GOLD_GROWTH: 1.15,
+} as const;
+
+/** The hidden armoury (session 35): a fortress taken now and then yields more war marks. */
+export const SPOILS = {
+  /** The armoury, 1 in 10: the marks twice over. The hoard, 1 in 100: five times over. */
+  ARMOURY: 0.1,
+  ARMOURY_TIMES: 2,
+  HOARD: 0.01,
+  HOARD_TIMES: 5,
 } as const;
 
 /** Section 5: the three endless sinks. */

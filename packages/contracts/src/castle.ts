@@ -26,6 +26,7 @@ export const CastleAction = z.discriminatedUnion('type', [
   act('upgrade', { id: Id }),
   act('research', { tech: Id }),
   act('forgeRelic', { relic: Id }),
+  act('temperRelic', { relic: Id }),
   act('equipRelics', { relics: z.array(Id).max(3) }),
   act('offense', { shares: Shares }),
   act('defense', { defense: Shares.optional(), trap: Id.nullable().optional(), castellan: Id.nullable().optional() }),

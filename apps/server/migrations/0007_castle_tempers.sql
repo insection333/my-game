@@ -1,0 +1,1 @@
+ALTER TABLE `player_bastions` ADD `relic_tempers` text DEFAULT '{}' NOT NULL;

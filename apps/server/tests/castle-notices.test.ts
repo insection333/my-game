@@ -36,6 +36,8 @@ function raise(l: Lord, level: number, extra: Partial<E.Castle> = {}) {
   castles.write({ ...raised, rating: E.bastionRating(raised) });
 }
 
+const resultOf = (r: { body: string }) => (JSON.parse(r.body) as { result: unknown }).result;
+
 let req = 0;
 const act = (l: Lord, action: unknown) =>
   post(s, '/api/castle/act', { requestId: `req-news-${++req}`, action }, l.cookie);
@@ -91,5 +93,22 @@ describe('Castle Clash news', () => {
     const kept = (await notices(def)).find((e) => e.type === 'castleBesieged');
     expect(kept).toMatchObject({ type: 'castleBesieged', foe: '' });
     expect(JSON.stringify(await notices(def))).not.toContain('Vanisher');
+  });
+  it('tempers a relic at its last level for a chance, and tells the lord of a masterstroke', async () => {
+    s = await server();
+    const smith = await lord('Smith', 20, 50_000_000);
+    raise(smith, 10, { warMarks: 500, warMarksEarned: 500, relics: { 'aegis-shard': 5 } });
+    const held = vi.spyOn(Math, 'random').mockReturnValue(0.99);
+    const missed = await act(smith, { type: 'temperRelic', relic: 'aegis-shard' }).finally(() => held.mockRestore());
+    expect(resultOf(missed)).toEqual({ ok: true, outcome: 'held', tempers: 0 });
+    const lucky = vi.spyOn(Math, 'random').mockReturnValue(0);
+    const struck = await act(smith, { type: 'temperRelic', relic: 'aegis-shard' }).finally(() => lucky.mockRestore());
+    expect(resultOf(struck)).toEqual({ ok: true, outcome: 'masterstroke', tempers: 2 });
+    expect(new CastleStore(s.ctx).read(smith.id)!.tempers).toEqual({ 'aegis-shard': 2 });
+    expect((await notices(smith)).find((e) => e.type === 'castleTempered')).toMatchObject({
+      relic: 'aegis-shard',
+      tempers: 2,
+      masterstroke: true,
+    });
   });
 });

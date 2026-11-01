@@ -2,6 +2,7 @@
 // the same L^1.05 scale as combat, so it only ever rises and a peaceful vault or excavation never lifts it.
 import { BUILDINGS, RELICS, SINKS, UNITS, type UnitId } from '@idle-clash/content';
 import type { Castle } from './castle.ts';
+import { temperMult, temperOf } from './effects.ts';
 import { statPower } from './economy.ts';
 
 /** A unit's drill bonus in percent: 50 × (1 − e^(−xp ÷ 10,000)). */
@@ -10,9 +11,9 @@ export const drillPct = (xp: number): number =>
 
 /** The three best war relics owned, by combat score at their levels, worn or not. */
 export function topRelicScore(c: Castle): number {
-  const scores = RELICS.map((r) => r.score * (Object.hasOwn(c.relics, r.id) ? c.relics[r.id] : 0)).sort(
-    (a, b) => b - a,
-  );
+  const scores = RELICS.map(
+    (r) => r.score * (Object.hasOwn(c.relics, r.id) ? c.relics[r.id] : 0) * temperMult(temperOf(c, r.id)),
+  ).sort((a, b) => b - a);
   return scores.slice(0, 3).reduce((n, s) => n + s, 0);
 }
 

@@ -50,6 +50,13 @@
       "when": 1793538508015,
       "tag": "0006_castle",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1793570899683,
+      "tag": "0007_castle_tempers",
+      "breakpoints": true
     }
   ]
 }

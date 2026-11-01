@@ -73,6 +73,7 @@ describe('a Sovereign Edict in the rest of the game', () => {
       marks: 120,
       relics: 2,
       studies: 0,
+      tempered: 0,
       called: null,
     });
     // The Hearth's reminder: until today's call is answered.

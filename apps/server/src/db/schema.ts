@@ -188,6 +188,7 @@ export const playerBastions = sqliteTable(
     incursionScoutedTier: integer('incursion_scouted_tier').notNull().default(0),
     // Bounded collections (JSON, at most 20 entries each).
     relics: text('relics').notNull().default('{}'),
+    relicTempers: text('relic_tempers').notNull().default('{}'),
     equippedRelics: text('equipped_relics').notNull().default('[]'),
     activeDebuffs: text('active_debuffs').notNull().default('[]'),
     debuffImmunities: text('debuff_immunities').notNull().default('{}'),

@@ -147,6 +147,23 @@ export function act(io: Io, action: CastleAction): Outcome {
     case 'forgeRelic':
       if (!E.tabOpen(c, 'halls')) return { ok: false, reason: 'locked' };
       return own(io, E.forgeRelic(w, action.relic));
+    case 'temperRelic': {
+      if (!E.tabOpen(c, 'halls')) return { ok: false, reason: 'locked' };
+      const r = E.temperRelic(w, action.relic, roll(), roll());
+      if (!r.ok) return { ok: false, reason: r.reason };
+      setPurse(io, r.purse);
+      io.castles.burn(r.burned);
+      store(io, r.castle);
+      if (r.outcome !== 'held')
+        io.events.push({
+          type: 'castleTempered',
+          at: io.now,
+          relic: action.relic,
+          tempers: r.tempers,
+          masterstroke: r.outcome === 'masterstroke',
+        });
+      return { ok: true, outcome: r.outcome, tempers: r.tempers };
+    }
     case 'equipRelics':
       return own(io, E.equipRelics(w, action.relics));
     case 'offense':
@@ -174,12 +191,28 @@ export function act(io: Io, action: CastleAction): Outcome {
 function incursion(io: Io, c: Castle): Outcome {
   if (!E.tabOpen(c, 'incursions')) return { ok: false, reason: 'locked' };
   const tier = c.incursionTier;
-  const r = E.launchIncursion(c, io.now, roll());
+  const r = E.launchIncursion(c, io.now, roll(), roll());
   if (r === 'ap') return { ok: false, reason: 'ap' };
   store(io, r.castle);
-  const data = { tier, fortress: E.fortressAt(tier).id, won: r.won, r: r.r, marks: r.marks, drillXp: r.drillXp };
+  const data = {
+    tier,
+    fortress: E.fortressAt(tier).id,
+    won: r.won,
+    r: r.r,
+    marks: r.marks,
+    drillXp: r.drillXp,
+    ...(r.spoils ? { spoils: r.spoils } : {}),
+  };
   io.castles.log(io.playerId, io.now, 'incursion', data);
-  io.events.push({ type: 'castleIncursion', at: io.now, fortress: data.fortress, tier, won: r.won, marks: r.marks });
+  io.events.push({
+    type: 'castleIncursion',
+    at: io.now,
+    fortress: data.fortress,
+    tier,
+    won: r.won,
+    marks: r.marks,
+    ...(r.spoils ? { spoils: r.spoils } : {}),
+  });
   return { ok: true, ...data };
 }
 

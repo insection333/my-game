@@ -244,7 +244,8 @@ export function noticeLine(e: GameEvent): (RecapLine & { at: number }) | null {
     case 'castleSiege':
     case 'castleBesieged':
     case 'castleSpyCaught':
-    case 'castleIncursion': {
+    case 'castleIncursion':
+    case 'castleTempered': {
       if (!isCastleEvent(e)) return null;
       const m = castleMoment(e);
       return { kind: 'castle', text: m.body ? `${m.title}. ${m.body}` : m.title, icon: null, href: m.href, at: e.at };

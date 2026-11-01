@@ -110,7 +110,7 @@ export class Lordship {
       if (E.tabOpen(c, 'incursions') && c.activeAp >= SINKS.INCURSION_AP) {
         const odds = E.combatRatio(E.castleSide(c, t, 'attack'), E.fortressSide(c.incursionTier), 0.5).r;
         if (odds >= 1.05) {
-          const r = E.launchIncursion(c, t, this.roll());
+          const r = E.launchIncursion(c, t, this.roll(), this.roll());
           if (r !== 'ap') {
             c = r.castle;
             continue;

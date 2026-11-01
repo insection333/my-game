@@ -79,6 +79,8 @@ export const castleWar = {
   'castle.incursion.unscouted': 'Not yet scouted',
   'castle.incursion.scout': 'Scout for {ap} AP',
   'castle.incursion.assault': 'Assault for {ap} AP',
+  'castle.spoils.armoury': 'the hidden armoury: war marks twice over',
+  'castle.spoils.hoard': 'a war hoard: war marks five times over',
   'castle.incursion.rewards': 'Taken: {marks} war marks and drill for the troops who fought',
 
   // The Reliquary.
@@ -109,6 +111,12 @@ export const castleWar = {
   'castle.relic.wear': 'Wear',
   'castle.relic.remove': 'Take off',
   'castle.relic.worn': 'Worn',
+  'castle.relic.tempers': 'Tempered +{tempers}: {pct} stronger',
+  'castle.temper': 'Temper: {pct} chance',
+  'castle.temper.cost': '{gold} and {marks} war marks a try',
+  'castle.temper.done': '{relic} tempered to +{tempers}',
+  'castle.temper.masterstroke': 'A masterstroke: {relic} tempered to +{tempers}',
+  'castle.temper.held': 'The temper did not take. The relic is as it was.',
 
   // Refusals.
   'castle.refused.gold': 'Not enough gold.',

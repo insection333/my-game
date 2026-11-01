@@ -42,7 +42,8 @@ function raised(id: string, now: number, level: number): E.Castle {
     excavationDepth: 9,
     incursionTier: 8,
     incursionScoutedTier: 8,
-    relics: { 'banner-of-the-first-king': 3, 'aegis-shard': 2, 'wyrmglass-lens': 1, 'ember-of-sieges': 2 },
+    relics: { 'banner-of-the-first-king': 5, 'aegis-shard': 2, 'wyrmglass-lens': 1, 'ember-of-sieges': 2 },
+    tempers: { 'banner-of-the-first-king': 3 },
     equippedRelics: ['banner-of-the-first-king', 'aegis-shard', 'ember-of-sieges'],
   };
   return { ...out, rating: E.bastionRating(out) };
@@ -58,7 +59,15 @@ export function castles(ctx: Ctx, ids: { elder: string; keeper: string }, now: n
   store.write({ ...rival, treasury: Math.round(required * 1.6), edict: 'harvest' });
   const at = (h: number) => now - h * HOUR;
   const log = (h: number, kind: string, data: Record<string, unknown>) => store.log(ids.elder, at(h), kind, data);
-  log(30, 'incursion', { tier: 7, fortress: 'hollow-crown-hold', won: true, r: 1.12, marks: 11, drillXp: {} });
+  log(30, 'incursion', {
+    tier: 7,
+    fortress: 'hollow-crown-hold',
+    won: true,
+    r: 1.12,
+    marks: 22,
+    drillXp: {},
+    spoils: 'armoury',
+  });
   log(26, 'mercenary', {
     merc: { first: 2, second: 5, rating: mine.rating },
     outcome: 'graze',

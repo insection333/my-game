@@ -1,7 +1,7 @@
 // Castle Clash's endless solo sinks (SPEC.md section 5.4): Drilling (AP into a unit's lasting bonus),
 // Deep Foundation Excavation (AP and gold into the vault and the idle multiplier), and Incursions against
 // six fortresses in turn, each tier stronger, for war marks and drill XP. Pure.
-import { FORTRESSES, RECOVERY, SINKS, UNIT_IDS, type UnitId } from '@idle-clash/content';
+import { FORTRESSES, RECOVERY, SINKS, SPOILS, UNIT_IDS, type UnitId } from '@idle-clash/content';
 import type { Castle } from './castle.ts';
 import { castleSide, combatRatio, type Side } from './combat.ts';
 import { lift, modifiers, noModifiers } from './effects.ts';
@@ -88,11 +88,19 @@ export interface IncursionResult {
   r: number;
   marks: number;
   drillXp: Record<UnitId, number>;
+  /** A fortress taken now and then yields more: the armoury (1 in 10), the hoard (1 in 100). */
+  spoils: FortressSpoils | null;
 }
+export type FortressSpoils = 'armoury' | 'hoard';
+
+/** What a fortress taken yields beyond its marks, from a roll in [0, 1). */
+export const spoilsOf = (luck: number): FortressSpoils | null =>
+  luck < SPOILS.HOARD ? 'hoard' : luck < SPOILS.HOARD + SPOILS.ARMOURY ? 'armoury' : null;
 
 /** Assaults the tier's fortress with the attack's formation. Won (R ≥ 1): war marks and drill XP shared
- *  by the formation, and the next tier. Lost: the wounds of a lost battle. `roll` in [0, 1). */
-export function launchIncursion(c: Castle, now: number, roll: number): IncursionResult | 'ap' {
+ *  by the formation, and the next tier, with the spoils `luck` finds. Lost: the wounds of a lost battle.
+ *  `roll` and `luck` in [0, 1); a luck of 1 finds nothing. */
+export function launchIncursion(c: Castle, now: number, roll: number, luck = 1): IncursionResult | 'ap' {
   if (c.activeAp + 1e-9 < SINKS.INCURSION_AP) return 'ap';
   const tier = c.incursionTier;
   const att = castleSide(c, now, 'attack');
@@ -110,8 +118,11 @@ export function launchIncursion(c: Castle, now: number, roll: number): Incursion
       r,
       marks: 0,
       drillXp: none,
+      spoils: null,
     };
-  const marks = Math.round((SINKS.INCURSION_MARKS_BASE + Math.floor(tier / 2)) * lift(mods.marks));
+  const spoils = spoilsOf(luck);
+  const times = spoils === 'hoard' ? SPOILS.HOARD_TIMES : spoils === 'armoury' ? SPOILS.ARMOURY_TIMES : 1;
+  const marks = Math.round((SINKS.INCURSION_MARKS_BASE + Math.floor(tier / 2)) * lift(mods.marks) * times);
   const pool = SINKS.INCURSION_DRILL_XP_BASE + SINKS.INCURSION_DRILL_XP_PER_TIER * tier;
   const drillXp = Object.fromEntries(UNIT_IDS.map((u, i) => [u, Math.round(pool * att.shares[i])])) as Record<
     UnitId,
@@ -130,5 +141,6 @@ export function launchIncursion(c: Castle, now: number, roll: number): Incursion
     r,
     marks,
     drillXp,
+    spoils,
   };
 }

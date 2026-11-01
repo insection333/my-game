@@ -199,7 +199,7 @@ The owner's castle system (`docs/castle-clash/`), between Storehouse and Hiscore
 | 16 | `castle.missions` | the page | In a lord's sheet: the four spy missions, what each does, the chance, Send |
 | 17 | `castle.plan` | the page | In a target's sheet and an incursion: the attack formation, its chance to win (about, for a lord: from their rating and the scouting), and Set against them, which sets the attack formation that does best against the garrison known |
 | 18 | `castle.incursion` | the page | Incursions: the fortress at your tier, its garrison and trap once scouted with the likely outcome, what taking it gives, Scout and Assault |
-| 19 | `castle.relics` | the page | Halls: the nine war relics, level of five, what each gives, Forge or raise, Wear and Take off, worn of three |
+| 19 | `castle.relics` | the page | Halls: the nine war relics, level of five, what each gives, Forge or raise, Wear and Take off, worn of three; at the last level, its tempers and how much stronger they make it, and Temper with its chance and cost (a temper that does not take says so on its row) |
 
 - **At 390:** the header, then each tab's panels in one column. **At 1,440:** the header across, the tab's panels in two columns.
 - **Elsewhere:** until the day's Call to arms is answered, the Hearth's Next up leads with it, linking here. The edict in force shows as a gold pill beside a skill's level on its page (Vigor's XP, Fortune's finds) and under Combat's tabs (any edict, Harvest's fight gold too). Castle Clash's deeds are on the Combat tab of Deeds.
