@@ -23,13 +23,14 @@ import { Gains } from './Gains.tsx';
 import { Moments } from './Moments.tsx';
 import s from './shell.module.css';
 
-export const MENU = [
+export const MENU: readonly { key: string; href: string; label: string; short?: string }[] = [
   { key: 'hearth', href: '/', label: 'menu.hearth' },
   { key: 'skills', href: '/skills', label: 'menu.skills' },
   { key: 'combat', href: '/combat', label: 'menu.combat' },
-  { key: 'storehouse', href: '/storehouse', label: 'menu.storehouse' },
+  { key: 'storehouse', href: '/storehouse', label: 'menu.storehouse', short: 'menu.storehouse.short' },
+  { key: 'castle', href: '/castle', label: 'menu.castle', short: 'menu.castle.short' },
   { key: 'hiscores', href: '/hiscores', label: 'menu.hiscores' },
-] as const;
+];
 
 const isCurrent = (href: string, path: string) =>
   href === '/' ? path === '/' : path === href || path.startsWith(`${href}/`);
@@ -83,7 +84,19 @@ export function Shell({ children }: { children: ReactNode }) {
             onClick={(e) => (e.preventDefault(), navigate(m.href))}
           >
             <MenuGlyph name={m.key} />
-            <span className={s.menuLabel}>{t(m.label)}</span>
+            {m.short ? (
+              <>
+                <span className={s.menuLabel} data-short aria-hidden="true">
+                  {t(m.short)}
+                </span>
+                <span className={s.menuLabel} data-full aria-hidden="true">
+                  {t(m.label)}
+                </span>
+                <span className="visually-hidden">{t(m.label)}</span>
+              </>
+            ) : (
+              <span className={s.menuLabel}>{t(m.label)}</span>
+            )}
           </a>
         ))}
       </nav>

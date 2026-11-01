@@ -167,7 +167,7 @@
   grid-area: menu;
   z-index: 10;
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   /* Clears the phone's home indicator (with viewport-fit=cover in index.html). */
   height: calc(var(--menu-h) + env(safe-area-inset-bottom, 0px));
   padding-bottom: env(safe-area-inset-bottom, 0px);
@@ -197,6 +197,11 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* A long name (Castle Clash) is shortened where the menu is narrow, and given in full on the wide rail. */
+.menuLabel[data-full] {
+  display: none;
 }
 
 .stripArea {
@@ -349,6 +354,14 @@
 
   .menuLabel {
     font-size: var(--t-body);
+  }
+
+  .menuLabel[data-full] {
+    display: inline;
+  }
+
+  .menuLabel[data-short] {
+    display: none;
   }
 
   .menuLink[aria-current='page'] {

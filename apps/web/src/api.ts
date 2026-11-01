@@ -17,8 +17,14 @@ import {
   type HiscoresResponse,
   type NoticesResponse,
   type MeResponse,
+  type CastleAction,
 } from '@idle-clash/contracts';
+import type { castleEngine } from '@idle-clash/features';
 import type { Command, CommandResult } from '@idle-clash/kernel';
+
+type CastleView = castleEngine.CastleView;
+type CastleTargets = castleEngine.CastleTargets;
+type CastleActResponse = castleEngine.CastleActResponse;
 
 export class ApiError extends Error {
   readonly status: number;
@@ -80,6 +86,12 @@ export const api = {
   game: () => get<GameResponse>(PATHS.game),
   notices: () => get<NoticesResponse>(PATHS.notices),
   hiscores: () => get<HiscoresResponse>(PATHS.hiscores),
+  castle: {
+    view: () => get<CastleView>(PATHS.castle),
+    targets: () => get<CastleTargets>(PATHS.castleTargets),
+    open: (id: string) => post<CastleActResponse>(PATHS.castleOpen, { requestId: id }),
+    act: (id: string, action: CastleAction) => post<CastleActResponse>(PATHS.castleAct, { requestId: id, action }),
+  },
   command: (id: string, command: Command) =>
     post<ActResponse<CommandResult>>(PATHS.command, { requestId: id, command }),
   feature: <R>(feature: string, route: string, id: string, input: unknown) =>

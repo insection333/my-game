@@ -9,25 +9,10 @@ import { limit, type Ctx } from '../context.ts';
 import { announce } from '../game/announce.ts';
 import { contractRoute, fail } from '../http.ts';
 import { act, castleRequest, openCastle, type Handled } from './service.ts';
-import { CastleStore, type LogEntry } from './store.ts';
+import { CastleStore } from './store.ts';
 
-/** A report with the other lord named (or null for a departed one). */
-export type LogView = LogEntry & { foeName: string | null };
-
-export interface CastleView {
-  /** Whether the lord's total level opens Castle Clash. */
-  open: boolean;
-  castle: E.Castle | null;
-  now: number;
-  totalLevel: number;
-  warChest: number;
-  logs: LogView[];
-}
-
-export interface TargetsView {
-  lords: { id: string; name: string; rating: number }[];
-  mercenaries: E.Mercenary[];
-}
+export type CastleView = E.CastleView;
+export type TargetsView = E.CastleTargets;
 
 export function castleView(ctx: Ctx, playerId: string, now: number): CastleView {
   const castles = new CastleStore(ctx);
@@ -60,7 +45,11 @@ export function targetsView(ctx: Ctx, playerId: string, now: number): TargetsVie
     .sort((a, b) => a.k - b.k)
     .slice(0, 5)
     .map((x) => x.l)
-    .sort((a, b) => Math.abs(a.rating - c.rating) - Math.abs(b.rating - c.rating));
+    .sort((a, b) => Math.abs(a.rating - c.rating) - Math.abs(b.rating - c.rating))
+    .flatMap((l) => {
+      const theirs = castles.read(l.id);
+      return theirs ? [{ ...l, spyChance: E.spyChance(c, E.syncCastle(theirs, now).castle, now) }] : [];
+    });
   return { lords, mercenaries: E.mercenaries(c, now, 5 - lords.length) };
 }
 

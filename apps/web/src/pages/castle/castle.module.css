@@ -1,0 +1,281 @@
+/* Castle Clash (IA.md): the header over every tab, then each tab's panels, one column on a phone and two
+   where there is room (as the Hearth), so neither column runs long while the other ends early. */
+.lead {
+  margin: 0;
+  padding: var(--s-3) var(--s-4);
+  color: var(--ink-2);
+  font-size: var(--t-lead);
+}
+
+.raise {
+  display: grid;
+  justify-items: start;
+  gap: var(--s-3);
+}
+
+.raise > .lead {
+  padding: 0;
+}
+
+.locked {
+  display: grid;
+  gap: var(--s-2);
+  justify-self: stretch;
+}
+
+.locked p {
+  margin: 0;
+  font-size: var(--t-lead);
+}
+
+/* What a castle brings, before it is raised. */
+.brings {
+  display: grid;
+  gap: var(--s-1);
+  margin: 0;
+  padding: 0 0 0 1.25em;
+  color: var(--ink-2);
+}
+
+/* What opens the tab shown, while it is closed: under the header's pills. */
+.closed {
+  margin: 0;
+  padding-top: var(--s-3);
+  border-top: 1px solid var(--line);
+  font-size: var(--t-lead);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--s-4);
+  align-items: start;
+}
+
+.column {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--s-4);
+}
+
+@container main (min-width: 720px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+
+/* The header: AP and the Call to arms on one line, the castle's standing in pills beneath. */
+.header {
+  display: grid;
+  gap: var(--s-3);
+}
+
+.apRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+}
+
+.ap {
+  display: grid;
+  flex: 1 1 200px;
+  gap: var(--s-1);
+  min-width: 0;
+}
+
+.apText {
+  font: 500 var(--t-lead) / 1.25 var(--font-book);
+  font-variant-numeric: tabular-nums;
+}
+
+.call {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-1) var(--s-3);
+}
+
+.muted {
+  color: var(--ink-2);
+  font-size: var(--t-small);
+}
+
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
+/* Why the last action was refused, in the alert's colour and marked so it reads without it. */
+.refused {
+  margin: 0;
+  padding: var(--s-2) var(--s-3);
+  border-left: 3px solid var(--alert);
+  background: var(--alert-soft);
+  color: var(--ink);
+}
+
+/* A short note under a panel's rows: what a number means, or why a button waits. */
+.note {
+  margin: 0;
+  padding: var(--s-2) var(--s-4) var(--s-3);
+  border-top: 1px solid var(--line);
+  color: var(--ink-2);
+  font-size: var(--t-small);
+}
+
+/* The treasury: what it holds and needs, the amount and its two buttons, how costs are paid. */
+.treasury {
+  display: grid;
+  gap: var(--s-3);
+}
+
+.treasury p {
+  margin: 0;
+}
+
+.move {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: var(--s-2);
+}
+
+.move > :first-child {
+  flex: 1 1 140px;
+  min-width: 0;
+}
+
+.treasury .hint {
+  margin-top: calc(-1 * var(--s-2));
+  color: var(--ink-2);
+  font-size: var(--t-small);
+}
+
+.payFrom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-2);
+  padding-top: var(--s-3);
+  border-top: 1px solid var(--line);
+}
+
+/* A formation: each unit's share with a step down and up, the flank warning, and Save. */
+.formation {
+  display: grid;
+  gap: var(--s-1);
+}
+
+.share {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto auto;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.shareName {
+  min-width: 0;
+}
+
+.sharePct {
+  min-width: 3.5em;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+.flanked {
+  margin: 0;
+  color: var(--ember-ink);
+  font-size: var(--t-small);
+}
+
+.save {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2) var(--s-3);
+}
+
+/* Choices of which one may be held (the trap): side by side, the chosen one pressed. */
+.choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  padding: var(--s-3) var(--s-4);
+}
+
+/* The relics and the War College: rows that scroll inside their panel where the screen is short. */
+.relics {
+  max-height: min(36rem, 58dvh);
+}
+
+.college {
+  max-height: min(30rem, 52dvh);
+}
+
+/* Reports: newest first, each one line with its outcome and what moved. */
+.reports {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.reports[data-scrollbox] {
+  max-height: min(24rem, 45dvh);
+}
+
+.report {
+  display: grid;
+  gap: 2px;
+  padding: var(--s-2) var(--s-4);
+  border-top: 1px solid var(--line);
+}
+
+.report:first-child {
+  border-top: 0;
+}
+
+.reportHead {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0 var(--s-3);
+}
+
+.reportWhen {
+  color: var(--ink-2);
+  font-size: var(--t-small);
+  font-variant-numeric: tabular-nums;
+}
+
+/* A target's sheet: its odds, the four missions and the siege. */
+.sheet {
+  display: grid;
+  gap: var(--s-3);
+  padding: var(--s-3) var(--s-4) var(--s-4);
+}
+
+.sheet p {
+  margin: 0;
+}
+
+.sheetSection {
+  display: grid;
+  gap: var(--s-2);
+}
+
+.sheetSection h3 {
+  margin: 0;
+  font: 500 var(--t-h3) / 1.2 var(--font-book);
+}
+
+.missions {
+  display: grid;
+  margin: 0 calc(-1 * var(--s-4));
+}

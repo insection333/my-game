@@ -8,6 +8,7 @@ import { Combat } from './pages/Combat.tsx';
 import { Expeditions, EXPEDITIONS_PATH } from './pages/Expeditions.tsx';
 import { Admin } from './pages/Admin.tsx';
 import { Hiscores } from './pages/Hiscores.tsx';
+import { Castle, castleTab } from './pages/castle/Castle.tsx';
 import { Deeds, DEEDS_PATH } from './pages/Deeds.tsx';
 import { Legal, legalPage } from './pages/Legal.tsx';
 import { NotFound, Storehouse } from './pages/Simple.tsx';
@@ -21,6 +22,7 @@ function Page({ path }: { path: string }) {
   if (path === '/combat') return <Combat />;
   if (path === EXPEDITIONS_PATH) return <Expeditions />;
   if (path === '/storehouse' || path === '/storehouse/log') return <Storehouse path={path} />;
+  if (castleTab(path)) return <Castle path={path} />;
   if (path === '/hiscores') return <Hiscores />;
   if (path === DEEDS_PATH) return <Deeds />;
   const legal = legalPage(path);

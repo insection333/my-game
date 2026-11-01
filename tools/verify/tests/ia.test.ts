@@ -42,7 +42,7 @@ describe('readPageMap', () => {
   it("reads the project's own IA.md cleanly", () => {
     const map = readPageMap(readFileSync(new URL('../../../IA.md', import.meta.url), 'utf8'));
     expect(map.problems).toEqual([]);
-    expect(map.menu).toEqual(['Hearth', 'Skills', 'Combat', 'Storehouse', 'Hiscores']);
+    expect(map.menu).toEqual(['Hearth', 'Skills', 'Combat', 'Storehouse', 'Castle Clash', 'Hiscores']);
     expect(map.slots).toContain('item.panel');
     expect(map.slots).toContain('hearth.goals');
     expect(map.slots.length).toBeGreaterThan(20);

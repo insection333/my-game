@@ -8,6 +8,8 @@ import { deeds } from './en-deeds.ts';
 import { expeditions } from './en-expeditions.ts';
 import { food } from './en-food.ts';
 import { kindling } from './en-kindling.ts';
+import { castle } from './en-castle.ts';
+import { castleWar } from './en-castle-war.ts';
 import { steading } from './en-steading.ts';
 import { closedTest } from './en-test.ts';
 import { legal } from './en-legal.ts';
@@ -35,6 +37,7 @@ export const en: Record<string, string> = {
   'menu.skills': 'Skills',
   'menu.combat': 'Combat',
   'menu.storehouse': 'Storehouse',
+  'menu.storehouse.short': 'Store',
   'menu.hiscores': 'Hiscores',
 
   // The lanes
@@ -316,4 +319,6 @@ export const en: Record<string, string> = {
   ...kindling,
   ...steading,
   ...closedTest,
+  ...castle,
+  ...castleWar,
 };

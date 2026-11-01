@@ -4,7 +4,7 @@ Session 0 · October 2026. This file is the contract between the shell and the f
 
 ## 1. The menu
 
-Five entries, in this order, with one place left free for the owner to fill:
+Six entries, in this order (the sixth, Castle Clash, the owner's choice in session 28):
 
 | Entry | Page | What it answers |
 | --- | --- | --- |
@@ -12,6 +12,7 @@ Five entries, in this order, with one place left free for the owner to fill:
 | Skills | The seven skills and each skill's page | What can I do, and what does the next level give? |
 | Combat | Gear, foes, food | What should I fight, with what, and what are my odds? |
 | Storehouse | Items, the vendor, the collection log | What do I have, where does it come from, and what is it for? |
+| Castle Clash | A castle of your own: its edict, troops, sieges and spies (opens at total level 100) | What does my castle give me, and whom can I challenge? |
 | Hiscores | Ladders and who is online | How do I compare? |
 
 Outside the menu:
@@ -37,7 +38,7 @@ Built at 320 px first. Three widths are specified and checked: 320, 390 and 1,44
 │ [🪓 Oak tree ▓▓░] [⚒ Iron bar ▓░░]   │  lanes strip, 44 px: one chip per running lane;
 │ [⚔ Grave wight ▓▓▓] [⛏ Iron vein ▓░] │  wraps to two rows when four lanes run; tap opens the lane sheet
 ├──────────────────────────────────────┤
-│  Hearth  Skills  Combat  Store  Hiscores │  menu, 56 px, icons with labels
+│ Hearth Skills Combat Store Castle Hiscores│  menu, 56 px, icons with short labels
 └──────────────────────────────────────┘
 ```
 
@@ -174,6 +175,40 @@ Tabs: Items · Collection log.
 | /storehouse/log | `collection.log` | `collection.log` |
 - **Newcomer:** capacity 0 of 24 and an empty grid reading "Logs and ores you gather land here".
 
+### Castle Clash
+
+The owner's castle system (`docs/castle-clash/`), between Storehouse and Hiscores. It opens at total level 100; before that the page says how far there is to go and what a castle brings. At 100 a lord raises their castle here. Then five tabs under the title, each opening as the castle grows: **Citadel** (`/castle`), **Garrison** (`/castle/garrison`), **War room** (`/castle/war-room`, short "War"), **Incursions** (`/castle/incursions`, short "Raids") and **Reliquary** (`/castle/reliquary`, short "Relics"). A closed tab says, under the header, what opens it; a closed War room still lists the lord's reports, since others may attack them first.
+
+| # | Section (slot) | Filled by | Notes |
+| --- | --- | --- | --- |
+| 1 | `castle.lead` | the page | Before a castle: total level against 100 with its bar, what a castle brings in three lines, and Raise your castle at 100 |
+| 2 | `castle.header` | the page | Above every tab: AP of the cap with its bar and the reserve, the Call to arms and its streak; pills for the rating, war marks, this week's decree, the treasury, what the vault keeps safe and what is raidable, a shield and vigilance; why the last action was refused |
+| 3 | `castle.edict` | the page | Citadel: the three edicts, each with what it lifts now, the one in force (or the treasury it needs) |
+| 4 | `castle.treasury` | the page | Citadel: what an edict needs and costs, the amount with Deposit and Withdraw (a fifth lost; barred after a scouting), whether costs come from the purse or the treasury |
+| 5 | `castle.buildings` | the page | Citadel: walls, deep vault, beacon tower and spy guild, each with its level, what it does and Raise for its gold; the walls' integrity and Repair |
+| 6 | `castle.dig` | the page | Citadel: the deep foundations' depth, its multiplier on the edict and AP, and Dig |
+| 7 | `castle.units` | the page | Garrison: the three troops by their evolution's name, level, drill and the next evolution, Drill and Raise; wounds and Heal |
+| 8 | `castle.college` | the page | Garrison: the War College's four studies, rank of ten, what a rank gives, Study for gold and war marks |
+| 9 | `castle.offense` | the page | Garrison: the attack formation, each share stepped by five, the flank warning past 60%, Save (free) |
+| 10 | `castle.defense` | the page | Garrison: the garrison, as the attack's, Save for 1% of the required treasury, then two hours' rest (pinned after a scouting) |
+| 11 | `castle.trap` | the page | Garrison: the three traps, the one set, Choose |
+| 12 | `castle.castellan` | the page | Garrison: the three castellans and what each does, Choose |
+| 13 | `castle.targets` | the page and the server | War room: up to five lords near your rating, then mercenary strongholds, each with its rating and Plan |
+| 14 | `castle.reports` | the server | War room: sieges, spies, mercenary battles and incursions, newest first, with what each moved |
+| 15 | `castle.target` | the page | A target's sheet (`?panel=target&target=…`): its rating, what is known of it (a scouting's findings, or a stronghold's likely outcome), the siege with its fee and AP, and the last reports about it |
+| 16 | `castle.missions` | the page | In a lord's sheet: the four spy missions, what each does, the chance, Send |
+| 17 | `castle.incursion` | the page | Incursions: the fortress at your tier, its garrison and trap once scouted with the likely outcome, what taking it gives, Scout and Assault |
+| 18 | `castle.relics` | the page | Reliquary: the nine war relics, level of five, what each gives, Forge or raise, Wear and Take off, worn of three |
+
+- **At 390:** the header, then each tab's panels in one column. **At 1,440:** the header across, the tab's panels in two columns.
+
+**Visible without scrolling** (checked by verify at 390 × 844 and 1,440 × 900; a slot no built feature fills yet is skipped):
+
+| View | 390 × 844 | 1,440 × 900 |
+| --- | --- | --- |
+| /castle | `castle.lead` | `castle.lead` |
+- **Newcomer:** total level against 100 and what a castle brings. **Three weeks in:** Raise your castle. **Two months in:** every tab of a raised castle, with a rival lord, reports, relics and a stronghold's sheet.
+
 ### Hiscores
 
 | # | Section (slot) | Filled by | Notes |
@@ -273,7 +308,7 @@ The design system holds about ten: Card, ResponsiveTable, ActionRow, LaneCard, T
 
 ## 5. Homes for later systems
 
-No later system adds a menu entry. The free sixth place stays free until the owner chooses otherwise.
+No later system adds a menu entry. The sixth place went to Castle Clash (the owner's choice, session 28), so the menu is full.
 
 | System | Home |
 | --- | --- |
