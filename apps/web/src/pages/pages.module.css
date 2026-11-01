@@ -15,14 +15,15 @@
   gap: var(--s-4);
 }
 
-/* The Hearth: phones stack today, goals, then next up; wide screens put today and next up on the
-   left and the goals beside them, so neither column runs long while the other ends early. */
+/* The Hearth: phones stack today, goals, next up, then the steading; wide screens put today, next up
+   and the steading on the left and the goals beside them, so neither column runs long while the other
+   ends early. */
 .hearth {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--s-4);
   align-items: start;
-  grid-template-areas: 'today' 'goals' 'next';
+  grid-template-areas: 'today' 'goals' 'next' 'steading';
 }
 .todayArea {
   grid-area: today;
@@ -33,12 +34,15 @@
 .nextArea {
   grid-area: next;
 }
+.steadingArea {
+  grid-area: steading;
+}
 
 @container main (min-width: 720px) {
   .hearth {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    grid-template-rows: auto 1fr;
-    grid-template-areas: 'today goals' 'next goals';
+    grid-template-rows: auto auto 1fr;
+    grid-template-areas: 'today goals' 'next goals' 'steading goals';
   }
 }
 

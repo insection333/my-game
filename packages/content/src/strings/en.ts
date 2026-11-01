@@ -2,12 +2,13 @@
 // (see numbers.ts). The content check fails on a missing key, an unused key, or a term GLOSSARY.md
 // says to avoid. Keep sections in order; within a feature's section, keys follow its content. The gathering
 // and artisan skills' words are in en-skills.ts, Combat's in en-combat.ts, the privacy page's and the
-// terms' in en-legal.ts, Fishing's and Cooking's in en-food.ts, Fletching's, Runecraft's and the supplies' in en-supplies.ts, the goals ladder's, its rewards' and your standing's in en-progress.ts, Kindling's in en-kindling.ts, the closed test's in en-test.ts.
+// terms' in en-legal.ts, Fishing's and Cooking's in en-food.ts, Fletching's, Runecraft's and the supplies' in en-supplies.ts, the goals ladder's, its rewards' and your standing's in en-progress.ts, Kindling's in en-kindling.ts, the steading's in en-steading.ts, the closed test's in en-test.ts.
 import { combat } from './en-combat.ts';
 import { deeds } from './en-deeds.ts';
 import { expeditions } from './en-expeditions.ts';
 import { food } from './en-food.ts';
 import { kindling } from './en-kindling.ts';
+import { steading } from './en-steading.ts';
 import { closedTest } from './en-test.ts';
 import { legal } from './en-legal.ts';
 import { progress } from './en-progress.ts';
@@ -313,5 +314,6 @@ export const en: Record<string, string> = {
   ...deeds,
   ...expeditions,
   ...kindling,
+  ...steading,
   ...closedTest,
 };

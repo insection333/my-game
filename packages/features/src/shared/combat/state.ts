@@ -9,6 +9,7 @@ import { relicFoodHeal } from '../expeditions/relics.ts';
 import { foods, supplies } from '../catalog.ts';
 import { HITPOINTS, LADDERS, SUPPLY_DAMAGE, type Foe } from './data.ts';
 import { maxHealth, regenPerSecond, type Fighter, type Meal } from './fight.ts';
+import { steadingDamagePct, steadingFoodHealPct } from '../steading.ts';
 
 const ItemId = z.string().regex(/^[a-z0-9][a-z0-9-]{0,63}$/);
 export const CombatState = z
@@ -55,11 +56,17 @@ export const styleOf = (state: State): Style | null => {
   return w ? (itemOf(w)?.gear?.style ?? null) : null;
 };
 
+/** The style's perks, with the Training yard's damage added. */
+const withYard = (perks: ReturnType<typeof perksAt>, state: State) => ({
+  ...perks,
+  damage: perks.damage + steadingDamagePct(state),
+});
+
 const hitpointsPart = (state: State) => {
   const hpLevel = skillLevel(state, HITPOINTS);
   const hpPerks = perksAt(LADDERS.hitpoints, hpLevel);
-  // The hearthstone, a relic, makes food heal more.
-  hpPerks.foodHeal += relicFoodHeal(state);
+  // The hearthstone, a relic, and the Smokehouse make food heal more.
+  hpPerks.foodHeal += relicFoodHeal(state) + steadingFoodHealPct(state);
   return { hpLevel, hpPerks };
 };
 
@@ -88,7 +95,7 @@ export function fighterOf(state: State, foe: Foe): Fighter | null {
     weaponTier: tierOf('weapon'),
     armour: tierOf('helm') + tierOf('body') + tierOf('legs'),
     ...hitpointsPart(state),
-    perks: perksAt(LADDERS[style], styleLevel),
+    perks: withYard(perksAt(LADDERS[style], styleLevel), state),
     mastery: masteryStep(Object.hasOwn(state.mastery, key) ? state.mastery[key] : 0),
     supply: supplyOf(state, style),
   };

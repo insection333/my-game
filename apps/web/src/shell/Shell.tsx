@@ -10,6 +10,7 @@ import { fills } from '../slots.tsx';
 import { navigate, useLocation, withPanel } from '../router.ts';
 import { ItemPanel } from '../pages/Items.tsx';
 import { DeedSheet, HonoursSheet } from '../pages/DeedSheets.tsx';
+import { WorkSheet } from '../pages/Steading.tsx';
 import { Settings, Tray, trayReadAt } from '../pages/Panels.tsx';
 import { noticesOf } from '../pages/notices.ts';
 import { FireBadge } from './FireBadge.tsx';
@@ -106,8 +107,9 @@ export function Shell({ children }: { children: ReactNode }) {
         </Sheet>
       )}
       {panel === 'item' && <ItemSheet onClose={close} />}
-      {panel === 'deed' && <DeedSheet onClose={() => navigate(withoutDeed())} />}
+      {panel === 'deed' && <DeedSheet onClose={() => navigate(withoutSheet('deed'))} />}
       {panel === 'honours' && <HonoursSheet onClose={close} />}
+      {panel === 'work' && <WorkSheet onClose={() => navigate(withoutSheet('work'))} />}
       {panel === 'settings' && (
         <Sheet title={t('settings.title')} closeLabel={t('shell.close')} onClose={close} slot="settings.account">
           <Settings />
@@ -122,11 +124,11 @@ export function Shell({ children }: { children: ReactNode }) {
   );
 }
 
-/** The address with a deed's sheet closed (its panel and the deed it named both gone). */
-function withoutDeed(): string {
+/** The address with a sheet closed: its panel and what it named (a deed, a work) both gone. */
+function withoutSheet(named: string): string {
   const url = new URL(location.href);
   url.searchParams.delete('panel');
-  url.searchParams.delete('deed');
+  url.searchParams.delete(named);
   return url.pathname + url.search;
 }
 

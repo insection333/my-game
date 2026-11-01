@@ -5,6 +5,7 @@
 // variables (MarchScene.module.css), so by day it is a cool morning and in the dark theme it is
 // night, with stars, a moon and the forge glowing.
 import s from './MarchScene.module.css';
+import { Works } from './Works.tsx';
 
 const W = 1600;
 const H = 600;
@@ -233,8 +234,17 @@ const hillPath = (f: (x: number) => number, bottom: number) => {
 };
 
 /** `ground` keeps the foreground when the scene is cropped (a backdrop); `middle` keeps the
- *  mountains, the forest and the forge (a banner). */
-export function MarchScene({ className, keep = 'ground' }: { className?: string; keep?: 'ground' | 'middle' }) {
+ *  mountains, the forest and the forge (a banner). `works`: the steading's works raised, by stage, drawn
+ *  on the hill beside the forge (the Hearth's banner). */
+export function MarchScene({
+  className,
+  keep = 'ground',
+  works,
+}: {
+  className?: string;
+  keep?: 'ground' | 'middle';
+  works?: Record<string, number>;
+}) {
   const stars = seeded(7);
   const fit = keep === 'ground' ? 'xMidYMax slice' : 'xMidYMid slice';
   return (
@@ -263,6 +273,7 @@ export function MarchScene({ className, keep = 'ground' }: { className?: string;
         <path className={s.hillMid} d={hillPath(midHill, H)} />
         <FarForest y={midHill} count={70} seed={11} size={44} />
         <Forge />
+        {works && <Works stages={works} />}
         {/* The old road, from the viewer up to the forge. */}
         <path
           className={s.road}

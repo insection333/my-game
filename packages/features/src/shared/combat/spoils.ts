@@ -6,6 +6,7 @@ import { fireXpPct, LEGENDARY_MARK_PCT, masteryStep } from '@idle-clash/content'
 import { addXp, give, xpOf, type ActionContext } from '@idle-clash/kernel';
 import { marksIn, rollFind } from '../complete.ts';
 import { relicXpPct } from '../expeditions/relics.ts';
+import { steadingXpPct } from '../steading.ts';
 import { announceKindling, pathBonus } from '../kindling.ts';
 import { skillLevel, yieldOf } from '../skill.ts';
 import { HITPOINTS, HITPOINTS_XP_SHARE, LADDERS, MASTERY_DROPS_PER_STEP, STYLE_FINDS, type Foe } from './data.ts';
@@ -19,6 +20,7 @@ function gainXp(ctx: ActionContext, skill: string, base: number) {
     (ctx.fireBurning ? fireXpPct(ctx.fireMinutes) : 0) +
     LEGENDARY_MARK_PCT * marks +
     relicXpPct(ctx.state, skill) +
+    steadingXpPct(ctx.state) +
     pathBonus(ctx.state, skill, 'xp');
   const xpBefore = xpOf(ctx.state, skill);
   addXp(ctx.state, skill, base * (1 + pct / 100));

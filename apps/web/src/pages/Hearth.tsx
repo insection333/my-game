@@ -1,7 +1,7 @@
 // The Hearth: what is happening, what happened while you were away, and what to aim for next.
 import { t } from '@idle-clash/content';
 import { useEffect } from 'react';
-import type { GoalRow, GoalsView, NextUpRow, PlaqueView, StandingView } from '@idle-clash/features';
+import type { GoalRow, GoalsView, NextUpRow, PlaqueView, StandingView, SteadingView } from '@idle-clash/features';
 import { ActionRow, Button, hasIcon, ItemIcon, MarchScene, Panel, Pill, ProgressBar } from '@idle-clash/ui';
 import { useGame } from '../game/hooks.ts';
 import { game } from '../game/store.ts';
@@ -12,6 +12,7 @@ import { honourStyle } from './honours-style.ts';
 import s from './pages.module.css';
 import { Tour } from '../shell/Tour.tsx';
 import { Today } from './Today.tsx';
+import { Steading } from './Steading.tsx';
 
 export function Hearth() {
   const { state, now, features } = useGame();
@@ -22,6 +23,7 @@ export function Hearth() {
   const [goals] = fills<GoalsView>(features, 'hearth.goals', state, now);
   const [standing] = fills<StandingView>(features, 'hearth.standing', state, now);
   const [plaque] = fills<PlaqueView>(features, 'hearth.plaque', state, now);
+  const [steading] = fills<SteadingView>(features, 'hearth.steading', state, now);
   // The ladder lacks a goal (a short goal was claimed, or a new day began): the server makes it.
   const wants = goals?.data.refresh ?? false;
   useEffect(() => {
@@ -33,7 +35,7 @@ export function Hearth() {
       {/* The region's banner, with your standing on a plaque in your banner's colour and frame: rank and
           title, total level, the way to the next rank. */}
       <div className={s.bannerBox}>
-        <MarchScene className={s.banner} keep="middle" />
+        <MarchScene className={s.banner} keep="middle" works={steading?.data.stages} />
         {standing && (
           <div
             data-slot="hearth.standing"
@@ -92,6 +94,11 @@ export function Hearth() {
                 ))}
               </Slot>
             </Panel>
+          </section>
+        )}
+        {steading?.data.open && (
+          <section data-section className={s.steadingArea}>
+            <Steading view={steading.data} />
           </section>
         )}
       </div>

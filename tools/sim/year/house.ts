@@ -1,11 +1,12 @@
 // A year's player's housekeeping on each visit: gear worn, food bought, the Storehouse tidied and
-// enlarged, relics raised, Paths taken at 99, goals claimed and deeds recorded. Each goes through the
+// enlarged, the steading's works raised, relics raised, Paths taken at 99, goals claimed and deeds recorded. Each goes through the
 // feature's own route, as the page sends it.
 import { TIER_LEVELS, type Style } from '@idle-clash/content';
 import { combatData, FEATURES, kindlingData, storehouseData, type GoalsView } from '@idle-clash/features';
 import type { GameEvent, State } from '@idle-clash/kernel';
 import { itemOf } from '../../../packages/features/src/shared/catalog.ts';
 import { rankOf, RELIC_COSTS, relics } from '../../../packages/features/src/shared/expeditions/relics.ts';
+import { STAGES, stageCost, stageOf, WORKS } from '../../../packages/features/src/shared/steading.ts';
 import { ACTS, ALL_SKILLS, ARTISAN, have, level } from './world.ts';
 import { behind } from './plan.ts';
 
@@ -71,6 +72,11 @@ function keeps(state: State): Set<string> {
       }
   }
   for (const a of ACTS) for (const n of a.needs) keep.add(n);
+  // What each work's next raising takes, saved up for it.
+  for (const w of WORKS) {
+    const stage = stageOf(state, w.id);
+    if (stage < STAGES) for (const i of stageCost(w, stage + 1).items) keep.add(i.item);
+  }
   for (const id of Object.keys(state.items)) {
     const it = itemOf(id);
     if (it?.kind === 'food') keep.add(id);
@@ -124,6 +130,20 @@ export function tidy(state: State, now: number): State {
     if (!r.result.ok) break;
     s = r.state;
   }
+  return s;
+}
+
+/** The steading's works raised whenever the materials are held and the gold leaves half again to spare
+ *  (the Storehouse's enlargements come first, in `tidy`). */
+export function raiseWorks(state: State, now: number): State {
+  let s = state;
+  for (const w of WORKS)
+    for (let stage = stageOf(s, w.id); stage < STAGES; stage++) {
+      if (have(s, 'gold') < stageCost(w, stage + 1).gold * 1.5) break;
+      const r = route(s, 'steading', 'raise', { work: w.id }, now);
+      if (!r.result.ok) break;
+      s = r.state;
+    }
   return s;
 }
 

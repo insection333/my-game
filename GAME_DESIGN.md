@@ -505,12 +505,27 @@ Each win: a Rare boss find 1 in 12, a Legendary 1 in 80. Relic ranks cost 10, 25
 ## 10. Gold and the Storehouse
 
 - **Sources:** selling logs, ores, bars, gear and Uncommon and Rare finds to the vendor; gold and drops from foes.
-- **Sinks:** food, and Storehouse enlargements. Gear is made, never bought.
+- **Sinks:** food, Storehouse enlargements, and the steading's works. Gear is made, never bought.
 - **The Storehouse** holds stacks of any size; slots limit the number of different items. Starts with 24 slots; each enlargement adds 6. Costs: 40,000, 90,000, 100,000, 120,000, 180,000, 200,000, 230,000, 250,000, 280,000, 300,000, 340,000, 450,000, 460,000, 650,000, 700,000, 750,000, 800,000, 850,000, 900,000, 925,000, 950,000, 975,000, 1,000,000, 1,000,000, 1,000,000 gold. There are 171 kinds of item (32 resources, 24 supplies, 7 keys, 48 gear, 20 foods, 40 sellable finds), so the last enlargement (174 slots) fits them all.
 - When a lane would produce an item with no free slot, it stops: "Storehouse full".
 - Every item's panel shows **Comes from** and **Used in**, gathered by asking every feature.
 
 Enlargement costs follow each day's net gold, so one is affordable roughly when it is wanted (days 1, 2, 3, 5, 7, 10, 14 and 18, then 25, 35, 45, 60, 75 and 90 as the climb brings more kinds of item). Relics, bought with expedition marks rather than gold, are the expansion's lasting spend.
+
+### The steading (session 25)
+
+Once the Storehouse is fully enlarged, gold had nothing left to buy: the year's simulation ended with about 990 million unspent. The steading is where it goes. Six works stand around the Hearth, each raised five times with gold and materials from the player's own skills, and every raising gives a small lasting gain:
+
+| Work | Each raising gives | Built of |
+| --- | --- | --- |
+| Woodyard | +2% chance of an extra item when gathering | logs |
+| Workshop | 2% chance to keep an ingredient when crafting | bars |
+| Training yard | +1% damage | ore and logs |
+| Smokehouse | Food heals 3% more | fish and logs |
+| Watchtower | Expeditions bring 5% more marks | bars and logs |
+| Shrine | +1% XP in every skill | runes |
+
+The five raisings cost 50,000, 500,000, 3,000,000, 15,000,000 and 60,000,000 gold, with 200, 600, 1,500, 3,000 and 6,000 materials of tiers 1, 3, 5, 6 and 8 (shared between the families of a work built of two). All thirty cost about 470 million gold, half of what the year once left unspent. In the year's simulation the steady player builds all six works in the first five days, raises each a third time between days 39 and 84, and gives each its fifth between days 186 and 324, the last waiting on tier 8. Gains are kept small (at most +5% XP and +5% damage) so that the year's pacing holds. Each work appears in the Hearth's banner beside the forge once built, grows with its raisings and flies a pennant at its fifth; the deeds count each work built and fully raised, and the whole steading.
 
 ## 11. Goals and notable moments
 

@@ -12,6 +12,7 @@ import { skillLevel } from '../shared/skill.ts';
 import { noRoom } from '../shared/storehouse.ts';
 import { dayOf, fightBoss, playBoss, restedToday } from './boss.ts';
 import { cacheAt, modsAt, playStage, stageCount } from './stage.ts';
+import { steadingMarksPct } from '../shared/steading.ts';
 
 /** Why a fighter cannot take on a foe now: no weapon, or hurt with nothing to eat. */
 function unfit(ctx: ActionContext, foe: Foe, gives: string[]): StopReason | null {
@@ -27,12 +28,15 @@ const runOf = (ctx: ActionContext, region: Region): Run | null => {
   return run && run.region === region ? run : null;
 };
 
-/** Brings a run home: its story as an event, a completed run counted by length when the boss fell. */
+/** Brings a run home: its story as an event, a completed run counted by length when the boss fell, and
+ *  the Watchtower's share of the run's marks on top (counted once, on the whole run, so no stage's
+ *  few marks round it away). */
 function home(ctx: ActionContext, run: Run, outcome: 'won' | 'lost' | 'retreated', finds: string[]) {
   const e = expeditionsOf(ctx.state);
   const key = String(run.hours);
   const runs = outcome === 'won' ? { ...e.runs, [key]: (Object.hasOwn(e.runs, key) ? e.runs[key] : 0) + 1 } : e.runs;
-  setExpeditions(ctx.state, { ...e, run: null, runs });
+  const watch = Math.round((run.marks * steadingMarksPct(ctx.state)) / 100);
+  setExpeditions(ctx.state, { ...e, marks: e.marks + watch, run: null, runs });
   ctx.emit({
     type: 'expeditionDone',
     at: ctx.at,
@@ -43,7 +47,7 @@ function home(ctx: ActionContext, run: Run, outcome: 'won' | 'lost' | 'retreated
     outcome,
     cleared: run.cleared,
     stages: stageCount(run),
-    marks: run.marks,
+    marks: run.marks + watch,
     finds,
   });
 }

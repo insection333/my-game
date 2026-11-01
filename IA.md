@@ -87,8 +87,10 @@ Each page lists its sections in order, what must be visible without scrolling at
 | 2 | `hearth.goals` | goals | First steps while unfinished (six rows with buttons); afterwards three short goals (the lanes' own work, so play finishes them; a suggestion only when every lane's has one), the daily goal (a day's goal done while away waits here, ready, until claimed) and the next milestone, each with a progress bar and its reward |
 | 3 | `hearth.lanes` | each lane | Full lane cards with their Next action; on desktop the lanes panel already shows them, so this section is omitted |
 | 4 | `hearth.nextUp` | every skill | The three nearest unlocks across all skills: "Woodcutting 21: Practised hands IV, 3,400 XP away" |
+| 5 | `hearth.steading` | steading | Shown once the player holds the first work's gold or has built one. The six works as tiles: each with what it gives in a few words ("+6% items"), five segments for its raisings, and "Ready to raise" when its next raising is held in full. A tile opens its sheet. Built works appear in the region's banner beside the forge |
+| 6 | `hearth.work` | steading | A work's sheet (`?panel=work&work=…`): how far it is raised, what it gives now and what its next raising adds, each part of the cost beside how many are held (a part not held in ember), and Build or Raise |
 
-- **At 390:** the recap or Today (first 3 rows), then the goals ladder's first two rows. **At 1,440:** Today, the goals ladder and Next up side by side (two columns from 720 px of content width).
+- **At 390:** the recap or Today (first 3 rows), then the goals ladder's first two rows. **At 1,440:** Today, the goals ladder and Next up side by side (two columns from 720 px of content width), and the steading below Next up, its works three to a row.
 
 **Visible without scrolling** (checked by verify at 390 × 844 and 1,440 × 900; a slot no built feature fills yet is skipped):
 
