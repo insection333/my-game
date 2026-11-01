@@ -31,13 +31,18 @@ export const ECONOMY = {
   /** upgradeGoldCost(base, level) = round(base × 1.18^level); statPower(base, level) = base × level^1.05. */
   COST_GROWTH: 1.18,
   STAT_EXPONENT: 1.05,
-  /** requiredTreasury = round(GOLD_SCALE × 1000 × 1.12^avgLevel). */
+  /** requiredTreasury = round(GOLD_SCALE × 1000 × 1.12^max(avgLevel, totalLevel ÷ 22)): the floor by the
+   *  lord's total level keeps a neglected castle from a near-free edict (DESIGN.md 11.2). */
   TREASURY_BASE: 1000 * GOLD_SCALE,
   TREASURY_GROWTH: 1.12,
-  /** An edict's bonus at the requirement, doubling by 5× it: base × min(2, 1 + 0.25 × log2(t ÷ req)). */
-  EDICT_BASE_PCT: 10,
+  TREASURY_TOTAL_LEVEL_DIVISOR: 22,
+  /** An edict's bonus at the requirement, doubling by 5× it: base × min(2, 1 + slope × log2(t ÷ req)).
+   *  Half the plan's 10%, so an edict sits beside the steading rather than above it (DESIGN.md 11.1). The
+   *  plan's slope of 0.25 reaches 2× only at 16 times the requirement, against its own "2x at 5x"; the
+   *  slope here is the one that keeps the stated intent, 1 ÷ log2(5) (DESIGN.md 5.18). */
+  EDICT_BASE_PCT: 5,
   EDICT_MAX_MULT: 2,
-  EDICT_LOG_SLOPE: 0.25,
+  EDICT_LOG_SLOPE: 1 / Math.log2(5),
   /** Defending troops when the treasury is under its requirement. */
   UNPAID_MORALE: 0.8,
   WITHDRAW_TAX: 0.2,
@@ -71,8 +76,11 @@ export const COMBAT = {
   PENETRATION_PER_SIEGE_SHARE: 0.25,
   /** No attacker bypasses more than this share of the walls. */
   PENETRATION_MAX: 0.9,
-  /** The walls' defence multiplier: 1 + 0.6 × L ÷ (L + 25) × integrity (DESIGN.md section 5.12). */
-  WALL_BONUS_MAX: 0.6,
+  /** The walls' defence multiplier: 1 + 0.25 × L ÷ (L + 25) × integrity (DESIGN.md section 5.12). At 0.6,
+   *  two equal castles met at R ≈ 0.79, under the plan's genuine bound of 0.85, so no fair siege could
+   *  ever breach. At 0.25 a paid garrison keeps a modest edge at every level (equal castles at R 0.86 to
+   *  0.99, the castle-siege test). */
+  WALL_BONUS_MAX: 0.25,
   WALL_BONUS_HALF: 25,
   /** Changing the garrison, trap or castellan: 1% of the required treasury, then 2 hours' rest. */
   DEFENSE_CHANGE_COST_PCT: 0.01,
@@ -138,6 +146,8 @@ export const SIEGE = {
   SPOILS_TO_ATTACKER: 0.65,
   SPOILS_DESTROYED: 0.3,
   SPOILS_TO_WAR_CHEST: 0.05,
+  /** One siege raids at most this many times the defender's required treasury (DESIGN.md 11.3). */
+  RAID_CAP_REQUIRED: 2,
   /** War marks: a grazing and a decisive breach, and a defender who repels a siege. */
   MARKS_GRAZE: 8,
   MARKS_DECISIVE: 14,
@@ -147,8 +157,9 @@ export const SIEGE = {
   BRACKET_LOW: 0.75,
   BRACKET_HIGH: 1.35,
   MERCENARY_SCALES: [0.85, 0.95, 1.0, 1.1, 1.2] as readonly number[],
-  /** A mercenary bounty: min(GOLD_SCALE × 2 × your rating, 5% of the war chest). */
-  MERCENARY_BOUNTY_PER_RATING: 2 * GOLD_SCALE,
+  /** A mercenary bounty: min(GOLD_SCALE × 0.6 × your rating, 5% of the war chest), always under the fee
+   *  (DESIGN.md 11.4). */
+  MERCENARY_BOUNTY_PER_RATING: 0.6 * GOLD_SCALE,
   MERCENARY_CHEST_SHARE: 0.05,
 } as const;
 
