@@ -41,6 +41,19 @@ describe('deleting an account', () => {
     // An admin mended the player's save: the record of it names them too.
     const warden = await signUpAdmin(s, 'Warden');
     await post(s, '/api/admin/mend', { playerId: player!.id }, warden);
+    // Their castle and its reports, and a bystander's castle whose report and pair limits name them
+    // (Castle Clash: rows made directly, as the castle's service will make them).
+    const { player: bystander } = await meOf(keep);
+    const castle = s.ctx.store.sqlite.prepare(
+      'insert into player_bastions (user_id, created_at, updated_at, last_ap_sync_at, last_upkeep_at, shield_until_utc, recovery_synced_at, pair_limits) values (?, 0, 0, 0, 0, 0, 0, ?)',
+    );
+    castle.run(player!.id, '[]');
+    castle.run(bystander!.id, JSON.stringify([{ d: player!.id, sieges: [0], spies: [] }]));
+    const report = s.ctx.store.sqlite.prepare(
+      'insert into bastion_logs (user_id, created_at, kind, data) values (?, 0, ?, ?)',
+    );
+    report.run(player!.id, 'siege', JSON.stringify({ foe: bystander!.id }));
+    report.run(bystander!.id, 'siege', JSON.stringify({ foe: player!.id, gold: 120 }));
     const before = everything();
     expect(before).toContain(player!.id);
     expect(before).toContain('Zephyrine');
@@ -57,6 +70,9 @@ describe('deleting an account', () => {
     expect((await meOf(cookie)).player).toBeNull();
     expect(code(await signIn('Zephyrine', PASSWORD))).toBe('wrongNameOrPassword');
     expect((await meOf(keep)).player).toMatchObject({ name: 'Bystander' });
+    // The bystander keeps their castle and their report, which now names a departed lord.
+    const kept = s.ctx.store.sqlite.prepare('select data from bastion_logs where user_id = ?').all(bystander!.id);
+    expect(kept).toEqual([{ data: JSON.stringify({ foe: 'departed', gold: 120 }) }]);
   });
 });
 

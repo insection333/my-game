@@ -1,6 +1,6 @@
 // The server's tables, beside the kernel's saves in the same SQLite file. Change these, then run
 // `pnpm --filter @idle-clash/server db:generate`; migrations apply in order when the server starts.
-import { index, integer, primaryKey, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { index, integer, primaryKey, real, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 export const players = sqliteTable(
   'players',
@@ -115,4 +115,105 @@ export const visits = sqliteTable(
     day: text('day').notNull(),
   },
   (t) => [primaryKey({ columns: [t.playerId, t.day] })],
+);
+
+// Castle Clash (sessions 28 onward, docs/castle-clash/): each player's castle in one row, the war chest
+// in one row, and each player's last 20 reports. A siege or a spy mission reads and writes exactly two
+// castle rows, in ascending player id, inside one transaction (DESIGN.md section 3).
+
+/** A player's castle: every level, timer and bounded collection, made when they first open Castle
+ *  Clash. Times are epoch milliseconds (UTC); shares are whole percents summing to 100. */
+export const playerBastions = sqliteTable(
+  'player_bastions',
+  {
+    userId: text('user_id').primaryKey(),
+    createdAt: integer('created_at').notNull(),
+    updatedAt: integer('updated_at').notNull(),
+    // Action points and the daily Call to arms (SPEC.md section 2).
+    activeAp: real('active_ap').notNull().default(60),
+    lastApSyncAt: integer('last_ap_sync_at').notNull(),
+    lastCtaDateUtc: text('last_cta_date_utc'),
+    streakAtLastCta: integer('streak_at_last_cta').notNull().default(0),
+    // The treasury and its edict (section 3).
+    bastionTreasury: integer('bastion_treasury').notNull().default(0),
+    edict: text('edict'),
+    lastUpkeepAt: integer('last_upkeep_at').notNull(),
+    payFromTreasury: integer('pay_from_treasury').notNull().default(0),
+    // Buildings and units, each from level 1.
+    castleWallsLevel: integer('castle_walls_level').notNull().default(1),
+    deepVaultLevel: integer('deep_vault_level').notNull().default(1),
+    watchtowerLevel: integer('watchtower_level').notNull().default(1),
+    spyGuildLevel: integer('spy_guild_level').notNull().default(1),
+    vanguardLevel: integer('vanguard_level').notNull().default(1),
+    outridersLevel: integer('outriders_level').notNull().default(1),
+    siegeLevel: integer('siege_level').notNull().default(1),
+    // Drilling: each unit's XP towards its asymptotic bonus (section 5).
+    vanguardDrillXp: real('vanguard_drill_xp').notNull().default(0),
+    outridersDrillXp: real('outriders_drill_xp').notNull().default(0),
+    siegeDrillXp: real('siege_drill_xp').notNull().default(0),
+    // War College: four trees' ranks.
+    techLogistics: integer('tech_logistics').notNull().default(0),
+    techSiegecraft: integer('tech_siegecraft').notNull().default(0),
+    techFortification: integer('tech_fortification').notNull().default(0),
+    techEspionage: integer('tech_espionage').notNull().default(0),
+    // Formations (section 4B): the attack's, set freely; the garrison's, changed at a cost and a cooldown.
+    offVPct: integer('off_v_pct').notNull().default(34),
+    offOPct: integer('off_o_pct').notNull().default(33),
+    offSPct: integer('off_s_pct').notNull().default(33),
+    defVPct: integer('def_v_pct').notNull().default(34),
+    defOPct: integer('def_o_pct').notNull().default(33),
+    defSPct: integer('def_s_pct').notNull().default(33),
+    activeTrap: text('active_trap'),
+    castellanDoctrine: text('castellan_doctrine'),
+    defenseChangedAt: integer('defense_changed_at'),
+    // Being scouted pins the garrison for 15 minutes and the treasury for 30 (DESIGN.md section 5.1).
+    reconLockdownUntilUtc: integer('recon_lockdown_until_utc'),
+    withdrawLockdownUntilUtc: integer('withdraw_lockdown_until_utc'),
+    // Shields, vigilance, walls and the infirmary (section 4E).
+    shieldUntilUtc: integer('shield_until_utc').notNull(),
+    wallIntegrity: real('wall_integrity').notNull().default(100),
+    infirmaryPct: real('infirmary_pct').notNull().default(0),
+    recoverySyncedAt: integer('recovery_synced_at').notNull(),
+    /** Times of the genuine sieges received in the last 12 hours (at most 3). */
+    genuineReceived: text('genuine_received').notNull().default('[]'),
+    // Sieges launched today, for fatigue.
+    siegesDayUtc: text('sieges_day_utc'),
+    siegesToday: integer('sieges_today').notNull().default(0),
+    // Ratings, marks and the endless sinks.
+    bastionRating: integer('bastion_rating').notNull().default(0),
+    warMarks: integer('war_marks').notNull().default(0),
+    warMarksEarned: integer('war_marks_earned').notNull().default(0),
+    excavationDepth: integer('excavation_depth').notNull().default(0),
+    incursionTier: integer('incursion_tier').notNull().default(1),
+    incursionScoutedTier: integer('incursion_scouted_tier').notNull().default(0),
+    // Bounded collections (JSON, at most 20 entries each).
+    relics: text('relics').notNull().default('{}'),
+    equippedRelics: text('equipped_relics').notNull().default('[]'),
+    activeDebuffs: text('active_debuffs').notNull().default('[]'),
+    debuffImmunities: text('debuff_immunities').notNull().default('{}'),
+    pairLimits: text('pair_limits').notNull().default('[]'),
+  },
+  (t) => [index('idx_bastion_matchmaking').on(t.bastionRating, t.shieldUntilUtc)],
+);
+
+/** The realm's one row (id 1): the war chest, fed only by burns, from which mercenary bounties are paid. */
+export const bastionGlobalState = sqliteTable('bastion_global_state', {
+  id: integer('id').primaryKey(),
+  warChestReserveGold: integer('war_chest_reserve_gold').notNull().default(0),
+  /** All gold destroyed by Castle Clash, for the admin's view of the economy. */
+  goldDestroyed: integer('gold_destroyed').notNull().default(0),
+});
+
+/** Each player's reports (sieges, spy missions, incursions), the newest 20 kept. Players are named by
+ *  id inside `data` and resolved when read, so a deleted account leaves no name behind. */
+export const bastionLogs = sqliteTable(
+  'bastion_logs',
+  {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    userId: text('user_id').notNull(),
+    createdAt: integer('created_at').notNull(),
+    kind: text('kind').notNull(),
+    data: text('data').notNull(),
+  },
+  (t) => [index('bastion_logs_user_at').on(t.userId, t.createdAt)],
 );
