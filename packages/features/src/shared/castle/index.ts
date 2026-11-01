@@ -16,3 +16,4 @@ export * from './sync.ts';
 export * from './unlocks.ts';
 export * from './mirror.ts';
 export * from './view.ts';
+export * from './words.ts';

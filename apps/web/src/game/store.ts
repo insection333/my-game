@@ -3,7 +3,7 @@
 // takes the server's state whenever one arrives (a command's answer, the live channel, or a fresh
 // read when the tab comes back). The clock ticks only while something is moving, so a resting page
 // uses no CPU.
-import { actionRegistry, FEATURES, type Feature, type Json } from '@idle-clash/features';
+import { actionRegistry, castleEngine, FEATURES, type Feature, type Json } from '@idle-clash/features';
 import {
   createEngine,
   seeded,
@@ -118,7 +118,15 @@ export async function start(flags: Record<string, boolean>): Promise<void> {
   live = openLive({
     state: (state, now) => adopt(state, now),
     events: (events) => {
-      if (view) publish({ ...view, notices: [...[...events].reverse(), ...view.notices].slice(0, 100) });
+      if (!view) return;
+      // Castle Clash's events happen only on the server (a siege, a caught spy), so they join this page's
+      // own events for their moments; the rest the page has already played itself.
+      const castle = events.filter(castleEngine.isCastleEvent);
+      publish({
+        ...view,
+        notices: [...[...events].reverse(), ...view.notices].slice(0, 100),
+        ...(castle.length ? { events: [...view.events, ...castle].slice(-50) } : {}),
+      });
     },
     signedOut,
     reopened: () => void resync(),

@@ -2,7 +2,8 @@
 // confirmation, everything the server holds for the player goes at once: the account, its sessions
 // and email tokens, the save and every damaged copy, notices, hiscores, telemetry, the feedback and
 // visits, and their castle (Castle Clash). Nothing stays: another castle's reports and pair limits that
-// named them keep the entry, with the id replaced by "departed".
+// named them keep the entry, with the id replaced by "departed", and another lord's notices of a siege
+// or a caught spy keep it with the name taken out.
 import { ROUTES } from '@idle-clash/contracts';
 import { eq, sql } from 'drizzle-orm';
 import type { FastifyInstance } from 'fastify';
@@ -41,6 +42,8 @@ export function erase(ctx: Ctx, playerId: string): void {
       .where(sql`instr(${playerBastions.pairLimits}, ${playerId}) > 0`)
       .run();
     ctx.notices.remove(playerId);
+    const name = ctx.db.select({ name: players.name }).from(players).where(eq(players.id, playerId)).get()?.name;
+    if (name) ctx.notices.forgetFoe(name);
     ctx.hiscores.remove(playerId);
     ctx.store.remove(playerId);
     ctx.db.delete(players).where(eq(players.id, playerId)).run();

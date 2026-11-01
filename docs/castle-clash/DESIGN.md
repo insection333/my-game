@@ -37,6 +37,7 @@ SQLite has no row locks; the plan's guarantees are kept this way:
 - better-sqlite3 runs every transaction synchronously on the one connection, and the server is one process, so **no two transactions ever interleave**: a transaction holding two rows is exactly as isolated as `FOR UPDATE` on both, and a deadlock cannot occur.
 - Each mutation is one `sqlite.transaction(...)` that reads the rows it needs, computes, and writes them back, together with the acting player's save when gold moves. The save's revision check still applies.
 - The two rows of a siege or a spy mission are read with `WHERE user_id IN (?, ?) ORDER BY user_id ASC`, the plan's query and ordering.
+- A castle is synced (AP, recovery, upkeep) whenever a request reads it. When upkeep burned, the synced row is written back at once, even if the action is then refused, so the ledger never counts gold as burned that a treasury still holds (found by the random-play test in Phase 5).
 - The one lock that can interleave is `PlayerQueue` (requests wait on it across `await`s). A siege runs inside the attacker's queue; it never writes the defender's save, so it never needs the defender's queue. The defender's side of the game (their Sovereign Edict's bonus) is read from their row when their own requests run (section 7), so nothing waits on two queues and the plan's ascending-order rule is kept by construction.
 
 ## 4. Words: the plan's terms in this game
@@ -125,7 +126,7 @@ The plan's gold figures assume a small economy (`requiredTreasury` starts at 1,1
 - **Banned players:** neither found in matchmaking nor able to act.
 - **Rate limits:** castle routes share the 30-per-10-seconds limit of every changing request; reads share the 120-a-minute read limit.
 - **Contracts:** every castle route is a contract with a strict schema, so the hostile-input suite covers it.
-- **Notices and moments:** a defender hears of each siege and failed spy mission in their notices tray, and on their open pages through the live channel.
+- **Notices and moments:** a defender hears of each siege and failed spy mission in their notices tray, and on their open pages through the live channel. The attacker hears how their siege or incursion ended in the same way (Phase 5: the events `castleSiege`, `castleBesieged`, `castleSpyCaught`, `castleIncursion`). A notice names the other lord as they were then; deleting an account takes the name out of every other lord's notices, and telemetry never keeps it.
 
 ## 10. The content (`bastionConfig`)
 

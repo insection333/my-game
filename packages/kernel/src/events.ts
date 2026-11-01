@@ -40,6 +40,15 @@ export interface EventMap {
     marks: number;
     finds: string[];
   };
+  /** Castle Clash (session 32): your siege of a lord or a mercenary stronghold, as it ended. `foe` is
+   *  their name as it was then; `outcome` is repelled, graze or decisive. */
+  castleSiege: { foe: string; outcome: string; gold: number; marks: number };
+  /** Castle Clash: a lord besieged your castle; the treasury gold they took, the war marks you earned. */
+  castleBesieged: { foe: string; outcome: string; lost: number; marks: number };
+  /** Castle Clash: a spy sent against you was caught; the war marks it earned you. */
+  castleSpyCaught: { foe: string; marks: number };
+  /** Castle Clash: your assault on an incursion's fortress, taken or held against you. */
+  castleIncursion: { fortress: string; tier: number; won: boolean; marks: number };
   /** A lane stopped; the reason says why, so the page can say what to do. */
   laneStopped: { lane: LaneId; action: ActionRef | null; reason: StopReason };
   /** A command was refused: what was asked, and why not, so the page can say so. */
@@ -63,5 +72,9 @@ export const NOTABLE_EVENTS: readonly (keyof EventMap)[] = [
   'deedDone',
   'expeditionDone',
   'kindled',
+  'castleSiege',
+  'castleBesieged',
+  'castleSpyCaught',
+  'castleIncursion',
 ];
 export const isNotable = (e: GameEvent): boolean => NOTABLE_EVENTS.includes(e.type);

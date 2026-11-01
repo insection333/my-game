@@ -3,7 +3,13 @@
 // centre of the screen; Rare finds, mastery steps and hard deeds a banner; Uncommon finds, goals and
 // easy deeds a small toast.
 import { fmt, formatEffect, formatStop, isQuietStop, masteryEffects, t } from '@idle-clash/content';
-import { expeditionStory as storyOf, kindlingData, skill as skillKit, type Feature } from '@idle-clash/features';
+import {
+  castleEngine,
+  expeditionStory as storyOf,
+  kindlingData,
+  skill as skillKit,
+  type Feature,
+} from '@idle-clash/features';
 import { isNotable, type GameEvent } from '@idle-clash/kernel';
 import { hasIcon } from '@idle-clash/ui';
 
@@ -35,6 +41,7 @@ function rank(e: GameEvent): number {
   if (e.type === 'deedDone') return e.tier === 'master' ? 1 : e.tier === 'elite' ? 5 : 7;
   if (e.type === 'expeditionDone') return e.outcome === 'won' ? 1 : 5;
   if (e.type === 'kindled') return 1;
+  if (castleEngine.isCastleEvent(e)) return castleEngine.castleMoment(e).size === 'banner' ? 5 : 8;
   return e.type === 'levelUp' ? 3 : e.type === 'masteryStep' ? 6 : 8;
 }
 
@@ -45,6 +52,7 @@ function sizeOf(e: GameEvent): MomentSize {
   if (e.type === 'deedDone') return e.tier === 'easy' ? 'toast' : e.tier === 'hard' ? 'banner' : 'centre';
   if (e.type === 'expeditionDone') return e.outcome === 'won' ? 'centre' : 'banner';
   if (e.type === 'masteryStep' || (e.type === 'find' && e.rarity === 'rare')) return 'banner';
+  if (castleEngine.isCastleEvent(e)) return castleEngine.castleMoment(e).size;
   return 'toast';
 }
 
@@ -111,6 +119,13 @@ function describe(
         body: [worth, unlocked].filter(Boolean).join('. '),
         icon: e.icon && hasIcon(e.icon) ? e.icon : null,
       };
+    }
+    case 'castleSiege':
+    case 'castleBesieged':
+    case 'castleSpyCaught':
+    case 'castleIncursion': {
+      const m = castleEngine.castleMoment(e);
+      return { title: m.title, body: m.body, icon: null };
     }
     default:
       return { title: '', body: null, icon: null };

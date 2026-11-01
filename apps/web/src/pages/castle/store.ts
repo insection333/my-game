@@ -5,7 +5,8 @@ import type { CastleAction } from '@idle-clash/contracts';
 import type { castleEngine } from '@idle-clash/features';
 import { useEffect, useSyncExternalStore } from 'react';
 import { api, requestId } from '../../api.ts';
-import { handled } from '../../game/session.ts';
+import { useGame } from '../../game/hooks.ts';
+import { handled, sessionStore } from '../../game/session.ts';
 import { untilLoaded } from '../../Ready.tsx';
 
 export interface CastleSnapshot {
@@ -24,6 +25,13 @@ const set = (next: Partial<CastleSnapshot>) => {
   for (const l of listeners) l();
 };
 let refusedTimer: ReturnType<typeof setTimeout> | undefined;
+
+// A castle belongs to the lord signed in: when they sign out, it goes, so the next lord in this tab never
+// sees it while their own loads.
+sessionStore.subscribe(() => {
+  if (sessionStore.get().phase === 'signedOut' && (snapshot.view || snapshot.targets))
+    set({ view: null, targets: null, busy: false, refused: null });
+});
 
 export const castleStore = {
   get: () => snapshot,
@@ -78,6 +86,12 @@ export function useCastleLoad(): void {
     const every = setInterval(() => void loadCastle(), 60_000);
     return () => clearInterval(every);
   }, []);
+  // Another lord's siege or spy changes this castle on the server: read it again when one is heard.
+  const { events } = useGame();
+  const struck = events.findLast((e) => e.type === 'castleBesieged' || e.type === 'castleSpyCaught')?.at;
+  useEffect(() => {
+    if (struck) void loadCastle();
+  }, [struck]);
 }
 
 /** The castle snapshot, for every part of the page (the page loads it: useCastleLoad). */

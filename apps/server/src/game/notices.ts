@@ -2,7 +2,7 @@
 // them, the newest 100 kept. The page reads them when it opens; live events add to them after.
 import { isQuietStop } from '@idle-clash/content';
 import { isNotable, type GameEvent } from '@idle-clash/kernel';
-import { and, desc, eq, lt } from 'drizzle-orm';
+import { and, desc, eq, lt, sql } from 'drizzle-orm';
 import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
 import { notices } from '../db/schema.ts';
 
@@ -58,5 +58,24 @@ export class Notices {
 
   remove(playerId: string): void {
     this.db.delete(notices).where(eq(notices.playerId, playerId)).run();
+  }
+
+  /** A departed lord's name, taken out of every other lord's Castle Clash notice that named them (the
+   *  notice then reads "a lord no longer of the realm"). */
+  forgetFoe(name: string): void {
+    const rows = this.db
+      .select()
+      .from(notices)
+      .where(sql`instr(${notices.data}, ${JSON.stringify(name)}) > 0`)
+      .all();
+    for (const r of rows) {
+      const e = JSON.parse(r.data) as Record<string, unknown>;
+      if (e.foe !== name) continue;
+      this.db
+        .update(notices)
+        .set({ data: JSON.stringify({ ...e, foe: '' }) })
+        .where(eq(notices.id, r.id))
+        .run();
+    }
   }
 }

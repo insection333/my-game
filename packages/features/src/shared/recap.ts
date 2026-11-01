@@ -5,6 +5,7 @@
 import { fmt, formatStop, isQuietStop, t } from '@idle-clash/content';
 import type { AwaySummary, GameEvent } from '@idle-clash/kernel';
 import { itemOf } from './catalog.ts';
+import { castleMoment, isCastleEvent } from './castle/words.ts';
 import { storyOf } from './expeditions/story.ts';
 import { remedyFor } from './remedy.ts';
 
@@ -15,6 +16,7 @@ export type RecapKind =
   | 'kindled'
   | 'rare'
   | 'expedition'
+  | 'castle'
   | 'mastery'
   | 'deed'
   | 'goal'
@@ -31,6 +33,7 @@ export const RECAP_ORDER: readonly RecapKind[] = [
   'kindled',
   'rare',
   'expedition',
+  'castle',
   'mastery',
   'deed',
   'goal',
@@ -238,6 +241,14 @@ export function noticeLine(e: GameEvent): (RecapLine & { at: number }) | null {
         href: '/hiscores/deeds',
         at: e.at,
       };
+    case 'castleSiege':
+    case 'castleBesieged':
+    case 'castleSpyCaught':
+    case 'castleIncursion': {
+      if (!isCastleEvent(e)) return null;
+      const m = castleMoment(e);
+      return { kind: 'castle', text: m.body ? `${m.title}. ${m.body}` : m.title, icon: null, href: m.href, at: e.at };
+    }
     case 'laneStopped':
       if (isQuietStop(e.reason.code)) return null;
       return {

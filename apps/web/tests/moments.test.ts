@@ -135,4 +135,32 @@ describe('moments', () => {
     expect(moment.icon).toBe('supply-cache');
     expect(moment.body).toContain('Hold 1,000 gold');
   });
+  it('says who besieged your castle and what they took, a deleted lord by no name', () => {
+    const struck: GameEvent = {
+      type: 'castleBesieged',
+      at: T,
+      foe: 'Stormer',
+      outcome: 'graze',
+      lost: 1_250_000,
+      marks: 0,
+    };
+    expect(momentsFrom([struck], T - 1, FEATURES)).toMatchObject([
+      { size: 'banner', title: 'Stormer attacked: Breached', body: '1.3M gold taken' },
+    ]);
+    const held: GameEvent = { type: 'castleBesieged', at: T, foe: '', outcome: 'repelled', lost: 0, marks: 4 };
+    expect(momentsFrom([held], T - 1, FEATURES)).toMatchObject([
+      { size: 'toast', title: 'A lord no longer of the realm attacked: Repelled', body: '+4 war marks' },
+    ]);
+    const stormed: GameEvent = {
+      type: 'castleSiege',
+      at: T,
+      foe: 'The Grey Fang',
+      outcome: 'decisive',
+      gold: 400,
+      marks: 14,
+    };
+    expect(momentsFrom([stormed], T - 1, FEATURES)).toMatchObject([
+      { size: 'banner', title: 'Stormed: The Grey Fang', body: '+400 gold, +14 war marks' },
+    ]);
+  });
 });
