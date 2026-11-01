@@ -67,15 +67,15 @@ Every player-facing name comes from the strings file in Phase 4; ids below are t
 6. **Upkeep's vacation pause.** Upkeep burns 2% a day, compounding (`× 0.98^days`), from the last upkeep time to the earlier of now and `startOfUtcDay(last Call to arms) + 48 h`. Burned gold splits 95% destroyed and 5% to the war chest, as every burn does.
 7. **The Deep vault.** It protects `min(75% of treasury, flat(level, depth) + pct(level) × treasury)`. Vigilance then takes 25% per stack off what is raidable, and overextension scales it again for a weaker defender.
 8. **Spy success,** which the plan does not give: `chance = clamp(0.5 + 0.35 × ln(stealth ÷ detection), 0.10, 0.90)`.
-   - Stealth: the spy guild's power, Espionage tech, outriders' drill and the Whisper Weaver, × 0.75 per compromised-network stack.
-   - Detection: the beacon tower's power and the defender's Espionage tech.
+   - Stealth: `statPower(60, spy guild)` lifted by stealth effects (the outriders' first passive, Espionage tech, the Whisper Weaver, a relic, the decree), × 0.75 per compromised-network stack.
+   - Detection: `statPower(80, beacon tower)` lifted by the defender's detection effects (Espionage tech, a relic).
    - A mission that cannot take (the target is shielded, or immune to that debuff, or already at its stack cap) is refused before anything is spent.
 9. **Shields.** A shielded castle can be neither sieged nor spied on. Launching a siege ends your own shield; a spy mission does not.
 10. **The mobilization fee** (gold, scaled to the attacker's rating, times overextension and fatigue) is spent on every siege, won or lost. The plan names its fate only for a repelled siege ("100% burned"), but refunding it on a breach would let a stronger player raid for free. All of it is burned (95/5).
 11. **Where looted gold lands:** the attacker's 65% goes to their purse (the save's gold), written in the same transaction as both rows.
 12. **Combat power.** Section 4C fixes the shares, the flank penalty, the matrix, traps and penetration. The rest of the totals is settled as follows:
     - A unit's power is `statPower(100, level) × (1 + drill%) × evolution × tech × relics × castellan`. Both sides use every unit, weighted by their formation's shares.
-    - The defender also multiplies in the walls: `1 + 0.6 × L ÷ (L + 25) × integrity`, with the attacker's penetration taken off that bonus only. The other defender factors are vigilance (+12% a stack), morale (0.8 when unpaid), Poison wells (−8% a stack) and the infirmary.
+    - The defender also multiplies in the walls: `1 + 0.25 × L ÷ (L + 25) × integrity`. 0.6 was tried first, but equal castles then met at R ≈ 0.79, below the plan's genuine bound of 0.85, so no fair siege could breach. At 0.25, equal castles meet at R 0.86 to 0.99 at every level. with the attacker's penetration taken off that bonus only. The other defender factors are vigilance (+12% a stack), morale (0.8 when unpaid), Poison wells (−8% a stack) and the infirmary.
     - The infirmary multiplies either side by `1 − wounded`.
     - Phase 2 writes these as one pure function with tests; the plan's own numbers are never changed.
 13. **Genuine sieges.** The defender keeps the times of genuine sieges received. Vigilance is their count in the last 12 hours (at most 2); the third in 12 hours clears them and raises a 6-hour truce shield.
@@ -83,6 +83,8 @@ Every player-facing name comes from the strings file in Phase 4; ids below are t
 15. **Mercenary strongholds** are drawn from the attacker's id and the UTC day, so the list holds still through a day. They sit at 0.85 to 1.2 of the attacker's rating, and their bounty is paid strictly from the war chest. No gold is ever minted.
 16. **Logs name players by id,** resolved to names when read. When an account is deleted, its id in other castles' reports and pair limits becomes `departed` (read as "a lord no longer of the realm"), so nothing of it remains (section 9).
 17. **Paying for things.** Costs are paid from the purse unless the player sets "pay from the treasury" (`pay_from_treasury`). Treasury spending carries the plan's 0% tax, and a purchase that would take the treasury below `requiredTreasury` asks first, since it would switch the edict off.
+18. **The edict's curve.** The plan states that the bonus doubles at five times the requirement, but its formula `1 + 0.25 × log2(t ÷ req)` doubles only at sixteen times. The stated intent wins: the slope is `1 ÷ log2(5)`, so the bonus is ×1.43 at twice the requirement and ×2 at five times.
+19. **Upkeep across weeks.** A treasury left alone for days is charged week by week, each at that week's decree (Open coffers halves it), never all at the rate of the week it is read in.
 
 ## 6. Unlocks
 
@@ -99,9 +101,9 @@ The plan's Sovereign Edicts and Deep Foundation Excavation reach into the main g
 
 | Plan | Effect in Idle Clash |
 | --- | --- |
-| Edict of Harvest (idle gold) | +10% to +20% gold from fights (a foe's gold drop) |
-| Edict of Vigor (idle XP) | +10% to +20% XP in every skill |
-| Edict of Fortune (drop rate) | Rare and Legendary finds +10% to +20% likelier (the same effect as `findChance` perks) |
+| Edict of Harvest (idle gold) | +5% to +10% gold from fights (a foe's gold drop) |
+| Edict of Vigor (idle XP) | +5% to +10% XP in every skill |
+| Edict of Fortune (drop rate) | Rare and Legendary finds +5% to +10% likelier (the same effect as `findChance` perks) |
 | Excavation's idle multiplier `1 + 0.02 × √depth` | Multiplies the active edict's bonus and the castle's own idle AP. Never raw XP, so it cannot run away with the year's pacing |
 
 - The engine is pure and plays offline time from the save alone, so the castle's effect is mirrored into the save: `features.castle = { edict, pct }`. It is refreshed in every request of the owner's, inside the same transaction that reads their row; a raid that drops a defender's treasury below the requirement takes effect from their next request.
@@ -113,7 +115,7 @@ The plan's Sovereign Edicts and Deep Foundation Excavation reach into the main g
 
 The plan's gold figures assume a small economy (`requiredTreasury` starts at 1,120). A steady player here holds about 16 million gold by day 30 and earns about 1.5 million a day all year (`.verify/year.md`). All castle gold is scaled by one constant, `GOLD_SCALE = 100`, applied to the plan's formulas without changing their shape:
 
-- **Required treasury:** `requiredTreasury = round(GOLD_SCALE × 1000 × 1.12^avgLevel)`. That is 112,000 at level 1, 3.3 million at 30 and 32 million at 50.
+- **Required treasury:** `requiredTreasury = round(GOLD_SCALE × 1000 × 1.12^avgLevel)`, with the floor by total level of section 11.2. That is 112,000 at level 1, 3.3 million at 30 and 32 million at 50.
 - **Upgrades:** `upgradeGoldCost(base, level)` uses the plan's `1.18^level` from per-track bases of 2,000 to 5,000 gold. Every track to level 50 costs about 600 million in all, a year of a steady player's gold, and the climb goes on past it.
 - Phase 6 replays a castle alongside the year's simulation and tunes the constants, never the formulas.
 
@@ -149,7 +151,17 @@ The plan's gold figures assume a small economy (`requiredTreasury` starts at 1,1
   - Ember of Sieges (+3% penetration); Mender's Mortar (+10% recovery); Tidings Stone (+3% AP).
   - Each level's figure counts again. The three best by combat score count towards the castle rating, worn or not, so the rating only rises.
 
-## 11. Phases
+## 11. Amendments for the game's integrity (2 November 2026, with the owner's leave)
+
+The owner allowed the plan to be amended wherever it does not account for the rest of the game, so long as integrity holds. Each amendment below closes a hole the plan's numbers open once they meet this game:
+
+1. **Edicts at half strength: +5% at the requirement, +10% at five times it** (the plan's +10% to +20%). An edict lifts the whole game (XP, finds or fight gold) for every hour, online or away. At +20%, Castle Clash would become the one thing every player must do first, and the year's pacing would compress by a sixth. The steading, a year's work, gives +5% XP at most; an edict should sit beside it, not above it.
+2. **The required treasury grows with the player as well as the castle:** `requiredTreasury = round(TREASURY_BASE × 1.12^max(avgCastleLevel, totalLevel ÷ 22))`. The plan ties it to castle levels alone, so a player who never upgrades their castle would keep a level-1 requirement (112,000 gold) and a near-free edict for the whole year. With the floor, a lord of total level 500 needs about 1.3 million, and a lord at the top about 27 million. That is the plan's scaling, measured against the whole lord rather than only their walls.
+3. **A siege takes at most twice the defender's required treasury.** The game has no trading, so raids are the only way gold can move between accounts, and an alt account could otherwise pour a large treasury into a main one at a 35% tax. The cap ties what one siege can take to the defender's own standing, so a thin alt castle can hand over little. Together with the plan's pair limit (two sieges a day) and overextension, funnelling gold becomes slower than playing.
+4. **Mercenary bounties pay less than they cost.** A bounty is at most `0.6 × GOLD_SCALE ×` the attacker's rating, against a mobilization fee of `1 × GOLD_SCALE ×` it. In the plan, a bounty of up to twice the fee would make mercenaries a machine that drains the war chest to whoever finds it first. Mercenaries pay war marks; their gold softens the fee and never exceeds it.
+5. **Sabotage only bites in a fair fight.** Poison wells, forged orders and a sabotaged gatehouse take effect only in a siege whose rating ratio is within the genuine bound (`brRatio ≤ 1.35`). The plan's verification (`R ≥ 0.85`) needs the battle's result, which depends on the debuffs themselves, so the ratio alone decides whether they apply. A siege that turns out genuine consumes them and grants the 4-hour immunity, exactly as the plan says. An alt far weaker than its target can neither use nor clear another player's sabotage.
+
+## 12. Phases
 
 | Phase | Session | Delivers |
 | --- | --- | --- |
