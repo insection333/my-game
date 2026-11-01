@@ -27,6 +27,8 @@ import { hear } from './watching.ts';
 import { contractRoute, fail } from '../http.ts';
 import { identify, requirePlayer } from '../auth/routes.ts';
 import { noteVisit } from '../feedback.ts';
+import { announce as announceChange } from './announce.ts';
+import { withCastle } from '../castle/mirror.ts';
 
 export function gameRoutes(app: FastifyInstance, ctx: Ctx, features: readonly Feature[]): void {
   const now = () => ctx.config.now();
@@ -38,7 +40,7 @@ export function gameRoutes(app: FastifyInstance, ctx: Ctx, features: readonly Fe
     if (!saved) throw fail(404, 'notFound');
     const t = now();
     noteVisit(ctx, playerId, t);
-    const before = saved.doc.state;
+    const before = withCastle(ctx, playerId, saved.doc.state, t);
     const out = ctx.engine.advance(before, t, seeded(before.seed));
     const away =
       recap && t - before.lastSeen >= RECAP_AFTER_MS ? summarizeAway(before, out.state, out.events, t) : null;
@@ -48,14 +50,8 @@ export function gameRoutes(app: FastifyInstance, ctx: Ctx, features: readonly Fe
   };
 
   /** After a change: tell the player's open pages, and record what happened. */
-  const announce = (playerId: string, doc: SaveDoc, events: GameEvent[], at: number) => {
-    ctx.hiscores.acted(playerId, at);
-    ctx.live.publish(playerId, { type: 'state', state: doc.state, now: at });
-    if (events.length) ctx.live.publish(playerId, { type: 'events', events });
-    ctx.telemetry.events(playerId, events);
-    ctx.notices.add(playerId, events);
-    ctx.hiscores.update(playerId, doc.state, at);
-  };
+  const announce = (playerId: string, doc: SaveDoc, events: GameEvent[], at: number) =>
+    announceChange(ctx, playerId, doc, events, at);
 
   /** Reads come at a pace: a page reads a few times a minute, a script reading without pause is held. */
   const reading = (reply: FastifyReply, playerId: string) =>
@@ -107,7 +103,8 @@ export function gameRoutes(app: FastifyInstance, ctx: Ctx, features: readonly Fe
       let events: GameEvent[] = [];
       let next: SaveDoc | null = null;
       const out = await handle(ctx.queue, ctx.store, player, input.requestId, t, (doc) => {
-        const r = ctx.engine.command(doc.state, t, input.command, seeded(doc.state.seed));
+        const state = withCastle(ctx, player, doc.state, t);
+        const r = ctx.engine.command(state, t, input.command, seeded(state.seed));
         events = r.events;
         next = { ...doc, state: r.state };
         return { doc: next, result: r.result };
@@ -147,7 +144,8 @@ export function gameRoutes(app: FastifyInstance, ctx: Ctx, features: readonly Fe
           let events: GameEvent[] = [];
           let next: SaveDoc | null = null;
           const out = await handle(ctx.queue, ctx.store, player, input.requestId, t, (doc) => {
-            const arrived = ctx.engine.input(doc.state, t, seeded(doc.state.seed));
+            const state = withCastle(ctx, player, doc.state, t);
+            const arrived = ctx.engine.input(state, t, seeded(state.seed));
             const ran = route.run(arrived.state, parsed.data, t);
             events = [...arrived.events, ...(ran.events ?? [])];
             next = { ...doc, state: ran.state };

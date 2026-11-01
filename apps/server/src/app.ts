@@ -16,6 +16,7 @@ import { ipOf, limit } from './context.ts';
 import { openDb } from './db/open.ts';
 import { LiveHub } from './game/live.ts';
 import { gameRoutes } from './game/routes.ts';
+import { castleRoutes } from './castle/routes.ts';
 import { contractRoute, harden } from './http.ts';
 import { RateLimiter } from './security.ts';
 import { adminRoutes } from './admin/routes.ts';
@@ -91,6 +92,7 @@ export async function buildApp(
   feedbackRoutes(app, ctx, features);
   if (config.emailEnabled) emailRoutes(app, ctx);
   gameRoutes(app, ctx, features);
+  castleRoutes(app, ctx);
   if (config.webDist) webRoutes(app, config.webDist);
   const watching = setInterval(
     () => void hearWatching(ctx).catch((err: unknown) => app.log.error({ err }, 'hiscores for watchers')),

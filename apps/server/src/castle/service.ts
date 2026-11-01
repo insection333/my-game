@@ -1,0 +1,162 @@
+// Castle Clash's service (docs/castle-clash/DESIGN.md section 3): every change runs in the player's queue
+// and one transaction on the one connection. It reads the save (acting once per request id), plays it to
+// now, reads the castle rows it needs in ascending id, works the change out with the pure engine, and
+// writes the rows, the war chest, the reports and the save together. Nothing is half done.
+import type { CastleAction } from '@idle-clash/contracts';
+import { castleEngine as E, totalLevel } from '@idle-clash/features';
+import { countOf, REMEMBERED_REQUESTS, seeded, type GameEvent, type SaveDoc, type State } from '@idle-clash/kernel';
+import type { Ctx } from '../context.ts';
+import { fail } from '../http.ts';
+import { mirrored } from './mirror.ts';
+import { CastleStore } from './store.ts';
+import { siege, spy } from './war.ts';
+
+type Castle = E.Castle;
+export type Outcome = { ok: true; [k: string]: unknown } | { ok: false; reason: string };
+
+/** What an action works with: the save (its gold is the purse), the castles, the time and the lord's level. */
+export interface Io {
+  ctx: Ctx;
+  castles: CastleStore;
+  playerId: string;
+  state: State;
+  now: number;
+  totalLevel: number;
+}
+
+export const purseOf = (io: Io): number => countOf(io.state, 'gold');
+export function setPurse(io: Io, gold: number): void {
+  io.state = { ...io.state, items: { ...io.state.items, gold: Math.max(0, Math.floor(gold)) } };
+}
+
+/** The castle synced to now, its upkeep burned into the ledger. */
+export function loadSynced(io: Io, id: string, castle: Castle | null = io.castles.read(id)): Castle | null {
+  if (!castle) return null;
+  const { castle: synced, burned } = E.syncCastle(castle, io.now);
+  io.castles.burn(burned);
+  return synced;
+}
+
+/** Writes a castle, its rating brought up to date first. */
+export function store(io: Io, c: Castle): Castle {
+  const out = { ...c, rating: Math.max(c.rating, E.bastionRating(c)), updatedAt: io.now };
+  io.castles.write(out);
+  return out;
+}
+
+export interface Handled {
+  result: Outcome;
+  duplicate: boolean;
+  doc: SaveDoc;
+  events: GameEvent[];
+}
+
+/** Runs one castle request for a player: in their queue, in one transaction, acting once per request id. */
+export function castleRequest(
+  ctx: Ctx,
+  playerId: string,
+  requestId: string,
+  now: number,
+  fn: (io: Io) => Outcome,
+): Promise<Handled> {
+  return ctx.queue.run(playerId, () =>
+    ctx.store.sqlite.transaction((): Handled => {
+      const saved = ctx.store.read(playerId, now);
+      if (!saved) throw fail(404, 'notFound');
+      const seen = saved.doc.requests.find((r) => r.id === requestId);
+      if (seen) return { result: seen.result as Outcome, duplicate: true, doc: saved.doc, events: [] };
+      const castles = new CastleStore(ctx);
+      const start = mirrored(saved.doc.state, castles.read(playerId), now);
+      const arrived = ctx.engine.input(start, now, seeded(start.seed));
+      const io: Io = { ctx, castles, playerId, state: arrived.state, now, totalLevel: totalLevel(arrived.state) };
+      const result = fn(io);
+      const state = mirrored(io.state, castles.read(playerId), now);
+      const requests = [...saved.doc.requests, { id: requestId, at: now, result }].slice(-REMEMBERED_REQUESTS);
+      const doc: SaveDoc = { ...saved.doc, state, requests };
+      ctx.store.write(playerId, doc, saved.rev, now);
+      return { result, duplicate: false, doc, events: arrived.events };
+    })(),
+  );
+}
+
+/** Opens a lord's castle once their total level allows: every level 1, the novice shield up. */
+export function openCastle(io: Io): Outcome {
+  if (!E.castleOpen(io.totalLevel)) return { ok: false, reason: 'closed' };
+  if (io.castles.read(io.playerId)) return { ok: true, opened: false };
+  store(io, E.newCastle(io.playerId, io.now));
+  return { ok: true, opened: true };
+}
+
+/** An own-castle action through the engine's wallet: purse or treasury paid, the burn into the ledger. */
+function own(io: Io, d: E.Done): Outcome {
+  if (!d.ok) return { ok: false, reason: d.reason };
+  setPurse(io, d.purse);
+  io.castles.burn(d.burned);
+  store(io, d.castle);
+  return { ok: true };
+}
+
+/** Runs one action on the player's own castle (or, for a siege or spy mission, against another). */
+export function act(io: Io, action: CastleAction): Outcome {
+  const c = loadSynced(io, io.playerId);
+  if (!c) return { ok: false, reason: 'noCastle' };
+  const w: E.Wallet = { castle: c, purse: purseOf(io) };
+  switch (action.type) {
+    case 'callToArms': {
+      const r = E.claimCallToArms(c, io.now);
+      if (!r.ok) return { ok: false, reason: r.reason };
+      store(io, r.castle);
+      return { ok: true, gained: r.gained, streak: r.streak };
+    }
+    case 'deposit':
+      return own(io, E.deposit(w, action.gold));
+    case 'withdraw':
+      return own(io, E.withdraw(w, action.gold, io.now));
+    case 'edict':
+      return own(io, E.setEdict(w, action.edict));
+    case 'payFrom':
+      return own(io, E.setPayFrom(w, action.treasury));
+    case 'upgrade':
+      return own(io, E.upgrade(w, action.id as Parameters<typeof E.upgrade>[1], io.now));
+    case 'research':
+      return own(io, E.research(w, action.tech as Parameters<typeof E.research>[1], io.now));
+    case 'forgeRelic':
+      if (!E.tabOpen(c, 'reliquary')) return { ok: false, reason: 'locked' };
+      return own(io, E.forgeRelic(w, action.relic));
+    case 'equipRelics':
+      return own(io, E.equipRelics(w, action.relics));
+    case 'offense':
+      return own(io, E.setOffense(w, action.shares));
+    case 'defense':
+      return own(io, E.setDefense(w, action, io.totalLevel, io.now));
+    case 'mend':
+      return own(io, E.mendNow(w, action.what, io.now));
+    case 'drill':
+      return own(io, E.drill(w, action.unit, action.times));
+    case 'excavate':
+      return own(io, E.excavate(w, io.now));
+    case 'scoutIncursion':
+      if (!E.tabOpen(c, 'incursions')) return { ok: false, reason: 'locked' };
+      return own(io, E.scoutIncursion(w));
+    case 'incursion':
+      return incursion(io, c);
+    case 'spy':
+      return spy(io, c, action.target, action.mission);
+    case 'siege':
+      return siege(io, c, action.target);
+  }
+}
+
+function incursion(io: Io, c: Castle): Outcome {
+  if (!E.tabOpen(c, 'incursions')) return { ok: false, reason: 'locked' };
+  const tier = c.incursionTier;
+  const r = E.launchIncursion(c, io.now, roll());
+  if (r === 'ap') return { ok: false, reason: 'ap' };
+  store(io, r.castle);
+  const data = { tier, fortress: E.fortressAt(tier).id, won: r.won, r: r.r, marks: r.marks, drillXp: r.drillXp };
+  io.castles.log(io.playerId, io.now, 'incursion', data);
+  return { ok: true, ...data };
+}
+
+/** A fair roll in [0, 1): the server is the authority, so it needs no seed. */
+export const roll = (): number => Math.random();

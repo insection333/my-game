@@ -16,6 +16,7 @@ import {
 import { addXp, countOf, give, take, xpOf, type ActionContext, type Rarity, type State } from '@idle-clash/kernel';
 import { relicFindPct, relicXpPct } from './expeditions/relics.ts';
 import { steadingSavePct, steadingXpPct, steadingYieldPct } from './steading.ts';
+import { edictPct } from './castle/mirror.ts';
 import { announceKindling, pathBonus } from './kindling.ts';
 import { actionModifiers, perksAt, skillLevel, yieldOf } from './skill.ts';
 
@@ -92,7 +93,7 @@ export function completeSkillAction(ctx: ActionContext, def: SkillDefinition, ac
   if (artisan && !takeInputs(ctx, act.takes!, m.saveInput + steadingSavePct(state))) return false;
   const yard = artisan ? 0 : steadingYieldPct(state);
   // A skill on the Path of Fortune finds more; on Bounty, makes more (past 99, see kindling.ts).
-  rollFind(ctx, def, act, m.findChance + pathBonus(state, def.skill, 'finds'));
+  rollFind(ctx, def, act, m.findChance + pathBonus(state, def.skill, 'finds') + edictPct(state, ctx.at, 'finds'));
 
   for (const g of act.gives)
     give(
@@ -108,6 +109,7 @@ export function completeSkillAction(ctx: ActionContext, def: SkillDefinition, ac
     LEGENDARY_MARK_PCT * marksIn(state, def.finds) +
     relicXpPct(state, def.skill) +
     steadingXpPct(state) +
+    edictPct(state, ctx.at, 'xp') +
     pathBonus(state, def.skill, 'xp');
   const xpBefore = xpOf(state, def.skill);
   addXp(state, def.skill, act.xp * (1 + bonusPct / 100));
