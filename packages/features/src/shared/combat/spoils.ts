@@ -7,6 +7,7 @@ import { addXp, give, xpOf, type ActionContext } from '@idle-clash/kernel';
 import { marksIn, rollFind } from '../complete.ts';
 import { relicXpPct } from '../expeditions/relics.ts';
 import { steadingXpPct } from '../steading.ts';
+import { edictPct } from '../castle/mirror.ts';
 import { announceKindling, pathBonus } from '../kindling.ts';
 import { skillLevel, yieldOf } from '../skill.ts';
 import { HITPOINTS, HITPOINTS_XP_SHARE, LADDERS, MASTERY_DROPS_PER_STEP, STYLE_FINDS, type Foe } from './data.ts';
@@ -21,6 +22,7 @@ function gainXp(ctx: ActionContext, skill: string, base: number) {
     LEGENDARY_MARK_PCT * marks +
     relicXpPct(ctx.state, skill) +
     steadingXpPct(ctx.state) +
+    edictPct(ctx.state, ctx.at, 'xp') +
     pathBonus(ctx.state, skill, 'xp');
   const xpBefore = xpOf(ctx.state, skill);
   addXp(ctx.state, skill, base * (1 + pct / 100));
@@ -46,7 +48,13 @@ export function spoils(
   // A style on the Path of Bounty brings home more gold and drops; on Fortune, more finds (past 99).
   const bounty = pathBonus(ctx.state, p.style, 'items');
   const extra = p.perks.spoils + MASTERY_DROPS_PER_STEP * p.mastery + bounty;
-  give(ctx.state, 'gold', Math.round(foe.gold * (1 + p.perks.spoils / 100) * (1 + bounty / 100) * (more.gold ?? 1)));
+  // A Sovereign Edict of Harvest lifts fight gold (Castle Clash).
+  const harvest = 1 + edictPct(ctx.state, ctx.at, 'fightGold') / 100;
+  give(
+    ctx.state,
+    'gold',
+    Math.round(foe.gold * (1 + p.perks.spoils / 100) * (1 + bounty / 100) * (more.gold ?? 1) * harvest),
+  );
   // More drops (an expedition's twist) count as more extra yield: ×1.5 is +50%.
   const drops = extra + ((more.drops ?? 1) - 1) * 100;
   give(
@@ -60,7 +68,7 @@ export function spoils(
     ctx,
     style,
     { id: foe.id, tier: foe.tier, xp: 0, gives: [], findMultiple },
-    p.perks.findChance + pathBonus(ctx.state, p.style, 'finds'),
+    p.perks.findChance + pathBonus(ctx.state, p.style, 'finds') + edictPct(ctx.state, ctx.at, 'finds'),
   );
 }
 

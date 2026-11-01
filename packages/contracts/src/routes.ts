@@ -5,6 +5,7 @@ import { Command, type AwaySummary, type GameEvent, type State } from '@idle-cla
 import { z } from 'zod';
 import { Email, Password, plainText, PlayerName, RequestId, Token } from './fields.ts';
 import { PASSWORD_MAX } from './limits.ts';
+import { CASTLE_ROUTES } from './castle.ts';
 import { CLOSED_TEST_ROUTES } from './closed-test.ts';
 import { PATHS } from './paths.ts';
 
@@ -185,6 +186,7 @@ export const ROUTES = {
     example: { playerId: '00000000-0000-4000-8000-000000000000' },
   }),
   ...CLOSED_TEST_ROUTES,
+  ...CASTLE_ROUTES,
 } satisfies Record<string, RouteContract>;
 
 export type RouteId = keyof typeof ROUTES;

@@ -24,6 +24,10 @@ export const PATHS = {
   adminResetPassword: '/api/admin/reset-password',
   feedback: '/api/feedback',
   adminTest: '/api/admin/test',
+  castle: '/api/castle',
+  castleTargets: '/api/castle/targets',
+  castleOpen: '/api/castle/open',
+  castleAct: '/api/castle/act',
 } as const;
 
 /** A feature's own route. */
