@@ -2,7 +2,7 @@
 export const steading = {
   'help.steading.title': 'The steading',
   'help.steading.body':
-    'The works you raise around your Hearth with gold and your own materials. Each is raised five times, and every raising stays: a little more from your work for good, and something new in the scene above.',
+    'Works you build around your Hearth with gold and your own materials. Each can be raised five times; every raising gives a small lasting bonus and shows in the scene above.',
   'steading.title': 'The steading',
   'steading.raise': 'Raise',
   'steading.build': 'Build',

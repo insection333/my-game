@@ -27,6 +27,7 @@ export function skills(): Deed[] {
       deed({
         id: `level-${skill}-${level}`,
         family: 'level',
+        brief: true,
         row: skill,
         tier,
         target: level,

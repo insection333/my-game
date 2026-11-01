@@ -19,9 +19,7 @@ describe('item questions', () => {
       ['tide-stone', 0],
       ['ancient-tide-stone', 0],
     ]);
-    expect(items.sourceLabel(items.usedIn(FEATURES, 'iron-key')[0])).toBe(
-      'Runecraft: Tide stone (kept, never used up)',
-    );
+    expect(items.sourceLabel(items.usedIn(FEATURES, 'iron-key')[0])).toBe('Runecraft: Tide stone (not used up)');
   });
 
   it("says a fish comes from its shallows and pool and goes into its cooking and the next tier's dish", () => {
