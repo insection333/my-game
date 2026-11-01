@@ -50,12 +50,25 @@ export const fortressName = read({
   'hollow-crown-hold': 'castle.fortress.hollow-crown-hold',
 });
 
-type CastleEvent = EventOf<'castleSiege' | 'castleBesieged' | 'castleSpyCaught' | 'castleIncursion'>;
+type CastleEvent = EventOf<'castleSiege' | 'castleBesieged' | 'castleSpyCaught' | 'castleIncursion' | 'castleTempered'>;
 export const isCastleEvent = (e: GameEvent): e is CastleEvent =>
   e.type === 'castleSiege' ||
   e.type === 'castleBesieged' ||
   e.type === 'castleSpyCaught' ||
-  e.type === 'castleIncursion';
+  e.type === 'castleIncursion' ||
+  e.type === 'castleTempered';
+
+export const relicName = read({
+  'banner-of-the-first-king': 'castle.relic.banner-of-the-first-king',
+  'aegis-shard': 'castle.relic.aegis-shard',
+  'wyrmglass-lens': 'castle.relic.wyrmglass-lens',
+  'sentinels-eye': 'castle.relic.sentinels-eye',
+  'oathbound-horn': 'castle.relic.oathbound-horn',
+  'gilded-ledger': 'castle.relic.gilded-ledger',
+  'ember-of-sieges': 'castle.relic.ember-of-sieges',
+  'menders-mortar': 'castle.relic.menders-mortar',
+  'tidings-stone': 'castle.relic.tidings-stone',
+});
 
 /** A line that may begin with a name: its first letter made a capital ("a lord no longer…" opening it). */
 export const sentence = (text: string): string => text.charAt(0).toUpperCase() + text.slice(1);
@@ -68,7 +81,7 @@ export function castleMoment(e: CastleEvent): {
   title: string;
   body: string | null;
   href: string;
-  size: 'banner' | 'toast';
+  size: 'centre' | 'banner' | 'toast';
 } {
   const foe = 'foe' in e ? e.foe || t('castle.departed') : '';
   const join = (parts: string[]) => (parts.length ? parts.join(', ') : null);
@@ -100,9 +113,28 @@ export function castleMoment(e: CastleEvent): {
     case 'castleIncursion':
       return {
         title: t('castle.report.incursion', { fortress: fortressName(e.fortress), tier: fmt.int(e.tier) }),
-        body: join([e.won ? t('castle.report.won') : t('castle.report.lostIncursion'), ...marksText(e.marks)]),
+        body: join([
+          e.won ? t('castle.report.won') : t('castle.report.lostIncursion'),
+          ...(e.spoils === 'hoard'
+            ? [t('castle.spoils.hoard')]
+            : e.spoils === 'armoury'
+              ? [t('castle.spoils.armoury')]
+              : []),
+          ...marksText(e.marks),
+        ]),
         href: '/castle/incursions',
-        size: e.won ? 'banner' : 'toast',
+        // A hoard takes the centre of the screen, as a Legendary find does; the armoury a banner.
+        size: e.spoils === 'hoard' ? 'centre' : e.won ? 'banner' : 'toast',
+      };
+    case 'castleTempered':
+      return {
+        title: t(e.masterstroke ? 'castle.temper.masterstroke' : 'castle.temper.done', {
+          relic: relicName(e.relic),
+          tempers: fmt.int(e.tempers),
+        }),
+        body: null,
+        href: '/castle/halls',
+        size: e.masterstroke ? 'centre' : 'banner',
       };
   }
 }

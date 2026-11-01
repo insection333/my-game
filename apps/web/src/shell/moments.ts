@@ -41,7 +41,10 @@ function rank(e: GameEvent): number {
   if (e.type === 'deedDone') return e.tier === 'master' ? 1 : e.tier === 'elite' ? 5 : 7;
   if (e.type === 'expeditionDone') return e.outcome === 'won' ? 1 : 5;
   if (e.type === 'kindled') return 1;
-  if (castleEngine.isCastleEvent(e)) return castleEngine.castleMoment(e).size === 'banner' ? 5 : 8;
+  if (castleEngine.isCastleEvent(e)) {
+    const size = castleEngine.castleMoment(e).size;
+    return size === 'centre' ? 1 : size === 'banner' ? 5 : 8;
+  }
   return e.type === 'levelUp' ? 3 : e.type === 'masteryStep' ? 6 : 8;
 }
 
@@ -123,7 +126,8 @@ function describe(
     case 'castleSiege':
     case 'castleBesieged':
     case 'castleSpyCaught':
-    case 'castleIncursion': {
+    case 'castleIncursion':
+    case 'castleTempered': {
       const m = castleEngine.castleMoment(e);
       return { title: m.title, body: m.body, icon: null };
     }

@@ -30,6 +30,7 @@ const Pairs = z
   .max(20);
 const Times = z.array(z.number()).max(20);
 const Relics = z.record(z.string().max(40), z.number().int().min(1).max(5));
+const Tempers = z.record(z.string().max(40), z.number().int().min(0).max(10_000));
 const Equipped = z.array(z.string().max(40)).max(3);
 
 function json<T>(schema: z.ZodType<T>, text: string, empty: T): T {
@@ -94,6 +95,7 @@ export function toCastle(r: BastionRow): Castle {
     incursionTier: r.incursionTier,
     incursionScoutedTier: r.incursionScoutedTier,
     relics: json(Relics, r.relics, {}),
+    tempers: json(Tempers, r.relicTempers, {}),
     equippedRelics: json(Equipped, r.equippedRelics, []),
     debuffs: json(Debuffs, r.activeDebuffs, []),
     immunities: json(Immunities, r.debuffImmunities, {}),
@@ -153,6 +155,7 @@ export function toRow(c: Castle): BastionRow {
     incursionTier: c.incursionTier,
     incursionScoutedTier: c.incursionScoutedTier,
     relics: JSON.stringify(c.relics),
+    relicTempers: JSON.stringify(c.tempers),
     equippedRelics: JSON.stringify(c.equippedRelics),
     activeDebuffs: JSON.stringify(c.debuffs),
     debuffImmunities: JSON.stringify(c.immunities),

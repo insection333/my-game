@@ -7,6 +7,7 @@ import {
   EVOLUTION_LEVELS,
   RELICS,
   TECHS,
+  TEMPER,
   UNIT_IDS,
   UNITS,
   type CastleEffect,
@@ -107,11 +108,16 @@ export function modifiers(c: Castle, now: number): Modifiers {
   for (const id of c.equippedRelics) {
     const r = RELICS.find((x) => x.id === id);
     const level = Object.hasOwn(c.relics, id) ? c.relics[id] : 0;
-    if (r && level > 0) apply(m, r.perLevel, level);
+    if (r && level > 0) apply(m, r.perLevel, level * temperMult(temperOf(c, id)));
   }
   for (const e of decreeOf(now).effects) apply(m, e);
   return m;
 }
+
+/** A relic's tempers, and what they multiply its effect by: 1 + 0.5 × (1 − 0.9^tempers), towards +50%. */
+export const temperOf = (c: Castle, id: string): number => (Object.hasOwn(c.tempers, id) ? c.tempers[id] : 0);
+export const temperMult = (tempers: number): number =>
+  1 + TEMPER.BONUS_MAX * (1 - TEMPER.BONUS_DECAY ** Math.max(0, tempers));
 
 /** A percent as a multiplier, never below zero (−120% is nothing, not a negative). */
 export const lift = (pct: number): number => Math.max(0, 1 + pct / 100);

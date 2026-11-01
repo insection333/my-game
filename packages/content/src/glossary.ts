@@ -121,6 +121,14 @@ export const TERMS: [term: string, meaning: string][] = [
   ['Tier', 'A rank of material and gear: Copper, Bronze, Iron, Steel'],
   ['Title', 'A name shown beside yours on the hiscores and on your plaque, opened by deed points or a particular deed'],
   ['Total level', "Every skill's level added together"],
+  [
+    'Tempering',
+    'Castle Clash: war marks and gold for a chance to strengthen a relic at its last level; the chance falls with each temper, never below 5%, and a masterstroke tempers twice',
+  ],
+  [
+    'The hidden armoury',
+    'Castle Clash: now and then a fortress taken yields its war marks twice over; once in a hundred, a hoard, five times over',
+  ],
   ['Treasury', 'Castle Clash: gold kept in your castle; it powers the edict, and part of it can be raided'],
   ['Twist', 'Something that holds for a whole expedition, giving and taking: fog, hungry wolves, a storm'],
   ['Uncommon', 'The most frequent find, about 1 in 50 actions'],

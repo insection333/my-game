@@ -13,6 +13,10 @@ const TAKEN: Steps = [
   [25, 'hard'],
   [50, 'elite'],
 ];
+const TEMPERED: Steps = [
+  [3, 'hard'],
+  [10, 'master'],
+];
 const MARKS: Steps = [
   [100, 'easy'],
   [1000, 'hard'],
@@ -63,6 +67,19 @@ export function castleDeeds(): Deed[] {
       measure: (r) => r.castle('marks'),
     }),
   );
+  // Tempering is luck as much as patience: +3 in a few weeks of war marks, +10 a long chase.
+  const tempered = TEMPERED.map(([count, tier]) =>
+    deed({
+      id: `tempered-${count}`,
+      family: 'halls',
+      key: 'deed.tempered',
+      tier,
+      target: count,
+      words: { count: fmt.int(count) },
+      mark: `+${fmt.int(count)}`,
+      measure: (r) => r.castle('tempered'),
+    }),
+  );
   const relics = RELICS.length * RELIC.LEVELS;
   const ranks = TECH_IDS.length * TECH.RANKS;
   const halls = [
@@ -98,5 +115,5 @@ export function castleDeeds(): Deed[] {
       measure: (r) => r.castle('studies'),
     }),
   ];
-  return [raised, ...levels, ...taken, ...marks, ...halls];
+  return [raised, ...levels, ...taken, ...marks, ...halls, ...tempered];
 }

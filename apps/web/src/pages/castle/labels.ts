@@ -3,7 +3,7 @@
 import { t } from '@idle-clash/content';
 import { castleEngine } from '@idle-clash/features';
 
-export const { fortressName, outcomeName, mercName } = castleEngine;
+export const { fortressName, outcomeName, mercName, relicName } = castleEngine;
 
 const read = (map: Record<string, string>) => (id: string | null | undefined, params?: Record<string, string>) =>
   id && Object.hasOwn(map, id) ? t(map[id], params) : '';
@@ -107,17 +107,6 @@ export const missionDoes = read({
   poison: 'castle.mission.poison.does',
   sabotage: 'castle.mission.sabotage.does',
   forge: 'castle.mission.forge.does',
-});
-export const relicName = read({
-  'banner-of-the-first-king': 'castle.relic.banner-of-the-first-king',
-  'aegis-shard': 'castle.relic.aegis-shard',
-  'wyrmglass-lens': 'castle.relic.wyrmglass-lens',
-  'sentinels-eye': 'castle.relic.sentinels-eye',
-  'oathbound-horn': 'castle.relic.oathbound-horn',
-  'gilded-ledger': 'castle.relic.gilded-ledger',
-  'ember-of-sieges': 'castle.relic.ember-of-sieges',
-  'menders-mortar': 'castle.relic.menders-mortar',
-  'tidings-stone': 'castle.relic.tidings-stone',
 });
 export const relicGives = read({
   attack: 'castle.relic.gives.attack',

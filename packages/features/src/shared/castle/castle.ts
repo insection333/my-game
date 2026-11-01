@@ -62,6 +62,8 @@ export interface Castle {
   incursionScoutedTier: number;
   /** Owned war relics by id, each at level 1 to 5. */
   relics: Record<string, number>;
+  /** Tempers on relics at their last level (session 35), by id: without end. */
+  tempers: Record<string, number>;
   equippedRelics: string[];
   debuffs: Debuff[];
   /** Immunity to each debuff kind, until when. */
@@ -118,6 +120,7 @@ export function newCastle(userId: string, now: number): Castle {
     incursionTier: 1,
     incursionScoutedTier: 0,
     relics: {},
+    tempers: {},
     equippedRelics: [],
     debuffs: [],
     immunities: {},

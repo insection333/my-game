@@ -59,9 +59,12 @@ export async function loadTargets(first = false): Promise<void> {
   }
 }
 
-/** Sends one action; the answer's castle replaces the one held, and a refusal is shown for a while. */
-export async function castleAct(action: CastleAction | 'open'): Promise<boolean> {
-  if (snapshot.busy) return false;
+/** Sends one action and gives back its result (null when it never got through); the answer's castle
+ *  replaces the one held, and a refusal is shown for a while. */
+export async function castleRun(
+  action: CastleAction | 'open',
+): Promise<castleEngine.CastleActResponse['result'] | null> {
+  if (snapshot.busy) return null;
   set({ busy: true, refused: null });
   try {
     const r = await (action === 'open' ? api.castle.open(requestId()) : api.castle.act(requestId(), action));
@@ -70,14 +73,18 @@ export async function castleAct(action: CastleAction | 'open'): Promise<boolean>
     set({ view: r.castle, refused });
     if (refused) refusedTimer = setTimeout(() => set({ refused: null }), 8000);
     if (r.result.ok && (action === 'open' || action.type === 'siege' || action.type === 'spy')) void loadTargets();
-    return r.result.ok;
+    return r.result;
   } catch (err) {
     handled(err);
-    return false;
+    return null;
   } finally {
     set({ busy: false });
   }
 }
+
+/** Sends one action: whether it was done. */
+export const castleAct = async (action: CastleAction | 'open'): Promise<boolean> =>
+  (await castleRun(action))?.ok ?? false;
 
 /** Loads the castle when the page opens and each minute while it is open: called once, by the page. */
 export function useCastleLoad(): void {

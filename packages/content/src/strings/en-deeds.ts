@@ -70,6 +70,8 @@ export const deeds = {
   'deed.relicForged.text': 'Forge a war relic in the Reliquary.',
   'deed.reliquaryFull.name': 'The full Reliquary',
   'deed.reliquaryFull.text': 'Forge all {count} war relics to level {levels}: {total} levels in all.',
+  'deed.tempered.name': 'Tempered +{count}',
+  'deed.tempered.text': 'Temper one war relic {count} times.',
   'deed.collegeFull.name': 'Master of the War College',
   'deed.collegeFull.text': 'Study all {count} trees of the War College to rank {ranks}: {total} ranks in all.',
   'deed.steading.name': 'The whole steading',

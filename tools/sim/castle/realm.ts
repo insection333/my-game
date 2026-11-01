@@ -25,7 +25,7 @@ export interface LordKind {
   playsOf4: number;
   /** The treasury it keeps, in times what its edict needs: more for a stronger edict, and more to raid. */
   treasury: number;
-  /** Whether it goes to war against other lords. */
+  /** Whether it goes to war, against other lords and today's strongholds. */
   raids: boolean;
 }
 
@@ -70,7 +70,9 @@ export interface Realm {
   lords: Lord[];
   sieges: SiegeRecord[];
   mercs: MercRecord[];
-  incursions: { day: number; r: number; won: boolean; tier: number }[];
+  incursions: { day: number; r: number; won: boolean; tier: number; spoils: string | null }[];
+  /** Tempering across the realm: tries, tempers taken, masterstrokes. */
+  tempers: { tries: number; taken: number; masterstrokes: number };
   chest: number;
   destroyed: number;
   /** Gold burned, by what burned it. */
@@ -114,6 +116,7 @@ export function playRealm(perKind: number, days: number, seed: number): Realm {
     sieges: [],
     mercs: [],
     incursions: [],
+    tempers: { tries: 0, taken: 0, masterstrokes: 0 },
     chest: 0,
     destroyed: 0,
     burned: {},
@@ -177,6 +180,35 @@ export function playRealm(perKind: number, days: number, seed: number): Realm {
     if (short > 0 && l.purse > 0) done(E.deposit(w(), Math.floor(Math.min(short, l.purse))), 'deposit');
     if (l.castle.treasury < required) return;
     let budget = l.purse * 0.3;
+    for (const tech of TECH_IDS) {
+      const cost = E.techCost(l.castle, tech, t);
+      if (cost && cost.gold <= budget && l.castle.warMarks >= cost.marks && done(E.research(w(), tech, t)))
+        budget -= cost.gold;
+    }
+    // Relics one at a time to their last level (the first three are worn), then the next.
+    // (Saving up for the relic in hand rather than starting another.)
+    const forging = RELICS.find((r) => E.relicCost(l.castle, r.id));
+    for (let guard = 0; forging && guard < 5; guard++) {
+      const cost = E.relicCost(l.castle, forging.id);
+      if (!cost || cost.gold > budget || l.castle.warMarks < cost.marks || !done(E.forgeRelic(w(), forging.id))) break;
+      budget -= cost.gold;
+    }
+    // Tempering: a relic at its last level, while war marks and the budget last, for a chance each time.
+    for (const r of RELICS)
+      for (let tries = 0; tries < 5; tries++) {
+        const cost = E.temperCost(l.castle, r.id);
+        if (!cost || cost.gold > budget || l.castle.warMarks < cost.marks) break;
+        const t2 = E.temperRelic(w(), r.id, roll(), roll());
+        if (!t2.ok) break;
+        l.castle = t2.castle;
+        l.purse = t2.purse;
+        burn(t2.burned, 'tempering');
+        budget -= t2.burned;
+        realm.tempers.tries++;
+        if (t2.outcome !== 'held') realm.tempers.taken++;
+        if (t2.outcome === 'masterstroke') realm.tempers.masterstrokes++;
+      }
+    // War marks are the scarcer thing: their halls first, then levels with the gold left.
     const all = [...BUILDINGS, ...UNITS];
     for (;;) {
       const next = all
@@ -186,16 +218,6 @@ export function playRealm(perKind: number, days: number, seed: number): Realm {
       if (!next || next.cost > budget) break;
       if (!done(E.upgrade(w(), next.id, t))) break;
       budget -= next.cost;
-    }
-    for (const tech of TECH_IDS) {
-      const cost = E.techCost(l.castle, tech, t);
-      if (cost && cost.gold <= budget && l.castle.warMarks >= cost.marks && done(E.research(w(), tech, t)))
-        budget -= cost.gold;
-    }
-    for (const r of RELICS) {
-      const cost = E.relicCost(l.castle, r.id);
-      if (cost && cost.gold <= budget && l.castle.warMarks >= cost.marks && done(E.forgeRelic(w(), r.id)))
-        budget -= cost.gold;
     }
     const owned = Object.keys(l.castle.relics).slice(0, 3);
     if (owned.length > l.castle.equippedRelics.length) done(E.equipRelics(w(), owned));
@@ -208,14 +230,20 @@ export function playRealm(perKind: number, days: number, seed: number): Realm {
       // never stakes more than a quarter of their purse on one fee.
       const war = E.tabOpen(l.castle, 'warRoom') && l.castle.siegesToday < SIEGE.FATIGUE_FREE;
       if (war && l.kind.raids && siegeALord(l, t, day)) continue;
-      if (war && mercenary(l, t, day)) continue;
+      if (war && l.kind.raids && mercenary(l, t, day)) continue;
       if (E.tabOpen(l.castle, 'incursions') && l.castle.activeAp >= SINKS.INCURSION_AP) {
         const odds = E.combatRatio(att(), E.fortressSide(l.castle.incursionTier), 0.5).r;
         if (odds >= 1.05) {
-          const r = E.launchIncursion(l.castle, t, roll());
+          const r = E.launchIncursion(l.castle, t, roll(), roll());
           if (r !== 'ap') {
             l.castle = r.castle;
-            realm.incursions.push({ day, r: r.r, won: r.won, tier: l.castle.incursionTier - (r.won ? 1 : 0) });
+            realm.incursions.push({
+              day,
+              r: r.r,
+              won: r.won,
+              tier: l.castle.incursionTier - (r.won ? 1 : 0),
+              spoils: r.spoils,
+            });
             continue;
           }
         }

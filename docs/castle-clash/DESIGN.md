@@ -179,6 +179,20 @@ The year's simulation now keeps a castle for both of its players (`tools/sim/yea
 
 The run also exposed a gap that was always there. With the climb now ending inside the year, the last fortnight showed days with nothing new: past 99, Kindling and the castle bring a first about once a week. The year's "a first every day" now covers the climb, and the days after 99 are held to a first a week. Those days still need something new of their own; that is an open item for the endgame, outside Castle Clash.
 
+### Session 34 and 35: after a critique
+
+A critique of the page and the play (session 34) found the layout cumbersome in places and the play too settled. Session 34 reworked the layout: a compact header, Top up, Drill ×5, presets, the Halls tab, and the chance to win with Set against them on every target. Session 35 added luck and endless play:
+
+10. **The battle's roll is ±10% (the plan's ±4%).** At ±4%, almost every battle was settled before it began. A stronghold one step above even, which wins nothing at ±4%, now falls about one time in eight; the frontier fortress is a real gamble; and an equal castle's walls still hold it (R about 0.88 × 1.1 < 1).
+11. **Tempering, without end.** A relic at its last level can be tempered for war marks (15 + 5 a temper) and gold (1.6 million × 1.15 a temper).
+    - The chance starts at 60%, falls 15% with each temper, and never goes below 5%.
+    - A success is a masterstroke (two tempers at once) 6% of the time.
+    - Each temper strengthens the relic's effect and its score in the rating by 1 + 0.5 × (1 − 0.9^tempers), which approaches but never reaches half again.
+    - The realm's chase check finds +5 after about 12 tries and 300 war marks, +10 after about 1,600 war marks, and +20 after about 15,000.
+12. **The hidden armoury.** A fortress taken yields its war marks twice over one time in ten, and five times over one time in a hundred (a war hoard, given the centre of the screen).
+
+Both add moments, notices and deeds (Tempered +3 and +10), and the realm and the year are re-checked with them.
+
 The realm's checks hold gold to the coin, keep every kind of lord's edict powered on at least 90% of days, cap any one day's losses at three days' earnings, and keep every bounty under its fee.
 
 ## 12. Phases

@@ -58,7 +58,7 @@ function everything(): State {
       edict: null,
       pct: 0,
       until: 0,
-      standing: { level: 25, taken: 50, marks: 1000, relics: 45, studies: 40 },
+      standing: { level: 25, taken: 50, marks: 1000, relics: 45, studies: 40, tempered: 10 },
     },
   };
   const held = items.filter((i) => i.id !== 'gold').slice(0, capacity(s));
