@@ -56,6 +56,10 @@ describe('a Sovereign Edict in the rest of the game', () => {
     expect((thin.until - T0) / (24 * HOUR)).toBeCloseTo(Math.log(1 / 1.02) / Math.log(0.98), 1);
     // A deep treasury outlasts the pause: the edict holds until the next Call to arms rewrites it.
     expect(mirrorFor({ ...base, treasury: req * 3 }, 0, T0).until).toBe(Number.MAX_SAFE_INTEGER);
-    expect(mirrorFor({ ...base, treasury: req - 1 }, 0, T0)).toEqual({ edict: null, pct: 0, until: 0 });
+    expect(mirrorFor({ ...base, treasury: req - 1 }, 0, T0)).toMatchObject({ edict: null, pct: 0, until: 0 });
+  });
+  it("carries the castle's standing for the deeds, edict or none", () => {
+    const c = { ...newCastle('lord', T0), incursionTier: 8, warMarksEarned: 120, relics: { 'aegis-shard': 2 } };
+    expect(mirrorFor(c, 0, T0).standing).toEqual({ level: 1, taken: 7, marks: 120, relics: 2, studies: 0 });
   });
 });

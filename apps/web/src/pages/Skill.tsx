@@ -3,6 +3,7 @@ import { fmt, levelFor, t } from '@idle-clash/content';
 import type { Feature, FindEntry, KindlingView, LadderRow, SkillActionRow, SkillSummary } from '@idle-clash/features';
 import { actionKey, laneFor, laneKind, LANE_IDS, xpOf, type LaneId, type State } from '@idle-clash/kernel';
 import { ActionRow, Button, hasIcon, ItemIcon, Panel, Pill, ProgressBar, Tabs } from '@idle-clash/ui';
+import { EdictPill } from './castle/EdictPill.tsx';
 import { memo, useEffect, useRef } from 'react';
 import { useGame } from '../game/hooks.ts';
 import { game } from '../game/store.ts';
@@ -67,6 +68,7 @@ function SkillPage({ feature }: { feature: Feature }) {
             )}
             <h1>{head.name}</h1>
             <Pill tone="moss">{head.level}</Pill>
+            <EdictPill />
           </div>
           <div className={s.skillBar}>
             <ProgressBar value={head.progress} label={head.toNext} />

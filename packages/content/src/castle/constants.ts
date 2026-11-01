@@ -31,11 +31,12 @@ export const ECONOMY = {
   /** upgradeGoldCost(base, level) = round(base × 1.18^level); statPower(base, level) = base × level^1.05. */
   COST_GROWTH: 1.18,
   STAT_EXPONENT: 1.05,
-  /** requiredTreasury = round(GOLD_SCALE × 1000 × 1.12^max(avgLevel, totalLevel ÷ 22)): the floor by the
-   *  lord's total level keeps a neglected castle from a near-free edict (DESIGN.md 11.2). */
+  /** requiredTreasury = round(GOLD_SCALE × 1000 × 1.12^max(avgLevel, totalLevel ÷ 25)): the floor by the
+   *  lord's total level keeps a neglected castle from a near-free edict (DESIGN.md 11.2). 25, not the first
+   *  guess of 22: at 22 the year's simulation spent most of a top lord's day on upkeep (DESIGN.md 11.6). */
   TREASURY_BASE: 1000 * GOLD_SCALE,
   TREASURY_GROWTH: 1.12,
-  TREASURY_TOTAL_LEVEL_DIVISOR: 22,
+  TREASURY_TOTAL_LEVEL_DIVISOR: 25,
   /** An edict's bonus at the requirement, doubling by 5× it: base × min(2, 1 + slope × log2(t ÷ req)).
    *  Half the plan's 10%, so an edict sits beside the steading rather than above it (DESIGN.md 11.1). The
    *  plan's slope of 0.25 reaches 2× only at 16 times the requirement, against its own "2x at 5x"; the
@@ -120,8 +121,10 @@ export const ESPIONAGE = {
 /** Section 4E: guardrails against snowballing, vigilance, spoils and shields. */
 export const SIEGE = {
   AP: 20,
-  /** The mobilization fee: GOLD_SCALE × 1 per point of the attacker's rating, burned win or lose. */
-  MOBILIZE_PER_RATING: 1 * GOLD_SCALE,
+  /** The mobilization fee: GOLD_SCALE × 0.5 per point of the attacker's rating, burned win or lose. Half
+   *  the first guess: at 1 × GOLD_SCALE a breach of a lord holding what their edict needs never paid its
+   *  own fee, so a siege was only ever worth its war marks (DESIGN.md 11.9). */
+  MOBILIZE_PER_RATING: 0.5 * GOLD_SCALE,
   OVEREXTENSION_RATIO: 0.8,
   OVEREXTENSION_COST_EXP: 2.5,
   OVEREXTENSION_REWARD_EXP: 2,
@@ -156,10 +159,13 @@ export const SIEGE = {
   TARGETS: 5,
   BRACKET_LOW: 0.75,
   BRACKET_HIGH: 1.35,
-  MERCENARY_SCALES: [0.85, 0.95, 1.0, 1.1, 1.2] as readonly number[],
-  /** A mercenary bounty: min(GOLD_SCALE × 0.6 × your rating, 5% of the war chest), always under the fee
-   *  (DESIGN.md 11.4). */
-  MERCENARY_BOUNTY_PER_RATING: 0.6 * GOLD_SCALE,
+  /** Today's strongholds, by your rating. Walls favour a defender, so a stronghold of your own rating holds
+   *  (R about 0.87 with an even formation): from 0.75 to 1.15, two fall to any attack, one is even, and two
+   *  need a formation set against them (DESIGN.md 11.7; the plan's 0.85 to 1.2 left four of five out of reach). */
+  MERCENARY_SCALES: [0.75, 0.85, 0.95, 1.05, 1.15] as readonly number[],
+  /** A mercenary bounty: min(GOLD_SCALE × 0.3 × your rating, 5% of the war chest), always under the fee
+   *  (DESIGN.md 11.4: 60% of it, as the fee was halved). */
+  MERCENARY_BOUNTY_PER_RATING: 0.3 * GOLD_SCALE,
   MERCENARY_CHEST_SHARE: 0.05,
 } as const;
 
@@ -197,7 +203,9 @@ export const SINKS = {
   /** A fortress at tier t: 80 × t^1.05 of power in its garrison, behind walls of level t. */
   INCURSION_POWER_BASE: 80,
   INCURSION_POWER_EXP: 1.05,
-  INCURSION_MARKS_BASE: 6,
+  /** War marks a fortress taken gives: 10 + ⌊tier ÷ 2⌋ (DESIGN.md 11.8: at the plan's 6, a lord who never
+   *  besieges anyone earned too few in a year to open one tree of the War College). */
+  INCURSION_MARKS_BASE: 10,
   INCURSION_DRILL_XP_BASE: 150,
   INCURSION_DRILL_XP_PER_TIER: 20,
 } as const;

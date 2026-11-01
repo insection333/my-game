@@ -2,6 +2,7 @@
 // loaded every feature), and the categories the Deeds tab lists them under.
 import type { State } from '@idle-clash/kernel';
 import { POINTS, type Deed } from './content.ts';
+import { castleDeeds } from './families-castle.ts';
 import { combat, craft, skills } from './families.ts';
 import { finds, home } from './families-home.ts';
 import { kindlingDeeds } from './families-kindling.ts';
@@ -14,7 +15,7 @@ import { deedsOf } from './state.ts';
 export const CATEGORIES: readonly { id: string; families: readonly string[] }[] = [
   { id: 'skills', families: ['level', 'rank', 'kindling', 'kindlings'] },
   { id: 'craft', families: ['work', 'mastery', 'masters'] },
-  { id: 'combat', families: ['foe', 'region', 'defeats', 'gear'] },
+  { id: 'combat', families: ['foe', 'region', 'defeats', 'gear', 'castle', 'fortresses', 'warMarks', 'halls'] },
   { id: 'finds', families: ['legendary', 'log', 'collector'] },
   { id: 'runs', families: ['bossFirst', 'boss', 'trophy', 'trophies', 'runLength', 'runs', 'twists', 'relic'] },
   { id: 'home', families: ['fire', 'gold', 'store', 'works', 'steading', 'hidden'] },
@@ -32,6 +33,7 @@ function make() {
       ...runs(),
       ...home(),
       ...steadingDeeds(),
+      ...castleDeeds(),
     ];
     made = { list, byId: new Map(list.map((d) => [d.id, d])) };
   }

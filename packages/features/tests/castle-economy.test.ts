@@ -53,7 +53,7 @@ describe('Castle Clash gold', () => {
   it('asks a treasury by the castle and, at the least, by the lord (DESIGN.md 11.2)', () => {
     const c = fresh();
     expect(requiredTreasury(c, 0)).toBe(Math.round(100_000 * 1.12));
-    expect(requiredTreasury(c, 500)).toBe(Math.round(100_000 * 1.12 ** (500 / 22)));
+    expect(requiredTreasury(c, 500)).toBe(Math.round(100_000 * 1.12 ** (500 / 25)));
   });
 
   it('gives an edict 5% at the requirement, 10% at five times it, nothing under it, and unpaid morale', () => {

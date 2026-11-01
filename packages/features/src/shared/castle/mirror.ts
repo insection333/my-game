@@ -7,7 +7,15 @@ import type { State } from '@idle-clash/kernel';
 import { ECONOMY, EDICTS } from '@idle-clash/content';
 import { z } from 'zod';
 import type { Castle } from './castle.ts';
-import { edictBonusPct, requiredTreasury } from './economy.ts';
+import { avgLevel, edictBonusPct, requiredTreasury } from './economy.ts';
+
+const Count = z.number().int().min(0).max(1e9);
+/** The castle's standing, for the deeds that read it (session 33): its average level (whole), fortresses
+ *  taken, war marks earned, relic levels forged and War College ranks studied. */
+export const CastleStanding = z
+  .object({ level: Count, taken: Count, marks: Count, relics: Count, studies: Count })
+  .strict();
+export type CastleStanding = z.infer<typeof CastleStanding>;
 
 export const CastleMirror = z
   .object({
@@ -15,6 +23,7 @@ export const CastleMirror = z
     /** The edict's bonus in percent (5 to 10, more with excavation). */
     pct: z.number().min(0).max(50),
     until: z.number(),
+    standing: CastleStanding.optional(),
   })
   .strict();
 export type CastleMirror = z.infer<typeof CastleMirror>;
@@ -26,6 +35,21 @@ export function mirrorOf(state: State): CastleMirror {
   const raw = Object.hasOwn(state.features, 'castle') ? state.features.castle : undefined;
   const parsed = CastleMirror.safeParse(raw);
   return parsed.success ? parsed.data : NO_EDICT;
+}
+
+/** A lord's castle standing as their save holds it, or null before their castle is raised. */
+export const castleStanding = (state: State): CastleStanding | null => mirrorOf(state).standing ?? null;
+
+/** What the deeds read of a castle. */
+export function standingOf(c: Castle): CastleStanding {
+  const sum = (o: Record<string, number>) => Object.values(o).reduce((a, b) => a + b, 0);
+  return {
+    level: Math.floor(avgLevel(c)),
+    taken: Math.max(0, c.incursionTier - 1),
+    marks: Math.floor(c.warMarksEarned),
+    relics: sum(c.relics),
+    studies: sum(c.techs),
+  };
 }
 
 /** The bonus an edict gives at a moment to what it lifts: XP, finds or fight gold. */
@@ -40,7 +64,8 @@ export function edictPct(state: State, at: number, lifts: 'xp' | 'finds' | 'figh
  *  requirement. Paused upkeep keeps the edict until the lord's next Call to arms rewrites the mirror. */
 export function mirrorFor(c: Castle, totalLevel: number, now: number): CastleMirror {
   const pct = edictBonusPct(c, totalLevel);
-  if (!c.edict || pct <= 0) return NO_EDICT;
+  const standing = standingOf(c);
+  if (!c.edict || pct <= 0) return { ...NO_EDICT, standing };
   const req = requiredTreasury(c, totalLevel);
   const days = Math.log(req / c.treasury) / Math.log(1 - ECONOMY.UPKEEP_PER_DAY);
   const crossing = now + Math.max(0, days) * 86_400_000;
@@ -48,5 +73,5 @@ export function mirrorFor(c: Castle, totalLevel: number, now: number): CastleMir
     ? Date.parse(`${c.lastCtaDateUtc}T00:00:00Z`) + ECONOMY.UPKEEP_PAUSE_MS
     : Number.NEGATIVE_INFINITY;
   const until = crossing <= pauseAt ? crossing : Number.MAX_SAFE_INTEGER;
-  return { edict: c.edict as CastleMirror['edict'], pct, until: Math.floor(until) };
+  return { edict: c.edict as CastleMirror['edict'], pct, until: Math.floor(until), standing };
 }

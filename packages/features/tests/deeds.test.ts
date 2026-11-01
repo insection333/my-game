@@ -53,6 +53,13 @@ function everything(): State {
       runs: { '1': 100, '2': 80, '4': 50, '8': 20 },
       twists: TWISTS.map((x) => x.id),
     },
+    // A castle at level 25, fifty fortresses taken, every relic forged and every study made.
+    castle: {
+      edict: null,
+      pct: 0,
+      until: 0,
+      standing: { level: 25, taken: 50, marks: 1000, relics: 45, studies: 40 },
+    },
   };
   const held = items.filter((i) => i.id !== 'gold').slice(0, capacity(s));
   s.items = {

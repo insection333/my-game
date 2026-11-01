@@ -139,14 +139,16 @@ async function simulation(): Promise<StepResult> {
   // side on the machine's cores.
   const reportPath = 'design/model/report.md';
   const before = read(reportPath);
-  const [sim, year, model] = await Promise.all([
+  const [sim, year, castle, model] = await Promise.all([
     node('tools/sim/run.ts'),
     node('tools/sim/year-run.ts'),
+    node('tools/sim/castle-run.ts'),
     node('design/model/checks2.ts'),
   ]);
   mkdirSync(join(ROOT, '.verify'), { recursive: true });
   writeFileSync(join(ROOT, '.verify/simulation.md'), sim.output);
   writeFileSync(join(ROOT, '.verify/year.md'), year.output);
+  writeFileSync(join(ROOT, '.verify/castle.md'), castle.output);
   const passes = (out: string) => (out.match(/^PASS /gm) ?? []).length;
   const failures = (out: string) =>
     out
@@ -155,10 +157,11 @@ async function simulation(): Promise<StepResult> {
       .join('\n') || out;
   if (sim.code !== 0) return fail('the simulation misses a target', failures(sim.output));
   if (year.code !== 0) return fail('the year misses a target', failures(year.output));
+  if (castle.code !== 0) return fail('Castle Clash misses a target', failures(castle.output));
   if (model.code !== 0) return fail('the paper model misses a target', failures(model.output));
   if (read(reportPath) !== before) return fail("the model's report changed: run pnpm design:build and commit");
   return pass(
-    `real engine: ${passes(sim.output)} checks for the built skills (.verify/simulation.md) and ${passes(year.output)} for the year (.verify/year.md); paper model: ${passes(model.output)}`,
+    `real engine: ${passes(sim.output)} checks for the built skills (.verify/simulation.md), ${passes(year.output)} for the year (.verify/year.md) and ${passes(castle.output)} for Castle Clash (.verify/castle.md); paper model: ${passes(model.output)}`,
   );
 }
 

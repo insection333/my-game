@@ -101,7 +101,14 @@ export function Reports({ logs, now }: { logs: Report[]; now: number }) {
         flush
       >
         {logs.length ? (
-          <ul data-slot="castle.reports" className={s.reports} data-scrollbox>
+          // The list scrolls inside its panel and holds no controls: it takes the keyboard's focus itself.
+          <ul
+            data-slot="castle.reports"
+            className={s.reports}
+            data-scrollbox
+            tabIndex={0}
+            aria-label={t('castle.reports.title')}
+          >
             {logs.map((l) => (
               <ReportRow key={l.id} report={l} now={now} />
             ))}

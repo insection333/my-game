@@ -279,3 +279,9 @@
   display: grid;
   margin: 0 calc(-1 * var(--s-4));
 }
+
+/* The edict in force, on a skill's page and on Combat: a pill of its own size wherever it sits. */
+.edictPill {
+  display: inline-flex;
+  justify-self: start;
+}

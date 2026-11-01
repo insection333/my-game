@@ -6,7 +6,7 @@ import { castleEngine as E } from '@idle-clash/features';
 import { ActionRow, Button, Panel, Pill, Sheet } from '@idle-clash/ui';
 import { useEffect } from 'react';
 import { navigate, useLocation, withPanel } from '../../router.ts';
-import { mercName, missionDoes, missionName, outcomeName, refusal } from './labels.ts';
+import { mercName, missionDoes, missionName, outcomeName, refusal, trapName } from './labels.ts';
 import { garrisonLine, ReportRow, Reports, when } from './Reports.tsx';
 import { castleAct, loadTargets } from './store.ts';
 import { affords, hasAp, useSyncedCastle } from './synced.ts';
@@ -112,6 +112,16 @@ function TargetSheet({ target, onClose }: { target: Target; onClose: () => void 
         )}
         <div className={s.sheetSection}>
           <h3>{t('castle.siege.title')}</h3>
+          {target.merc && (
+            <p>
+              {t('castle.incursion.scouted', {
+                v: fmt.int(target.merc.garrison[0]),
+                o: fmt.int(target.merc.garrison[1]),
+                s: fmt.int(target.merc.garrison[2]),
+                trap: trapName(target.merc.trap),
+              })}
+            </p>
+          )}
           {odds !== null ? (
             <p>
               {t('castle.siege.odds', {

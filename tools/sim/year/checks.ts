@@ -82,6 +82,10 @@ export function yearChecks(check: Check, lines: string[]): { steady: Year; light
     `The light player has every skill at 99 on day ${lightAll}, within a quarter of the steady player's ${all}`,
   );
 
+  // Castle Clash in the year (session 33): raised at total level 100 and kept as a careful lord would,
+  // its Edict of Vigor lifting every skill's XP; the targets above all hold with it.
+  for (const y of [steady, light]) castleYear(y, check, lines);
+
   // A moment about every two minutes of active play at every stage of the year, never five without one.
   lines.push(`\n## Moments in the steady player's active hour`);
   for (const n of STAGES) {
@@ -132,15 +136,31 @@ export function yearChecks(check: Check, lines: string[]): { steady: Year; light
     0,
   );
   check(dailies >= year.length - 1, `${dailies} daily goals set and done in ${year.length} days`);
-  const empty = year.filter((d) => d.firsts.length === 0).map((d) => d.day);
+  // The climb is held to a first a day; once every skill is at 99 (sooner with an edict running, session
+  // 33), Kindling and the castle take over, and are held to one a week.
+  const top = lastOf(steady, ALL_SKILLS);
+  const climb = year.filter((d) => d.day <= top);
+  const empty = climb.filter((d) => d.firsts.length === 0).map((d) => d.day);
   const running = empty.some((d, i) => empty[i + 1] === d + 1);
   const kinds = new Set(year.flatMap((d) => d.firsts.map((f) => f.split(':')[0])));
   lines.push(`Kinds of first over the year: ${[...kinds].join(', ')}`);
-  lines.push(`Days without a first: ${empty.join(', ') || 'none'}`);
+  lines.push(`Days of the climb without a first: ${empty.join(', ') || 'none'}`);
   check(
     empty.length <= EMPTY_DAYS && !running,
-    `A first on ${year.length - empty.length} of ${year.length} days (at most ${EMPTY_DAYS} without, never two running)`,
+    `A first on ${climb.length - empty.length} of the climb's ${climb.length} days (at most ${EMPTY_DAYS} without, never two running)`,
   );
+  const after = year.filter((d) => d.day > top);
+  let gap = 0;
+  let longest = 0;
+  for (const d of after) {
+    gap = d.firsts.length ? 0 : gap + 1;
+    longest = Math.max(longest, gap);
+  }
+  if (after.length)
+    check(
+      longest < 7,
+      `After every skill is at 99 (day ${top}), a first at least once a week (the longest wait ${longest} days)`,
+    );
   // One skill kept in its lane, on the real engine to 99: a gathering skill, an artisan one, a style.
   lines.push(`\n## One skill kept in its lane, to 99`);
   const kept = [
@@ -174,4 +194,44 @@ export function yearChecks(check: Check, lines: string[]): { steady: Year; light
     );
   }
   return { steady, light };
+}
+
+/** Days in a year the edict may go unpowered (a short treasury), and what a castle reaches in a year. */
+const UNPOWERED_DAYS = 0.1;
+const CASTLE_YEAR = { level: 15, tier: 26, marks: 550 };
+
+function castleYear(y: Year, check: Check, lines: string[]) {
+  lines.push(`\n## ${y.kind.name}'s castle`);
+  const kept = y.days.filter((d) => d.castle && d.day <= YEAR);
+  const raised = kept[0]?.day ?? Infinity;
+  check(raised <= 7, `${y.kind.name} raises a castle on day ${raised} (within the first week)`);
+  for (const n of [30, 90, 180, 365]) {
+    const c = y.days[n - 1]?.castle;
+    if (c)
+      lines.push(
+        `Day ${n}: castle level ${c.level.toFixed(1)}, edict +${c.pct.toFixed(1)}%, treasury ${(c.treasury / 1e6).toFixed(1)}M of ${(c.required / 1e6).toFixed(1)}M needed, tier ${c.tier}, ${c.marks} war marks earned`,
+      );
+  }
+  const unpowered = kept.filter((d) => d.castle!.pct <= 0).length;
+  check(
+    unpowered <= kept.length * UNPOWERED_DAYS,
+    `${y.kind.name}'s edict is powered on ${kept.length - unpowered} of ${kept.length} days (at least 90%)`,
+  );
+  const end = kept.at(-1)?.castle;
+  const levels = [91, 182, 273, 365].map((n) => y.days[n - 1]?.castle?.level ?? 0);
+  check(
+    levels.every((l, i) => i === 0 || l > levels[i - 1]),
+    `${y.kind.name}'s castle grows every quarter (${levels.map((l) => l.toFixed(1)).join(', ')})`,
+  );
+  if (y.kind.name === 'The steady player' && end) {
+    check(
+      end.level >= CASTLE_YEAR.level,
+      `A year's castle at level ${end.level.toFixed(1)} (at least ${CASTLE_YEAR.level})`,
+    );
+    check(end.tier >= CASTLE_YEAR.tier, `A year's incursions reach tier ${end.tier} (a fortress a fortnight)`);
+    check(
+      end.marks >= CASTLE_YEAR.marks,
+      `A year's war marks without a siege: ${end.marks} (at least ${CASTLE_YEAR.marks}, a War College tree)`,
+    );
+  }
 }
