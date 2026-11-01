@@ -125,8 +125,6 @@
   gap: var(--s-3);
   max-height: min(38rem, 56dvh);
   padding: 2px;
-  overflow-y: auto;
-  overscroll-behavior: contain;
 }
 
 /* A row: what it is about (a skill, a foe) and its medallions, side by side while they fit (a foe's

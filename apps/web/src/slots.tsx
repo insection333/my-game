@@ -25,9 +25,20 @@ export function fillFor<T>(feature: Feature, slot: string, state: State, now: nu
   return fill ? (fill({ state, now }) as T) : null;
 }
 
-export function Slot({ id, children, className }: { id: string; children: ReactNode; className?: string }) {
+export function Slot({
+  id,
+  children,
+  className,
+  scrolls,
+}: {
+  id: string;
+  children: ReactNode;
+  className?: string;
+  /** Its rows scroll inside it (base.css: `data-scrollbox`). */
+  scrolls?: boolean;
+}) {
   return (
-    <div data-slot={id} className={className}>
+    <div data-slot={id} className={className} data-scrollbox={scrolls || undefined}>
       {children}
     </div>
   );

@@ -37,7 +37,20 @@
   }
 
   .intro {
+    position: relative;
+    isolation: isolate;
     padding-top: var(--s-6);
+  }
+
+  /* The scene runs behind the words here: a soft wash of the page's own colour keeps the mountains
+     from crossing the title and the loop. */
+  .intro::before {
+    content: '';
+    position: absolute;
+    inset: -8% -14% -24% -14%;
+    z-index: -1;
+    background: radial-gradient(closest-side, color-mix(in srgb, var(--surface) 94%, transparent) 62%, transparent);
+    pointer-events: none;
   }
 
   .card {
@@ -71,6 +84,7 @@
   color: var(--ink-2);
   font-size: var(--t-lead);
   line-height: 1.45;
+  text-wrap: balance;
 }
 
 /* Ore, bar, sword, foe: the loop the game is built on, joined by small chevrons. */
@@ -81,6 +95,10 @@
   display: flex;
   align-items: center;
   gap: var(--s-2);
+  padding: var(--s-1) var(--s-3);
+  background: color-mix(in srgb, var(--surface) 82%, transparent);
+  border: 1px solid var(--line);
+  border-radius: 999px;
 }
 
 .loop li {

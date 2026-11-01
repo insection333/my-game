@@ -91,3 +91,33 @@ a {
 :root[data-repaint] *::after {
   color: transparent !important;
 }
+
+/* A list that scrolls inside its own box (a skill's actions, its levels, the relics, a deed family):
+   its rows fade out at whichever edge has more beyond it (marked by the page: data-above,
+   data-below), so a row cut by the edge reads as more to come, not as a fault; and rows come to rest
+   on their own edges. */
+[data-scrollbox] {
+  --fade: 40px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scroll-snap-type: y proximity;
+}
+
+[data-scrollbox] > * {
+  scroll-snap-align: start;
+}
+
+[data-scrollbox][data-below] {
+  -webkit-mask-image: linear-gradient(#000 calc(100% - var(--fade)), transparent);
+  mask-image: linear-gradient(#000 calc(100% - var(--fade)), transparent);
+}
+
+[data-scrollbox][data-above] {
+  -webkit-mask-image: linear-gradient(transparent, #000 var(--fade));
+  mask-image: linear-gradient(transparent, #000 var(--fade));
+}
+
+[data-scrollbox][data-above][data-below] {
+  -webkit-mask-image: linear-gradient(transparent, #000 var(--fade), #000 calc(100% - var(--fade)), transparent);
+  mask-image: linear-gradient(transparent, #000 var(--fade), #000 calc(100% - var(--fade)), transparent);
+}

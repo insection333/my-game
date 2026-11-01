@@ -25,7 +25,7 @@ export function Ribbon({ stages, boss }: { stages: StageChip[]; boss: string }) 
   const forkAt = stages.findIndex((x) => x.afterFork);
   return (
     // A long route scrolls inside its own box, which takes the keyboard too.
-    <div className={s.ribbonBox} tabIndex={0} role="group" aria-label={t('expedition.route')}>
+    <div className={s.ribbonBox} data-scrollbox tabIndex={0} role="group" aria-label={t('expedition.route')}>
       <ol className={s.ribbon}>
         {Array.from({ length: hours }, (_, h) => (
           <li key={h} className={s.hour} aria-label={t('expedition.hour', { hour: fmt.int(h + 1) })}>

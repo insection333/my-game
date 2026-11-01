@@ -93,7 +93,7 @@ function SkillPage({ feature }: { feature: Feature }) {
                 />
               </div>
             )}
-            <Slot id="skill.actions" className={s.actionList}>
+            <Slot id="skill.actions" className={s.actionList} scrolls>
               {!all.length && (
                 <div className={s.trained}>
                   <span className={s.muted}>{t('combat.trainedHere')}</span>
@@ -195,7 +195,7 @@ const Ladder = memo(
     return (
       <Panel title={t('skill.ladder.title')} flush>
         <Slot id="skill.ladder">
-          <ol className={s.ladder} ref={ref} tabIndex={0} aria-label={t('skill.ladder.title')}>
+          <ol className={s.ladder} ref={ref} data-scrollbox tabIndex={0} aria-label={t('skill.ladder.title')}>
             {ladder.map((l) => (
               <li key={l.level} data-reached={l.reached || undefined}>
                 <span className={s.lv}>{l.level}</span>

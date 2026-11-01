@@ -215,8 +215,6 @@ a.row:hover {
 .actionList {
   display: block;
   max-height: min(42rem, 62dvh);
-  overflow-y: auto;
-  overscroll-behavior: contain;
 }
 
 .ladder {
@@ -224,8 +222,6 @@ a.row:hover {
   margin: 0;
   padding: 0;
   max-height: min(30rem, 55dvh);
-  overflow-y: auto;
-  overscroll-behavior: contain;
 }
 
 .ladder li {

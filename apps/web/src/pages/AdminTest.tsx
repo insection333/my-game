@@ -23,7 +23,7 @@ export function AdminTest() {
         {view.testers.length === 0 ? (
           <p className={s.note}>{t('admin.test.noPlayers')}</p>
         ) : (
-          <div className={s.testers} tabIndex={0} aria-label={t('admin.test.testers')}>
+          <div className={s.testers} data-scrollbox tabIndex={0} aria-label={t('admin.test.testers')}>
             {view.testers.map((p) => (
               <Tester key={p.name} p={p} />
             ))}
@@ -42,7 +42,7 @@ export function AdminTest() {
         {view.feedback.length === 0 ? (
           <p className={s.note}>{t('admin.test.noFeedback')}</p>
         ) : (
-          <ul className={s.list} tabIndex={0} aria-label={t('admin.test.feedback')}>
+          <ul className={s.list} data-scrollbox tabIndex={0} aria-label={t('admin.test.feedback')}>
             {view.feedback.map((f) => (
               <li key={`${f.at}-${f.name ?? ''}-${f.text.length}`}>
                 <div className={s.noteHead}>
