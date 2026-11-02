@@ -51,10 +51,10 @@ function raised(id: string, now: number, level: number): E.Castle {
   return { ...out, rating: E.bastionRating(out) };
 }
 
-/** Today's easiest stronghold, taken ten minutes ago: it shows as fallen, one of five. */
+/** Today's easiest stronghold, taken twelve minutes ago (its report is in castles()): fallen, one of five. */
 function fallen(c: E.Castle, now: number): E.Castle {
   const id = `merc:${E.formatUtcDate(now)}:0`;
-  return { ...c, pairs: [{ d: id, sieges: [now - 10 * 60_000], spies: [], cn: 0, cnUntil: 0, fell: true }] };
+  return { ...c, pairs: [{ d: id, sieges: [now - 0.2 * HOUR], spies: [], cn: 0, cnUntil: 0, fell: true }] };
 }
 
 /** Writes both castles and the elder's reports. `totalLevel` is the elder's, for the treasury it needs. */

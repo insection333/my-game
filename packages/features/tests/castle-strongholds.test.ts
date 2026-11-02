@@ -77,14 +77,16 @@ describe("the day's strongholds", () => {
     // A castle far stronger than its strongholds (they are drawn from its rating, so it is lowered).
     let c: Castle = { ...castle(30), rating: 2000 };
     const five = mercenaries(c, T0, 5);
-    let last = null;
-    for (const m of five) {
-      last = assault(c, m, 0.99);
-      expect(last.outcome).not.toBe('repelled');
-      c = last.attacker;
-    }
-    expect(last!.rout).toBe(true);
-    expect(last!.marks).toBe(strongholdMarks(c, five[4], last!.outcome, T0) + SIEGE.ROUT_MARKS);
+    const results = five.map((m) => {
+      const r = assault(c, m, 0.99);
+      expect(r.outcome).not.toBe('repelled');
+      c = r.attacker;
+      return r;
+    });
+    const last = results[4];
+    expect(results.slice(0, 4).every((r) => !r.rout)).toBe(true);
+    expect(last.rout).toBe(true);
+    expect(last.marks).toBe(strongholdMarks(c, five[4], last.outcome, T0) + SIEGE.ROUT_MARKS);
     expect(c.routs).toBe(1);
     expect(strongholdsFallen(c, T0)).toBe(5);
   });

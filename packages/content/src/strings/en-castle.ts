@@ -155,4 +155,8 @@ export const castle = {
   'castle.tech.espionage.does': '+5% stealth and detection a rank',
   'castle.rank': 'Rank {rank} of {ranks}',
   'castle.study': 'Study for {gold} and {marks} war marks',
+  // The Castles ladder on Hiscores (session 38).
+  'hiscores.castles': 'Castles',
+  'hiscores.castleLevel': 'Castle',
+  'hiscores.rating': 'Rating',
 };

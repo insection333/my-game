@@ -8,6 +8,9 @@
 // (checks.ts): every siege and its odds, raids, bounties, tiers, marks, and the realm's gold to the coin.
 import { BUILDINGS, RELICS, SIEGE, SINKS, TECH_IDS, UNIT_IDS, UNITS } from '@idle-clash/content';
 import { castleEngine as E } from '@idle-clash/features';
+import type { Lord, Realm } from './records.ts';
+
+export type { Lord, MercRecord, Realm, SiegeRecord } from './records.ts';
 
 const HOUR = 3_600_000;
 export const DAY = 24 * HOUR;
@@ -34,58 +37,6 @@ export const KINDS: LordKind[] = [
   { name: 'light', visits: [8, 20], income: 500_000, totalLevel: 300, playsOf4: 4, raids: false, treasury: 1.5 },
   { name: 'lapsed', visits: [8], income: 400_000, totalLevel: 250, playsOf4: 1, raids: true, treasury: 2 },
 ];
-
-export interface SiegeRecord {
-  day: number;
-  attacker: string;
-  defender: string;
-  ratio: number;
-  r: number;
-  outcome: E.Outcome;
-  raided: number;
-  /** The defender's required treasury at the time. */
-  required: number;
-  fee: number;
-}
-export interface MercRecord {
-  day: number;
-  lord: string;
-  scale: number;
-  /** Its place among the day's five, easiest first. */
-  n: number;
-  outcome: E.Outcome;
-  bounty: number;
-  fee: number;
-  marks: number;
-  rout: boolean;
-}
-export interface Lord {
-  id: string;
-  kind: LordKind;
-  castle: E.Castle;
-  purse: number;
-  /** Per day: the edict powered at the day's end, the tier, war marks earned, gold the treasury lost. */
-  powered: boolean[];
-  tiers: number[];
-  marks: number[];
-  levels: number[];
-  raidedOn: number[];
-}
-export interface Realm {
-  lords: Lord[];
-  sieges: SiegeRecord[];
-  mercs: MercRecord[];
-  incursions: { day: number; r: number; won: boolean; tier: number; spoils: string | null }[];
-  /** Tempering across the realm: tries, tempers taken, masterstrokes. */
-  tempers: { tries: number; taken: number; masterstrokes: number };
-  chest: number;
-  destroyed: number;
-  /** Gold burned, by what burned it. */
-  burned: Record<string, number>;
-  /** Gold that came in from play, and the realm's gold at the start. */
-  income: number;
-  start: number;
-}
 
 function generator(seed: number) {
   let s = seed;
