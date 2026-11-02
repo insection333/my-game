@@ -20,6 +20,8 @@ export interface PairEntry {
   spies: number[];
   cn: number;
   cnUntil: number;
+  /** A stronghold breached in the window (session 38): it has fallen for the day. */
+  fell?: boolean;
 }
 
 export interface Castle {
@@ -60,6 +62,8 @@ export interface Castle {
   excavationDepth: number;
   incursionTier: number;
   incursionScoutedTier: number;
+  /** Days all five strongholds fell (session 38). */
+  routs: number;
   /** Owned war relics by id, each at level 1 to 5. */
   relics: Record<string, number>;
   /** Tempers on relics at their last level (session 35), by id: without end. */
@@ -119,6 +123,7 @@ export function newCastle(userId: string, now: number): Castle {
     excavationDepth: 0,
     incursionTier: 1,
     incursionScoutedTier: 0,
+    routs: 0,
     relics: {},
     tempers: {},
     equippedRelics: [],

@@ -23,9 +23,22 @@ export interface CastleView {
   logs: CastleReport[];
 }
 
+/** A lord to challenge: near your rating, or one who besieged you in the last day (session 38). */
+export interface LordTarget {
+  id: string;
+  name: string;
+  rating: number;
+  /** Your spies' chance against them now. */
+  spyChance: number;
+  /** When they last besieged you, within the last day, or null. */
+  struck: number | null;
+  /** Until when their shield holds (a foe may be under one), or null. */
+  shieldedUntil: number | null;
+}
+
 export interface CastleTargets {
-  /** Lords near your rating, each with your spies' chance against them now. */
-  lords: { id: string; name: string; rating: number; spyChance: number }[];
+  lords: LordTarget[];
+  /** The day's five strongholds, easiest first. */
   mercenaries: Mercenary[];
 }
 

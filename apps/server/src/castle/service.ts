@@ -199,6 +199,8 @@ function incursion(io: Io, c: Castle): Outcome {
     fortress: E.fortressAt(tier).id,
     won: r.won,
     r: r.r,
+    ...E.battleAccount(r.attack, r.defense, r.r),
+    formation: [...c.offense],
     marks: r.marks,
     drillXp: r.drillXp,
     ...(r.spoils ? { spoils: r.spoils } : {}),

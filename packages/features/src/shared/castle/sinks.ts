@@ -86,6 +86,9 @@ export interface IncursionResult {
   castle: Castle;
   won: boolean;
   r: number;
+  /** Each side's strength, for the battle's account. */
+  attack: number;
+  defense: number;
   marks: number;
   drillXp: Record<UnitId, number>;
   /** A fortress taken now and then yields more: the armoury (1 in 10), the hoard (1 in 100). */
@@ -104,7 +107,7 @@ export function launchIncursion(c: Castle, now: number, roll: number, luck = 1):
   if (c.activeAp + 1e-9 < SINKS.INCURSION_AP) return 'ap';
   const tier = c.incursionTier;
   const att = castleSide(c, now, 'attack');
-  const { r } = combatRatio(att, fortressSide(tier), roll);
+  const { attack, defense, r } = combatRatio(att, fortressSide(tier), roll);
   const mods = modifiers(c, now);
   const spent = { ...c, activeAp: c.activeAp - SINKS.INCURSION_AP };
   const none = { vanguard: 0, outriders: 0, siege: 0 };
@@ -116,6 +119,8 @@ export function launchIncursion(c: Castle, now: number, roll: number, luck = 1):
       },
       won: false,
       r,
+      attack,
+      defense,
       marks: 0,
       drillXp: none,
       spoils: null,
@@ -139,6 +144,8 @@ export function launchIncursion(c: Castle, now: number, roll: number, luck = 1):
     },
     won: true,
     r,
+    attack,
+    defense,
     marks,
     drillXp,
     spoils,

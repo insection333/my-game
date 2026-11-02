@@ -88,7 +88,7 @@ export const TERMS: [term: string, meaning: string][] = [
   ['Medallion', "A deed's mark on the Deeds tab, ringed in its tier's colour and filled once done"],
   [
     'Mercenary stronghold',
-    'Castle Clash: a target made for you each day near your rating; its bounty comes from the war chest',
+    'Castle Clash: one of five targets made for you each day near your rating, the harder paying more; it falls for the day once breached, and its bounty comes from the war chest',
   ],
   ['Milestone', 'A long goal, such as total level 100'],
   ['Next action', "The action queued behind a lane's current one; it starts when the current one stops"],
@@ -102,6 +102,7 @@ export const TERMS: [term: string, meaning: string][] = [
   ['Rare', 'A find of about 1 in 500 actions'],
   ['Region', 'Where foes are fought: the march, the Sunken Fen and the Ashen Peaks, each a tab of Combat'],
   ['Relic', 'A lasting boost bought with marks, in ranks: XP in a skill, food, finds or Storehouse space'],
+  ['Rout', "Castle Clash: all five of a day's mercenary strongholds taken, worth war marks of its own"],
   ['Retreat', 'Leaving a fight at low health with no food; nothing is lost and the lane stops'],
   ['Short goals', 'Three rolling goals of 10 to 15 minutes'],
   ['Siege', "Castle Clash: an attack on another lord's castle for the treasury gold their vault cannot hide"],

@@ -134,6 +134,7 @@ export const refusal = read({
   self: 'castle.refused.self',
   shielded: 'castle.refused.shielded',
   pairLimit: 'castle.refused.pairLimit',
+  fallen: 'castle.refused.fallen',
   immune: 'castle.refused.immune',
   full: 'castle.refused.full',
   closed: 'castle.refused.closed',

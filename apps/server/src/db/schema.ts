@@ -192,6 +192,8 @@ export const playerBastions = sqliteTable(
     excavationDepth: integer('excavation_depth').notNull().default(0),
     incursionTier: integer('incursion_tier').notNull().default(1),
     incursionScoutedTier: integer('incursion_scouted_tier').notNull().default(0),
+    /** Days all five of the day's strongholds fell (session 38). */
+    routs: integer('routs').notNull().default(0),
     // Bounded collections (JSON, at most 20 entries each).
     relics: text('relics').notNull().default('{}'),
     relicTempers: text('relic_tempers').notNull().default('{}'),

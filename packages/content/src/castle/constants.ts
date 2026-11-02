@@ -169,6 +169,17 @@ export const SIEGE = {
    *  (DESIGN.md 11.4: 60% of it, as the fee was halved). */
   MERCENARY_BOUNTY_PER_RATING: 0.3 * GOLD_SCALE,
   MERCENARY_CHEST_SHARE: 0.05,
+  /** What each of the day's strongholds pays, by its place (session 38): its war marks and bounty times
+   *  these. The harder ones pay more, so each is worth its risk; even the last one's bounty (0.48 ×
+   *  GOLD_SCALE × your rating) stays under its fee (0.5). */
+  STRONGHOLD_PAY: [0.8, 0.9, 1, 1.25, 1.6] as readonly number[],
+  /** War marks for a stronghold taken, narrowly or not, before what its place pays: one number a player
+   *  can weigh against its odds (12, 15 and 19 from the middle up). */
+  STRONGHOLD_MARKS: 12,
+  /** All five of the day's strongholds taken: a rout, worth these war marks more (before relics). */
+  ROUT_MARKS: 30,
+  /** War marks for a siege on a stronger lord: × their rating over yours, squared, up to 1.5 (session 38). */
+  BOLD_MARKS_MAX: 1.5,
 } as const;
 
 /** Section 4E.6: walls and wounds recover; nothing is ever lost for good. */

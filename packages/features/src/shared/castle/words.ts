@@ -87,12 +87,24 @@ export function castleMoment(e: CastleEvent): {
   const join = (parts: string[]) => (parts.length ? parts.join(', ') : null);
   switch (e.type) {
     case 'castleSiege':
-      return {
-        title: sentence(t('castle.report.siegeOut', { outcome: outcomeName(e.outcome), foe })),
-        body: join([...goldText(e.gold), ...marksText(e.marks)]),
-        href: '/castle/war-room',
-        size: e.outcome === 'decisive' ? 'banner' : 'toast',
-      };
+      // The fifth of the day's strongholds to fall takes the centre of the screen: a rout.
+      return e.rout
+        ? {
+            title: t('castle.rout'),
+            body: join([
+              sentence(t('castle.report.siegeOut', { outcome: outcomeName(e.outcome), foe })),
+              ...goldText(e.gold),
+              ...marksText(e.marks),
+            ]),
+            href: '/castle/war-room',
+            size: 'centre',
+          }
+        : {
+            title: sentence(t('castle.report.siegeOut', { outcome: outcomeName(e.outcome), foe })),
+            body: join([...goldText(e.gold), ...marksText(e.marks)]),
+            href: '/castle/war-room',
+            size: e.outcome === 'decisive' ? 'banner' : 'toast',
+          };
     case 'castleBesieged':
       return {
         title: sentence(t('castle.report.siegeIn', { foe, outcome: outcomeName(e.outcome) })),

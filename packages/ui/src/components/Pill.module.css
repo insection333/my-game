@@ -32,5 +32,6 @@
 
 .ember {
   background: color-mix(in srgb, var(--ember) 14%, transparent);
-  color: var(--ember);
+  /* The ember's ink: the ember itself is too light for small text on its own tint. */
+  color: var(--ember-ink);
 }

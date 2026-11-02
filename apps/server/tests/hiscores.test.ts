@@ -6,6 +6,8 @@ import { XP_TABLE } from '@idle-clash/content';
 import type { State } from '@idle-clash/kernel';
 import { eq } from 'drizzle-orm';
 import { afterEach, describe, expect, it } from 'vitest';
+import { castleEngine } from '@idle-clash/features';
+import { CastleStore } from '../src/castle/store.ts';
 import { players } from '../src/db/schema.ts';
 import { hearWatching } from '../src/game/watching.ts';
 import { post, server, signUp, type TestServer } from './helpers.ts';
@@ -225,5 +227,45 @@ describe('hiscores', () => {
     expect((await ladders(a)).listed).toBe(false);
     await post(s, '/api/f/goals/refresh', { requestId: 'req-hs-goals', input: {} }, a);
     expect((await ladders(a)).listed).toBe(true);
+  });
+
+  it('ranks castles by rating on the Castles ladder, the first raised first on a tie (session 38)', async () => {
+    s = await server();
+    const a = await signUp(s, 'Alder');
+    const b = await signUp(s, 'Birch');
+    const c = await signUp(s, 'Cedar');
+    const idOf = async (cookie: string) =>
+      (
+        JSON.parse((await s.app.inject({ method: 'GET', url: '/api/me', headers: { cookie } })).body) as {
+          player: { id: string };
+        }
+      ).player.id;
+    const castles = new CastleStore(s.ctx);
+    const raise = (id: string, level: number, at: number) => {
+      const fresh = castleEngine.newCastle(id, at);
+      const levels = Object.fromEntries(
+        Object.keys(fresh.levels).map((k) => [k, level]),
+      ) as castleEngine.Castle['levels'];
+      const built = { ...fresh, levels };
+      castles.write({ ...built, rating: castleEngine.bastionRating(built) });
+    };
+    raise(await idOf(a), 10, 1);
+    raise(await idOf(b), 20, 2);
+    raise(await idOf(c), 10, 0);
+    listAll();
+    const ladder = (await ladders(a)).ladders.find((l) => l.skill === 'castle')!;
+    expect(ladder.rows.map((r) => [r.rank, r.name, r.level])).toEqual([
+      [1, 'Birch', 20],
+      [2, 'Cedar', 10],
+      [3, 'Alder', 10],
+    ]);
+    expect(ladder.rows[0].xp).toBeGreaterThan(ladder.rows[1].xp);
+    expect(ladder.you).toMatchObject({ rank: 3, name: 'Alder' });
+    // A banned lord leaves it.
+    s.ctx.db.update(players).set({ bannedAt: s.clock.now }).where(eq(players.name, 'Birch')).run();
+    expect((await ladders(a)).ladders.find((l) => l.skill === 'castle')!.rows.map((r) => r.name)).toEqual([
+      'Cedar',
+      'Alder',
+    ]);
   });
 });

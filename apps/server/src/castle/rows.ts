@@ -25,6 +25,7 @@ const Pairs = z
       spies: z.array(z.number()).max(20),
       cn: z.number().int().min(0).max(3),
       cnUntil: z.number(),
+      fell: z.boolean().optional(),
     }),
   )
   .max(20);
@@ -94,6 +95,7 @@ export function toCastle(r: BastionRow): Castle {
     excavationDepth: r.excavationDepth,
     incursionTier: r.incursionTier,
     incursionScoutedTier: r.incursionScoutedTier,
+    routs: r.routs,
     relics: json(Relics, r.relics, {}),
     tempers: json(Tempers, r.relicTempers, {}),
     equippedRelics: json(Equipped, r.equippedRelics, []),
@@ -154,6 +156,7 @@ export function toRow(c: Castle): BastionRow {
     excavationDepth: c.excavationDepth,
     incursionTier: c.incursionTier,
     incursionScoutedTier: c.incursionScoutedTier,
+    routs: c.routs,
     relics: JSON.stringify(c.relics),
     relicTempers: JSON.stringify(c.tempers),
     equippedRelics: JSON.stringify(c.equippedRelics),

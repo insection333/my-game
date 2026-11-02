@@ -9,6 +9,7 @@ import {
   estimatedDefence,
   newCastle,
   oddsWith,
+  sabotageSent,
   winChance,
   type Castle,
 } from '../src/shared/castle/index.ts';
@@ -53,5 +54,34 @@ describe('Castle Clash planning', () => {
     expect(est.base[0]).toBeCloseTo(self.base[0], 6);
     const half = estimatedDefence(c, seen, c.rating / 2, T0);
     expect(half.base[0]).toBeCloseTo(self.base[0] / 2, 6);
+  });
+});
+
+describe('sabotage your spies laid (session 38)', () => {
+  it('counts in the estimate until it lapses or a fair siege of yours consumes it', () => {
+    const T = Date.UTC(2026, 10, 2, 12);
+    const H = 3_600_000;
+    const spy = (at: number, mission: string, success = true) => ({
+      kind: 'spyOut',
+      at,
+      data: { foe: 'them', mission, success },
+    });
+    const reports = [
+      spy(T - H, 'poison'),
+      spy(T - 2 * H, 'poison'),
+      spy(T - 5 * H, 'poison'),
+      spy(T - H, 'forge', false),
+    ];
+    expect(sabotageSent(reports, 'them', T)).toEqual([{ kind: 'poison', stacks: 2, until: T - H + 4 * H }]);
+    expect(sabotageSent(reports, 'someone else', T)).toEqual([]);
+    const sieged = [...reports, { kind: 'siegeOut', at: T - 30 * 60_000, data: { foe: 'them', genuine: true } }];
+    expect(sabotageSent(sieged, 'them', T)).toEqual([]);
+    // Poisoned wells lower the estimated defence of an even lord.
+    const c = { ...newCastle('me', T - 30 * 24 * H), shieldUntil: 0 };
+    const rated = { ...c, rating: bastionRating(c) };
+    const seen = { defense: [34, 33, 33], trap: null, castellan: null };
+    const plain = estimatedDefence(rated, seen, rated.rating, T);
+    const weakened = estimatedDefence(rated, seen, rated.rating, T, sabotageSent(reports, 'them', T));
+    expect(oddsWith(rated, rated.offense, weakened, T)).toBeGreaterThan(oddsWith(rated, rated.offense, plain, T));
   });
 });

@@ -22,6 +22,8 @@ export const CastleStanding = z
     studies: Count,
     /** The most tempers on any one relic. */
     tempered: Count.optional(),
+    /** Days all five strongholds fell (session 38). */
+    routs: Count.optional(),
     /** The day of the last Call to arms answered, for the Hearth's reminder. */
     called: z
       .string()
@@ -67,6 +69,7 @@ export function standingOf(c: Castle): CastleStanding {
     relics: sum(c.relics),
     studies: sum(c.techs),
     tempered: Math.max(0, ...Object.values(c.tempers)),
+    routs: c.routs,
     called: c.lastCtaDateUtc,
   };
 }

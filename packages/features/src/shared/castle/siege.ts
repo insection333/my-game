@@ -30,7 +30,12 @@ export function siegeCosts(c: Castle, ratio: number, now: number): { ap: number;
 export const overextensionReward = (ratio: number): number =>
   ratio < SIEGE.OVEREXTENSION_RATIO ? (ratio / SIEGE.OVEREXTENSION_RATIO) ** SIEGE.OVEREXTENSION_REWARD_EXP : 1;
 
-export type SiegeRefusal = 'self' | 'shielded' | 'pairLimit' | 'ap';
+/** War marks for a siege by the ratio: less against a far weaker castle, more against a stronger one
+ *  (brRatio², up to 1.5; session 38), so the bolder attack is worth its worse odds. */
+export const marksReward = (ratio: number): number =>
+  ratio > 1 ? Math.min(SIEGE.BOLD_MARKS_MAX, ratio ** 2) : overextensionReward(ratio);
+
+export type SiegeRefusal = 'self' | 'shielded' | 'fallen' | 'pairLimit' | 'ap';
 
 /** Why a siege may not go, or null. Gold is the caller's to check (purse or treasury). */
 export function siegeRefusal(
@@ -42,7 +47,9 @@ export function siegeRefusal(
 ): SiegeRefusal | null {
   if (att.userId === defId) return 'self';
   if (defShielded) return 'shielded';
-  if (pairOf(att, defId, now).sieges.length >= ESPIONAGE.PAIR_SIEGES) return 'pairLimit';
+  const pair = pairOf(att, defId, now);
+  if (pair.fell) return 'fallen';
+  if (pair.sieges.length >= ESPIONAGE.PAIR_SIEGES) return 'pairLimit';
   if (att.activeAp + 1e-9 < ap) return 'ap';
   return null;
 }
@@ -127,7 +134,9 @@ export function resolveSiege(
   const spoils = splitSpoils(Math.min(def.treasury, Math.max(0, Math.round(raidable * factor))));
   const breach = outcome !== 'repelled';
   const attackerMarks = breach
-    ? Math.round((outcome === 'decisive' ? SIEGE.MARKS_DECISIVE : SIEGE.MARKS_GRAZE) * reward * lift(attMods.marks))
+    ? Math.round(
+        (outcome === 'decisive' ? SIEGE.MARKS_DECISIVE : SIEGE.MARKS_GRAZE) * marksReward(ratio) * lift(attMods.marks),
+      )
     : 0;
   const defenderMarks = breach ? 0 : Math.round(SIEGE.MARKS_REPELLED * lift(defMods.marks));
 

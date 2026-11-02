@@ -8,6 +8,9 @@
 // (checks.ts): every siege and its odds, raids, bounties, tiers, marks, and the realm's gold to the coin.
 import { BUILDINGS, RELICS, SIEGE, SINKS, TECH_IDS, UNIT_IDS, UNITS } from '@idle-clash/content';
 import { castleEngine as E } from '@idle-clash/features';
+import type { Lord, Realm } from './records.ts';
+
+export type { Lord, MercRecord, Realm, SiegeRecord } from './records.ts';
 
 const HOUR = 3_600_000;
 export const DAY = 24 * HOUR;
@@ -34,53 +37,6 @@ export const KINDS: LordKind[] = [
   { name: 'light', visits: [8, 20], income: 500_000, totalLevel: 300, playsOf4: 4, raids: false, treasury: 1.5 },
   { name: 'lapsed', visits: [8], income: 400_000, totalLevel: 250, playsOf4: 1, raids: true, treasury: 2 },
 ];
-
-export interface SiegeRecord {
-  day: number;
-  attacker: string;
-  defender: string;
-  ratio: number;
-  r: number;
-  outcome: E.Outcome;
-  raided: number;
-  /** The defender's required treasury at the time. */
-  required: number;
-  fee: number;
-}
-export interface MercRecord {
-  day: number;
-  scale: number;
-  outcome: E.Outcome;
-  bounty: number;
-  fee: number;
-}
-export interface Lord {
-  id: string;
-  kind: LordKind;
-  castle: E.Castle;
-  purse: number;
-  /** Per day: the edict powered at the day's end, the tier, war marks earned, gold the treasury lost. */
-  powered: boolean[];
-  tiers: number[];
-  marks: number[];
-  levels: number[];
-  raidedOn: number[];
-}
-export interface Realm {
-  lords: Lord[];
-  sieges: SiegeRecord[];
-  mercs: MercRecord[];
-  incursions: { day: number; r: number; won: boolean; tier: number; spoils: string | null }[];
-  /** Tempering across the realm: tries, tempers taken, masterstrokes. */
-  tempers: { tries: number; taken: number; masterstrokes: number };
-  chest: number;
-  destroyed: number;
-  /** Gold burned, by what burned it. */
-  burned: Record<string, number>;
-  /** Gold that came in from play, and the realm's gold at the start. */
-  income: number;
-  start: number;
-}
 
 function generator(seed: number) {
   let s = seed;
@@ -231,6 +187,12 @@ export function playRealm(perKind: number, days: number, seed: number): Realm {
       const war = E.tabOpen(l.castle, 'warRoom') && l.castle.siegesToday < SIEGE.FATIGUE_FREE;
       if (war && l.kind.raids && siegeALord(l, t, day)) continue;
       if (war && l.kind.raids && mercenary(l, t, day)) continue;
+      // A raider with AP and gold to spare (a week's earnings in hand, the edict paid for) presses on past
+      // fatigue against the strongholds still standing, for the harder ones' pay and the rout (session 38).
+      const spare =
+        l.purse > 7 * l.kind.income && l.castle.treasury >= E.requiredTreasury(l.castle, l.kind.totalLevel) * 1.5;
+      const pressing = spare && E.tabOpen(l.castle, 'warRoom') && l.castle.siegesToday < SIEGE.STRONGHOLD_PAY.length;
+      if (pressing && l.kind.raids && l.castle.activeAp >= SIEGE.AP * 2 && mercenary(l, t, day)) continue;
       if (E.tabOpen(l.castle, 'incursions') && l.castle.activeAp >= SINKS.INCURSION_AP) {
         const odds = E.combatRatio(att(), E.fortressSide(l.castle.incursionTier), 0.5).r;
         if (odds >= 1.05) {
@@ -304,14 +266,19 @@ export function playRealm(perKind: number, days: number, seed: number): Realm {
     return false;
   }
 
+  /** A stronghold, as a player would choose one: the formation set against each, the first standing one
+   *  with a fair chance (60% or better), its fee no more than a quarter of the purse. */
   function mercenary(l: Lord, t: number, day: number): boolean {
     const today = E.mercenaries(l.castle, t, SIEGE.TARGETS);
-    for (const [n, m] of today.entries()) {
-      const costs = E.mercenaryCosts(l.castle, m, t);
-      if (E.siegeRefusal(l.castle, m.id, false, costs.ap, t)) continue;
-      const odds = E.combatRatio(E.castleSide(l.castle, t, 'attack'), E.mercenarySide(m), 0.5).r;
-      if (odds < 1.05 || costs.gold > l.purse / 4) continue;
-      const paid = E.pay({ castle: l.castle, purse: l.purse }, costs.gold);
+    for (const m of today) {
+      const side = E.mercenarySide(m);
+      const best = E.bestOffense(l.castle, side, t);
+      if (E.winChance(best.r) < 0.6) continue;
+      const set = { ...l.castle, offense: best.shares };
+      const costs = E.mercenaryCosts(set, m, t);
+      if (E.siegeRefusal(set, m.id, false, costs.ap, t)) continue;
+      if (costs.gold > l.purse / 4) continue;
+      const paid = E.pay({ castle: set, purse: l.purse }, costs.gold);
       if (!paid) return false;
       burn(costs.gold, 'stronghold fees');
       l.purse = paid.purse;
@@ -321,10 +288,14 @@ export function playRealm(perKind: number, days: number, seed: number): Realm {
       l.castle = r.attacker;
       realm.mercs.push({
         day,
-        scale: SIEGE.MERCENARY_SCALES[n],
+        lord: l.id,
+        scale: SIEGE.MERCENARY_SCALES[m.n],
+        n: m.n,
         outcome: r.outcome,
         bounty: r.bounty,
         fee: costs.gold,
+        marks: r.marks,
+        rout: r.rout,
       });
       return true;
     }

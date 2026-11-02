@@ -5,10 +5,18 @@ import { castleEngine as E } from '@idle-clash/features';
 import { ActionRow, Button, Panel, Pill } from '@idle-clash/ui';
 import { fortressName, trapName } from './labels.ts';
 import { AttackPlan } from './Plan.tsx';
-import { ReportRow } from './Reports.tsx';
-import { castleAct } from './store.ts';
+import { navigate } from '../../router.ts';
+import { ReportRow, reportSheet } from './Reports.tsx';
+import { castleAct, castleRun, castleStore } from './store.ts';
 import { hasAp, useSyncedCastle } from './synced.ts';
 import s from './castle.module.css';
+
+/** Sends an assault, and on its answer opens the battle's account. */
+async function assault() {
+  const r = await castleRun({ type: 'incursion' });
+  const report = castleStore.get().view?.logs[0];
+  if (r?.ok && report) navigate(reportSheet(report.id));
+}
 
 export function Incursions() {
   const { castle, view, now, busy } = useSyncedCastle();
@@ -65,7 +73,7 @@ export function Incursions() {
                 <Button
                   variant="primary"
                   disabled={busy || !hasAp(castle, SINKS.INCURSION_AP)}
-                  onClick={() => void castleAct({ type: 'incursion' })}
+                  onClick={() => void assault()}
                 >
                   {t('castle.incursion.assault', { ap: fmt.int(SINKS.INCURSION_AP) })}
                 </Button>

@@ -59,6 +59,36 @@ export function castleChecks(check: Check, lines: string[]): void {
   const bounties = realm.mercs.every((m) => m.bounty < m.fee);
   check(bounties, `Every stronghold's bounty is less than its fee (${realm.mercs.length} stronghold sieges)`);
 
+  // The day's strongholds (session 38): each falls once breached, the harder pay more, and the hardest
+  // are reached only by some, on some days; all five falling, a rout, is rare.
+  const byPlace = [0, 1, 2, 3, 4].map((n) => realm.mercs.filter((m) => m.n === n));
+  const fell = byPlace.map((ms) => ms.filter((m) => m.outcome !== 'repelled').length);
+  const marksAt = byPlace.map((ms) => {
+    const won = ms.filter((m) => m.outcome !== 'repelled' && !m.rout);
+    return won.reduce((n, m) => n + m.marks, 0) / Math.max(1, won.length);
+  });
+  const routs = realm.mercs.filter((m) => m.rout).length;
+  const warDays = new Set(realm.mercs.map((m) => `${m.lord}:${m.day}`)).size;
+  lines.push(
+    `Strongholds taken, easiest first: ${fell.join(', ')}; war marks for each: ${marksAt.map((x) => x.toFixed(1)).join(', ')}; routs ${routs} in ${warDays} days at war`,
+  );
+  check(
+    marksAt.every((x, i) => i === 0 || x === 0 || x > marksAt[i - 1]),
+    'Each harder stronghold pays more war marks than the one before it',
+  );
+  const twice = new Set<string>();
+  const again = realm.mercs.some((m) => {
+    if (m.outcome === 'repelled') return false;
+    const k = `${m.lord}:${m.day}:${m.n}`;
+    return twice.has(k) || (twice.add(k), false);
+  });
+  check(!again, 'No stronghold is taken twice in a day');
+  check(fell[3] > 0, `The fourth stronghold falls to lords who set their formation against it (${fell[3]} times)`);
+  check(
+    routs < warDays * 0.25,
+    `A rout is a feat, not a daily chore (${routs} in ${warDays} days at war, under a quarter)`,
+  );
+
   // Luck: fortresses' spoils as often as their odds say, and tempering a long chase with no end.
   const taken = realm.incursions.filter((x) => x.won);
   const armoury = taken.filter((x) => x.spoils === 'armoury').length / Math.max(1, taken.length);

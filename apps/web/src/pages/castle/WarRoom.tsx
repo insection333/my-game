@@ -1,211 +1,146 @@
-// The War room (IA.md, Castle Clash): today's targets (lords near your rating, then mercenary strongholds)
-// and your reports. A target opens its sheet (`?panel=target&target=<id>`): what is known of it, the siege
-// with its fee, and for a lord the four spy missions with their chances.
-import { SPY_MISSIONS, fmt, t } from '@idle-clash/content';
+// The War room (IA.md, Castle Clash): lords to challenge (near your rating, and any who struck you in the
+// last day), the day's five strongholds, and your reports. Each row carries the decision: the chance, what
+// a win brings and how the target stands today (targets.ts). A target opens its sheet (TargetSheet.tsx).
+import { SIEGE, fmt, t } from '@idle-clash/content';
 import { castleEngine as E } from '@idle-clash/features';
-import { ActionRow, Button, Panel, Pill, Sheet } from '@idle-clash/ui';
+import { ActionRow, Button, Panel, Pill } from '@idle-clash/ui';
 import { useEffect } from 'react';
 import { navigate, useLocation, withPanel } from '../../router.ts';
-import { mercName, missionDoes, missionName, refusal, trapName } from './labels.ts';
-import { AttackPlan } from './Plan.tsx';
-import { garrisonLine, ReportRow, Reports, when } from './Reports.tsx';
-import { castleAct, loadTargets } from './store.ts';
-import { affords, hasAp, useSyncedCastle } from './synced.ts';
+import { mercName } from './labels.ts';
+import { Reports, when } from './Reports.tsx';
+import { loadTargets } from './store.ts';
+import { useSyncedCastle } from './synced.ts';
+import { TargetSheet } from './TargetSheet.tsx';
+import { chanceLine, defenceOf, paysLine, sheetOf, standingOf, type Target } from './targets.ts';
 import s from './castle.module.css';
 
-interface Target {
-  id: string;
-  name: string;
-  rating: number;
-  spyChance: number | null;
-  merc: E.Mercenary | null;
-}
-
-const sheetOf = (id: string) => `${location.pathname}?panel=target&target=${encodeURIComponent(id)}`;
-
-function useTargets(): Target[] {
+function useTargets(): { lords: Target[]; strongholds: Target[] } {
   const { targets } = useSyncedCastle();
   useEffect(() => {
     void loadTargets(targets === null);
     // Loaded once each time the War room opens; an action that changes them reloads them (store.ts).
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  if (!targets) return [];
-  return [
-    ...targets.lords.map((l) => ({ ...l, merc: null })),
-    ...targets.mercenaries.map((m) => ({
+  if (!targets) return { lords: [], strongholds: [] };
+  return {
+    lords: targets.lords.map((l) => ({ ...l, merc: null })),
+    strongholds: targets.mercenaries.map((m) => ({
       id: m.id,
       name: mercName(m.first, m.second),
       rating: m.rating,
       spyChance: null,
+      struck: null,
+      shieldedUntil: null,
       merc: m,
     })),
-  ];
+  };
 }
 
 export function WarRoom() {
   const { view, now } = useSyncedCastle();
   const { panel } = useLocation();
-  const targets = useTargets();
-  const open =
-    panel === 'target' ? targets.find((x) => x.id === new URLSearchParams(location.search).get('target')) : undefined;
+  const { lords, strongholds } = useTargets();
+  const id = panel === 'target' ? new URLSearchParams(location.search).get('target') : null;
+  const open = id ? [...lords, ...strongholds].find((x) => x.id === id) : undefined;
   return (
     <div className={s.grid}>
-      <section data-section>
-        <Panel title={t('castle.targets.title')} flush>
-          <div data-slot="castle.targets">
-            {targets.length === 0 && <p className={s.lead}>{t('castle.targets.none')}</p>}
-            {targets.map((x) => (
-              <ActionRow
-                key={x.id}
-                name={x.name}
-                status={
-                  <Pill tone={x.merc ? undefined : 'woad'}>
-                    {t('castle.target.rating', { rating: fmt.int(x.rating) })}
-                  </Pill>
-                }
-                facts={x.merc ? [t('castle.target.mercenary')] : []}
-                actions={<Button onClick={() => navigate(sheetOf(x.id))}>{t('castle.target.open')}</Button>}
-              />
-            ))}
-          </div>
-        </Panel>
-      </section>
+      <div className={s.column}>
+        <Lords lords={lords} />
+        <Strongholds strongholds={strongholds} />
+      </div>
       <Reports logs={view?.logs ?? []} now={now} />
       {open && <TargetSheet target={open} onClose={() => navigate(withPanel(null).replace(/[?&]target=[^&]*/, ''))} />}
     </div>
   );
 }
 
-/** Whether a mercenary report is about this stronghold (by its name, which is what the lord saw). */
-function sameMerc(logged: unknown, m: E.Mercenary): boolean {
-  if (!logged || typeof logged !== 'object') return false;
-  const named = logged as { first?: unknown; second?: unknown };
-  return named.first === m.first && named.second === m.second;
-}
-
-function TargetSheet({ target, onClose }: { target: Target; onClose: () => void }) {
-  const { castle, view, now, purse, busy, refused } = useSyncedCastle();
+function TargetRow({ target, chance }: { target: Target; chance: string }) {
+  const { castle, view, now } = useSyncedCastle();
   if (!castle) return null;
-  const about = (view?.logs ?? []).filter((l) =>
-    target.merc ? sameMerc(l.data.merc, target.merc) : l.data.foe === target.id,
-  );
-  const scouted = about.find((l) => l.kind === 'spyOut' && l.data.report && typeof l.data.report === 'object');
-  const costs = target.merc
-    ? E.mercenaryCosts(castle, target.merc, now)
-    : E.siegeCosts(castle, E.brRatio(castle, { rating: target.rating }), now);
-  const blocked = E.siegeRefusal(castle, target.id, false, costs.ap, now);
-  const report = scouted?.data.report as Record<string, unknown> | undefined;
-  // What the attack meets: a stronghold as it is, a lord as the last scouting saw them.
-  const def = target.merc
-    ? E.mercenarySide(target.merc)
-    : report
-      ? E.estimatedDefence(
-          castle,
-          {
-            defense: Array.isArray(report.defense) ? report.defense.map(Number) : [34, 33, 33],
-            trap: typeof report.trap === 'string' ? report.trap : null,
-            castellan: typeof report.castellan === 'string' ? report.castellan : null,
-          },
-          target.rating,
-          now,
+  const standing = standingOf(castle, target, now);
+  // A stronghold that fell says when, and nothing more is to be weighed about it today.
+  const fell = standing?.kind === 'fallen';
+  const taken = Math.max(0, ...E.pairOf(castle, target.id, now).sieges);
+  return (
+    <ActionRow
+      name={target.name}
+      status={
+        <>
+          <Pill tone={target.merc ? undefined : 'woad'}>
+            {t('castle.target.rating', { rating: fmt.int(target.rating) })}
+          </Pill>
+          {target.struck !== null && (
+            <Pill tone="ember">{t('castle.target.struckAt', { when: when(target.struck, now) })}</Pill>
+          )}
+          {standing && standing.kind !== 'once' && <Pill tone={fell ? 'moss' : undefined}>{standing.text}</Pill>}
+        </>
+      }
+      facts={
+        fell
+          ? [t('castle.target.fellAt', { when: when(taken, now) })]
+          : [
+              chance,
+              paysLine(castle, target, view?.warChest ?? 0, view?.logs ?? [], now),
+              ...(standing?.kind === 'once' ? [standing.text] : []),
+            ]
+      }
+      actions={
+        standing && standing.kind !== 'once' ? undefined : (
+          <Button onClick={() => navigate(sheetOf(target.id))}>
+            {target.struck !== null ? t('castle.target.strikeBack') : t('castle.target.open')}
+          </Button>
         )
-      : null;
-  return (
-    <Sheet title={target.name} closeLabel={t('shell.close')} onClose={onClose} slot="castle.target">
-      <div className={s.sheet}>
-        <div className={s.pills}>
-          <Pill tone="woad">{t('castle.target.rating', { rating: fmt.int(target.rating) })}</Pill>
-          {target.merc && <Pill>{t('castle.target.mercenary')}</Pill>}
-        </div>
-        {/* The header is behind the sheet: a refusal is said here too. */}
-        {refused && (
-          <p className={s.refused} role="status">
-            {refusal(refused)}
-          </p>
-        )}
-        <div className={s.sheetSection}>
-          <h3>{t('castle.siege.title')}</h3>
-          {target.merc && (
-            <p>
-              {t('castle.incursion.scouted', {
-                v: fmt.int(target.merc.garrison[0]),
-                o: fmt.int(target.merc.garrison[1]),
-                s: fmt.int(target.merc.garrison[2]),
-                trap: trapName(target.merc.trap),
-              })}
-            </p>
-          )}
-          {!target.merc && scouted && (
-            <p>
-              {t('castle.siege.scouted', { when: when(scouted.at, now) })}: {garrisonLine(report!)}
-            </p>
-          )}
-          {def ? (
-            <AttackPlan def={def} estimate={!target.merc} />
-          ) : (
-            <p className={s.muted}>{t('castle.siege.unscouted')}</p>
-          )}
-          <div className={s.save}>
-            <Button
-              variant="primary"
-              disabled={busy || blocked !== null || !hasAp(castle, costs.ap) || !affords(castle, purse, costs.gold)}
-              onClick={() => void castleAct({ type: 'siege', target: target.id })}
-            >
-              {t('castle.siege', { gold: fmt.short(costs.gold), ap: fmt.int(costs.ap) })}
-            </Button>
-            {blocked === 'pairLimit' && <span className={s.muted}>{t('castle.refused.pairLimit')}</span>}
-          </div>
-        </div>
-        {!target.merc && <Missions target={target} />}
-        {about.length > 0 && (
-          <div className={s.sheetSection}>
-            <h3>{t('castle.reports.title')}</h3>
-            <ul className={s.reports}>
-              {about.slice(0, 3).map((l) => (
-                <ReportRow key={l.id} report={l} now={now} />
-              ))}
-            </ul>
-          </div>
-        )}
-      </div>
-    </Sheet>
+      }
+    />
   );
 }
 
-function Missions({ target }: { target: Target }) {
-  const { castle, now, purse, busy } = useSyncedCastle();
+function Lords({ lords }: { lords: Target[] }) {
+  const { castle, view, now } = useSyncedCastle();
   if (!castle) return null;
-  // Bribes scale with the stronger castle; only the target's rating is needed for that.
-  const them = { ...castle, userId: target.id, rating: target.rating };
   return (
-    <div className={s.sheetSection}>
-      <h3>{t('castle.spy.title')}</h3>
-      <div className={s.missions} data-slot="castle.missions">
-        {SPY_MISSIONS.map((m) => {
-          const cost = E.spyCosts(castle, them, m, now);
-          return (
-            <ActionRow
-              key={m.id}
-              name={missionName(m.id)}
-              facts={[
-                missionDoes(m.id),
-                ...(target.spyChance === null
-                  ? []
-                  : [t('castle.mission.chance', { pct: fmt.pct(Math.round(target.spyChance * 100)) })]),
-              ]}
-              actions={
-                <Button
-                  disabled={busy || !hasAp(castle, cost.ap) || !affords(castle, purse, cost.gold)}
-                  onClick={() => void castleAct({ type: 'spy', target: target.id, mission: m.id })}
-                >
-                  {t('castle.mission.send', { gold: fmt.short(cost.gold), ap: fmt.int(cost.ap) })}
-                </Button>
-              }
+    <section data-section>
+      <Panel title={t('castle.targets.title')} flush>
+        <div data-slot="castle.targets">
+          {lords.length === 0 && <p className={s.lead}>{t('castle.targets.none')}</p>}
+          {lords.map((x) => (
+            <TargetRow
+              key={x.id}
+              target={x}
+              chance={chanceLine(castle, defenceOf(castle, x, view?.logs ?? [], now), true, now)}
             />
-          );
-        })}
-      </div>
-    </div>
+          ))}
+        </div>
+      </Panel>
+    </section>
+  );
+}
+
+function Strongholds({ strongholds }: { strongholds: Target[] }) {
+  const { castle, now } = useSyncedCastle();
+  if (!castle || strongholds.length === 0) return null;
+  const fallen = E.strongholdsFallen(castle, now);
+  const total = SIEGE.STRONGHOLD_PAY.length;
+  return (
+    <section data-section>
+      <Panel
+        title={t('castle.strongholds.title')}
+        aside={
+          fallen >= total ? (
+            <Pill tone="gold">{t('castle.strongholds.routed')}</Pill>
+          ) : (
+            <Pill>{t('castle.strongholds.fallen', { count: fmt.int(fallen), total: fmt.int(total) })}</Pill>
+          )
+        }
+        flush
+      >
+        <div data-slot="castle.strongholds">
+          {strongholds.map((x) => (
+            <TargetRow key={x.id} target={x} chance={chanceLine(castle, E.mercenarySide(x.merc!), false, now)} />
+          ))}
+        </div>
+        <p className={s.note}>{t('castle.strongholds.note')}</p>
+      </Panel>
+    </section>
   );
 }

@@ -113,3 +113,14 @@
   - **Less work per request.** SQLite's compiled statements are kept. A change answers with the save it just wrote instead of reading it again. Hiscore rows and daily visits are compared in memory before anything is written, and what a change records goes in one commit.
   - **The hiscores scale.** A ladder index puts the top rows first, and each ladder's order is kept in memory, so your rank is found at once. With 20,000 players a hiscores page fell from about 700 ms to 3 ms.
   - **Result:** 500 players on one core use 21% of it (p95 19 ms for a change), and 1,500 use 58% (p95 67 ms), with no errors.
+- Session 38, Castle Clash's second critique:
+  - **The day's strongholds are a ladder.** There are always five, easiest first. Each pays more than the one before it: 10, 11, 12, 15 and 19 war marks, with a bounty that grows the same way. A stronghold taken falls until tomorrow. The hardest ones want the formation set against them, Siegecraft or an attack relic.
+  - **A rout.** Taking all five in a day gives 30 war marks more, a moment in the centre of the screen, and deeds for the first, tenth and fiftieth.
+  - **Bold sieges pay.** A siege on a stronger lord earns up to half again the war marks, for the same fee.
+  - **Strike back.** A lord who besieged you in the last day appears among your targets, marked Struck you, with Strike back.
+  - **The War room carries the decision.**
+    - Lords and strongholds have panels of their own.
+    - Each row shows the chance to win, the chance with the formation set against them, what a win brings, and how the target stands today.
+    - A lord's estimate now counts the sabotage your spies have laid. When a lord is too strong, the sheet says how to weaken them.
+  - **Every battle has its account.** Each report opens a sheet showing both sides' strength, the day's fortune, the ratio against the breach and decisive marks, the formation (for a defender, the one that came at them) and what came of it. A siege or assault opens its account as it is fought.
+  - **A Castles ladder on Hiscores**, by rating, with each castle's level.
