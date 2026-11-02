@@ -1,5 +1,5 @@
-// Hiscores (IA.md): its Ladders tab, with how many are playing now and a ladder for Total and each
-// skill with your own entry pinned, each player's title and banner beside their name; the Deeds tab is
+// Hiscores (IA.md): its Ladders tab, with how many are playing now and a ladder for Total, each skill and
+// Castles (session 38: castles by rating) with your own entry pinned, each player's title and banner beside their name; the Deeds tab is
 // Deeds.tsx. The ladders come from the server; the page asks again each minute while it is open.
 import type { HiscoreRow, HiscoresResponse } from '@idle-clash/contracts';
 import { fmt, hasString, t } from '@idle-clash/content';
@@ -12,6 +12,7 @@ import { untilLoaded } from '../Ready.tsx';
 import { navigate, useLocation } from '../router.ts';
 import { Slot } from '../slots.tsx';
 import { bannerStyle } from './honours-style.ts';
+import { MenuGlyph } from '../shell/glyphs.tsx';
 import { PageHead } from './PageHead.tsx';
 import s from './hiscores.module.css';
 
@@ -52,7 +53,9 @@ export function Hiscores() {
   }, []);
   const asked = new URLSearchParams(location.search).get('skill') ?? 'total';
   const ladder = data?.ladders.find((l) => l.skill === asked) ?? data?.ladders[0];
-  const name = (skill: string) => (skill === 'total' ? t('hiscores.total') : t(`skill.${skill}`));
+  const name = (skill: string) =>
+    skill === 'total' ? t('hiscores.total') : skill === 'castle' ? t('hiscores.castles') : t(`skill.${skill}`);
+  const castles = ladder?.skill === 'castle';
   const you = ladder?.you ?? null;
   const shown = ladder?.rows ?? [];
   // A player not yet listed is in no one's rows, their own included: their place is pinned beneath,
@@ -93,21 +96,21 @@ export function Hiscores() {
                       <th scope="col">{t('hiscores.rank')}</th>
                       <th scope="col">{t('hiscores.name')}</th>
                       <th scope="col" data-num>
-                        {t('hiscores.level')}
+                        {castles ? t('hiscores.castleLevel') : t('hiscores.level')}
                       </th>
                       <th scope="col" data-num>
-                        {t('hiscores.xp')}
+                        {castles ? t('hiscores.rating') : t('hiscores.xp')}
                       </th>
                     </tr>
                   </thead>
                   <tbody>
                     {shown.map((r) => (
-                      <Row key={r.rank} row={r} you={mine(r)} total={ladder.skill === 'total'} />
+                      <Row key={r.rank} row={r} you={mine(r)} ladder={ladder.skill} />
                     ))}
                   </tbody>
                   {pinned && (
                     <tbody className={s.pinned}>
-                      <Row row={pinned} you total={ladder.skill === 'total'} />
+                      <Row row={pinned} you ladder={ladder.skill} />
                     </tbody>
                   )}
                 </table>
@@ -121,9 +124,10 @@ export function Hiscores() {
   );
 }
 
-/** A ladder's icon: the skill's seal, or the game's own mark for Total. */
+/** A ladder's icon: the skill's seal, Castle Clash's glyph for Castles, or the game's own mark for Total. */
 function LadderIcon({ skill }: { skill: string }) {
   if (hasIcon(skill)) return <ItemIcon name={skill} size={24} />;
+  if (skill === 'castle') return <MenuGlyph name="castle" />;
   return (
     <svg width={24} height={24} viewBox="0 0 48 48" aria-hidden="true">
       <FireSeal />
@@ -143,8 +147,9 @@ function Place({ rank }: { rank: number }) {
 }
 
 /** One place on a ladder: the player's banner down its edge, their name with their title under it,
- *  and on Total the milestones claimed. */
-function Row({ row, you, total }: { row: HiscoreRow; you: boolean; total: boolean }) {
+ *  and on Total the milestones claimed (on Castles, the castle's level and rating). */
+function Row({ row, you, ladder }: { row: HiscoreRow; you: boolean; ladder: string }) {
+  const total = ladder === 'total';
   const title = row.title && hasString(`honour.title.${row.title}`) ? t(`honour.title.${row.title}`) : null;
   const milestones =
     total && row.milestones > 0
@@ -153,7 +158,7 @@ function Row({ row, you, total }: { row: HiscoreRow; you: boolean; total: boolea
         : t('hiscores.milestones', { count: fmt.int(row.milestones) })
       : null;
   // On a skill's ladder, its Kindlings past 99 (worked out from the XP, as the game does).
-  const kindled = total ? 0 : kindlingData.kindlingsIn(row.xp);
+  const kindled = total || ladder === 'castle' ? 0 : kindlingData.kindlingsIn(row.xp);
   const kindling = kindled > 0 ? t('hiscores.kindled', { count: fmt.int(kindled) }) : null;
   return (
     <tr data-you={you || undefined} style={bannerStyle(row.banner)}>

@@ -1,5 +1,5 @@
 // The deeds of Castle Clash (session 33, DESIGN.md section 7): a castle raised and grown, fortresses
-// taken, war marks earned, relics forged and the War College studied. Each reads the castle's standing,
+// taken, the day's strongholds routed, war marks earned, relics forged and the War College studied. Each reads the castle's standing,
 // which the castle's mirror keeps in the save.
 import { fmt, RELIC, RELICS, TECH, TECH_IDS } from '@idle-clash/content';
 import { deed, type Deed, type Steps } from './content.ts';
@@ -16,6 +16,10 @@ const TAKEN: Steps = [
 const TEMPERED: Steps = [
   [3, 'hard'],
   [10, 'master'],
+];
+const ROUTS: Steps = [
+  [10, 'elite'],
+  [50, 'master'],
 ];
 const MARKS: Steps = [
   [100, 'easy'],
@@ -80,6 +84,31 @@ export function castleDeeds(): Deed[] {
       measure: (r) => r.castle('tempered'),
     }),
   );
+  // A rout: all five of a day's strongholds, the last of them the hardest (session 38).
+  const routs = [
+    deed({
+      id: 'rout-first',
+      family: 'routs',
+      key: 'deed.routFirst',
+      tier: 'hard',
+      target: 1,
+      words: {},
+      mark: fmt.int(1),
+      shows: 'none',
+      measure: (r) => r.castle('routs'),
+    }),
+    ...ROUTS.map(([count, tier]) =>
+      deed({
+        id: `routs-${count}`,
+        family: 'routs',
+        tier,
+        target: count,
+        words: { count: fmt.int(count) },
+        mark: fmt.int(count),
+        measure: (r) => r.castle('routs'),
+      }),
+    ),
+  ];
   const relics = RELICS.length * RELIC.LEVELS;
   const ranks = TECH_IDS.length * TECH.RANKS;
   const halls = [
@@ -115,5 +144,5 @@ export function castleDeeds(): Deed[] {
       measure: (r) => r.castle('studies'),
     }),
   ];
-  return [raised, ...levels, ...taken, ...marks, ...halls, ...tempered];
+  return [raised, ...levels, ...taken, ...routs, ...marks, ...halls, ...tempered];
 }

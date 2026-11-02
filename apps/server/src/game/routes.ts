@@ -22,6 +22,7 @@ import {
 } from '@idle-clash/kernel';
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { ipOf, limit, type Ctx } from '../context.ts';
+import { castlesLadder } from './castles-ladder.ts';
 import { TOTAL } from './hiscores.ts';
 import { hear } from './watching.ts';
 import { contractRoute, fail } from '../http.ts';
@@ -95,7 +96,10 @@ export function gameRoutes(app: FastifyInstance, ctx: Ctx, features: readonly Fe
       return {
         online: ctx.live.online,
         listed: ctx.hiscores.isListed(req.playerId!),
-        ladders: [TOTAL, ...allSkills()].map((skill) => ctx.hiscores.ladder(skill, req.playerId!)),
+        ladders: [
+          ...[TOTAL, ...allSkills()].map((skill) => ctx.hiscores.ladder(skill, req.playerId!)),
+          castlesLadder(ctx.db, req.playerId!),
+        ],
       } satisfies HiscoresResponse;
     },
     requirePlayer(ctx),

@@ -8,9 +8,9 @@ import { loadSynced, purseOf, roll, setPurse, store, tell, type Io, type Outcome
 
 type Castle = E.Castle;
 
-/** Today's strongholds are the plan's five; any of them may be attacked, twice a day each. */
+/** Today's five strongholds; any may be attacked until it falls, twice a day at most. */
 const mercenaryOf = (att: Castle, id: string, now: number) =>
-  E.mercenaries(att, now, SIEGE.TARGETS).find((m) => m.id === id);
+  E.mercenaries(att, now, SIEGE.STRONGHOLD_PAY.length).find((m) => m.id === id);
 
 /** The other castle, synced, or why it cannot be a target. */
 function opponent(io: Io, att: Castle, target: string): Castle | 'unknown' | 'self' {
@@ -39,20 +39,30 @@ export function siege(io: Io, att: Castle, target: string): Outcome {
   io.castles.ledger(r.spoils.toChest, r.spoils.destroyed);
   store(io, r.attacker);
   store(io, r.defender);
-  const shared = { outcome: r.outcome, r: r.r, genuine: r.genuine, raided: r.spoils.raided };
+  const shared = {
+    outcome: r.outcome,
+    r: r.r,
+    genuine: r.genuine,
+    raided: r.spoils.raided,
+    ...E.battleAccount(r.attackPower, r.defensePower, r.r),
+  };
   io.castles.log(io.playerId, io.now, 'siegeOut', {
     ...shared,
     foe: target,
     gold: r.spoils.toAttacker,
     marks: r.attackerMarks,
     fee: costs.gold,
+    formation: [...launched.offense],
   });
+  // The defender sees the formation that came at them: what to set their garrison against.
   io.castles.log(target, io.now, 'siegeIn', {
     ...shared,
     foe: io.playerId,
     marks: r.defenderMarks,
     truce: r.truce,
     consumed: r.consumed,
+    formation: [...launched.offense],
+    walls: r.defender.wallIntegrity,
   });
   const names = io.castles.names([io.playerId, target]);
   io.events.push({
@@ -90,12 +100,15 @@ function mercenarySiege(io: Io, att: Castle, target: string): Outcome {
   setPurse(io, paid.purse + r.bounty);
   store(io, r.attacker);
   const data = {
-    merc: { first: m.first, second: m.second, rating: m.rating },
+    merc: { first: m.first, second: m.second, rating: m.rating, n: m.n },
     outcome: r.outcome,
     r: r.r,
     gold: r.bounty,
     marks: r.marks,
     fee: costs.gold,
+    formation: [...launched.offense],
+    ...E.battleAccount(r.attack, r.defense, r.r),
+    ...(r.rout ? { rout: true } : {}),
   };
   io.castles.log(io.playerId, io.now, 'mercenary', data);
   io.events.push({
@@ -105,6 +118,7 @@ function mercenarySiege(io: Io, att: Castle, target: string): Outcome {
     outcome: r.outcome,
     gold: r.bounty,
     marks: r.marks,
+    ...(r.rout ? { rout: true } : {}),
   });
   return { ok: true, ...data };
 }

@@ -15,7 +15,10 @@ import { deedsOf } from './state.ts';
 export const CATEGORIES: readonly { id: string; families: readonly string[] }[] = [
   { id: 'skills', families: ['level', 'rank', 'kindling', 'kindlings'] },
   { id: 'craft', families: ['work', 'mastery', 'masters'] },
-  { id: 'combat', families: ['foe', 'region', 'defeats', 'gear', 'castle', 'fortresses', 'warMarks', 'halls'] },
+  {
+    id: 'combat',
+    families: ['foe', 'region', 'defeats', 'gear', 'castle', 'fortresses', 'routs', 'warMarks', 'halls'],
+  },
   { id: 'finds', families: ['legendary', 'log', 'collector'] },
   { id: 'runs', families: ['bossFirst', 'boss', 'trophy', 'trophies', 'runLength', 'runs', 'twists', 'relic'] },
   { id: 'home', families: ['fire', 'gold', 'store', 'works', 'steading', 'hidden'] },

@@ -137,6 +137,54 @@ describe('Castle Clash over HTTP', () => {
     expect(await result(att, { type: 'siege', target: def.id })).toEqual({ ok: false, reason: 'pairLimit' });
   });
 
+  it('offers a lord who besieged you to strike back, and tells each battle how it went (session 38)', async () => {
+    s = await server();
+    const att = await lord('Reaver', 20, 50_000_000);
+    const def = await lord('Warden', 20, 50_000_000);
+    await open(att);
+    await open(def);
+    // Far apart in rating, so the attacker is not among the defender's lords near their rating.
+    raise(att, 40);
+    raise(def, 10, { treasury: 30_000_000 });
+    const targets = async (l: Lord) =>
+      JSON.parse(
+        (await s.app.inject({ method: 'GET', url: '/api/castle/targets', headers: { cookie: l.cookie } })).body,
+      ) as E.CastleTargets;
+    expect((await targets(def)).lords.find((x) => x.id === att.id)).toBeUndefined();
+    expect(await result(att, { type: 'siege', target: def.id })).toMatchObject({ ok: true });
+    const foe = (await targets(def)).lords.find((x) => x.id === att.id);
+    expect(foe).toMatchObject({ name: 'Reaver', struck: s.clock.now, shieldedUntil: null });
+    // Both reports carry the battle's account; the defender also sees the formation that came at them.
+    const out = (await view(att)).logs[0].data;
+    const inn = (await view(def)).logs[0].data;
+    for (const d of [out, inn]) {
+      expect(Number(d.attack)).toBeGreaterThan(0);
+      expect(Number(d.defense)).toBeGreaterThan(0);
+      expect(Math.abs(Number(d.fortune))).toBeLessThanOrEqual(0.1);
+    }
+    expect(inn.formation).toEqual([34, 33, 33]);
+    // A day later the foe is no longer offered.
+    s.clock.now += 25 * H;
+    expect((await targets(def)).lords.find((x) => x.id === att.id)).toBeUndefined();
+  });
+
+  it("offers the day's five strongholds beside any lords, and refuses one that has fallen", async () => {
+    s = await server();
+    const att = await lord('Freebooter', 20, 50_000_000);
+    await open(att);
+    raise(att, 30, { activeAp: 1000 });
+    const list = JSON.parse(
+      (await s.app.inject({ method: 'GET', url: '/api/castle/targets', headers: { cookie: att.cookie } })).body,
+    ) as E.CastleTargets;
+    expect(list.mercenaries.map((m) => m.n)).toEqual([0, 1, 2, 3, 4]);
+    const easy = list.mercenaries[0];
+    const rolls = vi.spyOn(Math, 'random').mockReturnValue(0.99);
+    const r = await result(att, { type: 'siege', target: easy.id }).finally(() => rolls.mockRestore());
+    expect(r).toMatchObject({ ok: true });
+    expect(r.outcome).not.toBe('repelled');
+    expect(await result(att, { type: 'siege', target: easy.id })).toEqual({ ok: false, reason: 'fallen' });
+  });
+
   it('refuses a shielded lord, an unknown one, yourself, and the war room before an average level of 5', async () => {
     s = await server();
     const att = await lord('Eager', 20, 50_000_000);

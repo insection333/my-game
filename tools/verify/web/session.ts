@@ -97,6 +97,8 @@ export function views(): View[] {
     '/skills/fletching',
     '/combat',
     '/storehouse',
+    // The Castles ladder, with the elder's castle and the keeper's on it.
+    '/hiscores?skill=castle',
     // Deeds two months in: honours open, families half done, a sheet of choices.
     '/hiscores/deeds',
     '/hiscores/deeds?view=skills',
@@ -104,11 +106,13 @@ export function views(): View[] {
     '/hiscores/deeds?panel=honours',
     // Expeditions two months in: the Fen's longest route, the bosses and the relics.
     '/combat/expeditions?region=fen&hours=8',
-    // Castle Clash weeks after raising: every tab, and a stronghold's sheet (today's first).
+    // Castle Clash weeks after raising: every tab, a stronghold's sheet (today's second; the first has
+    // fallen), and the account of a siege on the elder (report 6: castles.ts).
     '/castle',
     '/castle/garrison',
     '/castle/war-room',
-    `/castle/war-room?panel=target&target=merc:${new Date().toISOString().slice(0, 10)}:0`,
+    `/castle/war-room?panel=target&target=merc:${new Date().toISOString().slice(0, 10)}:1`,
+    '/castle/war-room?panel=report&report=6',
     '/castle/incursions',
     '/castle/halls',
   ].map((path) => ({

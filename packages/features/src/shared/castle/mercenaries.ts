@@ -1,12 +1,14 @@
 // Castle Clash's matchmaking (SPEC.md section 4E.5): lords within 0.75 to 1.35 of your rating come first;
-// the list is filled with mercenary strongholds drawn from your id and the UTC day, so it holds still
-// through a day. A mercenary pays war marks, and a bounty only from the war chest, always under the fee
-// (DESIGN.md 11.4): no gold is ever made.
+// beside them stand five mercenary strongholds drawn from your id and the UTC day, so they hold still
+// through a day. A stronghold pays war marks, and a bounty only from the war chest, always under the fee
+// (DESIGN.md 11.4): no gold is ever made. The harder ones pay more; one breached falls for the day, and
+// all five fallen is a rout (session 38).
 import { MERCENARY_NAMES, RECOVERY, SIEGE, TRAPS } from '@idle-clash/content';
 import { formatUtcDate, type Castle } from './castle.ts';
 import { combatRatio, castleSide, outcomeOf, type Outcome, type Side } from './combat.ts';
 import { lift, modifiers, noModifiers } from './effects.ts';
 import { statPower } from './economy.ts';
+import { pairOf, withPair } from './pairs.ts';
 import { siegeCosts } from './siege.ts';
 
 /** A 32-bit FNV-1a hash: a stable number from a string. */
@@ -33,6 +35,8 @@ const GARRISONS: readonly (readonly [number, number, number])[] = [
 export interface Mercenary {
   /** `merc:<day>:<n>`: a stronghold's id, used as the pair key against the attacker. */
   id: string;
+  /** Its place among the day's five, easiest first: what it pays (SIEGE.STRONGHOLD_PAY). */
+  n: number;
   /** Name parts, each an index into MERCENARY_NAMES. */
   first: number;
   second: number;
@@ -53,6 +57,7 @@ export function mercenaries(c: Castle, now: number, count: number): Mercenary[] 
     const rating = Math.max(1, Math.round(Math.max(1, c.rating) * scale));
     return {
       id: `merc:${day}:${n}`,
+      n,
       first: h % MERCENARY_NAMES.first.length,
       second: (h >>> 8) % MERCENARY_NAMES.second.length,
       rating,
@@ -79,44 +84,74 @@ export function mercenarySide(m: Mercenary): Side {
   };
 }
 
-/** A bounty: the smaller of 0.6 × GOLD_SCALE × the attacker's rating and 5% of the war chest. */
-export const mercenaryBounty = (attackerRating: number, chest: number): number =>
+/** What a stronghold pays by its place among the day's five. */
+export const strongholdPay = (m: Pick<Mercenary, 'n'>): number =>
+  SIEGE.STRONGHOLD_PAY[Math.min(Math.max(0, m.n), SIEGE.STRONGHOLD_PAY.length - 1)];
+
+/** A bounty: the smaller of 0.3 × GOLD_SCALE × the attacker's rating × what the stronghold pays, and 5%
+ *  of the war chest. */
+export const mercenaryBounty = (attackerRating: number, chest: number, pay = 1): number =>
   Math.max(
     0,
     Math.floor(
-      Math.min(SIEGE.MERCENARY_BOUNTY_PER_RATING * Math.max(1, attackerRating), chest * SIEGE.MERCENARY_CHEST_SHARE),
+      Math.min(
+        SIEGE.MERCENARY_BOUNTY_PER_RATING * Math.max(1, attackerRating) * pay,
+        chest * SIEGE.MERCENARY_CHEST_SHARE,
+      ),
     ),
   );
+
+/** War marks a stronghold gives when taken, narrowly or decisively alike (before the rout). */
+export function strongholdMarks(att: Castle, m: Pick<Mercenary, 'n'>, outcome: Outcome, now: number): number {
+  if (outcome === 'repelled') return 0;
+  return Math.round(SIEGE.STRONGHOLD_MARKS * strongholdPay(m) * lift(modifiers(att, now).marks));
+}
+
+/** How many of today's strongholds have fallen to this castle. */
+export const strongholdsFallen = (c: Castle, now: number): number => {
+  const prefix = `merc:${formatUtcDate(now)}:`;
+  return c.pairs.filter((p) => p.d.startsWith(prefix) && pairOf(c, p.d, now).fell).length;
+};
 
 export interface MercenaryResult {
   attacker: Castle;
   outcome: Outcome;
   r: number;
+  attack: number;
+  defense: number;
+  /** War marks, the rout's among them. */
   marks: number;
   bounty: number;
+  /** This breach was the fifth of the day: a rout, with its war marks. */
+  rout: boolean;
 }
 
-/** A siege on a stronghold (the attacker launched and paid already): war marks and a bounty on a breach. */
+/** A siege on a stronghold (the attacker launched and paid already): war marks and a bounty on a breach,
+ *  more for the harder ones; a breached stronghold falls for the day, and the fifth to fall is a rout. */
 export function resolveMercenary(att: Castle, m: Mercenary, now: number, roll: number, chest: number): MercenaryResult {
-  const { r } = combatRatio(castleSide(att, now, 'attack'), mercenarySide(m), roll);
+  const { attack, defense, r } = combatRatio(castleSide(att, now, 'attack'), mercenarySide(m), roll);
   const outcome = outcomeOf(r);
   const mods = modifiers(att, now);
   const breach = outcome !== 'repelled';
-  const marks = breach
-    ? Math.round((outcome === 'decisive' ? SIEGE.MARKS_DECISIVE : SIEGE.MARKS_GRAZE) * lift(mods.marks))
-    : 0;
   const wounds = (breach ? RECOVERY.WOUNDS_WINNER : RECOVERY.WOUNDS_LOSER) * lift(mods.woundsTaken);
+  const fallen = breach ? withPair(att, { ...pairOf(att, m.id, now), fell: true }, now) : att;
+  const rout = breach && strongholdsFallen(fallen, now) === SIEGE.STRONGHOLD_PAY.length;
+  const marks = strongholdMarks(att, m, outcome, now) + (rout ? Math.round(SIEGE.ROUT_MARKS * lift(mods.marks)) : 0);
   return {
     attacker: {
-      ...att,
+      ...fallen,
       warMarks: att.warMarks + marks,
       warMarksEarned: att.warMarksEarned + marks,
       infirmaryPct: Math.min(RECOVERY.INFIRMARY_MAX, att.infirmaryPct + wounds),
+      routs: att.routs + (rout ? 1 : 0),
     },
     outcome,
     r,
+    attack,
+    defense,
     marks,
-    bounty: breach ? mercenaryBounty(att.rating, chest) : 0,
+    bounty: breach ? mercenaryBounty(att.rating, chest, strongholdPay(m)) : 0,
+    rout,
   };
 }
 

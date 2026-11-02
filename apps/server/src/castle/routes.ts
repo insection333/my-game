@@ -2,6 +2,7 @@
 // list today's targets, open your castle, and act on it. Reads go at the read pace, changes at the
 // command pace, every change once per request id (service.ts).
 import { CASTLE_ROUTES, type CastleAction } from '@idle-clash/contracts';
+import { SIEGE } from '@idle-clash/content';
 import { castleEngine as E, totalLevel } from '@idle-clash/features';
 import type { FastifyInstance } from 'fastify';
 import { requirePlayer } from '../auth/routes.ts';
@@ -32,25 +33,52 @@ export function castleView(ctx: Ctx, playerId: string, now: number): CastleView 
   };
 }
 
-/** Up to five lords near your rating (a fresh five each day, nearest first among them), then mercenaries. */
+/** Lords who besieged you in the last day, at most this many, offered to strike back. */
+const FOES = 5;
+const DAY = 86_400_000;
+
+/** Up to five lords near your rating (a fresh five each day, nearest first among them); then any lord who
+ *  besieged you in the last day and is not among them, to strike back (session 38); and the day's five
+ *  strongholds. */
 export function targetsView(ctx: Ctx, playerId: string, now: number): TargetsView {
   const castles = new CastleStore(ctx);
   const row = castles.read(playerId);
   if (!row) return { lords: [], mercenaries: [] };
   const c = E.syncCastle(row, now).castle;
   const day = new Date(now).toISOString().slice(0, 10);
-  const near = castles.lordsNear(playerId, c.rating, { low: 0.75, high: 1.35 }, now);
-  const lords = near
+  const struck = new Map<string, number>();
+  for (const l of castles.logs(playerId))
+    if (l.kind === 'siegeIn' && l.at > now - DAY && typeof l.data.foe === 'string' && !struck.has(l.data.foe))
+      struck.set(l.data.foe, l.at);
+  const near = castles
+    .lordsNear(playerId, c.rating, { low: SIEGE.BRACKET_LOW, high: SIEGE.BRACKET_HIGH }, now)
     .map((l) => ({ l, k: E.hash(`${playerId}:${day}:${l.id}`) }))
     .sort((a, b) => a.k - b.k)
-    .slice(0, 5)
+    .slice(0, SIEGE.TARGETS)
     .map((x) => x.l)
-    .sort((a, b) => Math.abs(a.rating - c.rating) - Math.abs(b.rating - c.rating))
-    .flatMap((l) => {
-      const theirs = castles.read(l.id);
-      return theirs ? [{ ...l, spyChance: E.spyChance(c, E.syncCastle(theirs, now).castle, now) }] : [];
-    });
-  return { lords, mercenaries: E.mercenaries(c, now, 5 - lords.length) };
+    .sort((a, b) => Math.abs(a.rating - c.rating) - Math.abs(b.rating - c.rating));
+  const seen = new Set(near.map((l) => l.id));
+  const names = castles.names([...struck.keys()].filter((id) => !seen.has(id)));
+  const foes = [...struck.keys()]
+    .filter((id) => !seen.has(id) && names.has(id) && !castles.banned(id))
+    .slice(0, FOES)
+    .map((id) => ({ id, name: names.get(id)!, rating: 0 }));
+  const lords = [...near, ...foes].flatMap((l) => {
+    const theirs = castles.read(l.id);
+    if (!theirs) return [];
+    const synced = E.syncCastle(theirs, now).castle;
+    return [
+      {
+        id: l.id,
+        name: l.name,
+        rating: synced.rating,
+        spyChance: E.spyChance(c, synced, now),
+        struck: struck.get(l.id) ?? null,
+        shieldedUntil: E.isShielded(synced, now) ? synced.shieldUntil : null,
+      },
+    ];
+  });
+  return { lords, mercenaries: E.mercenaries(c, now, SIEGE.STRONGHOLD_PAY.length) };
 }
 
 export function castleRoutes(app: FastifyInstance, ctx: Ctx): void {

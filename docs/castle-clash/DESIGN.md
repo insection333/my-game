@@ -195,6 +195,24 @@ Both add moments, notices and deeds (Tempered +3 and +10), and the realm and the
 
 The realm's checks hold gold to the coin, keep every kind of lord's edict powered on at least 90% of days, cap any one day's losses at three days' earnings, and keep every bounty under its fee.
 
+### Session 38: a second critique
+
+A second critique (owner's leave to change anything) found three faults the first did not reach:
+
+- **The day's strongholds had no risk and no reward to weigh.** All five paid the same, so the easy ones were always right: the two hardest were decoration, and nothing changed when a lord grew stronger in ways their rating does not count (the War College's Siegecraft, attack relics).
+- **The War room hid the decision.** Lords and strongholds shared one list under "Lords to challenge", each row only a rating, so every choice meant opening each sheet; nothing said what a win would bring, or how a target stood today.
+- **A battle had no account.** A siege resolved to one line in the reports: no strength on either side, no fortune, no formation, so a lord could not learn from a loss or see why they held.
+
+What changed:
+
+13. **Strongholds fall, and the harder pay more.** A stronghold taken falls for the day (one repelled may be tried once more). Each pays by its place, easiest first: war marks 12 × 0.8, 0.9, 1, 1.25 and 1.6 (10, 11, 12, 15 and 19), a breach narrow or decisive alike, and its bounty × the same (the last stays under its fee: 0.48 against 0.5 per rating point). Plain castles take the first three; the fourth and fifth want the formation set against them, Siegecraft or an attack relic.
+14. **A rout.** All five of a day's strongholds taken is a rout: 30 war marks more (before relics), a moment in the centre of the screen, and deeds for the first, the tenth and the fiftieth. It needs five sieges in a day, two of them past fatigue, so it is a feat: in the realm's half year, one rout came in about 1,500 days at war.
+15. **A bold siege pays more war marks.** Against a stronger lord, war marks × their rating over yours, squared, up to 1.5; the fee does not grow, so boldness costs only its odds.
+16. **Strike back.** A lord who besieged you in the last day is offered among your targets (Struck you), whatever their rating, with Strike back; the pair limit and shields still hold.
+17. **Every battle has its account.** Each report of a battle keeps both sides' strength, the day's fortune and the formation; a defender sees the formation that came at them. A report opens its account over any tab, and a siege or assault opens its own as it is fought.
+
+The realm re-checks each: the harder strongholds pay more, none is taken twice in a day, the fourth falls to lords who set their formation against it, and a rout stays rare. Every other check holds.
+
 ## 12. Phases
 
 | Phase | Session | Delivers |

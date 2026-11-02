@@ -118,6 +118,14 @@ export function combatRatio(att: Side, def: Side, roll: number): { attack: numbe
   return { attack, defense, r: defense > 0 ? (attack * spread) / defense : Infinity };
 }
 
+/** A battle's account, for its report (session 38): each side's strength, and the day's fortune (the
+ *  roll's ±10%, as a fraction) from which the ratio came. */
+export const battleAccount = (attack: number, defense: number, r: number) => ({
+  attack: Math.round(attack),
+  defense: Math.round(defense),
+  fortune: defense > 0 && attack > 0 && Number.isFinite(r) ? Math.round(((r * defense) / attack - 1) * 1000) / 1000 : 0,
+});
+
 /** The plan's three outcomes, by R. */
 export type Outcome = 'repelled' | 'graze' | 'decisive';
 export const outcomeOf = (r: number): Outcome =>

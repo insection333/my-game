@@ -5,14 +5,14 @@ import { fmt, t, UNLOCKS } from '@idle-clash/content';
 import { castleEngine as E } from '@idle-clash/features';
 import { Button, Panel, ProgressBar, Tabs } from '@idle-clash/ui';
 import type { ReactNode } from 'react';
-import { navigate } from '../../router.ts';
+import { navigate, useLocation } from '../../router.ts';
 import { PageHead } from '../PageHead.tsx';
 import { Citadel } from './Citadel.tsx';
 import { Garrison } from './Garrison.tsx';
 import { Header } from './Header.tsx';
 import { Incursions } from './Incursions.tsx';
 import { Halls } from './Halls.tsx';
-import { Reports } from './Reports.tsx';
+import { Reports, ReportSheet } from './Reports.tsx';
 import { castleAct, useCastleLoad } from './store.ts';
 import { useSyncedCastle } from './synced.ts';
 import { WarRoom } from './WarRoom.tsx';
@@ -44,6 +44,7 @@ const SHORT: Partial<Record<Tab, string>> = {
 
 export function Castle({ path }: { path: string }) {
   const tab = castleTab(path) ?? 'citadel';
+  const { panel } = useLocation();
   useCastleLoad();
   const { view, castle, now } = useSyncedCastle();
   const head = (children?: ReactNode) => <PageHead title={t('castle.title')}>{children}</PageHead>;
@@ -107,6 +108,7 @@ export function Castle({ path }: { path: string }) {
           <Halls />
         )}
       </div>
+      {panel === 'report' && <ReportSheet />}
     </>
   );
 }

@@ -193,13 +193,15 @@ The owner's castle system (`docs/castle-clash/`), between Storehouse and Hiscore
 | 10 | `castle.defense` | the page | Garrison: the garrison, as the attack's, Save for 1% of the required treasury, then two hours' rest (pinned after a scouting) |
 | 11 | `castle.trap` | the page | Garrison: the three traps, the one set, Choose |
 | 12 | `castle.castellan` | the page | Garrison: the three castellans and what each does, Choose |
-| 13 | `castle.targets` | the page and the server | War room: up to five lords near your rating, then mercenary strongholds, each with its rating and Plan |
-| 14 | `castle.reports` | the server | War room: sieges, spies, mercenary battles and incursions, newest first, with what each moved |
-| 15 | `castle.target` | the page | A target's sheet (`?panel=target&target=…`): its rating, what is known of it (a scouting's findings, or a stronghold's likely outcome), the siege with its fee and AP, and the last reports about it |
-| 16 | `castle.missions` | the page | In a lord's sheet: the four spy missions, what each does, the chance, Send |
-| 17 | `castle.plan` | the page | In a target's sheet and an incursion: the attack formation, its chance to win (about, for a lord: from their rating and the scouting), and Set against them, which sets the attack formation that does best against the garrison known |
-| 18 | `castle.incursion` | the page | Incursions: the fortress at your tier, its garrison and trap once scouted with the likely outcome, what taking it gives, Scout and Assault |
-| 19 | `castle.relics` | the page | Halls: the nine war relics, level of five, what each gives, Forge or raise, Wear and Take off, worn of three; at the last level, its tempers and how much stronger they make it, and Temper with its chance and cost (a temper that does not take says so on its row) |
+| 13 | `castle.targets` | the page and the server | War room: up to five lords near your rating (a fresh five each day), then any lord who besieged you in the last day (Struck you, with Strike back). Each row carries the decision: its rating, the chance to win (about, once scouted; with the chance set against them when better), what a breach brings, and how it stands today (sieged once, twice, shielded) |
+| 14 | `castle.strongholds` | the page and the server | War room: the day's five mercenary strongholds, easiest first, each with its rating, the chance to win, what taking it pays (the harder more) and Plan, or Fallen once taken; how many of five have fallen, or Routed; a line saying a stronghold falls until tomorrow and five make a rout |
+| 15 | `castle.reports` | the server | War room: sieges, spies, stronghold battles and incursions, newest first, with what each moved; each opens its account |
+| 16 | `castle.target` | the page | A target's sheet (`?panel=target&target=…`): its rating, what is known of it (a scouting's findings, or a stronghold's garrison and trap), the attack plan, what a breach brings, the siege with its fee and AP (or why it cannot go), and the last reports about it. A siege sent from here opens its account |
+| 17 | `castle.account` | the server | A battle's account (`?panel=report&report=…`), over any tab: won or lost, each side's strength as a bar, the day's fortune and the ratio it made against the breach and decisive marks, the formation (for a defender, the one that came at them), what came of it, the fee and the walls; for a lord, Strike back or Plan another siege. An assault or a siege opens its account when it is fought |
+| 18 | `castle.missions` | the page | In a lord's sheet: the four spy missions, what each does, the chance, Send |
+| 19 | `castle.plan` | the page | In a target's sheet and an incursion: the attack formation, its chance to win (about, for a lord: from their rating and the scouting), and Set against them, which sets the attack formation that does best against the garrison known |
+| 20 | `castle.incursion` | the page | Incursions: the fortress at your tier, its garrison and trap once scouted with the likely outcome, what taking it gives, Scout and Assault |
+| 21 | `castle.relics` | the page | Halls: the nine war relics, level of five, what each gives, Forge or raise, Wear and Take off, worn of three; at the last level, its tempers and how much stronger they make it, and Temper with its chance and cost (a temper that does not take says so on its row) |
 
 - **At 390:** the header, then each tab's panels in one column. **At 1,440:** the header across, the tab's panels in two columns.
 - **Elsewhere:** until the day's Call to arms is answered, the Hearth's Next up leads with it, linking here. The edict in force shows as a gold pill beside a skill's level on its page (Vigor's XP, Fortune's finds) and under Combat's tabs (any edict, Harvest's fight gold too). Castle Clash's deeds are on the Combat tab of Deeds.
@@ -209,7 +211,7 @@ The owner's castle system (`docs/castle-clash/`), between Storehouse and Hiscore
 | View | 390 × 844 | 1,440 × 900 |
 | --- | --- | --- |
 | /castle | `castle.lead` | `castle.lead` |
-- **Newcomer:** total level against 100 and what a castle brings. **Three weeks in:** Raise your castle. **Two months in:** every tab of a raised castle, with a rival lord, reports, relics and a stronghold's sheet.
+- **Newcomer:** total level against 100 and what a castle brings. **Three weeks in:** Raise your castle. **Two months in:** every tab of a raised castle, with a rival lord who struck it, the day's strongholds (one fallen), reports, relics, a stronghold's sheet and a battle's account.
 
 ### Hiscores
 
@@ -220,7 +222,7 @@ Two tabs under the title: **Ladders** (`/hiscores`) and **Deeds** (`/hiscores/de
 | # | Section (slot) | Filled by | Notes |
 | --- | --- | --- | --- |
 | 1 | `hiscores.online` | server | Ladders: how many are playing now |
-| 2 | `hiscores.ladder` | hiscores | Ladders: tabs for Total and each skill, each with its seal (on a phone, when the names will not fit, the seals alone, sharing the width; beside the ladder on wide screens); rank, name, level, XP; each name with its banner's pennant and its title beneath (on a skill's ladder, how many times it is kindled); your own row pinned. A player joins the ladders once one of their actions comes half an hour or more after their first: until then they see their own place pinned beneath, as any row below the top is, and no page states the rule |
+| 2 | `hiscores.ladder` | hiscores | Ladders: tabs for Total, each skill and Castles (session 38: castles by rating, which only rises, with each castle's level; Castle Clash's glyph), each with its seal (on a phone, when the names will not fit, the seals alone, sharing the width; beside the ladder on wide screens); rank, name, level, XP; each name with its banner's pennant and its title beneath (on a skill's ladder, how many times it is kindled); your own row pinned. A player joins the ladders once one of their actions comes half an hour or more after their first: until then they see their own place pinned beneath, as any row below the top is, and no page states the rule |
 | 3 | `hiscores.honours` | deeds | Deeds: your honours. Deed points and title on your banner's colour in your frame, deeds done by tier, the bar to the next title by points, and Choose honours |
 | 4 | `hiscores.deeds` | deeds | Deeds: tabs Next up, Skills, Work, Combat, Finds, Home (short labels on a phone). Next up lists the six deeds nearest to done and the six done last; each other tab, its families (Levels, Foes, the fire…) as panels of rows, each row a skill or a foe with a medallion for each deed, ringed in its tier's colour and filled when done |
 | 5 | `hiscores.deed` | deeds | A deed's sheet (`?panel=deed&deed=…`): its medallion, tier and points, its text, its progress or the day it was done, and what it unlocks. A hidden deed shows only that it is hidden |

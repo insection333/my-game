@@ -64,6 +64,13 @@
       "when": 1793609163356,
       "tag": "0008_hiscores_rank",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1793612284206,
+      "tag": "0009_castle_routs",
+      "breakpoints": true
     }
   ]
 }

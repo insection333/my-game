@@ -1,0 +1,1 @@
+ALTER TABLE `player_bastions` ADD `routs` integer DEFAULT 0 NOT NULL;
