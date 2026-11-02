@@ -7,7 +7,17 @@
 // - forge relics with spare war marks.
 // The edict is mirrored into the save before the engine plays time away, as the server does, so the
 // year's checks run with the edict lifting every skill's XP.
-import { BUILDINGS, RELICS, SINKS, TECH_IDS, UNIT_IDS, UNITS, type BuildingId, type UnitId } from '@idle-clash/content';
+import {
+  BUILDINGS,
+  RELICS,
+  SIEGE,
+  SINKS,
+  TECH_IDS,
+  UNIT_IDS,
+  UNITS,
+  type BuildingId,
+  type UnitId,
+} from '@idle-clash/content';
 import { castleEngine as E, totalLevel } from '@idle-clash/features';
 import type { State } from '@idle-clash/kernel';
 import { mirrored } from '../../../apps/server/src/castle/mirror.ts';
@@ -30,6 +40,9 @@ export interface CastleDay {
 const BUILD_SHARE = 0.2;
 const BUILD_SHARE_AT_99 = 0.9;
 const ALL_AT_99 = 99 * 11;
+/** Past 99: sieges of strongholds a day (as many as come before fatigue), and tempering tries a visit. */
+const STRONGHOLDS_A_DAY = SIEGE.FATIGUE_FREE;
+const TEMPERS_A_VISIT = 3;
 /** The treasury kept: this many times what the edict needs. */
 const TREASURY_TIMES = 1.5;
 
@@ -126,12 +139,40 @@ export class Lordship {
       const unit = [...UNIT_IDS].sort((a, b) => c.drillXp[a] - c.drillXp[b])[0];
       if (!apply(E.drill(wallet(), unit, 1))) break;
     }
-    // Relics with spare war marks: the attack's banner and the Aegis first, then the rest.
-    if (E.tabOpen(c, 'halls'))
-      for (const r of RELICS) {
-        const cost = E.relicCost(c, r.id);
-        if (cost && c.warMarks >= cost.marks && purse * share >= cost.gold) apply(E.forgeRelic(wallet(), r.id));
+    // Once every skill is at 99, the castle's war is the lord's chase: the day's easier strongholds, in the
+    // formation set against each, for war marks (the fee burned, no bounty from an empty realm's chest).
+    if (level >= ALL_AT_99 && E.tabOpen(c, 'warRoom'))
+      for (const m of E.mercenaries(c, t, SIEGE.TARGETS)) {
+        if (c.siegesDayUtc === E.formatUtcDate(t) && c.siegesToday >= STRONGHOLDS_A_DAY) break;
+        const side = E.mercenarySide(m);
+        const best = E.bestOffense(c, side, t);
+        if (E.winChance(best.r) < 0.6) continue;
+        c = { ...c, offense: best.shares };
+        const costs = E.mercenaryCosts(c, m, t);
+        if (E.siegeRefusal(c, m.id, false, costs.ap, t) || costs.gold > purse * share) continue;
+        const paid = E.pay(wallet(), costs.gold);
+        if (!paid) continue;
+        purse = paid.purse;
+        c = E.resolveMercenary(E.launch(paid.castle, m.id, costs.ap, t), m, t, this.roll(), 0).attacker;
       }
+    // Relics with spare war marks, one at a time to its last level; then tempering it, a few tries a visit.
+    if (E.tabOpen(c, 'halls')) {
+      const forging = RELICS.find((r) => E.relicCost(c, r.id));
+      for (let n = 0; forging && n < 5; n++) {
+        const cost = E.relicCost(c, forging.id);
+        if (!cost || c.warMarks < cost.marks || purse * share < cost.gold || !apply(E.forgeRelic(wallet(), forging.id)))
+          break;
+      }
+      for (const r of RELICS)
+        for (let n = 0; n < TEMPERS_A_VISIT; n++) {
+          const cost = E.temperCost(c, r.id);
+          if (!cost || c.warMarks < cost.marks || purse * share < cost.gold) break;
+          const done = E.temperRelic(wallet(), r.id, this.roll(), this.roll());
+          if (!done.ok) break;
+          c = done.castle;
+          purse = done.purse;
+        }
+    }
     if (c.equippedRelics.length < 3) {
       const owned = Object.keys(c.relics).slice(0, 3);
       apply(E.equipRelics(wallet(), owned));
@@ -144,6 +185,7 @@ export class Lordship {
     if (sum(c.techs) > sum(was.techs)) firsts.push('castle:study');
     if (c.excavationDepth > was.excavationDepth) firsts.push('castle:dig');
     if (sum(c.relics) > sum(was.relics)) firsts.push('castle:relic');
+    if (sum(c.tempers) > sum(was.tempers)) firsts.push('castle:temper');
     this.castle = c;
     const next = mirrored({ ...state, items: { ...state.items, gold: Math.max(0, Math.floor(purse)) } }, c, t);
     return {

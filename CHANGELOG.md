@@ -104,3 +104,6 @@
   - **The hidden armoury:** a fortress taken now and then yields its war marks twice over, and rarely a war hoard worth five times over.
   - Moments, notices, two deeds and glossary terms for both.
   - The realm's checks now run half a year, including the tempering chase.
+- Session 36, the days after 99:
+  - **The castle's war fills them.** Past 99 the year's lord besieges the day's strongholds (up to three, in the formation set against each) and tempers relics. The longest run of days without anything new fell from a week to three days.
+  - **The year's checks:** every day of the climb still has a first, and past 99 the wait is never more than three days.
