@@ -4,6 +4,7 @@
 import { SIEGE } from '@idle-clash/content';
 import { castleEngine as E } from '@idle-clash/features';
 import { totalLevelOf } from '../game/standing.ts';
+import { noteSiege } from '../moderation.ts';
 import { loadSynced, purseOf, roll, setPurse, store, tell, type Io, type Outcome } from './service.ts';
 
 type Castle = E.Castle;
@@ -46,6 +47,7 @@ export function siege(io: Io, att: Castle, target: string): Outcome {
     raided: r.spoils.raided,
     ...E.battleAccount(r.attackPower, r.defensePower, r.r),
   };
+  noteSiege(io.ctx, io.playerId, target, io.now, r.spoils.toAttacker, r.outcome !== 'repelled');
   io.castles.log(io.playerId, io.now, 'siegeOut', {
     ...shared,
     foe: target,

@@ -5,6 +5,7 @@ import { SPY_MISSIONS, fmt, t } from '@idle-clash/content';
 import { castleEngine as E } from '@idle-clash/features';
 import { ActionRow, Button, Pill, Sheet } from '@idle-clash/ui';
 import { navigate } from '../../router.ts';
+import { ReportPlayer } from '../ReportPlayer.tsx';
 import { missionDoes, missionName, refusal, trapName } from './labels.ts';
 import { AttackPlan } from './Plan.tsx';
 import { garrisonLine, ReportRow, reportSheet, when } from './Reports.tsx';
@@ -97,6 +98,7 @@ export function TargetSheet({ target, onClose }: { target: Target; onClose: () =
             </ul>
           </div>
         )}
+        {!target.merc && <ReportPlayer name={target.name} />}
       </div>
     </Sheet>
   );

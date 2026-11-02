@@ -71,6 +71,13 @@
       "when": 1793612284206,
       "tag": "0009_castle_routs",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "6",
+      "when": 1793649798092,
+      "tag": "0010_moderation",
+      "breakpoints": true
     }
   ]
 }

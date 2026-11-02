@@ -1,7 +1,7 @@
 // Deleting an account (the brief: "an account and its data can be deleted"). With the password and a
 // confirmation, everything the server holds for the player goes at once: the account, its sessions
 // and email tokens, the save and every damaged copy, notices, hiscores, telemetry, the feedback and
-// visits, and their castle (Castle Clash). Nothing stays: another castle's reports and pair limits that
+// visits, reports made by them or about them and their sieges' record, and their castle (Castle Clash). Nothing stays: another castle's reports and pair limits that
 // named them keep the entry, with the id replaced by "departed", and another lord's notices of a siege
 // or a caught spy keep it with the name taken out.
 import { ROUTES } from '@idle-clash/contracts';
@@ -11,6 +11,7 @@ import { limit, type Ctx } from '../context.ts';
 import { bastionLogs, emailTokens, playerBastions, players, sessions, telemetry } from '../db/schema.ts';
 import { contractRoute, fail } from '../http.ts';
 import { eraseFeedback } from '../feedback.ts';
+import { eraseModeration } from '../moderation.ts';
 import { checkPassword } from './passwords.ts';
 import { requirePlayer } from './routes.ts';
 import { SESSION_COOKIE } from './sessions.ts';
@@ -29,6 +30,7 @@ export function erase(ctx: Ctx, playerId: string): void {
       .where(sql`instr(${telemetry.data}, ${playerId}) > 0`)
       .run();
     eraseFeedback(ctx, playerId);
+    eraseModeration(ctx, playerId);
     ctx.db.delete(playerBastions).where(eq(playerBastions.userId, playerId)).run();
     ctx.db.delete(bastionLogs).where(eq(bastionLogs.userId, playerId)).run();
     ctx.db

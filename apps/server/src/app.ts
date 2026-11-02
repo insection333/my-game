@@ -21,6 +21,7 @@ import { contractRoute, harden } from './http.ts';
 import { RateLimiter } from './security.ts';
 import { adminRoutes } from './admin/routes.ts';
 import { feedbackRoutes } from './feedback.ts';
+import { moderationRoutes } from './moderation.ts';
 import { accountRoutes } from './auth/account.ts';
 import { Hiscores } from './game/hiscores.ts';
 import { Notices } from './game/notices.ts';
@@ -93,6 +94,7 @@ export async function buildApp(
   if (config.emailEnabled) emailRoutes(app, ctx);
   gameRoutes(app, ctx, features);
   castleRoutes(app, ctx);
+  moderationRoutes(app, ctx);
   if (config.webDist) webRoutes(app, config.webDist);
   const watching = setInterval(
     () => void hearWatching(ctx).catch((err: unknown) => app.log.error({ err }, 'hiscores for watchers')),

@@ -80,6 +80,13 @@ Progress since that backup is lost, so restore only when the live database canno
 - **Browser errors** reach the server's log (`journalctl -u idleclash | grep "browser error"`).
 - **GitHub** emails the owner when a deploy fails.
 
+## Moderation
+
+The admin page (`/admin`, for names in `ADMIN_NAMES`) holds what players report and what sieges show (session 39):
+
+- **Reports** lists the players reported, those reported by players who have played a while first. Open shows the player beside, to rename or ban them (either settles their reports); Dismiss settles them as unfounded. A player reported again after that comes back.
+- **Sieges between lords** lists pairs of lords with four or more sieges in 30 days, most gold first, with the sieges the other way. A pair where gold only flows one way, between accounts made close together, is worth a look in both saves.
+
 ## Capacity
 
 `pnpm load` starts the real server on one core (half the live server), signs 500 players up and keeps

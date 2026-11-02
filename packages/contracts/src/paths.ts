@@ -28,6 +28,10 @@ export const PATHS = {
   castleTargets: '/api/castle/targets',
   castleOpen: '/api/castle/open',
   castleAct: '/api/castle/act',
+  reportPlayer: '/api/report',
+  adminReports: '/api/admin/reports',
+  adminSettleReports: '/api/admin/reports/settle',
+  adminSiegeFlows: '/api/admin/siege-flows',
 } as const;
 
 /** A feature's own route. */

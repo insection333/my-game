@@ -56,6 +56,21 @@
   overflow-wrap: anywhere;
 }
 
+/* A name opens its player's sheet: it reads as the name, faintly underlined to say it can be pressed
+   (no hover on a phone), fully on hover. */
+.nameLink {
+  display: inline-block;
+  min-height: 24px;
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentColor 30%, transparent);
+  text-underline-offset: 3px;
+}
+
+.nameLink:hover {
+  text-decoration-color: currentColor;
+}
+
 .head {
   display: flex;
   flex-wrap: wrap;
@@ -138,4 +153,32 @@
 
 .medal[data-place='3'] {
   background: #d9a774;
+}
+
+/* A player's sheet: their title, their places, and reporting them. */
+.sheet {
+  display: grid;
+  gap: var(--s-2);
+  padding: var(--s-3) var(--s-4) var(--s-4);
+}
+
+.sheet h3 {
+  margin: 0;
+  font: 500 var(--t-h3) / 1.2 var(--font-book);
+}
+
+.sheetTitle {
+  margin: 0;
+  color: var(--ink-2);
+  font-style: italic;
+}
+
+.places {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+  gap: 2px var(--s-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-variant-numeric: tabular-nums;
 }

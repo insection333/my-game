@@ -18,6 +18,9 @@ import {
   type NoticesResponse,
   type MeResponse,
   type CastleAction,
+  type AdminReportsResponse,
+  type AdminSiegeFlowsResponse,
+  type ReportReason,
 } from '@idle-clash/contracts';
 import type { castleEngine } from '@idle-clash/features';
 import type { Command, CommandResult } from '@idle-clash/kernel';
@@ -74,6 +77,7 @@ export const api = {
   signIn: (name: string, password: string) => post<AuthResponse>(PATHS.signIn, { name, password }),
   signOut: () => post<void>(PATHS.signOut),
   deleteAccount: (password: string) => post<void>(PATHS.deleteAccount, { password, confirm: true }),
+  report: (name: string, reason: ReportReason) => post<void>(PATHS.reportPlayer, { name, reason }),
   admin: {
     test: () => post<AdminTestResponse>(PATHS.adminTest),
     players: (query: string) => post<AdminPlayersResponse>(PATHS.adminPlayers, { query }),
@@ -82,6 +86,9 @@ export const api = {
     ban: (playerId: string, banned: boolean) => post<AdminPlayerView>(PATHS.adminBan, { playerId, banned }),
     mend: (playerId: string) => post<AdminSaveResponse>(PATHS.adminMend, { playerId }),
     resetPassword: (playerId: string) => post<AdminResetResponse>(PATHS.adminResetPassword, { playerId }),
+    reports: () => post<AdminReportsResponse>(PATHS.adminReports),
+    settleReports: (playerId: string) => post<void>(PATHS.adminSettleReports, { playerId }),
+    siegeFlows: () => post<AdminSiegeFlowsResponse>(PATHS.adminSiegeFlows),
   },
   game: () => get<GameResponse>(PATHS.game),
   notices: () => get<NoticesResponse>(PATHS.notices),

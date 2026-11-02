@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { Email, Password, plainText, PlayerName, RequestId, Token } from './fields.ts';
 import { PASSWORD_MAX } from './limits.ts';
 import { CASTLE_ROUTES } from './castle.ts';
+import { MODERATION_ROUTES } from './moderation.ts';
 import { CLOSED_TEST_ROUTES } from './closed-test.ts';
 import { PATHS } from './paths.ts';
 
@@ -187,6 +188,7 @@ export const ROUTES = {
   }),
   ...CLOSED_TEST_ROUTES,
   ...CASTLE_ROUTES,
+  ...MODERATION_ROUTES,
 } satisfies Record<string, RouteContract>;
 
 export type RouteId = keyof typeof ROUTES;

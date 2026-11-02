@@ -1,9 +1,11 @@
-// The server's housekeeping, each hour: sessions that have ended are let go, and telemetry older than
-// half a year (what it is for, the closed test and the months after launch, is long done by then). The
+// The server's housekeeping, each hour: sessions that have ended are let go, telemetry older than
+// half a year (what it is for, the closed test and the months after launch, is long done by then), the
+// record of sieges between lords past its 30 days, and reports settled three months ago. The
 // tables that keep a player's newest rows (notices, feedback, sessions) trim themselves as they grow.
 import { lt } from 'drizzle-orm';
 import type { Ctx } from './context.ts';
 import { telemetry } from './db/schema.ts';
+import { sweepModeration } from './moderation.ts';
 
 export { SESSIONS_PER_PLAYER } from './auth/sessions.ts';
 export const TELEMETRY_DAYS = 180;
@@ -17,4 +19,5 @@ export function keepHouse(ctx: Ctx): void {
     .delete(telemetry)
     .where(lt(telemetry.at, now - TELEMETRY_DAYS * DAY))
     .run();
+  sweepModeration(ctx, now);
 }

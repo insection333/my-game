@@ -5,4 +5,5 @@ export * from './fields.ts';
 export * from './routes.ts';
 export * from './closed-test.ts';
 export * from './castle.ts';
+export * from './moderation.ts';
 export * from './live.ts';

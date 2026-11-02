@@ -14,6 +14,7 @@ import { Slot } from '../slots.tsx';
 import { bannerStyle } from './honours-style.ts';
 import { MenuGlyph } from '../shell/glyphs.tsx';
 import { PageHead } from './PageHead.tsx';
+import { PlayerSheet, playerSheet } from './HiscoresPlayer.tsx';
 import s from './hiscores.module.css';
 
 const PHONE_ROWS = 10;
@@ -36,7 +37,7 @@ export function HiscoresHead({ deeds, children }: { deeds?: boolean; children?: 
 
 export function Hiscores() {
   const [data, setData] = useState<HiscoresResponse | null>(null);
-  useLocation();
+  const { panel } = useLocation();
   useEffect(() => {
     let live = true;
     const load = (first = false) =>
@@ -120,6 +121,7 @@ export function Hiscores() {
           </Panel>
         </section>
       </div>
+      {panel === 'player' && data && <PlayerSheet ladders={data.ladders} name={name} />}
     </>
   );
 }
@@ -166,7 +168,18 @@ function Row({ row, you, ladder }: { row: HiscoreRow; you: boolean; ladder: stri
         <Place rank={row.rank} />
       </td>
       <td>
-        <span className={s.player}>{row.name}</span>
+        <span className={s.player}>
+          {/* The name opens the player's sheet (their places, and Report this player). */}
+          <a
+            href={playerSheet(row.name)}
+            data-ui="RowLink"
+            className={s.nameLink}
+            aria-current={you || undefined}
+            onClick={(e) => (e.preventDefault(), navigate(playerSheet(row.name)))}
+          >
+            {row.name}
+          </a>
+        </span>
         {(title || milestones || kindling) && (
           <span className={s.honours}>
             {title && <span className={s.title}>{title}</span>}
