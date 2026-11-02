@@ -32,7 +32,7 @@ describe('a part of a save', () => {
     const s = newState(1, T0);
     s.features.goals = { claimed: ['chop-a-pine'] };
     const g = goalsOf(s);
-    expect(() => (g.claimed as string[]).push('mine-copper-ore')).toThrow();
+    expect(() => g.claimed.push('mine-copper-ore')).toThrow();
     expect(() => {
       (g as { made: number }).made = 9;
     }).toThrow();

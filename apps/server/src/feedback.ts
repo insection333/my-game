@@ -20,14 +20,14 @@ const DAY = 24 * HOUR;
 export const FEEDBACK_PACE = { hour: 10, day: 30, kept: 50 };
 const dayOf = (at: number) => new Date(at).toISOString().slice(0, 10);
 
-/** Notes that a player came to the game today (once a day; cheap enough for every read). */
-/** The day each player's visit was last noted, by server: one write a player a day, not one a read. */
+/** The day each player's visit was last noted, by database: one write a player a day, not one a read. */
 const noted = new WeakMap<Ctx['db'], Map<string, string>>();
 
+/** Notes that a player came to the game today (once a day; cheap enough for every read). */
 export function noteVisit(ctx: Ctx, playerId: string, at: number): void {
   const day = dayOf(at);
   let days = noted.get(ctx.db);
-  if (!days) noted.set(ctx.db, (days = new Map()));
+  if (!days) noted.set(ctx.db, (days = new Map<string, string>()));
   if (days.get(playerId) === day) return;
   ctx.db.insert(visits).values({ playerId, day }).onConflictDoNothing().run();
   days.set(playerId, day);
