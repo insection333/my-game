@@ -8,6 +8,7 @@ import { ECONOMY, EDICTS } from '@idle-clash/content';
 import { z } from 'zod';
 import type { Castle } from './castle.ts';
 import { avgLevel, edictBonusPct, requiredTreasury } from './economy.ts';
+import { partReader } from '../part.ts';
 
 const Count = z.number().int().min(0).max(1e9);
 /** The castle's standing, for the deeds that read it (session 33): its average level (whole), fortresses
@@ -45,11 +46,7 @@ export type CastleMirror = z.infer<typeof CastleMirror>;
 export const NO_EDICT: CastleMirror = { edict: null, pct: 0, until: 0 };
 
 /** The mirror in a save; a part that does not read is no edict. */
-export function mirrorOf(state: State): CastleMirror {
-  const raw = Object.hasOwn(state.features, 'castle') ? state.features.castle : undefined;
-  const parsed = CastleMirror.safeParse(raw);
-  return parsed.success ? parsed.data : NO_EDICT;
-}
+export const mirrorOf: (state: State) => CastleMirror = partReader('castle', CastleMirror, NO_EDICT);
 
 /** Whether a lord with a castle has yet to answer today's Call to arms, as their save last heard. */
 export const callAwaits = (state: State, now: number): boolean => {

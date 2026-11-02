@@ -21,6 +21,19 @@ afterEach(() => {
 const sample = () => readFileSync(new URL('./saves/v2.json', import.meta.url), 'utf8');
 
 describe('the SQLite store', () => {
+  it('compiles each statement once, and hands a kept one back in the shape it was asked for (session 37)', () => {
+    const text = 'select player_id from saves where player_id = ?';
+    const first = store.sqlite.prepare(text);
+    expect(store.sqlite.prepare(text)).toBe(first);
+    store.create('kept', newState(1, T0), T0);
+    // Drizzle reads rows as arrays; the next caller of the same statement still gets objects.
+    expect(first.raw().get('kept')).toEqual(['kept']);
+    expect(store.sqlite.prepare(text).get('kept')).toEqual({ player_id: 'kept' });
+    expect(store.db.select({ id: saves.playerId }).from(saves).where(eq(saves.playerId, 'kept')).get()).toEqual({
+      id: 'kept',
+    });
+  });
+
   it('applies its migrations to a new file, in write-ahead mode', () => {
     const tables = store.sqlite.prepare("select name from sqlite_master where type = 'table' order by name").all();
     expect(tables.map((t) => (t as { name: string }).name)).toEqual(

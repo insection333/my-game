@@ -15,7 +15,7 @@ The plan is `docs/BRIEF.md`: the pillars, scope, targets, sessions and the owner
 | `pnpm verify` | Decides whether a change is done (nine steps, one line each). `--only 1,4` runs chosen steps |
 | `pnpm test` | The tests alone |
 | `pnpm format` | Formats code with Prettier |
-| `pnpm load` | The load test: 500 players online against the real server on one core (`PLAYERS`, `MINUTES` to change) |
+| `pnpm load` | The load test: 500 players with grown saves and castles online against the real server on one core (`PLAYERS`, `MINUTES` to change; `PROFILE=<dir>` for a CPU profile) |
 | `pnpm design:check` | Runs the paper model against every target (writes `design/model/report.md`) |
 | `pnpm design:build` | Rebuilds `GAME_DESIGN.md` from `design/GAME_DESIGN.template.md` and the model |
 

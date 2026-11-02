@@ -85,6 +85,7 @@ export function adminRoutes(app: FastifyInstance, ctx: Ctx): void {
         .set({ name: input.name, nameKey: nameKey(input.name), nameLook: nameLook(input.name) })
         .where(eq(players.id, input.playerId))
         .run();
+      ctx.hiscores.forget();
       record('rename', req.playerId!, input.playerId);
       return view(ctx, playerOf(ctx, input.playerId));
     },
@@ -101,6 +102,7 @@ export function adminRoutes(app: FastifyInstance, ctx: Ctx): void {
         .set({ bannedAt: input.banned ? ctx.config.now() : null })
         .where(eq(players.id, input.playerId))
         .run();
+      ctx.hiscores.forget();
       if (input.banned) {
         ctx.sessions.endAll(input.playerId);
         ctx.live.closePlayer(input.playerId);

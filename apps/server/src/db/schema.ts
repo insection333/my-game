@@ -1,5 +1,6 @@
 // The server's tables, beside the kernel's saves in the same SQLite file. Change these, then run
 // `pnpm --filter @idle-clash/server db:generate`; migrations apply in order when the server starts.
+import { sql } from 'drizzle-orm';
 import { index, integer, primaryKey, real, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 export const players = sqliteTable(
@@ -91,7 +92,12 @@ export const hiscores = sqliteTable(
     /** When this XP was first reached: ties go to whoever got there first. */
     reachedAt: integer('reached_at').notNull(),
   },
-  (t) => [primaryKey({ columns: [t.playerId, t.skill] }), index('hiscores_skill_xp').on(t.skill, t.xp)],
+  (t) => [
+    primaryKey({ columns: [t.playerId, t.skill] }),
+    index('hiscores_skill_xp').on(t.skill, t.xp),
+    // A ladder in its order (session 37), so its top rows are read from the top, not sorted from all.
+    index('hiscores_rank').on(t.skill, sql`${t.level} desc`, sql`${t.xp} desc`, t.reachedAt),
+  ],
 );
 
 /** Feedback a player sends from Settings: what they wrote and the page they were on. */

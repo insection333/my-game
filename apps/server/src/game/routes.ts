@@ -49,6 +49,14 @@ export function gameRoutes(app: FastifyInstance, ctx: Ctx, features: readonly Fe
     return { state: out.state, now: t, away };
   };
 
+  /** What a change answers with: the save it just wrote, already advanced to now (session 37: it was
+   *  read again, advanced again and recorded again); a request seen before reads the save as it is now. */
+  const after = async (playerId: string, written: SaveDoc | null, t: number): Promise<GameResponse> => {
+    if (!written) return ctx.queue.run(playerId, () => current(playerId));
+    noteVisit(ctx, playerId, t);
+    return { state: written.state, now: t, away: null };
+  };
+
   /** After a change: tell the player's open pages, and record what happened. */
   const announce = (playerId: string, doc: SaveDoc, events: GameEvent[], at: number) =>
     announceChange(ctx, playerId, doc, events, at);
@@ -115,7 +123,7 @@ export function gameRoutes(app: FastifyInstance, ctx: Ctx, features: readonly Fe
         result: out.result,
         duplicate: out.duplicate,
         events,
-        ...(await ctx.queue.run(player, () => current(player))),
+        ...(await after(player, out.duplicate ? null : next, t)),
       } satisfies ActResponse;
     },
     requirePlayer(ctx),
@@ -156,7 +164,7 @@ export function gameRoutes(app: FastifyInstance, ctx: Ctx, features: readonly Fe
             result: out.result,
             duplicate: out.duplicate,
             events,
-            ...(await ctx.queue.run(player, () => current(player))),
+            ...(await after(player, out.duplicate ? null : next, t)),
           } satisfies ActResponse;
         },
         requirePlayer(ctx),

@@ -5,6 +5,7 @@
 // expeditions each read the work that touches them here.
 import type { State } from '@idle-clash/kernel';
 import { z } from 'zod';
+import { partReader } from './part.ts';
 
 export const STAGES = 5;
 /** Each stage's gold, in order. */
@@ -62,19 +63,20 @@ export type SteadingState = z.infer<typeof SteadingState>;
 const EMPTY: SteadingState = Object.freeze({ stages: Object.freeze({}) });
 
 /** The steading in a save; a part that does not read is as if nothing were built yet. */
-export function steadingOf(state: State): SteadingState {
-  const raw = Object.hasOwn(state.features, 'steading') ? state.features.steading : undefined;
-  const parsed = SteadingState.safeParse(raw);
-  return parsed.success ? parsed.data : EMPTY;
-}
+export const steadingOf: (state: State) => SteadingState = partReader('steading', SteadingState, EMPTY);
 export const stageOf = (state: State, work: string): number => {
   const stages = steadingOf(state).stages;
   return Object.hasOwn(stages, work) ? stages[work] : 0;
 };
 
 /** What the steading gives now for one effect, in percent. */
-const gain = (state: State, effect: WorkEffect): number =>
-  WORKS.filter((w) => w.effect === effect).reduce((n, w) => n + stageOf(state, w.id) * w.pct, 0);
+const gain = (state: State, effect: WorkEffect): number => {
+  const stages = steadingOf(state).stages;
+  return WORKS.filter((w) => w.effect === effect).reduce(
+    (n, w) => n + (Object.hasOwn(stages, w.id) ? stages[w.id] : 0) * w.pct,
+    0,
+  );
+};
 
 /** More of what a gathering action makes (the Woodyard), as extra-item chance. */
 export const steadingYieldPct = (state: State) => gain(state, 'gatherYield');

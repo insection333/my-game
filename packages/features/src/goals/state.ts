@@ -3,6 +3,7 @@
 // so progress is what was done since. Fields added in session 9 default, so older saves still read.
 import type { State } from '@idle-clash/kernel';
 import { z } from 'zod';
+import { partReader } from '../shared/part.ts';
 
 const Key = z.string().max(64);
 const Ref = z.object({ feature: Key, id: Key }).strict();
@@ -57,10 +58,14 @@ export const GoalsState = z
   .strict();
 export type GoalsState = z.infer<typeof GoalsState>;
 
-export function goalsOf(state: State): GoalsState {
-  const parsed = GoalsState.safeParse(Object.hasOwn(state.features, 'goals') ? state.features.goals : undefined);
-  return parsed.success ? parsed.data : { claimed: [], short: [], made: 0, daily: null, milestones: [], opened: 0 };
-}
+export const goalsOf: (state: State) => GoalsState = partReader('goals', GoalsState, {
+  claimed: [],
+  short: [],
+  made: 0,
+  daily: null,
+  milestones: [],
+  opened: 0,
+});
 
 export const setGoals = (state: State, g: GoalsState): void => {
   state.features.goals = g;

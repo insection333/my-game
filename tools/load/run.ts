@@ -1,32 +1,42 @@
 // The load test (the brief: 500 players online on the 2-core server, load-tested before launch).
 // `pnpm load` starts the real server on a fresh database, pinned to one core (half the live server),
-// signs 500 players up, and keeps them all online for a few minutes: each holds the live channel open
-// and plays at a person's pace (a change every 15 s or so, the game read each minute, the hiscores
-// every two). It reports each kind of request's latency, the errors, and the server's CPU and memory,
-// and fails if any budget is broken. `PLAYERS=50 MINUTES=1 pnpm load` runs a smaller one.
+// signs 500 players up, gives their saves weeks to a year of history and most of them castles
+// (history.ts), and keeps them all online for a few minutes: each holds the live channel open and plays
+// at a person's pace (a change every 15 s or so; the game, notices and castle read each minute; the
+// hiscores, a feature route and a castle action every two). It reports each kind of request's latency,
+// the errors, and the server's CPU and memory, and fails if any budget is broken.
+// `PLAYERS=50 MINUTES=1 pnpm load` runs a smaller one.
 import { spawn, spawnSync } from 'node:child_process';
 import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import WebSocket from 'ws';
 import { freePort } from '../ops/tests/ports.ts';
+import { giveHistory } from './history.ts';
 import { ROOT } from '../verify/exec.ts';
 
 const PLAYERS = Number(process.env.PLAYERS ?? 500);
 const MINUTES = Number(process.env.MINUTES ?? 3);
-const BUDGET = { p95ms: { command: 250, game: 250, hiscores: 500 }, cpuOfOneCore: 0.7, rssMb: 800 };
+const BUDGET = {
+  p95ms: { command: 250, game: 250, hiscores: 500, castle: 250, castleAct: 250, notices: 250, feature: 250 },
+  cpuOfOneCore: 0.7,
+  rssMb: 800,
+};
 
 const port = await freePort();
+const dbPath = join(mkdtempSync(join(tmpdir(), 'ic-load-')), 'load.db');
 const url = `http://127.0.0.1:${port}`;
 const pinned = spawnSync('taskset', ['--version']).status === 0;
 const pin = (core: number, pid: number) => pinned && spawnSync('taskset', ['-cp', String(core), String(pid)]);
 pin(1, process.pid);
-const server = spawn(process.execPath, ['apps/server/src/main.ts'], {
+// PROFILE=<dir> writes the server's CPU profile there, to find where its time goes.
+const profile = process.env.PROFILE ? ['--cpu-prof', `--cpu-prof-dir=${process.env.PROFILE}`] : [];
+const server = spawn(process.execPath, [...profile, 'apps/server/src/main.ts'], {
   cwd: ROOT,
   env: {
     ...process.env,
     PORT: String(port),
-    DB_PATH: join(mkdtempSync(join(tmpdir(), 'ic-load-')), 'load.db'),
+    DB_PATH: dbPath,
     ORIGINS: url,
     LOG: 'false',
   },
@@ -48,8 +58,9 @@ for (
 )
   await wait(100);
 
-type Kind = 'command' | 'game' | 'hiscores';
-const times: Record<Kind, number[]> = { command: [], game: [], hiscores: [] };
+type Kind = keyof typeof BUDGET.p95ms;
+const KINDS = Object.keys(BUDGET.p95ms) as Kind[];
+const times = Object.fromEntries(KINDS.map((k) => [k, []])) as unknown as Record<Kind, number[]>;
 const errors: string[] = [];
 let measuring = false;
 let liveMessages = 0;
@@ -72,6 +83,7 @@ interface Player {
   ip: string;
   socket: WebSocket;
   n: number;
+  id: string;
 }
 
 async function signUp(i: number): Promise<Player> {
@@ -87,11 +99,14 @@ async function signUp(i: number): Promise<Player> {
   if (res.status === 422) res = await attempt(`Load x${i}`);
   if (res.status !== 201) throw new Error(`sign-up ${i}: ${res.status} ${await res.text()}`);
   const cookie = (res.headers.get('set-cookie') ?? '').split(';')[0];
-  const socket = new WebSocket(`ws://127.0.0.1:${port}/api/live`, { headers: { cookie, origin: url } });
+  const socket = new WebSocket(`ws://127.0.0.1:${port}/api/live`, {
+    headers: { cookie, origin: url, 'x-forwarded-for': ip },
+  });
   socket.on('message', () => liveMessages++);
   socket.on('close', (code) => measuring && errors.push(`live channel closed (${code})`));
   await new Promise((resolve, reject) => (socket.once('open', resolve), socket.once('error', reject)));
-  return { cookie, ip, socket, n: 0 };
+  const me = (await (await fetch(`${url}/api/me`, { headers: { cookie } })).json()) as { player: { id: string } };
+  return { cookie, ip, socket, n: 0, id: me.player.id };
 }
 
 const COMMANDS = [
@@ -101,28 +116,59 @@ const COMMANDS = [
   { type: 'stoke' },
 ];
 
-/** One player's few minutes: a change every 15 s or so, the game each minute, the hiscores every two. */
-async function play(p: Player, until: number) {
+/** One player's few minutes, at a person's pace: a change every 15 s or so; the game each minute, the
+ *  notices with it, the hiscores every two; a goal or deed recorded now and then; and for a lord, the
+ *  castle each minute, a castle action every two and today's targets every three. */
+async function play(p: Player, until: number, lord: boolean) {
   await wait(Math.random() * 15_000);
-  let nextGame = Date.now() + Math.random() * 60_000;
-  let nextHiscores = Date.now() + Math.random() * 120_000;
+  const at = (every: number) => Date.now() + Math.random() * every;
+  let nextGame = at(60_000);
+  let nextHiscores = at(120_000);
+  let nextFeature = at(120_000);
+  let nextCastle = at(60_000);
+  let nextCastleAct = at(120_000);
+  let nextTargets = at(180_000);
+  const id = () => `load-${p.ip.replaceAll('.', '-')}-${p.n++}`;
   while (Date.now() < until) {
     const command = COMMANDS[p.n % COMMANDS.length];
-    await request('command', '/api/game/command', p.cookie, p.ip, {
-      requestId: `load-${p.ip.replaceAll('.', '-')}-${p.n++}`,
-      command,
-    });
+    await request('command', '/api/game/command', p.cookie, p.ip, { requestId: id(), command });
     if (Date.now() >= nextGame) {
       await request('game', '/api/game', p.cookie, p.ip);
+      await request('notices', '/api/notices', p.cookie, p.ip);
       nextGame += 60_000;
     }
     if (Date.now() >= nextHiscores) {
       await request('hiscores', '/api/hiscores', p.cookie, p.ip);
       nextHiscores += 120_000;
     }
+    if (Date.now() >= nextFeature) {
+      await request('feature', '/api/f/deeds/refresh', p.cookie, p.ip, { requestId: id(), input: {} });
+      nextFeature += 120_000;
+    }
+    if (lord && Date.now() >= nextCastle) {
+      await request('castle', '/api/castle', p.cookie, p.ip);
+      nextCastle += 60_000;
+    }
+    if (lord && Date.now() >= nextTargets) {
+      await request('castle', '/api/castle/targets', p.cookie, p.ip);
+      nextTargets += 180_000;
+    }
+    if (lord && Date.now() >= nextCastleAct) {
+      const action = CASTLE_ACTIONS[p.n % CASTLE_ACTIONS.length];
+      await request('castleAct', '/api/castle/act', p.cookie, p.ip, { requestId: id(), action });
+      nextCastleAct += 120_000;
+    }
     await wait(8_000 + Math.random() * 14_000);
   }
 }
+
+const CASTLE_ACTIONS = [
+  { type: 'callToArms' },
+  { type: 'drill', unit: 'vanguard', times: 1 },
+  { type: 'scoutIncursion' },
+  { type: 'incursion' },
+  { type: 'deposit', gold: 1000 },
+];
 
 /** The server's CPU time so far (seconds) and its memory now (MB), from /proc. */
 function usage() {
@@ -136,13 +182,18 @@ const players: Player[] = [];
 for (let i = 0; i < PLAYERS; i += 10)
   players.push(...(await Promise.all(Array.from({ length: Math.min(10, PLAYERS - i) }, (_, j) => signUp(i + j)))));
 console.log(`${PLAYERS} players signed up and online in ${((performance.now() - t0) / 1000).toFixed(0)} s`);
+const given = giveHistory(
+  dbPath,
+  players.map((p) => p.id),
+);
+console.log(`Saves given weeks to a year of history; ${given.castles} castles raised`);
 
 measuring = true;
 const before = usage();
 let peakRss = before.rss;
 const sampler = setInterval(() => (peakRss = Math.max(peakRss, usage().rss)), 2000);
 const start = Date.now();
-await Promise.all(players.map((p) => play(p, start + MINUTES * 60_000)));
+await Promise.all(players.map((p, i) => play(p, start + MINUTES * 60_000, i % 3 !== 0)));
 const seconds = (Date.now() - start) / 1000;
 const cpu = (usage().cpu - before.cpu) / seconds;
 clearInterval(sampler);
@@ -157,7 +208,7 @@ const lines = [
   '| Request | Count | p50 | p95 | Max |',
   '| --- | --- | --- | --- | --- |',
 ];
-for (const kind of ['command', 'game', 'hiscores'] as const) {
+for (const kind of KINDS) {
   const xs = times[kind];
   const p95 = pct(xs, 0.95);
   lines.push(
@@ -165,7 +216,7 @@ for (const kind of ['command', 'game', 'hiscores'] as const) {
   );
   if (p95 > BUDGET.p95ms[kind]) problems.push(`${kind} p95 ${p95.toFixed(0)} ms (budget ${BUDGET.p95ms[kind]} ms)`);
 }
-const total = times.command.length + times.game.length + times.hiscores.length;
+const total = KINDS.reduce((n, k) => n + times[k].length, 0);
 lines.push(
   '',
   `${(total / seconds).toFixed(1)} requests a second; ${liveMessages} live messages; ${errors.length} errors.`,

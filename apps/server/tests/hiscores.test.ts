@@ -35,7 +35,10 @@ const chop = async (cookie: string, id: string, minutes: number) => {
   );
 };
 /** Lists every player now, as if each had played a while. */
-const listAll = () => s.ctx.db.update(players).set({ firstActAt: 0, listedAt: s.clock.now }).run();
+const listAll = () => {
+  s.ctx.db.update(players).set({ firstActAt: 0, listedAt: s.clock.now }).run();
+  s.ctx.hiscores.forget(); // as listing them one by one would
+};
 /** Gives a player's save this state and records it on the hiscores at `at`, as a player who has played a while. */
 const record = async (cookie: string, make: (s: State) => State, at: number) => {
   const me = JSON.parse((await s.app.inject({ method: 'GET', url: '/api/me', headers: { cookie } })).body) as {
@@ -46,6 +49,7 @@ const record = async (cookie: string, make: (s: State) => State, at: number) => 
   s.ctx.store.write(me.player.id, { ...saved.doc, state }, saved.rev, s.clock.now);
   s.ctx.hiscores.update(me.player.id, state, at);
   s.ctx.db.update(players).set({ firstActAt: 0, listedAt: s.clock.now }).where(eq(players.id, me.player.id)).run();
+  s.ctx.hiscores.forget(); // as listing them would
 };
 
 describe('hiscores', () => {
@@ -73,6 +77,7 @@ describe('hiscores', () => {
     // Ladders open in the same order on every page: Total first, then each skill.
     expect((await ladders(a)).ladders.map((l) => l.skill).slice(0, 2)).toEqual(['total', 'woodcutting']);
     s.ctx.db.update(players).set({ bannedAt: s.clock.now }).where(eq(players.name, 'Birch')).run();
+    s.ctx.hiscores.forget(); // as the admin's ban does
     const after = (await ladders(a)).ladders.find((l) => l.skill === 'woodcutting')!;
     expect(after.rows.map((r) => r.name)).toEqual(['Alder']);
     expect(after.you).toMatchObject({ rank: 1 });

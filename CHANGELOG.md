@@ -107,3 +107,9 @@
 - Session 36, the days after 99:
   - **The castle's war fills them.** Past 99 the year's lord besieges the day's strongholds (up to three, in the formation set against each) and tempers relics. The longest run of days without anything new fell from a week to three days.
   - **The year's checks:** every day of the climb still has a first, and past 99 the wait is never more than three days.
+- Session 37, the server under real load:
+  - **A truer load test.** `pnpm load` now gives every save weeks to a year of history (full Storehouses, mastery, deeds) and two in three players a castle. One in ten comes back after hours away. The mix adds Castle Clash, notices and feature routes, each with a latency budget.
+  - **Catching up on time away costs less than half as much.** A save's parts are checked against their schemas once per object, not on every fight; eight hours away went from about 120 ms to about 50 ms.
+  - **Less work per request.** SQLite's compiled statements are kept. A change answers with the save it just wrote instead of reading it again. Hiscore rows and daily visits are compared in memory before anything is written, and what a change records goes in one commit.
+  - **The hiscores scale.** A ladder index puts the top rows first, and each ladder's order is kept in memory, so your rank is found at once. With 20,000 players a hiscores page fell from about 700 ms to 3 ms.
+  - **Result:** 500 players on one core use 21% of it (p95 19 ms for a change), and 1,500 use 58% (p95 67 ms), with no errors.
