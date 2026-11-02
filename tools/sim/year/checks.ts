@@ -28,6 +28,8 @@ const CLIMB: [number, number][] = [
 const QUARTER_DEEDS = 30;
 /** Days of a year that may pass without a first (one in fifty), never two running. */
 const EMPTY_DAYS = 7;
+/** Past 99, the most days running without a first. */
+const ENDGAME_WAIT = 3;
 
 const lastOf = (y: Year, skills: readonly string[]) => Math.max(...skills.map((s) => y.at99[s] ?? Infinity));
 const firstOf = (y: Year, skills: readonly string[]) => Math.min(...skills.map((s) => y.at99[s] ?? Infinity));
@@ -136,8 +138,9 @@ export function yearChecks(check: Check, lines: string[]): { steady: Year; light
     0,
   );
   check(dailies >= year.length - 1, `${dailies} daily goals set and done in ${year.length} days`);
-  // The climb is held to a first a day; once every skill is at 99 (sooner with an edict running, session
-  // 33), Kindling and the castle take over, and are held to one a week.
+  // The climb is held to a first a day. Past 99 (sooner with an edict running), Kindling and the castle's
+  // war carry the days, held to a first at least every few days (session 36: the lord's war past 99 took
+  // the longest wait from a week to three days).
   const top = lastOf(steady, ALL_SKILLS);
   const climb = year.filter((d) => d.day <= top);
   const empty = climb.filter((d) => d.firsts.length === 0).map((d) => d.day);
@@ -150,6 +153,7 @@ export function yearChecks(check: Check, lines: string[]): { steady: Year; light
     `A first on ${climb.length - empty.length} of the climb's ${climb.length} days (at most ${EMPTY_DAYS} without, never two running)`,
   );
   const after = year.filter((d) => d.day > top);
+  lines.push(`After every skill is at 99 (day ${top}): ${after.flatMap((d) => d.firsts).join(', ') || 'nothing'}`);
   let gap = 0;
   let longest = 0;
   for (const d of after) {
@@ -158,8 +162,8 @@ export function yearChecks(check: Check, lines: string[]): { steady: Year; light
   }
   if (after.length)
     check(
-      longest < 7,
-      `After every skill is at 99 (day ${top}), a first at least once a week (the longest wait ${longest} days)`,
+      longest <= ENDGAME_WAIT,
+      `After every skill is at 99, never more than ${ENDGAME_WAIT} days without a first (the longest ${longest})`,
     );
   // One skill kept in its lane, on the real engine to 99: a gathering skill, an artisan one, a style.
   lines.push(`\n## One skill kept in its lane, to 99`);
