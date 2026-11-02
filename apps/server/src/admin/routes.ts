@@ -19,6 +19,7 @@ import type { Ctx } from '../context.ts';
 import { players } from '../db/schema.ts';
 import { contractRoute, fail } from '../http.ts';
 import { totalLevelOf } from '../game/standing.ts';
+import { settleReports } from '../moderation.ts';
 
 const view = (ctx: Ctx, p: typeof players.$inferSelect): AdminPlayerView => ({
   id: p.id,
@@ -86,6 +87,7 @@ export function adminRoutes(app: FastifyInstance, ctx: Ctx): void {
         .where(eq(players.id, input.playerId))
         .run();
       ctx.hiscores.forget();
+      settleReports(ctx, input.playerId, ctx.config.now());
       record('rename', req.playerId!, input.playerId);
       return view(ctx, playerOf(ctx, input.playerId));
     },
@@ -103,6 +105,7 @@ export function adminRoutes(app: FastifyInstance, ctx: Ctx): void {
         .where(eq(players.id, input.playerId))
         .run();
       ctx.hiscores.forget();
+      if (input.banned) settleReports(ctx, input.playerId, ctx.config.now());
       if (input.banned) {
         ctx.sessions.endAll(input.playerId);
         ctx.live.closePlayer(input.playerId);

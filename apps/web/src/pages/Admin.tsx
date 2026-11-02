@@ -1,6 +1,6 @@
 // The admin page (the brief): find a player; rename them, ban or unban them, look at their save and
-// what was mended in it, and set a new password when they have forgotten theirs; and the closed test's
-// panel (AdminTest.tsx). Only players on the
+// what was mended in it, and set a new password when they have forgotten theirs; the reports and sieges
+// between lords to look into (AdminModeration.tsx, session 39); and the closed test's panel (AdminTest.tsx). Only players on the
 // server's admin list reach it; everyone else gets the page that does not exist.
 import type { AdminPlayerView, AdminSaveResponse } from '@idle-clash/contracts';
 import { fmt, t } from '@idle-clash/content';
@@ -10,6 +10,7 @@ import { api, ApiError } from '../api.ts';
 import { handled, useSession } from '../game/session.ts';
 import { untilLoaded } from '../Ready.tsx';
 import { Slot } from '../slots.tsx';
+import { AdminModeration } from './AdminModeration.tsx';
 import { AdminTest } from './AdminTest.tsx';
 import { PageHead } from './PageHead.tsx';
 import { NotFound } from './Simple.tsx';
@@ -30,6 +31,8 @@ export function Admin() {
   const [found, setFound] = useState<AdminPlayerView[] | null>(null);
   const [save, setSave] = useState<AdminSaveResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
+  // Changes whenever a player is opened again after an action, so the reports they settled leave the queue.
+  const [version, setVersion] = useState(0);
   // Opens on the first players by name, so there is something to act on at once.
   useEffect(() => {
     if (admin)
@@ -54,7 +57,14 @@ export function Admin() {
       (r) => setFound(r.players),
     );
   };
-  const open = (id: string) => void run(() => api.admin.save(id), setSave);
+  const open = (id: string) =>
+    void run(
+      () => api.admin.save(id),
+      (r) => {
+        setSave(r);
+        setVersion((v) => v + 1);
+      },
+    );
   return (
     <>
       <PageHead title={t('admin.title')} />
@@ -95,6 +105,7 @@ export function Admin() {
               </div>
             </Slot>
           </Panel>
+          <AdminModeration open={open} version={version} />
           <AdminTest />
         </section>
         {save && (

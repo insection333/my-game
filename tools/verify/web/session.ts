@@ -20,7 +20,7 @@ import type { Ctx } from '../../../apps/server/src/context.ts';
 import type { State } from '@idle-clash/kernel';
 import { exec, ROOT } from '../exec.ts';
 import { totalLevel } from '@idle-clash/features';
-import { castles } from './castles.ts';
+import { castles, wrongdoing } from './castles.ts';
 import { elder, keeper } from './elder.ts';
 import { withHonours } from './honours.ts';
 import { crowd, CROWD, veteran } from './veteran.ts';
@@ -99,6 +99,8 @@ export function views(): View[] {
     '/storehouse',
     // The Castles ladder, with the elder's castle and the keeper's on it.
     '/hiscores?skill=castle',
+    // A player's sheet, with Report this player.
+    '/hiscores?panel=player&name=Keeper',
     // Deeds two months in: honours open, families half done, a sheet of choices.
     '/hiscores/deeds',
     '/hiscores/deeds?view=skills',
@@ -279,6 +281,8 @@ async function start(): Promise<Served> {
     '/combat',
   );
   await say(kpr, 'Love the Kindling flames on the seals.', '/skills/woodcutting');
+  // A report and a run of sieges on the admin page, so its queue and its pairs are seen at every width.
+  wrongdoing(ctx, { elder: elderId, keeper: ids.get('Keeper')! }, now);
   return {
     url,
     cookie,

@@ -124,3 +124,8 @@
     - A lord's estimate now counts the sabotage your spies have laid. When a lord is too strong, the sheet says how to weaken them.
   - **Every battle has its account.** Each report opens a sheet showing both sides' strength, the day's fortune, the ratio against the breach and decisive marks, the formation (for a defender, the one that came at them) and what came of it. A siege or assault opens its account as it is fought.
   - **A Castles ladder on Hiscores**, by rating, with each castle's level.
+- Session 39, bad actors:
+  - **Report a player.** Tap a name on any ladder for their sheet (their places, and Report this player), or use the foot of a lord's sheet in the War room. Reasons are an offensive name or cheating and abuse, with no free text. A player may make ten reports a day, once per target and reason, never of themselves, and gets the same answer whatever happened.
+  - **The admin's queue.** Reported players are listed with those reported by players who have played a while first. Dismiss and Open are beside each; renaming or banning settles their reports.
+  - **Sieges between lords.** The admin page sums 30 days of sieges by pair, with four or more sieges, most gold first, and the sieges the other way beside them, so an account feeding another shows.
+  - **The terms and privacy page** say how reports and the sieges' record are kept. Deleting an account takes both with it.

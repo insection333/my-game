@@ -4,6 +4,8 @@
 // room lists a lord to strike back at beside the strongholds.
 import { castleEngine as E } from '@idle-clash/features';
 import { CastleStore } from '../../../apps/server/src/castle/store.ts';
+import { reports } from '../../../apps/server/src/db/schema.ts';
+import { noteSiege } from '../../../apps/server/src/moderation.ts';
 import type { Ctx } from '../../../apps/server/src/context.ts';
 
 const HOUR = 3_600_000;
@@ -132,4 +134,13 @@ export function castles(ctx: Ctx, ids: { elder: string; keeper: string }, now: n
     marks: 4,
     truce: false,
   });
+}
+
+/** For the admin page: the elder reports the keeper for cheating, and has besieged them five days running. */
+export function wrongdoing(ctx: Ctx, ids: { elder: string; keeper: string }, now: number): void {
+  ctx.db
+    .insert(reports)
+    .values({ reporterId: ids.elder, targetId: ids.keeper, reason: 'cheating', at: now, reporterListed: 1 })
+    .run();
+  for (let d = 0; d < 5; d++) noteSiege(ctx, ids.elder, ids.keeper, now - d * DAY, 1_196_000, true);
 }

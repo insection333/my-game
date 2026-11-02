@@ -1,7 +1,7 @@
 // The server's tables, beside the kernel's saves in the same SQLite file. Change these, then run
 // `pnpm --filter @idle-clash/server db:generate`; migrations apply in order when the server starts.
 import { sql } from 'drizzle-orm';
-import { index, integer, primaryKey, real, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { index, integer, primaryKey, real, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
 
 export const players = sqliteTable(
   'players',
@@ -225,4 +225,43 @@ export const bastionLogs = sqliteTable(
     data: text('data').notNull(),
   },
   (t) => [index('bastion_logs_user_at').on(t.userId, t.createdAt)],
+);
+
+/** A player's report of another (session 39): an offensive name, or cheating and abuse. No words of the
+ *  reporter's own, so nothing here can carry abuse itself. One per reporter, target and reason; a report
+ *  made again after it was settled opens it again. Whether the reporter was listed when they reported
+ *  weighs it in the admin's queue (a crowd of new accounts counts for little). */
+export const reports = sqliteTable(
+  'reports',
+  {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    reporterId: text('reporter_id').notNull(),
+    targetId: text('target_id').notNull(),
+    reason: text('reason').notNull(),
+    at: integer('at').notNull(),
+    reporterListed: integer('reporter_listed').notNull().default(0),
+    /** When an admin settled it (dismissed, renamed or banned), or null while it is open. */
+    settledAt: integer('settled_at'),
+  },
+  (t) => [
+    uniqueIndex('reports_once').on(t.reporterId, t.targetId, t.reason),
+    index('reports_target_open').on(t.targetId, t.settledAt),
+    index('reports_reporter_at').on(t.reporterId, t.at),
+  ],
+);
+
+/** Every siege between two lords for the last 30 days (session 39): who took how much from whom, so an
+ *  admin can see gold flowing one way between two accounts (a lord feeding a second account of theirs). */
+export const siegeFlows = sqliteTable(
+  'siege_flows',
+  {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    attackerId: text('attacker_id').notNull(),
+    defenderId: text('defender_id').notNull(),
+    at: integer('at').notNull(),
+    /** Gold the attacker took (their share of the raid). */
+    gold: integer('gold').notNull(),
+    breach: integer('breach').notNull(),
+  },
+  (t) => [index('siege_flows_at').on(t.at), index('siege_flows_pair').on(t.attackerId, t.defenderId)],
 );

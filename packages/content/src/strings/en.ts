@@ -2,7 +2,7 @@
 // (see numbers.ts). The content check fails on a missing key, an unused key, or a term GLOSSARY.md
 // says to avoid. Keep sections in order; within a feature's section, keys follow its content. The gathering
 // and artisan skills' words are in en-skills.ts, Combat's in en-combat.ts, the privacy page's and the
-// terms' in en-legal.ts, Fishing's and Cooking's in en-food.ts, Fletching's, Runecraft's and the supplies' in en-supplies.ts, the goals ladder's, its rewards' and your standing's in en-progress.ts, Kindling's in en-kindling.ts, the steading's in en-steading.ts, the closed test's in en-test.ts.
+// terms' in en-legal.ts, Fishing's and Cooking's in en-food.ts, Fletching's, Runecraft's and the supplies' in en-supplies.ts, the goals ladder's, its rewards' and your standing's in en-progress.ts, Kindling's in en-kindling.ts, the steading's in en-steading.ts, the closed test's in en-test.ts, the admin page's and reporting's in en-moderation.ts.
 import { combat } from './en-combat.ts';
 import { deeds } from './en-deeds.ts';
 import { expeditions } from './en-expeditions.ts';
@@ -12,6 +12,7 @@ import { castle } from './en-castle.ts';
 import { castleWar } from './en-castle-war.ts';
 import { steading } from './en-steading.ts';
 import { closedTest } from './en-test.ts';
+import { moderation } from './en-moderation.ts';
 import { legal } from './en-legal.ts';
 import { progress } from './en-progress.ts';
 import { skills } from './en-skills.ts';
@@ -167,25 +168,6 @@ export const en: Record<string, string> = {
   'settings.delete.cancel': 'Keep my account',
   'settings.delete.wrong': 'That is not your password.',
   'legal.back': 'Back',
-  'admin.title': 'Admin',
-  'admin.players': 'Players',
-  'admin.search': 'Player name',
-  'admin.find': 'Find',
-  'admin.none': 'No player by that name.',
-  'admin.joined': 'Joined {date}',
-  'admin.totalLevel': 'Total level {level}',
-  'admin.banned': 'Banned',
-  'admin.open': 'Open',
-  'admin.newName': 'Name',
-  'admin.rename': 'Rename',
-  'admin.ban': 'Ban',
-  'admin.unban': 'Unban',
-  'admin.mend': 'Check and mend save',
-  'admin.reset': 'Set a new password',
-  'admin.newPassword': 'Their new password. Pass it on; it replaces the old one, and they are signed out everywhere:',
-  'admin.repairs': 'Repairs to this save',
-  'admin.noRepairs': 'None: the save has always read cleanly.',
-  'admin.save': 'The save',
 
   // The welcome page, before signing in
   'welcome.title': 'Idle Clash',
@@ -319,6 +301,7 @@ export const en: Record<string, string> = {
   ...kindling,
   ...steading,
   ...closedTest,
+  ...moderation,
   ...castle,
   ...castleWar,
 };
