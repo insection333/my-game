@@ -5,6 +5,7 @@
 import { relicSlots } from './expeditions/relics.ts';
 import { countOf, type State, type StopReason } from '@idle-clash/kernel';
 import { z } from 'zod';
+import { partReader } from './part.ts';
 
 export const START_SLOTS = 24;
 export const SLOTS_PER_ENLARGEMENT = 6;
@@ -21,12 +22,7 @@ export const SLOTLESS = new Set(['gold']);
 export const StoreState = z.object({ enlargements: z.number().int().min(0).max(ENLARGE_COSTS.length) }).strict();
 export type StoreState = z.infer<typeof StoreState>;
 
-export function storeOf(state: State): StoreState {
-  const parsed = StoreState.safeParse(
-    Object.hasOwn(state.features, 'storehouse') ? state.features.storehouse : undefined,
-  );
-  return parsed.success ? parsed.data : { enlargements: 0 };
-}
+export const storeOf: (state: State) => StoreState = partReader('storehouse', StoreState, { enlargements: 0 });
 
 /** Spaces: the first 24, six for each enlargement, and six for each rank of the builder's cord (a relic). */
 export const capacity = (state: State): number =>

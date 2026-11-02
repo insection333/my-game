@@ -19,6 +19,31 @@ export interface ReadSave {
   repairs: string[];
 }
 
+/** Statements kept, at most; past it they are all let go and kept afresh (a guard, never reached in use). */
+const STATEMENTS_KEPT = 1000;
+
+/**
+ * Keeps each statement SQLite has compiled, by its text (session 37). Drizzle asks for a new one on
+ * every query, and compiling them was the server's largest single cost under load. A statement is used
+ * whole within one synchronous call (nothing here iterates one across an await), so sharing is safe; the
+ * row shape Drizzle may have asked of it last time (`raw`) is reset before it is handed out again.
+ */
+function keepStatements(sqlite: Database.Database): void {
+  const kept = new Map<string, Database.Statement>();
+  const compile = sqlite.prepare.bind(sqlite);
+  sqlite.prepare = ((source: string) => {
+    const known = kept.get(source);
+    if (known) {
+      if (known.reader) known.raw(false);
+      return known;
+    }
+    if (kept.size >= STATEMENTS_KEPT) kept.clear();
+    const made = compile(source);
+    kept.set(source, made);
+    return made;
+  }) as typeof sqlite.prepare;
+}
+
 export class SqliteStore implements SaveStore {
   readonly sqlite: Database.Database;
   readonly db: BetterSQLite3Database;
@@ -28,6 +53,7 @@ export class SqliteStore implements SaveStore {
     this.sqlite.pragma('journal_mode = WAL');
     this.sqlite.pragma('synchronous = NORMAL');
     this.sqlite.pragma('busy_timeout = 5000');
+    keepStatements(this.sqlite);
     this.db = drizzle(this.sqlite);
     migrate(this.db, { migrationsFolder: MIGRATIONS });
   }

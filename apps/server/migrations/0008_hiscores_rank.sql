@@ -1,0 +1,1 @@
+CREATE INDEX `hiscores_rank` ON `hiscores` (`skill`,"level" desc,"xp" desc,`reached_at`);

@@ -5,18 +5,22 @@ import type { Item, Ladder } from '@idle-clash/content';
 import type { ContentAction } from '../define.ts';
 
 let items = new Map<string, Item>();
+let supplyList: Item[] = [];
+let foodList: Item[] = [];
 
 export function setCatalog(list: readonly Item[]): void {
   items = new Map(list.map((i) => [i.id, i]));
+  supplyList = list.filter((i) => i.kind === 'supply' && i.supply !== undefined);
+  foodList = list.filter((i) => i.kind === 'food' && i.heals !== undefined);
 }
 
 export const itemOf = (id: string): Item | undefined => items.get(id);
 
 /** Every supply: whetstones, arrows and runes, each with the style that uses it and its tier. */
-export const supplies = (): Item[] => [...items.values()].filter((i) => i.kind === 'supply' && i.supply !== undefined);
+export const supplies = (): readonly Item[] => supplyList;
 
 /** Every food: the vendor's and what Cooking makes, each with what it heals. */
-export const foods = (): Item[] => [...items.values()].filter((i) => i.kind === 'food' && i.heals !== undefined);
+export const foods = (): readonly Item[] => foodList;
 
 /** A skill's actions as its feature declares them, for features that plan around them (goals). */
 export interface SkillActions {

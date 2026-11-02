@@ -83,7 +83,16 @@ Progress since that backup is lost, so restore only when the live database canno
 ## Capacity
 
 `pnpm load` starts the real server on one core (half the live server), signs 500 players up and keeps
-them online for 3 minutes, each with the live channel open and playing at a person's pace. On
-21 October 2026: 40 requests a second, p95 17 ms for a change, 10 ms for reading the game and 26 ms
-for the hiscores, no errors, 20% of one core and 200 MB of memory. With 1,500 players: 113 requests a
-second, p95 60 ms, 51% of one core, 243 MB.
+them online for 3 minutes, each with the live channel open and playing at a person's pace. Their saves
+are grown first (weeks to a year of play, full Storehouses, mastery and deeds), two in three have a
+castle with reports, and one in ten comes back after hours away and catches up on its first change.
+Besides changes, the game and the hiscores, they read their notices and castle, act in Castle Clash and
+call feature routes. On 2 November 2026: 59 requests a second, p95 19 ms for a change, 9 ms for reading
+the game, 16 ms for the hiscores and 19 ms for a castle action, no errors, 21% of one core and 201 MB.
+With 1,500 players: 176 requests a second, p95 67 ms for a change, 58% of one core, 212 MB.
+
+What costs the server most, and how it is kept down (session 37): an offline catch-up runs every fight
+and repetition since the player left (about 50 ms for eight hours of combat); SQLite's compiled
+statements are kept, so a query is not compiled again; each ladder's order is held in memory, so a rank
+costs nothing however many players there are (a hiscores page with 20,000 players takes about 3 ms). A
+CPU profile of the server under load is one variable away: `PROFILE=<dir> pnpm load`.
