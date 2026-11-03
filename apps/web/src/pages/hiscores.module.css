@@ -53,10 +53,28 @@
 }
 
 .player {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: var(--s-2);
   overflow-wrap: anywhere;
+}
+
+/* A player's picture beside their name (session 43); on a narrow ladder the name keeps the room. */
+.rowPicture {
+  display: flex;
+  flex: none;
+}
+
+@container main (max-width: 479px) {
+  .rowPicture {
+    display: none;
+  }
+}
+
+/* A badge beside the title, no taller than the title's line. */
+.honours svg {
+  width: 18px;
+  height: 18px;
 }
 
 /* A name opens its player's sheet: it reads as the name, faintly underlined to say it can be pressed

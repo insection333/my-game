@@ -169,7 +169,11 @@ function Row({ row, you, ladder }: { row: HiscoreRow; you: boolean; ladder: stri
       </td>
       <td>
         <span className={s.player}>
-          {row.look && <Picture picture={row.look.picture} frame={row.look.frame} glow={row.look.glow} size={24} />}
+          {row.look && (
+            <span className={s.rowPicture}>
+              <Picture picture={row.look.picture} frame={row.look.frame} glow={row.look.glow} size={24} />
+            </span>
+          )}
           {/* The name opens the player's sheet (their places, and Report this player). */}
           <a
             href={playerSheet(row.name)}
