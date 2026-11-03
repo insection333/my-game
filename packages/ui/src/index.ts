@@ -10,6 +10,7 @@ export { ActionRow, type ActionRowProps } from './components/ActionRow.tsx';
 export { LaneCard, type LaneCardProps } from './components/LaneCard.tsx';
 export { ResponsiveTable, type Column } from './components/ResponsiveTable.tsx';
 export { ItemIcon, type IconSize } from './components/ItemIcon.tsx';
+export { Picture, GLOWS } from './components/Picture.tsx';
 export { Sheet } from './components/Sheet.tsx';
 export { Moment } from './components/Moment.tsx';
 export { Field, type FieldProps } from './components/Field.tsx';

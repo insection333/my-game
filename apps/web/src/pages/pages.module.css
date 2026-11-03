@@ -70,7 +70,9 @@
   left: var(--s-2);
   bottom: var(--s-2);
   display: grid;
-  gap: 2px;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 2px var(--s-2);
   min-width: 9rem;
   max-width: calc(100% - 2 * var(--s-2));
   padding: var(--s-1) var(--s-3) var(--s-2);
@@ -89,10 +91,29 @@
 .rank {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
+  align-items: center;
   gap: 0 var(--s-2);
   font: 600 var(--t-lead) / 1.2 var(--font-book);
   color: var(--ink);
+}
+
+/* The player's picture beside what the plaque says (session 43): smaller on a phone's short banner. */
+.plaquePicture {
+  display: grid;
+}
+
+@container main (max-width: 719px) {
+  .plaquePicture > span,
+  .plaquePicture svg {
+    width: 36px !important;
+    height: 36px !important;
+  }
+}
+
+.plaqueText {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
 }
 
 /* The title the player shows, after the rank. */

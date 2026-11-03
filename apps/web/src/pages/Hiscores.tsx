@@ -4,14 +4,14 @@
 import type { HiscoreRow, HiscoresResponse } from '@idle-clash/contracts';
 import { fmt, hasString, t } from '@idle-clash/content';
 import { kindlingData } from '@idle-clash/features';
-import { FireSeal, hasIcon, ItemIcon, Panel, Pill, Tabs } from '@idle-clash/ui';
+import { FireSeal, hasIcon, ItemIcon, Panel, Picture, Pill, Tabs } from '@idle-clash/ui';
 import { useEffect, useState, type ReactNode } from 'react';
 import { api } from '../api.ts';
 import { handled } from '../game/session.ts';
 import { untilLoaded } from '../Ready.tsx';
 import { navigate, useLocation } from '../router.ts';
 import { Slot } from '../slots.tsx';
-import { bannerStyle } from './honours-style.ts';
+import { badgeName, bannerStyle } from './honours-style.ts';
 import { MenuGlyph } from '../shell/glyphs.tsx';
 import { PageHead } from './PageHead.tsx';
 import { PlayerSheet, playerSheet } from './HiscoresPlayer.tsx';
@@ -169,6 +169,7 @@ function Row({ row, you, ladder }: { row: HiscoreRow; you: boolean; ladder: stri
       </td>
       <td>
         <span className={s.player}>
+          {row.look && <Picture picture={row.look.picture} frame={row.look.frame} glow={row.look.glow} size={24} />}
           {/* The name opens the player's sheet (their places, and Report this player). */}
           <a
             href={playerSheet(row.name)}
@@ -182,6 +183,9 @@ function Row({ row, you, ladder }: { row: HiscoreRow; you: boolean; ladder: stri
         </span>
         {(title || milestones || kindling) && (
           <span className={s.honours}>
+            {row.look?.badge && (
+              <ItemIcon name={`badge-${row.look.badge}`} size={24} label={badgeName(row.look.badge)} />
+            )}
             {title && <span className={s.title}>{title}</span>}
             {milestones && <span className={s.milestones}>{milestones}</span>}
             {kindling && <span className={s.kindled}>{kindling}</span>}

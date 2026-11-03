@@ -1,9 +1,10 @@
 // The Deeds tab's two sheets: one deed (`?panel=deed&deed=level-woodcutting-40`) with its words, tier,
-// points, progress and what it unlocks; and the choice of honours (`?panel=honours`): every title,
-// banner and frame, those open to show and how the rest are opened.
+// points, progress and what it unlocks; and the choice of honours (`?panel=honours`): the thirty pictures
+// as a grid (session 43), then every title, badge, frame, glow, banner and scene, those open to show and
+// how the rest are opened.
 import { t } from '@idle-clash/content';
 import type { DeedsView, HonourChoice, HonoursView } from '@idle-clash/features';
-import { ActionRow, Button, Pill, ProgressBar, Sheet } from '@idle-clash/ui';
+import { ActionRow, Button, ItemIcon, Picture, Pill, ProgressBar, Sheet } from '@idle-clash/ui';
 import { useGame } from '../game/hooks.ts';
 import { game } from '../game/store.ts';
 import { fills } from '../slots.tsx';
@@ -60,7 +61,47 @@ export function HonoursSheet({ onClose }: { onClose: () => void }) {
   );
 }
 
+/** What an option looks like beside its name: a banner's colour, a frame's metal, a glow round the
+ *  forester, a badge, a scene's sky. */
+function Preview({ kind, id }: { kind: HonourChoice['kind']; id: string }) {
+  if (kind === 'glow') return <Picture picture="forester" glow={id} size={32} />;
+  if (kind === 'badge') return <ItemIcon name={`badge-${id}`} size={32} />;
+  if (kind === 'scene') return <span className={s.swatch} data-kind="scene" data-scene={id} />;
+  return <span className={s.swatch} data-kind={kind} style={kind === 'banner' ? bannerStyle(id) : frameStyle(id)} />;
+}
+
+/** The thirty pictures as a grid: those open to choose, the rest shown in grey with how they open beneath. */
+function Pictures({ choice }: { choice: HonourChoice }) {
+  return (
+    <section className={s.choice} aria-label={choice.name}>
+      <h3 className={s.choiceTitle}>{choice.name}</h3>
+      <ul className={s.pictures}>
+        {choice.options.map((o) =>
+          o.id === null ? null : (
+            <li key={o.id}>
+              <button
+                type="button"
+                data-ui="ItemTile"
+                className={s.pictureTile}
+                aria-pressed={o.current}
+                disabled={!o.open}
+                title={o.unlock ?? o.name}
+                onClick={() => game.act('deeds', 'choose', { kind: 'picture', id: o.id })}
+              >
+                <ItemIcon name={`portrait-${o.id}`} size={48} silhouette={!o.open} />
+                <span className={s.pictureName}>{o.name}</span>
+              </button>
+            </li>
+          ),
+        )}
+      </ul>
+      <p className={s.pictureNote}>{t('honour.picture.note')}</p>
+    </section>
+  );
+}
+
 function Choice({ choice }: { choice: HonourChoice }) {
+  if (choice.kind === 'picture') return <Pictures choice={choice} />;
   return (
     <section className={s.choice} aria-label={choice.name}>
       <h3 className={s.choiceTitle}>{choice.name}</h3>
@@ -68,15 +109,7 @@ function Choice({ choice }: { choice: HonourChoice }) {
         <ActionRow
           key={o.id ?? 'none'}
           locked={!o.open}
-          icon={
-            choice.kind !== 'title' && o.id ? (
-              <span
-                className={s.swatch}
-                data-kind={choice.kind}
-                style={choice.kind === 'banner' ? bannerStyle(o.id) : frameStyle(o.id)}
-              />
-            ) : undefined
-          }
+          icon={choice.kind !== 'title' && o.id ? <Preview kind={choice.kind} id={o.id} /> : undefined}
           name={o.name}
           facts={o.unlock ? [o.unlock] : []}
           status={o.current ? <Pill tone="woad">{t('deeds.showing')}</Pill> : undefined}

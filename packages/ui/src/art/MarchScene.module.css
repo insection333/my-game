@@ -94,7 +94,8 @@
   }
 }
 
-:global(:root[data-theme='dark']) .wrap {
+:global(:root[data-theme='dark']) .wrap,
+.wrap[data-night] {
   --sky: #0a1318;
   --sky-low: #13222a;
   --sky-horizon: #1d2f35;

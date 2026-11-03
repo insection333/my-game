@@ -107,6 +107,19 @@ describe('hiscores', () => {
     expect(after.rows[0]).toMatchObject({ name: 'Alder', title: 'forester', banner: 'dawn' });
   });
 
+  it("shows each player's look (session 43): their picture, and the forester's until they choose", async () => {
+    s = await server();
+    const a = await signUp(s, 'Alder');
+    await record(a, (st) => ({ ...st, skills: { woodcutting: { xp: XP_TABLE[60] } } }), 1);
+    const row = async () => (await ladders(a)).ladders.find((l) => l.skill === 'woodcutting')!.rows[0];
+    expect((await row()).look).toEqual({ picture: 'forester', frame: null, glow: null, badge: null, scene: 'march' });
+    await post(s, '/api/f/deeds/choose', { requestId: 'req-look-1', input: { kind: 'picture', id: 'owl' } }, a);
+    expect((await row()).look).toMatchObject({ picture: 'owl', glow: null });
+    // A glow not yet opened is refused, and the look stays as it was.
+    await post(s, '/api/f/deeds/choose', { requestId: 'req-look-2', input: { kind: 'glow', id: 'aurora' } }, a);
+    expect((await row()).look).toMatchObject({ picture: 'owl', glow: null });
+  });
+
   it('gives a tie to whoever reached it first', async () => {
     // Written straight into saves, so the two hold exactly the same XP.
     s = await server();

@@ -248,6 +248,16 @@ export interface HiscoreRow {
   /** The title the player shows (an honour's id, worded by the page), and their banner's colour. */
   title: string | null;
   banner: string | null;
+  /** How the player looks (session 43): their picture, its frame and glow, the badge beside their title
+   *  and the scene behind their profile, each an honour's id; null before their save is first read. */
+  look: Look | null;
+}
+export interface Look {
+  picture: string;
+  frame: string | null;
+  glow: string | null;
+  badge: string | null;
+  scene: string;
 }
 export interface Ladder {
   /** A skill's id, or 'total'. */

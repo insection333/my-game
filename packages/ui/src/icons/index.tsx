@@ -85,6 +85,7 @@ import { SUPPLY_FINDS } from './finds-supplies.tsx';
 import { SUPPLY_ICONS } from './supplies-index.tsx';
 import { EXPEDITION_ICONS } from './expeditions-index.tsx';
 import { CASTLE_ICONS } from './castle-index.tsx';
+import { HONOUR_ICONS } from './honours-index.tsx';
 import { PathFortune, PathLore, PathBounty } from './kindling.tsx';
 import { M, type Tone } from './style.tsx';
 import {
@@ -119,7 +120,9 @@ export type IconFamily =
   | 'relic'
   | 'path'
   | 'castle'
-  | 'crest';
+  | 'crest'
+  | 'picture'
+  | 'badge';
 
 export interface IconDef {
   draw: ComponentType;
@@ -282,6 +285,7 @@ export const ICONS: Record<string, IconDef> = {
   ...SUPPLY_FINDS,
   ...EXPEDITION_ICONS,
   ...CASTLE_ICONS,
+  ...HONOUR_ICONS,
   // Kindling's Paths (session 17).
   'path-bounty': { draw: PathBounty, family: 'path', title: 'Bounty: a bound sheaf (Path)' },
   'path-lore': { draw: PathLore, family: 'path', title: 'Lore: an open book (Path)' },

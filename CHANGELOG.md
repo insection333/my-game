@@ -144,3 +144,11 @@
   - **Castle Clash battle reports.** A Reports tab: every siege, defence, stronghold, fortress and spy's errand as a card under its day, filtered by kind. Each card shows both sides' arms, the outcome in a coloured word, the clash of strength and the spoils with their icons. The account is drawn as a report, with the ratio on a scale and the formation in three shares. The War tab keeps the latest three.
   - **Every popup closes from a cross in its top right:** sheets, moments of every size and the tour's card. Verify fails a popup without one.
   - Moments that name several things end each sentence; strongholds' reports now keep the stronghold's id, so its arms match its row.
+- Session 43, the owner's phase 2 (player identity and veteran cosmetics):
+  - **Thirty display pictures** in a new art family. There are seven folk of the march and five beasts, open from the first day, plus fifteen foes (each opened once a hundred have fallen to you) and the three bosses (opened once beaten). They are chosen from a grid in Choose honours.
+  - **Veteran cosmetics**, every one opened by a hard, elite or master deed of the middle or end of the game:
+    - five glows, slow rings of light that turn round the picture;
+    - two prestige frames (royal and obsidian), which also rim the picture;
+    - six rare badges worn beside the title;
+    - two scenes behind a profile: the march by night, and the player's own castle.
+  - **Where they show:** the Hearth's plaque, every ladder row, and a player's sheet, which now opens on their scene with their picture over it. A player's look is kept on their row (migration 0012).

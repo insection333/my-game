@@ -1,5 +1,5 @@
 // Deeds' part of the save: when each deed was done, and the honours chosen to show (a title beside
-// your name, a banner's colour, a frame). Read on every draw, so each saved object is checked once.
+// your name, a banner's colour, a frame; since session 43 a picture, its glow, a badge and a scene). Read on every draw, so each saved object is checked once.
 import type { State } from '@idle-clash/kernel';
 import { z } from 'zod';
 
@@ -12,12 +12,26 @@ export const DeedsState = z
     title: Key.nullable().default(null),
     banner: Key.nullable().default(null),
     frame: Key.nullable().default(null),
+    // Session 43: the picture, its glow, a badge beside the title, the scene behind a profile.
+    picture: Key.nullable().default(null),
+    glow: Key.nullable().default(null),
+    badge: Key.nullable().default(null),
+    scene: Key.nullable().default(null),
   })
   .strict()
   .refine((d) => Object.keys(d.done).length <= 2000, 'too many deeds');
 export type DeedsState = z.infer<typeof DeedsState>;
 
-const EMPTY: DeedsState = Object.freeze({ done: Object.freeze({}), title: null, banner: null, frame: null });
+const EMPTY: DeedsState = Object.freeze({
+  done: Object.freeze({}),
+  title: null,
+  banner: null,
+  frame: null,
+  picture: null,
+  glow: null,
+  badge: null,
+  scene: null,
+});
 const checked = new WeakMap<object, DeedsState>();
 
 export function deedsOf(state: State): DeedsState {

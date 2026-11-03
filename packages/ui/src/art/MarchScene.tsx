@@ -118,15 +118,18 @@ export function MarchScene({
   className,
   keep = 'ground',
   works,
+  night,
 }: {
   className?: string;
   keep?: 'ground' | 'middle';
   works?: Record<string, number>;
+  /** Night whatever the theme (a profile's scene, session 43). */
+  night?: boolean;
 }) {
   const stars = seeded(7);
   const fit = keep === 'ground' ? 'xMidYMax slice' : 'xMidYMid slice';
   return (
-    <div className={`${s.wrap} ${className ?? ''}`} aria-hidden="true">
+    <div className={`${s.wrap} ${className ?? ''}`} data-night={night || undefined} aria-hidden="true">
       <svg className={s.scene} viewBox={`0 0 ${W} ${H}`} preserveAspectRatio={fit} focusable="false">
         {/* The one gradient: a sky this wide needs it, and nothing here is seen at 24 px. */}
         <defs>
