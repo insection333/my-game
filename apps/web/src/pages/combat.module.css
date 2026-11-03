@@ -80,10 +80,8 @@
 }
 
 .sideName {
-  overflow: hidden;
   font: 500 var(--t-body) / 1.2 var(--font-book);
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
 }
 
 .hp {

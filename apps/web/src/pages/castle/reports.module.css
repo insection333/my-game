@@ -7,6 +7,14 @@
 
 .days {
   display: grid;
+  max-height: min(40rem, 62dvh);
+}
+
+/* The way from the War tab's latest three to the rest. */
+.more {
+  margin: 0;
+  padding: var(--s-2) var(--s-4) var(--s-3);
+  border-top: 1px solid var(--line);
 }
 
 .day + .day {

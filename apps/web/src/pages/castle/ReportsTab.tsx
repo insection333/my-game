@@ -56,7 +56,7 @@ export function ReportsTab() {
             }))}
           />
         </div>
-        <div data-slot="castle.reports" className={s.days}>
+        <div data-slot="castle.reports" className={s.days} data-scrollbox>
           {shown.length === 0 ? (
             <p className={s.none}>{t('castle.reports.none')}</p>
           ) : (
@@ -85,15 +85,7 @@ export function LatestReports() {
   const latest = cardsBy(cards, 'all').slice(0, 3);
   return (
     <section data-section>
-      <Panel
-        title={t('castle.reports.latest')}
-        aside={
-          <TextLink href="/castle/reports" onNavigate={navigate}>
-            {t('castle.reports.all')}
-          </TextLink>
-        }
-        flush
-      >
+      <Panel title={t('castle.reports.latest')} flush>
         <div data-slot="castle.latest">
           {latest.length ? (
             <ul className={s.cards}>
@@ -105,6 +97,13 @@ export function LatestReports() {
             <p className={s.none}>{t('castle.reports.none')}</p>
           )}
         </div>
+        {cards.length > latest.length && (
+          <p className={s.more}>
+            <TextLink href="/castle/reports" onNavigate={navigate}>
+              {t('castle.reports.all')}
+            </TextLink>
+          </p>
+        )}
       </Panel>
     </section>
   );

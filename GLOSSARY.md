@@ -13,6 +13,8 @@ Plain, warm and brief, with an old-world flavour in names rather than in instruc
 | Action | One thing a lane repeats: chopping a pine, forging a helm, fighting a foe |
 | Advantage | Your style beats the foe's: you deal more damage and take less |
 | AP | Action points in Castle Clash: earned by the hour and by the Call to arms, spent on drilling, spies, sieges and incursions |
+| Arena | The fight in your Combat lane played out on the Combat page, swing by swing: the very fight the game settles |
+| Arms | Castle Clash: the shield each lord, stronghold and fortress bears, its own and the same every time |
 | Artisan lane | The lane that turns materials into bars and gear (Smithing), fish into food (Cooking) and bars and logs into arrows (Fletching) |
 | Away | Time you are not on the page; lanes keep working for up to 24 hours |
 | Away recap | What happened while you were away, best thing first |
@@ -28,6 +30,7 @@ Plain, warm and brief, with an old-world flavour in names rather than in instruc
 | Comes from | On an item: every action that produces it |
 | Cooked food | Food Cooking makes from fish and logs; it heals more for its worth than the vendor's |
 | Daily goal | One larger goal a day |
+| Critical hit | A hit in the top tenth of what you can deal, marked in gold in the arena |
 | Decree | Castle Clash: the realm's rule for the week, the same for every castle |
 | Deed | A feat done in the course of play (a level, work, mastery, foes, finds, the fire), easy, hard, elite or master; listed on the Deeds tab of Hiscores |
 | Deed points | What deeds give by tier (easy 5, hard 15, elite 40, master 100); they open titles, a banner and frames |
