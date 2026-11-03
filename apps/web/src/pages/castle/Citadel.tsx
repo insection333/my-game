@@ -3,12 +3,20 @@
 // the walls' repair, and the deep foundations.
 import { BUILDINGS, EDICTS, ECONOMY, fmt, t } from '@idle-clash/content';
 import { castleEngine as E } from '@idle-clash/features';
-import { ActionRow, Button, Field, Panel, Pill } from '@idle-clash/ui';
+import { ActionRow, Button, Field, ItemIcon, Panel, Pill } from '@idle-clash/ui';
 import { useState } from 'react';
 import { buildingDoes, buildingName, decreeDoes, edictGives, edictName } from './labels.ts';
 import { castleAct } from './store.ts';
 import { affords, hasAp, useSyncedCastle } from './synced.ts';
 import s from './castle.module.css';
+
+/** Each building's icon (the castle's family of icons, ART.md). */
+const BUILDING_ICON: Record<(typeof BUILDINGS)[number]['id'], string> = {
+  walls: 'castle-walls',
+  deepVault: 'castle-deep-vault',
+  watchtower: 'castle-watchtower',
+  spyGuild: 'castle-spy-guild',
+};
 
 /** The treasury the Top up button fills to: half again what the edict needs. */
 const TOP_UP = 1.5;
@@ -44,6 +52,7 @@ function Edicts() {
             return (
               <ActionRow
                 key={e.id}
+                icon={<ItemIcon name={`edict-${e.id}`} size={32} />}
                 name={edictName(e.id)}
                 facts={[edictGives(e.lifts, { pct: pct(paid ? gives : ECONOMY.EDICT_BASE_PCT) })]}
                 status={
@@ -177,6 +186,7 @@ function Buildings() {
             return (
               <ActionRow
                 key={b.id}
+                icon={<ItemIcon name={BUILDING_ICON[b.id]} size={32} />}
                 name={buildingName(b.id)}
                 status={<Pill>{t('castle.level', { level: fmt.int(level) })}</Pill>}
                 facts={[does(castle, b.id, now)]}

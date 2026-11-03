@@ -1,0 +1,137 @@
+/* The lord's castle in its scene (CastleScene.tsx). The sky, hills and their day and night are the
+   march's (MarchScene.module.css); what is the castle's own is here. */
+.wrap {
+  --mound-lit: #93b18a;
+  --tent: #d9ccb0;
+  --tent-lit: #efe6d0;
+  --foe: #b03c30;
+  --fire-glow: 0.35;
+}
+
+@media (prefers-color-scheme: dark) {
+  :global(:root:not([data-theme='light'])) .wrap {
+    --mound-lit: #213634;
+    --tent: #4b463c;
+    --tent-lit: #5d574a;
+    --foe: #8c3a30;
+    --fire-glow: 0.6;
+  }
+
+  /* By night the castle is dimmed and cooled; its windows and fires are drawn over it, still lit. */
+  :global(:root:not([data-theme='light'])) .castle {
+    filter: url(#castle-night);
+  }
+}
+
+:global(:root[data-theme='dark']) .wrap {
+  --mound-lit: #213634;
+  --tent: #4b463c;
+  --tent-lit: #5d574a;
+  --foe: #8c3a30;
+  --fire-glow: 0.6;
+}
+
+:global(:root[data-theme='dark']) .castle {
+  filter: url(#castle-night);
+}
+
+/* The castle is drawn in the icons' style at a larger scale: its ink is thickened to hold at a
+   quarter size on a phone, as the scene's own ink is. */
+.castle path[fill='none'] {
+  stroke-width: 3.5;
+}
+
+.moundLit {
+  fill: var(--mound-lit);
+}
+
+.course {
+  stroke: #182024;
+  stroke-width: 2;
+  opacity: 0.55;
+}
+
+.crack {
+  fill: none;
+  stroke: #182024;
+  stroke-width: 3;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.portcullis {
+  fill: none;
+  stroke: #8f989e;
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+.planks {
+  fill: none;
+  stroke: #46301d;
+  stroke-width: 3;
+}
+
+.tent {
+  fill: var(--tent);
+}
+
+.tentLit {
+  fill: var(--tent-lit);
+}
+
+.foe {
+  fill: var(--foe);
+  stroke: #182024;
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+}
+
+.glow {
+  fill: #ffa23a;
+  opacity: var(--fire-glow);
+  filter: blur(12px);
+}
+
+.smoke {
+  fill: #5d6266;
+  opacity: 0.55;
+}
+
+.flag,
+.flicker {
+  transform-box: view-box;
+}
+
+/* The banner stirs and the fires flicker: slow, small, never a distraction. */
+@media (prefers-reduced-motion: no-preference) {
+  .stillSmoke {
+    display: none;
+  }
+
+  .flag {
+    animation: stir 5s ease-in-out infinite alternate;
+  }
+
+  .flicker {
+    animation: flicker 1.4s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes stir {
+  from {
+    transform: skewY(-3deg) scaleX(0.96);
+  }
+  to {
+    transform: skewY(3deg) scaleX(1);
+  }
+}
+
+@keyframes flicker {
+  from {
+    transform: scale(0.9, 0.84);
+  }
+  to {
+    transform: scale(1.05, 1.08);
+  }
+}

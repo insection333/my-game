@@ -134,3 +134,8 @@
   - **One press a battle.** Each attack on a known foe goes in the formation set against it. The result lands on its own row: the two sides' strength races out, then the word and what it brought, with the battle's account a tap away. Fortresses need no scouting.
   - **The war from the first day.** The fortress and strongholds open with the castle; lords open at an average level of 5, on both sides. Sieging a stronghold keeps the novice shield.
   - **Orders of the day.** The header shows three small aims, each linking to where it is done. Each pays war marks at once, and all three pay more.
+- Session 41, Castle Clash phase two (the look):
+  - **The lord's castle, drawn as raised.** A banner above every tab shows the castle in the march: its walls from a timber palisade to white stone and gold as they are raised, a keep that gains storeys, towers and beacons with the watchtower, the edict in force flying, damage shown, and fires and a foe's camp after a siege. Night in the dark theme; the crop fits the castle to a phone.
+  - **Arms for every foe.** Each lord, stronghold and fortress bears its own shield, drawn from its id, on its row, its sheet and its battle.
+  - **Drawings for every row:** buildings, studies, edicts, each troop at each evolution, and the nine war relics (grey until forged).
+  - **A battle drawn as a clash:** the two sides' arms at either end of one bar, meeting where the battle stood.

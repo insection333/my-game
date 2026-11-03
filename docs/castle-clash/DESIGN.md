@@ -235,6 +235,21 @@ What changed:
 
 The realm keeps every check, with strongholds fought from the first day. Routs came 21 times in about 1,800 days at war, still a feat.
 
+### Session 41: the look (phase two of the owner's two)
+
+The owner found Castle Clash bland. Looking at it beside the rest of the game made the reasons plain:
+
+- **Nothing on the page was drawn.** Every other part of the game has its icons and the Hearth its scene; the castle was text, pills and buttons from end to end, so a castle at level 60 looked as one just raised.
+- **Foes had no faces.** A stronghold, a lord and a fortress were names in rows, alike until read.
+- **A battle was two grey bars.** The moment the war turns on said little at a glance.
+
+What changed:
+
+22. **The lord's castle, as raised, above every tab** (`castle.banner`; ART.md, The lord's castle). Its walls turn from timber to fieldstone, dressed stone, iron-capped and at last white stone and gold as they are raised; its keep gains storeys with the castle's average level; towers and then beacons come with the watchtower; the edict in force flies on the keep; damaged walls show it; for six hours after a siege, fires burn on them and a camp stands in the field. Each level of a building is now seen as well as counted.
+23. **Arms for every lord and stronghold,** drawn from its id, on its row, its sheet and its battle: a foe is known by its shield before its name.
+24. **Every row of things has its drawing:** the buildings, the War College's studies, the edicts (as the banners they fly), each troop at each of its four evolutions (so an evolution is seen as well as named), and the nine war relics, in grey until forged.
+25. **A battle drawn as a clash:** your arms and theirs at either end of one bar, your attack pushing in against their defence until they meet where the battle stood, then the word.
+
 ## 12. Phases
 
 | Phase | Session | Delivers |

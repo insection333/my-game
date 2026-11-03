@@ -51,6 +51,19 @@ const Sheet = ({ theme }: { theme: 'light' | 'dark' }) => (
         </figure>
       ))}
     </div>
+    {/* Arms: each lord and stronghold bears its own, drawn from its id (heraldry.tsx). */}
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 24, alignItems: 'end', marginTop: 32 }}>
+      {['ashford', 'brenmoor', 'cael', 'dunmere', 'eldhollow', 'fenwick', 'garrow', 'holt'].map((seed) => (
+        <figure key={seed} style={{ margin: 0, display: 'grid', gap: 8, justifyItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'end', gap: 12 }}>
+            {([96, 48, 24] as const).map((size) => (
+              <ItemIcon key={size} name="crest" crest={seed} size={size} />
+            ))}
+          </div>
+          <figcaption style={{ font: '13px var(--font-ui)' }}>Arms of {seed}</figcaption>
+        </figure>
+      ))}
+    </div>
     {/* Each Kindling past 99 sets a flame on the rim's crown, up to five. */}
     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 24, alignItems: 'end', marginTop: 32 }}>
       {[1, 2, 3, 5].map((kindlings) => (

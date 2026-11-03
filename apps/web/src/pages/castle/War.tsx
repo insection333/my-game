@@ -5,7 +5,7 @@
 // reports beside them. A lord's Plan opens their sheet: spies, the full plan, Report this player.
 import { SINKS, SPY_MISSIONS, UNLOCKS, fmt, t } from '@idle-clash/content';
 import { castleEngine as E } from '@idle-clash/features';
-import { ActionRow, Button, Panel, Pill } from '@idle-clash/ui';
+import { ActionRow, Button, ItemIcon, Panel, Pill } from '@idle-clash/ui';
 import { useEffect } from 'react';
 import { navigate, useLocation, withPanel } from '../../router.ts';
 import { Fought } from './Fought.tsx';
@@ -79,6 +79,7 @@ function Fortress() {
       >
         <div data-slot="castle.incursion">
           <ActionRow
+            icon={<ItemIcon name="crest" crest={fortress.id} size={32} />}
             name={fortressName(fortress.id)}
             facts={[
               t('castle.target.chance', { pct: pct(E.winChance(best.r)) }),
@@ -178,6 +179,7 @@ function TargetRow({ target }: { target: Target }) {
   const taken = Math.max(0, ...E.pairOf(castle, target.id, now).sieges);
   return (
     <ActionRow
+      icon={<ItemIcon name="crest" crest={target.id} size={32} />}
       name={target.name}
       status={
         <>
