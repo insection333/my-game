@@ -1,0 +1,63 @@
+/* A picture, and the glow round it: a ring of light in the glow's colours, blurred, turning slowly. */
+.picture {
+  position: relative;
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+}
+
+.picture > svg {
+  position: relative;
+}
+
+.glow {
+  position: absolute;
+  inset: -12%;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, var(--g1), var(--g2), var(--g3), var(--g1));
+  filter: blur(3px);
+  opacity: 0.9;
+  mask: radial-gradient(circle, transparent 58%, #000 62%, #000 70%, transparent 74%);
+}
+
+.picture[data-glow='verdant'] {
+  --g1: #9fd67a;
+  --g2: #e4f7a8;
+  --g3: #3f8f4e;
+}
+
+.picture[data-glow='ember'] {
+  --g1: #ff8a3a;
+  --g2: #ffd27a;
+  --g3: #c2341b;
+}
+
+.picture[data-glow='frost'] {
+  --g1: #9fdcff;
+  --g2: #f2fbff;
+  --g3: #4a86c7;
+}
+
+.picture[data-glow='wyrmfire'] {
+  --g1: #ff5a2a;
+  --g2: #a13cff;
+  --g3: #ffc84a;
+}
+
+.picture[data-glow='aurora'] {
+  --g1: #6cf0c8;
+  --g2: #8a7cff;
+  --g3: #ff7ad1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .glow {
+    animation: turn 9s linear infinite;
+  }
+}
+
+@keyframes turn {
+  to {
+    transform: rotate(1turn);
+  }
+}

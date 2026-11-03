@@ -8,6 +8,7 @@ import { xpOf, type State } from '@idle-clash/kernel';
 import { and, asc, desc, eq, isNotNull, isNull, sql } from 'drizzle-orm';
 import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
 import { hiscores, players } from '../db/schema.ts';
+import { lookOf, readLook } from './look.ts';
 import { Ranks } from './ranks.ts';
 
 export const TOTAL = 'total';
@@ -25,6 +26,7 @@ interface Top {
   reachedAt: number;
   title: string | null;
   banner: string | null;
+  look: string | null;
 }
 
 /** Whether an entry stands above a row in the ladder's order (level, then XP; a tie to the earlier). */
@@ -60,11 +62,12 @@ export class Hiscores {
   update(playerId: string, state: State, at: number): void {
     this.heard.set(playerId, at);
     const honours = shownHonours(state);
-    const key = `${honours.title ?? ''}|${honours.banner}`;
+    const look = lookOf(honours);
+    const key = `${honours.title ?? ''}|${honours.banner}|${look}`;
     if (this.shown.get(playerId) !== key) {
       this.db
         .update(players)
-        .set({ title: honours.title, banner: honours.banner })
+        .set({ title: honours.title, banner: honours.banner, look })
         .where(eq(players.id, playerId))
         .run();
       this.shown.set(playerId, key);
@@ -170,6 +173,7 @@ export class Hiscores {
         reachedAt: hiscores.reachedAt,
         title: players.title,
         banner: players.banner,
+        look: players.look,
       })
       .from(hiscores)
       .innerJoin(players, eq(players.id, hiscores.playerId))
@@ -201,6 +205,7 @@ export class Hiscores {
       milestones: r.milestones,
       title: r.title,
       banner: r.banner,
+      look: readLook(r.look),
     });
     const rows = top.map((r, i) => row(r, i + 1));
     const mine = this.entries(skill, playerId).get();

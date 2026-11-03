@@ -9,7 +9,9 @@ import { wordsOf } from './content.ts';
 import { deedById, pointsOf } from './list.ts';
 import { deedsOf } from './state.ts';
 
-export type HonourKind = 'title' | 'banner' | 'frame';
+export type HonourKind = 'title' | 'banner' | 'frame' | 'picture' | 'glow' | 'badge' | 'scene';
+/** Every kind, as a player chooses them (the honours sheet's order). */
+export const HONOUR_KINDS: readonly HonourKind[] = ['picture', 'title', 'badge', 'frame', 'glow', 'banner', 'scene'];
 export type Unlock = { points: number } | { deed: string } | { anyOf: () => string[]; text: string };
 export interface Honour {
   id: string;
@@ -31,6 +33,41 @@ const SKILL_TITLES: Record<string, string> = {
   magic: 'archmage',
   hitpoints: 'unbroken',
 };
+
+/** The display pictures (session 43): twelve open to everyone (folk of the march and its beasts), fifteen
+ *  foes and the three bosses. A picture's id is its icon's (`portrait-<id>`). */
+export const PICTURES_OPEN = [
+  'forester',
+  'delver',
+  'smith',
+  'angler',
+  'ranger',
+  'mage',
+  'knight',
+  'stag',
+  'wolf',
+  'owl',
+  'boar',
+  'raven',
+] as const;
+export const PICTURE_FOES = [
+  'hollow-rat',
+  'goblin-slinger',
+  'marsh-wisp',
+  'orc-raider',
+  'grave-wight',
+  'hill-troll',
+  'fell-huntsman',
+  'bog-lurker',
+  'drowned-acolyte',
+  'mire-hulk',
+  'bog-witch',
+  'ash-troll',
+  'ash-shaman',
+  'obsidian-golem',
+  'ember-sorcerer',
+] as const;
+export const PICTURE_BOSSES = ['troll-chief', 'drowned-warden', 'ember-wyrm'] as const;
 
 const title = (id: string, unlock: Unlock): Honour => ({ id, kind: 'title', unlock });
 const at = (points: number) => ({ points });
@@ -68,15 +105,41 @@ export const HONOURS: readonly Honour[] = [
   { id: 'night', kind: 'banner', unlock: at(2_000) },
   { id: 'gold', kind: 'banner', unlock: by('gold-1000000') },
   { id: 'dawn', kind: 'banner', unlock: { anyOf: ninetyNines, text: 'honour.unlock.any99' } },
-  // Frames: by points.
+  // Frames: by points, then two of prestige (session 43), for a castle grown great and a war long fought.
   { id: 'bronze', kind: 'frame', unlock: at(500) },
   { id: 'silver', kind: 'frame', unlock: at(2_000) },
   { id: 'gold', kind: 'frame', unlock: at(4_000) },
   { id: 'dawn', kind: 'frame', unlock: at(8_000) },
+  { id: 'royal', kind: 'frame', unlock: by('castle-level-25') },
+  { id: 'obsidian', kind: 'frame', unlock: by('defeats-250000') },
+  // Pictures (session 43): twelve for everyone from the first day, a foe's once a hundred of them have
+  // fallen to you, a boss's once beaten.
+  ...PICTURES_OPEN.map((id): Honour => ({ id, kind: 'picture', unlock: null })),
+  ...PICTURE_FOES.map((id): Honour => ({ id, kind: 'picture', unlock: by(`foe-${id}-100`) })),
+  ...PICTURE_BOSSES.map((id): Honour => ({ id, kind: 'picture', unlock: by(`boss-${id}`) })),
+  // Glows round the picture, slow and animated: a veteran's, each for a mid- to end-game milestone.
+  { id: 'verdant', kind: 'glow', unlock: by('rank-knight') },
+  { id: 'ember', kind: 'glow', unlock: by('routs-10') },
+  { id: 'frost', kind: 'glow', unlock: by('boss-drowned-warden-50') },
+  { id: 'wyrmfire', kind: 'glow', unlock: by('boss-ember-wyrm-100') },
+  { id: 'aurora', kind: 'glow', unlock: by('rank-legend') },
+  // Badges beside the title: rare, each for a feat few reach.
+  { id: 'tower', kind: 'badge', unlock: by('castle-level-25') },
+  { id: 'skull', kind: 'badge', unlock: by('defeats-500000') },
+  { id: 'star', kind: 'badge', unlock: by('collector-all') },
+  { id: 'flame', kind: 'badge', unlock: by('kindlings-10') },
+  { id: 'wyrm', kind: 'badge', unlock: by('boss-ember-wyrm-100') },
+  { id: 'crown', kind: 'badge', unlock: by('rank-legend') },
+  // The scene behind a profile: the march by day for everyone, by night, and the lord's own castle.
+  { id: 'march', kind: 'scene', unlock: null },
+  { id: 'night', kind: 'scene', unlock: by('fortresses-25') },
+  { id: 'castle', kind: 'scene', unlock: by('castle-level-10') },
 ];
 
 export const honourOf = (kind: HonourKind, id: string) => HONOURS.find((h) => h.kind === kind && h.id === id);
 export const DEFAULT_BANNER = 'woad';
+export const DEFAULT_PICTURE = 'forester';
+export const DEFAULT_SCENE = 'march';
 
 /** Whether an honour is unlocked, given the deeds done and the points they make. */
 export function unlocked(h: Honour, done: Readonly<Record<string, number>>, points: number): boolean {
@@ -102,12 +165,30 @@ export function unlockText(h: Honour): string {
 export const honourName = (h: Pick<Honour, 'kind' | 'id'>) => t(`honour.${h.kind}.${h.id}`);
 
 /** The honours a player shows, each still unlocked (a chosen honour is checked again as it is read). */
-export function shownHonours(state: State): { title: string | null; banner: string; frame: string | null } {
+export interface Shown {
+  title: string | null;
+  banner: string;
+  frame: string | null;
+  picture: string;
+  glow: string | null;
+  badge: string | null;
+  scene: string;
+}
+
+export function shownHonours(state: State): Shown {
   const d = deedsOf(state);
   const points = pointsOf(state);
   const ok = (kind: HonourKind, id: string | null) => {
     const h = id ? honourOf(kind, id) : undefined;
     return h && unlocked(h, d.done, points) ? h.id : null;
   };
-  return { title: ok('title', d.title), banner: ok('banner', d.banner) ?? DEFAULT_BANNER, frame: ok('frame', d.frame) };
+  return {
+    title: ok('title', d.title),
+    banner: ok('banner', d.banner) ?? DEFAULT_BANNER,
+    frame: ok('frame', d.frame),
+    picture: ok('picture', d.picture) ?? DEFAULT_PICTURE,
+    glow: ok('glow', d.glow),
+    badge: ok('badge', d.badge),
+    scene: ok('scene', d.scene) ?? DEFAULT_SCENE,
+  };
 }

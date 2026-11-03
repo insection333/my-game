@@ -43,7 +43,8 @@ export function refresh(state: State, now: number): Answer<{ ok: true; done: num
 
 export type ChooseResult = { ok: true } | { ok: false; reason: 'unknown' | 'locked' };
 
-/** Shows an honour (or, with null, a title or frame no longer: the banner returns to woad). */
+/** Shows an honour (or, with null, none of that kind: the banner returns to woad, the picture to the forester's,
+ *  the scene to the march's). */
 export function choose(state: State, kind: HonourKind, id: string | null): Answer<ChooseResult> {
   const d = deedsOf(state);
   if (id !== null) {

@@ -10,13 +10,13 @@ import {
   type StandingView,
   type SteadingView,
 } from '@idle-clash/features';
-import { ActionRow, Button, hasIcon, ItemIcon, MarchScene, Panel, Pill, ProgressBar } from '@idle-clash/ui';
+import { ActionRow, Button, hasIcon, ItemIcon, MarchScene, Panel, Picture, Pill, ProgressBar } from '@idle-clash/ui';
 import { useGame } from '../game/hooks.ts';
 import { game } from '../game/store.ts';
 import { navigate } from '../router.ts';
 import { LaneList, laneViews } from '../shell/Lanes.tsx';
 import { fills, Slot } from '../slots.tsx';
-import { honourStyle } from './honours-style.ts';
+import { badgeName, honourStyle } from './honours-style.ts';
 import s from './pages.module.css';
 import { Tour } from '../shell/Tour.tsx';
 import { Today } from './Today.tsx';
@@ -41,8 +41,8 @@ export function Hearth() {
   return (
     <>
       <h1 className="visually-hidden">{t('hearth.title')}</h1>
-      {/* The region's banner, with your standing on a plaque in your banner's colour and frame: rank and
-          title, total level, the way to the next rank. */}
+      {/* The region's banner, with your standing on a plaque in your banner's colour and frame: your picture
+          in its glow (session 43), rank, badge and title, total level, the way to the next rank. */}
       <div className={s.bannerBox}>
         <MarchScene className={s.banner} keep="middle" works={steading?.data.stages} />
         {standing && (
@@ -52,14 +52,24 @@ export function Hearth() {
             data-frame={plaque?.data.frame ? true : undefined}
             style={plaque ? honourStyle(plaque.data.banner, plaque.data.frame) : undefined}
           >
-            <span className={s.rank}>
-              {standing.data.rank}
-              {plaque?.data.title && <span className={s.plaqueTitle}>{plaque.data.title}</span>}
-            </span>
-            <span className={s.total}>{standing.data.total}</span>
-            {standing.data.next && (
-              <ProgressBar value={standing.data.progress} label={standing.data.next} tone="woad" />
+            {plaque && (
+              <span className={s.plaquePicture}>
+                <Picture picture={plaque.data.picture} frame={plaque.data.frame} glow={plaque.data.glow} size={48} />
+              </span>
             )}
+            <span className={s.plaqueText}>
+              <span className={s.rank}>
+                {standing.data.rank}
+                {plaque?.data.badge && (
+                  <ItemIcon name={`badge-${plaque.data.badge}`} size={24} label={badgeName(plaque.data.badge)} />
+                )}
+                {plaque?.data.title && <span className={s.plaqueTitle}>{plaque.data.title}</span>}
+              </span>
+              <span className={s.total}>{standing.data.total}</span>
+              {standing.data.next && (
+                <ProgressBar value={standing.data.progress} label={standing.data.next} tone="woad" />
+              )}
+            </span>
           </div>
         )}
       </div>

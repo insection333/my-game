@@ -149,7 +149,7 @@ describe('deeds', () => {
     expect(choose(s, 'banner', 'woad').result).toEqual({ ok: true });
     // A save that names a locked honour shows none (and the woad banner).
     s.features.deeds = { done: {}, title: 'forester', banner: 'dawn', frame: 'gold' };
-    expect(shownHonours(s)).toEqual({ title: null, banner: 'woad', frame: null });
+    expect(shownHonours(s)).toMatchObject({ title: null, banner: 'woad', frame: null });
   });
 
   it('are all checked quickly, as the page asks on every draw', () => {

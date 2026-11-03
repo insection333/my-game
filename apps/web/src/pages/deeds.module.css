@@ -236,6 +236,65 @@
   background: var(--banner);
 }
 
+.swatch[data-kind='scene'] {
+  width: 32px;
+  border: 1px solid var(--line-strong);
+  background: linear-gradient(#b9cfd6 0 55%, #7f9f80 55%);
+}
+
+.swatch[data-scene='night'] {
+  background: linear-gradient(#0a1318 0 55%, #18292a 55%);
+}
+
+.swatch[data-scene='castle'] {
+  background:
+    linear-gradient(to right, transparent 30%, #bfb7a8 30% 70%, transparent 70%) 0 30% / 100% 45% no-repeat,
+    linear-gradient(#b9cfd6 0 55%, #7f9f80 55%);
+}
+
+/* The pictures, four or more to a row; the one shown ringed in woad. */
+.pictures {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(5rem, 1fr));
+  gap: var(--s-2);
+  margin: 0;
+  padding: 0 var(--s-4);
+  list-style: none;
+}
+
+.pictureTile {
+  display: grid;
+  justify-items: center;
+  gap: var(--s-1);
+  width: 100%;
+  padding: var(--s-2) var(--s-1);
+  border: 1px solid var(--line);
+  border-radius: var(--r-control);
+  background: var(--surface-2);
+  color: var(--ink);
+  font: 500 var(--t-small) / 1.2 var(--font-ui);
+  cursor: pointer;
+}
+
+.pictureTile[aria-pressed='true'] {
+  border: 2px solid var(--woad);
+}
+
+.pictureTile:disabled {
+  color: var(--ink-2);
+  cursor: default;
+}
+
+.pictureName {
+  overflow-wrap: anywhere;
+}
+
+.pictureNote {
+  padding: var(--s-2) var(--s-4) 0;
+  color: var(--ink-2);
+  font-size: var(--t-small);
+}
+
 .swatch[data-kind='frame'] {
   border: 3px solid var(--frame);
   background: var(--surface-2);

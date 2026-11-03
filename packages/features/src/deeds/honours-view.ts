@@ -3,7 +3,16 @@
 import { fmt, t } from '@idle-clash/content';
 import type { State } from '@idle-clash/kernel';
 import { DEED_TIERS, type DeedTier } from './content.ts';
-import { HONOURS, honourName, shownHonours, unlocked, unlockText, type HonourKind } from './honours.ts';
+import {
+  HONOUR_KINDS,
+  HONOURS,
+  honourName,
+  shownHonours,
+  unlocked,
+  unlockText,
+  type HonourKind,
+  type Shown,
+} from './honours.ts';
 import { deedList, pointsOf } from './list.ts';
 import { deedsOf } from './state.ts';
 
@@ -27,21 +36,20 @@ export interface HonoursView {
   tiers: { tier: DeedTier; name: string; count: string }[];
   /** The next title points unlock, and how far it is. */
   next: { text: string; progress: number } | null;
-  shown: { title: string | null; banner: string; frame: string | null; bannerName: string; frameName: string | null };
+  shown: Omit<Shown, 'title'> & { title: string | null; bannerName: string; frameName: string | null };
   choices: HonourChoice[];
 }
 
-/** What the plaque on the Hearth wears. */
-export interface PlaqueView {
-  title: string | null;
-  banner: string;
-  frame: string | null;
-}
+/** What the plaque on the Hearth wears: the title in words, the rest by id. */
+export type PlaqueView = Omit<Shown, 'title'> & { title: string | null };
 
 export function plaqueView(state: State): PlaqueView {
   const s = shownHonours(state);
-  return { title: s.title ? honourName({ kind: 'title', id: s.title }) : null, banner: s.banner, frame: s.frame };
+  return { ...s, title: s.title ? honourName({ kind: 'title', id: s.title }) : null };
 }
+
+/** The kinds a player may also show none of; a banner, a picture and a scene always show one. */
+const NONE: ReadonlySet<HonourKind> = new Set(['title', 'frame', 'glow', 'badge']);
 
 export function honoursView(state: State): HonoursView {
   const d = deedsOf(state);
@@ -111,6 +119,6 @@ export function honoursView(state: State): HonoursView {
       bannerName: honourName({ kind: 'banner', id: shown.banner }),
       frameName: shown.frame ? honourName({ kind: 'frame', id: shown.frame }) : null,
     },
-    choices: [choice('title', true), choice('banner', false), choice('frame', true)],
+    choices: HONOUR_KINDS.map((k) => choice(k, NONE.has(k))),
   };
 }

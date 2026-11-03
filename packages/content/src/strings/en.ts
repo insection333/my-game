@@ -5,6 +5,7 @@
 // terms' in en-legal.ts, Fishing's and Cooking's in en-food.ts, Fletching's, Runecraft's and the supplies' in en-supplies.ts, the goals ladder's, its rewards' and your standing's in en-progress.ts, Kindling's in en-kindling.ts, the steading's in en-steading.ts, the closed test's in en-test.ts, the admin page's and reporting's in en-moderation.ts.
 import { combat } from './en-combat.ts';
 import { deeds } from './en-deeds.ts';
+import { honours } from './en-honours.ts';
 import { expeditions } from './en-expeditions.ts';
 import { food } from './en-food.ts';
 import { kindling } from './en-kindling.ts';
@@ -297,6 +298,7 @@ export const en: Record<string, string> = {
   ...legal,
   ...progress,
   ...deeds,
+  ...honours,
   ...expeditions,
   ...kindling,
   ...steading,
