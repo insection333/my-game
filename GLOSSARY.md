@@ -18,6 +18,7 @@ Plain, warm and brief, with an old-world flavour in names rather than in instruc
 | Artisan lane | The lane that turns materials into bars and gear (Smithing), fish into food (Cooking) and bars and logs into arrows (Fletching) |
 | Away | Time you are not on the page; lanes keep working for up to 24 hours |
 | Away recap | What happened while you were away, best thing first |
+| Badge | A rare feat's mark worn beside your title, opened by a deed few reach |
 | Banner | The colour your plaque and your hiscores pennant fly, opened by deeds |
 | Bar | Metal smelted from ore: copper, bronze, iron, steel |
 | Boss | A region's last and hardest foe: met at an expedition's end, or fought alone once a day |
@@ -46,8 +47,9 @@ Plain, warm and brief, with an old-world flavour in names rather than in instruc
 | First steps | The six opening goals, each with a button |
 | Foe | Something to fight; each has a style, shown before you fight |
 | Fork | Halfway along an expedition: two roads, one chosen before setting out, each changing the second half |
-| Frame | The metal rim of your plaque on the Hearth, opened by deed points |
+| Frame | The metal rim of your plaque and your picture, opened by deed points (and two of prestige by deeds) |
 | Gathering lane | The lane that cuts wood, mines ore, fishes or draws runes; the fire opens a second one |
+| Glow | A slow ring of light round your picture, opened by a deed of the middle or end of the game |
 | Gold | Earned from selling and from foes; buys food and Storehouse space |
 | Health | How much damage you can take; set by Hitpoints |
 | Hearth | The home page |
@@ -71,12 +73,14 @@ Plain, warm and brief, with an old-world flavour in names rather than in instruc
 | Orders of the day | Castle Clash: three small aims each day, the day's strongholds always among them; each pays war marks when done, and all three pay more |
 | Path | A level-99 skill's way of working: Bounty (more of what it makes), Lore (more XP) or Fortune (more finds); free to change |
 | Perk | A lasting bonus unlocked at a level |
+| Picture | The face you show others: thirty, twelve yours from the start, the rest opened by foes overcome and bosses beaten |
 | Rank | Your standing, from Wanderer to Legend of the Realm, rising with your total level |
 | Rare | A find of about 1 in 500 actions |
 | Region | Where foes are fought: the march, the Sunken Fen and the Ashen Peaks, each a tab of Combat |
 | Relic | A lasting boost bought with marks, in ranks: XP in a skill, food, finds or Storehouse space |
 | Rout | Castle Clash: all five of a day's mercenary strongholds taken, worth war marks of its own |
 | Retreat | Leaving a fight at low health with no food; nothing is lost and the lane stops |
+| Scene | The view behind your profile: the march by day, by night, or your castle |
 | Short goals | Three rolling goals of 10 to 15 minutes |
 | Siege | Castle Clash: an attack on another lord's castle for the treasury gold their vault cannot hide |
 | Slot | A space in the Storehouse for one kind of item, in any amount |
