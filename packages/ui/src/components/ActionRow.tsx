@@ -4,6 +4,9 @@ import s from './ActionRow.module.css';
 
 export interface ActionRowProps {
   icon?: ReactNode;
+  /** The icon gives way to the words on the narrowest rows (a 320 px phone), for rows whose buttons are
+   *  long (Castle Clash's costs); otherwise it stays at every width. */
+  iconYields?: boolean;
   name: string;
   /** Short facts, each formatted already: "7.5 s", "5,400 XP an hour", "Pine logs ×1". */
   facts: string[];
@@ -15,13 +18,13 @@ export interface ActionRowProps {
   locked?: boolean;
 }
 
-export function ActionRow({ icon, name, facts, status, progress, actions, locked }: ActionRowProps) {
+export function ActionRow({ icon, iconYields, name, facts, status, progress, actions, locked }: ActionRowProps) {
   // A group named by the row's name: a screen reader says "Pine tree" on entering it, so its "Start"
   // and "Next" are heard with what they start.
   const id = useId();
   return (
     <div data-ui="ActionRow" data-locked={locked || undefined} className={s.row} role="group" aria-labelledby={id}>
-      <div className={s.grid} data-icon={icon ? true : undefined}>
+      <div className={s.grid} data-icon={icon ? true : undefined} data-yields={(icon && iconYields) || undefined}>
         {icon && <div className={s.icon}>{icon}</div>}
         <div className={s.main}>
           <div className={s.title}>

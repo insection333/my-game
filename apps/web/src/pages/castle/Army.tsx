@@ -3,7 +3,7 @@
 // castellan (Formation.tsx). The War College is in the Halls, beside the Reliquary.
 import { EVOLUTION_LEVELS, ECONOMY, SINKS, UNITS, fmt, t } from '@idle-clash/content';
 import { castleEngine as E } from '@idle-clash/features';
-import { ActionRow, Button, Panel, Pill } from '@idle-clash/ui';
+import { ActionRow, Button, ItemIcon, Panel, Pill } from '@idle-clash/ui';
 import { Defences, Formations } from './Formation.tsx';
 import { evolutionName, unitName } from './labels.ts';
 import { castleAct } from './store.ts';
@@ -44,6 +44,8 @@ function Troops() {
             return (
               <ActionRow
                 key={u.id}
+                iconYields
+                icon={<ItemIcon name={u.evolutions[stage]} size={32} />}
                 name={evolutionName(u.evolutions[stage])}
                 status={<Pill>{t('castle.level', { level: fmt.int(level) })}</Pill>}
                 facts={[

@@ -1,4 +1,4 @@
-// Castle Clash (docs/castle-clash/, IA.md): the castle's header (AP, the Call to arms, the orders of the
+// Castle Clash (docs/castle-clash/, IA.md): the castle's banner (session 41) and its header (AP, the Call to arms, the orders of the
 // day, the decree, shields) over four tabs (session 40): the War first, where every battle of the day is,
 // then the Army, the Citadel and the Halls. Before total level 100 the page says when it opens; at 100 a
 // lord raises their castle here. The tabs' old addresses still lead to them.
@@ -10,6 +10,7 @@ import { navigate, useLocation } from '../../router.ts';
 import { PageHead } from '../PageHead.tsx';
 import { Citadel } from './Citadel.tsx';
 import { Army } from './Army.tsx';
+import { Banner } from './Banner.tsx';
 import { Header } from './Header.tsx';
 import { Halls } from './Halls.tsx';
 import { ReportSheet } from './Reports.tsx';
@@ -88,6 +89,7 @@ export function Castle({ path }: { path: string }) {
     <>
       {head(<Tabs tabs={tabs} label={t('castle.title')} onNavigate={navigate} />)}
       <div className={s.column}>
+        <Banner />
         <Header note={E.tabOpen(castle, tab) ? null : t('castle.opens.halls')} />
         {!E.tabOpen(castle, tab) ? null : tab === 'war' ? (
           <War />

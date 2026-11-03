@@ -3,7 +3,7 @@
 // castle's three best relics count towards its rating, worn or not; only worn ones give).
 import { RELIC, RELIC_SOCKETS, RELICS, TECH, TECHS, fmt, t, type CastleEffect } from '@idle-clash/content';
 import { castleEngine as E } from '@idle-clash/features';
-import { ActionRow, Button, Panel, Pill } from '@idle-clash/ui';
+import { ActionRow, Button, ItemIcon, Panel, Pill } from '@idle-clash/ui';
 import { useState } from 'react';
 import { relicGives, relicName, techDoes, techName } from './labels.ts';
 import { castleAct, castleRun } from './store.ts';
@@ -38,6 +38,8 @@ function College() {
             return (
               <ActionRow
                 key={x.id}
+                iconYields
+                icon={<ItemIcon name={`tech-${x.id}`} size={32} />}
                 name={techName(x.id)}
                 status={<Pill>{t('castle.rank', { rank: fmt.int(rank), ranks: fmt.int(TECH.RANKS) })}</Pill>}
                 facts={[techDoes(x.id)]}
@@ -111,6 +113,8 @@ function Relic({ id }: { id: string }) {
   };
   return (
     <ActionRow
+      iconYields
+      icon={<ItemIcon name={id} size={32} silhouette={level === 0} />}
       name={relicName(id)}
       status={
         level ? (

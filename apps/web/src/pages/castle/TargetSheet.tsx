@@ -4,7 +4,7 @@
 // about it.
 import { SPY_MISSIONS, fmt, t } from '@idle-clash/content';
 import { castleEngine as E } from '@idle-clash/features';
-import { ActionRow, Button, Pill, Sheet } from '@idle-clash/ui';
+import { ActionRow, Button, ItemIcon, Pill, Sheet } from '@idle-clash/ui';
 import { ReportPlayer } from '../ReportPlayer.tsx';
 import { missionDoes, missionName, refusal, trapName } from './labels.ts';
 import { AttackPlan } from './Plan.tsx';
@@ -29,12 +29,16 @@ export function TargetSheet({ target, onClose }: { target: Target; onClose: () =
   return (
     <Sheet title={target.name} closeLabel={t('shell.close')} onClose={onClose} slot="castle.target">
       <div className={s.sheet}>
-        <div className={s.pills}>
-          <Pill tone="woad">{t('castle.target.rating', { rating: fmt.int(target.rating) })}</Pill>
-          {target.merc && <Pill>{t('castle.target.mercenary')}</Pill>}
-          {target.struck !== null && (
-            <Pill tone="ember">{t('castle.target.struckAt', { when: when(target.struck, now) })}</Pill>
-          )}
+        {/* Their arms beside how they stand. */}
+        <div className={s.arms}>
+          <ItemIcon name="crest" crest={target.id} size={48} />
+          <div className={s.pills}>
+            <Pill tone="woad">{t('castle.target.rating', { rating: fmt.int(target.rating) })}</Pill>
+            {target.merc && <Pill>{t('castle.target.mercenary')}</Pill>}
+            {target.struck !== null && (
+              <Pill tone="ember">{t('castle.target.struckAt', { when: when(target.struck, now) })}</Pill>
+            )}
+          </div>
         </div>
         {/* The header is behind the sheet: a refusal is said here too. */}
         {refused && (

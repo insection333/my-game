@@ -50,10 +50,12 @@ Each material has exactly three tones: light, base and shadow.
 | Finds | The object as it was found. Rarity is shown by a word and a pill beside it, never by colour or a frame alone | Bird's nest |
 | Skills | The skill's tool on a slate seal with a bronze rim, which marks the family | Woodcutting |
 | Bosses | Foes, larger and marked out: a crown, a barnacled helm and lantern-light, horns and a jaw of fire; still a bust in left-facing profile with the eye the brightest point | The Troll-chief of the hill (session 16) |
-| Relics | A keepsake hung from a leather cord, which marks the family; below it the thing itself, one object lit from the upper left | Heartwood charm, Hearthstone (session 16) |
+| Relics | A keepsake hung from a leather cord, which marks the family; below it the thing itself, one object lit from the upper left. Castle Clash's nine war relics (session 41) are the objects alone, larger, with no cord: they are kept in the Reliquary, not carried, and drawn in grey until forged | Heartwood charm, Hearthstone (session 16) |
 | Regions | A small landscape on a round shield of sky, the region's own land and colour: an expedition's icon | The march, the Sunken Fen, the Ashen Peaks (session 16) |
 | Paths | The Path's emblem on a round ember seal with a fiery inner ring, which marks the family: a bound sheaf for Bounty, an open book for Lore, a starred gold coin for Fortune | Bounty, Lore, Fortune (session 17) |
 | Fish | On a slant, head low on the left, tail up on the right, so it fills the square as a sword does; back lit, belly in shade, the eye the brightest point. Each kind has its own skin and marks; cooked, it turns golden brown with grill marks and a cloudy eye | Perch, Cooked perch, Salmon, Pike pie (approved 27 October 2026) |
+| The castle (session 41) | Castle Clash's works and garrison, each one thing in its own materials: the buildings (a stretch of curtain wall with its gate, a round vault door with a gold lock, a crenellated watchtower with its beacon, a hood with two eyes for the spy guild), the War College's studies (a supply cart, a battering ram, a mason's square on a stone, a mask before a dagger), the three edicts as banners hung from a gilded bar in the colours they fly on the keep, and each troop at its four evolutions, a step up in metal and finish each (wood and iron, iron, gold, dawnsteel, as gear's tiers step): the vanguard a shield before a polearm, the outriders a horse's head beside an upright lance, the siege train its engine (trebuchet, bombard, hellcannon, the crystal engine) | Walls, Levy spearmen, Border scouts, Timber trebuchets (awaiting the owner's approval) |
+| Arms (session 41) | A heater shield, one per lord and stronghold, drawn from its id: one colour (red, blue, green, purple, black), divided with a metal (gold or silver; per pale, per fess, per bend, a chief, a chevron, quarterly) or plain, and a charge in the other metal (a star, a tower, a crescent, a roundel, a cross, a key). Metal on colour, as heralds have it, so each reads at 24 px; the ink line holds a charge where it crosses the division | The review sheet's eight samples (awaiting the owner's approval) |
 
 ## Readable at 24 px
 
@@ -102,6 +104,18 @@ The march, seen from the road (`packages/ui/src/art/MarchScene.tsx`; placed by t
 - **Its colours are CSS variables,** so the light theme is a cool morning and the dark theme is night, with stars, the moon and the forge's glow.
 - **What matters sits in the middle 960 of its 1,600 units,** so any crop (a phone's banner, a wide screen) keeps it; the edges add pines for wider screens.
 - **A little moves** (the owner asked for "slightly more animated", 26 October 2026): smoke rises from the forge's chimney, two clouds take minutes to cross the sky, and now and then a few birds fly over, kept above the welcome page's words. What moves is drawn in a layer of its own over the still scene, so only those few shapes are repainted (verify's CPU budget holds); at night the clouds are faint and the birds stay away; with reduced motion nothing moves.
+
+## The lord's castle
+
+The Castle Clash banner (`packages/ui/src/art/CastleScene.tsx`, session 41; the parts in `castle-parts.tsx`): the lord's castle on its mound in the march, under the region's own sky, hills and pines (`landscape.tsx`, shared with the region's scene, with its day and night). The castle is drawn by the icon rules (flat tones, three to a material, the ink line), its ink thickened so it holds at a quarter size on a phone. It shows the castle as it is:
+
+- **The walls' material by the walls' level:** a timber palisade with a timber keep below 5, rough fieldstone from 5, dressed stone from 15, merlons capped in iron from 30, white stone with gold from 60. Under 100% they show cracks; under 80% merlons are missing and stones lie at their foot.
+- **The keep rises a storey** at an average level of 5, 15 and 30 (one to four). The edict in force flies on it in its colour (Harvest gold, Vigor green, Fortune blue); with none, plain cloth.
+- **Towers by the watchtower's level:** two at the corners from 5, a third from 15, a fourth from 30, under slate cones; from 50 the corner towers are crenellated and burn beacons.
+- **After a siege,** for six hours: fires on the walls with smoke rising, and two tents of the foe's red in the field.
+- **Night in the dark theme:** the castle is dimmed and cooled by one filter; its windows and fires are drawn over it, still lit.
+- **The crop follows the frame:** it keeps the castle's band (from the banner's tip to the walls' foot) and shows as much of the march either side as the frame's shape allows, so on a phone the castle fills the banner and on a wide screen the pines frame it.
+- **What moves** is in its own layer, as the region's scene's: the clouds, the banner stirring, the beacons and siege fires flickering, the smoke. With reduced motion nothing moves and the smoke hangs still.
 
 ## The loadout's figure
 
