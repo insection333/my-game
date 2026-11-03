@@ -50,13 +50,26 @@ export const fortressName = read({
   'hollow-crown-hold': 'castle.fortress.hollow-crown-hold',
 });
 
-type CastleEvent = EventOf<'castleSiege' | 'castleBesieged' | 'castleSpyCaught' | 'castleIncursion' | 'castleTempered'>;
+type CastleEvent = EventOf<
+  'castleSiege' | 'castleBesieged' | 'castleSpyCaught' | 'castleIncursion' | 'castleTempered' | 'castleOrders'
+>;
 export const isCastleEvent = (e: GameEvent): e is CastleEvent =>
   e.type === 'castleSiege' ||
   e.type === 'castleBesieged' ||
   e.type === 'castleSpyCaught' ||
   e.type === 'castleIncursion' ||
-  e.type === 'castleTempered';
+  e.type === 'castleTempered' ||
+  e.type === 'castleOrders';
+
+/** An order of the day by its kind, for a moment (the header words them in full, with their counts). */
+export const orderName = read({
+  strongholds: 'castle.order.strongholds.short',
+  incursion: 'castle.order.incursion.short',
+  drill: 'castle.order.drill.short',
+  dig: 'castle.order.dig.short',
+  spy: 'castle.order.spy.short',
+  lord: 'castle.order.lord.short',
+});
 
 export const relicName = read({
   'banner-of-the-first-king': 'castle.relic.banner-of-the-first-king',
@@ -96,13 +109,13 @@ export function castleMoment(e: CastleEvent): {
               ...goldText(e.gold),
               ...marksText(e.marks),
             ]),
-            href: '/castle/war-room',
+            href: '/castle',
             size: 'centre',
           }
         : {
             title: sentence(t('castle.report.siegeOut', { outcome: outcomeName(e.outcome), foe })),
             body: join([...goldText(e.gold), ...marksText(e.marks)]),
-            href: '/castle/war-room',
+            href: '/castle',
             size: e.outcome === 'decisive' ? 'banner' : 'toast',
           };
     case 'castleBesieged':
@@ -112,14 +125,14 @@ export function castleMoment(e: CastleEvent): {
           ...(e.lost > 0 ? [t('castle.report.lost', { gold: fmt.short(e.lost) })] : []),
           ...marksText(e.marks),
         ]),
-        href: '/castle/war-room',
+        href: '/castle',
         size: e.lost > 0 ? 'banner' : 'toast',
       };
     case 'castleSpyCaught':
       return {
         title: sentence(t('castle.report.spyIn', { foe })),
         body: join(marksText(e.marks)),
-        href: '/castle/war-room',
+        href: '/castle',
         size: 'toast',
       };
     case 'castleIncursion':
@@ -134,9 +147,17 @@ export function castleMoment(e: CastleEvent): {
               : []),
           ...marksText(e.marks),
         ]),
-        href: '/castle/incursions',
+        href: '/castle',
         // A hoard takes the centre of the screen, as a Legendary find does; the armoury a banner.
         size: e.spoils === 'hoard' ? 'centre' : e.won ? 'banner' : 'toast',
+      };
+    case 'castleOrders':
+      // The three together: a banner; one order done: a toast.
+      return {
+        title: e.all ? t('castle.orders.allDone') : t('castle.orders.done', { order: orderName(e.orders[0] ?? '') }),
+        body: join(marksText(e.marks)),
+        href: '/castle',
+        size: e.all ? 'banner' : 'toast',
       };
     case 'castleTempered':
       return {

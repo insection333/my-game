@@ -1,10 +1,11 @@
 // Castle Clash's header, above every tab (SPEC.md section 5), kept to two short rows so each tab's own
 // work starts high on a phone: AP with the Call to arms (and its streak) on one, the castle's rating, war
-// marks, this week's decree and any shield on the other; then why the last action was refused, or what
-// opens the tab shown.
+// marks, this week's decree and any shield on the other; the orders of the day (session 40); then why the
+// last action was refused, or what opens the tab shown.
 import { AP, fmt, t } from '@idle-clash/content';
 import { castleEngine as E } from '@idle-clash/features';
-import { Button, Panel, Pill, ProgressBar } from '@idle-clash/ui';
+import { Button, Panel, Pill, ProgressBar, TextLink } from '@idle-clash/ui';
+import { navigate } from '../../router.ts';
 import { decreeName, refusal } from './labels.ts';
 import { castleAct } from './store.ts';
 import { useSyncedCastle } from './synced.ts';
@@ -50,6 +51,7 @@ export function Header({ note }: { note: string | null }) {
             )}
             {vigilance > 0 && <Pill tone="moss">{t('castle.vigilance', { count: fmt.int(vigilance) })}</Pill>}
           </div>
+          <Orders />
           {note && <p className={s.closed}>{note}</p>}
           {refused && (
             <p className={s.refused} role="status">
@@ -59,5 +61,75 @@ export function Header({ note }: { note: string | null }) {
         </div>
       </Panel>
     </section>
+  );
+}
+
+/** What an order asks, with its count where it has one. */
+function orderText(o: E.Order): string {
+  switch (o.kind) {
+    case 'strongholds':
+      return o.target === 1
+        ? t('castle.order.strongholdsOne')
+        : t('castle.order.strongholds', { count: fmt.int(o.target) });
+    case 'drill':
+      return o.target === 1 ? t('castle.order.drillOne') : t('castle.order.drill', { count: fmt.int(o.target) });
+    case 'incursion':
+      return t('castle.order.incursion');
+    case 'dig':
+      return t('castle.order.dig');
+    case 'spy':
+      return t('castle.order.spy');
+    case 'lord':
+      return t('castle.order.lord');
+  }
+}
+
+/** Where each order is done. */
+const ORDER_TAB: Record<E.OrderKind, string> = {
+  strongholds: '/castle',
+  incursion: '/castle',
+  spy: '/castle',
+  lord: '/castle',
+  drill: '/castle/army',
+  dig: '/castle/citadel',
+};
+
+/** The orders of the day (session 40): how many are done, and each order with how far along it is, a link
+ *  to where it is done, ticked once done. */
+function Orders() {
+  const { castle, now } = useSyncedCastle();
+  if (!castle) return null;
+  const orders = E.ordersOf(castle, now);
+  const done = orders.list.filter((o) => o.progress >= o.target).length;
+  return (
+    <div className={s.orders} data-slot="castle.orders">
+      <span className={s.ordersHead}>
+        {orders.paid
+          ? t('castle.orders.paid')
+          : t('castle.orders.title', { done: fmt.int(done), total: fmt.int(orders.list.length) })}
+      </span>
+      <ul className={s.orderList}>
+        {orders.list.map((o) => {
+          const finished = o.progress >= o.target;
+          return (
+            <li key={o.kind} data-done={finished || undefined}>
+              <span aria-hidden="true">{finished ? '✓' : '○'}</span>
+              {finished ? (
+                <span>{orderText(o)}</span>
+              ) : (
+                <TextLink href={ORDER_TAB[o.kind]} onNavigate={navigate}>
+                  {orderText(o)}
+                </TextLink>
+              )}
+              {!finished && o.target > 1 && (
+                <span className={s.muted}>
+                  {t('castle.order.progress', { done: fmt.int(o.progress), target: fmt.int(o.target) })}
+                </span>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    </div>
   );
 }

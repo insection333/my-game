@@ -91,7 +91,6 @@ describe('Castle Clash under random play', () => {
         { type: 'mend', what: pick(['walls', 'wounds']) },
         { type: 'drill', unit: pick(['vanguard', 'outriders', 'siege']), times: 1 + Math.floor(rand() * 3) },
         { type: 'excavate' },
-        { type: 'scoutIncursion' },
         { type: 'incursion' },
         { type: 'spy', target: other, mission: pick(['scout', 'poison', 'sabotage', 'forge']) },
         { type: 'siege', target },

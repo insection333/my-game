@@ -213,6 +213,28 @@ What changed:
 
 The realm re-checks each: the harder strongholds pay more, none is taken twice in a day, the fourth falls to lords who set their formation against it, and a rout stays rare. Every other check holds.
 
+### Session 40: fun and the way round (phase one of the owner's two)
+
+The owner found Castle Clash still not fun enough, and clunky to get round. Counting what a day asked made both plain:
+
+- **A day's war took four tabs and three presses a battle.** The fortress was on Incursions, the strongholds on the War room, a formation was set on its sheet, then the siege was sent, and its account opened over the page. Five strongholds were about fifteen presses and five sheets to close.
+- **Setting the formation was a chore, not a choice.** The page already knew the best formation against a known garrison, so "Set against them" was one more press with only one right answer. Scouting a fortress was another.
+- **A new castle had no war at all.** Incursions waited for a unit at level 3 and strongholds for an average level of 5, so the first days were spent in the Citadel.
+- **A visit had no shape or end.** Nothing said what a good day's war was, or that it was done.
+
+What changed:
+
+18. **Four tabs, the War first.** War (`/castle`: the fortress, the day's strongholds, lords, reports), Army, Citadel and Halls. Old addresses lead to the new tabs.
+19. **Every battle a press away, set against the foe.** An attack on a known foe goes in the formation that does best against it, sent with the attack (`shares` on `siege` and `incursion`, checked whole). The standing attack formation is used only against a lord not scouted. A fortress's garrison is known without scouting. Its result lands on its own row: two bars race out, then the word and what it brought, with The battle a tap away. Nothing opens over the page.
+20. **The war from the first day.** The fortress and the strongholds open with the castle. Lords open at an average level of 5, on both sides: a castle below it can neither besiege nor be besieged. A siege on a stronghold no longer ends the novice shield.
+21. **Orders of the day.** Three small aims each UTC day, shown in the header, each a link to where it is done:
+    - The day's strongholds are always first (one for a young castle, two or three after).
+    - Two more come from an incursion won, drilling (two for a young castle, five after), a dig, and, once lords are open, a spy or a siege on a lord.
+    - Each order pays 6 war marks as it is done, and all three pay 12 more, with a moment. There is nothing to claim.
+    - They are kept on the castle (`orders`, migration 0011), drawn from the lord's id and the day.
+
+The realm keeps every check, with strongholds fought from the first day. Routs came 21 times in about 1,800 days at war, still a feat.
+
 ## 12. Phases
 
 | Phase | Session | Delivers |

@@ -160,7 +160,7 @@ export function ReportSheet() {
   const won = report.kind === 'incursion' ? d.won === true : d.outcome !== 'repelled';
   const good = defending ? !won : won;
   const foe = typeof d.foe === 'string' ? targets?.lords.find((l) => l.id === d.foe) : undefined;
-  const sheetOf = (target: string) => `/castle/war-room?panel=target&target=${encodeURIComponent(target)}`;
+  const sheetOf = (target: string) => `/castle?panel=target&target=${encodeURIComponent(target)}`;
   return (
     <Sheet title={castleEngine.sentence(line)} closeLabel={t('shell.close')} onClose={close} slot="castle.account">
       <div className={s.sheet}>

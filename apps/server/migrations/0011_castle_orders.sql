@@ -1,0 +1,1 @@
+ALTER TABLE `player_bastions` ADD `orders` text DEFAULT 'null' NOT NULL;

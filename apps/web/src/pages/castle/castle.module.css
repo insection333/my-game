@@ -343,3 +343,115 @@
   gap: var(--s-1);
   font-variant-numeric: tabular-nums;
 }
+
+/* A battle just fought, on its row: the word, what it brought, attack against defence, the account. It
+   rises in once, as the result lands. */
+.fought {
+  display: grid;
+  gap: var(--s-1);
+  margin-top: var(--s-1);
+  padding: var(--s-2) var(--s-3);
+  border-left: 3px solid var(--alert);
+  border-radius: var(--r-control);
+  background: var(--surface-2);
+  animation: fought 320ms ease-out;
+}
+
+.fought[data-won] {
+  border-left-color: var(--moss);
+}
+
+.foughtHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--s-1) var(--s-3);
+  /* The word lands once the two sides have met: the bars race first. */
+  animation: fought 260ms ease-out 620ms both;
+}
+
+.rout {
+  color: var(--gold);
+}
+
+/* Attack above, defence below, each against the stronger of the two. */
+.clash {
+  display: grid;
+  gap: 3px;
+}
+
+.clash span {
+  display: block;
+  height: 6px;
+  border-radius: 3px;
+  transform-origin: left;
+  animation: clash 600ms ease-out;
+}
+
+.clashAttack {
+  background: var(--woad);
+}
+
+.clashDefence {
+  background: var(--ink-2);
+}
+
+@keyframes fought {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+@keyframes clash {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fought,
+  .foughtHead,
+  .clash span {
+    animation: none;
+  }
+}
+
+/* The orders of the day, under the header's pills: a line saying how many are done, the three as a list
+   that runs on one line where there is room, done ones ticked in moss. */
+.orders {
+  display: grid;
+  gap: var(--s-1);
+  padding-top: var(--s-2);
+  border-top: 1px solid var(--line);
+}
+
+.ordersHead {
+  font-weight: 600;
+}
+
+.orderList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-1) var(--s-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.orderList li {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--s-1);
+}
+
+.orderList li[data-done] {
+  color: var(--moss);
+}
+
+/* A short line under a formation: when it is used. */
+.hint {
+  margin: var(--s-2) 0 0;
+  color: var(--ink-2);
+  font-size: var(--t-small);
+}

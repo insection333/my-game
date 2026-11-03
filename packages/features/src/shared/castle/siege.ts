@@ -54,8 +54,9 @@ export function siegeRefusal(
   return null;
 }
 
-/** The attacker's side of any siege: AP and the day's count spent, its own shield ended, the pair noted. */
-export function launch(att: Castle, defId: string, ap: number, now: number): Castle {
+/** The attacker's side of any siege: AP and the day's count spent, the pair noted, and for a siege on a
+ *  lord (not a stronghold: session 40) its own shield ended. */
+export function launch(att: Castle, defId: string, ap: number, now: number, onLord = true): Castle {
   const today = formatUtcDate(now);
   const pair = pairOf(att, defId, now);
   const launched: Castle = {
@@ -63,7 +64,7 @@ export function launch(att: Castle, defId: string, ap: number, now: number): Cas
     activeAp: Math.max(0, att.activeAp - ap),
     siegesDayUtc: today,
     siegesToday: launchedToday(att, now) + 1,
-    shieldUntil: Math.min(att.shieldUntil, now),
+    shieldUntil: onLord ? Math.min(att.shieldUntil, now) : att.shieldUntil,
   };
   return withPair(launched, { ...pair, sieges: [...pair.sieges, now] }, now);
 }

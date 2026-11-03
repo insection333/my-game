@@ -177,33 +177,35 @@ Tabs: Items · Collection log.
 
 ### Castle Clash
 
-The owner's castle system (`docs/castle-clash/`), between Storehouse and Hiscores. It opens at total level 100; before that the page says how far there is to go and what a castle brings. At 100 a lord raises their castle here. Then five tabs under the title, each opening as the castle grows: **Citadel** (`/castle`), **Garrison** (`/castle/garrison`), **War room** (`/castle/war-room`, short "War"), **Incursions** (`/castle/incursions`, short "Raids") and **Halls** (`/castle/halls`: the War College and the Reliquary, where war marks are spent). A closed tab says, under the header, what opens it; a closed War room still lists the lord's reports, since others may attack them first.
+The owner's castle system (`docs/castle-clash/`), between Storehouse and Hiscores. It opens at total level 100; before that the page says how far there is to go and what a castle brings. At 100 a lord raises their castle here. Then four tabs under the title (session 40): **War** (`/castle`, first: every battle of the day, open from the first day), **Army** (`/castle/army`), **Citadel** (`/castle/citadel`) and **Halls** (`/castle/halls`: the War College and the Reliquary, where war marks are spent, opening with the first war mark; until then the header says so). The tabs' addresses before session 40 (`/castle/garrison`, `/castle/war-room`, `/castle/incursions`) lead to the tab that holds what they held.
 
 | # | Section (slot) | Filled by | Notes |
 | --- | --- | --- | --- |
 | 1 | `castle.lead` | the page | Before a castle: total level against 100 with its bar, what a castle brings in three lines, and Raise your castle at 100 |
-| 2 | `castle.header` | the page | Above every tab, in two short rows: AP of the cap with its bar, the Call to arms (with the AP it brings) or Answered today, and the streak; pills for the rating, war marks, this week's decree, a shield and vigilance; why the last action was refused, or what opens the tab shown |
+| 2 | `castle.header` | the page | Above every tab, in two short rows: AP of the cap with its bar, the Call to arms (with the AP it brings) or Answered today, and the streak; pills for the rating, war marks, this week's decree, a shield and vigilance; then `castle.orders`; why the last action was refused, or what opens the tab shown |
+| 2a | `castle.orders` | the page | In the header (session 40): the orders of the day, how many of three are done (or all done), each order with how far along it is and ticked once done, and what they pay (war marks each, more for all three) |
 | 3 | `castle.edict` | the page | Citadel: the three edicts, each with what it lifts now, the one in force (or the treasury it needs) |
 | 4 | `castle.treasury` | the page | Citadel: what the treasury holds and what of it is raidable, what an edict needs and costs, this week's decree, Top up (to half again what the edict needs) in one press, the amount with Deposit and Withdraw (a fifth lost; barred after a scouting), whether costs come from the purse or the treasury |
 | 5 | `castle.buildings` | the page | Citadel: walls, deep vault, beacon tower and spy guild, each with its level, what it does and Raise for its gold; the walls' integrity and Repair |
 | 6 | `castle.dig` | the page | Citadel: the deep foundations' depth, its multiplier on the edict and AP, and Dig |
-| 7 | `castle.units` | the page | Garrison: the three troops by their evolution's name, level, drill and the next evolution, Drill (once or five times) and Raise; wounds and Heal |
+| 7 | `castle.units` | the page | Army: the three troops by their evolution's name, level, drill and the next evolution, Drill (once or five times) and Raise; wounds and Heal |
 | 8 | `castle.college` | the page | Halls: the War College's four studies, rank of ten, what a rank gives, Study for gold and war marks |
-| 9 | `castle.offense` | the page | Garrison: the attack formation, presets (Even, Shield wall, Lancers, Siege train), each share stepped by five, the flank warning past 60%, Save (free) |
-| 10 | `castle.defense` | the page | Garrison: the garrison, as the attack's, Save for 1% of the required treasury, then two hours' rest (pinned after a scouting) |
-| 11 | `castle.trap` | the page | Garrison: the three traps, the one set, Choose |
-| 12 | `castle.castellan` | the page | Garrison: the three castellans and what each does, Choose |
-| 13 | `castle.targets` | the page and the server | War room: up to five lords near your rating (a fresh five each day), then any lord who besieged you in the last day (Struck you, with Strike back). Each row carries the decision: its rating, the chance to win (about, once scouted; with the chance set against them when better), what a breach brings, and how it stands today (sieged once, twice, shielded) |
-| 14 | `castle.strongholds` | the page and the server | War room: the day's five mercenary strongholds, easiest first, each with its rating, the chance to win, what taking it pays (the harder more) and Plan, or Fallen once taken; how many of five have fallen, or Routed; a line saying a stronghold falls until tomorrow and five make a rout |
-| 15 | `castle.reports` | the server | War room: sieges, spies, stronghold battles and incursions, newest first, with what each moved; each opens its account |
-| 16 | `castle.target` | the page | A target's sheet (`?panel=target&target=…`): its rating, what is known of it (a scouting's findings, or a stronghold's garrison and trap), the attack plan, what a breach brings, the siege with its fee and AP (or why it cannot go), and the last reports about it; for a lord, `player.report` at its foot. A siege sent from here opens its account |
-| 17 | `castle.account` | the server | A battle's account (`?panel=report&report=…`), over any tab: won or lost, each side's strength as a bar, the day's fortune and the ratio it made against the breach and decisive marks, the formation (for a defender, the one that came at them), what came of it, the fee and the walls; for a lord, Strike back or Plan another siege. An assault or a siege opens its account when it is fought |
-| 18 | `castle.missions` | the page | In a lord's sheet: the four spy missions, what each does, the chance, Send |
-| 19 | `castle.plan` | the page | In a target's sheet and an incursion: the attack formation, its chance to win (about, for a lord: from their rating and the scouting), and Set against them, which sets the attack formation that does best against the garrison known |
-| 20 | `castle.incursion` | the page | Incursions: the fortress at your tier, its garrison and trap once scouted with the likely outcome, what taking it gives, Scout and Assault |
-| 21 | `castle.relics` | the page | Halls: the nine war relics, level of five, what each gives, Forge or raise, Wear and Take off, worn of three; at the last level, its tempers and how much stronger they make it, and Temper with its chance and cost (a temper that does not take says so on its row) |
+| 9 | `castle.offense` | the page | Army: the standing attack formation (used against a lord not scouted; against a known foe every attack is set against it), presets (Even, Shield wall, Lancers, Siege train), each share stepped by five, the flank warning past 60%, Save (free) |
+| 10 | `castle.defense` | the page | Army: the garrison, as the attack's, Save for 1% of the required treasury, then two hours' rest (pinned after a scouting) |
+| 11 | `castle.trap` | the page | Army: the three traps, the one set, Choose |
+| 12 | `castle.castellan` | the page | Army: the three castellans and what each does, Choose |
+| 13 | `castle.incursion` | the page | War, first: the fortress at your tier with its tier, the chance to win in the formation set against it, what taking it gives, its garrison and trap, and Assault; the battle's result lands on its row (`castle.fought`) |
+| 14 | `castle.strongholds` | the page and the server | War: the day's five mercenary strongholds, easiest first, each with its rating, the chance to win in the formation set against it, what taking it pays (the harder more) and Siege with its fee and AP, or Fallen and when once taken; how many of five have fallen, or Routed; a line saying a stronghold falls until tomorrow and five make a rout |
+| 15 | `castle.targets` | the page and the server | War: lords to challenge, once the castle averages level 5 (until then a line saying so): up to five near your rating (a fresh five each day), then any lord who besieged you in the last day (Struck you, with Strike back). Each row: its rating, the chance to win (about, once scouted, in the formation set against them), what a breach brings, how it stands today (sieged once, twice, shielded), Plan, and Siege (or Scout, before the first scouting) |
+| 16 | `castle.fought` | the page | On the row a battle was fought from (session 40), until the next: won or lost in a word, what it brought (Routed for the fifth stronghold), attack against defence as two bars, and The battle (its account) |
+| 17 | `castle.reports` | the server | War: sieges, spies, stronghold battles and incursions, newest first, with what each moved; each opens its account |
+| 18 | `castle.target` | the page | A lord's sheet (`?panel=target&target=…`): its rating, a scouting's findings, the plan, what a breach brings, the siege with its fee and AP (or why it cannot go; sent, the sheet closes and its result lands on their row), the four spy missions, the last reports about them, and `player.report` at its foot |
+| 19 | `castle.account` | the server | A battle's account (`?panel=report&report=…`), over any tab: won or lost, each side's strength as a bar, the day's fortune and the ratio it made against the breach and decisive marks, the formation (for a defender, the one that came at them), what came of it, the fee and the walls; for a lord, Strike back or Plan another siege |
+| 20 | `castle.missions` | the page | In a lord's sheet: the four spy missions, what each does, the chance, Send |
+| 21 | `castle.plan` | the page | In a lord's sheet: the formation the attack goes in (set against the garrison known) and its chance to win (about: from their rating, the scouting and your own spies' sabotage) |
+| 22 | `castle.relics` | the page | Halls: the nine war relics, level of five, what each gives, Forge or raise, Wear and Take off, worn of three; at the last level, its tempers and how much stronger they make it, and Temper with its chance and cost (a temper that does not take says so on its row) |
 
-- **At 390:** the header, then each tab's panels in one column. **At 1,440:** the header across, the tab's panels in two columns.
+- **At 390:** the header, then each tab's panels in one column (the War: the fortress, the strongholds, the lords, then the reports). **At 1,440:** the header across, the tab's panels in two columns (the War's reports on the right).
 - **Elsewhere:** until the day's Call to arms is answered, the Hearth's Next up leads with it, linking here. The edict in force shows as a gold pill beside a skill's level on its page (Vigor's XP, Fortune's finds) and under Combat's tabs (any edict, Harvest's fight gold too). Castle Clash's deeds are on the Combat tab of Deeds.
 
 **Visible without scrolling** (checked by verify at 390 × 844 and 1,440 × 900; a slot no built feature fills yet is skipped):
@@ -211,7 +213,7 @@ The owner's castle system (`docs/castle-clash/`), between Storehouse and Hiscore
 | View | 390 × 844 | 1,440 × 900 |
 | --- | --- | --- |
 | /castle | `castle.lead` | `castle.lead` |
-- **Newcomer:** total level against 100 and what a castle brings. **Three weeks in:** Raise your castle. **Two months in:** every tab of a raised castle, with a rival lord who struck it, the day's strongholds (one fallen), reports, relics, a stronghold's sheet and a battle's account.
+- **Newcomer:** total level against 100 and what a castle brings. **Three weeks in:** Raise your castle. **Two months in:** every tab of a raised castle, with a rival lord who struck it, the day's strongholds (one fallen), the orders of the day, reports, relics and a battle's account.
 
 ### Hiscores
 

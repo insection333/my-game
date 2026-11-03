@@ -184,16 +184,16 @@ export function playRealm(perKind: number, days: number, seed: number): Realm {
     for (let guard = 0; guard < 30 && l.castle.activeAp >= SINKS.DRILL_AP; guard++) {
       // A careful lord goes to war at most three times a day (past that, fatigue raises every cost) and
       // never stakes more than a quarter of their purse on one fee.
-      const war = E.tabOpen(l.castle, 'warRoom') && l.castle.siegesToday < SIEGE.FATIGUE_FREE;
-      if (war && l.kind.raids && siegeALord(l, t, day)) continue;
+      const war = l.castle.siegesToday < SIEGE.FATIGUE_FREE;
+      if (war && l.kind.raids && E.lordsOpen(l.castle) && siegeALord(l, t, day)) continue;
       if (war && l.kind.raids && mercenary(l, t, day)) continue;
       // A raider with AP and gold to spare (a week's earnings in hand, the edict paid for) presses on past
       // fatigue against the strongholds still standing, for the harder ones' pay and the rout (session 38).
       const spare =
         l.purse > 7 * l.kind.income && l.castle.treasury >= E.requiredTreasury(l.castle, l.kind.totalLevel) * 1.5;
-      const pressing = spare && E.tabOpen(l.castle, 'warRoom') && l.castle.siegesToday < SIEGE.STRONGHOLD_PAY.length;
+      const pressing = spare && l.castle.siegesToday < SIEGE.STRONGHOLD_PAY.length;
       if (pressing && l.kind.raids && l.castle.activeAp >= SIEGE.AP * 2 && mercenary(l, t, day)) continue;
-      if (E.tabOpen(l.castle, 'incursions') && l.castle.activeAp >= SINKS.INCURSION_AP) {
+      if (l.castle.activeAp >= SINKS.INCURSION_AP) {
         const odds = E.combatRatio(att(), E.fortressSide(l.castle.incursionTier), 0.5).r;
         if (odds >= 1.05) {
           const r = E.launchIncursion(l.castle, t, roll(), roll());
@@ -282,7 +282,7 @@ export function playRealm(perKind: number, days: number, seed: number): Realm {
       if (!paid) return false;
       burn(costs.gold, 'stronghold fees');
       l.purse = paid.purse;
-      const r = E.resolveMercenary(E.launch(paid.castle, m.id, costs.ap, t), m, t, roll(), realm.chest);
+      const r = E.resolveMercenary(E.launch(paid.castle, m.id, costs.ap, t, false), m, t, roll(), realm.chest);
       realm.chest -= r.bounty;
       l.purse += r.bounty;
       l.castle = r.attacker;

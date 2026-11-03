@@ -45,6 +45,7 @@ export function Formations() {
             disabled={busy}
             onSave={(shares) => castleAct({ type: 'offense', shares })}
           />
+          <p className={s.hint}>{t('castle.formation.attack.note')}</p>
         </Panel>
       </section>
       <section data-section>

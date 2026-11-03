@@ -1,6 +1,7 @@
 // Castle Clash: a castle as the engine reads it (one `player_bastions` row, its JSON parsed), and the
 // UTC calendar the plan's lazy sync counts in. Pure: no clock, no database; the server maps rows.
 import { AP, SIEGE, type BuildingId, type TechId, type UnitId } from '@idle-clash/content';
+import type { Orders } from './orders.ts';
 
 export type Shares = readonly [number, number, number];
 export type DebuffKind = 'poison' | 'sabotage' | 'forge';
@@ -61,9 +62,10 @@ export interface Castle {
   warMarksEarned: number;
   excavationDepth: number;
   incursionTier: number;
-  incursionScoutedTier: number;
   /** Days all five strongholds fell (session 38). */
   routs: number;
+  /** The orders of the day (session 40), or null before the first. */
+  orders: Orders | null;
   /** Owned war relics by id, each at level 1 to 5. */
   relics: Record<string, number>;
   /** Tempers on relics at their last level (session 35), by id: without end. */
@@ -122,8 +124,8 @@ export function newCastle(userId: string, now: number): Castle {
     warMarksEarned: 0,
     excavationDepth: 0,
     incursionTier: 1,
-    incursionScoutedTier: 0,
     routs: 0,
+    orders: null,
     relics: {},
     tempers: {},
     equippedRelics: [],

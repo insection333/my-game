@@ -124,6 +124,9 @@ function own(io: Io, d: E.Done): Outcome {
 export function act(io: Io, action: CastleAction): Outcome {
   const c = loadSynced(io, io.playerId);
   if (!c) return { ok: false, reason: 'noCastle' };
+  // A formation sent with an attack is whole: three shares of a hundred.
+  if ('shares' in action && action.shares && action.shares.reduce((a, b) => a + b, 0) !== 100)
+    return { ok: false, reason: 'invalid' };
   const w: E.Wallet = { castle: c, purse: purseOf(io) };
   switch (action.type) {
     case 'callToArms': {
@@ -176,20 +179,54 @@ export function act(io: Io, action: CastleAction): Outcome {
       return own(io, E.drill(w, action.unit, action.times));
     case 'excavate':
       return own(io, E.excavate(w, io.now));
-    case 'scoutIncursion':
-      if (!E.tabOpen(c, 'incursions')) return { ok: false, reason: 'locked' };
-      return own(io, E.scoutIncursion(w));
     case 'incursion':
-      return incursion(io, c);
+      return incursion(io, withShares(c, action.shares));
     case 'spy':
       return spy(io, c, action.target, action.mission);
     case 'siege':
-      return siege(io, c, action.target);
+      return siege(io, withShares(c, action.shares), action.target);
   }
 }
 
+/** The castle attacking in the formation sent with the attack (the page's, set against the foe), for
+ *  this battle; the attack formation kept on the castle is the one written with it. */
+const withShares = (c: Castle, shares: readonly [number, number, number] | undefined): Castle =>
+  shares ? { ...c, offense: shares } : c;
+
+/** What each action counts towards the orders of the day (session 40), from what it did. */
+function orderOf(action: CastleAction, out: Outcome): [E.OrderKind, number] | null {
+  if (!out.ok) return null;
+  switch (action.type) {
+    case 'siege':
+      return action.target.startsWith('merc:') ? (out.outcome === 'repelled' ? null : ['strongholds', 1]) : ['lord', 1];
+    case 'incursion':
+      return out.won === true ? ['incursion', 1] : null;
+    case 'drill':
+      return ['drill', action.times];
+    case 'excavate':
+      return ['dig', 1];
+    case 'spy':
+      return ['spy', 1];
+    default:
+      return null;
+  }
+}
+
+/** Runs an action, then counts it towards the orders of the day: what it finishes pays at once. */
+export function actAndOrder(io: Io, action: CastleAction): Outcome {
+  const out = act(io, action);
+  const counted = orderOf(action, out);
+  const c = counted && io.castles.read(io.playerId);
+  if (!counted || !c) return out;
+  const r = E.recordOrder(E.syncCastle(c, io.now).castle, counted[0], counted[1], io.now);
+  if (r.marks > 0 || r.done.length) {
+    store(io, r.castle);
+    io.events.push({ type: 'castleOrders', at: io.now, orders: r.done, all: r.all, marks: r.marks });
+  } else store(io, r.castle);
+  return out;
+}
+
 function incursion(io: Io, c: Castle): Outcome {
-  if (!E.tabOpen(c, 'incursions')) return { ok: false, reason: 'locked' };
   const tier = c.incursionTier;
   const r = E.launchIncursion(c, io.now, roll(), roll());
   if (r === 'ap') return { ok: false, reason: 'ap' };
