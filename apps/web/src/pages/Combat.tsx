@@ -71,7 +71,6 @@ function CombatPage({ combat }: { combat: Feature }) {
         </section>
         <section data-section className={s.foesArea}>
           <Panel title={t('combat.foes')} flush>
-            <CombatArena />
             {tiers.length > 1 && (
               <div className={s.tierTabs}>
                 <Tabs
@@ -91,6 +90,8 @@ function CombatPage({ combat }: { combat: Feature }) {
               </div>
             )}
             <Slot id="combat.foes">
+              {/* The fight the lane is in, over the foes to choose from. */}
+              <CombatArena />
               {foes.map((f) => (
                 <ActionRow
                   key={f.foe.id}
