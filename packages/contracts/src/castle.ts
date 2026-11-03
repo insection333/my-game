@@ -33,10 +33,9 @@ export const CastleAction = z.discriminatedUnion('type', [
   act('mend', { what: z.enum(['walls', 'wounds']) }),
   act('drill', { unit: Unit, times: z.number().int().min(1).max(50) }),
   act('excavate', {}),
-  act('scoutIncursion', {}),
-  act('incursion', {}),
+  act('incursion', { shares: Shares.optional() }),
   act('spy', { target: Target, mission: z.enum(['scout', 'poison', 'sabotage', 'forge']) }),
-  act('siege', { target: Target }),
+  act('siege', { target: Target, shares: Shares.optional() }),
 ]);
 export type CastleAction = z.infer<typeof CastleAction>;
 

@@ -24,6 +24,12 @@ export const castleWar = {
   'castle.merc.second.lances': 'Lances',
   'castle.merc.second.crows': 'Crows',
   'castle.target.open': 'Plan',
+  'castle.scoutFor': 'Scout for {gold} and {ap} AP',
+  'castle.strikeBackFor': 'Strike back for {gold} and {ap} AP',
+  'castle.fought.account': 'The battle',
+  'castle.incursion.title': 'Incursion',
+  'castle.lords.opens':
+    'Lords open to challenge once your castle averages level {level} (now {now}). Until then, the fortress and the strongholds are your war.',
   'castle.target.strikeBack': 'Strike back',
   'castle.target.struckAt': 'Struck you {when}',
   'castle.target.fallen': 'Fallen',
@@ -50,8 +56,6 @@ export const castleWar = {
   'castle.chance': '{pct} chance to win',
   'castle.chance.estimate': 'About {pct} chance to win (from their rating and the scouting)',
   'castle.attackWith': 'Your attack: {v}% vanguard, {o}% outriders, {s}% siege',
-  'castle.counter': 'Set against them: {pct}',
-  'castle.counter.best': 'Your attack is already set against them.',
   'castle.siege.scouted': 'Scouted {when}',
   'castle.siege.unscouted': 'Scout first to see their garrison, trap and treasury.',
   'castle.siege.weaken':
@@ -116,13 +120,11 @@ export const castleWar = {
   'castle.fortress.hollow-crown-hold': 'Hollow Crown Hold',
   'castle.incursion.tier': 'Tier {tier}',
   'castle.incursion.scouted': 'Garrison {v}% vanguard, {o}% outriders, {s}% siege; trap: {trap}',
-  'castle.incursion.unscouted': 'Not yet scouted',
-  'castle.incursion.scout': 'Scout for {ap} AP',
   'castle.incursion.assault': 'Assault for {ap} AP',
   'castle.spoils.armoury': 'the hidden armoury: war marks twice over',
   'castle.spoils.hoard': 'a war hoard: war marks five times over',
   'castle.rout': "A rout: all five of the day's strongholds have fallen",
-  'castle.incursion.rewards': 'Taken: {marks} war marks and drill for the troops who fought',
+  'castle.incursion.rewards': 'Taken: {marks} war marks and drill',
 
   // The Reliquary.
   'castle.reliquary.title': 'The Reliquary',

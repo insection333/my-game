@@ -191,9 +191,12 @@ export const playerBastions = sqliteTable(
     warMarksEarned: integer('war_marks_earned').notNull().default(0),
     excavationDepth: integer('excavation_depth').notNull().default(0),
     incursionTier: integer('incursion_tier').notNull().default(1),
+    /** No longer read: a fortress's garrison is known without scouting since session 40. */
     incursionScoutedTier: integer('incursion_scouted_tier').notNull().default(0),
     /** Days all five of the day's strongholds fell (session 38). */
     routs: integer('routs').notNull().default(0),
+    /** The orders of the day (session 40), as JSON, or null before the first. */
+    orders: text('orders').notNull().default('null'),
     // Bounded collections (JSON, at most 20 entries each).
     relics: text('relics').notNull().default('{}'),
     relicTempers: text('relic_tempers').notNull().default('{}'),

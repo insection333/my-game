@@ -240,7 +240,6 @@ export const SINKS = {
   /** The idle multiplier, 1 + 0.02 × √depth (DESIGN.md section 7: it lifts the edict and idle AP). */
   EXCAVATION_MULT_SLOPE: 0.02,
   INCURSION_AP: 30,
-  INCURSION_SCOUT_AP: 5,
   /** A fortress at tier t: 80 × t^1.05 of power in its garrison, behind walls of level t. */
   INCURSION_POWER_BASE: 80,
   INCURSION_POWER_EXP: 1.05,
@@ -254,10 +253,24 @@ export const SINKS = {
 /** The weekly decree: floor(now in seconds ÷ 604,800) mod 5. */
 export const DECREE_WEEK_SECONDS = 604_800;
 
-/** When Castle Clash and its tabs open (DESIGN.md section 6). */
+/** When Castle Clash and its tabs open (DESIGN.md section 6; session 40: the war from the first day, lords
+ *  at an average castle level of 5). */
 export const UNLOCKS = {
   TOTAL_LEVEL: 100,
-  INCURSIONS_UNIT_LEVEL: 3,
-  WAR_ROOM_AVG_LEVEL: 5,
+  LORDS_AVG_LEVEL: 5,
   RELIQUARY_MARKS_EARNED: 1,
+} as const;
+
+/** The orders of the day (session 40): three small aims drawn each UTC day, each paying war marks when
+ *  done and the three together paying more. The first is always the day's strongholds. */
+export const ORDERS = {
+  /** War marks for each order done, and for all three. */
+  MARKS: 6,
+  ALL_MARKS: 12,
+  /** Strongholds to take: two or three. */
+  STRONGHOLDS: [2, 3] as readonly number[],
+  DRILLS: 5,
+  /** For a young castle (lords not yet open), whose AP covers little: one stronghold, two drills. */
+  YOUNG_STRONGHOLDS: 1,
+  YOUNG_DRILLS: 2,
 } as const;

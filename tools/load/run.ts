@@ -165,7 +165,6 @@ async function play(p: Player, until: number, lord: boolean) {
 const CASTLE_ACTIONS = [
   { type: 'callToArms' },
   { type: 'drill', unit: 'vanguard', times: 1 },
-  { type: 'scoutIncursion' },
   { type: 'incursion' },
   { type: 'deposit', gold: 1000 },
 ];

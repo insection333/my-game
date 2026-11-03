@@ -1,25 +1,18 @@
 // A target's sheet in the War room (`?panel=target&target=<id>`, IA.md): what is known of it, the attack
-// planned against it, what a win brings, the siege with its fee, a lord's four spy missions, and the last
-// reports about it. A siege sent from here opens its battle's account (session 38).
+// planned against it, what a win brings, the siege with its fee (sent in the formation set against them,
+// the sheet closing so its result lands on their row), a lord's four spy missions, and the last reports
+// about it.
 import { SPY_MISSIONS, fmt, t } from '@idle-clash/content';
 import { castleEngine as E } from '@idle-clash/features';
 import { ActionRow, Button, Pill, Sheet } from '@idle-clash/ui';
-import { navigate } from '../../router.ts';
 import { ReportPlayer } from '../ReportPlayer.tsx';
 import { missionDoes, missionName, refusal, trapName } from './labels.ts';
 import { AttackPlan } from './Plan.tsx';
-import { garrisonLine, ReportRow, reportSheet, when } from './Reports.tsx';
-import { castleRun, castleStore } from './store.ts';
+import { garrisonLine, ReportRow, when } from './Reports.tsx';
+import { castleRun, fight } from './store.ts';
 import { affords, hasAp, useSyncedCastle } from './synced.ts';
 import { defenceOf, paysLine, pct, scoutingOf, type Target } from './targets.ts';
 import s from './castle.module.css';
-
-/** Sends a siege, and on its answer opens the battle's account in place of the target's sheet. */
-async function siege(target: string) {
-  const r = await castleRun({ type: 'siege', target });
-  const report = castleStore.get().view?.logs[0];
-  if (r?.ok && report) navigate(reportSheet(report.id));
-}
 
 export function TargetSheet({ target, onClose }: { target: Target; onClose: () => void }) {
   const { castle, view, now, purse, busy, refused } = useSyncedCastle();
@@ -80,7 +73,16 @@ export function TargetSheet({ target, onClose }: { target: Target; onClose: () =
             <Button
               variant="primary"
               disabled={busy || blocked !== null || !hasAp(castle, costs.ap) || !affords(castle, purse, costs.gold)}
-              onClick={() => void siege(target.id)}
+              onClick={() => {
+                // The sheet closes, and the battle's result lands on the target's row.
+                const best = def ? E.bestOffense(castle, def, now) : null;
+                onClose();
+                void fight(target.id, {
+                  type: 'siege',
+                  target: target.id,
+                  ...(best ? { shares: [...best.shares] as [number, number, number] } : {}),
+                });
+              }}
             >
               {t('castle.siege', { gold: fmt.short(costs.gold), ap: fmt.int(costs.ap) })}
             </Button>

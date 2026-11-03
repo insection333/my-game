@@ -45,7 +45,6 @@ function raised(id: string, now: number, level: number): E.Castle {
     warMarksEarned: 412,
     excavationDepth: 9,
     incursionTier: 8,
-    incursionScoutedTier: 8,
     relics: { 'banner-of-the-first-king': 5, 'aegis-shard': 2, 'wyrmglass-lens': 1, 'ember-of-sieges': 2 },
     tempers: { 'banner-of-the-first-king': 3 },
     equippedRelics: ['banner-of-the-first-king', 'aegis-shard', 'ember-of-sieges'],

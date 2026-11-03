@@ -129,3 +129,8 @@
   - **The admin's queue.** Reported players are listed with those reported by players who have played a while first. Dismiss and Open are beside each; renaming or banning settles their reports.
   - **Sieges between lords.** The admin page sums 30 days of sieges by pair, with four or more sieges, most gold first, and the sieges the other way beside them, so an account feeding another shows.
   - **The terms and privacy page** say how reports and the sieges' record are kept. Deleting an account takes both with it.
+- Session 40, Castle Clash phase one (fun and the way round):
+  - **Four tabs, the War first.** One tab holds every battle of the day: the fortress, the day's strongholds, lords and reports. Then come the Army, the Citadel and the Halls; old addresses still lead to the new tabs.
+  - **One press a battle.** Each attack on a known foe goes in the formation set against it. The result lands on its own row: the two sides' strength races out, then the word and what it brought, with the battle's account a tap away. Fortresses need no scouting.
+  - **The war from the first day.** The fortress and strongholds open with the castle; lords open at an average level of 5, on both sides. Sieging a stronghold keeps the novice shield.
+  - **Orders of the day.** The header shows three small aims, each linking to where it is done. Each pays war marks at once, and all three pay more.

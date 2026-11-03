@@ -49,6 +49,9 @@ export interface EventMap {
   castleSpyCaught: { foe: string; marks: number };
   /** Castle Clash: your assault on an incursion's fortress, taken or held against you. */
   castleIncursion: { fortress: string; tier: number; won: boolean; marks: number; spoils?: 'armoury' | 'hoard' };
+  /** Castle Clash: orders of the day done (session 40), and the war marks they paid; `all` when the three
+   *  together paid too. */
+  castleOrders: { orders: string[]; all: boolean; marks: number };
   /** Castle Clash: a war relic tempered (session 35), to its count of tempers; two at once, a masterstroke. */
   castleTempered: { relic: string; tempers: number; masterstroke: boolean };
   /** A lane stopped; the reason says why, so the page can say what to do. */
@@ -79,5 +82,6 @@ export const NOTABLE_EVENTS: readonly (keyof EventMap)[] = [
   'castleSpyCaught',
   'castleIncursion',
   'castleTempered',
+  'castleOrders',
 ];
 export const isNotable = (e: GameEvent): boolean => NOTABLE_EVENTS.includes(e.type);

@@ -9,7 +9,7 @@ import { requirePlayer } from '../auth/routes.ts';
 import { limit, type Ctx } from '../context.ts';
 import { announce } from '../game/announce.ts';
 import { contractRoute, fail } from '../http.ts';
-import { act, castleRequest, openCastle, type Handled } from './service.ts';
+import { actAndOrder, castleRequest, openCastle, type Handled } from './service.ts';
 import { CastleStore } from './store.ts';
 
 export type CastleView = E.CastleView;
@@ -138,7 +138,7 @@ export function castleRoutes(app: FastifyInstance, ctx: Ctx): void {
       const player = req.playerId!;
       limit(ctx, reply, `command:${player}`, 30, 10_000);
       const t = now();
-      const out = await castleRequest(ctx, player, input.requestId, t, (io) => act(io, input.action));
+      const out = await castleRequest(ctx, player, input.requestId, t, (io) => actAndOrder(io, input.action));
       return after(player, out, t);
     },
     requirePlayer(ctx),

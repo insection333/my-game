@@ -13,7 +13,7 @@ import s from './castle.module.css';
 /** Drills at one press, for AP saved up. */
 const DRILL_MANY = 5;
 
-export function Garrison() {
+export function Army() {
   return (
     <div className={s.grid}>
       <div className={s.column}>

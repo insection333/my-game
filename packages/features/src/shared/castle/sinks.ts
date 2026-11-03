@@ -66,22 +66,6 @@ export function fortressSide(tier: number): Side {
   };
 }
 
-/** Scouts the tier's fortress: its garrison and trap are shown until the tier is beaten. */
-export function scoutIncursion(w: Wallet): Done {
-  if (w.castle.incursionScoutedTier === w.castle.incursionTier) return { ok: false, reason: 'unchanged' };
-  if (w.castle.activeAp + 1e-9 < SINKS.INCURSION_SCOUT_AP) return { ok: false, reason: 'ap' };
-  return {
-    ok: true,
-    castle: {
-      ...w.castle,
-      activeAp: w.castle.activeAp - SINKS.INCURSION_SCOUT_AP,
-      incursionScoutedTier: w.castle.incursionTier,
-    },
-    purse: w.purse,
-    burned: 0,
-  };
-}
-
 export interface IncursionResult {
   castle: Castle;
   won: boolean;

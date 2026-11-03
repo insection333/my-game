@@ -7,6 +7,7 @@ import { syncAp } from './ap.ts';
 import { formatUtcDate, type Castle, type DebuffKind } from './castle.ts';
 import { lift, modifiers } from './effects.ts';
 import { syncUpkeep } from './economy.ts';
+import { ordersOf } from './orders.ts';
 import { prunePairs } from './pairs.ts';
 import { bastionRating } from './rating.ts';
 
@@ -52,6 +53,7 @@ export function syncCastle(c: Castle, now: number): Synced {
     withdrawLockdownUntil:
       mended.withdrawLockdownUntil !== null && mended.withdrawLockdownUntil > now ? mended.withdrawLockdownUntil : null,
     updatedAt: Math.max(mended.updatedAt, now),
+    orders: ordersOf(mended, now),
   };
   return { castle: { ...castle, rating: Math.max(castle.rating, bastionRating(castle)) }, burned };
 }

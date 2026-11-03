@@ -30,6 +30,22 @@ const Pairs = z
   )
   .max(20);
 const Times = z.array(z.number()).max(20);
+/** The orders of the day (session 40). */
+const OrdersSchema = z
+  .object({
+    day: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    list: z
+      .array(
+        z.object({
+          kind: z.enum(['strongholds', 'incursion', 'drill', 'dig', 'spy', 'lord']),
+          target: z.number().int().min(1).max(100),
+          progress: z.number().int().min(0).max(100),
+        }),
+      )
+      .max(5),
+    paid: z.boolean(),
+  })
+  .nullable();
 const Relics = z.record(z.string().max(40), z.number().int().min(1).max(5));
 const Tempers = z.record(z.string().max(40), z.number().int().min(0).max(10_000));
 const Equipped = z.array(z.string().max(40)).max(3);
@@ -94,8 +110,8 @@ export function toCastle(r: BastionRow): Castle {
     warMarksEarned: r.warMarksEarned,
     excavationDepth: r.excavationDepth,
     incursionTier: r.incursionTier,
-    incursionScoutedTier: r.incursionScoutedTier,
     routs: r.routs,
+    orders: json(OrdersSchema, r.orders, null),
     relics: json(Relics, r.relics, {}),
     tempers: json(Tempers, r.relicTempers, {}),
     equippedRelics: json(Equipped, r.equippedRelics, []),
@@ -155,8 +171,9 @@ export function toRow(c: Castle): BastionRow {
     warMarksEarned: c.warMarksEarned,
     excavationDepth: c.excavationDepth,
     incursionTier: c.incursionTier,
-    incursionScoutedTier: c.incursionScoutedTier,
+    incursionScoutedTier: 0,
     routs: c.routs,
+    orders: JSON.stringify(c.orders),
     relics: JSON.stringify(c.relics),
     relicTempers: JSON.stringify(c.tempers),
     equippedRelics: JSON.stringify(c.equippedRelics),

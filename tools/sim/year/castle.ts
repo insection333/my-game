@@ -120,7 +120,7 @@ export class Lordship {
     let dug = false;
     for (let guard = 0; guard < 40; guard++) {
       if (c.activeAp < SINKS.DRILL_AP) break;
-      if (E.tabOpen(c, 'incursions') && c.activeAp >= SINKS.INCURSION_AP) {
+      if (c.activeAp >= SINKS.INCURSION_AP) {
         const odds = E.combatRatio(E.castleSide(c, t, 'attack'), E.fortressSide(c.incursionTier), 0.5).r;
         if (odds >= 1.05) {
           const r = E.launchIncursion(c, t, this.roll(), this.roll());
@@ -141,7 +141,7 @@ export class Lordship {
     }
     // Once every skill is at 99, the castle's war is the lord's chase: the day's easier strongholds, in the
     // formation set against each, for war marks (the fee burned, no bounty from an empty realm's chest).
-    if (level >= ALL_AT_99 && E.tabOpen(c, 'warRoom'))
+    if (level >= ALL_AT_99)
       for (const m of E.mercenaries(c, t, SIEGE.TARGETS)) {
         if (c.siegesDayUtc === E.formatUtcDate(t) && c.siegesToday >= STRONGHOLDS_A_DAY) break;
         const side = E.mercenarySide(m);
@@ -153,7 +153,7 @@ export class Lordship {
         const paid = E.pay(wallet(), costs.gold);
         if (!paid) continue;
         purse = paid.purse;
-        c = E.resolveMercenary(E.launch(paid.castle, m.id, costs.ap, t), m, t, this.roll(), 0).attacker;
+        c = E.resolveMercenary(E.launch(paid.castle, m.id, costs.ap, t, false), m, t, this.roll(), 0).attacker;
       }
     // Relics with spare war marks, one at a time to its last level; then tempering it, a few tries a visit.
     if (E.tabOpen(c, 'halls')) {

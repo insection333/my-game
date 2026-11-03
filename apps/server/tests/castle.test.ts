@@ -2,7 +2,7 @@
 // per request id, in one transaction with the save; a siege moves gold between two lords and the war
 // chest and never makes any; a raid that empties a treasury switches the lord's edict off in their save;
 // both lords read the siege in their reports.
-import { XP_TABLE } from '@idle-clash/content';
+import { ORDERS, XP_TABLE } from '@idle-clash/content';
 import { allSkills, castleEngine as E } from '@idle-clash/features';
 import { describe, expect, it, vi } from 'vitest';
 import { CastleStore } from '../src/castle/store.ts';
@@ -183,6 +183,63 @@ describe('Castle Clash over HTTP', () => {
     expect(r).toMatchObject({ ok: true });
     expect(r.outcome).not.toBe('repelled');
     expect(await result(att, { type: 'siege', target: easy.id })).toEqual({ ok: false, reason: 'fallen' });
+  });
+
+  it('opens the war on the first day: strongholds and incursions, the novice shield kept (session 40)', async () => {
+    s = await server();
+    const l = await lord('Fresh', 10, 50_000_000);
+    await open(l);
+    const shield = (await view(l)).castle!.shieldUntil;
+    const list = JSON.parse(
+      (await s.app.inject({ method: 'GET', url: '/api/castle/targets', headers: { cookie: l.cookie } })).body,
+    ) as E.CastleTargets;
+    expect(list.mercenaries).toHaveLength(5);
+    expect((await result(l, { type: 'siege', target: list.mercenaries[0].id })).ok).toBe(true);
+    expect((await result(l, { type: 'incursion' })).ok).toBe(true);
+    expect((await view(l)).castle!.shieldUntil).toBe(shield);
+    // A formation sent with an attack must be whole.
+    expect(await result(l, { type: 'siege', target: list.mercenaries[1].id, shares: [50, 50, 50] })).toEqual({
+      ok: false,
+      reason: 'invalid',
+    });
+  });
+
+  it('pays the orders of the day as they are done (session 40)', async () => {
+    s = await server();
+    const l = await lord('Dutiful', 20, 500_000_000);
+    await open(l);
+    raise(l, 30, { activeAp: 2000 });
+    const orders = () => E.ordersOf(E.syncCastle(new CastleStore(s.ctx).read(l.id)!, s.clock.now).castle, s.clock.now);
+    const first = orders();
+    expect(first.list[0].kind).toBe('strongholds');
+    const list = JSON.parse(
+      (await s.app.inject({ method: 'GET', url: '/api/castle/targets', headers: { cookie: l.cookie } })).body,
+    ) as E.CastleTargets;
+    const rolls = vi.spyOn(Math, 'random').mockReturnValue(0.99);
+    const before = (await view(l)).castle!.warMarks;
+    // The easiest first, until the order is done or one holds.
+    let taken = 0;
+    try {
+      for (const m of list.mercenaries) {
+        if (taken >= first.list[0].target) break;
+        const best = E.bestOffense(
+          E.syncCastle(new CastleStore(s.ctx).read(l.id)!, s.clock.now).castle,
+          E.mercenarySide(m),
+          s.clock.now,
+        );
+        const r = answer(await act(l, { type: 'siege', target: m.id, shares: [...best.shares] })).result;
+        expect(r.ok).toBe(true);
+        if (r.outcome !== 'repelled') taken++;
+      }
+    } finally {
+      rolls.mockRestore();
+    }
+    expect(taken).toBe(first.list[0].target);
+    expect(orders().list[0].progress).toBe(first.list[0].target);
+    const won = (await view(l)).logs
+      .filter((x) => x.kind === 'mercenary')
+      .reduce((n, x) => n + Number(x.data.marks), 0);
+    expect((await view(l)).castle!.warMarks - before).toBe(won + ORDERS.MARKS);
   });
 
   it('refuses a shielded lord, an unknown one, yourself, and the war room before an average level of 5', async () => {

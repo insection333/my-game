@@ -22,11 +22,14 @@ function opponent(io: Io, att: Castle, target: string): Castle | 'unknown' | 'se
   return raw ? (loadSynced(io, target, raw) ?? 'unknown') : 'unknown';
 }
 
+/** A siege: on one of the day's strongholds from the first day, on a lord once lords are open (each side's
+ *  castle at an average level of 5: below it, a castle cannot be besieged). */
 export function siege(io: Io, att: Castle, target: string): Outcome {
-  if (!E.tabOpen(att, 'warRoom')) return { ok: false, reason: 'locked' };
   if (target.startsWith('merc:')) return mercenarySiege(io, att, target);
+  if (!E.lordsOpen(att)) return { ok: false, reason: 'locked' };
   const def = opponent(io, att, target);
   if (typeof def === 'string') return { ok: false, reason: def };
+  if (!E.lordsOpen(def)) return { ok: false, reason: 'shielded' };
   const costs = E.siegeCosts(att, E.brRatio(att, def), io.now);
   const refusal = E.siegeRefusal(att, target, E.isShielded(def, io.now), costs.ap, io.now);
   if (refusal) return { ok: false, reason: refusal };
@@ -95,7 +98,7 @@ function mercenarySiege(io: Io, att: Castle, target: string): Outcome {
   const paid = E.pay({ castle: att, purse: purseOf(io) }, costs.gold);
   if (!paid) return { ok: false, reason: 'gold' };
   io.castles.burn(costs.gold);
-  const launched = E.launch(paid.castle, m.id, costs.ap, io.now);
+  const launched = E.launch(paid.castle, m.id, costs.ap, io.now, false);
   const r = E.resolveMercenary(launched, m, io.now, roll(), io.castles.chest());
   // A bounty is paid strictly from the war chest: no gold is made (DESIGN.md 11.4).
   io.castles.ledger(-r.bounty, 0);
@@ -126,10 +129,11 @@ function mercenarySiege(io: Io, att: Castle, target: string): Outcome {
 }
 
 export function spy(io: Io, att: Castle, target: string, missionId: string): Outcome {
-  if (!E.tabOpen(att, 'warRoom')) return { ok: false, reason: 'locked' };
   if (target.startsWith('merc:')) return { ok: false, reason: 'unknown' };
+  if (!E.lordsOpen(att)) return { ok: false, reason: 'locked' };
   const def = opponent(io, att, target);
   if (typeof def === 'string') return { ok: false, reason: def };
+  if (!E.lordsOpen(def)) return { ok: false, reason: 'shielded' };
   const refusal = E.spyRefusal(att, def, missionId, io.now);
   if (refusal) return { ok: false, reason: refusal };
   const mission = E.missionOf(missionId)!;

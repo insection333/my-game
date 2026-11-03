@@ -16,9 +16,18 @@ export interface CastleSnapshot {
   busy: boolean;
   /** Why the last action was refused, while it is worth reading. */
   refused: string | null;
+  /** The last battle fought from the War tab (session 40), shown on the row it was fought from: which
+   *  target (`incursion` for the fortress), what came of it, and its report. */
+  battle: Battle | null;
 }
 
-let snapshot: CastleSnapshot = { view: null, targets: null, busy: false, refused: null };
+export interface Battle {
+  key: string;
+  result: castleEngine.CastleActResponse['result'];
+  report: number | null;
+}
+
+let snapshot: CastleSnapshot = { view: null, targets: null, busy: false, refused: null, battle: null };
 const listeners = new Set<() => void>();
 const set = (next: Partial<CastleSnapshot>) => {
   snapshot = { ...snapshot, ...next };
@@ -30,7 +39,7 @@ let refusedTimer: ReturnType<typeof setTimeout> | undefined;
 // sees it while their own loads.
 sessionStore.subscribe(() => {
   if (sessionStore.get().phase === 'signedOut' && (snapshot.view || snapshot.targets))
-    set({ view: null, targets: null, busy: false, refused: null });
+    set({ view: null, targets: null, busy: false, refused: null, battle: null });
 });
 
 export const castleStore = {
@@ -80,6 +89,13 @@ export async function castleRun(
   } finally {
     set({ busy: false });
   }
+}
+
+/** Fights a battle from the War tab: the siege or assault, then its result kept for the row it came from. */
+export async function fight(key: string, action: CastleAction): Promise<void> {
+  const result = await castleRun(action);
+  if (!result?.ok) return;
+  set({ battle: { key, result, report: snapshot.view?.logs[0]?.id ?? null } });
 }
 
 /** Sends one action: whether it was done. */
