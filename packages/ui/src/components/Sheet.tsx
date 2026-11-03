@@ -1,7 +1,7 @@
 // A sheet for a panel over the page: the notices tray, settings, an item, a lane. Rises from the
-// bottom on phones and slides in from the right on wide screens. Escape or the close button shuts it.
+// bottom on phones and slides in from the right on wide screens. Escape, the scrim or the cross in its top right shuts it.
 import { useEffect, useRef, type ReactNode } from 'react';
-import { Button } from './Button.tsx';
+import { CloseButton } from './CloseButton.tsx';
 import s from './Sheet.module.css';
 
 export interface SheetProps {
@@ -74,9 +74,7 @@ export function Sheet({ title, closeLabel, onClose, children, slot }: SheetProps
       >
         <div className={s.head}>
           <h2 className={s.title}>{title}</h2>
-          <Button variant="quiet" onClick={onClose}>
-            {closeLabel}
-          </Button>
+          <CloseButton label={closeLabel} onClick={onClose} />
         </div>
         <div className={s.body}>{children}</div>
       </div>

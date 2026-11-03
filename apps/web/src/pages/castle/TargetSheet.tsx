@@ -8,11 +8,14 @@ import { ActionRow, Button, ItemIcon, Pill, Sheet } from '@idle-clash/ui';
 import { ReportPlayer } from '../ReportPlayer.tsx';
 import { missionDoes, missionName, refusal, trapName } from './labels.ts';
 import { AttackPlan } from './Plan.tsx';
-import { garrisonLine, ReportRow, when } from './Reports.tsx';
+import { cardOf } from './report-model.ts';
+import { ReportCardLink } from './ReportCards.tsx';
+import { garrisonLine, when } from './Reports.tsx';
 import { castleRun, fight } from './store.ts';
 import { affords, hasAp, useSyncedCastle } from './synced.ts';
 import { defenceOf, paysLine, pct, scoutingOf, type Target } from './targets.ts';
 import s from './castle.module.css';
+import r from './reports.module.css';
 
 export function TargetSheet({ target, onClose }: { target: Target; onClose: () => void }) {
   const { castle, view, now, purse, busy, refused } = useSyncedCastle();
@@ -97,10 +100,14 @@ export function TargetSheet({ target, onClose }: { target: Target; onClose: () =
         {about.length > 0 && (
           <div className={s.sheetSection}>
             <h3>{t('castle.reports.title')}</h3>
-            <ul className={s.reports}>
-              {about.slice(0, 3).map((l) => (
-                <ReportRow key={l.id} report={l} now={now} />
-              ))}
+            <ul className={r.cards}>
+              {about
+                .slice(0, 3)
+                .map((l) => cardOf(l, castle.userId))
+                .filter((c) => c !== null)
+                .map((c) => (
+                  <ReportCardLink key={c.id} card={c} now={now} />
+                ))}
             </ul>
           </div>
         )}

@@ -1,5 +1,5 @@
-// Combat: the loadout (gear worn on a figure, your style and the triangle, health, food), every foe with
-// Your odds, and the vendor's food.
+// Combat: the loadout (gear worn on a figure, your style and the triangle, health, food), the fight in
+// the lane played out (the arena, session 42), every foe with Your odds, and the vendor's food.
 // A gear slot opens a sheet of the matching gear in the Storehouse (`?panel=gear&slot=weapon`).
 import { fmt, t } from '@idle-clash/content';
 import type { Feature, FoeRow, LoadoutSlot, LoadoutView, TrianglePart } from '@idle-clash/features';
@@ -9,6 +9,7 @@ import { useGame } from '../game/hooks.ts';
 import { game } from '../game/store.ts';
 import { navigate, useLocation, withPanel } from '../router.ts';
 import { fillFor, Slot } from '../slots.tsx';
+import { CombatArena } from './CombatArena.tsx';
 import { CombatFood } from './CombatFood.tsx';
 import { Loadout } from './Loadout.tsx';
 import { CombatHead } from './CombatHead.tsx';
@@ -89,6 +90,8 @@ function CombatPage({ combat }: { combat: Feature }) {
               </div>
             )}
             <Slot id="combat.foes">
+              {/* The fight the lane is in, over the foes to choose from. */}
+              <CombatArena />
               {foes.map((f) => (
                 <ActionRow
                   key={f.foe.id}

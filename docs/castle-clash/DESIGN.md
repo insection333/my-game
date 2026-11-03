@@ -250,6 +250,22 @@ What changed:
 24. **Every row of things has its drawing:** the buildings, the War College's studies, the edicts (as the banners they fly), each troop at each of its four evolutions (so an evolution is seen as well as named), and the nine war relics, in grey until forged.
 25. **A battle drawn as a clash:** your arms and theirs at either end of one bar, your attack pushing in against their defence until they meet where the battle stood, then the word.
 
+### Session 42: battle reports (the owner, 3 November)
+
+The owner asked for a battle reports section that shows past battles and spy wars in an easy, good-looking way. The War tab's list of one-line reports did neither.
+
+26. **A Reports tab** (`/castle/reports`, `castle.reports`): every siege, defence, stronghold, fortress and spy's errand as a card, newest first under its day, filtered by All, Sieges, Defences, Strongholds or Spies.
+    - A card shows the two sides' arms with the attacker on the left (a spy's mission between them), and the outcome in a word: moss when it went your way, red when not.
+    - Under that: what happened in a line, attack against defence on one bar, and what it moved, with icons for gold, war marks and gold lost.
+    - The War tab keeps the latest three (`castle.latest`).
+27. **The account drawn as a report** (`castle.account`):
+    - the outcome large over both sides' arms;
+    - attack and defence meeting on one bar, and the day's fortune;
+    - the ratio on a scale with the breach and decisive lines marked and named (Repelled, Breached, Stormed);
+    - the formation as three named shares;
+    - a spy's findings, and the spoils with their icons.
+    A stronghold's report now keeps its id, so its arms match its row.
+
 ## 12. Phases
 
 | Phase | Session | Delivers |

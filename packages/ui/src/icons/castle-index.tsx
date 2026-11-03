@@ -18,6 +18,7 @@ import {
   WyrmglassLens,
 } from './castle-relics.tsx';
 import { Espionage, Fortification, Logistics, Siegecraft } from './castle-techs.tsx';
+import { Coins, GoldLost, SpyForge, SpyPoison, SpySabotage, SpyScout, WarMarks } from './castle-spies.tsx';
 import { Crest } from './heraldry.tsx';
 
 const UNITS: readonly [string, (p: { stage: number }) => React.JSX.Element, readonly string[]][] = [
@@ -42,6 +43,14 @@ export const CASTLE_ICONS: Record<string, IconDef> = {
       ]),
     ),
   ),
+  // A battle report's (session 42): the spy missions, and what a battle moves.
+  'spy-scout': { draw: SpyScout, family: 'castle', title: 'Scout the castle (spy mission)' },
+  'spy-poison': { draw: SpyPoison, family: 'castle', title: 'Poison the wells (spy mission)' },
+  'spy-sabotage': { draw: SpySabotage, family: 'castle', title: 'Sabotage the gatehouse (spy mission)' },
+  'spy-forge': { draw: SpyForge, family: 'castle', title: 'Forge orders (spy mission)' },
+  'castle-gold': { draw: Coins, family: 'castle', title: 'Gold won' },
+  'castle-marks': { draw: WarMarks, family: 'castle', title: 'War marks' },
+  'castle-gold-lost': { draw: GoldLost, family: 'castle', title: 'Gold lost to a raid' },
   // The War College's studies.
   'tech-logistics': { draw: Logistics, family: 'castle', title: 'Logistics (War College)' },
   'tech-siegecraft': { draw: Siegecraft, family: 'castle', title: 'Siegecraft (War College)' },

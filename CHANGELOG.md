@@ -139,3 +139,8 @@
   - **Arms for every foe.** Each lord, stronghold and fortress bears its own shield, drawn from its id, on its row, its sheet and its battle.
   - **Drawings for every row:** buildings, studies, edicts, each troop at each evolution, and the nine war relics (grey until forged).
   - **A battle drawn as a clash:** the two sides' arms at either end of one bar, meeting where the battle stood.
+- Session 42, the owner's phase 1 (the core loop's fun, `docs/FUN_AUDIT.md`):
+  - **The arena.** The fight in the Combat lane plays out on the Combat page, swing by swing, the very fight the engine settles. Both sides' health drains, each swing's number rises over its side (critical hits in gold, misses, meals), and Slain is stamped as a foe falls.
+  - **Castle Clash battle reports.** A Reports tab: every siege, defence, stronghold, fortress and spy's errand as a card under its day, filtered by kind. Each card shows both sides' arms, the outcome in a coloured word, the clash of strength and the spoils with their icons. The account is drawn as a report, with the ratio on a scale and the formation in three shares. The War tab keeps the latest three.
+  - **Every popup closes from a cross in its top right:** sheets, moments of every size and the tour's card. Verify fails a popup without one.
+  - Moments that name several things end each sentence; strongholds' reports now keep the stronghold's id, so its arms match its row.

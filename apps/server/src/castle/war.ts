@@ -105,7 +105,7 @@ function mercenarySiege(io: Io, att: Castle, target: string): Outcome {
   setPurse(io, paid.purse + r.bounty);
   store(io, r.attacker);
   const data = {
-    merc: { first: m.first, second: m.second, rating: m.rating, n: m.n },
+    merc: { id: m.id, first: m.first, second: m.second, rating: m.rating, n: m.n },
     outcome: r.outcome,
     r: r.r,
     gold: r.bounty,

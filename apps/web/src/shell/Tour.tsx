@@ -1,8 +1,8 @@
 // The tour (IA.md): on a newcomer's first visit to the Hearth, four short pointers, each at a slot by
 // name, never at a layout class. It blocks nothing: the first points at the first step's button, and
-// pressing that button moves the tour on as Next does. Skip ends it; it does not come back.
+// pressing that button moves the tour on as Next does. The cross in its top right ends it; it does not come back.
 import { t } from '@idle-clash/content';
-import { Button } from '@idle-clash/ui';
+import { Button, CloseButton } from '@idle-clash/ui';
 import { useEffect, useState } from 'react';
 import { useGame } from '../game/hooks.ts';
 import { useLocation } from '../router.ts';
@@ -85,11 +85,9 @@ export function Tour() {
         style={{ top: box.top - 4, left: box.left - 4, width: box.width + 8, height: box.height + 8 }}
       />
       <div className={s.card} role="dialog" aria-label={t('tour.title')} data-tour-step={step + 1} style={place}>
+        <CloseButton className={s.close} label={t('tour.skip')} onClick={end} />
         <p>{t(STEPS[step].key)}</p>
         <div className={s.buttons}>
-          <Button variant="quiet" onClick={end}>
-            {t('tour.skip')}
-          </Button>
           <Button variant="primary" onClick={next}>
             {step + 1 < STEPS.length ? t('tour.next') : t('tour.done')}
           </Button>

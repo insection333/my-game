@@ -10,7 +10,8 @@ import { useEffect } from 'react';
 import { navigate, useLocation, withPanel } from '../../router.ts';
 import { Fought } from './Fought.tsx';
 import { fortressName, mercName } from './labels.ts';
-import { Reports, when } from './Reports.tsx';
+import { when } from './Reports.tsx';
+import { LatestReports } from './ReportsTab.tsx';
 import { castleRun, fight, loadTargets } from './store.ts';
 import { affords, hasAp, useSyncedCastle } from './synced.ts';
 import { TargetSheet } from './TargetSheet.tsx';
@@ -40,7 +41,6 @@ function useTargets(): { lords: Target[]; strongholds: Target[] } {
 }
 
 export function War() {
-  const { view, now } = useSyncedCastle();
   const { panel } = useLocation();
   const { lords, strongholds } = useTargets();
   const id = panel === 'target' ? new URLSearchParams(location.search).get('target') : null;
@@ -52,7 +52,7 @@ export function War() {
         <Strongholds strongholds={strongholds} />
         <Lords lords={lords} />
       </div>
-      <Reports logs={view?.logs ?? []} now={now} />
+      <LatestReports />
       {open && <TargetSheet target={open} onClose={() => navigate(withPanel(null).replace(/[?&]target=[^&]*/, ''))} />}
     </div>
   );
