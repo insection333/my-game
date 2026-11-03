@@ -28,7 +28,6 @@ export const moderation = {
   'report.sent': 'Reported. An admin will look into it.',
   'report.failed': 'That report did not go through. Try again in a while.',
 
-
   'admin.reports': 'Reports',
   'admin.reports.none': 'Nothing reported.',
   'admin.reports.forName': 'For the name: {count}',
