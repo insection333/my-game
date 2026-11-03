@@ -38,6 +38,7 @@ function College() {
             return (
               <ActionRow
                 key={x.id}
+                iconYields
                 icon={<ItemIcon name={`tech-${x.id}`} size={32} />}
                 name={techName(x.id)}
                 status={<Pill>{t('castle.rank', { rank: fmt.int(rank), ranks: fmt.int(TECH.RANKS) })}</Pill>}
@@ -112,6 +113,7 @@ function Relic({ id }: { id: string }) {
   };
   return (
     <ActionRow
+      iconYields
       icon={<ItemIcon name={id} size={32} silhouette={level === 0} />}
       name={relicName(id)}
       status={

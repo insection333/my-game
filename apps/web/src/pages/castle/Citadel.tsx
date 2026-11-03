@@ -52,6 +52,7 @@ function Edicts() {
             return (
               <ActionRow
                 key={e.id}
+                iconYields
                 icon={<ItemIcon name={`edict-${e.id}`} size={32} />}
                 name={edictName(e.id)}
                 facts={[edictGives(e.lifts, { pct: pct(paid ? gives : ECONOMY.EDICT_BASE_PCT) })]}
@@ -186,6 +187,7 @@ function Buildings() {
             return (
               <ActionRow
                 key={b.id}
+                iconYields
                 icon={<ItemIcon name={BUILDING_ICON[b.id]} size={32} />}
                 name={buildingName(b.id)}
                 status={<Pill>{t('castle.level', { level: fmt.int(level) })}</Pill>}

@@ -79,6 +79,7 @@ function Fortress() {
       >
         <div data-slot="castle.incursion">
           <ActionRow
+            iconYields
             icon={<ItemIcon name="crest" crest={fortress.id} size={32} />}
             name={fortressName(fortress.id)}
             facts={[
@@ -179,6 +180,7 @@ function TargetRow({ target }: { target: Target }) {
   const taken = Math.max(0, ...E.pairOf(castle, target.id, now).sieges);
   return (
     <ActionRow
+      iconYields
       icon={<ItemIcon name="crest" crest={target.id} size={32} />}
       name={target.name}
       status={
