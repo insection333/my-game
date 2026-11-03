@@ -4,6 +4,7 @@ import { castleEngine } from '@idle-clash/features';
 import { and, asc, desc, eq, gte, inArray, isNull, lte, ne, notInArray, sql } from 'drizzle-orm';
 import type { Ctx } from '../context.ts';
 import { bastionGlobalState, bastionLogs, playerBastions, players } from '../db/schema.ts';
+import { tally } from './record.ts';
 import { toCastle, toRow } from './rows.ts';
 
 type Castle = castleEngine.Castle;
@@ -78,12 +79,13 @@ export class CastleStore {
     this.ledger(toChest, destroyed);
   }
 
-  /** Adds a report, keeping the castle's newest 20. */
+  /** Adds a report, keeping the castle's newest 20, and counts it towards the lord's war record. */
   log(userId: string, at: number, kind: string, data: Record<string, unknown>): void {
     this.ctx.db
       .insert(bastionLogs)
       .values({ userId, createdAt: at, kind, data: JSON.stringify(data) })
       .run();
+    tally(this.ctx.db, userId, kind, data);
     const keep = this.ctx.db
       .select({ id: bastionLogs.id })
       .from(bastionLogs)

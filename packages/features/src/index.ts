@@ -40,6 +40,7 @@ export type {
   PlaqueView,
 } from './deeds/index.ts';
 export { shownHonours } from './deeds/honours.ts';
+export { careerOf, type Career } from './deeds/career.ts';
 export type {
   BossRow,
   ExpeditionView,

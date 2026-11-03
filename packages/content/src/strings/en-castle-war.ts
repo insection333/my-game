@@ -72,6 +72,7 @@ export const castleWar = {
   'castle.mission.send': 'Send for {gold} and {ap} AP',
   'castle.mission.chance': '{pct} chance',
   'castle.reports.title': 'Reports',
+  'castle.target.profile': 'Their profile',
   // The Reports tab (session 42).
   'castle.tab.reports': 'Reports',
   'castle.reports.filters': 'Show',

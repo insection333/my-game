@@ -8,7 +8,7 @@ import { ROUTES } from '@idle-clash/contracts';
 import { eq, sql } from 'drizzle-orm';
 import type { FastifyInstance } from 'fastify';
 import { limit, type Ctx } from '../context.ts';
-import { bastionLogs, emailTokens, playerBastions, players, sessions, telemetry } from '../db/schema.ts';
+import { bastionLogs, castleRecords, emailTokens, playerBastions, players, sessions, telemetry } from '../db/schema.ts';
 import { contractRoute, fail } from '../http.ts';
 import { eraseFeedback } from '../feedback.ts';
 import { eraseModeration } from '../moderation.ts';
@@ -33,6 +33,7 @@ export function erase(ctx: Ctx, playerId: string): void {
     eraseModeration(ctx, playerId);
     ctx.db.delete(playerBastions).where(eq(playerBastions.userId, playerId)).run();
     ctx.db.delete(bastionLogs).where(eq(bastionLogs.userId, playerId)).run();
+    ctx.db.delete(castleRecords).where(eq(castleRecords.userId, playerId)).run();
     ctx.db
       .update(bastionLogs)
       .set({ data: sql`replace(${bastionLogs.data}, ${playerId}, 'departed')` })

@@ -270,3 +270,19 @@ export const siegeFlows = sqliteTable(
   },
   (t) => [index('siege_flows_at').on(t.at), index('siege_flows_pair').on(t.attackerId, t.defenderId)],
 );
+
+/** A lord's war record for all time (session 44), counted as each report is written (reports themselves
+ *  keep only the newest 20): sieges won and lost, defences held and lost, strongholds taken and not,
+ *  spies' errands done and caught, and enemy spies caught. Shown on the profile card. */
+export const castleRecords = sqliteTable('castle_records', {
+  userId: text('user_id').primaryKey(),
+  siegesWon: integer('sieges_won').notNull().default(0),
+  siegesLost: integer('sieges_lost').notNull().default(0),
+  defencesHeld: integer('defences_held').notNull().default(0),
+  defencesLost: integer('defences_lost').notNull().default(0),
+  strongholdsTaken: integer('strongholds_taken').notNull().default(0),
+  strongholdsHeld: integer('strongholds_held').notNull().default(0),
+  spiesDone: integer('spies_done').notNull().default(0),
+  spiesCaught: integer('spies_caught').notNull().default(0),
+  spiesStopped: integer('spies_stopped').notNull().default(0),
+});

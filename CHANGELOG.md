@@ -152,3 +152,11 @@
     - six rare badges worn beside the title;
     - two scenes behind a profile: the march by night, and the player's own castle.
   - **Where they show:** the Hearth's plaque, every ladder row, and a player's sheet, which now opens on their scene with their picture over it. A player's look is kept on their row (migration 0012).
+- Session 44, the owner's phase 3 (profile cards):
+  - **A player's profile card, over any page**, opened from a name on any ladder, a lord's name in a battle's account, and Their profile on a lord's sheet.
+  - **What it shows:**
+    - their scene, edged in their banner's colour, with their picture in its frame and glow;
+    - their badge and title, and how long they have played;
+    - their career: total level, deed points, deeds done, titles earned, Kindlings, foes slain, bosses beaten and expeditions home;
+    - their castle and war record for all time: sieges, defences, strongholds and spies' errands, each as won against lost on one bar.
+  - **The war record is counted as each report is written** (migration 0013, `castle_records`), since reports keep only the newest twenty. It goes with the account.

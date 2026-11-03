@@ -32,6 +32,7 @@ export const PATHS = {
   adminReports: '/api/admin/reports',
   adminSettleReports: '/api/admin/reports/settle',
   adminSiegeFlows: '/api/admin/siege-flows',
+  profile: '/api/profile',
 } as const;
 
 /** A feature's own route. */

@@ -1,5 +1,5 @@
-// Reporting a player (session 39), wherever their name is shown to others: Hiscores' player sheet and a
-// lord's sheet in the War room. Two reasons, no words of one's own; never shown for one's own name. Once
+// Reporting a player (session 39), wherever their name is shown to others: their profile card (session 44)
+// and a lord's sheet in the War. Two reasons, no words of one's own; never shown for one's own name. Once
 // sent it says so, and the same whatever the server made of it.
 import { REPORT_REASONS, type ReportReason } from '@idle-clash/contracts';
 import { t } from '@idle-clash/content';

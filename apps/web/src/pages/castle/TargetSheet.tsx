@@ -4,10 +4,12 @@
 // about it.
 import { SPY_MISSIONS, fmt, t } from '@idle-clash/content';
 import { castleEngine as E } from '@idle-clash/features';
-import { ActionRow, Button, ItemIcon, Pill, Sheet } from '@idle-clash/ui';
+import { ActionRow, Button, ItemIcon, Pill, Sheet, TextLink } from '@idle-clash/ui';
 import { ReportPlayer } from '../ReportPlayer.tsx';
 import { missionDoes, missionName, refusal, trapName } from './labels.ts';
 import { AttackPlan } from './Plan.tsx';
+import { navigate } from '../../router.ts';
+import { profileHref } from '../ProfileSheet.tsx';
 import { cardOf } from './report-model.ts';
 import { ReportCardLink } from './ReportCards.tsx';
 import { garrisonLine, when } from './Reports.tsx';
@@ -43,6 +45,13 @@ export function TargetSheet({ target, onClose }: { target: Target; onClose: () =
             )}
           </div>
         </div>
+        {!target.merc && (
+          <p className={s.muted}>
+            <TextLink href={profileHref(target.name)} onNavigate={navigate}>
+              {t('castle.target.profile')}
+            </TextLink>
+          </p>
+        )}
         {/* The header is behind the sheet: a refusal is said here too. */}
         {refused && (
           <p className={s.refused} role="status">
