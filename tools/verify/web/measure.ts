@@ -116,6 +116,19 @@ export function measurePage(): Measured {
       problems.push(`${describe(el)} is drawn differently from ${describe(seen.el)} (one control, two ways)`);
   }
 
+  // Every popup (a sheet, the tour's card, a moment) closes from a cross in its top right (the owner,
+  // session 42): a close control whose middle is in the right third and near the top.
+  for (const pop of Array.from(document.querySelectorAll('[role="dialog"], [data-ui="Moment"]'))) {
+    if (!shown(pop) || hidden(pop)) continue;
+    const pr = pop.getBoundingClientRect();
+    const corner = Array.from(pop.querySelectorAll('[data-close]')).some((c) => {
+      if (!shown(c) || c.closest('[role="dialog"], [data-ui="Moment"]') !== pop) return false;
+      const r = c.getBoundingClientRect();
+      return r.left + r.width / 2 > pr.left + (pr.width * 2) / 3 && r.top - pr.top < Math.min(72, pr.height / 2);
+    });
+    if (!corner) problems.push(`${describe(pop)} has no close control in its top right`);
+  }
+
   const menus = Array.from(document.querySelectorAll('[data-menu]'));
   for (const m of menus) {
     const n = m.querySelectorAll('a[href]').length;

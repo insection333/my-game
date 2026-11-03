@@ -64,6 +64,16 @@ export interface FightTwists {
   heal?: number;
 }
 
+/** A hit counts as critical when its roll is in the top tenth of what the fighter can deal: the same
+ *  rolls as ever, named, so the arena can mark the best of them (session 42). */
+export const CRIT_SHARE = 0.9;
+
+/** One swing as the arena shows it: who swung, at what second of the fight, what it did, and both
+ *  sides' health after it. A meal is its own entry. */
+export type Swing =
+  | { t: number; by: 'you' | 'foe'; hit: boolean; damage: number; crit: boolean; health: number; foeHp: number }
+  | { t: number; by: 'meal'; item: string; heals: number; health: number; foeHp: number };
+
 export function fight(
   p: Fighter,
   foe: Foe,
@@ -71,6 +81,8 @@ export function fight(
   health: number,
   meals: readonly Meal[],
   tw: FightTwists = {},
+  /** Told of each swing as it falls (the arena's replay); the fight goes the same without it. */
+  log?: (s: Swing) => void,
 ): Fought {
   const mu = TRIANGLE[matchup(p.style, foe.style)];
   const hit = clamp(0.66 + 0.012 * (p.styleLevel - foe.level) + p.perks.accuracy / 100) * (tw.hit ?? 1);
@@ -89,22 +101,27 @@ export function fight(
   while (foeHp > 0) {
     t += SWING_S;
     if (rng() < hit) {
-      const d = Math.min(foeHp, (1 + Math.floor(rng() * maxHit)) * dealtMult);
+      const roll = 1 + Math.floor(rng() * maxHit);
+      const d = Math.min(foeHp, roll * dealtMult);
       foeHp -= d;
       dealt += d;
-    }
+      log?.({ t, by: 'you', hit: true, damage: d, crit: roll > maxHit * CRIT_SHARE, health, foeHp });
+    } else log?.({ t, by: 'you', hit: false, damage: 0, crit: false, health, foeHp });
     if (foeHp <= 0) break;
     if (rng() < foeHit) {
-      const d = (1 + Math.floor(rng() * foe.maxHit)) * guard;
+      const roll = 1 + Math.floor(rng() * foe.maxHit);
+      const d = roll * guard;
       health -= d;
       taken += d;
-    }
+      log?.({ t, by: 'foe', hit: true, damage: d, crit: roll > foe.maxHit * CRIT_SHARE, health, foeHp });
+    } else log?.({ t, by: 'foe', hit: false, damage: 0, crit: false, health, foeHp });
     health = Math.min(most, health + regen);
     const meal = pantry.find((m) => m.count > 0);
     if (health < most * EAT_BELOW && meal) {
       health += meal.heals * heal;
       meal.count--;
       eaten[meal.item] = (eaten[meal.item] ?? 0) + 1;
+      log?.({ t, by: 'meal', item: meal.item, heals: meal.heals * heal, health, foeHp });
     }
     if (health < most * retreatAt)
       return {

@@ -1,7 +1,7 @@
 // The moments region: the centre for big moments, a stack at the bottom for banners and toasts.
-// Each goes by itself a few seconds after its last event; a centre moment can also be closed.
+// Each goes by itself a few seconds after its last event, or at once by the cross in its corner.
 import { t } from '@idle-clash/content';
-import { Button, ItemIcon, Moment } from '@idle-clash/ui';
+import { ItemIcon, Moment } from '@idle-clash/ui';
 import { useEffect, useMemo, useState } from 'react';
 import { useGame } from '../game/hooks.ts';
 import { momentsFrom } from './moments.ts';
@@ -25,6 +25,7 @@ export function Moments() {
     return () => clearTimeout(id);
   }, [showing, at]);
 
+  const close = (key: string) => setClosed((c) => [...c, key]);
   const centre = showing.filter((m) => m.size === 'centre').at(-1);
   const stack = showing.filter((m) => m.size !== 'centre').slice(-3);
   return (
@@ -36,11 +37,8 @@ export function Moments() {
             title={centre.title}
             body={centre.body ?? undefined}
             icon={centre.icon ? <ItemIcon name={centre.icon} size={96} /> : undefined}
-            action={
-              <Button variant="quiet" onClick={() => setClosed((c) => [...c, centre.key])}>
-                {t('moment.close')}
-              </Button>
-            }
+            closeLabel={t('moment.close')}
+            onClose={() => close(centre.key)}
           />
         </div>
       )}
@@ -51,6 +49,8 @@ export function Moments() {
           title={m.title}
           body={m.body ?? undefined}
           icon={m.icon ? <ItemIcon name={m.icon} size={m.size === 'toast' ? 32 : 48} /> : undefined}
+          closeLabel={t('moment.close')}
+          onClose={() => close(m.key)}
         />
       ))}
     </div>

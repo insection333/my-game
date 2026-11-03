@@ -1,6 +1,7 @@
 // A notable moment: a level, a find, a goal. Big ones take the centre; smaller ones a banner, the
-// smallest a toast.
+// smallest a toast. Each can be closed by the cross in its top right (session 42).
 import type { ReactNode } from 'react';
+import { CloseButton } from './CloseButton.tsx';
 import s from './Moment.module.css';
 
 export interface MomentProps {
@@ -9,9 +10,12 @@ export interface MomentProps {
   body?: string;
   icon?: ReactNode;
   action?: ReactNode;
+  /** Closes it before it goes by itself: the cross in its top right. */
+  onClose?: () => void;
+  closeLabel?: string;
 }
 
-export function Moment({ size, title, body, icon, action }: MomentProps) {
+export function Moment({ size, title, body, icon, action, onClose, closeLabel }: MomentProps) {
   return (
     <div role="status" data-ui="Moment" data-size={size} className={`${s.moment} ${s[size]}`}>
       {icon && (
@@ -26,6 +30,7 @@ export function Moment({ size, title, body, icon, action }: MomentProps) {
         {body && <div className={s.body}>{body}</div>}
       </div>
       {action}
+      {onClose && closeLabel && <CloseButton className={s.close} label={closeLabel} onClick={onClose} />}
     </div>
   );
 }

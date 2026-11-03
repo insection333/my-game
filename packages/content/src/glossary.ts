@@ -12,6 +12,11 @@ export const TERMS: [term: string, meaning: string][] = [
     'Action points in Castle Clash: earned by the hour and by the Call to arms, spent on drilling, spies, sieges and incursions',
   ],
   [
+    'Arena',
+    'The fight in your Combat lane played out on the Combat page, swing by swing: the very fight the game settles',
+  ],
+  ['Arms', 'Castle Clash: the shield each lord, stronghold and fortress bears, its own and the same every time'],
+  [
     'Artisan lane',
     'The lane that turns materials into bars and gear (Smithing), fish into food (Cooking) and bars and logs into arrows (Fletching)',
   ],
@@ -38,6 +43,7 @@ export const TERMS: [term: string, meaning: string][] = [
   ['Comes from', 'On an item: every action that produces it'],
   ['Cooked food', "Food Cooking makes from fish and logs; it heals more for its worth than the vendor's"],
   ['Daily goal', 'One larger goal a day'],
+  ['Critical hit', 'A hit in the top tenth of what you can deal, marked in gold in the arena'],
   ['Decree', "Castle Clash: the realm's rule for the week, the same for every castle"],
   [
     'Deed',

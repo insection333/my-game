@@ -108,13 +108,16 @@ export function views(): View[] {
     '/hiscores/deeds?panel=honours',
     // Expeditions two months in: the Fen's longest route, the bosses and the relics.
     '/combat/expeditions?region=fen&hours=8',
-    // Castle Clash weeks after raising: every tab (the War first), and the account of a siege on the elder
+    // Castle Clash weeks after raising: every tab (the War first, the Reports last), and the account of a siege on the elder
     // (report 6: castles.ts).
     '/castle',
     '/castle/army',
     '/castle/citadel',
     '/castle?panel=report&report=6',
     '/castle/halls',
+    // The Reports tab (session 42): every report as a card, and one filter.
+    '/castle/reports',
+    '/castle/reports?show=spies',
   ].map((path) => ({
     page:
       map.views.find((v) => v.path === path)?.page ??

@@ -1,6 +1,7 @@
 // The design system: tokens (tokens.css, base.css) and the shared components every page draws with.
 export { Button, type ButtonProps } from './components/Button.tsx';
 export { IconButton, type IconButtonProps } from './components/IconButton.tsx';
+export { CloseButton, type CloseButtonProps } from './components/CloseButton.tsx';
 export { Panel, type PanelProps } from './components/Panel.tsx';
 export { Pill } from './components/Pill.tsx';
 export { ProgressBar, ProgressFill, type ProgressRun } from './components/ProgressBar.tsx';

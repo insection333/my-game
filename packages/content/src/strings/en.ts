@@ -146,7 +146,7 @@ export const en: Record<string, string> = {
   'tour.fire': 'While you are here the fire burns: more XP the longer you keep it going, and a second Gathering lane.',
   'tour.notices': 'Notices say when a lane stops and why, and what happened while you were away.',
   'tour.next': 'Next',
-  'tour.skip': 'Skip',
+  'tour.skip': 'Skip the tour',
   'tour.done': 'Done',
   'tray.empty': 'Nothing needs you right now.',
   'settings.title': 'Settings',

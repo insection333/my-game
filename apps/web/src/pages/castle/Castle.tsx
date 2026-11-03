@@ -1,7 +1,7 @@
-// Castle Clash (docs/castle-clash/, IA.md): the castle's banner (session 41) and its header (AP, the Call to arms, the orders of the
-// day, the decree, shields) over four tabs (session 40): the War first, where every battle of the day is,
-// then the Army, the Citadel and the Halls. Before total level 100 the page says when it opens; at 100 a
-// lord raises their castle here. The tabs' old addresses still lead to them.
+// Castle Clash (docs/castle-clash/, IA.md): the castle's banner (session 41) and its header (AP, the Call
+// to arms, the orders of the day, the decree, shields) over five tabs: the War first, where every battle
+// of the day is (session 40), then the Army, the Citadel, the Halls and the Reports (session 42). Before
+// total level 100 the page says when it opens; at 100 a lord raises their castle here. The tabs' old addresses still lead to them.
 import { fmt, t, UNLOCKS } from '@idle-clash/content';
 import { castleEngine as E } from '@idle-clash/features';
 import { Button, Panel, ProgressBar, Tabs } from '@idle-clash/ui';
@@ -13,19 +13,21 @@ import { Army } from './Army.tsx';
 import { Banner } from './Banner.tsx';
 import { Header } from './Header.tsx';
 import { Halls } from './Halls.tsx';
-import { ReportSheet } from './Reports.tsx';
+import { ReportSheet } from './Account.tsx';
+import { ReportsTab } from './ReportsTab.tsx';
 import { castleAct, useCastleLoad } from './store.ts';
 import { useSyncedCastle } from './synced.ts';
 import { War } from './War.tsx';
 import s from './castle.module.css';
 
-export const CASTLE_TABS = ['war', 'army', 'citadel', 'halls'] as const;
+export const CASTLE_TABS = ['war', 'army', 'citadel', 'halls', 'reports'] as const;
 type Tab = (typeof CASTLE_TABS)[number];
 const PATH: Record<Tab, string> = {
   war: '/castle',
   army: '/castle/army',
   citadel: '/castle/citadel',
   halls: '/castle/halls',
+  reports: '/castle/reports',
 };
 /** The addresses of the five tabs before session 40, to the tab that holds what they held. */
 const FORMER: Record<string, Tab> = {
@@ -42,6 +44,7 @@ const LABEL: Record<Tab, string> = {
   army: 'castle.tab.army',
   citadel: 'castle.tab.citadel',
   halls: 'castle.tab.halls',
+  reports: 'castle.tab.reports',
 };
 
 export function Castle({ path }: { path: string }) {
@@ -97,8 +100,10 @@ export function Castle({ path }: { path: string }) {
           <Army />
         ) : tab === 'citadel' ? (
           <Citadel />
-        ) : (
+        ) : tab === 'halls' ? (
           <Halls />
+        ) : (
+          <ReportsTab />
         )}
       </div>
       {panel === 'report' && <ReportSheet />}

@@ -1,0 +1,18 @@
+/* A small square with a cross: quiet until pointed at, as large as a tap needs. */
+.button {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: var(--r-control);
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+
+.button:hover {
+  background: var(--surface-2);
+  color: var(--ink);
+}

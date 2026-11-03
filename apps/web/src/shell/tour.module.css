@@ -23,6 +23,14 @@
 
 .card p {
   margin: 0 0 var(--s-2);
+  padding-right: 28px;
+}
+
+/* The cross ends the tour (session 42: every popup closes from its top right). */
+.close {
+  position: absolute;
+  top: var(--s-1);
+  right: var(--s-1);
 }
 
 .buttons {

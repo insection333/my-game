@@ -165,7 +165,12 @@ export function momentsFrom(events: readonly GameEvent[], since: number, feature
       ...rest.slice(0, ALSO_NAMED).map((e) => describe(e, features).title),
       ...(rest.length > ALSO_NAMED ? [t('moment.andMore', { count: fmt.int(rest.length - ALSO_NAMED) })] : []),
     ];
-    const body = [best.body, also.length ? t('moment.also', { what: also.join('; ') }) : null].filter(Boolean);
+    // Sentences, each ended: "Easy, 5 points. Also: …".
+    const end = (x: string) => (/[.!?]$/.test(x) ? x : `${x}.`);
+    const body = [
+      best.body && also.length ? end(best.body) : best.body,
+      also.length ? t('moment.also', { what: also.join('; ') }) : null,
+    ].filter(Boolean);
     return {
       key: String(group[0].at),
       size,

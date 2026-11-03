@@ -1,4 +1,5 @@
 .moment {
+  position: relative;
   display: flex;
   align-items: center;
   gap: var(--s-3);
@@ -8,6 +9,26 @@
   box-shadow: 0 12px 40px var(--shade);
   padding: var(--s-4);
   animation: rise 260ms ease-out;
+}
+
+/* The cross sits in the corner; the words keep clear of it. */
+.close {
+  position: absolute;
+  top: var(--s-1);
+  right: var(--s-1);
+}
+
+.moment:has(.close) {
+  padding-right: calc(var(--s-4) + 28px);
+}
+
+.toast:has(.close) {
+  padding-right: calc(var(--s-3) + 28px);
+}
+
+.centre:has(.close) {
+  padding-right: var(--s-5);
+  padding-top: var(--s-6);
 }
 
 .centre {
