@@ -8,11 +8,13 @@ import { useGame } from '../game/hooks.ts';
 import { ProfileSheet } from '../pages/ProfileSheet.tsx';
 import { game } from '../game/store.ts';
 import { fills } from '../slots.tsx';
-import { navigate, useLocation, withPanel } from '../router.ts';
+import { navigate, trayHref, useLocation, withPanel } from '../router.ts';
 import { ItemPanel } from '../pages/Items.tsx';
 import { DeedSheet, HonoursSheet } from '../pages/DeedSheets.tsx';
 import { WorkSheet } from '../pages/Steading.tsx';
-import { Settings, Tray, trayReadAt } from '../pages/Panels.tsx';
+import { Settings, trayReadAt } from '../pages/Panels.tsx';
+import { TraySheet } from '../pages/TraySheet.tsx';
+import { useUnreadMail } from '../game/mail.ts';
 import { noticesOf } from '../pages/notices.ts';
 import { FireBadge } from './FireBadge.tsx';
 import { Bell, Coin, MenuGlyph, Person } from './glyphs.tsx';
@@ -115,11 +117,7 @@ export function Shell({ children }: { children: ReactNode }) {
       <Gains />
       <Sounds />
       <Moments />
-      {panel === 'tray' && (
-        <Sheet title={t('tray.title')} closeLabel={t('shell.close')} onClose={close} slot="tray.list">
-          <Tray />
-        </Sheet>
-      )}
+      {panel === 'tray' && <TraySheet onClose={() => navigate(withoutSheet('tray', 'to'))} />}
       {panel === 'item' && <ItemSheet onClose={close} />}
       {panel === 'deed' && <DeedSheet onClose={() => navigate(withoutSheet('deed'))} />}
       {panel === 'honours' && <HonoursSheet onClose={close} />}
@@ -140,10 +138,10 @@ export function Shell({ children }: { children: ReactNode }) {
 }
 
 /** The address with a sheet closed: its panel and what it named (a deed, a work) both gone. */
-function withoutSheet(named: string): string {
+function withoutSheet(...named: string[]): string {
   const url = new URL(location.href);
   url.searchParams.delete('panel');
-  url.searchParams.delete(named);
+  for (const k of named) url.searchParams.delete(k);
   return url.pathname + url.search;
 }
 
@@ -158,8 +156,10 @@ function ItemSheet({ onClose }: { onClose: () => void }) {
   );
 }
 
-/** The bell, with how many notices arrived since the tray was last opened here. */
+/** The bell, with how many notices arrived since the tray was last opened here and how many messages wait
+ * unread; with only messages new, it opens on them. */
 function TrayButton() {
+  const mail = useUnreadMail();
   const view = useGame();
   const [readAt, setReadAt] = useState(trayReadAt);
   useEffect(() => {
@@ -167,13 +167,17 @@ function TrayButton() {
     window.addEventListener('tray-read', read);
     return () => window.removeEventListener('tray-read', read);
   }, []);
-  const unread = noticesOf(view).filter((n) => n.at > readAt).length;
-  const news = unread === 1 ? t('tray.unreadOne') : t('tray.unread', { count: fmt.int(unread) });
+  const notices = noticesOf(view).filter((n) => n.at > readAt).length;
+  const unread = notices + mail;
+  const news = [
+    ...(notices ? [notices === 1 ? t('tray.unreadOne') : t('tray.unread', { count: fmt.int(notices) })] : []),
+    ...(mail ? [mail === 1 ? t('tray.newMessagesOne') : t('tray.newMessages', { count: fmt.int(mail) })] : []),
+  ].join(', ');
   return (
     <IconButton
       label={unread ? `${t('shell.notices')}: ${news}` : t('shell.notices')}
       badge={unread ? (unread > 9 ? '9+' : fmt.int(unread)) : undefined}
-      onClick={() => navigate(withPanel('tray'))}
+      onClick={() => navigate(trayHref(mail && !notices ? 'mail' : 'notices'))}
     >
       <Bell />
     </IconButton>

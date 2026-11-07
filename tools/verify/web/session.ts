@@ -24,6 +24,8 @@ import { castles, wrongdoing } from './castles.ts';
 import { elder, keeper } from './elder.ts';
 import { withHonours } from './honours.ts';
 import { crowd, CROWD, veteran } from './veteran.ts';
+import { letters } from './letters.ts';
+import { SHEETS } from './sheets.ts';
 import { readPageMap, type ViewSpec } from '../ia.ts';
 
 export const DIST = join(ROOT, 'apps/web/dist');
@@ -42,39 +44,7 @@ export interface View extends ViewSpec {
 /** Views to open: every row of IA.md's "Visible without scrolling" tables, and the sheets (the tray, an item, settings). */
 export function views(): View[] {
   const map = readPageMap(readFileSync(join(ROOT, 'IA.md'), 'utf8'));
-  const sheets: ViewSpec[] = [
-    { page: 'The notices tray (panel)', path: '/?panel=tray', phone: ['tray.list'], desktop: ['tray.list'] },
-    {
-      page: 'Storehouse',
-      path: '/storehouse?panel=item&item=copper-bar',
-      phone: ['item.panel'],
-      desktop: ['item.panel'],
-    },
-    {
-      page: 'Hiscores',
-      path: '/hiscores/deeds?panel=honours',
-      phone: ['hiscores.choose'],
-      desktop: ['hiscores.choose'],
-    },
-    {
-      page: 'Hiscores',
-      path: '/hiscores/deeds?view=skills&panel=deed&deed=level-woodcutting-10',
-      phone: ['hiscores.deed'],
-      desktop: ['hiscores.deed'],
-    },
-    {
-      page: 'Hearth',
-      path: '/?panel=work&work=woodyard',
-      phone: ['hearth.work'],
-      desktop: ['hearth.work'],
-    },
-    {
-      page: 'Settings (account menu)',
-      path: '/?panel=settings',
-      phone: ['settings.account'],
-      desktop: ['settings.account'],
-    },
-  ];
+  const sheets = SHEETS;
   // The same pages for a player three weeks in, whose rows carry odds, pills and long names.
   const veteran: ViewSpec[] = [
     ...map.views.filter((v) => !signedOut(v.path)).map((v) => ({ ...v, as: 'veteran' as const })),
@@ -101,6 +71,8 @@ export function views(): View[] {
     '/hiscores?skill=castle',
     // A player's sheet, with Report this player.
     '/hiscores?panel=player&name=Keeper',
+    // Messages behind the bell: letters read and unread, Reply, Delete and Block, and a player blocked.
+    '/?panel=tray&tray=mail',
     // Deeds two months in: honours open, families half done, a sheet of choices.
     '/hiscores/deeds',
     '/hiscores/deeds?view=skills',
@@ -284,6 +256,12 @@ async function start(): Promise<Served> {
   await say(kpr, 'Love the Kindling flames on the seals.', '/skills/woodcutting');
   // A report and a run of sieges on the admin page, so its queue and its pairs are seen at every width.
   wrongdoing(ctx, { elder: elderId, keeper: ids.get('Keeper')! }, now);
+  // Letters in the elder's inbox and on the admin's monitor.
+  letters(
+    ctx,
+    { elder: elderId, keeper: ids.get('Keeper')!, veteran: ids.get('Veteran')!, blocked: ids.get(CROWD[0])! },
+    now,
+  );
   return {
     url,
     cookie,

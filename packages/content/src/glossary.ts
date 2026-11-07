@@ -25,6 +25,7 @@ export const TERMS: [term: string, meaning: string][] = [
   ['Badge', "A rare feat's mark worn beside your title, opened by a deed few reach"],
   ['Banner', 'The colour your plaque and your hiscores pennant fly, opened by deeds'],
   ['Bar', 'Metal smelted from ore: copper, bronze, iron, steel'],
+  ['Block', 'Stops one player sending you messages, and nothing else; Unblock lets them again'],
   ['Boss', "A region's last and hardest foe: met at an expedition's end, or fought alone once a day"],
   [
     'Call to arms',
@@ -97,6 +98,10 @@ export const TERMS: [term: string, meaning: string][] = [
   [
     'Mercenary stronghold',
     'Castle Clash: one of five targets made for you each day near your rating, the harder paying more; it falls for the day once breached, and its bounty comes from the war chest',
+  ],
+  [
+    'Messages',
+    'Short notes of up to 250 characters between players, kept behind the bell beside the notices; the inbox keeps your latest 20',
   ],
   ['Milestone', 'A long goal, such as total level 100'],
   ['Next action', "The action queued behind a lane's current one; it starts when the current one stops"],

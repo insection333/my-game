@@ -18,6 +18,8 @@ export interface Tab {
 }
 
 const TAP = 44;
+/** The gap between tabs (--s-1). */
+const GAP = 4;
 
 /** Turns the strip compact when its full labels would not fit, measured each time it is drawn. */
 function useFit(ref: React.RefObject<HTMLElement | null>, key: string) {
@@ -30,11 +32,15 @@ function useFit(ref: React.RefObject<HTMLElement | null>, key: string) {
       el.style.removeProperty('--cols');
       if (el.scrollWidth <= el.clientWidth + 1) return;
       el.setAttribute('data-compact', '');
-      // Still too many for one row at a full tap's width each (twelve ladders on a phone): two rows.
+      // Still too many for one row at a full tap's width each (twelve ladders on a phone), or a tab
+      // squeezed narrower than its own label (five words on a phone): rows.
       const tabs = Array.from(el.children) as HTMLElement[];
-      if (el.scrollWidth > el.clientWidth + 1 || tabs.some((t) => t.getBoundingClientRect().width < TAP)) {
-        // As few rows as a tap's width each allows, the tabs shared evenly between them.
-        const perRow = Math.max(1, Math.floor(el.clientWidth / TAP));
+      const squeezed = tabs.some((t) => t.scrollWidth > t.clientWidth + 1);
+      if (squeezed || el.scrollWidth > el.clientWidth + 1 || tabs.some((t) => t.getBoundingClientRect().width < TAP)) {
+        // Each column as wide as the widest label needs (and a tap at least); as few rows as that
+        // allows, the tabs shared evenly between them.
+        const widest = Math.max(TAP, ...tabs.map((t) => t.scrollWidth));
+        const perRow = Math.max(1, Math.floor((el.clientWidth + GAP) / (widest + GAP)));
         const rows = Math.ceil(tabs.length / perRow);
         el.style.setProperty('--cols', String(Math.ceil(tabs.length / rows)));
         el.setAttribute('data-wrap', '');

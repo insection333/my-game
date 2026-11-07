@@ -8,7 +8,6 @@
 
 .head {
   position: relative;
-  margin-bottom: 44px;
 }
 
 .scene {
@@ -28,9 +27,24 @@
   background: var(--surface);
 }
 
+/* Who they are sits beside the picture, under the scene, where the picture hangs below it. */
 .who {
   display: grid;
+  align-content: start;
   gap: 2px;
+  min-height: 40px;
+  margin-top: calc(-1 * var(--s-2));
+  padding-left: calc(var(--s-4) + 112px);
+}
+
+.name {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  margin: 0;
+  font: 600 var(--t-h3) / 1.2 var(--font-book);
+  overflow-wrap: anywhere;
+  min-width: 0;
 }
 
 .titleLine {
@@ -39,6 +53,11 @@
   gap: var(--s-2);
   margin: 0;
   font: italic 500 var(--t-lead) / 1.3 var(--font-book);
+}
+
+.titleLine[data-none] {
+  color: var(--ink-2);
+  font: 400 var(--t-small) / 1.4 var(--font-ui);
 }
 
 .since,
@@ -118,7 +137,15 @@
   background: var(--alert-soft);
 }
 
+.recordBar[data-none] {
+  background: var(--line);
+}
+
 .recordBar > span {
   width: var(--won);
   background: var(--moss);
+}
+
+.message {
+  margin: var(--s-2) 0 0;
 }

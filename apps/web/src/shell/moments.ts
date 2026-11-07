@@ -161,15 +161,24 @@ export function momentsFrom(events: readonly GameEvent[], since: number, feature
     const size = group.map(sizeOf).reduce((a, b) => (SIZE_RANK.indexOf(b) > SIZE_RANK.indexOf(a) ? b : a));
     // A long run of moments at once (a returning player's deeds) names the first few and counts the rest.
     const rest = ordered.slice(1);
+    // Deeds alone are named once, as a list ("Also done: Castle 10, War marks: 100 and Tempered +3"), not
+    // each under its own heading; anything mixed keeps each its heading.
+    const deedsOnly = rest.every((e) => e.type === 'deedDone');
     const also = [
-      ...rest.slice(0, ALSO_NAMED).map((e) => describe(e, features).title),
+      ...rest
+        .slice(0, ALSO_NAMED)
+        .map((e) => (deedsOnly && e.type === 'deedDone' ? e.name : describe(e, features).title)),
       ...(rest.length > ALSO_NAMED ? [t('moment.andMore', { count: fmt.int(rest.length - ALSO_NAMED) })] : []),
     ];
     // Sentences, each ended: "Easy, 5 points. Also: …".
     const end = (x: string) => (/[.!?]$/.test(x) ? x : `${x}.`);
     const body = [
       best.body && also.length ? end(best.body) : best.body,
-      also.length ? t('moment.also', { what: also.join('; ') }) : null,
+      also.length
+        ? deedsOnly
+          ? t('moment.alsoDone', { what: fmt.list(also) })
+          : t('moment.also', { what: also.join('; ') })
+        : null,
     ].filter(Boolean);
     return {
       key: String(group[0].at),

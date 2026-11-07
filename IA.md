@@ -17,7 +17,7 @@ Six entries, in this order (the sixth, Castle Clash, the owner's choice in sessi
 
 Outside the menu:
 
-- **The notices tray**: a bell in the header with a count. Lane stops, goals claimed, the away recap, and (later) letters.
+- **The notices tray**: a bell in the header with a count of new notices and unread messages. Two tabs: Notices (lane stops, goals claimed, the away recap) and Messages (session 45).
 - **The account menu**: behind the account button. Settings, privacy, terms, sign out, and (session 9) delete account.
 - **The tour**: a short overlay on first visit, pointing at slots by name, never at layout classes.
 - **Closing what opens (session 42, the owner's rule):** every popup (a sheet, a moment of any size, the tour's card) closes from a cross in its top right; verify fails a popup without one.
@@ -268,11 +268,12 @@ Anyone not signed in sees this page instead of the shell, at any address; afterw
 
 ### The notices tray (panel)
 
-Opened from the header's bell; its address is `/?panel=tray`.
+Opened from the header's bell; its address is `/?panel=tray`, and `/?panel=tray&tray=mail` for Messages (`&to=Name` begins a message to that player, from their profile card's Send a message). The bell opens on Messages when only messages are new. Two tabs at the top: Notices and Messages (with the unread count).
 
 | # | Section (slot) | Filled by | Notes |
 | --- | --- | --- | --- |
 | 1 | `tray.list` | the shell, from events | Newest first, grouped by day. Each notice says what happened and links to where to act ("Smithing stopped: out of tin ore · Mine tin"). The away recap lands here too, after it is closed |
+| 2 | `tray.mail` | the shell | Messages (session 45). Write a message (one button, folded until wanted; opened by Reply or from a card): To (offering the names of those who have written), the message with how many of its 250 characters are used, Cancel and Send (Ctrl or Cmd with Enter sends), and the reason when one is refused (no such player, foul language, blocked, a cooldown, ten players a day, muted). Then the letters newest first, an unread one barred in gold with New: the sender's picture and name (which opens their card), when, the words, Reply, Delete (leaving a line with Undo for five seconds) and Block (asked once, in the row, since it clears their letters). The game's own letters (an admin's warning) come from the keepers of the realm under the game's mark, with Delete only. The inbox keeps 20; read letters go after a week, unread after two. Then Blocked players, each with Unblock. Blocking stops only messages. Opening the view marks the letters read |
 
 ### Settings (account menu)
 
@@ -307,7 +308,8 @@ At `/admin`, for players named in the server's admin list only (anyone else sees
 | 1 | `admin.players` | the shell | Find a player by name: name, when they joined, total level, Banned; Open |
 | 2 | `admin.player` | the shell | The player opened: rename, ban or unban, check and mend the save, set a new password (shown once, to pass on), what was repaired, and the save itself in a scrolling box |
 | 3 | `admin.moderation` | the shell | Bad actors (session 39), under the player search: the players reported (Reports, with a count), those reported by players who have played a while first, each with how many reports for the name and for cheating, by how many players and how many of them playing a while, the last day, Dismiss and Open (renaming or banning settles their reports); then Sieges between lords: pairs with four or more sieges in 30 days, most gold first, each with its sieges, breaches, gold taken and sieges the other way, and Open. Each list scrolls in its own box |
-| 4 | `admin.test` | the shell | The players (sessions 18 and 19), under the player search: each player with when they joined, the days they played, Back on day 2 and day 3, total level, what the Hearth's goals ask of them, and Not on the hiscores yet for a player not yet listed; the feedback sent from Settings, newest first, each note with Copy and the panel with Copy all (plain text that says who sent it, their total level and days played, the page and the day; where the browser refuses, the text is shown selected to copy by hand). Each list scrolls in its own box |
+| 4 | `admin.mail` | the shell | The mail monitor (session 45), under the bad actors: search by player, by the player they wrote with and by words; then one list at a time, by tabs (`?mail=`): Sent (newest 200), Flagged (sent the day their sender had one refused), Refused, and Refused today (players with messages the filter stopped, most first, with Muted, Warn, and Mute for a week or Unmute). Each letter shows sender to recipient (each name a search), when, the words, Warn the sender and Mute for a week. A warning goes as the game's own letter and names no admin. The list scrolls in its own box |
+| 5 | `admin.test` | the shell | The players (sessions 18 and 19), under the player search: each player with when they joined, the days they played, Back on day 2 and day 3, total level, what the Hearth's goals ask of them, and Not on the hiscores yet for a player not yet listed; the feedback sent from Settings, newest first, each note with Copy and the panel with Copy all (plain text that says who sent it, their total level and days played, the page and the day; where the browser refuses, the text is shown selected to copy by hand). Each list scrolls in its own box |
 
 **Visible without scrolling** (checked by verify at 390 × 844 and 1,440 × 900; a slot no built feature fills yet is skipped):
 
@@ -329,7 +331,7 @@ No later system adds a menu entry. The sixth place went to Castle Clash (the own
 | Fishing, Cooking, Fletching, Runecraft | New rows on Skills, new pages under it; ammunition in the loadout and the Storehouse |
 | Guilds | A tab of Hiscores, which is renamed Realm when guilds arrive |
 | Player market | A tab of the Storehouse |
-| Letters | The notices tray |
+| Letters | The notices tray (built in session 45: its Messages tab) |
 | Expeditions | A tab of Combat (built in session 16: runs, bosses and relics) |
 | Seasons | A tab of Realm, with its own ladder |
 | Kindling (in place of Rekindling) | The skill's own page from level 99 (built in session 17), and flames on its seal wherever it is shown |

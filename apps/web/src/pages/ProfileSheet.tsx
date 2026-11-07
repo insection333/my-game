@@ -1,13 +1,14 @@
 // A player's profile card (`?panel=player&name=…`, session 44), over any page: opened from their name on
 // the ladders and in Castle Clash. The scene they show with their picture in its frame and glow over its
 // foot; their name, badge and title, and how long they have played; their career at a glance; their
-// castle and its war record, wins against losses on one bar each; and for someone else, Report this player.
+// castle and its war record, wins against losses on one bar each; and for someone else, Send a message
+// (session 45) and Report this player.
 import type { Profile } from '@idle-clash/contracts';
 import { fmt, hasString, t } from '@idle-clash/content';
-import { CastleScene, ItemIcon, MarchScene, Picture, Sheet, TextLink, type CastleLook } from '@idle-clash/ui';
+import { Button, CastleScene, ItemIcon, MarchScene, Picture, Sheet, TextLink, type CastleLook } from '@idle-clash/ui';
 import { useEffect, useState, type CSSProperties } from 'react';
 import { api } from '../api.ts';
-import { navigate } from '../router.ts';
+import { navigate, trayHref } from '../router.ts';
 import { badgeName, bannerStyle } from './honours-style.ts';
 import { ReportPlayer } from './ReportPlayer.tsx';
 import s from './profile.module.css';
@@ -39,6 +40,7 @@ function Record({ label, won, lost }: { label: string; won: number; lost: number
       <span className={s.recordCounts}>{t('profile.wonLost', { won: fmt.int(won), lost: fmt.int(lost) })}</span>
       <span
         className={s.recordBar}
+        data-none={all ? undefined : ''}
         style={{ '--won': all ? `${(won / all) * 100}%` : '0%' } as CSSProperties}
         aria-hidden="true"
       >
@@ -48,6 +50,8 @@ function Record({ label, won, lost }: { label: string; won: number; lost: number
   );
 }
 
+/** One figure; the career's later figures (titles, Kindlings, foes, bosses, expeditions) show once above
+ *  nought, so a newcomer's card is not a wall of zeros. */
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div className={s.stat}>
@@ -73,13 +77,23 @@ function Card({ p }: { p: Profile }) {
         </span>
       </div>
       <div className={s.who}>
-        <p className={s.titleLine}>
+        <p className={s.name}>
+          {p.name}
           {p.look.badge && <ItemIcon name={`badge-${p.look.badge}`} size={24} label={badgeName(p.look.badge)} />}
+        </p>
+        <p className={s.titleLine} data-none={title ? undefined : ''}>
           {title ?? t('profile.noTitle')}
         </p>
         <p className={s.since}>
           {p.since === 0 ? t('profile.sinceToday') : t('profile.since', { days: fmt.int(p.since) })}
         </p>
+        {!p.you && (
+          <p className={s.message}>
+            <Button variant="secondary" onClick={() => navigate(trayHref('mail', p.name))}>
+              {t('profile.message')}
+            </Button>
+          </p>
+        )}
       </div>
       <section className={s.section} aria-label={t('profile.career')}>
         <h3>{t('profile.career')}</h3>
@@ -90,11 +104,11 @@ function Card({ p }: { p: Profile }) {
             label={t('profile.deeds')}
             value={t('profile.of', { n: fmt.int(c.deedsDone), all: fmt.int(c.deedsAll) })}
           />
-          <Stat label={t('profile.titles')} value={fmt.int(c.titles)} />
-          <Stat label={t('profile.kindlings')} value={fmt.int(c.kindlings)} />
-          <Stat label={t('profile.defeats')} value={fmt.int(c.defeats)} />
-          <Stat label={t('profile.bossWins')} value={fmt.int(c.bossWins)} />
-          <Stat label={t('profile.runs')} value={fmt.int(c.runs)} />
+          {c.titles > 0 && <Stat label={t('profile.titles')} value={fmt.int(c.titles)} />}
+          {c.kindlings > 0 && <Stat label={t('profile.kindlings')} value={fmt.int(c.kindlings)} />}
+          {c.defeats > 0 && <Stat label={t('profile.defeats')} value={fmt.int(c.defeats)} />}
+          {c.bossWins > 0 && <Stat label={t('profile.bossWins')} value={fmt.int(c.bossWins)} />}
+          {c.runs > 0 && <Stat label={t('profile.runs')} value={fmt.int(c.runs)} />}
         </dl>
       </section>
       {p.castle && (

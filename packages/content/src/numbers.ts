@@ -7,6 +7,7 @@ const tenths = new Intl.NumberFormat('en', { maximumFractionDigits: 1 });
 const compact = new Intl.NumberFormat('en', { notation: 'compact', maximumFractionDigits: 1 });
 const timeOfDay = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit' });
 const day = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+const conjunction = new Intl.ListFormat('en-GB', { type: 'conjunction' });
 
 const ROMAN: [number, string][] = [
   [10, 'X'],
@@ -49,6 +50,8 @@ export const fmt = {
   time: (ms: number): string => timeOfDay.format(ms),
   /** milliseconds since the epoch → "20 Oct 2026", in the player's own time zone */
   date: (ms: number): string => day.format(ms),
+  /** ["a", "b", "c"] → "a, b and c": words joined as a sentence joins them */
+  list: (items: readonly string[]): string => conjunction.format(items),
   /** 4 → "IV", up to 39 */
   roman: (n: number): string => {
     if (!Number.isInteger(n) || n < 1 || n > 39) throw new Error(`roman: ${n} is out of range`);

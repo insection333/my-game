@@ -1,6 +1,7 @@
 // The admin page (the brief): find a player; rename them, ban or unban them, look at their save and
 // what was mended in it, and set a new password when they have forgotten theirs; the reports and sieges
-// between lords to look into (AdminModeration.tsx, session 39); and the closed test's panel (AdminTest.tsx). Only players on the
+// between lords to look into (AdminModeration.tsx, session 39); the mail monitor (AdminMail.tsx, session 45); and the closed
+// test's panel (AdminTest.tsx). Only players on the
 // server's admin list reach it; everyone else gets the page that does not exist.
 import type { AdminPlayerView, AdminSaveResponse } from '@idle-clash/contracts';
 import { fmt, t } from '@idle-clash/content';
@@ -10,6 +11,7 @@ import { api, ApiError } from '../api.ts';
 import { handled, useSession } from '../game/session.ts';
 import { untilLoaded } from '../Ready.tsx';
 import { Slot } from '../slots.tsx';
+import { AdminMail } from './AdminMail.tsx';
 import { AdminModeration } from './AdminModeration.tsx';
 import { AdminTest } from './AdminTest.tsx';
 import { PageHead } from './PageHead.tsx';
@@ -106,6 +108,7 @@ export function Admin() {
             </Slot>
           </Panel>
           <AdminModeration open={open} version={version} />
+          <AdminMail />
           <AdminTest />
         </section>
         {save && (

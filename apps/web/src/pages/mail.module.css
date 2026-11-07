@@ -1,0 +1,203 @@
+/* Messages behind the bell (session 45): the message being written, then the letters as rows of picture,
+   name, time and words, an unread one marked by a gold bar on its left edge, then the players blocked. */
+.mail {
+  display: grid;
+  gap: var(--s-2);
+  padding-bottom: var(--s-4);
+}
+
+.write {
+  display: grid;
+  gap: var(--s-2);
+  padding: var(--s-3) var(--s-4) 0;
+}
+
+.bar {
+  display: flex;
+  padding: var(--s-3) var(--s-4) 0;
+}
+
+.send {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--s-2);
+}
+
+.good,
+.bad {
+  margin: 0;
+  padding: 0 var(--s-4);
+  font-size: var(--t-small);
+}
+
+.good:empty,
+.bad:empty {
+  display: none;
+}
+
+.good {
+  color: var(--moss);
+}
+
+.bad {
+  color: var(--alert);
+}
+
+.muted {
+  margin: var(--s-3) var(--s-4) 0;
+  padding: var(--s-2) var(--s-3);
+  border: 1px solid var(--alert);
+  border-radius: var(--r-control);
+  background: var(--alert-soft);
+}
+
+.note {
+  margin: 0;
+  padding: var(--s-2) var(--s-4);
+  color: var(--ink-2);
+}
+
+.letters {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--line);
+}
+
+.letter {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--s-3);
+  padding: var(--s-3) var(--s-4) var(--s-2);
+  border-bottom: 1px solid var(--line);
+  border-left: 3px solid transparent;
+}
+
+.letter[data-unread] {
+  border-left-color: var(--gold);
+  background: var(--surface-2);
+}
+
+.main {
+  display: grid;
+  gap: var(--s-1);
+  min-width: 0;
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+  margin: 0;
+}
+
+.from {
+  font-weight: 600;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.at {
+  margin-left: auto;
+  font: 600 var(--t-small) / 1 var(--font-ui);
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.body {
+  margin: 0;
+  font-family: var(--font-book);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-1);
+  margin-left: calc(-1 * var(--s-2));
+}
+
+.kept {
+  margin: 0;
+  padding: 0 var(--s-4);
+  font-size: var(--t-small);
+  color: var(--ink-2);
+}
+
+.blocked {
+  display: grid;
+  gap: var(--s-1);
+  margin-top: var(--s-2);
+}
+
+.blocked h3 {
+  margin: 0;
+  padding: 0 var(--s-4);
+  font: 600 var(--t-body) / 1.4 var(--font-ui);
+}
+
+.blocked ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.blocked li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-2);
+  min-height: var(--tap);
+  padding: 0 var(--s-4);
+  border-top: 1px solid var(--line);
+}
+
+/* The game's own letter: its mark in a round of the same size as a picture. */
+.seal {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border: 2px solid var(--gold);
+  border-radius: 50%;
+  background: var(--gold-soft);
+}
+
+.letter[data-realm] .from {
+  color: var(--gold);
+  font-family: var(--font-book);
+  font-style: italic;
+}
+
+.ask {
+  display: grid;
+  gap: var(--s-1);
+  margin-top: var(--s-1);
+  padding: var(--s-2) var(--s-3);
+  border: 1px solid var(--alert);
+  border-radius: var(--r-control);
+  background: var(--alert-soft);
+}
+
+.ask p {
+  margin: 0;
+  font-size: var(--t-small);
+}
+
+.ask .actions {
+  margin-left: 0;
+}
+
+.deleted {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-2);
+  min-height: var(--tap);
+  padding: var(--s-1) var(--s-4);
+  border-bottom: 1px solid var(--line);
+  color: var(--ink-2);
+  font-size: var(--t-small);
+}

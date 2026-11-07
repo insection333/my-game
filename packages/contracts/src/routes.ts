@@ -7,6 +7,7 @@ import { Email, Password, plainText, PlayerName, RequestId, Token } from './fiel
 import { PASSWORD_MAX } from './limits.ts';
 import { CASTLE_ROUTES } from './castle.ts';
 import { MODERATION_ROUTES } from './moderation.ts';
+import { MAIL_ROUTES } from './mail.ts';
 import { PROFILE_ROUTES } from './profile.ts';
 import { CLOSED_TEST_ROUTES } from './closed-test.ts';
 import { PATHS } from './paths.ts';
@@ -191,6 +192,7 @@ export const ROUTES = {
   ...CASTLE_ROUTES,
   ...MODERATION_ROUTES,
   ...PROFILE_ROUTES,
+  ...MAIL_ROUTES,
 } satisfies Record<string, RouteContract>;
 
 export type RouteId = keyof typeof ROUTES;

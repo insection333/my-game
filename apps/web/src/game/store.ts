@@ -17,6 +17,7 @@ import { api, ApiError, requestId } from '../api.ts';
 import { onConnection, setConnected } from './connection.ts';
 import { announceGains } from './gains.ts';
 import { openLive } from './live.ts';
+import { refreshMail, setUnreadMail } from './mail.ts';
 import { handled, sessionStore, signedOut } from './session.ts';
 
 export interface GameView {
@@ -128,9 +129,14 @@ export async function start(flags: Record<string, boolean>): Promise<void> {
         ...(castle.length ? { events: [...view.events, ...castle].slice(-50) } : {}),
       });
     },
+    mail: setUnreadMail,
     signedOut,
-    reopened: () => void resync(),
+    reopened: () => {
+      void resync();
+      void refreshMail();
+    },
   });
+  void refreshMail();
 }
 
 if (typeof document !== 'undefined') {

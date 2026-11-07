@@ -160,3 +160,21 @@
     - their career: total level, deed points, deeds done, titles earned, Kindlings, foes slain, bosses beaten and expeditions home;
     - their castle and war record for all time: sieges, defences, strongholds and spies' errands, each as won against lost on one bar.
   - **The war record is counted as each report is written** (migration 0013, `castle_records`), since reports keep only the newest twenty. It goes with the account.
+- Session 45, the owner's phase 3 (a protected inbox):
+  - **Messages behind the bell.** The tray has two tabs, Notices and Messages, and the bell counts unread messages too (it opens on Messages when only they are new).
+  - **Writing:** To, up to 250 characters with a counter, and Send a message on any other player's profile card. Each letter shows the sender's picture and name (which opens their card), when, the words, Reply, Delete and Block.
+  - **Guarded:**
+    - markup, scripts and hidden characters are stripped;
+    - foul language is refused, including spaced, disguised and look-alike spellings, and the sender is warned;
+    - a 15-second cooldown, ten players a day, and a mute an admin can give;
+    - an inbox keeps 20 (the oldest goes first); read letters go after a week, unread after two (migration 0014).
+  - **Block and Unblock**, for messages only: nothing else in the game is touched.
+  - **The admin's mail monitor:** search by player, by who they wrote with, by words, or flagged letters (sent the day their sender had one refused); who keeps being refused; Warn, Mute for a week and Unmute.
+  - **The terms of use say moderators can read messages**, and nowhere else does.
+  - **Polished after review:** Block asks once in the row (it clears their letters); Delete leaves Undo for five seconds; a name that is no one's says so; Ctrl or Cmd with Enter sends; the To field offers those who have written; an admin's warning comes from the keepers of the realm, naming no admin and never answered; the monitor shows one list at a time by tabs.
+- Review of sessions 42 to 45:
+  - **Tabs never draw one label over another.** A strip squeezed on a phone now takes rows sized to its widest label; Castle Clash's report filters show their marks (siege engines, walls, a stronghold's arms, the scout) and turn to marks alone on a phone. Verify now fails a tab too narrow for its label.
+  - **The profile card** puts the name, badge and title beside the picture, draws an empty war record grey rather than red, and leaves out career figures still at nought.
+  - **Moments that merge deeds** name them once, as a list ("Also done: Castle 10, War marks: 100 and Tempered +3").
+  - **The admin page** no longer scrolls as a whole (an unseen word in the mail monitor sat at the foot of the page).
+
