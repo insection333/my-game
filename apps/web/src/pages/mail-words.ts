@@ -5,6 +5,7 @@ import { fmt, t } from '@idle-clash/content';
 
 const REASON: Record<MailRefusal, string> = {
   language: 'mail.reason.language',
+  noPlayer: 'mail.reason.noPlayer',
   blocked: 'mail.reason.blocked',
   muted: 'mail.reason.muted',
   cooldown: 'mail.reason.cooldown',

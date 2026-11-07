@@ -168,23 +168,14 @@
    then the messages as letters: sender to recipient (each name a search), when, the words, Warn and Mute. */
 .mailSearch {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 7.5rem), 1fr));
   align-items: end;
   gap: var(--s-2);
   padding: var(--s-3) var(--s-4);
 }
 
-.check {
-  display: flex;
-  align-items: center;
-  gap: var(--s-2);
-  min-height: var(--tap);
-}
-
-.check input {
-  width: 20px;
-  height: 20px;
-  accent-color: var(--woad);
+.mailTabs {
+  padding: 0 var(--s-4);
 }
 
 .mailHead {
@@ -201,7 +192,7 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  max-height: min(28rem, 55dvh);
+  max-height: min(22rem, 40dvh);
   overflow: auto;
 }
 
@@ -227,25 +218,13 @@
 }
 
 .pair {
+  margin-left: calc(-1 * var(--s-2));
   display: inline-flex;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--s-1);
   min-width: 0;
   color: var(--ink-2);
-}
-
-.who {
-  min-height: 24px;
-  padding: 0 2px;
-  border: 0;
-  background: none;
-  color: var(--woad);
-  font: 600 var(--t-body) / 1.4 var(--font-ui);
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  cursor: pointer;
-  overflow-wrap: anywhere;
 }
 
 .letterAt {
@@ -266,5 +245,9 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--s-1);
+  margin-left: calc(-1 * var(--s-2));
+}
+
+.letterHead > button:first-child {
   margin-left: calc(-1 * var(--s-2));
 }

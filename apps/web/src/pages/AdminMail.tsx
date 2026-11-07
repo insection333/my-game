@@ -1,82 +1,106 @@
-// The admin's mail monitor (session 45), under the bad actors: who has had messages refused today (most
-// first, Warn, Mute for a week or Unmute), then every message sent, newest first, or only those between two
-// players, holding some words, or flagged (sent the day its sender had one refused); and the messages the
-// filter refused, so an attempt to get round it shows. A name searches for that player's messages.
-import type { AdminMailResponse } from '@idle-clash/contracts';
+// The admin's mail monitor (session 45), under the bad actors. A search over who wrote, to whom and what;
+// then one list at a time, chosen by tabs (each with its own address, `?mail=`): every message sent,
+// newest first; only those flagged (sent the day their sender had one refused); the messages the filter
+// refused, so an attempt to get round it shows; and who has had messages refused today, most first. Every
+// message carries Warn the sender and Mute for a week; every name searches for that player's messages.
+import type { AdminLetter, AdminMailResponse, AdminRefused } from '@idle-clash/contracts';
 import { fmt, t } from '@idle-clash/content';
-import { Button, Field, Panel, Pill } from '@idle-clash/ui';
+import { Button, Field, Panel, Pill, Tabs } from '@idle-clash/ui';
 import { useEffect, useState, type FormEvent } from 'react';
 import { api } from '../api.ts';
 import { handled } from '../game/session.ts';
+import { navigate, useLocation } from '../router.ts';
 import { Slot } from '../slots.tsx';
 import s from './admin.module.css';
+
+const VIEWS = ['sent', 'flagged', 'refused', 'watch'] as const;
+type View = (typeof VIEWS)[number];
+const LABEL: Record<View, string> = {
+  sent: 'admin.mail.letters',
+  flagged: 'admin.mail.flagged',
+  refused: 'admin.mail.refused',
+  watch: 'admin.mail.watch',
+};
+/** The tabs' words where the strip is narrow (a phone). */
+const SHORT: Record<View, string> = {
+  sent: 'admin.mail.letters',
+  flagged: 'admin.mail.flagged',
+  refused: 'admin.mail.refused',
+  watch: 'admin.mail.watch.short',
+};
 
 interface Query {
   player: string;
   other: string;
   text: string;
-  flagged: boolean;
 }
-const NONE: Query = { player: '', other: '', text: '', flagged: false };
-const LISTS = { letters: 'admin.mail.letters', refused: 'admin.mail.refused' } as const;
+const NONE: Query = { player: '', other: '', text: '' };
 
-/** The query as the server takes it: empty fields left out. */
-const asked = (q: Query) => ({
+/** The query as the server takes it: empty fields left out, and whether only flagged letters are wanted. */
+const asked = (q: Query, flagged: boolean) => ({
   ...(q.player.trim() ? { player: q.player.trim() } : {}),
   ...(q.other.trim() ? { other: q.other.trim() } : {}),
   ...(q.text.trim() ? { text: q.text.trim() } : {}),
-  ...(q.flagged ? { flagged: true } : {}),
+  flagged,
 });
 
+const viewHref = (v: View) => {
+  const url = new URL(location.href);
+  url.searchParams.set('mail', v);
+  return url.pathname + url.search;
+};
+
 export function AdminMail() {
+  useLocation();
+  const asks = new URLSearchParams(location.search).get('mail');
+  const view: View = VIEWS.find((v) => v === asks) ?? 'sent';
   const [q, setQ] = useState<Query>(NONE);
   const [found, setFound] = useState<AdminMailResponse | null>(null);
-  const [missing, setMissing] = useState(false);
-  const [done, setDone] = useState('');
+  const [said, setSaid] = useState<{ text: string; bad: boolean } | null>(null);
   const load = (query: Query) =>
-    api.admin.mail(asked(query)).then(
-      (r) => {
-        setFound(r);
-        setMissing(false);
-      },
+    api.admin.mail(asked(query, view === 'flagged')).then(
+      (r) => setFound(r),
       (err: unknown) => {
-        if (!handled(err)) setMissing(true);
+        if (!handled(err)) setSaid({ text: t('admin.none'), bad: true });
       },
     );
-  useEffect(() => void load(NONE), []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => void load(q), [view]);
   const search = (e: FormEvent) => {
     e.preventDefault();
+    setSaid(null);
     void load(q);
   };
   const about = (name: string) => {
     const next = { ...NONE, player: name };
     setQ(next);
-    void load(next);
+    setSaid(null);
+    if (view === 'watch') navigate(viewHref('sent'));
+    else void load(next);
   };
+  const DONE = { warn: 'admin.mail.warned', mute: 'admin.mail.mutedDone', unmute: 'admin.mail.unmutedDone' } as const;
   const act = (name: string, action: 'warn' | 'mute' | 'unmute') =>
     api.admin.mailAction(name, action).then(
       () => {
-        setDone(
-          t(
-            action === 'warn'
-              ? 'admin.mail.warned'
-              : action === 'mute'
-                ? 'admin.mail.mutedDone'
-                : 'admin.mail.unmutedDone',
-            {
-              name,
-            },
-          ),
-        );
+        setSaid({ text: t(DONE[action], { name }), bad: false });
         void load(q);
       },
       (err: unknown) => void handled(err),
     );
   const Who = ({ name }: { name: string }) => (
-    <button type="button" className={s.who} onClick={() => about(name)}>
+    <Button variant="quiet" onClick={() => about(name)}>
       {name}
-    </button>
+    </Button>
   );
+  // Each tab's count, where this search knows it (the flagged letters are among those sent).
+  const count = (v: View): number | null => {
+    if (!found) return null;
+    if (v === 'watch') return found.watch.length;
+    if (v === 'refused') return found.refused.length;
+    if (v === 'flagged') return found.letters.filter((l) => l.flagged).length;
+    return view === 'flagged' ? null : found.letters.length;
+  };
+  const letters: (AdminLetter | AdminRefused)[] = !found ? [] : view === 'refused' ? found.refused : found.letters;
   return (
     <Slot id="admin.mail" className={s.test}>
       <Panel title={t('admin.mail')} flush>
@@ -99,86 +123,88 @@ export function AdminMail() {
             maxLength={100}
             onChange={(e) => setQ({ ...q, text: e.target.value })}
           />
-          <label className={s.check}>
-            <input type="checkbox" checked={q.flagged} onChange={(e) => setQ({ ...q, flagged: e.target.checked })} />
-            {t('admin.mail.flagged')}
-          </label>
           <Button type="submit" variant="primary">
             {t('admin.mail.search')}
           </Button>
         </form>
-        <p className={s.note} role="status">
-          {missing ? t('admin.none') : done}
-        </p>
-        <h3 className={s.mailHead}>{t('admin.mail.watch')}</h3>
-        {found && found.watch.length === 0 ? (
-          <p className={s.note}>{t('admin.mail.watch.none')}</p>
+        <div className={s.mailTabs}>
+          <Tabs
+            label={t('admin.mail')}
+            onNavigate={navigate}
+            tabs={VIEWS.map((v) => ({
+              href: viewHref(v),
+              label: count(v) === null ? t(LABEL[v]) : `${t(LABEL[v])} (${fmt.int(count(v) ?? 0)})`,
+              current: v === view,
+              short: t(SHORT[v]),
+            }))}
+          />
+        </div>
+        {said && (
+          <p className={said.bad ? s.error : s.note} role="status">
+            {said.text}
+          </p>
+        )}
+        {view === 'watch' ? (
+          found && found.watch.length === 0 ? (
+            <p className={s.note}>{t('admin.mail.watch.none')}</p>
+          ) : (
+            <ul className={s.mailList} data-scrollbox tabIndex={0} aria-label={t('admin.mail.watch')}>
+              {found?.watch.map((w) => (
+                <li key={w.name} className={s.letter}>
+                  <div className={s.letterHead}>
+                    <Who name={w.name} />
+                    {w.muted && <Pill tone="ember">{t('admin.mail.muted')}</Pill>}
+                    <span className={s.letterAt}>
+                      {w.refused === 1
+                        ? t('admin.mail.watch.countOne')
+                        : t('admin.mail.watch.count', { count: fmt.int(w.refused) })}
+                    </span>
+                  </div>
+                  <div className={s.letterActions}>
+                    <Button variant="quiet" onClick={() => void act(w.name, 'warn')}>
+                      {t('admin.mail.warn')}
+                    </Button>
+                    <Button variant="quiet" onClick={() => void act(w.name, w.muted ? 'unmute' : 'mute')}>
+                      {t(w.muted ? 'admin.mail.unmute' : 'admin.mail.mute')}
+                    </Button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )
+        ) : found && letters.length === 0 ? (
+          <p className={s.note}>{t('admin.mail.none')}</p>
         ) : (
-          <ul className={s.mailList} data-scrollbox tabIndex={0} aria-label={t('admin.mail.watch')}>
-            {found?.watch.map((w) => (
-              <li key={w.name} className={s.letter}>
+          <ul className={s.mailList} data-scrollbox tabIndex={0} aria-label={t(LABEL[view])}>
+            {letters.map((m, i) => (
+              <li key={`${m.at}-${i}`} className={s.letter} data-refused={view === 'refused' ? '' : undefined}>
                 <div className={s.letterHead}>
-                  <Who name={w.name} />
-                  {w.muted && <Pill tone="ember">{t('admin.mail.muted')}</Pill>}
-                  <span className={s.letterAt}>
-                    {w.refused === 1
-                      ? t('admin.mail.watch.countOne')
-                      : t('admin.mail.watch.count', { count: fmt.int(w.refused) })}
+                  <span className={s.pair}>
+                    {m.from ? <Who name={m.from} /> : <span>{t('mail.realm')}</span>}
+                    <span aria-hidden="true">→</span>
+                    <span className="visually-hidden">{t('admin.mail.to')}</span>
+                    <Who name={m.to} />
                   </span>
+                  {'flagged' in m && m.flagged && (
+                    <span title={t('admin.mail.flag.note')}>
+                      <Pill tone="gold">{t('admin.mail.flag')}</Pill>
+                    </span>
+                  )}
+                  <time className={s.letterAt}>{`${fmt.date(m.at)} ${fmt.time(m.at)}`}</time>
                 </div>
+                <p className={s.letterBody}>{m.body}</p>
                 <div className={s.letterActions}>
-                  <Button variant="quiet" onClick={() => void act(w.name, 'warn')}>
-                    {t('admin.mail.warn')}
+                  <Button variant="quiet" onClick={() => void act(m.from, 'warn')}>
+                    {t('admin.mail.warnSender')}
                   </Button>
-                  <Button variant="quiet" onClick={() => void act(w.name, w.muted ? 'unmute' : 'mute')}>
-                    {t(w.muted ? 'admin.mail.unmute' : 'admin.mail.mute')}
+                  <Button variant="quiet" onClick={() => void act(m.from, 'mute')}>
+                    {t('admin.mail.mute')}
                   </Button>
                 </div>
               </li>
             ))}
           </ul>
         )}
-        {(['letters', 'refused'] as const).map((list) => (
-          <section key={list} aria-label={t(LISTS[list])}>
-            <h3 className={s.mailHead}>
-              {t(LISTS[list])}
-              {found && <Pill tone={list === 'refused' ? 'ember' : 'neutral'}>{fmt.int(found[list].length)}</Pill>}
-            </h3>
-            {found && found[list].length === 0 ? (
-              <p className={s.note}>{t('admin.mail.none')}</p>
-            ) : (
-              <ul className={s.mailList} data-scrollbox tabIndex={0} aria-label={t(LISTS[list])}>
-                {found?.[list].map((m, i) => (
-                  <li key={`${m.at}-${i}`} className={s.letter} data-refused={list === 'refused' ? '' : undefined}>
-                    <div className={s.letterHead}>
-                      <span className={s.pair}>
-                        <Who name={m.from} />
-                        <span aria-hidden="true">→</span>
-                        <span className="visually-hidden">{t('admin.mail.to')}</span>
-                        <Who name={m.to} />
-                      </span>
-                      {'flagged' in m && m.flagged && (
-                        <span title={t('admin.mail.flag.note')}>
-                          <Pill tone="gold">{t('admin.mail.flag')}</Pill>
-                        </span>
-                      )}
-                      <time className={s.letterAt}>{`${fmt.date(m.at)} ${fmt.time(m.at)}`}</time>
-                    </div>
-                    <p className={s.letterBody}>{m.body}</p>
-                    <div className={s.letterActions}>
-                      <Button variant="quiet" onClick={() => void act(m.from, 'warn')}>
-                        {t('admin.mail.warnSender')}
-                      </Button>
-                      <Button variant="quiet" onClick={() => void act(m.from, 'mute')}>
-                        {t('admin.mail.mute')}
-                      </Button>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </section>
-        ))}
       </Panel>
     </Slot>
   );

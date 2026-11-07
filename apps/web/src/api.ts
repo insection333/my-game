@@ -91,7 +91,7 @@ export const api = {
     block: (name: string, blocked: boolean) => post<InboxResponse>(PATHS.mailBlock, { name, blocked }),
   },
   admin: {
-    mail: (query: { player?: string; other?: string; text?: string; flagged?: boolean }) =>
+    mail: (query: { player?: string; other?: string; text?: string; flagged: boolean }) =>
       post<AdminMailResponse>(PATHS.adminMail, query),
     mailAction: (player: string, action: 'warn' | 'mute' | 'unmute') =>
       post<void>(PATHS.adminMailAction, { player, action }),

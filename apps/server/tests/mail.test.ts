@@ -43,7 +43,9 @@ describe('sending a letter', () => {
     expect(await sendAs(alder, 'Birch', 'a'.repeat(250))).toEqual({ ok: true });
     later();
     expect(await sendAs(alder, 'Alder', 'hello me')).toEqual({ ok: false, reason: 'self' });
-    expect(await sendAs(alder, 'Nobody', 'hello')).toEqual({ ok: false, reason: 'blocked' });
+    expect(await sendAs(alder, 'Nobody', 'hello')).toEqual({ ok: false, reason: 'noPlayer' });
+    s.ctx.db.update(players).set({ bannedAt: s.clock.now }).where(eq(players.name, 'Birch')).run();
+    expect(await sendAs(alder, 'Birch', 'hello')).toEqual({ ok: false, reason: 'blocked' });
   });
 
   it('refuses foul language however it is spelled, keeps it for the admin and flags the next letters', async () => {
@@ -119,6 +121,18 @@ describe('the inbox', () => {
     expect((await inboxOf(birch)).letters).toEqual([]);
   });
 
+  it('gives a letter read late its full week from the reading', async () => {
+    s = await server();
+    const alder = await signUp(s, 'Alder');
+    const birch = await signUp(s, 'Birch');
+    await sendAs(alder, 'Birch', 'read on day 13');
+    s.clock.now += 13 * DAY;
+    await post(s, '/api/mail/read', '', birch);
+    s.clock.now += 3 * DAY;
+    keepHouse(s.ctx);
+    expect((await inboxOf(birch)).letters.map((l) => l.body)).toEqual(['read on day 13']);
+  });
+
   it('blocks a player from writing, and only from writing, until they are unblocked', async () => {
     s = await server();
     const alder = await signUp(s, 'Alder');
@@ -148,13 +162,16 @@ describe("the admin's monitor", () => {
     const birch = await signUp(s, 'Birch');
     await sendAs(alder, 'Birch', 'shit');
     await sendAs(alder, 'Birch', 'hello there');
-    const view = JSON.parse((await post(s, '/api/admin/mail', { player: 'Alder' }, admin)).body) as AdminMailResponse;
+    const view = JSON.parse(
+      (await post(s, '/api/admin/mail', { player: 'Alder', flagged: false }, admin)).body,
+    ) as AdminMailResponse;
     expect(view.letters).toMatchObject([{ from: 'Alder', to: 'Birch', body: 'hello there', flagged: true }]);
     expect(view.refused).toMatchObject([{ from: 'Alder', body: 'shit' }]);
     expect(view.watch).toMatchObject([{ name: 'Alder', refused: 1, muted: false }]);
-    expect((await post(s, '/api/admin/mail', {}, alder)).statusCode).toBe(403);
+    expect((await post(s, '/api/admin/mail', { flagged: false }, alder)).statusCode).toBe(403);
     await post(s, '/api/admin/mail/action', { player: 'Alder', action: 'warn' }, admin);
-    expect((await inboxOf(alder)).letters[0]).toMatchObject({ from: 'Warden' });
+    // The warning is the game's own letter: it names no admin.
+    expect((await inboxOf(alder)).letters[0]).toMatchObject({ from: '', realm: true, look: null });
     await post(s, '/api/admin/mail/action', { player: 'Alder', action: 'mute' }, admin);
     later();
     expect(await sendAs(alder, 'Birch', 'hi')).toEqual({ ok: false, reason: 'muted' });

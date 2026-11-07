@@ -3,6 +3,7 @@
 import {
   MAIL_ROUTES,
   nameKey,
+  REALM,
   type AdminLetter,
   type AdminMailResponse,
   type AdminRefused,
@@ -80,7 +81,7 @@ export function mailRoutes(app: FastifyInstance, ctx: Ctx): void {
   const sender = alias(players, 'sender');
   const recipient = alias(players, 'recipient');
 
-  contractRoute<{ player?: string; other?: string; text?: string; flagged?: boolean }>(
+  contractRoute<{ player?: string; other?: string; text?: string; flagged: boolean }>(
     app,
     MAIL_ROUTES.adminMail,
     ({ input }) => {
@@ -104,7 +105,7 @@ export function mailRoutes(app: FastifyInstance, ctx: Ctx): void {
           flagged: mail.flagged,
         })
         .from(mail)
-        .innerJoin(sender, eq(sender.id, mail.fromId))
+        .leftJoin(sender, eq(sender.id, mail.fromId))
         .innerJoin(recipient, eq(recipient.id, mail.toId))
         .where(
           and(
@@ -116,7 +117,7 @@ export function mailRoutes(app: FastifyInstance, ctx: Ctx): void {
         .orderBy(desc(mail.at))
         .limit(SHOWN)
         .all()
-        .map((r) => ({ ...r, flagged: r.flagged === 1 }));
+        .map((r) => ({ ...r, from: r.from ?? '', flagged: r.flagged === 1 }));
       const refused: AdminRefused[] = ctx.db
         .select({ from: sender.name, to: recipient.name, body: mailRefused.body, at: mailRefused.at })
         .from(mailRefused)
@@ -157,15 +158,15 @@ export function mailRoutes(app: FastifyInstance, ctx: Ctx): void {
   contractRoute<{ player: string; action: 'warn' | 'mute' | 'unmute' }>(
     app,
     MAIL_ROUTES.adminMailAction,
-    ({ req, reply, input }) => {
+    ({ reply, input }) => {
       const target = idOf(ctx, input.player);
       if (!target) throw fail(404, 'notFound');
       const t0 = now();
       if (input.action === 'warn') {
-        // A warning is a letter from the admin who gave it, in the game's own words.
+        // A warning is the game's own letter, in its own words: it names no admin, and is never answered.
         ctx.db
           .insert(mail)
-          .values({ toId: target, fromId: req.playerId!, body: t('mail.warning'), at: t0 })
+          .values({ toId: target, fromId: REALM, body: t('mail.warning'), at: t0 })
           .run();
         announceMail(ctx, target);
       } else if (input.action === 'mute')

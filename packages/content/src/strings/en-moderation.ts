@@ -43,5 +43,5 @@ export const moderation = {
   'admin.flows.facts': '{sieges} sieges, {breaches} breached, {gold} gold taken; {back} the other way',
   // Letters (session 45): what an admin's warning says.
   'mail.warning':
-    'A word from the keepers of the realm: letters that insult, harass or try to get round the language filter are not allowed. Further letters like it will see your letters stopped.',
+    'Messages that insult, harass or try to get past the language filter are not allowed. Send any more like that and you will lose the right to send messages.',
 };

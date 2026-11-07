@@ -1,16 +1,17 @@
 // Messages (session 45), the second view behind the bell: write a message (to whom, what, and how many of
 // its 250 characters are used), then the letters newest first, each with its sender's picture and name
-// (which opens their card), when it came, Reply, Delete and Block; then the players blocked, each with
-// Unblock. Opening the view marks the letters read; a letter arriving while it is open shows at once.
-import { MAIL, NAME_MAX, type InboxResponse, type Letter } from '@idle-clash/contracts';
+// (which opens their card), when it came, Reply, Delete (with Undo) and Block (asked once); then the
+// players blocked, each with Unblock. Opening the view marks the letters read; a letter arriving while it
+// is open shows at once. The To field offers the names of those who have written.
+import { MAIL, NAME_MAX, type InboxResponse } from '@idle-clash/contracts';
 import { fmt, t } from '@idle-clash/content';
-import { Button, Field, Picture, Pill } from '@idle-clash/ui';
-import { useEffect, useRef, useState, type FormEvent } from 'react';
+import { Button, Field } from '@idle-clash/ui';
+import { useEffect, useId, useRef, useState, type FormEvent, type KeyboardEvent } from 'react';
 import { api, ApiError } from '../api.ts';
 import { setUnreadMail, useUnreadMail } from '../game/mail.ts';
 import { Slot } from '../slots.tsx';
 import { reasonText } from './mail-words.ts';
-import { NameLink } from './ProfileSheet.tsx';
+import { Deleted, LetterRow } from './MailLetter.tsx';
 import s from './mail.module.css';
 
 type Note = { text: string; bad: boolean } | null;
@@ -18,10 +19,8 @@ type Note = { text: string; bad: boolean } | null;
 const errorText = (err: unknown): string =>
   err instanceof ApiError && err.code === 'tooManyTries' ? t('mail.reason.cooldown') : t('error.other');
 
-/** When a letter came: the time today, the day before that. */
-function when(at: number): string {
-  return new Date(at).toDateString() === new Date().toDateString() ? fmt.time(at) : fmt.date(at);
-}
+/** How long a deleted letter waits, with Undo, before it goes for good. */
+const UNDO_MS = 5000;
 
 export function Messages() {
   const [box, setBox] = useState<InboxResponse | null>(null);
@@ -34,6 +33,19 @@ export function Messages() {
   const [writing, setWriting] = useState(() => to !== '');
   const form = useRef<HTMLFormElement>(null);
   const unread = useUnreadMail();
+  const names = useId();
+  // Letters deleted and still within their Undo: deleted for good when the time runs out or the view closes.
+  const [doomed, setDoomed] = useState<number[]>([]);
+  const timers = useRef(new Map<number, ReturnType<typeof setTimeout>>());
+  useEffect(() => {
+    const pending = timers.current;
+    return () => {
+      for (const [id, timer] of pending) {
+        clearTimeout(timer);
+        void api.mail.remove(id).catch(() => undefined);
+      }
+    };
+  }, []);
 
   const load = () =>
     api.mail.inbox().then(
@@ -83,9 +95,30 @@ export function Messages() {
     form.current?.scrollIntoView({ block: 'nearest' });
   };
   const remove = (id: number) => {
-    setBox((b) => b && { ...b, letters: b.letters.filter((l) => l.id !== id) });
-    api.mail.remove(id).catch(() => void load());
+    setDoomed((d) => [...d, id]);
+    timers.current.set(
+      id,
+      setTimeout(() => {
+        timers.current.delete(id);
+        setBox((b) => b && { ...b, letters: b.letters.filter((l) => l.id !== id) });
+        setDoomed((d) => d.filter((x) => x !== id));
+        api.mail.remove(id).catch(() => void load());
+      }, UNDO_MS),
+    );
   };
+  const undo = (id: number) => {
+    clearTimeout(timers.current.get(id));
+    timers.current.delete(id);
+    setDoomed((d) => d.filter((x) => x !== id));
+  };
+  // Ctrl or Cmd with Enter sends, as in any mail.
+  const sendKey = (e: KeyboardEvent) => {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      form.current?.requestSubmit();
+    }
+  };
+  const writers = [...new Set(box?.letters.filter((l) => !l.realm).map((l) => l.from) ?? [])];
   const block = (name: string, blocked: boolean) =>
     api.mail.block(name, blocked).then(
       (r) => {
@@ -113,15 +146,27 @@ export function Messages() {
           </Button>
         </div>
       ) : (
-        <form ref={form} className={s.write} onSubmit={(e) => void submit(e)} aria-label={t('mail.write')}>
+        <form
+          ref={form}
+          className={s.write}
+          onSubmit={(e) => void submit(e)}
+          onKeyDown={sendKey}
+          aria-label={t('mail.write')}
+        >
           <Field
             label={t('mail.to')}
             value={to}
             maxLength={NAME_MAX}
             autoComplete="off"
+            list={names}
             onChange={(e) => setTo(e.target.value)}
             required
           />
+          <datalist id={names}>
+            {writers.map((n) => (
+              <option key={n} value={n} />
+            ))}
+          </datalist>
           <Field
             label={t('mail.body')}
             rows={3}
@@ -150,9 +195,20 @@ export function Messages() {
         <p className={s.note}>{t('mail.empty')}</p>
       ) : (
         <ul className={s.letters}>
-          {box.letters.map((l) => (
-            <LetterRow key={l.id} letter={l} reply={reply} remove={remove} block={(n) => void block(n, true)} />
-          ))}
+          {box.letters.map((l) =>
+            doomed.includes(l.id) ? (
+              <Deleted key={l.id} from={l.from} undo={() => undo(l.id)} />
+            ) : (
+              <LetterRow
+                key={l.id}
+                letter={l}
+                canWrite={!muted}
+                reply={reply}
+                remove={remove}
+                block={(n) => void block(n, true)}
+              />
+            ),
+          )}
         </ul>
       )}
       {box && box.letters.length > 0 && <p className={s.kept}>{t('mail.kept', { n: fmt.int(MAIL.INBOX) })}</p>}
@@ -173,46 +229,5 @@ export function Messages() {
         </section>
       )}
     </Slot>
-  );
-}
-
-function LetterRow({
-  letter: l,
-  reply,
-  remove,
-  block,
-}: {
-  letter: Letter;
-  reply: (name: string) => void;
-  remove: (id: number) => void;
-  block: (name: string) => void;
-}) {
-  return (
-    <li className={s.letter} data-unread={l.read ? undefined : ''}>
-      <Picture picture={l.look?.picture ?? 'forester'} frame={l.look?.frame} glow={l.look?.glow} size={48} />
-      <div className={s.main}>
-        <p className={s.head}>
-          <span className={s.from}>
-            <NameLink name={l.from} />
-          </span>
-          {!l.read && <Pill tone="gold">{t('mail.new')}</Pill>}
-          <time className={s.at} dateTime={new Date(l.at).toISOString()}>
-            {when(l.at)}
-          </time>
-        </p>
-        <p className={s.body}>{l.body}</p>
-        <div className={s.actions}>
-          <Button variant="quiet" onClick={() => reply(l.from)}>
-            {t('mail.reply')}
-          </Button>
-          <Button variant="quiet" onClick={() => remove(l.id)}>
-            {t('mail.delete')}
-          </Button>
-          <Button variant="quiet" onClick={() => block(l.from)}>
-            {t('mail.block')}
-          </Button>
-        </div>
-      </div>
-    </li>
   );
 }

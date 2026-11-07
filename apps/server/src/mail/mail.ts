@@ -38,7 +38,9 @@ export function send(ctx: Ctx, fromId: string, toName: string, raw: string, now:
     .from(players)
     .where(eq(players.nameKey, nameKey(toName)))
     .get();
-  if (!to || to.bannedAt !== null) return { ok: false, reason: 'blocked' };
+  // Names are public (the ladders), so a name that is no one's is said as such; a banned player's is not.
+  if (!to) return { ok: false, reason: 'noPlayer' };
+  if (to.bannedAt !== null) return { ok: false, reason: 'blocked' };
   if (to.id === fromId) return { ok: false, reason: 'self' };
   if (mutedUntil(ctx, fromId, now) !== null) return { ok: false, reason: 'muted' };
   const body = cleanMessage(raw);
@@ -102,14 +104,16 @@ export function inbox(ctx: Ctx, playerId: string, now: number): InboxResponse {
   const rows = ctx.db
     .select({ id: mail.id, body: mail.body, at: mail.at, readAt: mail.readAt, from: players.name, look: players.look })
     .from(mail)
-    .innerJoin(players, eq(players.id, mail.fromId))
+    .leftJoin(players, eq(players.id, mail.fromId))
     .where(eq(mail.toId, playerId))
     .orderBy(desc(mail.at), desc(mail.id))
     .all();
+  // A letter from a player since gone is gone with them (eraseMail); one with no player is the game's own.
   const letters: Letter[] = rows.map((r) => ({
     id: r.id,
-    from: r.from,
-    look: readLook(r.look),
+    from: r.from ?? '',
+    realm: r.from === null,
+    look: r.from === null ? null : readLook(r.look),
     body: r.body,
     at: r.at,
     read: r.readAt !== null,
@@ -178,7 +182,7 @@ export function sweepMail(ctx: Ctx, now: number): void {
     .where(
       or(
         and(isNotNull(mail.readAt), lt(mail.readAt, now - READ_KEPT_DAYS * DAY)),
-        lt(mail.at, now - UNREAD_KEPT_DAYS * DAY),
+        and(isNull(mail.readAt), lt(mail.at, now - UNREAD_KEPT_DAYS * DAY)),
       ),
     )
     .run();

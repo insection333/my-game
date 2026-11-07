@@ -171,3 +171,4 @@
   - **Block and Unblock**, for messages only: nothing else in the game is touched.
   - **The admin's mail monitor:** search by player, by who they wrote with, by words, or flagged letters (sent the day their sender had one refused); who keeps being refused; Warn, Mute for a week and Unmute.
   - **The terms of use say moderators can read messages**, and nowhere else does.
+  - **Polished after review:** Block asks once in the row (it clears their letters); Delete leaves Undo for five seconds; a name that is no one's says so; Ctrl or Cmd with Enter sends; the To field offers those who have written; an admin's warning comes from the keepers of the realm, naming no admin and never answered; the monitor shows one list at a time by tabs.

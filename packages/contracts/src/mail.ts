@@ -18,14 +18,19 @@ export const AdminMailQuery = z
     player: PlayerName.optional(),
     other: PlayerName.optional(),
     text: z.string().max(100).optional(),
-    flagged: z.boolean().optional(),
+    flagged: z.boolean(),
   })
   .strict();
 export const AdminMailAction = z.object({ player: PlayerName, action: z.enum(['warn', 'mute', 'unmute']) }).strict();
 
+/** The sender of the game's own letters (an admin's warning): not a player, so never answered or blocked. */
+export const REALM = 'realm';
+
 export interface Letter {
   id: number;
+  /** The sender's name; empty for the game's own letters (`realm`). */
   from: string;
+  realm: boolean;
   look: Look | null;
   body: string;
   at: number;
@@ -42,6 +47,7 @@ export interface InboxResponse {
 /** Why a message was not sent, each said to its sender in words of its own. */
 export const MAIL_REFUSALS = [
   'language',
+  'noPlayer',
   'blocked',
   'muted',
   'cooldown',
@@ -55,6 +61,7 @@ export type SendResult = { ok: true } | { ok: false; reason: MailRefusal };
 
 export interface AdminLetter {
   id: number;
+  /** The sender's name; empty for the game's own letters (a warning). */
   from: string;
   to: string;
   body: string;
