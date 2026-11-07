@@ -35,10 +35,10 @@ const fixFor = (reason: { code: string; detail?: Record<string, string | number>
 const actionName = (a: { feature: string; id: string }) => t(`action.${a.feature}.${a.id}`);
 
 /** An action's icon: a foe's own, or what an action makes, when drawn. */
-function iconOf(features: readonly Feature[], a: ActionRef): string | undefined {
-  // A fight shows its foe (its drop is incidental); any other action what it makes.
+export function iconOf(features: readonly Feature[], a: ActionRef, lane: LaneId): string | undefined {
+  // A fight shows its foe, a boss too (its drop is incidental); any other action what it makes.
   const out = features.find((f) => f.id === a.feature)?.content.actions?.find((x) => x.id === a.id)?.gives?.[0]?.item;
-  return (a.feature === 'combat' ? [a.id, out] : [out, a.id]).find((n): n is string => !!n && hasIcon(n));
+  return (lane === 'combat' ? [a.id, out] : [out, a.id]).find((n): n is string => !!n && hasIcon(n));
 }
 
 export function laneViews(state: State, now: number, features: readonly Feature[] = []): LaneView[] {
@@ -58,7 +58,7 @@ export function laneViews(state: State, now: number, features: readonly Feature[
       idle: !run,
       progress: run ? Math.min(1, Math.max(0, (now - run.startedAt) / (run.endsAt - run.startedAt))) : undefined,
       run: run ? { key: run.startedAt, msLeft: run.endsAt - now } : undefined,
-      icon: run ? iconOf(features, run.action) : undefined,
+      icon: run ? iconOf(features, run.action, id) : undefined,
       note,
       short: !run && l.stopped ? formatStop(l.stopped.reason, 'short') : undefined,
       halted: !run && !!l.stopped && !isQuietStop(l.stopped.reason.code),

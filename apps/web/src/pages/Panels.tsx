@@ -7,6 +7,7 @@ import { useGame } from '../game/hooks.ts';
 import { navigate } from '../router.ts';
 import { Feedback } from './Feedback.tsx';
 import { noticesOf } from './notices.ts';
+import { profileHref } from './ProfileSheet.tsx';
 import { account, useSession } from '../game/session.ts';
 import { readSound, type SoundChoice } from '../sound/cues.ts';
 import { play, unlockAudio } from '../sound/synth.ts';
@@ -51,7 +52,7 @@ export function Tray() {
             {list
               .filter((n) => label(n.at) === day)
               .map((n, i) => (
-                <li key={`${n.at}-${i}`} data-kind={n.kind}>
+                <li key={`${n.at}-${i}`} data-kind={n.kind} data-who={n.who ? '' : undefined}>
                   <a
                     href={n.href ?? '/'}
                     data-ui="RowLink"
@@ -62,6 +63,13 @@ export function Tray() {
                     {n.icon ? <ItemIcon name={n.icon} size={24} /> : <span className={s.lineDot} aria-hidden="true" />}
                     <span className={s.lineText}>{n.text}</span>
                   </a>
+                  {n.who && (
+                    <span className={s.lineWho}>
+                      <TextLink href={profileHref(n.who)} onNavigate={navigate}>
+                        {t('tray.profile')}
+                      </TextLink>
+                    </span>
+                  )}
                 </li>
               ))}
           </ul>

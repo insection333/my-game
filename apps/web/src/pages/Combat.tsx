@@ -9,7 +9,7 @@ import { useGame } from '../game/hooks.ts';
 import { game } from '../game/store.ts';
 import { navigate, useLocation, withPanel } from '../router.ts';
 import { fillFor, Slot } from '../slots.tsx';
-import { CombatArena } from './CombatArena.tsx';
+import { CombatArena, useFightClock } from './CombatArena.tsx';
 import { CombatFood } from './CombatFood.tsx';
 import { Loadout } from './Loadout.tsx';
 import { CombatHead } from './CombatHead.tsx';
@@ -25,24 +25,30 @@ export function Combat() {
 }
 
 function CombatPage({ combat }: { combat: Feature }) {
-  const { state, now } = useGame();
+  const { state } = useGame();
+  // Swing by swing while a fight lasts, so the arena and the health bar move together.
+  const now = useFightClock();
   const { panel } = useLocation();
   const loadout = fillFor<LoadoutView>(combat, 'combat.loadout', state, now)!;
   const every = fillFor<FoeRow[]>(combat, 'combat.foes', state, now) ?? [];
   // One region at a time (the march, the Sunken Fen, the Ashen Peaks), and in it one tier at a time:
   // those asked for in the address, or the newest with a foe open.
   const query = new URLSearchParams(location.search);
+  // Or, with none asked for, the region and tier of the foe being fought, so the arena opens over it.
   const regions = [...new Map(every.map((f) => [f.region, f])).entries()];
   const newestFoe = [...every].reverse().find((f) => !f.locked) ?? every[0];
+  const run = state.lanes.combat.current;
+  const fought = run?.action.feature === 'combat' ? every.find((f) => f.foe.id === run.action.id) : undefined;
   const askedTier = Number(query.get('tier'));
   const region =
     regions.find(([id]) => id === query.get('region'))?.[0] ??
     every.find((f) => f.tier === askedTier)?.region ??
+    fought?.region ??
     newestFoe?.region;
   const all = every.filter((f) => f.region === region);
   const tiers = [...new Set(all.map((f) => f.tier))].sort((a, b) => a - b);
   const newest = Math.max(tiers[0] ?? 1, ...all.filter((f) => !f.locked).map((f) => f.tier));
-  const tier = tiers.includes(askedTier) ? askedTier : newest;
+  const tier = tiers.includes(askedTier) ? askedTier : fought?.region === region ? fought.tier : newest;
   const foes = all.filter((f) => f.tier === tier);
   const triangle = fillFor<TrianglePart[]>(combat, 'combat.triangle', state, now) ?? [];
   const fighting = (f: FoeRow) =>
@@ -90,8 +96,8 @@ function CombatPage({ combat }: { combat: Feature }) {
               </div>
             )}
             <Slot id="combat.foes">
-              {/* The fight the lane is in, over the foes to choose from. */}
-              <CombatArena />
+              {/* The fight the lane is in, over the foes to choose from (or where it is, if elsewhere). */}
+              <CombatArena now={now} place={{ region: region ?? '', tier }} />
               {foes.map((f) => (
                 <ActionRow
                   key={f.foe.id}

@@ -8,8 +8,9 @@ import { itemOf } from '../shared/catalog.ts';
 import { FOES, HITPOINTS, matchup, regionOf, STYLE_SKILLS, type Foe } from '../shared/combat/data.ts';
 import type { Odds } from '../shared/combat/fight.ts';
 import { oddsFor } from '../shared/combat/odds.ts';
-import { healthAt, healthMax, mealsOf, styleOf, supplyOf, wornIn } from '../shared/combat/state.ts';
+import { healthMax, mealsOf, styleOf, supplyOf, wornIn } from '../shared/combat/state.ts';
 import { skillLevel } from '../shared/skill.ts';
+import { healthShown } from './arena.ts';
 import { wearNeeds } from './gear.ts';
 import { FEATURE } from './rules.ts';
 
@@ -114,7 +115,8 @@ function loadout(state: State, now: number): LoadoutView {
     };
   });
   const most = healthMax(state);
-  const health = healthAt(state, now);
+  // During a fight, the fight's own health (the arena's), so the bar and the arena never disagree.
+  const health = healthShown(state, now);
   const meals = mealsOf(state);
   return {
     style: style ? t(`skill.${style}`) : null,

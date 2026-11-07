@@ -4,10 +4,11 @@
 import { XP_TABLE } from '@idle-clash/content';
 import { createEngine, HOUR, newState, seeded, type State } from '@idle-clash/kernel';
 import { describe, expect, it } from 'vitest';
-import { arenaOf } from '../src/combat/arena.ts';
+import { arenaAt, arenaOf, healthShown } from '../src/combat/arena.ts';
 import { actionRegistry, combatData, FEATURES } from '../src/index.ts';
 import { CRIT_SHARE, fight, type Swing } from '../src/shared/combat/fight.ts';
-import { fighterOf } from '../src/shared/combat/state.ts';
+import { SWING_S } from '../src/shared/combat/data.ts';
+import { fighterOf, healthAt } from '../src/shared/combat/state.ts';
 
 const T0 = Date.UTC(2026, 10, 3, 9);
 const engine = createEngine(actionRegistry(FEATURES, () => true));
@@ -59,6 +60,83 @@ describe('the arena', () => {
       expect(arena.endsAt - arena.startedAt).toBe(Math.round(arena.fought.seconds * 1000));
       expect(arena.swings.length).toBeGreaterThan(0);
     }
+  });
+
+  // The owner's report of 8 November: the arena and the lane fell out of step in the Sunken Fen. The foe
+  // fell on the page a breather before the lane ended, Slain then stood over the next foe, and the
+  // health bar went on returning through the fight while the arena's did not.
+  it('keeps time with the lane: the foe falls at its blow and lies slain until the lane ends', () => {
+    let s = fighter({ melee: 30, hitpoints: 30, defence: 20 }, { 'copper-sword': 1, bread: 40 });
+    const rng = seeded(4);
+    s = engine.command(
+      s,
+      T0,
+      { type: 'start', lane: 'combat', action: { feature: 'combat', id: 'orc-raider' } },
+      rng,
+    ).state;
+    let fights = 0;
+    for (let at = T0; at < T0 + HOUR / 2 && fights < 40; at += 7_000) {
+      s = engine.advance(s, at, rng).state;
+      const a = arenaOf(s);
+      if (!a || a.fought.retreated) continue;
+      fights++;
+      expect(
+        a.swings.every((x, i) => x.at > a.startedAt && x.at <= a.endsAt && (i === 0 || x.at >= a.swings[i - 1].at)),
+      ).toBe(true);
+      // Your swing shows half a swing before the foe answers it, so both are seen.
+      for (const x of a.swings.filter((y) => y.by === 'foe'))
+        expect(a.swings.find((y) => y.by === 'you' && y.t === x.t)!.at).toBe(x.at - (SWING_S / 2) * 1000);
+      expect(a.slainAt).not.toBeNull();
+      expect(arenaAt(a, a.slainAt! - 1)).toMatchObject({ slain: false });
+      expect(arenaAt(a, a.slainAt! - 1).foeHp).toBeGreaterThan(0);
+      expect(arenaAt(a, a.endsAt - 1)).toMatchObject({ slain: true, foeHp: 0 });
+      // The felling blow lands half a swing before the lane ends and pays out, not a breather before.
+      expect(a.endsAt - a.slainAt!).toBe((SWING_S / 2) * 1000);
+      // A fresh fight begins as itself: the foe whole, nothing yet shown, nothing slain.
+      expect(arenaAt(a, a.startedAt)).toMatchObject({ count: 0, slain: false, foeHp: a.foe.hp });
+    }
+    expect(fights).toBeGreaterThan(10);
+  });
+
+  it("shows the fight's own health while it lasts, with no jump when it ends", () => {
+    let s = fighter({ melee: 20, hitpoints: 15 }, { 'copper-sword': 1, bread: 40 });
+    const rng = seeded(11);
+    s = engine.command(
+      s,
+      T0,
+      { type: 'start', lane: 'combat', action: { feature: 'combat', id: 'orc-raider' } },
+      rng,
+    ).state;
+    s = engine.advance(s, T0 + 60_000, rng).state;
+    const a = arenaOf(s)!;
+    const mid = a.swings[Math.floor(a.swings.length / 2)].at;
+    expect(healthShown(s, mid)).toBe(arenaAt(a, mid).health);
+    expect(healthShown(s, mid)).not.toBe(healthAt(s, mid));
+    const before = healthShown(s, a.endsAt - 1);
+    const after = engine.advance(s, a.endsAt, rng).state;
+    // Past the end and before the page's clock settles it, the health the engine is about to set.
+    expect(healthShown(s, a.endsAt + 500)).toBeCloseTo(
+      healthShown(engine.advance(s, a.endsAt + 500, rng).state, a.endsAt + 500),
+      6,
+    );
+    // One swing's return of health at most (the breather the fight ends on).
+    expect(Math.abs(healthShown(after, a.endsAt) - before)).toBeLessThan(a.most * 0.02);
+  });
+
+  it('plays a boss fought in the lane, lasting as long as the lane says', () => {
+    let s = fighter({ melee: 80, hitpoints: 80, defence: 70 }, { 'copper-sword': 1, bread: 50 });
+    const rng = seeded(5);
+    s = engine.command(
+      s,
+      T0,
+      { type: 'start', lane: 'combat', action: { feature: 'expeditions', id: 'troll-chief' } },
+      rng,
+    ).state;
+    expect(s.lanes.combat.current?.action.id).toBe('troll-chief');
+    const a = arenaOf(s)!;
+    expect(a).toMatchObject({ boss: true });
+    expect(a.foe.id).toBe('troll-chief');
+    expect(a.endsAt - a.startedAt).toBe(Math.round(a.fought.seconds * 1000));
   });
 
   it('is empty when the lane is not fighting', () => {

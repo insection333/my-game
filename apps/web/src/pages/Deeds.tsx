@@ -4,7 +4,7 @@
 // and frame.
 import { t } from '@idle-clash/content';
 import type { DeedFamily, DeedStep, DeedsView, HonoursView } from '@idle-clash/features';
-import { ActionRow, Button, hasIcon, ItemIcon, Medal, Panel, Pill, ProgressBar, Tabs } from '@idle-clash/ui';
+import { ActionRow, Button, hasIcon, ItemIcon, Medal, Panel, Picture, Pill, ProgressBar, Tabs } from '@idle-clash/ui';
 import { useGame } from '../game/hooks.ts';
 import { navigate, useLocation, withPanel } from '../router.ts';
 import { fills, Slot } from '../slots.tsx';
@@ -88,6 +88,10 @@ function Honours({ view }: { view: HonoursView }) {
           data-frame={view.shown.frame ? true : undefined}
           style={honourStyle(view.shown.banner, view.shown.frame)}
         >
+          {/* The picture worn, with its frame and glow, as others see it (session 46). */}
+          <span className={s.plaquePicture}>
+            <Picture picture={view.shown.picture} frame={view.shown.frame} glow={view.shown.glow} size={48} />
+          </span>
           <span className={s.points}>{view.points}</span>
           <span className={s.shown}>{view.shown.title ?? t('deeds.noTitle')}</span>
         </div>

@@ -402,6 +402,23 @@ a.line:hover {
   min-width: 0;
 }
 
+/* A notice naming a lord offers their profile card beside it (session 46). */
+.lines li[data-who] {
+  display: flex;
+  align-items: center;
+}
+
+.lines li[data-who] > .line {
+  flex: 1;
+  min-width: 0;
+}
+
+.lineWho {
+  flex: none;
+  padding-right: var(--s-4);
+  font-size: var(--t-small);
+}
+
 .collect {
   display: flex;
   align-items: center;

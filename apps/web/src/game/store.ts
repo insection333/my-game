@@ -37,6 +37,8 @@ let engine = createEngine(actionRegistry([], () => true));
 /** The server's clock minus this device's, so prediction runs on the server's time. */
 let skew = 0;
 const clock = () => Date.now() + skew;
+/** The server's time now, for what must land between the clock's once-a-second ticks (the arena). */
+export const serverNow = (): number => clock();
 
 const listeners = new Set<() => void>();
 const emit = () => {

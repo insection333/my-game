@@ -15,6 +15,7 @@ import { nextRoute, runFoes, type Hours } from '../src/expeditions/route.ts';
 import { engine, fighterAt, runOnce, T0 } from './helpers/expedition.ts';
 import { buyRelic, setOut } from '../src/expeditions/routes.ts';
 import { stageCount } from '../src/expeditions/stage.ts';
+import { expeditionView } from '../src/expeditions/views.ts';
 
 /** What a state is worth: gold, every item at its price (food at the vendor's), and every XP at what
  *  an hour of the tier's gathering pays for its XP. */
@@ -120,6 +121,27 @@ describe('a run', () => {
     expect(home).toMatchObject({ outcome: 'retreated' });
     expect(expeditionsOf(out.state).run).toBeNull();
     expect(countOf(out.state, 'gold')).toBeGreaterThan(0);
+  });
+});
+
+describe("a run's bar", () => {
+  // Session 46: the run's bar stood still through a stage and jumped at its end, while the lane's filled.
+  it('fills with the stage under way, as the lane does', () => {
+    let s = fighterAt('fen', 6);
+    s = setOut(s, 'fen', 1, nextRoute(s, 'fen', 1)!.roads[0]).state;
+    s = engine.command(
+      s,
+      T0,
+      { type: 'start', lane: 'combat', action: { feature: 'expeditions', id: 'fen' } },
+      seeded(6),
+    ).state;
+    const c = s.lanes.combat.current!;
+    const mid = c.startedAt + (c.endsAt - c.startedAt) / 2;
+    const count = stageCount(expeditionsOf(s).run!);
+    const at = (now: number) => expeditionView(s, now).run!.progress;
+    expect(at(c.startedAt)).toBeCloseTo(0, 6);
+    expect(at(mid)).toBeCloseTo(0.5 / (count + 1), 6);
+    expect(at(c.endsAt)).toBeCloseTo(1 / (count + 1), 6);
   });
 });
 

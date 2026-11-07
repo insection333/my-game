@@ -177,4 +177,11 @@
   - **The profile card** puts the name, badge and title beside the picture, draws an empty war record grey rather than red, and leaves out career figures still at nought.
   - **Moments that merge deeds** name them once, as a list ("Also done: Castle 10, War marks: 100 and Tempered +3").
   - **The admin page** no longer scrolls as a whole (an unseen word in the mail monitor sat at the foot of the page).
+- Session 46, the owner's report that the Combat lane and the arena fell out of step (the Sunken Fen), and a sweep for the like:
+  - **The arena keeps time with the lane.** The foe used to fall a breather before the lane ended, Slain then stood over the next foe, and only the foe's answer to each exchange was ever shown. Now your swing shows half a swing before the foe's answer, the fight opens on the breather as the two square up, and the felling blow lands half a swing before the lane ends and pays. The arena renders at the moment each swing lands, not on the next second's tick.
+  - **One health throughout.** The loadout's health bar no longer returns through a fight while the arena's falls; both show the fight's own.
+  - **The arena is where the fight is.** Combat opens on the region and tier of the foe being fought. Another tab says where the lane is fighting, with Watch the fight, instead of playing that fight over the wrong foes.
+  - **Boss fights are played out too,** over the bosses on the Expeditions tab. The lane shows the boss, not its drop.
+  - **An expedition's bar fills with the stage under way,** as the lane's does, instead of jumping at each stage's end.
+  - **Notices:** deeds done together read as one line in the tray and on the Hearth's Today; a siege or a spy against you offers the lord's profile. Your honours on the Deeds tab shows the picture worn.
 
