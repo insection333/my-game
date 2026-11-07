@@ -45,3 +45,13 @@ export function withPanel(panel: string | null): string {
   else url.searchParams.delete('panel');
   return url.pathname + url.search;
 }
+
+/** The address of the tray behind the bell at one of its views (session 45); `to` starts a message to that player. */
+export function trayHref(view: 'notices' | 'mail', to?: string): string {
+  const url = new URL(location.href);
+  url.searchParams.set('panel', 'tray');
+  for (const k of ['tray', 'to', 'name']) url.searchParams.delete(k);
+  if (view === 'mail') url.searchParams.set('tray', 'mail');
+  if (to) url.searchParams.set('to', to);
+  return url.pathname + url.search;
+}

@@ -286,3 +286,50 @@ export const castleRecords = sqliteTable('castle_records', {
   spiesCaught: integer('spies_caught').notNull().default(0),
   spiesStopped: integer('spies_stopped').notNull().default(0),
 });
+
+/** Letters between players (session 45): plain text, 250 characters at most; an inbox keeps its newest
+ *  20, and read letters go after 7 days, unread after 14. `flagged`: written on a day its sender had a
+ *  letter refused for its language, for the admin's eye. */
+export const mail = sqliteTable(
+  'mail',
+  {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    toId: text('to_id').notNull(),
+    fromId: text('from_id').notNull(),
+    body: text('body').notNull(),
+    at: integer('at').notNull(),
+    readAt: integer('read_at'),
+    flagged: integer('flagged').notNull().default(0),
+  },
+  (t) => [index('mail_to_at').on(t.toId, t.at), index('mail_from_at').on(t.fromId, t.at), index('mail_at').on(t.at)],
+);
+
+/** A player's block on another's letters (session 45): it stops letters, and nothing else in the game. */
+export const mailBlocks = sqliteTable(
+  'mail_blocks',
+  {
+    blockerId: text('blocker_id').notNull(),
+    blockedId: text('blocked_id').notNull(),
+    at: integer('at').notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.blockerId, t.blockedId] })],
+);
+
+/** Letters refused for their language (session 45), kept 30 days for the admin: who tried to say what to
+ *  whom. A player muted from letters by an admin is muted until `mail_mutes.until`. */
+export const mailRefused = sqliteTable(
+  'mail_refused',
+  {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    fromId: text('from_id').notNull(),
+    toId: text('to_id').notNull(),
+    body: text('body').notNull(),
+    at: integer('at').notNull(),
+  },
+  (t) => [index('mail_refused_from_at').on(t.fromId, t.at), index('mail_refused_at').on(t.at)],
+);
+
+export const mailMutes = sqliteTable('mail_mutes', {
+  playerId: text('player_id').primaryKey(),
+  until: integer('until').notNull(),
+});

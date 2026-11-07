@@ -1,13 +1,14 @@
 // A player's profile card (`?panel=player&name=…`, session 44), over any page: opened from their name on
 // the ladders and in Castle Clash. The scene they show with their picture in its frame and glow over its
 // foot; their name, badge and title, and how long they have played; their career at a glance; their
-// castle and its war record, wins against losses on one bar each; and for someone else, Report this player.
+// castle and its war record, wins against losses on one bar each; and for someone else, Send a message
+// (session 45) and Report this player.
 import type { Profile } from '@idle-clash/contracts';
 import { fmt, hasString, t } from '@idle-clash/content';
-import { CastleScene, ItemIcon, MarchScene, Picture, Sheet, TextLink, type CastleLook } from '@idle-clash/ui';
+import { Button, CastleScene, ItemIcon, MarchScene, Picture, Sheet, TextLink, type CastleLook } from '@idle-clash/ui';
 import { useEffect, useState, type CSSProperties } from 'react';
 import { api } from '../api.ts';
-import { navigate } from '../router.ts';
+import { navigate, trayHref } from '../router.ts';
 import { badgeName, bannerStyle } from './honours-style.ts';
 import { ReportPlayer } from './ReportPlayer.tsx';
 import s from './profile.module.css';
@@ -80,6 +81,13 @@ function Card({ p }: { p: Profile }) {
         <p className={s.since}>
           {p.since === 0 ? t('profile.sinceToday') : t('profile.since', { days: fmt.int(p.since) })}
         </p>
+        {!p.you && (
+          <p className={s.message}>
+            <Button variant="secondary" onClick={() => navigate(trayHref('mail', p.name))}>
+              {t('profile.message')}
+            </Button>
+          </p>
+        )}
       </div>
       <section className={s.section} aria-label={t('profile.career')}>
         <h3>{t('profile.career')}</h3>

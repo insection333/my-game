@@ -22,6 +22,9 @@ import {
   type AdminSiegeFlowsResponse,
   type ReportReason,
   type Profile,
+  type InboxResponse,
+  type SendResult,
+  type AdminMailResponse,
 } from '@idle-clash/contracts';
 import type { castleEngine } from '@idle-clash/features';
 import type { Command, CommandResult } from '@idle-clash/kernel';
@@ -80,7 +83,18 @@ export const api = {
   deleteAccount: (password: string) => post<void>(PATHS.deleteAccount, { password, confirm: true }),
   report: (name: string, reason: ReportReason) => post<void>(PATHS.reportPlayer, { name, reason }),
   profile: (name: string) => post<Profile>(PATHS.profile, { name }),
+  mail: {
+    inbox: () => post<InboxResponse>(PATHS.mailInbox),
+    send: (to: string, body: string) => post<SendResult>(PATHS.mailSend, { to, body }),
+    read: () => post<void>(PATHS.mailRead),
+    remove: (id: number) => post<void>(PATHS.mailDelete, { id }),
+    block: (name: string, blocked: boolean) => post<InboxResponse>(PATHS.mailBlock, { name, blocked }),
+  },
   admin: {
+    mail: (query: { player?: string; other?: string; text?: string; flagged?: boolean }) =>
+      post<AdminMailResponse>(PATHS.adminMail, query),
+    mailAction: (player: string, action: 'warn' | 'mute' | 'unmute') =>
+      post<void>(PATHS.adminMailAction, { player, action }),
     test: () => post<AdminTestResponse>(PATHS.adminTest),
     players: (query: string) => post<AdminPlayersResponse>(PATHS.adminPlayers, { query }),
     save: (playerId: string) => post<AdminSaveResponse>(PATHS.adminSave, { playerId }),

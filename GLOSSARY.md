@@ -21,6 +21,7 @@ Plain, warm and brief, with an old-world flavour in names rather than in instruc
 | Badge | A rare feat's mark worn beside your title, opened by a deed few reach |
 | Banner | The colour your plaque and your hiscores pennant fly, opened by deeds |
 | Bar | Metal smelted from ore: copper, bronze, iron, steel |
+| Block | Stops one player sending you messages, and nothing else; Unblock lets them again |
 | Boss | A region's last and hardest foe: met at an expedition's end, or fought alone once a day |
 | Call to arms | Castle Clash: answered once a day for AP held in reserve; days in a row build a streak that adds to the hourly AP |
 | Castle Clash | The castle each lord raises at total level 100: an edict for the rest of the game, troops, spies and sieges |
@@ -67,6 +68,7 @@ Plain, warm and brief, with an old-world flavour in names rather than in instruc
 | Mastery | How practised you are at one action; each step makes it faster and richer |
 | Medallion | A deed's mark on the Deeds tab, ringed in its tier's colour and filled once done |
 | Mercenary stronghold | Castle Clash: one of five targets made for you each day near your rating, the harder paying more; it falls for the day once breached, and its bounty comes from the war chest |
+| Messages | Short notes of up to 250 characters between players, kept behind the bell beside the notices; the inbox keeps your latest 20 |
 | Milestone | A long goal, such as total level 100 |
 | Next action | The action queued behind a lane's current one; it starts when the current one stops |
 | Notices | The tray of things that happened and need you |

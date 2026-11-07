@@ -4,6 +4,7 @@
 // visits, reports made by them or about them and their sieges' record, and their castle (Castle Clash). Nothing stays: another castle's reports and pair limits that
 // named them keep the entry, with the id replaced by "departed", and another lord's notices of a siege
 // or a caught spy keep it with the name taken out.
+import { eraseMail } from '../mail/mail.ts';
 import { ROUTES } from '@idle-clash/contracts';
 import { eq, sql } from 'drizzle-orm';
 import type { FastifyInstance } from 'fastify';
@@ -31,6 +32,7 @@ export function erase(ctx: Ctx, playerId: string): void {
       .run();
     eraseFeedback(ctx, playerId);
     eraseModeration(ctx, playerId);
+    eraseMail(ctx, playerId);
     ctx.db.delete(playerBastions).where(eq(playerBastions.userId, playerId)).run();
     ctx.db.delete(bastionLogs).where(eq(bastionLogs.userId, playerId)).run();
     ctx.db.delete(castleRecords).where(eq(castleRecords.userId, playerId)).run();

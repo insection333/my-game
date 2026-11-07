@@ -11,6 +11,8 @@ export interface LiveHandlers {
   state: (state: State, now: number) => void;
   /** What a change just written brought about (for the notices tray). */
   events: (events: GameEvent[]) => void;
+  /** How many letters wait, when a letter comes or letters are read (session 45). */
+  mail: (unread: number) => void;
   signedOut: () => void;
   reopened: () => void;
 }
@@ -41,6 +43,7 @@ export function openLive(on: LiveHandlers): { close: () => void } {
         const msg = JSON.parse(e.data) as LiveMessage;
         if (msg.type === 'state') on.state(msg.state, msg.now);
         else if (msg.type === 'events') on.events(msg.events);
+        else if (msg.type === 'mail') on.mail(msg.unread);
       } catch {
         /* A message this page cannot read is skipped; the next read corrects it. */
       }

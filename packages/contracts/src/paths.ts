@@ -33,6 +33,13 @@ export const PATHS = {
   adminSettleReports: '/api/admin/reports/settle',
   adminSiegeFlows: '/api/admin/siege-flows',
   profile: '/api/profile',
+  mailInbox: '/api/mail',
+  mailSend: '/api/mail/send',
+  mailRead: '/api/mail/read',
+  mailDelete: '/api/mail/delete',
+  mailBlock: '/api/mail/block',
+  adminMail: '/api/admin/mail',
+  adminMailAction: '/api/admin/mail/action',
 } as const;
 
 /** A feature's own route. */

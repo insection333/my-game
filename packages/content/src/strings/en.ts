@@ -14,6 +14,7 @@ import { castleWar } from './en-castle-war.ts';
 import { steading } from './en-steading.ts';
 import { closedTest } from './en-test.ts';
 import { moderation } from './en-moderation.ts';
+import { mail } from './en-mail.ts';
 import { legal } from './en-legal.ts';
 import { progress } from './en-progress.ts';
 import { skills } from './en-skills.ts';
@@ -140,7 +141,6 @@ export const en: Record<string, string> = {
   'action.working': 'In your lane',
   'notFound.title': 'Nothing here',
   'notFound.lead': 'This page does not exist.',
-  'tray.title': 'Notices',
   'tour.title': 'Getting started',
   'tour.goals': 'Start here: each first step has a button that starts it, and pays when it is done.',
   'tour.lanes': 'Your lanes do the work, and keep at it for up to a day while you are away.',
@@ -304,6 +304,7 @@ export const en: Record<string, string> = {
   ...steading,
   ...closedTest,
   ...moderation,
+  ...mail,
   ...castle,
   ...castleWar,
 };
