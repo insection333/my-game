@@ -40,6 +40,7 @@ function Record({ label, won, lost }: { label: string; won: number; lost: number
       <span className={s.recordCounts}>{t('profile.wonLost', { won: fmt.int(won), lost: fmt.int(lost) })}</span>
       <span
         className={s.recordBar}
+        data-none={all ? undefined : ''}
         style={{ '--won': all ? `${(won / all) * 100}%` : '0%' } as CSSProperties}
         aria-hidden="true"
       >
@@ -49,6 +50,8 @@ function Record({ label, won, lost }: { label: string; won: number; lost: number
   );
 }
 
+/** One figure; the career's later figures (titles, Kindlings, foes, bosses, expeditions) show once above
+ *  nought, so a newcomer's card is not a wall of zeros. */
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div className={s.stat}>
@@ -74,8 +77,11 @@ function Card({ p }: { p: Profile }) {
         </span>
       </div>
       <div className={s.who}>
-        <p className={s.titleLine}>
+        <p className={s.name}>
+          {p.name}
           {p.look.badge && <ItemIcon name={`badge-${p.look.badge}`} size={24} label={badgeName(p.look.badge)} />}
+        </p>
+        <p className={s.titleLine} data-none={title ? undefined : ''}>
           {title ?? t('profile.noTitle')}
         </p>
         <p className={s.since}>
@@ -98,11 +104,11 @@ function Card({ p }: { p: Profile }) {
             label={t('profile.deeds')}
             value={t('profile.of', { n: fmt.int(c.deedsDone), all: fmt.int(c.deedsAll) })}
           />
-          <Stat label={t('profile.titles')} value={fmt.int(c.titles)} />
-          <Stat label={t('profile.kindlings')} value={fmt.int(c.kindlings)} />
-          <Stat label={t('profile.defeats')} value={fmt.int(c.defeats)} />
-          <Stat label={t('profile.bossWins')} value={fmt.int(c.bossWins)} />
-          <Stat label={t('profile.runs')} value={fmt.int(c.runs)} />
+          {c.titles > 0 && <Stat label={t('profile.titles')} value={fmt.int(c.titles)} />}
+          {c.kindlings > 0 && <Stat label={t('profile.kindlings')} value={fmt.int(c.kindlings)} />}
+          {c.defeats > 0 && <Stat label={t('profile.defeats')} value={fmt.int(c.defeats)} />}
+          {c.bossWins > 0 && <Stat label={t('profile.bossWins')} value={fmt.int(c.bossWins)} />}
+          {c.runs > 0 && <Stat label={t('profile.runs')} value={fmt.int(c.runs)} />}
         </dl>
       </section>
       {p.castle && (

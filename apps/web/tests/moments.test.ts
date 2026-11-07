@@ -47,6 +47,24 @@ describe('moments', () => {
     expect(second).toMatchObject({ size: 'toast', title: 'Goal done: Chop a pine' });
   });
 
+  it('names the others of the same kind once, as a list, not each with its own heading', () => {
+    const deed = (at: number, name: string): GameEvent => ({
+      type: 'deedDone',
+      at,
+      deed: name,
+      name,
+      icon: null,
+      tier: 'easy',
+      points: 5,
+    });
+    const [m] = momentsFrom(
+      [deed(T, 'A castle raised'), deed(T + 1, 'Castle 10'), deed(T + 2, 'War marks: 100'), deed(T + 3, 'Tempered +3')],
+      T - 1,
+      FEATURES,
+    );
+    expect(m.body).toBe('Easy, 5 points. Also done: Castle 10, War marks: 100 and Tempered +3.');
+  });
+
   it('opens a goal’s supply cache in a banner, and a lucky one in the centre', () => {
     const cache = (grade: string): GameEvent => ({
       type: 'goalDone',

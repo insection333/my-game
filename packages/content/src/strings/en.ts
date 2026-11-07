@@ -266,6 +266,7 @@ export const en: Record<string, string> = {
   'moment.masteryStep': '{action}: mastery {step}',
   'moment.goalDone': 'Goal done: {goal}',
   'moment.also': 'Also: {what}.',
+  'moment.alsoDone': 'Also done: {what}.',
   'moment.close': 'Close',
   'moment.laneStopped': '{lane} stopped: {reason}',
   'recap.title': 'While you were away',

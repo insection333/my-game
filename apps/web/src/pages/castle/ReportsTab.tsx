@@ -3,7 +3,7 @@
 // with filters across the top. The War tab shows the latest few (LatestReports) with the way here.
 import { fmt, t } from '@idle-clash/content';
 import type { castleEngine } from '@idle-clash/features';
-import { Panel, Pill, Tabs, TextLink } from '@idle-clash/ui';
+import { ItemIcon, Panel, Pill, Tabs, TextLink } from '@idle-clash/ui';
 import { navigate } from '../../router.ts';
 import { cardOf, cardsBy, FILTERS, type Filter, type ReportCard } from './report-model.ts';
 import { ReportCardLink } from './ReportCards.tsx';
@@ -18,6 +18,18 @@ const FILTER_KEY: Record<Filter, string> = {
   spies: 'castle.reports.filter.spies',
 };
 const label = (f: Filter) => t(FILTER_KEY[f]);
+/** Each kind's mark beside its word, and in its place on a narrow strip (a phone): the siege engines, the
+ *  walls held, a stronghold's arms, the scout. All keeps its word. */
+const ICON: Record<Exclude<Filter, 'all'>, string> = {
+  sieges: 'tech-siegecraft',
+  defences: 'castle-walls',
+  strongholds: 'crest',
+  spies: 'spy-scout',
+};
+const icon = (f: Filter) =>
+  f === 'all' ? undefined : (
+    <ItemIcon name={ICON[f]} crest={f === 'strongholds' ? 'stronghold' : undefined} size={24} />
+  );
 
 const DAY = 86_400_000;
 /** The day a report fell on, as its heading says it: Today, Yesterday, or the date. */
@@ -52,6 +64,8 @@ export function ReportsTab() {
             tabs={FILTERS.map((f) => ({
               href: f === 'all' ? '/castle/reports' : `/castle/reports?show=${f}`,
               label: label(f),
+              icon: icon(f),
+              short: f === 'all' ? label(f) : undefined,
               current: f === filter,
             }))}
           />

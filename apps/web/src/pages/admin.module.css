@@ -197,6 +197,8 @@
 }
 
 .letter {
+  /* Holds its unseen words ("to" between two names) inside it, not at the foot of the page. */
+  position: relative;
   display: grid;
   gap: var(--s-1);
   padding: var(--s-2) var(--s-4);

@@ -129,6 +129,12 @@ export function measurePage(): Measured {
     if (!corner) problems.push(`${describe(pop)} has no close control in its top right`);
   }
 
+  // A tab holds its own label: a strip squeezed too narrow draws one label over the next (session 45's
+  // review found the Reports filters doing so on a phone).
+  for (const tab of Array.from(document.querySelectorAll<HTMLElement>('[data-ui="Tab"]')))
+    if (shown(tab) && tab.scrollWidth > tab.clientWidth + 1)
+      problems.push(`${describe(tab)} is too narrow for its label, which runs over its neighbours`);
+
   const menus = Array.from(document.querySelectorAll('[data-menu]'));
   for (const m of menus) {
     const n = m.querySelectorAll('a[href]').length;
