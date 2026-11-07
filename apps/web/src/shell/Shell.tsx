@@ -5,6 +5,7 @@ import { fmt, hasString, t } from '@idle-clash/content';
 import { GameMark, IconButton, Pill, Sheet } from '@idle-clash/ui';
 import { useEffect, useState, type ReactNode } from 'react';
 import { useGame } from '../game/hooks.ts';
+import { ProfileSheet } from '../pages/ProfileSheet.tsx';
 import { game } from '../game/store.ts';
 import { fills } from '../slots.tsx';
 import { navigate, useLocation, withPanel } from '../router.ts';
@@ -122,6 +123,7 @@ export function Shell({ children }: { children: ReactNode }) {
       {panel === 'item' && <ItemSheet onClose={close} />}
       {panel === 'deed' && <DeedSheet onClose={() => navigate(withoutSheet('deed'))} />}
       {panel === 'honours' && <HonoursSheet onClose={close} />}
+      {panel === 'player' && <ProfileSheet onClose={() => navigate(withoutSheet('name'))} />}
       {panel === 'work' && <WorkSheet onClose={() => navigate(withoutSheet('work'))} />}
       {panel === 'settings' && (
         <Sheet title={t('settings.title')} closeLabel={t('shell.close')} onClose={close} slot="settings.account">

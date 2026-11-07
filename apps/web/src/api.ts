@@ -21,6 +21,7 @@ import {
   type AdminReportsResponse,
   type AdminSiegeFlowsResponse,
   type ReportReason,
+  type Profile,
 } from '@idle-clash/contracts';
 import type { castleEngine } from '@idle-clash/features';
 import type { Command, CommandResult } from '@idle-clash/kernel';
@@ -78,6 +79,7 @@ export const api = {
   signOut: () => post<void>(PATHS.signOut),
   deleteAccount: (password: string) => post<void>(PATHS.deleteAccount, { password, confirm: true }),
   report: (name: string, reason: ReportReason) => post<void>(PATHS.reportPlayer, { name, reason }),
+  profile: (name: string) => post<Profile>(PATHS.profile, { name }),
   admin: {
     test: () => post<AdminTestResponse>(PATHS.adminTest),
     players: (query: string) => post<AdminPlayersResponse>(PATHS.adminPlayers, { query }),

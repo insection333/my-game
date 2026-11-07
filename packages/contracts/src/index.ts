@@ -6,4 +6,5 @@ export * from './routes.ts';
 export * from './closed-test.ts';
 export * from './castle.ts';
 export * from './moderation.ts';
+export * from './profile.ts';
 export * from './live.ts';

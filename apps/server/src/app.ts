@@ -22,6 +22,7 @@ import { RateLimiter } from './security.ts';
 import { adminRoutes } from './admin/routes.ts';
 import { feedbackRoutes } from './feedback.ts';
 import { moderationRoutes } from './moderation.ts';
+import { profileRoutes } from './game/profile.ts';
 import { accountRoutes } from './auth/account.ts';
 import { Hiscores } from './game/hiscores.ts';
 import { Notices } from './game/notices.ts';
@@ -95,6 +96,7 @@ export async function buildApp(
   gameRoutes(app, ctx, features);
   castleRoutes(app, ctx);
   moderationRoutes(app, ctx);
+  profileRoutes(app, ctx);
   if (config.webDist) webRoutes(app, config.webDist);
   const watching = setInterval(
     () => void hearWatching(ctx).catch((err: unknown) => app.log.error({ err }, 'hiscores for watchers')),

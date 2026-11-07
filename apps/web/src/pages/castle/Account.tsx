@@ -10,6 +10,7 @@ import { navigate, withPanel } from '../../router.ts';
 import { outcomeName, unitName } from './labels.ts';
 import { cardOf, when } from './report-model.ts';
 import { ClashBar, Faceoff, Spoils } from './ReportCards.tsx';
+import { NameLink } from '../ProfileSheet.tsx';
 import { readReport } from './Reports.tsx';
 import { useSyncedCastle } from './synced.ts';
 import s from './castle.module.css';
@@ -99,9 +100,9 @@ export function ReportSheet() {
             {card.word}
           </span>
           <span className={r.names}>
-            <span>{card.left.name}</span>
+            <span>{card.left.lord ? <NameLink name={card.left.name} /> : card.left.name}</span>
             <span>{t('arena.versus')}</span>
-            <span>{card.right.name}</span>
+            <span>{card.right.lord ? <NameLink name={card.right.name} /> : card.right.name}</span>
           </span>
           <span className={s.pills}>
             {card.rout && <Pill tone="gold">{t('castle.strongholds.routed')}</Pill>}

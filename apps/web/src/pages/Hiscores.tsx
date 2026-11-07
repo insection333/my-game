@@ -9,12 +9,12 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { api } from '../api.ts';
 import { handled } from '../game/session.ts';
 import { untilLoaded } from '../Ready.tsx';
-import { navigate, useLocation } from '../router.ts';
+import { navigate } from '../router.ts';
 import { Slot } from '../slots.tsx';
 import { badgeName, bannerStyle } from './honours-style.ts';
 import { MenuGlyph } from '../shell/glyphs.tsx';
 import { PageHead } from './PageHead.tsx';
-import { PlayerSheet, playerSheet } from './HiscoresPlayer.tsx';
+import { profileHref } from './ProfileSheet.tsx';
 import s from './hiscores.module.css';
 
 const PHONE_ROWS = 10;
@@ -37,7 +37,6 @@ export function HiscoresHead({ deeds, children }: { deeds?: boolean; children?: 
 
 export function Hiscores() {
   const [data, setData] = useState<HiscoresResponse | null>(null);
-  const { panel } = useLocation();
   useEffect(() => {
     let live = true;
     const load = (first = false) =>
@@ -121,7 +120,6 @@ export function Hiscores() {
           </Panel>
         </section>
       </div>
-      {panel === 'player' && data && <PlayerSheet ladders={data.ladders} name={name} />}
     </>
   );
 }
@@ -176,11 +174,11 @@ function Row({ row, you, ladder }: { row: HiscoreRow; you: boolean; ladder: stri
           )}
           {/* The name opens the player's sheet (their places, and Report this player). */}
           <a
-            href={playerSheet(row.name)}
+            href={profileHref(row.name)}
             data-ui="RowLink"
             className={s.nameLink}
             aria-current={you || undefined}
-            onClick={(e) => (e.preventDefault(), navigate(playerSheet(row.name)))}
+            onClick={(e) => (e.preventDefault(), navigate(profileHref(row.name)))}
           >
             {row.name}
           </a>

@@ -34,6 +34,13 @@ export interface Spoil {
   text: string;
 }
 
+/** One side of a report: its arms' seed, its name, and whether it is a lord (whose card opens from it). */
+export interface Side {
+  seed: string;
+  name: string;
+  lord: boolean;
+}
+
 export interface ReportCard {
   id: number;
   at: number;
@@ -46,8 +53,8 @@ export interface ReportCard {
   /** What happened, in a line: "Your siege on Keeper", "Keeper attacked you". */
   title: string;
   /** Each side's arms (the id they are drawn from) and name: the attacker on the left. */
-  left: { seed: string; name: string };
-  right: { seed: string; name: string };
+  left: Side;
+  right: Side;
   /** Attack against defence, when the battle was reckoned in full. */
   attack: number | null;
   defense: number | null;
@@ -62,7 +69,9 @@ export function cardOf(r: Report, me: string): ReportCard | null {
   const d = r.data;
   const foe = r.foeName ?? t('castle.departed');
   const foeSeed = str(d.foe) || `report-${r.id}`;
-  const you = { seed: me, name: t('arena.you') };
+  const you: Side = { seed: me, name: t('arena.you'), lord: false };
+  // The other lord, when there is one still (a departed lord's name is gone).
+  const lord: Side = { seed: foeSeed, name: foe, lord: r.foeName !== null };
   const marks: Spoil[] =
     num(d.marks) > 0 ? [{ icon: 'marks', text: t('castle.report.marks', { marks: fmt.int(num(d.marks)) }) }] : [];
   const gold: Spoil[] =
@@ -87,7 +96,7 @@ export function cardOf(r: Report, me: string): ReportCard | null {
         good: won,
         title: t('castle.reports.siegeOut', { foe }),
         left: you,
-        right: { seed: foeSeed, name: foe },
+        right: lord,
         spoils: [...gold, ...marks],
       };
     }
@@ -103,7 +112,7 @@ export function cardOf(r: Report, me: string): ReportCard | null {
         word: held ? t('castle.reports.held') : outcomeName(str(d.outcome)),
         good: held,
         title: t('castle.reports.siegeIn', { foe }),
-        left: { seed: foeSeed, name: foe },
+        left: lord,
         right: you,
         spoils: [...lost, ...marks],
       };
@@ -118,7 +127,7 @@ export function cardOf(r: Report, me: string): ReportCard | null {
         good: d.outcome !== 'repelled',
         title: t('castle.reports.stronghold', { foe: name }),
         left: you,
-        right: { seed: str(m.id) || `merc-${num(m.first)}-${num(m.second)}`, name },
+        right: { seed: str(m.id) || `merc-${num(m.first)}-${num(m.second)}`, name, lord: false },
         spoils: [...gold, ...marks],
       };
     }
@@ -138,7 +147,7 @@ export function cardOf(r: Report, me: string): ReportCard | null {
         good: won,
         title: t('castle.reports.fortress', { fortress: name, tier: fmt.int(num(d.tier)) }),
         left: you,
-        right: { seed: str(d.fortress), name },
+        right: { seed: str(d.fortress), name, lord: false },
         spoils: [...found, ...marks],
       };
     }
@@ -152,7 +161,7 @@ export function cardOf(r: Report, me: string): ReportCard | null {
         good: done,
         title: t('castle.reports.spyOut', { mission: missionName(str(d.mission)), foe }),
         left: you,
-        right: { seed: foeSeed, name: foe },
+        right: lord,
         spoils: marks,
       };
     }
@@ -164,7 +173,7 @@ export function cardOf(r: Report, me: string): ReportCard | null {
         word: t('castle.reports.caughtTheirs'),
         good: true,
         title: t('castle.reports.spyIn', { foe }),
-        left: { seed: foeSeed, name: foe },
+        left: lord,
         right: you,
         spoils: marks,
       };
