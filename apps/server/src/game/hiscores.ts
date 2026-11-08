@@ -4,11 +4,12 @@
 import { levelFor } from '@idle-clash/content';
 import { allSkills, goalsOf, shownHonours, totalLevel } from '@idle-clash/features';
 import type { HiscoreRow, Ladder } from '@idle-clash/contracts';
-import { xpOf, type State } from '@idle-clash/kernel';
+import { xpOf, type GameEvent, type State } from '@idle-clash/kernel';
 import { and, asc, desc, eq, isNotNull, isNull, sql } from 'drizzle-orm';
 import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
 import { hiscores, players } from '../db/schema.ts';
 import { lookOf, readLook } from './look.ts';
+import { climb } from './rank-ups.ts';
 import { Ranks } from './ranks.ts';
 
 export const TOTAL = 'total';
@@ -32,7 +33,17 @@ interface Top {
 /** Whether an entry stands above a row in the ladder's order (level, then XP; a tie to the earlier). */
 const ahead = (e: { level: number; xp: number }, r: Top) => e.level > r.level || (e.level === r.level && e.xp >= r.xp);
 
+interface Row {
+  xp: number;
+  milestones: number;
+  reachedAt: number;
+  /** The best band of places reached (rank-ups.ts); null until first placed. */
+  bestBand: number | null;
+}
+
 export class Hiscores {
+  /** Hears of a climb into a better band of places (session 49), to say it to the player. */
+  onRankUp: (playerId: string, events: GameEvent[]) => void = () => undefined;
   private db: BetterSQLite3Database;
   /** When each player's levels were last recorded (since the server started). */
   private heard = new Map<string, number>();
@@ -42,7 +53,7 @@ export class Hiscores {
   private listed = new Set<string>();
   /** Each player's rows as last written, read from the table once (session 37): a save read or written
    *  is compared with these, so an unchanged one asks nothing of the database. */
-  private rows = new Map<string, Map<string, { xp: number; milestones: number; reachedAt: number }>>();
+  private rows = new Map<string, Map<string, Row>>();
   /** Each ladder's top rows as last read (session 37), kept until a write could change them: a row
    *  written that would place among them, a name, honours, listing or ban changed (`forget`). */
   private tops = new Map<string, Top[]>();
@@ -96,10 +107,11 @@ export class Hiscores {
           .from(hiscores)
           .where(eq(hiscores.playerId, playerId))
           .all()
-          .map((r) => [r.skill, { xp: r.xp, milestones: r.milestones, reachedAt: r.reachedAt }]),
+          .map((r) => [r.skill, { xp: r.xp, milestones: r.milestones, reachedAt: r.reachedAt, bestBand: r.bestBand }]),
       );
       this.rows.set(playerId, had);
     }
+    const climbs: GameEvent[] = [];
     for (const e of entries) {
       const old = had.get(e.skill);
       if (old && old.xp === e.xp && old.milestones === e.milestones) continue;
@@ -113,8 +125,15 @@ export class Hiscores {
           set: { level: e.level, xp: e.xp, milestones: e.milestones, reachedAt },
         })
         .run();
-      had.set(e.skill, { xp: e.xp, milestones: e.milestones, reachedAt: old ? reachedAt : at });
-      this.standings.set(e.skill, { playerId, level: e.level, xp: e.xp, reachedAt: old ? reachedAt : at });
+      const row: Row = {
+        xp: e.xp,
+        milestones: e.milestones,
+        reachedAt: old ? reachedAt : at,
+        bestBand: old?.bestBand ?? null,
+      };
+      had.set(e.skill, row);
+      this.standings.set(e.skill, { playerId, level: e.level, xp: e.xp, reachedAt: row.reachedAt });
+      if (this.isListed(playerId)) this.placed(playerId, e.skill, e.level, row, at, climbs);
       const top = this.tops.get(e.skill);
       if (
         top &&
@@ -122,6 +141,22 @@ export class Hiscores {
       )
         this.tops.delete(e.skill);
     }
+    if (climbs.length) this.onRankUp(playerId, climbs);
+  }
+
+  /** A listed player's row written: their place on that ladder, and a climb into a better band said. */
+  private placed(playerId: string, skill: string, level: number, row: Row, at: number, climbs: GameEvent[]) {
+    const place = this.standings.rank(skill, { level, xp: row.xp, reachedAt: row.reachedAt });
+    const { keep, said } = climb(row.bestBand, place);
+    if (keep !== row.bestBand) {
+      row.bestBand = keep;
+      this.db
+        .update(hiscores)
+        .set({ bestBand: keep })
+        .where(and(eq(hiscores.playerId, playerId), eq(hiscores.skill, skill)))
+        .run();
+    }
+    if (said) climbs.push({ type: 'rankUp', at, skill, place, band: keep });
   }
 
   /** Notes a player's action (a command or a feature route): their first, and once one comes half an

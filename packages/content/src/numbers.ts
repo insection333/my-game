@@ -8,6 +8,8 @@ const compact = new Intl.NumberFormat('en', { notation: 'compact', maximumFracti
 const timeOfDay = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit' });
 const day = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 const conjunction = new Intl.ListFormat('en-GB', { type: 'conjunction' });
+const ordinals = new Intl.PluralRules('en-GB', { type: 'ordinal' });
+const SUFFIX: Record<string, string> = { one: 'st', two: 'nd', few: 'rd', other: 'th' };
 
 const ROMAN: [number, string][] = [
   [10, 'X'],
@@ -52,6 +54,8 @@ export const fmt = {
   date: (ms: number): string => day.format(ms),
   /** ["a", "b", "c"] → "a, b and c": words joined as a sentence joins them */
   list: (items: readonly string[]): string => conjunction.format(items),
+  /** 1 → "1st", 22 → "22nd", 113 → "113th": a place on a ladder */
+  ordinal: (n: number): string => `${whole.format(n)}${SUFFIX[ordinals.select(n)] ?? 'th'}`,
   /** 4 → "IV", up to 39 */
   roman: (n: number): string => {
     if (!Number.isInteger(n) || n < 1 || n > 39) throw new Error(`roman: ${n} is out of range`);

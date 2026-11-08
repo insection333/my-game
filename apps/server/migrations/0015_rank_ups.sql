@@ -1,0 +1,1 @@
+ALTER TABLE `hiscores` ADD `best_band` integer;

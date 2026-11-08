@@ -181,4 +181,34 @@ describe('moments', () => {
       { size: 'banner', title: 'Stormed: The Grey Fang', body: '+400 gold, +14 war marks' },
     ]);
   });
+
+  it('says a climb on the hiscores, first in the centre, and leads with a level that came with it', () => {
+    const up = (at: number, skill: string, place: number, band: number): GameEvent => ({
+      type: 'rankUp',
+      at,
+      skill,
+      place,
+      band,
+    });
+    expect(momentsFrom([up(T, 'woodcutting', 1, 1)], T - 1, FEATURES)).toEqual([
+      {
+        key: String(T),
+        size: 'centre',
+        icon: 'woodcutting',
+        title: '1st on the Woodcutting hiscores',
+        body: 'No one stands above you.',
+        until: T + 6000,
+      },
+    ]);
+    expect(momentsFrom([up(T, 'total', 42, 50)], T - 1, FEATURES)).toMatchObject([
+      { size: 'toast', icon: null, title: '42nd on the hiscores by total level', body: 'Into the top fifty.' },
+    ]);
+    const [both] = momentsFrom(
+      [{ type: 'levelUp', at: T, skill: 'mining', level: 30 }, up(T + 1000, 'mining', 3, 3)],
+      T - 1,
+      FEATURES,
+    );
+    expect(both).toMatchObject({ size: 'centre', title: 'Mining level 30' });
+    expect(both.body).toContain('Also: 3rd on the Mining hiscores');
+  });
 });

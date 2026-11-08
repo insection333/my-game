@@ -29,4 +29,4 @@ The owner's first phase of 3 November 2026: evaluate the pacing of combat and pr
 ## What is left to the next phases
 
 - **The thin middle of the year** (deeds and titles 80 to 98 days apart) belongs to phase 2: the veteran cosmetics are locked behind mid- and end-game milestones, placed into exactly those gaps.
-- **Rank-ups on the ladders** (passing someone, entering the top ten) need the server to notice a place changing. They come with phase 3's profile cards, where a player's places are shown.
+- **Rank-ups on the ladders**: done in session 49. The server notices a listed player's place as their row is written, and a climb into a better band (the top 100, 50, 10 or 3, or first) is a moment at once and a notice in the tray. Each band is said once, kept with the row so a restart does not say it again; a first place is where a player starts, so it is not said.

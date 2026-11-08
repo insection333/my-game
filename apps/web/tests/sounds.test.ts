@@ -35,6 +35,9 @@ describe('sound cues', () => {
       ]),
     ).toBe('level');
     expect(bestCue([find('rare'), find('legendary')])).toBe('legendary');
+    // First on a ladder rings like a Rare find; any other climb, the goal's chime.
+    expect(cueFor({ type: 'rankUp', at, skill: 'total', place: 1, band: 1 })).toBe('rare');
+    expect(cueFor({ type: 'rankUp', at, skill: 'mining', place: 7, band: 10 })).toBe('goal');
     expect(bestCue([])).toBeNull();
   });
 

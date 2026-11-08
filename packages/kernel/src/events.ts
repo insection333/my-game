@@ -54,6 +54,10 @@ export interface EventMap {
   castleOrders: { orders: string[]; all: boolean; marks: number };
   /** Castle Clash: a war relic tempered (session 35), to its count of tempers; two at once, a masterstroke. */
   castleTempered: { relic: string; tempers: number; masterstroke: boolean };
+  /** A climb on a hiscores ladder (session 49): into the top 100, 50, 10 or 3, or to first, for the first
+   *  time; `skill` is the ladder ('total' for the total level), `place` the place reached, `band` the
+   *  band entered (1, 3, 10, 50 or 100). Said by the server, which keeps the ladders. */
+  rankUp: { skill: string; place: number; band: number };
   /** A lane stopped; the reason says why, so the page can say what to do. */
   laneStopped: { lane: LaneId; action: ActionRef | null; reason: StopReason };
   /** A command was refused: what was asked, and why not, so the page can say so. */
@@ -83,5 +87,6 @@ export const NOTABLE_EVENTS: readonly (keyof EventMap)[] = [
   'castleIncursion',
   'castleTempered',
   'castleOrders',
+  'rankUp',
 ];
 export const isNotable = (e: GameEvent): boolean => NOTABLE_EVENTS.includes(e.type);
