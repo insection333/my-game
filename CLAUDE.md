@@ -91,5 +91,6 @@ To change the game design: edit the model in `design/model/` or the template, ru
 | 50 Food said truly | Done: what food heals is said as a fight eats it (Hitpoints' perks, the hearthstone, the Smokehouse) on the vendor's rows, the item panel and Cooking's rows, which said nothing of healing before |
 | 51 Gear said | Done: every piece of gear says what it does in a fight on the gear sheet and the item panel (a weapon's tier on the most a swing can roll, armour's tier off every hit), from the named constants fight() swings with |
 | 52 Food carried, drawn | Done: the loadout's food is a row of small tiles (icon and count) in the order a fight eats them, each naming what it heals and opening its item panel, in place of a line of text |
+| 53 Finds used, said | Done: a Rare find's Used in names its use (500 mastery completions on one of its skill's actions, a style's foe, a boss's region), where it said "Nothing yet." under the very offer to use it |
 
 Outstanding: the closed test waits on the server going up (the owner's call). Gold left once the Storehouse is fully enlarged now goes to the steading (session 25). Forgotten passwords are reset from the admin page while email is off; the owner's account is made an admin by naming it in `ADMIN_NAMES` after signing up. The contact address is admin@idleclash.com.

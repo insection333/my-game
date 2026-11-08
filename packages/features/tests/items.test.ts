@@ -1,6 +1,6 @@
 // Comes from and Used in, answered by every feature's content.
 import { describe, expect, it } from 'vitest';
-import { FEATURES, items } from '../src/index.ts';
+import { combatData, FEATURES, items } from '../src/index.ts';
 
 describe('item questions', () => {
   it("says a log comes from its two trees and goes into its tier's bows and staves and the fire under its fish", () => {
@@ -84,5 +84,20 @@ describe('every item says where it comes from and where it goes', () => {
     expect(items.usedIn(FEATURES, 'copper-helm').map(label)).toEqual(['Combat: worn on the head']);
     expect(items.usedIn(FEATURES, 'copper-arrows').map(label)).toEqual(['Combat: carried into Archery fights']);
     expect(items.usedIn(FEATURES, 'copper-arrows')[0]).toMatchObject({ href: '/combat' });
+  });
+
+  it('says what a Rare find is used for: mastery on its skill, a style on a foe, a boss on its region (session 53)', () => {
+    const label = (s: items.ItemSource) => items.sourceLabel(s);
+    expect(items.usedIn(FEATURES, 'carved-acorn').map(label)).toEqual([
+      'Woodcutting: 500 mastery completions on one of its actions',
+    ]);
+    expect(items.usedIn(FEATURES, 'carved-acorn')[0]).toMatchObject({ skill: 'woodcutting', feature: 'woodcutting' });
+    const melee = combatData.STYLE_FINDS.melee.find((f) => f.rarity === 'rare')!.item;
+    expect(items.usedIn(FEATURES, melee).map(label)).toEqual(['Melee: 500 mastery completions on one foe']);
+    expect(items.usedIn(FEATURES, 'chieftains-torc').map(label)).toEqual([
+      'Combat: 500 mastery completions on one foe of its region',
+    ]);
+    // An Uncommon find is only sold, and a Legendary one kept: no use is claimed for either.
+    expect(items.usedIn(FEATURES, 'birds-nest')).toEqual([]);
   });
 });
