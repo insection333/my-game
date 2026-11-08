@@ -93,6 +93,9 @@ export const hiscores = sqliteTable(
     milestones: integer('milestones').notNull().default(0),
     /** When this XP was first reached: ties go to whoever got there first. */
     reachedAt: integer('reached_at').notNull(),
+    /** The best band of places reached on this ladder (session 49: 1, 3, 10, 50 or 100; null until the
+     *  player is first placed), so a climb into a better band is said once, and only once. */
+    bestBand: integer('best_band'),
   },
   (t) => [
     primaryKey({ columns: [t.playerId, t.skill] }),

@@ -40,4 +40,15 @@ describe('a notice', () => {
       'Deed done: Pine 10',
     ]);
   });
+
+  it('says a climb on the hiscores, and leads to that ladder', () => {
+    const notices: GameEvent[] = [
+      { type: 'rankUp', at: T, skill: 'fishing', place: 9, band: 10 },
+      { type: 'rankUp', at: T + 1, skill: 'total', place: 3, band: 3 },
+    ];
+    expect(noticesOf({ notices, events: [] }).map((n) => [n.text, n.href, n.icon])).toEqual([
+      ['3rd on the hiscores by total level. Into the top three.', '/hiscores', null],
+      ['9th on the Fishing hiscores. Into the top ten.', '/hiscores?skill=fishing', 'fishing'],
+    ]);
+  });
 });

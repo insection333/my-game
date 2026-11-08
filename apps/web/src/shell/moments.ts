@@ -7,6 +7,7 @@ import {
   castleEngine,
   expeditionStory as storyOf,
   kindlingData,
+  rankUpWords,
   skill as skillKit,
   type Feature,
 } from '@idle-clash/features';
@@ -41,6 +42,8 @@ function rank(e: GameEvent): number {
   if (e.type === 'deedDone') return e.tier === 'master' ? 1 : e.tier === 'elite' ? 5 : 7;
   if (e.type === 'expeditionDone') return e.outcome === 'won' ? 1 : 5;
   if (e.type === 'kindled') return 1;
+  // First on a ladder ranks with a master deed; the top three or ten with an elite one.
+  if (e.type === 'rankUp') return e.band === 1 ? 1 : e.band <= 10 ? 5 : 8;
   if (castleEngine.isCastleEvent(e)) {
     const size = castleEngine.castleMoment(e).size;
     return size === 'centre' ? 1 : size === 'banner' ? 5 : 8;
@@ -55,6 +58,7 @@ function sizeOf(e: GameEvent): MomentSize {
   if (e.type === 'deedDone') return e.tier === 'easy' ? 'toast' : e.tier === 'hard' ? 'banner' : 'centre';
   if (e.type === 'expeditionDone') return e.outcome === 'won' ? 'centre' : 'banner';
   if (e.type === 'masteryStep' || (e.type === 'find' && e.rarity === 'rare')) return 'banner';
+  if (e.type === 'rankUp') return e.band === 1 ? 'centre' : e.band <= 10 ? 'banner' : 'toast';
   if (castleEngine.isCastleEvent(e)) return castleEngine.castleMoment(e).size;
   return 'toast';
 }
@@ -122,6 +126,10 @@ function describe(
         body: [worth, unlocked].filter(Boolean).join('. '),
         icon: e.icon && hasIcon(e.icon) ? e.icon : null,
       };
+    }
+    case 'rankUp': {
+      const w = rankUpWords(e);
+      return { title: w.title, body: w.body, icon: w.skill && hasIcon(w.skill) ? w.skill : null };
     }
     case 'castleSiege':
     case 'castleBesieged':

@@ -85,4 +85,12 @@ export const honours: Record<string, string> = {
   'profile.strongholds': 'Strongholds',
   'profile.spies': "Spies' errands",
   'profile.spiesStopped': 'Enemy spies caught: {count}',
+  // A climb on the hiscores (session 49), as a moment and in the notices.
+  'moment.rankUp': '{place} on the {ladder} hiscores',
+  'moment.rankUpTotal': '{place} on the hiscores by total level',
+  'rankUp.first': 'No one stands above you.',
+  'rankUp.top3': 'Into the top three.',
+  'rankUp.top10': 'Into the top ten.',
+  'rankUp.top50': 'Into the top fifty.',
+  'rankUp.top100': 'Into the top hundred.',
 };

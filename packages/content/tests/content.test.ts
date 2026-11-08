@@ -34,6 +34,19 @@ describe('fmt', () => {
       '3 h 20 min',
       '2 d 4 h',
     ]);
+    expect([1, 2, 3, 4, 11, 12, 13, 21, 22, 103, 1011].map(fmt.ordinal)).toEqual([
+      '1st',
+      '2nd',
+      '3rd',
+      '4th',
+      '11th',
+      '12th',
+      '13th',
+      '21st',
+      '22nd',
+      '103rd',
+      '1,011th',
+    ]);
     expect([1, 4, 8, 9, 14, 39].map(fmt.roman)).toEqual(['I', 'IV', 'VIII', 'IX', 'XIV', 'XXXIX']);
   });
 });

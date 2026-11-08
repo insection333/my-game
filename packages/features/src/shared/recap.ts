@@ -7,6 +7,7 @@ import type { AwaySummary, GameEvent } from '@idle-clash/kernel';
 import { itemOf } from './catalog.ts';
 import { castleMoment, isCastleEvent } from './castle/words.ts';
 import { storyOf } from './expeditions/story.ts';
+import { rankUpWords } from './rank-up.ts';
 import { remedyFor } from './remedy.ts';
 
 export type RecapKind =
@@ -17,6 +18,7 @@ export type RecapKind =
   | 'rare'
   | 'expedition'
   | 'castle'
+  | 'rank'
   | 'mastery'
   | 'deed'
   | 'goal'
@@ -34,6 +36,7 @@ export const RECAP_ORDER: readonly RecapKind[] = [
   'rare',
   'expedition',
   'castle',
+  'rank',
   'mastery',
   'deed',
   'goal',
@@ -249,6 +252,10 @@ export function noticeLine(e: GameEvent): (RecapLine & { at: number }) | null {
       if (!isCastleEvent(e)) return null;
       const m = castleMoment(e);
       return { kind: 'castle', text: m.body ? `${m.title}. ${m.body}` : m.title, icon: null, href: m.href, at: e.at };
+    }
+    case 'rankUp': {
+      const w = rankUpWords(e);
+      return { kind: 'rank', text: w.body ? `${w.title}. ${w.body}` : w.title, icon: w.skill, href: w.href, at: e.at };
     }
     case 'laneStopped':
       if (isQuietStop(e.reason.code)) return null;

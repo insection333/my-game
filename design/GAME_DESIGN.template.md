@@ -277,7 +277,7 @@ The five raisings cost 50,000, 500,000, 3,000,000, 15,000,000 and 60,000,000 gol
 
 ### Notable moments
 
-A level, an unlock, a find, a goal or a mastery step. Moments within 5 seconds of each other show together. Levels and Legendary finds take the centre of the screen; Rare finds and mastery steps a banner; Uncommon finds and goals a toast in the lane card. Measured in the model: one moment every 1.6 to 2.0 minutes of active play from day 2 onward, never more than 4.3 minutes without one. The first hour runs faster on purpose, at about one a minute, while ten levels come in every skill.
+A level, an unlock, a find, a goal or a mastery step. Moments within 5 seconds of each other show together. Levels and Legendary finds take the centre of the screen; Rare finds and mastery steps a banner; Uncommon finds and goals a toast in the lane card. A climb on a ladder (session 49) is a moment too, said by the server that keeps the ladders: into the top 100, 50, 10 or 3, or to first, each band said once (falling out and climbing back says nothing, and a player's first place is where they start, not a climb). First takes the centre, the top ten or three a banner, the rest a toast. Measured in the model: one moment every 1.6 to 2.0 minutes of active play from day 2 onward, never more than 4.3 minutes without one. The first hour runs faster on purpose, at about one a minute, while ten levels come in every skill.
 
 ### Deeds and honours (step 15)
 

@@ -69,6 +69,11 @@ export async function buildApp(
     notices: new Notices(db),
     hiscores: new Hiscores(db),
   };
+  // A climb on a ladder is said to the player at once, and kept with their notices (session 49).
+  ctx.hiscores.onRankUp = (playerId, events) => {
+    ctx.live.publish(playerId, { type: 'events', events });
+    ctx.notices.add(playerId, events);
+  };
   app.decorateRequest('playerId', null);
   harden(app, config.origins);
   await app.register(cookie);
