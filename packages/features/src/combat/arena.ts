@@ -59,14 +59,20 @@ export function arenaOf(state: State): Arena | null {
   if (!run || run.seed === undefined) return null;
   const boss = run.action.feature === 'expeditions' ? BOSSES.find((b) => b.id === run.action.id) : undefined;
   if (run.action.feature !== 'combat' && !boss) return null;
-  const key = [state.seed, run.action.feature, run.action.id, run.startedAt, run.seed, healthAt(state, run.startedAt)];
-  if (cached?.key !== key.join(':')) {
-    const foe = boss ?? foeById(run.action.id);
-    cached = {
-      key: key.join(':'),
-      arena: foe ? playOut(state, foe, !!boss, run.startedAt, run.endsAt, run.seed) : null,
-    };
-  }
+  const foe = boss ?? foeById(run.action.id);
+  if (!foe) return null;
+  // The engine settles the fight with the gear and food held when it ends (session 48): changed mid-fight,
+  // the arena plays it again as it will be settled.
+  const key = JSON.stringify([
+    state.seed,
+    run.action,
+    run.startedAt,
+    run.seed,
+    healthAt(state, run.startedAt),
+    fighterOf(state, foe),
+    mealsOf(state),
+  ]);
+  if (cached?.key !== key) cached = { key, arena: playOut(state, foe, !!boss, run.startedAt, run.endsAt, run.seed) };
   return cached.arena;
 }
 

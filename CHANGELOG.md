@@ -185,4 +185,5 @@
   - **An expedition's bar fills with the stage under way,** as the lane's does, instead of jumping at each stage's end.
   - **Notices:** deeds done together read as one line in the tray and on the Hearth's Today; a siege or a spy against you offers the lord's profile. Your honours on the Deeds tab shows the picture worn.
 - Session 47: every "XP an hour" a page states is what the lane pays. The skill rows and the foe rows left out every gain the engine pays: the fire's heat, Legendary marks, relics, the steading, the castle's edict and a Path. A foe's gold an hour now counts a Path of Bounty and an Edict of Harvest as its spoils do. One function works out the XP gain for the engine and the pages alike.
+- Session 48: Your odds kept fresh. They were remembered by a fighter's levels, gear and food alone, so carrying whetstones, arrows or runes, raising the Training yard, a relic or the Smokehouse left the odds (and the rates and verdicts the Combat page states from them) as they were. They are now remembered by the whole fighter and the meal as it heals. The arena plays a fight again when the gear or food it will be settled with changes mid-fight.
 
