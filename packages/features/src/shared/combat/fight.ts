@@ -14,6 +14,8 @@ import {
   REGEN_PER_6S,
   SWING_S,
   TRIANGLE,
+  ARMOUR_GUARD_PER_TIER,
+  WEAPON_HIT_PER_TIER,
   XP_PER_DAMAGE,
   type Foe,
 } from './data.ts';
@@ -86,11 +88,11 @@ export function fight(
 ): Fought {
   const mu = TRIANGLE[matchup(p.style, foe.style)];
   const hit = clamp(0.66 + 0.012 * (p.styleLevel - foe.level) + p.perks.accuracy / 100) * (tw.hit ?? 1);
-  const maxHit = 10 * (3 + Math.floor(p.styleLevel / 12) + p.weaponTier);
+  const maxHit = 10 * (3 + Math.floor(p.styleLevel / 12)) + WEAPON_HIT_PER_TIER * p.weaponTier;
   const dealtMult =
     mu.dealt * (1 + (p.perks.damage + (p.supply?.pct ?? 0)) / 100 + (MASTERY_DAMAGE_PER_STEP / 100) * p.mastery);
   const foeHit = clamp(0.62 + 0.02 * (foe.level - p.hpLevel));
-  const guard = (1 - 0.025 * p.armour) * (1 - p.perks.guard / 100) * mu.taken;
+  const guard = (1 - (ARMOUR_GUARD_PER_TIER / 100) * p.armour) * (1 - p.perks.guard / 100) * mu.taken;
   const regen = regenPerSecond(p) * SWING_S;
   const heal = (1 + p.hpPerks.foodHeal / 100) * (tw.heal ?? 1);
   const most = maxHealth(p);

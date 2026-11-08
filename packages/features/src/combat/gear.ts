@@ -1,9 +1,9 @@
 // Wearing and removing gear: combat's own routes. A weapon needs its style at the tier's level, armour
 // needs Hitpoints at it; the item must be in the Storehouse. Pure: a new state and an answer.
-import { TIER_LEVELS, type GearSlot } from '@idle-clash/content';
+import { fmt, t, TIER_LEVELS, type GearSlot } from '@idle-clash/content';
 import { countOf, type State } from '@idle-clash/kernel';
 import { itemOf } from '../shared/catalog.ts';
-import { HITPOINTS } from '../shared/combat/data.ts';
+import { ARMOUR_GUARD_PER_TIER, HITPOINTS, WEAPON_HIT_PER_TIER } from '../shared/combat/data.ts';
 import { combatOf, setCombat } from '../shared/combat/state.ts';
 import { skillLevel } from '../shared/skill.ts';
 
@@ -17,6 +17,16 @@ export function wearNeeds(item: string): { skill: string; level: number } | null
   const gear = itemOf(item)?.gear;
   if (!gear) return null;
   return { skill: gear.style ?? HITPOINTS, level: TIER_LEVELS[gear.tier - 1] };
+}
+
+/** What a piece does in a fight, in words (session 51): a weapon's tier raises the most a swing can roll,
+ *  armour's takes a share off every hit; the very numbers fight() uses. */
+export function gearDoes(item: string): string | null {
+  const gear = itemOf(item)?.gear;
+  if (!gear) return null;
+  return gear.slot === 'weapon'
+    ? t('gear.does.weapon', { hit: fmt.int(WEAPON_HIT_PER_TIER * gear.tier) })
+    : t('gear.does.armour', { pct: fmt.pct(ARMOUR_GUARD_PER_TIER * gear.tier) });
 }
 
 export function wear(state: State, item: string): { state: State; result: WearResult } {
