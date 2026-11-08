@@ -43,6 +43,8 @@ export const combat: Record<string, string> = {
   'gear.wearWeapon': 'Choose a weapon to wear',
   'gear.none': 'Empty',
   'gear.needs': 'Needs {skill} level {level}',
+  'gear.does.weapon': '+{hit} max hit',
+  'gear.does.armour': '{pct} less damage taken',
   'gear.wear': 'Wear',
   'gear.remove': 'Take off',
   'gear.worn': 'Worn',

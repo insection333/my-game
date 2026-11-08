@@ -163,7 +163,7 @@ function GearChoices({ gear }: { gear: LoadoutSlot }) {
           key={c.item}
           icon={<ItemIcon name={c.item} size={32} />}
           name={c.name}
-          facts={c.needs ? [c.needs] : []}
+          facts={[c.does, ...(c.needs ? [c.needs] : [])]}
           status={c.worn ? <Pill tone="moss">{t('gear.worn')}</Pill> : undefined}
           actions={
             c.worn ? (

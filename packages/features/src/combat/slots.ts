@@ -15,13 +15,15 @@ import { edictPct } from '../shared/castle/mirror.ts';
 import { pathBonus } from '../shared/kindling.ts';
 import { findsOf } from '../shared/combat/spoils.ts';
 import { healthShown } from './arena.ts';
-import { wearNeeds } from './gear.ts';
+import { gearDoes, wearNeeds } from './gear.ts';
 import { FEATURE } from './rules.ts';
 
 export interface GearChoice {
   item: string;
   name: string;
   worn: boolean;
+  /** What it does in a fight: "+30 max hit", "7.5% less damage taken". */
+  does: string;
   /** "Needs Melee level 10" when it cannot be worn yet. */
   needs: string | null;
 }
@@ -101,6 +103,7 @@ function loadout(state: State, now: number): LoadoutView {
           item: id,
           name: t(`item.${id}`),
           worn: id === item,
+          does: gearDoes(id) ?? '',
           needs: short ? t('gear.needs', { skill: t(`skill.${needs.skill}`), level: fmt.int(needs.level) }) : null,
         };
       });

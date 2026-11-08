@@ -2,7 +2,15 @@
 // panel itself, which sells to the vendor, wears gear, and answers Comes from and Used in by asking
 // every feature.
 import { fmt, t } from '@idle-clash/content';
-import { actionsFor, findOf, healsFor, items, RARE_FIND_COMPLETIONS, type CapacityView } from '@idle-clash/features';
+import {
+  actionsFor,
+  findOf,
+  gearDoes,
+  healsFor,
+  items,
+  RARE_FIND_COMPLETIONS,
+  type CapacityView,
+} from '@idle-clash/features';
 import { countOf } from '@idle-clash/kernel';
 import { useRef, useState } from 'react';
 import { ActionRow, Button, ItemIcon, Panel, Pill, ProgressBar } from '@idle-clash/ui';
@@ -141,6 +149,7 @@ export function ItemPanel({ item }: { item: string }) {
           <Pill>{t(KIND_TITLE[def.kind])}</Pill>
           <p>{t('item.panel.have', { count: fmt.int(countOf(state, item)) })}</p>
           {def.heals !== undefined && <p>{t('food.heals', { health: fmt.int(healsFor(state, def.heals)) })}</p>}
+          {def.gear && <p>{gearDoes(item)}</p>}
           {def.value > 0 && <p className={s.muted}>{t('item.panel.sells', { gold: fmt.int(def.value) })}</p>}
         </div>
       </div>

@@ -33,6 +33,10 @@ export const SWING_S = 3;
 export const BASE_HEALTH = 300;
 /** Health returns this much every 6 seconds, in a fight or out of one. */
 export const REGEN_PER_6S = 10;
+/** Each tier of the weapon worn adds this to the most a swing can roll (before the triangle and perks). */
+export const WEAPON_HIT_PER_TIER = 10;
+/** Each tier of armour worn, in each of its three slots, takes this percentage off every hit taken. */
+export const ARMOUR_GUARD_PER_TIER = 2.5;
 /** Food is eaten below this share of health; below BASE_RETREAT_PCT with none left, you retreat. */
 export const EAT_BELOW = 0.5;
 /** Style XP per point of damage dealt, by foe tier; Hitpoints gets this share of it. */
