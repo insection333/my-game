@@ -118,13 +118,19 @@ export function routeView(state: State, region: Region, hours: Hours): RouteView
   };
 }
 
-function runView(state: State, run: Run): RunView {
+function runView(state: State, run: Run, now: number): RunView {
   const count = stageCount(run);
   const boss = bossIn(run.region);
   const running = LANE_IDS.some((l) => {
     const c = state.lanes[l].current;
     return c !== null && actionKey(c.action) === `expeditions:${run.region}`;
   });
+  // The stage under way fills the run's bar as it fills the lane's (session 46), not at its end.
+  const c = state.lanes.combat.current;
+  const within =
+    c && actionKey(c.action) === `expeditions:${run.region}`
+      ? Math.min(1, Math.max(0, (now - c.startedAt) / Math.max(1, c.endsAt - c.startedAt)))
+      : 0;
   return {
     region: run.region,
     title: t('expedition.runTitle', { region: regionName(run.region), time: fmt.duration(run.hours * 3_600_000) }),
@@ -134,7 +140,7 @@ function runView(state: State, run: Run): RunView {
       run.at < count
         ? t('expedition.stage', { stage: fmt.int(run.at + 1), stages: fmt.int(count) })
         : t('expedition.bossStage', { boss: midSentence(t(`boss.${boss.id}`)) }),
-    progress: run.at / (count + 1),
+    progress: Math.min(1, (run.at + within) / (count + 1)),
     stages: chips(run, run.at, count),
     boss: { id: boss.id, name: t(`boss.${boss.id}`), now: run.at >= count },
     marks: t('expedition.runMarks', { marks: fmt.int(run.marks) }),
@@ -143,7 +149,7 @@ function runView(state: State, run: Run): RunView {
   };
 }
 
-export function expeditionView(state: State): ExpeditionView {
+export function expeditionView(state: State, now: number): ExpeditionView {
   const e = expeditionsOf(state);
   const hp = skillLevel(state, HITPOINTS);
   return {
@@ -157,7 +163,7 @@ export function expeditionView(state: State): ExpeditionView {
       };
     }),
     lengths: LENGTHS.map((hours) => ({ hours, label: fmt.duration(hours * 3_600_000) })),
-    run: e.run ? runView(state, e.run) : null,
+    run: e.run ? runView(state, e.run, now) : null,
     marks: t('expedition.marks', { marks: fmt.int(e.marks) }),
     legend: [...TWISTS, ...ROADS].map(twistView),
   };

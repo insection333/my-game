@@ -7,14 +7,18 @@ import { ActionRow, Button, hasIcon, ItemIcon, Panel, Pill } from '@idle-clash/u
 import { useGame } from '../game/hooks.ts';
 import { game } from '../game/store.ts';
 import { Slot } from '../slots.tsx';
+import { CombatArena, useFightClock } from './CombatArena.tsx';
 import s from './expeditions.module.css';
 
 const VERDICT_TONE = { easy: 'moss', fair: 'woad', costly: 'gold', tooStrong: 'neutral' } as const;
 
 export function Bosses({ bosses }: { bosses: BossRow[] }) {
+  const now = useFightClock();
   return (
     <Panel title={t('expeditions.title')} flush>
       <Slot id="combat.bosses">
+        {/* A boss fought in the lane, played out over the bosses (session 46). */}
+        <CombatArena now={now} place="bosses" />
         {bosses.map((b) => (
           <Boss key={b.id} boss={b} />
         ))}

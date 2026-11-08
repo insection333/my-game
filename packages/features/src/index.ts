@@ -16,7 +16,7 @@ export { CACHE_DRAWS } from './goals/cache.ts';
 export * as items from './shared/items.ts';
 export * as combatData from './shared/combat/data.ts';
 export type { Fighter, Odds, Swing, Verdict } from './shared/combat/fight.ts';
-export { arenaOf, type Arena } from './combat/arena.ts';
+export { arenaAt, arenaOf, healthShown, type Arena, type ArenaNow, type Shown } from './combat/arena.ts';
 export type { FoeRow, GearChoice, LoadoutSlot, LoadoutView, SupplyView, TrianglePart } from './combat/slots.ts';
 export { yourOdds } from './combat/slots.ts';
 export type { CapacityView, FoodView } from './storehouse/index.ts';

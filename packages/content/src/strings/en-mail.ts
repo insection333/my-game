@@ -3,6 +3,7 @@
 export const mail: Record<string, string> = {
   'tray.notices': 'Notices',
   'tray.messages': 'Messages',
+  'tray.profile': 'Profile',
   'tray.views': 'Notices and messages',
   'tray.newMessages': '{count} new messages',
   'tray.newMessagesOne': '1 new message',

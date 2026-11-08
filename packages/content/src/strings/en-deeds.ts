@@ -243,6 +243,7 @@ export const deeds = {
 
   // Moments.
   'moment.deedDone': 'Deed done: {deed}',
+  'moment.deedsDone': 'Deeds done: {deeds}',
   'moment.deedPoints': '{tier}, {points} points',
   'moment.deedUnlocks': 'Unlocked: {honours}',
   'moment.andMore': '{count} more',

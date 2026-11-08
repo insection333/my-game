@@ -222,3 +222,12 @@
     transition: none;
   }
 }
+
+/* The lane fighting a foe on another tab: one line saying where, with the way there. */
+.elsewhere {
+  margin: 0;
+  padding: var(--s-2) var(--s-4);
+  border-bottom: 1px solid var(--line);
+  background: var(--surface-2);
+  font-size: var(--t-small);
+}

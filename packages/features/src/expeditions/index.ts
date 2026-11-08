@@ -45,7 +45,7 @@ export const expeditions = defineFeature({
     }),
   },
   slots: {
-    'combat.expedition': ({ state }) => expeditionView(state) as unknown as Json,
+    'combat.expedition': ({ state, now }) => expeditionView(state, now) as unknown as Json,
     'combat.bosses': ({ state, now }) => bossRows(state, now) as unknown as Json,
     'combat.relics': ({ state }) => relicsView(state) as unknown as Json,
     'collection.log': ({ state }) => bossLog(state) as unknown as Json,
