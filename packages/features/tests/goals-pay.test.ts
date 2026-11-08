@@ -76,6 +76,15 @@ describe('what a goal pays', () => {
     expect(daily.reward).toBeLessThan(hour * 1.15);
   });
 
+  it("sizes the daily goal at the player's lasting XP gains, so a veteran's day is no shorter (session 55)", () => {
+    const plain = at(99, { feature: 'cooking', id: 'cooked-perch' });
+    const shrine: State = { ...plain, features: { ...plain.features, steading: { stages: { shrine: 5 } } } };
+    const [a, b] = [makeDaily(plain, T0)!, makeDaily(shrine, T0)!];
+    expect(b.skill).toBe(a.skill);
+    // The Shrine's five stages are 5% more XP in every skill: the day asks 5% more of it.
+    expect(b.target / a.target).toBeCloseTo(1.05, 2);
+  });
+
   it('is made the same on the server and the page', () => {
     const s = at(99, { feature: 'cooking', id: 'cooked-perch' });
     const a = goals.routes.refresh.run(s, {}, T0).state;
