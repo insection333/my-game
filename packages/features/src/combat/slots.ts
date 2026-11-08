@@ -10,6 +10,10 @@ import type { Odds } from '../shared/combat/fight.ts';
 import { oddsFor } from '../shared/combat/odds.ts';
 import { healthMax, mealsOf, styleOf, supplyOf, wornIn } from '../shared/combat/state.ts';
 import { skillLevel } from '../shared/skill.ts';
+import { xpBonusPct } from '../shared/complete.ts';
+import { edictPct } from '../shared/castle/mirror.ts';
+import { pathBonus } from '../shared/kindling.ts';
+import { findsOf } from '../shared/combat/spoils.ts';
 import { healthShown } from './arena.ts';
 import { wearNeeds } from './gear.ts';
 import { FEATURE } from './rules.ts';
@@ -157,7 +161,15 @@ function supplyView(state: State, style: Style): SupplyView {
   };
 }
 
-function foeRow(state: State, foe: Foe): FoeRow {
+/** Gold an hour as the lane pays it now: the winnings lifted by the style's Path of Bounty and an Edict of
+ *  Harvest (as spoils pays them), less food and supplies. */
+function goldNow(state: State, o: Odds, now: number): number {
+  const style = styleOf(state);
+  const bounty = style ? pathBonus(state, style, 'items') : 0;
+  return o.goldWon * (1 + bounty / 100) * (1 + edictPct(state, now, 'fightGold') / 100) - o.goldSpent;
+}
+
+function foeRow(state: State, foe: Foe, now: number): FoeRow {
   const locked = skillLevel(state, HITPOINTS) < foe.hitpoints;
   const style = styleOf(state);
   const o = locked ? null : oddsFor(state, foe);
@@ -180,9 +192,12 @@ function foeRow(state: State, foe: Foe): FoeRow {
     verdictId: o?.verdict ?? null,
     facts: o
       ? [
-          t('action.xpPerHour', { xp: fmt.int(o.xpPerHour) }),
+          // What the lane pays now, every gain on the style's XP counted.
+          t('action.xpPerHour', {
+            xp: fmt.int(o.xpPerHour * (style ? 1 + xpBonusPct(state, style, findsOf(style), now) / 100 : 1)),
+          }),
           t('combat.foodPerHour', { food: fmt.int(o.foodPerHour) }),
-          t('combat.goldPerHour', { gold: fmt.int(o.goldPerHour) }),
+          t('combat.goldPerHour', { gold: fmt.int(goldNow(state, o, now)) }),
         ]
       : [],
   };
@@ -190,7 +205,7 @@ function foeRow(state: State, foe: Foe): FoeRow {
 
 export const SLOTS_FILLED: Record<string, SlotFill> = {
   'combat.loadout': ({ state, now }) => loadout(state, now) as unknown as Json,
-  'combat.foes': ({ state }) => FOES.map((f) => foeRow(state, f)) as unknown as Json,
+  'combat.foes': ({ state, now }) => FOES.map((f) => foeRow(state, f, now)) as unknown as Json,
   // Each style, the one it beats, and the line that says so (the page draws their seals beside it).
   'combat.triangle': ({ state }) => triangle(styleOf(state)) as unknown as Json,
 };

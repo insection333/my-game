@@ -16,6 +16,7 @@ import { KINDLE_XP, kindlingsIn } from './kindling.ts';
 import { xpOf } from '@idle-clash/kernel';
 import type { Json, SlotFill } from '../define.ts';
 import { actionMastery, actionModifiers, nextUnlock, skillLevel, unlockText } from './skill.ts';
+import { xpBonusPct } from './complete.ts';
 
 export interface SkillAction {
   id: string;
@@ -158,8 +159,10 @@ export function skillSlots(def: SkillDef): Record<string, SlotFill> {
     },
     'skills.list': ({ state }) => summary(xpOf(state, skill)),
     'skill.header': ({ state }) => summary(xpOf(state, skill)),
-    'skill.actions': ({ state }) => {
+    'skill.actions': ({ state, now }) => {
       const level = skillLevel(state, skill);
+      // The XP an hour each row states is what the lane pays now, every gain counted.
+      const gain = 1 + xpBonusPct(state, skill, def.finds, now) / 100;
       return def.actions.map((a) => {
         const m = actionModifiers(state, skill, ladder, feature, a.id);
         const seconds = a.seconds / (1 + m.speed / 100);
@@ -173,7 +176,7 @@ export function skillSlots(def: SkillDef): Record<string, SlotFill> {
           locked: level < a.level,
           opensAt: level < a.level ? t('action.opensAt', { level: fmt.int(a.level) }) : null,
           time: fmt.seconds(Math.round(seconds * 100) / 100),
-          xpPerHour: t('action.xpPerHour', { xp: fmt.int((a.xp * 3600) / seconds) }),
+          xpPerHour: t('action.xpPerHour', { xp: fmt.int((a.xp * gain * 3600) / seconds) }),
           gives: a.gives
             .map((g) => t('action.gives', { item: t(`item.${g.item}`), count: fmt.int(g.count) }))
             .join(', '),

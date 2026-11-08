@@ -13,7 +13,18 @@ import {
   type Find,
   type Ladder,
 } from '@idle-clash/content';
-import { addXp, countOf, give, take, xpOf, type ActionContext, type Rarity, type State } from '@idle-clash/kernel';
+import {
+  addXp,
+  countOf,
+  fireBurning,
+  fireMinutes,
+  give,
+  take,
+  xpOf,
+  type ActionContext,
+  type Rarity,
+  type State,
+} from '@idle-clash/kernel';
 import { relicFindPct, relicXpPct } from './expeditions/relics.ts';
 import { steadingSavePct, steadingXpPct, steadingYieldPct } from './steading.ts';
 import { edictPct } from './castle/mirror.ts';
@@ -39,6 +50,27 @@ export interface CompletedAction {
 }
 
 /** Lasting marks in a skill: how many of its Legendary finds have ever been found. */
+/** Every lasting and passing gain on a skill's XP, as a percentage: the fire's heat while it burns, the
+ *  skill's Legendary marks, its relic, the steading, the castle's edict and the skill's Path. The engine
+ *  pays by it, and every "XP an hour" a page states counts it too (session 47), so the two agree. */
+export function xpBonusPct(
+  state: State,
+  skill: string,
+  finds: readonly Find[],
+  at: number,
+  minutes = fireMinutes(state, at),
+  burning = fireBurning(state, at),
+): number {
+  return (
+    (burning ? fireXpPct(minutes) : 0) +
+    LEGENDARY_MARK_PCT * marksIn(state, finds) +
+    relicXpPct(state, skill) +
+    steadingXpPct(state) +
+    edictPct(state, at, 'xp') +
+    pathBonus(state, skill, 'xp')
+  );
+}
+
 export const marksIn = (state: State, finds: readonly Find[]): number =>
   finds.filter((f) => f.rarity === 'legendary' && Object.hasOwn(state.found, f.item)).length;
 
@@ -104,13 +136,7 @@ export function completeSkillAction(ctx: ActionContext, def: SkillDefinition, ac
     );
 
   const before = skillLevel(state, def.skill);
-  const bonusPct =
-    (ctx.fireBurning ? fireXpPct(ctx.fireMinutes) : 0) +
-    LEGENDARY_MARK_PCT * marksIn(state, def.finds) +
-    relicXpPct(state, def.skill) +
-    steadingXpPct(state) +
-    edictPct(state, ctx.at, 'xp') +
-    pathBonus(state, def.skill, 'xp');
+  const bonusPct = xpBonusPct(state, def.skill, def.finds, ctx.at, ctx.fireMinutes, ctx.fireBurning);
   const xpBefore = xpOf(state, def.skill);
   addXp(state, def.skill, act.xp * (1 + bonusPct / 100));
   announceKindling(ctx, def.skill, xpBefore);
