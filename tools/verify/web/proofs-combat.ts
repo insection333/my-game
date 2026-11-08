@@ -67,7 +67,7 @@ async function retreatCostsNothing(served: Served, problems: string[]) {
   try {
     // The phone's chip says it short, and is heard in full.
     await page
-      .getByRole('button', { name: 'Combat: Retreated from the hill troll: out of food' })
+      .getByRole('button', { name: 'Combat: Out of food, retreated from the hill troll' })
       .filter({ hasText: 'Out of food' })
       .first()
       .waitFor({ timeout: 15_000 });

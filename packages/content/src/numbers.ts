@@ -30,6 +30,14 @@ export const fmt = {
   num: (n: number): string => decimal.format(n),
   /** 2.5 → "2.5%" */
   pct: (n: number): string => `${decimal.format(n)}%`,
+  /** A chance from 0 to 1 → "37%"; one that rounds to nothing or to certain but is neither says so
+   *  ("<1%", ">99%"; session 56), where "0% to win" read as hopeless for a fight that could be won. */
+  chance: (p: number): string =>
+    p > 0 && p < 0.005
+      ? `<${whole.format(1)}%`
+      : p < 1 && p >= 0.995
+        ? `>${whole.format(99)}%`
+        : `${whole.format(Math.round(p * 100))}%`,
   /** 7.5 → "7.5 s"; an action's time to a tenth, never "37.74 s" */
   seconds: (s: number): string => `${tenths.format(s)} s`,
   /** milliseconds → "45 s", "12 min", "3 h 20 min", "2 d 4 h" */

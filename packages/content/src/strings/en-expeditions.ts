@@ -23,7 +23,7 @@ export const expeditions = {
 
   'stop.expeditionHome': 'The expedition is home',
   'stopShort.expeditionHome': 'Home',
-  'stop.bossRested': 'Already fought today: back tomorrow',
+  'stop.bossRested': 'Already fought today, back tomorrow',
   'stopShort.bossRested': 'Fought today',
 
   'twist.fog': 'Fog',

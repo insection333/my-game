@@ -111,7 +111,7 @@ describe('fighting in the Combat lane', () => {
     const stopped = out.events.find((e) => e.type === 'laneStopped');
     expect(stopped).toMatchObject({ lane: 'combat', reason: { code: 'retreated', detail: { foe: 'hill-troll' } } });
     if (stopped?.type === 'laneStopped')
-      expect(formatStop(stopped.reason)).toBe('Retreated from the hill troll: out of food');
+      expect(formatStop(stopped.reason)).toBe('Out of food, retreated from the hill troll');
     // Just before the fight that ended in the retreat, and after it: only its food is gone.
     const before = engine.advance(s, stopped!.at - 1, rng).state;
     const { bread: _eaten, ...kept } = before.items;
