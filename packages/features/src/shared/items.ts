@@ -4,7 +4,8 @@
 // answers by declaring its content.
 import { fmt, t, type Item } from '@idle-clash/content';
 import type { Feature } from '../define.ts';
-import { FOODS } from './combat/data.ts';
+import { findOf, RARE_FIND_COMPLETIONS } from './catalog.ts';
+import { FOODS, STYLE_SKILLS } from './combat/data.ts';
 
 export interface ItemSource {
   feature: string;
@@ -78,7 +79,26 @@ function kept(def: Item | null): ItemSource[] {
   if (def.supply) return [{ ...COMBAT, label: t('item.panel.carried', { style: t(`skill.${def.supply.style}`) }) }];
   if (def.kind === 'find' && def.value === 0)
     return [{ ...COMBAT, feature: 'storehouse', label: t('item.panel.inLog'), href: '/storehouse/log' }];
+  const rare = findOf(def.id);
+  if (rare?.rarity === 'rare') return [mastery(rare)];
   return [];
+}
+
+/** A Rare find, used (session 53): its mastery completions on one of its skill's actions, a style's on
+ *  one foe, a boss's on one foe of its region. The item panel offered the use above "Used in", which
+ *  said "Nothing yet." */
+function mastery(f: { skill: string; feature: string }): ItemSource {
+  const count = fmt.int(RARE_FIND_COMPLETIONS);
+  const style = (STYLE_SKILLS as readonly string[]).includes(f.skill);
+  if (f.feature === 'expeditions') return { ...COMBAT, label: t('item.panel.useOnRegion', { count }) };
+  return {
+    feature: f.feature,
+    skill: f.skill,
+    action: null,
+    rarity: null,
+    count: 0,
+    label: t(style ? 'item.panel.useOnFoe' : 'item.panel.useOn', { skill: t(`skill.${f.skill}`), count }),
+  };
 }
 
 export function usedIn(features: readonly Feature[], item: string): ItemSource[] {

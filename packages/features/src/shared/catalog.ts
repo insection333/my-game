@@ -39,6 +39,9 @@ export function setSkills(list: readonly SkillActions[]): void {
 /** Every skill with actions of its own (not the combat skills, whose actions are combat's foes). */
 export const skillActions = (): readonly SkillActions[] => skills;
 
+/** What using a Rare find gives one action of its skill: this many mastery completions at once. */
+export const RARE_FIND_COMPLETIONS = 500;
+
 /** A skill's find, with the skill and feature it belongs to (a Rare one can be used on its actions). */
 export interface FindEntry {
   item: string;

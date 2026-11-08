@@ -65,7 +65,13 @@ describe('t', () => {
   it('has a one-form beside every count before a plural, so the page never says "1 milestones"', () => {
     // Counts that are never 1: the 500 completions a Rare find gives, the log sizes milestones ask for,
     // and every deed's (the smallest asks for 10).
-    const neverOne = ['item.panel.use', 'goal.milestone.log'];
+    const neverOne = [
+      'item.panel.use',
+      'item.panel.useOn',
+      'item.panel.useOnFoe',
+      'item.panel.useOnRegion',
+      'goal.milestone.log',
+    ];
     const plural = /\{(count|skills)\} (?:[A-Za-z]+ )?[a-z]+s\b/;
     const missing = allStringKeys().filter(
       (k) =>

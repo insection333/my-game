@@ -4,12 +4,12 @@
 // and a boss's to a foe of its region.
 import { masteryStep } from '@idle-clash/content';
 import { countOf, noteMoment, take, type ActionRef, type GameEvent, type State } from '@idle-clash/kernel';
-import { findOf, skillActions } from '../shared/catalog.ts';
+import { findOf, RARE_FIND_COMPLETIONS, skillActions } from '../shared/catalog.ts';
 import { FOES, HITPOINTS, regionOf, STYLE_SKILLS } from '../shared/combat/data.ts';
 import { BOSSES } from '../shared/expeditions/data.ts';
 import { perksAt, skillLevel } from '../shared/skill.ts';
 
-export const RARE_FIND_COMPLETIONS = 500;
+export { RARE_FIND_COMPLETIONS };
 
 export type UseFindResult =
   { ok: true } | { ok: false; reason: { code: 'notARareFind' | 'notOwned' | 'notItsAction' } };
