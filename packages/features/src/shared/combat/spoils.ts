@@ -2,28 +2,22 @@
 // damage dealt (more while the fire burns, for each Legendary mark and for the skill's relic); and for
 // a win, gold, the foe's drop and maybe a find. An expedition's fights also count towards each foe's
 // mastery, as the lane's do (the kernel counts the lane's).
-import { fireXpPct, LEGENDARY_MARK_PCT, masteryStep } from '@idle-clash/content';
+import { masteryStep } from '@idle-clash/content';
 import { addXp, give, xpOf, type ActionContext } from '@idle-clash/kernel';
-import { marksIn, rollFind } from '../complete.ts';
-import { relicXpPct } from '../expeditions/relics.ts';
-import { steadingXpPct } from '../steading.ts';
+import { rollFind, xpBonusPct } from '../complete.ts';
 import { edictPct } from '../castle/mirror.ts';
 import { announceKindling, pathBonus } from '../kindling.ts';
 import { skillLevel, yieldOf } from '../skill.ts';
 import { HITPOINTS, HITPOINTS_XP_SHARE, LADDERS, MASTERY_DROPS_PER_STEP, STYLE_FINDS, type Foe } from './data.ts';
 import { styleXp, type Fighter } from './fight.ts';
 
+/** The finds whose Legendary marks raise a fighting skill's XP (Hitpoints has none). */
+export const findsOf = (skill: string) => (skill === HITPOINTS ? [] : STYLE_FINDS[skill as keyof typeof STYLE_FINDS]);
+
 /** XP for a skill from a fight, with the fire, the skill's lasting marks and its relic. */
 function gainXp(ctx: ActionContext, skill: string, base: number) {
-  const marks = skill === HITPOINTS ? 0 : marksIn(ctx.state, STYLE_FINDS[skill as keyof typeof STYLE_FINDS]);
   const before = skillLevel(ctx.state, skill);
-  const pct =
-    (ctx.fireBurning ? fireXpPct(ctx.fireMinutes) : 0) +
-    LEGENDARY_MARK_PCT * marks +
-    relicXpPct(ctx.state, skill) +
-    steadingXpPct(ctx.state) +
-    edictPct(ctx.state, ctx.at, 'xp') +
-    pathBonus(ctx.state, skill, 'xp');
+  const pct = xpBonusPct(ctx.state, skill, findsOf(skill), ctx.at, ctx.fireMinutes, ctx.fireBurning);
   const xpBefore = xpOf(ctx.state, skill);
   addXp(ctx.state, skill, base * (1 + pct / 100));
   announceKindling(ctx, skill, xpBefore);

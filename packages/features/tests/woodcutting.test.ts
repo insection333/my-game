@@ -32,6 +32,20 @@ describe('woodcutting', () => {
     expect(per).toBeGreaterThan(11 * 1.16);
   });
 
+  // Session 47: each row's "XP an hour" left out every gain (the fire, the edict, relics, the steading,
+  // marks, a Path), so it promised less than the lane paid.
+  it('states the XP an hour the lane pays, every gain counted', () => {
+    const s = cmd(newState(11, T0), { type: 'start', lane: 'gathering', action: pine }).state;
+    const rows = woodcutting.slots['skill.actions']({ state: s, now: T0 }) as unknown as {
+      xpPerHour: string;
+    }[];
+    const stated = Number(rows[0].xpPerHour.replace(/[^0-9]/g, ''));
+    const after = engine.advance(s, T0 + 75 * SECOND, rng).state;
+    const { xp, part = 0 } = after.skills.woodcutting;
+    const paid = ((xp + part / 1000) * 3600) / 75;
+    expect(stated).toBeCloseTo(paid, -1);
+  });
+
   it('refuses a tree above your level, and says why in words', () => {
     const out = cmd(newState(11, T0), {
       type: 'start',

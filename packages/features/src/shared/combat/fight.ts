@@ -149,6 +149,9 @@ export interface Odds {
   xpPerHour: number;
   foodPerHour: number;
   goldPerHour: number;
+  /** Of which won from foes, and spent on food and supplies. */
+  goldWon: number;
+  goldSpent: number;
   retreatRate: number;
   /** Seconds from one foe to the next, on average. */
   secondsPerFight: number;
@@ -179,9 +182,12 @@ export function odds(p: Fighter, foe: Foe, meal: Omit<Meal, 'count'> | null, n =
   const price = meal ? (FOODS.find((fd) => fd.id === meal.item)?.price ?? itemOf(meal.item)?.value ?? 0) : 0;
   // One supply for each foe fought, at what it would sell for.
   const supplies = p.supply ? n * perHour * (itemOf(p.supply.item)?.value ?? 0) : 0;
-  const goldPerHour = defeats * foe.gold * (1 + p.perks.spoils / 100) - foodPerHour * price - supplies;
+  // Gold won and gold spent, apart, so a page can count what lifts the winnings (a Path, an edict).
+  const goldWon = defeats * foe.gold * (1 + p.perks.spoils / 100);
+  const goldSpent = foodPerHour * price + supplies;
+  const goldPerHour = goldWon - goldSpent;
   const retreatRate = retreats / n;
   const verdict: Verdict =
     retreatRate > 0.02 ? 'tooStrong' : foodPerHour < 4 ? 'easy' : foodPerHour < 25 ? 'fair' : 'costly';
-  return { verdict, xpPerHour, foodPerHour, goldPerHour, retreatRate, secondsPerFight: secs / n };
+  return { verdict, xpPerHour, foodPerHour, goldPerHour, goldWon, goldSpent, retreatRate, secondsPerFight: secs / n };
 }

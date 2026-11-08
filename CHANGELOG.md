@@ -184,4 +184,5 @@
   - **Boss fights are played out too,** over the bosses on the Expeditions tab. The lane shows the boss, not its drop.
   - **An expedition's bar fills with the stage under way,** as the lane's does, instead of jumping at each stage's end.
   - **Notices:** deeds done together read as one line in the tray and on the Hearth's Today; a siege or a spy against you offers the lord's profile. Your honours on the Deeds tab shows the picture worn.
+- Session 47: every "XP an hour" a page states is what the lane pays. The skill rows and the foe rows left out every gain the engine pays: the fire's heat, Legendary marks, relics, the steading, the castle's edict and a Path. A foe's gold an hour now counts a Path of Bounty and an Edict of Harvest as its spoils do. One function works out the XP gain for the engine and the pages alike.
 
