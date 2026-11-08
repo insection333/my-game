@@ -4,7 +4,8 @@
 // the save's seed and a count, so the server and the page make the same goal.
 import { masteryStep } from '@idle-clash/content';
 import { countOf, LANE_IDS, seeded, xpOf, type State } from '@idle-clash/kernel';
-import { skillActions } from '../shared/catalog.ts';
+import { findsIn, skillActions } from '../shared/catalog.ts';
+import { xpBonusPct } from '../shared/complete.ts';
 import { totalLevel } from '../shared/standing.ts';
 import { MILESTONES, type Milestone } from './content.ts';
 import { bestIn, paces, type Pace } from './pace.ts';
@@ -111,7 +112,9 @@ export function makeShort(state: State, g: GoalsState, now: number): ShortGoal |
 }
 
 /** Today's daily goal: about 40 minutes of XP in a skill at work in a lane that keeps working all day
- *  (or, with the lanes idle, any trained skill). */
+ *  (or, with the lanes idle, any trained skill). Since session 55 the 40 minutes are reckoned at the
+ *  player's lasting gains on that skill (marks, its relic, the steading, the edict, a Path), so a
+ *  veteran's day is not quicker for them; the fire's heat, which burns only while tended, is left out. */
 export function makeDaily(state: State, now: number): DailyGoal | null {
   const list = paces(state);
   const working = new Set(atWork(state, list, true).map((p) => p.skill));
@@ -121,7 +124,8 @@ export function makeDaily(state: State, now: number): DailyGoal | null {
   const day = dayOf(now);
   const r = seeded(state.seed);
   const p = options[Math.floor(r('daily', Number(day.replaceAll('-', ''))) * options.length)];
-  const xpPerS = p.xpEach / p.secondsEach;
+  const lasting = 1 + xpBonusPct(state, p.skill, findsIn(p.skill), now, 0, false) / 100;
+  const xpPerS = (p.xpEach * lasting) / p.secondsEach;
   return {
     day,
     skill: p.skill,

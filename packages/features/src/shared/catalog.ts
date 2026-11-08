@@ -58,6 +58,8 @@ export function setFinds(list: readonly FindEntry[]): void {
 }
 
 export const findOf = (item: string): FindEntry | undefined => finds.get(item);
+/** A skill's finds (a style's for a combat style, a boss's under Expeditions). */
+export const findsIn = (skill: string): FindEntry[] => [...finds.values()].filter((f) => f.skill === skill);
 
 /** Every find, skill by skill, in the order the features declare them. */
 export const allFinds = (): FindEntry[] => [...finds.values()];

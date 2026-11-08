@@ -49,14 +49,13 @@ export interface CompletedAction {
   findMultiple: number;
 }
 
-/** Lasting marks in a skill: how many of its Legendary finds have ever been found. */
 /** Every lasting and passing gain on a skill's XP, as a percentage: the fire's heat while it burns, the
  *  skill's Legendary marks, its relic, the steading, the castle's edict and the skill's Path. The engine
  *  pays by it, and every "XP an hour" a page states counts it too (session 47), so the two agree. */
 export function xpBonusPct(
   state: State,
   skill: string,
-  finds: readonly Find[],
+  finds: readonly Pick<Find, 'item' | 'rarity'>[],
   at: number,
   minutes = fireMinutes(state, at),
   burning = fireBurning(state, at),
@@ -71,7 +70,8 @@ export function xpBonusPct(
   );
 }
 
-export const marksIn = (state: State, finds: readonly Find[]): number =>
+/** Lasting marks in a skill: how many of its Legendary finds have ever been found. */
+export const marksIn = (state: State, finds: readonly Pick<Find, 'item' | 'rarity'>[]): number =>
   finds.filter((f) => f.rarity === 'legendary' && Object.hasOwn(state.found, f.item)).length;
 
 /** The rarity this completion finds, if any. Draws one roll, and a second only for Uncommon luck. */

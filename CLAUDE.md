@@ -93,5 +93,6 @@ To change the game design: edit the model in `design/model/` or the template, ru
 | 52 Food carried, drawn | Done: the loadout's food is a row of small tiles (icon and count) in the order a fight eats them, each naming what it heals and opening its item panel, in place of a line of text |
 | 53 Finds used, said | Done: a Rare find's Used in names its use (500 mastery completions on one of its skill's actions, a style's foe, a boss's region), where it said "Nothing yet." under the very offer to use it |
 | 54 Places on the card | Done: a listed player's profile card shows their places on the hiscores, Total and their three best skills, so a rank-up has somewhere to be seen by others |
+| 55 A day's goal holds | Done: the daily goal's 40 minutes are reckoned at the player's lasting XP gains on its skill (marks, relic, steading, edict, Path; not the fire), so it no longer shrinks as a veteran's gains grow |
 
 Outstanding: the closed test waits on the server going up (the owner's call). Gold left once the Storehouse is fully enlarged now goes to the steading (session 25). Forgotten passwords are reset from the admin page while email is off; the owner's account is made an admin by naming it in `ADMIN_NAMES` after signing up. The contact address is admin@idleclash.com.
