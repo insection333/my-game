@@ -4,8 +4,8 @@
 // and why, with where to act. The simulation reads the same lines.
 import { fmt, formatStop, isQuietStop, t } from '@idle-clash/content';
 import type { AwaySummary, GameEvent } from '@idle-clash/kernel';
-import { itemOf } from './catalog.ts';
-import { castleMoment, isCastleEvent } from './castle/words.ts';
+import { itemOf, skillActions } from './catalog.ts';
+import { castleIcon, castleMoment, isCastleEvent } from './castle/words.ts';
 import { storyOf } from './expeditions/story.ts';
 import { rankUpWords } from './rank-up.ts';
 import { remedyFor } from './remedy.ts';
@@ -58,6 +58,16 @@ export interface RecapLine {
 const lower = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
 const skillHref = (feature: string) => (feature === 'combat' ? '/combat' : `/skills/${feature}`);
 
+/** An action's picture (session 58): what it makes, or the foe fought; the page draws it if it can. */
+const actionIcon = (a: { feature: string; id: string }): string =>
+  skillActions()
+    .find((s) => s.feature === a.feature)
+    ?.actions.find((x) => x.id === a.id)?.gives?.[0]?.item ?? a.id;
+
+/** A lane's stop pictured by what would set it going again, else by the action it stopped on. */
+const stopIcon = (e: Extract<GameEvent, { type: 'laneStopped' }>): string | null =>
+  remedyFor(e.reason, e.action)?.item ?? (e.action ? actionIcon(e.action) : null);
+
 /** Where to act on a lane that stopped by itself: where the lanes rail's remedy leads, or the action's
  *  own page. */
 function stopHref(e: Extract<GameEvent, { type: 'laneStopped' }>): string | null {
@@ -70,7 +80,7 @@ function stopHref(e: Extract<GameEvent, { type: 'laneStopped' }>): string | null
 const kindledLine = (skill: string, count: number): RecapLine => ({
   kind: 'kindled',
   text: t('recap.kindled', { skill: t(`skill.${skill}`), count: fmt.int(count) }),
-  icon: null,
+  icon: skill,
   href: `/skills/${skill}`,
 });
 
@@ -109,7 +119,7 @@ export function recapLines(a: AwaySummary): RecapLine[] {
     lines.push({
       kind: 'level',
       text: t('recap.level', { skill: t(`skill.${skill}`), level: fmt.int(level) }),
-      icon: null,
+      icon: skill,
       href: `/skills/${skill}`,
     });
   // Kindlings, one line a skill: the latest.
@@ -135,7 +145,7 @@ export function recapLines(a: AwaySummary): RecapLine[] {
     lines.push({
       kind: 'mastery',
       text: t('moment.masteryStep', { action: t(`action.${e.action.feature}.${e.action.id}`), step: fmt.int(e.step) }),
-      icon: null,
+      icon: actionIcon(e.action),
       href: skillHref(e.action.feature),
     });
   if (a.uncommon)
@@ -177,7 +187,7 @@ export function recapLines(a: AwaySummary): RecapLine[] {
       lines.push({
         kind: 'stopped',
         text: t('moment.laneStopped', { lane: t(`lane.${e.lane}`), reason: lower(formatStop(e.reason)) }),
-        icon: null,
+        icon: stopIcon(e),
         href: stopHref(e),
       });
   return lines.sort((x, y) => RECAP_ORDER.indexOf(x.kind) - RECAP_ORDER.indexOf(y.kind));
@@ -201,7 +211,7 @@ export function noticeLine(e: GameEvent): (RecapLine & { at: number }) | null {
       return {
         kind: 'level',
         text: t('recap.level', { skill: t(`skill.${e.skill}`), level: fmt.int(e.level) }),
-        icon: null,
+        icon: e.skill,
         href: `/skills/${e.skill}`,
         at: e.at,
       };
@@ -212,7 +222,7 @@ export function noticeLine(e: GameEvent): (RecapLine & { at: number }) | null {
           action: t(`action.${e.action.feature}.${e.action.id}`),
           step: fmt.int(e.step),
         }),
-        icon: null,
+        icon: actionIcon(e.action),
         href: skillHref(e.action.feature),
         at: e.at,
       };
@@ -251,7 +261,13 @@ export function noticeLine(e: GameEvent): (RecapLine & { at: number }) | null {
     case 'castleTempered': {
       if (!isCastleEvent(e)) return null;
       const m = castleMoment(e);
-      return { kind: 'castle', text: m.body ? `${m.title}. ${m.body}` : m.title, icon: null, href: m.href, at: e.at };
+      return {
+        kind: 'castle',
+        text: m.body ? `${m.title}. ${m.body}` : m.title,
+        icon: castleIcon(e),
+        href: m.href,
+        at: e.at,
+      };
     }
     case 'rankUp': {
       const w = rankUpWords(e);
@@ -262,7 +278,7 @@ export function noticeLine(e: GameEvent): (RecapLine & { at: number }) | null {
       return {
         kind: 'stopped',
         text: t('moment.laneStopped', { lane: t(`lane.${e.lane}`), reason: lower(formatStop(e.reason)) }),
-        icon: null,
+        icon: stopIcon(e),
         href: stopHref(e),
         at: e.at,
       };

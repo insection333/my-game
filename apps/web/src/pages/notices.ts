@@ -13,6 +13,17 @@ export type Notice = recap.RecapLine & { at: number; who?: string; deed?: string
  *  marks: 100 and Tempered +3") rather than a column of "Deed done:" (session 46). */
 const TOGETHER_MS = 60_000;
 
+/** What makes two events one notice. A route this page runs at once and the server runs again (deeds
+ *  recorded, a goal claimed) says the same thing at two clocks' times, so those are known by what they
+ *  say: a deed by its id (done once ever), a goal by its words within the minute (session 58: "Deeds
+ *  done: Castle 10, …, Castle 10" listed each deed twice). */
+const keyOf = (e: GameEvent): string =>
+  e.type === 'deedDone'
+    ? `deed:${e.deed}`
+    : e.type === 'goalDone'
+      ? JSON.stringify({ ...e, at: Math.floor(e.at / TOGETHER_MS) })
+      : JSON.stringify(e);
+
 // Asked on every draw (the bell is always there): worked out again only when the lists change.
 let last: { notices: GameEvent[]; events: GameEvent[]; length: number; out: Notice[] } | null = null;
 
@@ -34,7 +45,7 @@ function list(view: Pick<GameView, 'notices' | 'events'>): Notice[] {
   const out: Notice[] = [];
   const all: GameEvent[] = [...view.notices, ...view.events];
   for (const e of all.sort((a, b) => b.at - a.at)) {
-    const key = JSON.stringify(e);
+    const key = keyOf(e);
     if (seen.has(key)) continue;
     seen.add(key);
     const line = recap.noticeLine(e);

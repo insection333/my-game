@@ -51,4 +51,20 @@ describe('a notice', () => {
       ['9th on the Fishing hiscores. Into the top ten.', '/hiscores?skill=fishing', 'fishing'],
     ]);
   });
+
+  // Session 58: the page records deeds at once and the server again, each at its own clock's time.
+  it('names a deed once, though the page and the server each said it', () => {
+    const deed = (at: number): GameEvent => ({
+      type: 'deedDone',
+      at,
+      deed: 'castle-10',
+      name: 'Castle 10',
+      icon: null,
+      tier: 'easy',
+      points: 5,
+    });
+    const goal = (at: number): GameEvent => ({ type: 'goalDone', at, goal: 'daily', name: 'Earn 900 Mining XP today' });
+    const lines = noticesOf({ notices: [deed(T), goal(T + 2_000)], events: [deed(T + 400), goal(T + 2_300)] });
+    expect(lines.map((n) => n.text)).toEqual(['Goal done: Earn 900 Mining XP today', 'Deed done: Castle 10']);
+  });
 });

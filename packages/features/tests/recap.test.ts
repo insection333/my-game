@@ -62,4 +62,29 @@ describe('the away recap', () => {
       }),
     ).toBeNull();
   });
+
+  // Session 58: levels, mastery, stops and the castle's lines stood on a bare dot.
+  it('pictures every line it can: a skill by its seal, an action by what it makes, a stop by its remedy', () => {
+    const icons = Object.fromEntries(recap.recapLines(away).map((l) => [l.text, l.icon]));
+    expect(icons['Mining reached level 13']).toBe('mining');
+    expect(icons['Oak tree: mastery 4']).toBe('oak-logs');
+    expect(icons['Artisan stopped: out of tin ore']).toBe('tin-ore');
+    const besieged = recap.noticeLine({
+      type: 'castleBesieged',
+      at: at(10),
+      foe: 'Keeper',
+      outcome: 'repelled',
+      lost: 0,
+      marks: 3,
+    });
+    expect(besieged?.icon).toBe('castle-walls');
+    const tempered = recap.noticeLine({
+      type: 'castleTempered',
+      at: at(11),
+      relic: 'aegis-shard',
+      tempers: 2,
+      masterstroke: false,
+    });
+    expect(tempered?.icon).toBe('aegis-shard');
+  });
 });
