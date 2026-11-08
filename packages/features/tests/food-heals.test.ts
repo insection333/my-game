@@ -4,6 +4,7 @@
 import { fmt, XP_TABLE } from '@idle-clash/content';
 import { newState, type State } from '@idle-clash/kernel';
 import { describe, expect, it } from 'vitest';
+import { combat } from '../src/combat/index.ts';
 import { cooking } from '../src/cooking/index.ts';
 import { combatData, healsFor } from '../src/index.ts';
 import { fight, type Swing } from '../src/shared/combat/fight.ts';
@@ -57,5 +58,44 @@ describe('what food heals', () => {
     expect(rows.every((r) => r.heals !== null)).toBe(true);
     // A newcomer, with no perk, is told the food's own healing.
     expect(healsFor(fighter(1), 140)).toBe(140);
+  });
+
+  it('is said on the loadout, food by food, in the order a fight eats it (session 52)', () => {
+    const state: State = { ...fighter(20), items: { 'copper-sword': 1, bread: 3, 'roast-fowl': 2, 'meat-pie': 5 } };
+    const loadout = combat.slots['combat.loadout']({ state, now: T0 }) as unknown as {
+      meals: { item: string; count: string; label: string }[];
+      noFood: string | null;
+    };
+    expect(loadout.noFood).toBeNull();
+    expect(loadout.meals.map((m) => m.item)).toEqual(['roast-fowl', 'meat-pie', 'bread']);
+    expect(loadout.meals[0]).toEqual({
+      item: 'roast-fowl',
+      count: '2',
+      label: `Roast fowl: 2 carried, each heals ${fmt.int(healsFor(state, 1000))}`,
+    });
+    // The first food a fight eats is the first the loadout shows.
+    const foe = combatData.FOES.at(-1)!;
+    let draw = 0;
+    let first: string | null = null;
+    fight(
+      fighterOf(state, foe)!,
+      foe,
+      () => (draw++ * 0.618) % 1,
+      300,
+      mealsOf(state),
+      {},
+      (s) => {
+        if (s.by === 'meal') first ??= s.item;
+      },
+    );
+    expect(first).toBe(loadout.meals[0].item);
+    const none = combat.slots['combat.loadout']({
+      state: { ...state, items: { 'copper-sword': 1 } },
+      now: T0,
+    }) as unknown as {
+      meals: unknown[];
+      noFood: string | null;
+    };
+    expect(none).toMatchObject({ meals: [], noFood: 'No food' });
   });
 });
