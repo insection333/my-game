@@ -39,6 +39,17 @@
   font-size: var(--t-small);
 }
 
+/* Where the run has come, with the marks it has won at the far end of the same line. */
+.where {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0 var(--s-2);
+  margin: 0;
+  color: var(--ink-2);
+  font-size: var(--t-small);
+}
+
 .twists {
   display: grid;
   gap: var(--s-1);

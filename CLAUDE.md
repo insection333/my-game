@@ -94,5 +94,6 @@ To change the game design: edit the model in `design/model/` or the template, ru
 | 53 Finds used, said | Done: a Rare find's Used in names its use (500 mastery completions on one of its skill's actions, a style's foe, a boss's region), where it said "Nothing yet." under the very offer to use it |
 | 54 Places on the card | Done: a listed player's profile card shows their places on the hiscores, Total and their three best skills, so a rank-up has somewhere to be seen by others |
 | 55 A day's goal holds | Done: the daily goal's 40 minutes are reckoned at the player's lasting XP gains on its skill (marks, relic, steading, edict, Path; not the fire), so it no longer shrinks as a veteran's gains grow |
+| 56 A run's line | Done: an expedition's stage and its marks sit apart on one line, and "0 marks so far" is gone before the first mark (it read "Stage 1 of 12 0 marks so far") |
 
 Outstanding: the closed test waits on the server going up (the owner's call). Gold left once the Storehouse is fully enlarged now goes to the steading (session 25). Forgotten passwords are reset from the admin page while email is off; the owner's account is made an admin by naming it in `ADMIN_NAMES` after signing up. The contact address is admin@idleclash.com.

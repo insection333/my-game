@@ -143,6 +143,16 @@ describe("a run's bar", () => {
     expect(at(mid)).toBeCloseTo(0.5 / (count + 1), 6);
     expect(at(c.endsAt)).toBeCloseTo(1 / (count + 1), 6);
   });
+
+  // Session 56: "Stage 1 of 12 0 marks so far" before a mark was won.
+  it('names the marks only once one is won', () => {
+    let s = fighterAt('fen', 6);
+    s = setOut(s, 'fen', 1, nextRoute(s, 'fen', 1)!.roads[0]).state;
+    expect(expeditionView(s, T0).run!.marks).toBeNull();
+    const run = expeditionsOf(s).run!;
+    const won = { ...s, features: { ...s.features, expeditions: { ...expeditionsOf(s), run: { ...run, marks: 3 } } } };
+    expect(expeditionView(won, T0).run!.marks).toBe('3 marks so far');
+  });
 });
 
 describe('a boss', () => {
