@@ -134,6 +134,13 @@ export function measurePage(): Measured {
   for (const tab of Array.from(document.querySelectorAll<HTMLElement>('[data-ui="Tab"]')))
     if (shown(tab) && tab.scrollWidth > tab.clientWidth + 1)
       problems.push(`${describe(tab)} is too narrow for its label, which runs over its neighbours`);
+  // A row's name and facts never squeezed into a sliver beside a wide button (session 57: the War
+  // College's names stood 50px wide beside "Study for 738.1K and 40 war marks").
+  for (const main of Array.from(document.querySelectorAll<HTMLElement>('[data-ui="ActionRow"] [data-part="main"]')))
+    if (shown(main) && main.getBoundingClientRect().width < 112)
+      problems.push(
+        `${describe(main)} is squeezed to ${Math.round(main.getBoundingClientRect().width)}px beside its buttons`,
+      );
 
   const menus = Array.from(document.querySelectorAll('[data-menu]'));
   for (const m of menus) {
