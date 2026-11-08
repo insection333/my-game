@@ -25,6 +25,9 @@ export interface Profile {
     bossWins: number;
     runs: number;
   };
+  /** Their places on the hiscores (session 54), once listed: Total first, then their three best skills,
+   *  the best first. */
+  places: { skill: string; place: number }[];
   /** Their castle, once raised: its level and rating, fortresses and routs, and their war record. */
   castle: {
     level: number;

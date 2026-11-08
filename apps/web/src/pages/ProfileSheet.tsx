@@ -1,8 +1,8 @@
 // A player's profile card (`?panel=player&name=…`, session 44), over any page: opened from their name on
 // the ladders and in Castle Clash. The scene they show with their picture in its frame and glow over its
 // foot; their name, badge and title, and how long they have played; their career at a glance; their
-// castle and its war record, wins against losses on one bar each; and for someone else, Send a message
-// (session 45) and Report this player.
+// places on the hiscores (session 54); their castle and its war record, wins against losses on one bar
+// each; and for someone else, Send a message (session 45) and Report this player.
 import type { Profile } from '@idle-clash/contracts';
 import { fmt, hasString, t } from '@idle-clash/content';
 import { Button, CastleScene, ItemIcon, MarchScene, Picture, Sheet, TextLink, type CastleLook } from '@idle-clash/ui';
@@ -111,6 +111,20 @@ function Card({ p }: { p: Profile }) {
           {c.runs > 0 && <Stat label={t('profile.runs')} value={fmt.int(c.runs)} />}
         </dl>
       </section>
+      {p.places.length > 0 && (
+        <section className={s.section} aria-label={t('profile.places')}>
+          <h3>{t('profile.places')}</h3>
+          <dl className={s.stats}>
+            {p.places.map((x) => (
+              <Stat
+                key={x.skill}
+                label={x.skill === 'total' ? t('profile.totalLevel') : t(`skill.${x.skill}`)}
+                value={fmt.ordinal(x.place)}
+              />
+            ))}
+          </dl>
+        </section>
+      )}
       {p.castle && (
         <section className={s.section} aria-label={t('profile.castle')}>
           <h3>{t('profile.castle')}</h3>

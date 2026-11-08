@@ -38,6 +38,39 @@ describe('a profile card', () => {
     expect((await card(alder, 'Alder')).body!.you).toBe(true);
   });
 
+  it('shows their places on the hiscores once listed: Total, then their best skills (session 54)', async () => {
+    s = await server();
+    const alder = await signUp(s, 'Alder');
+    const birch = await signUp(s, 'Birch');
+    const save = (id: string, skills: Record<string, number>) => {
+      const saved = s.ctx.store.read(id, s.clock.now)!;
+      const state = {
+        ...saved.doc.state,
+        skills: Object.fromEntries(Object.entries(skills).map(([k, xp]) => [k, { xp }])),
+      };
+      s.ctx.store.write(id, { ...saved.doc, state }, saved.rev, s.clock.now);
+      s.ctx.hiscores.update(id, state, s.clock.now);
+    };
+    save(idOf('Alder'), { woodcutting: 5_000, mining: 100, fishing: 900, smithing: 50, cooking: 10 });
+    save(idOf('Birch'), { woodcutting: 9_000, mining: 50 });
+    // Not yet listed: no places.
+    expect((await card(birch, 'Alder')).body!.places).toEqual([]);
+    s.ctx.db.update(players).set({ firstActAt: 0, listedAt: 0 }).run();
+    s.ctx.hiscores.forget();
+    s.clock.now += 61_000; // past the card's minute
+    expect((await card(birch, 'Alder')).body!.places).toEqual([
+      { skill: 'total', place: 1 },
+      { skill: 'fishing', place: 1 },
+      { skill: 'mining', place: 1 },
+      { skill: 'smithing', place: 1 },
+    ]);
+    expect((await card(alder, 'Birch')).body!.places).toEqual([
+      { skill: 'total', place: 2 },
+      { skill: 'woodcutting', place: 1 },
+      { skill: 'mining', place: 2 },
+    ]);
+  });
+
   it('knows no one by a name that is not a player, or a banned player', async () => {
     s = await server();
     const alder = await signUp(s, 'Alder');
