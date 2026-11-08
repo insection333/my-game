@@ -54,6 +54,7 @@ export function profileOf(ctx: Ctx, name: string, now: number): (Omit<Profile, '
     banner: shown.banner,
     look: { picture: shown.picture, frame: shown.frame, glow: shown.glow, badge: shown.badge, scene: shown.scene },
     career,
+    places: ctx.hiscores.placesOf(p.id),
     castle:
       castle && bastion
         ? {

@@ -189,6 +189,19 @@ export class Hiscores {
     return true;
   }
 
+  /** A listed player's places (session 54), for their profile card: Total, then their `best` best skills
+   *  (the best place first; of equal places, the most XP). Nothing for a player not yet listed. */
+  placesOf(playerId: string, best = 3): { skill: string; place: number }[] {
+    if (!this.isListed(playerId)) return [];
+    const rows = this.db.select().from(hiscores).where(eq(hiscores.playerId, playerId)).all();
+    const places = rows
+      .filter((r) => r.xp > 0)
+      .map((r) => ({ skill: r.skill, place: this.standings.rank(r.skill, r), xp: r.xp }));
+    const total = places.filter((p) => p.skill === 'total');
+    const skills = places.filter((p) => p.skill !== 'total').sort((a, b) => a.place - b.place || b.xp - a.xp);
+    return [...total, ...skills.slice(0, best)].map(({ skill, place }) => ({ skill, place }));
+  }
+
   /** Lets go of every ladder held: a player was renamed, banned or let back. */
   forget(): void {
     this.tops.clear();

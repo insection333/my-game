@@ -65,6 +65,7 @@ export const honours: Record<string, string> = {
   'profile.since': 'Playing for {days} days',
   'profile.sinceToday': 'Joined today',
   'profile.career': 'Career',
+  'profile.places': 'On the hiscores',
   'profile.totalLevel': 'Total level',
   'profile.deedPoints': 'Deed points',
   'profile.deeds': 'Deeds done',
