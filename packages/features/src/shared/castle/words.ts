@@ -89,6 +89,23 @@ export const sentence = (text: string): string => text.charAt(0).toUpperCase() +
 const marksText = (marks: number) => (marks > 0 ? [t('castle.report.marks', { marks: fmt.int(marks) })] : []);
 const goldText = (gold: number) => (gold > 0 ? [t('castle.report.gold', { gold: fmt.short(gold) })] : []);
 
+/** A castle event's picture (session 58), as the Reports tab's filters draw each kind: an assault's
+ *  siege engine, a defence's walls, a spy's glass, a relic tempered its own. */
+export function castleIcon(e: CastleEvent): string {
+  switch (e.type) {
+    case 'castleSiege':
+    case 'castleIncursion':
+      return 'tech-siegecraft';
+    case 'castleBesieged':
+    case 'castleOrders':
+      return 'castle-walls';
+    case 'castleSpyCaught':
+      return 'spy-scout';
+    case 'castleTempered':
+      return e.relic;
+  }
+}
+
 /** A castle event in words: its title, what it moved, where to read more, and how loud its moment is. */
 export function castleMoment(e: CastleEvent): {
   title: string;

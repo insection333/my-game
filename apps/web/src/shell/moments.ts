@@ -137,7 +137,8 @@ function describe(
     case 'castleIncursion':
     case 'castleTempered': {
       const m = castleEngine.castleMoment(e);
-      return { title: m.title, body: m.body, icon: null };
+      const icon = castleEngine.castleIcon(e);
+      return { title: m.title, body: m.body, icon: hasIcon(icon) ? icon : null };
     }
     default:
       return { title: '', body: null, icon: null };

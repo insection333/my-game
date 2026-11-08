@@ -1,6 +1,6 @@
 // The notices tray and settings: sheets over any page.
 import { fmt, t } from '@idle-clash/content';
-import { Button, Field, ItemIcon, TextLink } from '@idle-clash/ui';
+import { Button, Field, hasIcon, ItemIcon, TextLink } from '@idle-clash/ui';
 import { useEffect, useState, type FormEvent } from 'react';
 import { ApiError } from '../api.ts';
 import { useGame } from '../game/hooks.ts';
@@ -60,7 +60,11 @@ export function Tray() {
                     onClick={(e) => (e.preventDefault(), navigate(n.href ?? '/'))}
                   >
                     <span className={s.lineTime}>{fmt.time(n.at)}</span>
-                    {n.icon ? <ItemIcon name={n.icon} size={24} /> : <span className={s.lineDot} aria-hidden="true" />}
+                    {n.icon && hasIcon(n.icon) ? (
+                      <ItemIcon name={n.icon} size={24} />
+                    ) : (
+                      <span className={s.lineDot} aria-hidden="true" />
+                    )}
                     <span className={s.lineText}>{n.text}</span>
                   </a>
                   {n.who && (
