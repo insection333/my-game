@@ -6,7 +6,7 @@ import { castleEngine as E } from '@idle-clash/features';
 import { useSyncedCastle } from './synced.ts';
 import s from './castle.module.css';
 
-const pct = (p: number) => fmt.pct(Math.round(p * 100));
+const pct = (p: number) => fmt.chance(p);
 
 /** `estimate`: the defence is reckoned from a rating and a scouting, so the chance is said as about. */
 export function AttackPlan({ def, estimate }: { def: E.Side; estimate?: boolean }) {

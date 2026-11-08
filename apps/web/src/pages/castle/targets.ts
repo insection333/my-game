@@ -13,7 +13,7 @@ export interface Target {
   merc: E.Mercenary | null;
 }
 
-export const pct = (p: number) => fmt.pct(Math.round(p * 100));
+export const pct = (p: number) => fmt.chance(p);
 export const sheetOf = (id: string) => `${location.pathname}?panel=target&target=${encodeURIComponent(id)}`;
 
 /** What the last scouting of a lord saw, if any. */

@@ -65,8 +65,9 @@ export interface RunView {
   progress: number;
   stages: StageChip[];
   boss: { id: string; name: string; now: boolean };
-  /** "12 marks so far" and the finds. */
-  marks: string;
+  /** "12 marks so far", or null before the first is won (session 56: "0 marks so far" ran into the
+   *  stage, "Stage 1 of 12 0 marks so far"); and the finds. */
+  marks: string | null;
   finds: string[];
   /** Whether the Combat lane is on it now. */
   running: boolean;
@@ -143,7 +144,7 @@ function runView(state: State, run: Run, now: number): RunView {
     progress: Math.min(1, (run.at + within) / (count + 1)),
     stages: chips(run, run.at, count),
     boss: { id: boss.id, name: t(`boss.${boss.id}`), now: run.at >= count },
-    marks: t('expedition.runMarks', { marks: fmt.int(run.marks) }),
+    marks: run.marks > 0 ? t('expedition.runMarks', { marks: fmt.int(run.marks) }) : null,
     finds: run.finds,
     running,
   };

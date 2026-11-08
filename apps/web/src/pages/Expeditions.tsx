@@ -156,8 +156,9 @@ function Run({ view, run }: { view: ExpeditionView; run: RunView }) {
         </div>
         <Twists twists={run.twists} />
         <ProgressBar value={run.progress} label={run.stage} tone="woad" />
-        <p className={s.note}>
-          <span>{run.stage}</span> <span>{run.marks}</span>
+        <p className={s.where}>
+          <span>{run.stage}</span>
+          {run.marks && <span>{run.marks}</span>}
         </p>
         <Ribbon stages={run.stages} boss={run.boss.id} />
         {run.finds.length > 0 && (

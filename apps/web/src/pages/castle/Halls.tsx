@@ -160,7 +160,7 @@ function Relic({ id }: { id: string }) {
               disabled={busy || castle.warMarks < temper.marks || !affords(castle, purse, temper.gold)}
               onClick={() => void tryTemper()}
             >
-              {t('castle.temper', { pct: fmt.pct(Math.round(E.temperChance(tempers) * 100)) })}
+              {t('castle.temper', { pct: fmt.chance(E.temperChance(tempers)) })}
             </Button>
           ) : (
             <Pill tone="moss">{t('castle.highest')}</Pill>

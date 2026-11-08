@@ -59,7 +59,7 @@ export const combat: Record<string, string> = {
   'matchup.disadvantage': 'Disadvantage',
   'stop.hitpointsTooLow': 'Needs Hitpoints level {level}',
   'stop.noWeapon': 'Wear a weapon first',
-  'stop.retreated': 'Retreated from the {foe}: out of food',
+  'stop.retreated': 'Out of food, retreated from the {foe}',
   'stop.tooHurt': 'Too hurt to fight, and no food',
   'stopShort.hitpointsTooLow': 'Needs level {level}',
   'stopShort.noWeapon': 'No weapon',
