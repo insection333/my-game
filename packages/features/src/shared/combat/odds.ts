@@ -11,7 +11,9 @@ export function oddsFor(state: State, foe: Foe): Odds | null {
   const p = fighterOf(state, foe);
   if (!p) return null;
   const meal = mealsOf(state)[0] ?? null;
-  const key = JSON.stringify([p.style, p.styleLevel, p.weaponTier, p.armour, p.hpLevel, p.mastery, foe.id, meal?.item]);
+  // Everything the fights depend on: the whole fighter (its perks and supply too, which the Training yard,
+  // relics and a whetstone carried change), the foe and the meal as it heals (the Smokehouse).
+  const key = JSON.stringify([p, foe.id, meal?.item, meal?.heals]);
   let o = cache.get(key);
   if (!o) {
     if (cache.size > 500) cache.clear();
