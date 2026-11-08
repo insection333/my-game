@@ -120,3 +120,35 @@
   font-size: var(--t-small);
   color: var(--ink-2);
 }
+
+/* The food carried, in eating order: small tiles of icon and count, wrapping as the panel narrows. */
+.meals {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-1);
+}
+
+.meal {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-1);
+  min-height: 2rem;
+  padding: 0.125rem var(--s-2) 0.125rem var(--s-1);
+  border: 1px solid var(--line);
+  border-radius: var(--r-control);
+  background: var(--surface-2);
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  text-decoration: none;
+}
+
+.meal:hover {
+  border-color: var(--line-strong);
+}
+
+.health .meal span {
+  color: var(--ink);
+}

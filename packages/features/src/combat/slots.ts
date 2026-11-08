@@ -8,7 +8,7 @@ import { itemOf } from '../shared/catalog.ts';
 import { FOES, HITPOINTS, matchup, regionOf, STYLE_SKILLS, type Foe } from '../shared/combat/data.ts';
 import type { Odds } from '../shared/combat/fight.ts';
 import { oddsFor } from '../shared/combat/odds.ts';
-import { healthMax, mealsOf, styleOf, supplyOf, wornIn } from '../shared/combat/state.ts';
+import { healsFor, healthMax, mealsOf, styleOf, supplyOf, wornIn } from '../shared/combat/state.ts';
 import { skillLevel } from '../shared/skill.ts';
 import { xpBonusPct } from '../shared/complete.ts';
 import { edictPct } from '../shared/castle/mirror.ts';
@@ -51,7 +51,10 @@ export interface LoadoutView {
   slots: LoadoutSlot[];
   health: number;
   healthText: string;
-  food: string;
+  /** The food carried, in the order it is eaten (the most healing first; session 52). */
+  meals: { item: string; count: string; label: string }[];
+  /** "No food" when none is carried. */
+  noFood: string | null;
   supply: SupplyView | null;
 }
 export interface FoeRow {
@@ -132,11 +135,16 @@ function loadout(state: State, now: number): LoadoutView {
     health: health / most,
     healthText: t('combat.health', { now: fmt.int(health), most: fmt.int(most) }),
     supply: style ? supplyView(state, style) : null,
-    food: meals.length
-      ? t('combat.carrying', {
-          food: meals.map((m) => t('action.gives', { item: t(`item.${m.item}`), count: fmt.int(m.count) })).join(', '),
-        })
-      : t('combat.noFood'),
+    meals: meals.map((m) => ({
+      item: m.item,
+      count: fmt.short(m.count),
+      label: t('combat.meal', {
+        item: t(`item.${m.item}`),
+        count: fmt.int(m.count),
+        health: fmt.int(healsFor(state, m.heals)),
+      }),
+    })),
+    noFood: meals.length ? null : t('combat.noFood'),
   };
 }
 

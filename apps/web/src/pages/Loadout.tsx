@@ -5,6 +5,7 @@ import { t } from '@idle-clash/content';
 import type { LoadoutSlot, LoadoutView, SupplyView, TrianglePart } from '@idle-clash/features';
 import { Figure, ItemIcon, Panel, ProgressBar, TextLink } from '@idle-clash/ui';
 import { navigate } from '../router.ts';
+import { itemHref } from './Items.tsx';
 import { Slot } from '../slots.tsx';
 import s from './loadout.module.css';
 
@@ -48,7 +49,7 @@ export function Loadout({ loadout, triangle }: { loadout: LoadoutView; triangle:
           <div className={s.health}>
             <ProgressBar value={loadout.health} label={loadout.healthText} />
             <span>{loadout.healthText}</span>
-            <span>{loadout.food}</span>
+            <Meals loadout={loadout} />
             {loadout.supply && (
               <span>
                 {loadout.supply.name}: {loadout.supply.line}
@@ -58,6 +59,30 @@ export function Loadout({ loadout, triangle }: { loadout: LoadoutView; triangle:
         </div>
       </Slot>
     </Panel>
+  );
+}
+
+/** The food carried, as it is eaten: the most healing first, each opening its item panel. */
+function Meals({ loadout }: { loadout: LoadoutView }) {
+  if (loadout.noFood) return <span>{loadout.noFood}</span>;
+  return (
+    <ul className={s.meals} aria-label={t('combat.meals')} title={t('combat.meals')}>
+      {loadout.meals.map((m) => (
+        <li key={m.item}>
+          <a
+            href={itemHref(m.item)}
+            data-ui="ItemTile"
+            className={s.meal}
+            aria-label={m.label}
+            title={m.label}
+            onClick={(e) => (e.preventDefault(), navigate(itemHref(m.item)))}
+          >
+            <ItemIcon name={m.item} size={24} />
+            <span>{m.count}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
   );
 }
 
