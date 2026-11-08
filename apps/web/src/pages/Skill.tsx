@@ -110,7 +110,11 @@ function SkillPage({ feature }: { feature: Feature }) {
                   icon={actionIcon(feature, a.action.id)}
                   name={a.name}
                   locked={a.locked}
-                  facts={a.locked ? [a.gives] : [a.time, a.xpPerHour, a.gives, ...(a.takes ? [a.takes] : [])]}
+                  facts={
+                    a.locked
+                      ? [a.gives]
+                      : [a.time, a.xpPerHour, a.gives, ...(a.heals ? [a.heals] : []), ...(a.takes ? [a.takes] : [])]
+                  }
                   status={
                     a.locked ? (
                       <Pill>{a.opensAt}</Pill>

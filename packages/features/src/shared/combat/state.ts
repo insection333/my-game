@@ -70,6 +70,12 @@ const hitpointsPart = (state: State) => {
   return { hpLevel, hpPerks };
 };
 
+/** What a food heals in this player's fights: its own healing, raised by Hitpoints' perks, the
+ *  hearthstone and the Smokehouse, as a fight eats it (session 50). Every page that says what food heals
+ *  says this, so "Heals 161" is what the arena shows when it is eaten. */
+export const healsFor = (state: State, heals: number): number =>
+  heals * (1 + hitpointsPart(state).hpPerks.foodHeal / 100);
+
 /** The supply a style uses: the highest tier carried that its level allows, as for its weapon. */
 export function supplyOf(state: State, style: Style): { item: string; pct: number } | null {
   const level = skillLevel(state, style);
