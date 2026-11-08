@@ -17,6 +17,8 @@ import { xpOf } from '@idle-clash/kernel';
 import type { Json, SlotFill } from '../define.ts';
 import { actionMastery, actionModifiers, nextUnlock, skillLevel, unlockText } from './skill.ts';
 import { xpBonusPct } from './complete.ts';
+import { itemOf } from './catalog.ts';
+import { healsFor } from './combat/state.ts';
 
 export interface SkillAction {
   id: string;
@@ -53,6 +55,8 @@ export interface SkillActionRow {
   gives: string;
   /** What one repetition uses up, or null when it takes nothing. */
   takes: string | null;
+  /** What the food it makes heals in your fights ("Each heals 161"), or null when it makes no food. */
+  heals: string | null;
   mastery: string;
   /** The mastery step reached, 0 to 10. */
   masteryStep: number;
@@ -165,6 +169,7 @@ export function skillSlots(def: SkillDef): Record<string, SlotFill> {
       const gain = 1 + xpBonusPct(state, skill, def.finds, now) / 100;
       return def.actions.map((a) => {
         const m = actionModifiers(state, skill, ladder, feature, a.id);
+        const food = a.gives.map((g) => itemOf(g.item)?.heals).find((h) => h !== undefined);
         const seconds = a.seconds / (1 + m.speed / 100);
         const step = actionMastery(state, ladder, skill, feature, a.id);
         const done = Object.hasOwn(state.mastery, `${feature}:${a.id}`) ? state.mastery[`${feature}:${a.id}`] : 0;
@@ -187,6 +192,7 @@ export function skillSlots(def: SkillDef): Record<string, SlotFill> {
                   .join(', '),
               })
             : null,
+          heals: food === undefined ? null : t('action.heals', { health: fmt.int(healsFor(state, food)) }),
           mastery: t('mastery.step', { step: fmt.int(step) }),
           masteryStep: step,
           masteryProgress: to ? Math.min(1, (done - from) / (to - from)) : 1,

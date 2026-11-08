@@ -5,6 +5,7 @@ import { countOf, type State } from '@idle-clash/kernel';
 import { z } from 'zod';
 import { defineFeature, defineRoute, type Json } from '../define.ts';
 import { FOODS, HITPOINTS } from '../shared/combat/data.ts';
+import { healsFor } from '../shared/combat/state.ts';
 import { skillLevel } from '../shared/skill.ts';
 import { capacity, ENLARGE_COSTS, SLOTS_PER_ENLARGEMENT, slotsUsed, storeOf } from '../shared/storehouse.ts';
 import { useFind } from './finds.ts';
@@ -65,7 +66,10 @@ function foodView(state: State): FoodView {
     shop: FOODS.map((f) => ({
       item: f.id,
       name: t(`item.${f.id}`),
-      facts: [t('food.heals', { health: fmt.int(f.heals) }), t('food.price', { gold: fmt.int(f.price) })],
+      facts: [
+        t('food.heals', { health: fmt.int(healsFor(state, f.heals)) }),
+        t('food.price', { gold: fmt.int(f.price) }),
+      ],
       have: countOf(state, f.id) > 0 ? t('food.have', { count: fmt.int(countOf(state, f.id)) }) : null,
       price: f.price,
       carried: countOf(state, f.id),
