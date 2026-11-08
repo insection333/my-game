@@ -73,10 +73,33 @@
   gap: var(--s-2);
 }
 
-/* Narrow rows keep their buttons at the right, one above the other, so a row stays short. */
+/* Narrow rows keep their buttons at the right, one above the other, so a row stays short; a button
+   too wide to sit beside the name ("Study for 738.1K and 40 war marks") moves to a line of its own
+   below it rather than squeezing the name and facts into a sliver (session 57). */
 @container (max-width: 440px) {
   .row {
     padding: var(--s-2) var(--s-3);
+  }
+
+  .grid,
+  .grid[data-icon] {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .icon {
+    flex: 0 0 auto;
+  }
+
+  /* The name keeps at least 8rem, or all but 11rem of the row: Start, Next and Fight sit beside it,
+     a button much wider than they are wraps below. */
+  .main {
+    flex: 1 1 max(8rem, 100% - 11rem);
+  }
+
+  .actions {
+    flex: 0 0 auto;
+    margin-left: auto;
   }
 
   .actions {
@@ -91,10 +114,6 @@
 
 /* The narrowest rows (a 320 px phone): an icon that yields leaves its room to the name and the buttons. */
 @container (max-width: 300px) {
-  .grid[data-yields] {
-    grid-template-columns: minmax(0, 1fr) auto;
-  }
-
   .grid[data-yields] .icon {
     display: none;
   }

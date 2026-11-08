@@ -26,7 +26,7 @@ export function ActionRow({ icon, iconYields, name, facts, status, progress, act
     <div data-ui="ActionRow" data-locked={locked || undefined} className={s.row} role="group" aria-labelledby={id}>
       <div className={s.grid} data-icon={icon ? true : undefined} data-yields={(icon && iconYields) || undefined}>
         {icon && <div className={s.icon}>{icon}</div>}
-        <div className={s.main}>
+        <div className={s.main} data-part="main">
           <div className={s.title}>
             <span className={s.name} id={id}>
               {name}
