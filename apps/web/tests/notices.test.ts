@@ -68,3 +68,30 @@ describe('a notice', () => {
     expect(lines.map((n) => n.text)).toEqual(['Goal done: Earn 900 Mining XP today', 'Deed done: Castle 10']);
   });
 });
+
+// Session 68: deeds done together read as one line, pictured by the best of them (as their moment leads
+// with it), not by whichever came last.
+describe('deeds done together', () => {
+  it("are pictured by the highest tier's medallion", () => {
+    const deed = (at: number, name: string, tier: string, mark: string): GameEvent => ({
+      type: 'deedDone',
+      at,
+      deed: name,
+      name,
+      icon: null,
+      tier,
+      points: 5,
+      mark,
+    });
+    const [line] = noticesOf({
+      notices: [
+        deed(T, 'A castle raised', 'easy', '1'),
+        deed(T + 1, 'Mining 99', 'master', '99'),
+        deed(T + 2, 'Tempered +3', 'hard', '+3'),
+      ],
+      events: [],
+    });
+    expect(line.deeds).toHaveLength(3);
+    expect(line.medal).toEqual({ tier: 'master', mark: '99' });
+  });
+});

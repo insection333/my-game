@@ -23,8 +23,17 @@ export interface EventMap {
     cache?: { grade: string; items: { item: string; count: number }[] };
   };
   /** A deed was done (session 15): its words and icon as they were when done, its tier and points, and
-   *  the honours it unlocked (a title, a banner, a frame), by name. */
-  deedDone: { deed: string; name: string; icon: string | null; tier: string; points: number; unlocks?: string[] };
+   *  the honours it unlocked (a title, a banner, a frame), by name; and its medallion's mark ("40", "10K"),
+   *  so a notice draws the deed as the Deeds tab does (session 68; notices kept from before have none). */
+  deedDone: {
+    deed: string;
+    name: string;
+    icon: string | null;
+    tier: string;
+    points: number;
+    unlocks?: string[];
+    mark?: string;
+  };
   /** A skill past 99 reached another Kindling (step 17): its count so far. */
   kindled: { skill: string; count: number };
   /** An expedition came home (step 16): where and how long, the road taken, how it ended (the boss

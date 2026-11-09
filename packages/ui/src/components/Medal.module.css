@@ -44,6 +44,19 @@
   display: inline-flex;
 }
 
+/* A seal: the medallion at an icon's size, beside a line of words; never a button. */
+.seal {
+  flex: none;
+  min-width: var(--seal, 24px);
+  width: var(--seal, 24px);
+  height: var(--seal, 24px);
+  padding: 0;
+  border-width: max(1.5px, calc(var(--seal, 24px) / 16));
+  font-size: calc(var(--seal, 24px) * 0.38);
+  letter-spacing: -0.02em;
+  cursor: default;
+}
+
 /* How far along: a short bar at the medallion's foot. */
 .bar {
   position: absolute;

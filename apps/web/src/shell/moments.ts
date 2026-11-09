@@ -22,6 +22,8 @@ export interface MomentView {
   size: MomentSize;
   /** An item to draw beside it (a find), if any. */
   icon: string | null;
+  /** Without an icon, a deed's medallion (session 68). */
+  medal?: { tier: string; mark: string };
   title: string;
   body: string | null;
   /** When it should go: some seconds after its last event. */
@@ -78,7 +80,7 @@ function actionIcon(a: { feature: string; id: string }, features: readonly Featu
 function describe(
   e: GameEvent,
   features: readonly Feature[],
-): { title: string; body: string | null; icon: string | null } {
+): { title: string; body: string | null; icon: string | null; medal?: { tier: string; mark: string } } {
   switch (e.type) {
     case 'levelUp': {
       const f = features.find((x) => x.content.skill?.id === e.skill);
@@ -109,7 +111,7 @@ function describe(
       return {
         title: t('moment.goalDone', { goal: e.name ?? t(`goal.${e.goal}`) }),
         body: e.cache ? cacheText(e.cache) : null,
-        icon: e.cache ? 'supply-cache' : null,
+        icon: e.cache ? 'supply-cache' : 'gold',
       };
     case 'kindled':
       return {
@@ -131,6 +133,7 @@ function describe(
         title: t('moment.deedDone', { deed: e.name }),
         body: [worth, unlocked].filter(Boolean).join('. '),
         icon: e.icon && hasIcon(e.icon) ? e.icon : null,
+        medal: { tier: e.tier, mark: e.mark ?? '' },
       };
     }
     case 'rankUp': {
@@ -194,10 +197,13 @@ export function momentsFrom(events: readonly GameEvent[], since: number, feature
           : t('moment.also', { what: also.join('; ') })
         : null,
     ].filter(Boolean);
+    const icon = best.icon ?? ordered.map((e) => describe(e, features).icon).find(Boolean) ?? null;
+    const medal = icon ? undefined : (best.medal ?? ordered.map((e) => describe(e, features).medal).find(Boolean));
     return {
       key: String(group[0].at),
       size,
-      icon: best.icon ?? ordered.map((e) => describe(e, features).icon).find(Boolean) ?? null,
+      icon,
+      ...(medal ? { medal } : {}),
       title: best.title,
       body: body.length ? body.join(' ') : null,
       until: group.at(-1)!.at + SHOW_MS[size],

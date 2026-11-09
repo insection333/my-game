@@ -2,11 +2,12 @@
 // then Collect; otherwise today's notable moments as a short timeline; a newcomer's welcome before any.
 import { fmt, t } from '@idle-clash/content';
 import { recap } from '@idle-clash/features';
-import { Button, hasIcon, ItemIcon, Panel } from '@idle-clash/ui';
+import { Button, Panel } from '@idle-clash/ui';
 import { useGame } from '../game/hooks.ts';
 import { game } from '../game/store.ts';
 import { navigate } from '../router.ts';
 import { Slot } from '../slots.tsx';
+import { LineMark } from './LineMark.tsx';
 import { noticesOf } from './notices.ts';
 import s from './pages.module.css';
 
@@ -19,11 +20,7 @@ function Lines({ lines, time }: { lines: Line[]; time?: boolean }) {
         const inner = (
           <>
             {time && l.at !== undefined && <span className={s.lineTime}>{fmt.time(l.at)}</span>}
-            {l.icon && hasIcon(l.icon) ? (
-              <ItemIcon name={l.icon} size={24} />
-            ) : (
-              <span className={s.lineDot} aria-hidden="true" />
-            )}
+            <LineMark line={l} />
             <span className={s.lineText}>{l.text}</span>
           </>
         );

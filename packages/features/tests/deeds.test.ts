@@ -135,7 +135,8 @@ describe('deeds', () => {
     const ids = first.events.map((e) => (e.type === 'deedDone' ? e.deed : ''));
     expect(ids).toEqual(expect.arrayContaining(['level-woodcutting-10', 'level-woodcutting-99']));
     const top = first.events.find((e) => e.type === 'deedDone' && e.deed === 'level-woodcutting-99');
-    expect(top).toMatchObject({ name: 'Woodcutting 99', tier: 'master', points: 100 });
+    // Its medallion's mark rides with it (session 68), so a notice can draw the deed as the Deeds tab does.
+    expect(top).toMatchObject({ name: 'Woodcutting 99', tier: 'master', points: 100, mark: '99' });
     expect(top && 'unlocks' in top ? top.unlocks : []).toEqual(expect.arrayContaining(['Forester', 'Dawn']));
     const again = refresh(first.state, T0 + 1000);
     expect(again.events).toEqual([]);

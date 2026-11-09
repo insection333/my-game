@@ -33,6 +33,7 @@ export function refresh(state: State, now: number): Answer<{ ok: true; done: num
       icon: d.icon,
       tier: d.tier,
       points: POINTS[d.tier],
+      mark: d.mark,
       ...(unlocks.length ? { unlocks } : {}),
     });
   }

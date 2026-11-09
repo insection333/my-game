@@ -33,3 +33,22 @@ export function Medal({ tier, done, progress, label, mark, onClick }: MedalProps
     </button>
   );
 }
+
+/** The longest mark a seal holds; a longer one ("15 min", "1,000") leaves the seal to its tier's colour. */
+const SEAL_MARK = 3;
+
+/** A deed done, drawn beside a line of words or in a moment (session 68): its medallion, filled in its
+ *  tier's colour, the size of an icon, with its mark when the mark fits. A picture only, so hidden from screen readers. */
+export function MedalSeal({ tier, mark, size = 24 }: { tier: string; mark: string; size?: number }) {
+  return (
+    <span
+      data-ui="MedalSeal"
+      data-state={`${tier}-done`}
+      className={`${s.medal} ${s.seal}`}
+      style={{ '--seal': `${size}px` } as CSSProperties}
+      aria-hidden="true"
+    >
+      {mark.length <= SEAL_MARK ? mark : ''}
+    </span>
+  );
+}
