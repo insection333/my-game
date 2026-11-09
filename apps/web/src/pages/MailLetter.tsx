@@ -23,7 +23,7 @@ export function LetterRow({
   letter: Letter;
   /** False while muted: there is no answering then. */
   canWrite: boolean;
-  reply: (name: string) => void;
+  reply: (letter: Letter) => void;
   remove: (id: number) => void;
   block: (name: string) => void;
 }) {
@@ -61,7 +61,7 @@ export function LetterRow({
         ) : (
           <div className={s.actions}>
             {!l.realm && canWrite && (
-              <Button variant="quiet" onClick={() => reply(l.from)}>
+              <Button variant="quiet" onClick={() => reply(l)}>
                 {t('mail.reply')}
               </Button>
             )}

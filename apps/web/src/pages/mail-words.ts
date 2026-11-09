@@ -17,3 +17,16 @@ const REASON: Record<MailRefusal, string> = {
 
 export const reasonText = (reason: MailRefusal): string =>
   reason === 'tooLong' ? t(REASON[reason], { max: fmt.int(MAIL.MAX_CHARS) }) : t(REASON[reason]);
+
+/** The longest a reply's quote of the letter it answers runs, before it stops at a word's end. */
+const QUOTE_CHARS = 80;
+
+/** The opening words of a letter being answered (session 67), on one line: whole if short, else cut at
+ *  the last word that fits and marked with an ellipsis. */
+export function quoteOf(body: string): string {
+  const line = body.replace(/\s+/g, ' ').trim();
+  if (line.length <= QUOTE_CHARS) return line;
+  const cut = line.slice(0, QUOTE_CHARS);
+  const end = cut.lastIndexOf(' ');
+  return `${end > 0 ? cut.slice(0, end) : cut}…`;
+}
