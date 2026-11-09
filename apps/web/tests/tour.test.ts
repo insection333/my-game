@@ -1,6 +1,6 @@
 // Where the tour's card goes: never over what a newcomer should read above a tall target.
 import { describe, expect, it } from 'vitest';
-import { placeCard } from '../src/shell/tourPlace.ts';
+import { floorOf, placeCard } from '../src/shell/tourPlace.ts';
 
 const box = (top: number, bottom: number, left: number, right: number) => ({
   top,
@@ -24,5 +24,27 @@ describe('the tour card', () => {
 
   it('sits above a small target near the foot', () => {
     expect(placeCard(box(700, 730, 16, 374), { width: 390, height: 844 }, 736)).toEqual({ bottom: 154, left: 16 });
+  });
+
+  // Session 60: on a wide screen the side menu runs from the header to the foot, and its top was taken
+  // for the floor, pressing the card against the header far from the First steps it pointed at.
+  it('takes for the floor only what is fixed along the foot, not the columns down the sides', () => {
+    const menu = { top: 48, bottom: 900, height: 852 };
+    const lanes = { top: 48, bottom: 900, height: 852 };
+    expect(floorOf([menu, lanes], 900)).toBe(900);
+    expect(placeCard(box(255, 742, 668, 1075), { width: 1440, height: 900 }, floorOf([menu, lanes], 900))).toEqual({
+      top: 255,
+      left: 1085,
+    });
+    // A phone's lanes strip and menu along the foot are its floor.
+    expect(
+      floorOf(
+        [
+          { top: 736, bottom: 844, height: 108 },
+          { top: 790, bottom: 844, height: 54 },
+        ],
+        844,
+      ),
+    ).toBe(736);
   });
 });
