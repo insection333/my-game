@@ -3,7 +3,7 @@
 // writing to a player from their card, with the card's own name left behind.
 import { MAIL_REFUSALS } from '@idle-clash/contracts';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { reasonText } from '../src/pages/mail-words.ts';
+import { quoteOf, reasonText } from '../src/pages/mail-words.ts';
 import { trayHref } from '../src/router.ts';
 import '../../../packages/content/src/index.ts';
 
@@ -27,5 +27,21 @@ describe("the tray's addresses", () => {
   it('goes back to Notices without the message begun', () => {
     at('/skills?panel=tray&tray=mail&to=Keeper');
     expect(trayHref('notices')).toBe('/skills?panel=tray');
+  });
+});
+
+// Session 67: Reply filled in the name and nothing else, so the letter being answered was out of sight
+// once the message box opened above it. The box now shows its opening words.
+describe('a reply', () => {
+  it("quotes the letter it answers, a short one whole and a long one to a word's end", () => {
+    expect(quoteOf('Good siege!')).toBe('Good siege!');
+    expect(quoteOf('  Well  fought\n\nat the walls ')).toBe('Well fought at the walls');
+    const long =
+      'Your walls held against my vanguard twice now, so I am training siege engines and will be back at dawn with every one of them';
+    const q = quoteOf(long);
+    expect(q.endsWith('…')).toBe(true);
+    expect(q.length).toBeLessThanOrEqual(81);
+    expect(long.startsWith(q.slice(0, -1))).toBe(true);
+    expect(long[q.length - 1]).toBe(' ');
   });
 });

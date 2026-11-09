@@ -2,15 +2,16 @@
 // its 250 characters are used), then the letters newest first, each with its sender's picture and name
 // (which opens their card), when it came, Reply, Delete (with Undo) and Block (asked once); then the
 // players blocked, each with Unblock. Opening the view marks the letters read; a letter arriving while it
-// is open shows at once. The To field offers the names of those who have written.
-import { MAIL, NAME_MAX, type InboxResponse } from '@idle-clash/contracts';
+// is open shows at once. The To field offers the names of those who have written. A reply shows the opening
+// words of the letter it answers (session 67).
+import { MAIL, NAME_MAX, type InboxResponse, type Letter } from '@idle-clash/contracts';
 import { fmt, t } from '@idle-clash/content';
 import { Button, Field } from '@idle-clash/ui';
 import { useEffect, useId, useRef, useState, type FormEvent, type KeyboardEvent } from 'react';
 import { api, ApiError } from '../api.ts';
 import { setUnreadMail, useUnreadMail } from '../game/mail.ts';
 import { Slot } from '../slots.tsx';
-import { reasonText } from './mail-words.ts';
+import { quoteOf, reasonText } from './mail-words.ts';
 import { Deleted, LetterRow } from './MailLetter.tsx';
 import s from './mail.module.css';
 
@@ -31,6 +32,8 @@ export function Messages() {
   const [busy, setBusy] = useState(false);
   // The message being written stays folded behind one button until wanted (or begun from a card or a reply).
   const [writing, setWriting] = useState(() => to !== '');
+  // The letter a reply answers, shown while the message is still to its sender.
+  const [answering, setAnswering] = useState<Letter | null>(null);
   const form = useRef<HTMLFormElement>(null);
   const unread = useUnreadMail();
   const names = useId();
@@ -81,14 +84,16 @@ export function Messages() {
         setNote({ text: t('mail.sent', { name: to.trim() }), bad: false });
         setBody('');
         setWriting(false);
+        setAnswering(null);
       } else setNote({ text: reasonText(r.reason), bad: true });
     } catch (err) {
       setNote({ text: errorText(err), bad: true });
     }
     setBusy(false);
   };
-  const reply = (name: string) => {
-    setTo(name);
+  const reply = (letter: Letter) => {
+    setTo(letter.from);
+    setAnswering(letter);
     setNote(null);
     if (writing) form.current?.querySelector('textarea')?.focus();
     else setWriting(true);
@@ -167,6 +172,12 @@ export function Messages() {
               <option key={n} value={n} />
             ))}
           </datalist>
+          {answering && answering.from === to.trim() && (
+            <blockquote className={s.quote} data-part="answering">
+              <span className={s.quoteWho}>{t('mail.replyingTo', { name: answering.from })}</span>
+              <span className={s.quoteText}>{quoteOf(answering.body)}</span>
+            </blockquote>
+          )}
           <Field
             label={t('mail.body')}
             rows={3}
@@ -177,7 +188,13 @@ export function Messages() {
             required
           />
           <div className={s.send}>
-            <Button variant="quiet" onClick={() => setWriting(false)}>
+            <Button
+              variant="quiet"
+              onClick={() => {
+                setWriting(false);
+                setAnswering(null);
+              }}
+            >
               {t('mail.cancel')}
             </Button>
             <Button type="submit" variant="primary" disabled={busy || !to.trim() || !body.trim()}>

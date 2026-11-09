@@ -16,6 +16,7 @@ export const mail: Record<string, string> = {
   'mail.sending': 'Sending…',
   'mail.sent': 'Sent to {name}.',
   'mail.reply': 'Reply',
+  'mail.replyingTo': 'Replying to {name}',
   'mail.delete': 'Delete',
   'mail.block': 'Block',
   'mail.blockAsk': 'Block {name}? Their messages to you go, and they cannot write to you until you unblock them.',
