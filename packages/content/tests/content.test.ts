@@ -34,6 +34,10 @@ describe('fmt', () => {
       '3 h 20 min',
       '2 d 4 h',
     ]);
+    const noon = new Date(2026, 10, 10, 12, 0).getTime();
+    expect(fmt.when(new Date(2026, 10, 10, 9, 5).getTime(), noon)).toBe('09:05');
+    expect(fmt.when(new Date(2026, 10, 9, 20, 22).getTime(), noon)).toBe('9 Nov, 20:22');
+    expect(fmt.when(new Date(2025, 10, 9, 20, 22).getTime(), noon)).toBe('9 Nov 2025');
     expect([0, 0.001, 0.004, 0.005, 0.37, 0.994, 0.995, 0.9999, 1].map(fmt.chance)).toEqual([
       '0%',
       '<1%',

@@ -12,9 +12,8 @@ const str = (x: unknown): string => (typeof x === 'string' ? x : '');
 /** The Reports tab's filters, and which each report falls under. */
 export const FILTERS = ['all', 'sieges', 'defences', 'strongholds', 'spies'] as const;
 export type Filter = (typeof FILTERS)[number];
-/** When: the time today, or the date. */
-export const when = (at: number, now: number): string =>
-  new Date(at).toDateString() === new Date(now).toDateString() ? fmt.time(at) : fmt.date(at);
+/** When: the time today, the day and time this year, or the date. */
+export const when = (at: number, now: number): string => fmt.when(at, now);
 
 /** The address of a report's account, over the page shown. */
 export const reportSheet = (id: number) => `${location.pathname}?panel=report&report=${id}`;
