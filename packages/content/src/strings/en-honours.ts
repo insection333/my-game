@@ -63,6 +63,7 @@ export const honours: Record<string, string> = {
   'profile.none': 'There is no player of that name.',
   'profile.noTitle': 'No title shown',
   'profile.since': 'Playing for {days} days',
+  'profile.sinceOne': 'Playing for 1 day',
   'profile.sinceToday': 'Joined today',
   'profile.career': 'Career',
   'profile.places': 'On the hiscores',

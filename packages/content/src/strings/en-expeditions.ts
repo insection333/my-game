@@ -79,7 +79,7 @@ export const expeditions = {
   'story.foundMoreOne': 'and one more find',
   'story.foundMore': 'and {count} more finds',
   'story.marks': '{marks} marks.',
-  'story.markOne': '1 mark.',
+  'story.marksOne': '1 mark.',
   'relic.title': 'Relics',
   'relic.full': 'At its last rank',
   'expedition.summary': '{time}: {stages} fight stages, then {boss}',
@@ -89,7 +89,9 @@ export const expeditions = {
   'expedition.stage': 'Stage {stage} of {stages}',
   'expedition.bossStage': 'At the end: {boss}',
   'expedition.runMarks': '{marks} marks so far',
+  'expedition.runMarksOne': '1 mark so far',
   'expedition.marks': '{marks} marks',
+  'expedition.marksOne': '1 mark',
 
   'boss.rested': 'Fought today: back tomorrow',
   'boss.winsNone': 'Not yet beaten',

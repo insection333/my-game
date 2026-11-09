@@ -85,7 +85,7 @@ Each page lists its sections in order, what must be visible without scrolling at
 | --- | --- | --- | --- |
 | 0 | `hearth.standing` | goals | Over the region's banner: your picture in its frame and glow (session 43), your rank with your badge and title, your total level, and a thin bar to the next rank ("Warden of the March at 200") |
 | 0 | `hearth.plaque` | deeds | The standing's plaque wears your honours: your title after the rank, your banner's colour on its edge, your frame around it |
-| 1 | `hearth.today` | the shell (welcome), recap | On return: the away recap, best thing first, then "Collect". Otherwise: today's notable moments as a compact timeline |
+| 1 | `hearth.today` | the shell (welcome), recap | On return: the away recap, best thing first (five at most), then what the castle met meanwhile (a siege or a spy against it, up to three: session 66) and any lane that stopped, then "Collect". Otherwise: today's notable moments as a compact timeline |
 | 2 | `hearth.goals` | goals | First steps while unfinished (six rows with buttons); afterwards three short goals (the lanes' own work, so play finishes them; a suggestion only when every lane's has one), the daily goal (a day's goal done while away waits here, ready, until claimed) and the next milestone, each with a progress bar and its reward |
 | 3 | `hearth.lanes` | each lane | Full lane cards with their Next action; on desktop the lanes panel already shows them, so this section is omitted |
 | 4 | `hearth.nextUp` | every skill | The three nearest unlocks across all skills: "Woodcutting 21: Practised hands IV, 3,400 XP away" |

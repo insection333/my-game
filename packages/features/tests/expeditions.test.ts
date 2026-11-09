@@ -152,6 +152,9 @@ describe("a run's bar", () => {
     const run = expeditionsOf(s).run!;
     const won = { ...s, features: { ...s.features, expeditions: { ...expeditionsOf(s), run: { ...run, marks: 3 } } } };
     expect(expeditionView(won, T0).run!.marks).toBe('3 marks so far');
+    // Session 66: a stage pays one mark, so the first said "1 marks so far".
+    const one = { ...s, features: { ...s.features, expeditions: { ...expeditionsOf(s), run: { ...run, marks: 1 } } } };
+    expect(expeditionView(one, T0).run!.marks).toBe('1 mark so far');
   });
 });
 

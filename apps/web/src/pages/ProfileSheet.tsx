@@ -85,7 +85,11 @@ function Card({ p }: { p: Profile }) {
           {title ?? t('profile.noTitle')}
         </p>
         <p className={s.since}>
-          {p.since === 0 ? t('profile.sinceToday') : t('profile.since', { days: fmt.int(p.since) })}
+          {p.since === 0
+            ? t('profile.sinceToday')
+            : p.since === 1
+              ? t('profile.sinceOne')
+              : t('profile.since', { days: fmt.int(p.since) })}
         </p>
         {!p.you && (
           <p className={s.message}>

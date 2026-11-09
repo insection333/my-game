@@ -44,7 +44,9 @@ export function Header({ note }: { note: string | null }) {
           </div>
           <div className={s.pills}>
             <Pill tone="woad">{t('castle.rating', { rating: fmt.int(castle.rating) })}</Pill>
-            <Pill tone="gold">{t('castle.marks', { marks: fmt.int(castle.warMarks) })}</Pill>
+            <Pill tone="gold">
+              {castle.warMarks === 1 ? t('castle.marksOne') : t('castle.marks', { marks: fmt.int(castle.warMarks) })}
+            </Pill>
             <Pill>{t('castle.decree', { decree: decreeName(E.decreeOf(now).id) })}</Pill>
             {E.isShielded(castle, now) && (
               <Pill tone="moss">{t('castle.shielded', { time: fmt.duration(castle.shieldUntil - now) })}</Pill>

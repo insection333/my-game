@@ -33,7 +33,7 @@ export function storyOf(e: EventOf<'expeditionDone'>): { title: string; body: st
     ...(e.outcome === 'won' ? [t('story.beat', { boss })] : []),
     ...found(e.finds),
   ];
-  const marks = e.marks === 1 ? t('story.markOne') : t('story.marks', { marks: fmt.int(e.marks) });
+  const marks = e.marks === 1 ? t('story.marksOne') : t('story.marks', { marks: fmt.int(e.marks) });
   const told = parts.join(', ');
   return { title, body: `${told.charAt(0).toUpperCase()}${told.slice(1)}. ${marks}` };
 }
