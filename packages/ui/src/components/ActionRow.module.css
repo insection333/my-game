@@ -91,20 +91,20 @@
     flex: 0 0 auto;
   }
 
-  /* The name keeps at least 8rem, or all but 11rem of the row: Start, Next and Fight sit beside it,
+  /* The name keeps at least 8rem, or all but 12rem of the row: Start, Next and Fight sit beside it,
      a button much wider than they are wraps below. */
   .main {
-    flex: 1 1 max(8rem, 100% - 11rem);
+    flex: 1 1 max(8rem, 100% - 12rem);
   }
 
+  /* Stacked at the right edge: a text link above a button ("Take off" over "Temper") sits at the right
+     with it rather than floating in the middle (session 62). */
   .actions {
     flex: 0 0 auto;
     margin-left: auto;
-  }
-
-  .actions {
     flex-direction: column;
     align-self: center;
+    align-items: flex-end;
   }
 
   .actions > * {
