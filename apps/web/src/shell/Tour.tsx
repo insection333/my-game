@@ -6,7 +6,7 @@ import { Button, CloseButton } from '@idle-clash/ui';
 import { useEffect, useState } from 'react';
 import { useGame } from '../game/hooks.ts';
 import { useLocation } from '../router.ts';
-import { floorOf, placeCard } from './tourPlace.ts';
+import { floorOf, placeCard, ringOf } from './tourPlace.ts';
 import s from './tour.module.css';
 
 const STEPS = [
@@ -78,7 +78,7 @@ export function Tour() {
       <div
         className={s.ring}
         aria-hidden="true"
-        style={{ top: box.top - 4, left: box.left - 4, width: box.width + 8, height: box.height + 8 }}
+        style={ringOf(box, { width: window.innerWidth, height: window.innerHeight })}
       />
       <div className={s.card} role="dialog" aria-label={t('tour.title')} data-tour-step={step + 1} style={place}>
         <CloseButton className={s.close} label={t('tour.skip')} onClick={end} />
