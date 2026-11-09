@@ -35,7 +35,14 @@
   gap: var(--s-2);
 }
 
+/* A row's tiles stand the same height, a two-line name or not (session 59). */
+.grid > li {
+  display: flex;
+}
+
 .tile {
+  flex: 1;
+  align-content: start;
   position: relative;
   display: grid;
   justify-items: center;

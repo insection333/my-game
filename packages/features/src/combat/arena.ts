@@ -123,7 +123,8 @@ export function arenaAt(a: Arena, now: number): ArenaNow {
   const latest = shown.at(-1) ?? null;
   return {
     count,
-    health: latest ? latest.health : a.health,
+    // Past the end, the health the fight settles on, the breather's return in it, as the loadout says.
+    health: now >= a.endsAt ? a.fought.health : latest ? latest.health : a.health,
     foeHp: latest ? Math.max(0, latest.foeHp) : a.foe.hp,
     latest,
     yours: shown.findLast((s) => s.by === 'you') ?? null,
@@ -139,5 +140,5 @@ export function arenaAt(a: Arena, now: number): ArenaNow {
 export function healthShown(state: State, now: number): number {
   const a = arenaOf(state);
   if (!a) return healthAt(state, now);
-  return now < a.endsAt ? arenaAt(a, now).health : a.fought.health;
+  return arenaAt(a, now).health;
 }

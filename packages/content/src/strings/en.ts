@@ -293,6 +293,7 @@ export const en: Record<string, string> = {
   'rarity.legendary': 'Legendary',
   'find.foundOn': 'Found {date}',
   'find.greaterHint': 'Tier {tier} and up',
+  'find.anyAction': 'Any {skill} action',
   'collection.progress': '{found} of {total} found',
   'skill.finds.title': 'Finds',
 
