@@ -121,6 +121,9 @@ describe('the arena', () => {
     );
     // One swing's return of health at most (the breather the fight ends on).
     expect(Math.abs(healthShown(after, a.endsAt) - before)).toBeLessThan(a.most * 0.02);
+    // Session 59: past the end, the arena's own bar says what the loadout says ("1,919" beside
+    // "1,927" on the review sheet, the breather's return shown by one and not the other).
+    for (const at of [a.endsAt, a.endsAt + 500]) expect(arenaAt(a, at).health).toBe(healthShown(s, at));
   });
 
   it('plays a boss fought in the lane, lasting as long as the lane says', () => {

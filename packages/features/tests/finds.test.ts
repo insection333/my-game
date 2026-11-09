@@ -14,6 +14,7 @@ import { describe, expect, it } from 'vitest';
 import { actionRegistry, FEATURES } from '../src/index.ts';
 import { completeSkillAction, type CompletedAction, type SkillDefinition } from '../src/shared/complete.ts';
 import { FINDS, LADDER } from '../src/woodcutting/content.ts';
+import { woodcutting } from '../src/woodcutting/index.ts';
 
 const T0 = Date.UTC(2026, 9, 20, 9);
 const DEF: SkillDefinition = { feature: 'woodcutting', skill: 'woodcutting', ladder: LADDER, finds: FINDS };
@@ -141,5 +142,14 @@ describe('XP, marks and moments', () => {
     const moments = events.filter(isNotable);
     expect(moments.length).toBeGreaterThan(0);
     expect(state.luck.lastMoment).toBe(moments.at(-1)!.at);
+  });
+
+  // Session 59: an unfound find with no tier to name said nothing at all in the collection log.
+  it('says where each find in the log comes from until it is found', () => {
+    const notes = (
+      woodcutting.slots['skill.finds']({ state: newState(1, 0), now: 0 }) as { item: string; note: string }[]
+    ).map((f) => [f.item, f.note]);
+    expect(notes).toContainEqual(['birds-nest', 'Any Woodcutting action']);
+    expect(notes.every(([, n]) => n !== null)).toBe(true);
   });
 });

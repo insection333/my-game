@@ -143,7 +143,7 @@ export function skillSlots(def: SkillDef): Record<string, SlotFill> {
             ? t('find.foundOn', { date: fmt.date(at) })
             : f.greater
               ? t('find.greaterHint', { tier: fmt.int(GREATER_FROM_TIER) })
-              : null,
+              : t('find.anyAction', { skill: t(`skill.${skill}`) }),
       };
     });
 

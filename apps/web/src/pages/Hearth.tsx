@@ -102,7 +102,10 @@ export function Hearth() {
                     onClick={(e) => (e.preventDefault(), navigate('/castle'))}
                   >
                     <span className={s.rowHead}>
-                      <span className={s.rowName}>{t('menu.castle')}</span>
+                      <span className={s.rowName}>
+                        <ItemIcon name="castle-walls" size={24} />
+                        {t('menu.castle')}
+                      </span>
                     </span>
                     <span className={s.rowText}>{t('castle.nudge')}</span>
                   </a>
