@@ -11,7 +11,7 @@ import {
   type State,
 } from '@idle-clash/kernel';
 import { describe, expect, it } from 'vitest';
-import { actionRegistry, FEATURES } from '../src/index.ts';
+import { actionRegistry, combatData, FEATURES } from '../src/index.ts';
 import { completeSkillAction, type CompletedAction, type SkillDefinition } from '../src/shared/complete.ts';
 import { FINDS, LADDER } from '../src/woodcutting/content.ts';
 import { woodcutting } from '../src/woodcutting/index.ts';
@@ -151,5 +151,14 @@ describe('XP, marks and moments', () => {
     ).map((f) => [f.item, f.note]);
     expect(notes).toContainEqual(['birds-nest', 'Any Woodcutting action']);
     expect(notes.every(([, n]) => n !== null)).toBe(true);
+    // Session 65: a combat style's finds come from foes, not actions.
+    const melee = combatData.STYLE_FINDS.melee.find((f) => f.rarity === 'legendary')!.item;
+    const styleNotes = (
+      FEATURES.find((f) => f.id === 'melee')!.slots['skill.finds']({ state: newState(1, 0), now: 0 }) as {
+        item: string;
+        note: string;
+      }[]
+    ).map((f) => [f.item, f.note]);
+    expect(styleNotes).toContainEqual([melee, 'Any foe fought with Melee']);
   });
 });
