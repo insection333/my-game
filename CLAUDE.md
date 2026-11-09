@@ -101,5 +101,6 @@ To change the game design: edit the model in `design/model/` or the template, ru
 | 60 The tour beside its step | Done: on a wide screen the tour's card stands beside what it points at, where the side menu's top was taken for the foot of the screen and pressed the card against the header |
 | 61 The tour's ring | Done: the ring around the tour's target stays inside the screen (the lanes column's ran off its right edge) |
 | 62 Rows, second look | Done: a row's wide button wraps only when it must (the troops' Raise sits beside them again on a wide screen), stacked actions keep to the right edge ("Take off" over "Temper"), and the review sheets' castle counts its fallen stronghold on the day's orders |
+| 63 A press answered | Done: a siege, an assault or a tempering pressed in the castle has a moment of its own, leading the deeds and orders it brought, where it was folded under a deed seconds older as "1 more"; an order of the day done has words (its moment was blank, and read "Also: .") |
 
 Outstanding: the closed test waits on the server going up (the owner's call). Gold left once the Storehouse is fully enlarged now goes to the steading (session 25). Forgotten passwords are reset from the admin page while email is off; the owner's account is made an admin by naming it in `ADMIN_NAMES` after signing up. The contact address is admin@idleclash.com.

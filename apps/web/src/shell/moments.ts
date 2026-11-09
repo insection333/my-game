@@ -44,12 +44,18 @@ function rank(e: GameEvent): number {
   if (e.type === 'kindled') return 1;
   // First on a ladder ranks with a master deed; the top three or ten with an elite one.
   if (e.type === 'rankUp') return e.band === 1 ? 1 : e.band <= 10 ? 5 : 8;
+  // What the player has just done in the castle leads what it brought ("Breached …. Also: Deed done:
+  // War marks: 200"), as a level leads its deeds; news from others ranks by how loud it is.
+  if (byYou(e)) return 2;
   if (castleEngine.isCastleEvent(e)) {
     const size = castleEngine.castleMoment(e).size;
     return size === 'centre' ? 1 : size === 'banner' ? 5 : 8;
   }
   return e.type === 'levelUp' ? 3 : e.type === 'masteryStep' ? 6 : 8;
 }
+
+/** A press of the player's own in the castle answered: a siege, an assault, a relic tempered. */
+const byYou = (e: GameEvent) => e.type === 'castleSiege' || e.type === 'castleIncursion' || e.type === 'castleTempered';
 
 function sizeOf(e: GameEvent): MomentSize {
   if (e.type === 'levelUp' || e.type === 'kindled' || (e.type === 'find' && e.rarity === 'legendary')) return 'centre';
@@ -131,17 +137,14 @@ function describe(
       const w = rankUpWords(e);
       return { title: w.title, body: w.body, icon: w.skill && hasIcon(w.skill) ? w.skill : null };
     }
-    case 'castleSiege':
-    case 'castleBesieged':
-    case 'castleSpyCaught':
-    case 'castleIncursion':
-    case 'castleTempered': {
+    default: {
+      // Every castle event, the day's orders among them (session 63: an order done had no words at all,
+      // a blank toast, and read "Also: ." beside the siege that did it).
+      if (!castleEngine.isCastleEvent(e)) return { title: '', body: null, icon: null };
       const m = castleEngine.castleMoment(e);
       const icon = castleEngine.castleIcon(e);
       return { title: m.title, body: m.body, icon: hasIcon(icon) ? icon : null };
     }
-    default:
-      return { title: '', body: null, icon: null };
   }
 }
 
@@ -161,7 +164,9 @@ export function momentsFrom(events: readonly GameEvent[], since: number, feature
   const groups: GameEvent[][] = [];
   for (const e of notable) {
     const last = groups.at(-1);
-    if (last && e.at - last[0].at <= GROUP_MS) last.push(e);
+    // A press answered starts a moment of its own: it is never folded into what came before it, where it
+    // was counted as "1 more" under a deed seconds older (session 63).
+    if (last && e.at - last[0].at <= GROUP_MS && !byYou(e)) last.push(e);
     else groups.push([e]);
   }
   const moments = groups.map((group): MomentView => {

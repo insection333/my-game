@@ -211,4 +211,49 @@ describe('moments', () => {
     expect(both).toMatchObject({ size: 'centre', title: 'Mining level 30' });
     expect(both.body).toContain('Also: 3rd on the Mining hiscores');
   });
+
+  // Session 63: a siege pressed seconds after a run of deeds was folded under them as "1 more".
+  it('gives a press answered in the castle a moment of its own, leading what it brought', () => {
+    const deed = (at: number, n: number): GameEvent => ({
+      type: 'deedDone',
+      at,
+      deed: `d${n}`,
+      name: `Deed ${n}`,
+      icon: null,
+      tier: 'easy',
+      points: 5,
+    });
+    const siege: GameEvent = {
+      type: 'castleSiege',
+      at: T + 3_000,
+      foe: 'The Grey Wolves',
+      outcome: 'graze',
+      gold: 2_238,
+      marks: 11,
+    };
+    const shown = momentsFrom(
+      [1, 2, 3, 4, 5].map((n) => deed(T, n)).concat([siege, deed(T + 3_200, 6)]),
+      T - 1,
+      FEATURES,
+    );
+    expect(shown.map((m) => m.title)).toEqual(['Deed done: Deed 1', 'Breached: The Grey Wolves']);
+    expect(shown[1].body).toBe('+2,238 gold, +11 war marks. Also done: Deed 6.');
+  });
+
+  it('says an order of the day done, alone or beside the siege that did it', () => {
+    const order: GameEvent = { type: 'castleOrders', at: T, orders: ['strongholds'], all: false, marks: 5 };
+    expect(momentsFrom([order], T - 1, FEATURES)).toMatchObject([
+      { size: 'toast', title: 'Order done: strongholds taken' },
+    ]);
+    const siege: GameEvent = {
+      type: 'castleSiege',
+      at: T,
+      foe: 'The Black Banner',
+      outcome: 'graze',
+      gold: 10,
+      marks: 1,
+    };
+    const [m] = momentsFrom([siege, { ...order, at: T + 100 }], T - 1, FEATURES);
+    expect(m.body).toMatch(/Also: Order done: /);
+  });
 });
