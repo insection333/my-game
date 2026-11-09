@@ -10,7 +10,7 @@ export function feedbackNote(f: FeedbackView): string {
   const who = t('admin.test.copyWho', {
     name: f.name ?? t('admin.test.someone'),
     level: fmt.int(f.totalLevel),
-    days: f.daysPlayed === 1 ? t('admin.test.copyDayOne') : t('admin.test.copyDays', { days: fmt.int(f.daysPlayed) }),
+    days: f.daysPlayed === 1 ? t('admin.test.copyDaysOne') : t('admin.test.copyDays', { days: fmt.int(f.daysPlayed) }),
     page: f.page,
     date: fmt.date(f.at),
   });

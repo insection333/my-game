@@ -87,4 +87,31 @@ describe('the away recap', () => {
     });
     expect(tempered?.icon).toBe('aegis-shard');
   });
+
+  // Session 66: a siege or a caught spy against the player while away came back only in the bell; the
+  // recap ("While you were away") said nothing of it, even of gold lost.
+  it("says what the player's castle met while they were away, from the server's notices", () => {
+    const notices: GameEvent[] = [
+      { type: 'castleBesieged', at: 2 * 3600_000, foe: 'Keeper', outcome: 'graze', lost: 182_000, marks: 2 },
+      { type: 'castleSpyCaught', at: 3 * 3600_000, foe: 'Keeper', marks: 1 },
+      // Before the time away began: already seen.
+      { type: 'castleSpyCaught', at: -60_000, foe: 'Alder', marks: 1 },
+      { type: 'rankUp', at: 8 * 3600_000, skill: 'mining', place: 9, band: 10 },
+    ];
+    const lines = recap.recapLines(away, notices);
+    const defences = lines.filter((l) => l.kind === 'defence');
+    expect(defences.map((l) => l.text)).toEqual([
+      recap.noticeLine(notices[0])!.text,
+      recap.noticeLine(notices[1])!.text,
+    ]);
+    expect(defences[0]).toMatchObject({ icon: 'castle-walls', href: '/castle' });
+    expect(defences[0].text).toContain('182K');
+    // They need the player, as a stopped lane does: never folded away among the good things.
+    expect(recap.goodThings(lines).some((l) => l.kind === 'defence')).toBe(false);
+    expect(lines.find((l) => l.kind === 'rank')?.text).toBe(recap.noticeLine(notices[3])!.text);
+    // The defences come after the good things and before a stopped lane.
+    const kinds = lines.map((l) => l.kind);
+    expect(kinds.indexOf('defence')).toBeGreaterThan(kinds.indexOf('xp'));
+    expect(kinds.indexOf('defence')).toBeLessThan(kinds.indexOf('stopped'));
+  });
 });

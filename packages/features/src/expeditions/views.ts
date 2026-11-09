@@ -144,7 +144,12 @@ function runView(state: State, run: Run, now: number): RunView {
     progress: Math.min(1, (run.at + within) / (count + 1)),
     stages: chips(run, run.at, count),
     boss: { id: boss.id, name: t(`boss.${boss.id}`), now: run.at >= count },
-    marks: run.marks > 0 ? t('expedition.runMarks', { marks: fmt.int(run.marks) }) : null,
+    marks:
+      run.marks === 0
+        ? null
+        : run.marks === 1
+          ? t('expedition.runMarksOne')
+          : t('expedition.runMarks', { marks: fmt.int(run.marks) }),
     finds: run.finds,
     running,
   };
@@ -165,7 +170,7 @@ export function expeditionView(state: State, now: number): ExpeditionView {
     }),
     lengths: LENGTHS.map((hours) => ({ hours, label: fmt.duration(hours * 3_600_000) })),
     run: e.run ? runView(state, e.run, now) : null,
-    marks: t('expedition.marks', { marks: fmt.int(e.marks) }),
+    marks: e.marks === 1 ? t('expedition.marksOne') : t('expedition.marks', { marks: fmt.int(e.marks) }),
     legend: [...TWISTS, ...ROADS].map(twistView),
   };
 }

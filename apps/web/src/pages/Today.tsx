@@ -51,12 +51,14 @@ function Lines({ lines, time }: { lines: Line[]; time?: boolean }) {
 export function Today() {
   const view = useGame();
   if (view.away) {
-    // The best five good things, then any lane that stopped (it needs the player); the rest wait in the
-    // notices tray, where the recap goes once collected.
-    const all = recap.recapLines(view.away);
+    // The best five good things, then what the castle met (up to three: session 66) and any lane that
+    // stopped, which need the player; the rest wait in the notices tray, where the recap goes once
+    // collected.
+    const all = recap.recapLines(view.away, view.notices);
     const good = recap.goodThings(all);
-    const lines = [...good.slice(0, 5), ...all.filter((l) => l.kind === 'stopped')];
-    const more = good.length - 5;
+    const defences = all.filter((l) => l.kind === 'defence');
+    const lines = [...good.slice(0, 5), ...defences.slice(0, 3), ...all.filter((l) => l.kind === 'stopped')];
+    const more = Math.max(0, good.length - 5) + Math.max(0, defences.length - 3);
     return (
       <Slot id="hearth.today">
         <Panel

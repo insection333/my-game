@@ -40,7 +40,7 @@ function effectText(e: RelicEffect, rank: number): string {
 export function relicsView(state: State): RelicsView {
   const marks = expeditionsOf(state).marks;
   return {
-    marks: t('expedition.marks', { marks: fmt.int(marks) }),
+    marks: marks === 1 ? t('expedition.marksOne') : t('expedition.marks', { marks: fmt.int(marks) }),
     relics: relics().map((r) => {
       const rank = rankOf(state, r.id);
       const cost = rank < r.ranks ? RELIC_COSTS[rank] : null;

@@ -78,16 +78,43 @@ describe('t', () => {
   });
 
   it('has a one-form beside every count before a plural, so the page never says "1 milestones"', () => {
-    // Counts that are never 1: the 500 completions a Rare find gives, the log sizes milestones ask for,
-    // and every deed's (the smallest asks for 10).
+    // Session 66: every counting placeholder, not only {count}: "+1 war marks", "1 marks so far" and
+    // "Playing for 1 days" were all on screen. Counts that are never 1 are named here, each with why.
     const neverOne = [
+      // The 500 completions a Rare find gives, and the log sizes milestones ask for.
       'item.panel.use',
       'item.panel.useOn',
       'item.panel.useOnFoe',
       'item.panel.useOnRegion',
       'goal.milestone.log',
+      // The Storehouse grows 6 spaces at a time, and the builder's cord 6 a rank.
+      'store.enlarge',
+      'relic.effect.slots',
+      // Deed points come in fives (an easy deed is worth 5).
+      'deeds.points',
+      'deeds.worth',
+      'deeds.nextTitle',
+      'honour.unlock.points',
+      'moment.deedPoints',
+      // An hour's run is 6 stages; a relic's first rank costs 10 marks.
+      'expedition.summary',
+      'relic.next',
+      // The admin's pairs are listed from 4 sieges.
+      'admin.flows.facts',
+      // The castle pays and asks war marks by the handful: a caught spy's 2 is the least a report says, a
+      // stronghold pays 9 or more, a fortress 10 or more, and studies, relics and tempering cost 10 or more.
+      'castle.report.marks',
+      'castle.target.pays',
+      'castle.target.paysMarks',
+      'castle.incursion.rewards',
+      'castle.study',
+      'castle.relic.forge',
+      'castle.temper.cost',
+      // A lord's spoils are a range ("2–5 war marks").
+      'castle.target.paysLord',
+      'castle.target.paysLordUnscouted',
     ];
-    const plural = /\{(count|skills)\} (?:[A-Za-z]+ )?[a-z]+s\b/;
+    const plural = /\{(count|skills|marks|days|points|slots|sieges|stages)\} (?:[A-Za-z]+ )?[a-z]+s\b/;
     const missing = allStringKeys().filter(
       (k) =>
         plural.test(templateOf(k)!) &&

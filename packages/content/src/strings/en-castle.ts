@@ -35,6 +35,7 @@ export const castle = {
   'castle.vigilance': 'Vigilance {count}',
   'castle.rating': 'Rating {rating}',
   'castle.marks': '{marks} war marks',
+  'castle.marksOne': '1 war mark',
 
   // Tabs.
   'castle.formation.attack.note':
