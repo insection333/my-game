@@ -99,5 +99,6 @@ To change the game design: edit the model in `design/model/` or the template, ru
 | 58 Every line its picture | Done: the recap's and the tray's levels, Kindlings, mastery, stops and castle news carry pictures (a skill's seal, what an action makes, a stop's remedy, the castle's own icons, as do castle moments) where they stood on a bare dot; deeds and goals the page and the server both said are listed once |
 | 59 Seams | Done: the arena's health past a fight's end is the loadout's (the breather's return in both); the Storehouse's tiles stand one height a row; the Call to arms on the Hearth carries the castle's picture; an unfound find says where it comes from |
 | 60 The tour beside its step | Done: on a wide screen the tour's card stands beside what it points at, where the side menu's top was taken for the foot of the screen and pressed the card against the header |
+| 61 The tour's ring | Done: the ring around the tour's target stays inside the screen (the lanes column's ran off its right edge) |
 
 Outstanding: the closed test waits on the server going up (the owner's call). Gold left once the Storehouse is fully enlarged now goes to the steading (session 25). Forgotten passwords are reset from the admin page while email is off; the owner's account is made an admin by naming it in `ADMIN_NAMES` after signing up. The contact address is admin@idleclash.com.

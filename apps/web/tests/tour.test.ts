@@ -1,6 +1,6 @@
 // Where the tour's card goes: never over what a newcomer should read above a tall target.
 import { describe, expect, it } from 'vitest';
-import { floorOf, placeCard } from '../src/shell/tourPlace.ts';
+import { floorOf, placeCard, ringOf } from '../src/shell/tourPlace.ts';
 
 const box = (top: number, bottom: number, left: number, right: number) => ({
   top,
@@ -46,5 +46,21 @@ describe('the tour card', () => {
         844,
       ),
     ).toBe(736);
+  });
+
+  // Session 61: the lanes column runs to the screen's right edge, and its ring was cut off there.
+  it('keeps the ring around a target inside the screen', () => {
+    expect(ringOf(box(92, 308, 1120, 1440), { width: 1440, height: 900 })).toEqual({
+      top: 88,
+      left: 1116,
+      width: 322,
+      height: 224,
+    });
+    expect(ringOf(box(300, 400, 100, 200), { width: 1440, height: 900 })).toEqual({
+      top: 296,
+      left: 96,
+      width: 108,
+      height: 108,
+    });
   });
 });

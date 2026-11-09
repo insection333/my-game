@@ -3,6 +3,17 @@
 // foot of the screen (above the lanes and the menu) for a target taller than half the screen, and
 // above it only for a small target near the foot.
 export const CARD_W = 300;
+
+/** The ring drawn around the target, 4px out but kept inside the screen (session 61: the lanes column
+ *  runs to the screen's edge, and its ring was cut off there). */
+export function ringOf(
+  box: { top: number; bottom: number; left: number; right: number },
+  view: { width: number; height: number },
+): { top: number; left: number; width: number; height: number } {
+  const [left, right] = [Math.max(2, box.left - 4), Math.min(view.width - 2, box.right + 4)];
+  const [top, bottom] = [Math.max(2, box.top - 4), Math.min(view.height - 2, box.bottom + 4)];
+  return { top, left, width: right - left, height: bottom - top };
+}
 const CARD_H = 150;
 const GAP = 10;
 const EDGE = 12;
