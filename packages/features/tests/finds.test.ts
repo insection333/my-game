@@ -154,7 +154,7 @@ describe('XP, marks and moments', () => {
     // Session 65: a combat style's finds come from foes, not actions.
     const melee = combatData.STYLE_FINDS.melee.find((f) => f.rarity === 'legendary')!.item;
     const styleNotes = (
-      FEATURES.find((f) => f.id === 'melee')!.slots['skill.finds']!({ state: newState(1, 0), now: 0 }) as {
+      FEATURES.find((f) => f.id === 'melee')!.slots['skill.finds']({ state: newState(1, 0), now: 0 }) as {
         item: string;
         note: string;
       }[]
