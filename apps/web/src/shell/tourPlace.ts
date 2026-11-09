@@ -9,6 +9,17 @@ const EDGE = 12;
 
 export type Place = { top: number; left: number } | { bottom: number; left: number };
 
+/** The foot of the screen: the top of the lanes strip and the menu where they are fixed along it (a
+ *  phone). On a wide screen the menu and the lanes are columns down the sides, reaching the foot from
+ *  the top, and are no floor (session 60: the card was pressed against the header, far from the First
+ *  steps it pointed at, because the side menu's top was taken for the floor). */
+export function floorOf(rects: { top: number; bottom: number; height: number }[], viewHeight: number): number {
+  return Math.min(
+    viewHeight,
+    ...rects.filter((r) => r.height > 0 && r.bottom >= viewHeight - 1 && r.top > viewHeight / 2).map((r) => r.top),
+  );
+}
+
 export function placeCard(
   box: { top: number; bottom: number; left: number; right: number; height: number },
   view: { width: number; height: number },

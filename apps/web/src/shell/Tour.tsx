@@ -6,7 +6,7 @@ import { Button, CloseButton } from '@idle-clash/ui';
 import { useEffect, useState } from 'react';
 import { useGame } from '../game/hooks.ts';
 import { useLocation } from '../router.ts';
-import { placeCard } from './tourPlace.ts';
+import { floorOf, placeCard } from './tourPlace.ts';
 import s from './tour.module.css';
 
 const STEPS = [
@@ -68,13 +68,9 @@ export function Tour() {
     setStep(null);
   };
   const next = () => (step + 1 < STEPS.length ? setStep(step + 1) : end());
-  // The foot of the screen: the top of the lanes strip and the menu, where they are fixed there.
-  const floor = Math.min(
+  const floor = floorOf(
+    Array.from(document.querySelectorAll('[data-menu], [data-strip]')).map((el) => el.getBoundingClientRect()),
     window.innerHeight,
-    ...Array.from(document.querySelectorAll('[data-menu], [data-strip]'))
-      .map((el) => el.getBoundingClientRect())
-      .filter((r) => r.height > 0 && r.bottom >= window.innerHeight - 1)
-      .map((r) => r.top),
   );
   const place = placeCard(box, { width: window.innerWidth, height: window.innerHeight }, floor);
   return (
