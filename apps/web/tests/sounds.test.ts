@@ -35,6 +35,19 @@ describe('sound cues', () => {
       ]),
     ).toBe('level');
     expect(bestCue([find('rare'), find('legendary')])).toBe('legendary');
+    // The castle's battles (session 64): they were silent.
+    expect(cueFor({ type: 'castleSiege', at, foe: 'X', outcome: 'graze', gold: 1, marks: 1 })).toBe('goal');
+    expect(cueFor({ type: 'castleSiege', at, foe: 'X', outcome: 'decisive', gold: 1, marks: 1, rout: true })).toBe(
+      'rare',
+    );
+    expect(cueFor({ type: 'castleSiege', at, foe: 'X', outcome: 'repelled', gold: 0, marks: 0 })).toBeNull();
+    expect(cueFor({ type: 'castleBesieged', at, foe: 'X', outcome: 'repelled', lost: 0, marks: 4 })).toBe('goal');
+    expect(cueFor({ type: 'castleBesieged', at, foe: 'X', outcome: 'graze', lost: 9, marks: 0 })).toBe('stopped');
+    expect(cueFor({ type: 'castleTempered', at, relic: 'aegis-shard', tempers: 2, masterstroke: true })).toBe('rare');
+    expect(cueFor({ type: 'castleIncursion', at, fortress: 'f', tier: 3, won: true, marks: 9, spoils: 'hoard' })).toBe(
+      'rare',
+    );
+    expect(cueFor({ type: 'castleOrders', at, orders: ['spy'], all: false, marks: 3 })).toBe('goal');
     // First on a ladder rings like a Rare find; any other climb, the goal's chime.
     expect(cueFor({ type: 'rankUp', at, skill: 'total', place: 1, band: 1 })).toBe('rare');
     expect(cueFor({ type: 'rankUp', at, skill: 'mining', place: 7, band: 10 })).toBe('goal');

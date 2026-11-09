@@ -7,6 +7,7 @@ const tenths = new Intl.NumberFormat('en', { maximumFractionDigits: 1 });
 const compact = new Intl.NumberFormat('en', { notation: 'compact', maximumFractionDigits: 1 });
 const timeOfDay = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit' });
 const day = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+const dayMonth = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short' });
 const conjunction = new Intl.ListFormat('en-GB', { type: 'conjunction' });
 const ordinals = new Intl.PluralRules('en-GB', { type: 'ordinal' });
 const SUFFIX: Record<string, string> = { one: 'st', two: 'nd', few: 'rd', other: 'th' };
@@ -60,6 +61,14 @@ export const fmt = {
   time: (ms: number): string => timeOfDay.format(ms),
   /** milliseconds since the epoch → "20 Oct 2026", in the player's own time zone */
   date: (ms: number): string => day.format(ms),
+  /** A moment in the last while, as a report or a pill says it (session 64): "20:22" today, "9 Nov,
+   *  20:22" this year, "9 Nov 2025" before; where every day said its year, even yesterday. */
+  when: (at: number, now: number): string => {
+    const [a, n] = [new Date(at), new Date(now)];
+    if (a.toDateString() === n.toDateString()) return timeOfDay.format(at);
+    if (a.getFullYear() === n.getFullYear()) return `${dayMonth.format(at)}, ${timeOfDay.format(at)}`;
+    return day.format(at);
+  },
   /** ["a", "b", "c"] → "a, b and c": words joined as a sentence joins them */
   list: (items: readonly string[]): string => conjunction.format(items),
   /** 1 → "1st", 22 → "22nd", 113 → "113th": a place on a ladder */

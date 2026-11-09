@@ -33,6 +33,20 @@ export function cueFor(e: GameEvent): Cue | null {
     case 'rankUp':
       // First on a ladder rings like a Rare find; any other climb, the goal's small chime.
       return e.band === 1 ? 'rare' : 'goal';
+    // The castle (session 64: its battles were silent). A win the goal's chime, a rout or a fortress's
+    // hoard like a Rare find; a defence held the chime, one broken the stopped lane's low note.
+    case 'castleSiege':
+      return e.outcome === 'repelled' ? null : e.rout ? 'rare' : 'goal';
+    case 'castleIncursion':
+      return !e.won ? null : e.spoils ? 'rare' : 'goal';
+    case 'castleBesieged':
+      return e.outcome === 'repelled' ? 'goal' : 'stopped';
+    case 'castleSpyCaught':
+      return 'goal';
+    case 'castleTempered':
+      return e.masterstroke ? 'rare' : 'goal';
+    case 'castleOrders':
+      return e.all ? 'rare' : 'goal';
     case 'laneStopped':
       return isQuietStop(e.reason.code) ? null : 'stopped';
     default:

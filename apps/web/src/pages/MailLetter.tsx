@@ -10,10 +10,8 @@ import { useState } from 'react';
 import { NameLink } from './ProfileSheet.tsx';
 import s from './mail.module.css';
 
-/** When a letter came: the time today, the day before that. */
-function when(at: number): string {
-  return new Date(at).toDateString() === new Date().toDateString() ? fmt.time(at) : fmt.date(at);
-}
+/** When a letter came: the time today, the day and time before that (the year only from another). */
+const when = (at: number): string => fmt.when(at, Date.now());
 
 export function LetterRow({
   letter: l,
