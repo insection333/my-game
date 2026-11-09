@@ -79,14 +79,17 @@
   list-style: none;
 }
 
+/* An hour's number stands beside its first row of chips, not halfway down a row that wraps (session 65:
+   "1" stood beside the boss on a phone, below the hour it named). */
 .hour {
   display: grid;
   grid-template-columns: 1.25rem minmax(0, 1fr);
-  align-items: center;
+  align-items: start;
   gap: var(--s-2);
 }
 
 .hourLabel {
+  line-height: 30px;
   font-size: var(--t-small);
   font-variant-numeric: tabular-nums;
   color: var(--ink-2);

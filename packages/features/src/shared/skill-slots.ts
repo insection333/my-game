@@ -18,6 +18,7 @@ import type { Json, SlotFill } from '../define.ts';
 import { actionMastery, actionModifiers, nextUnlock, skillLevel, unlockText } from './skill.ts';
 import { xpBonusPct } from './complete.ts';
 import { itemOf } from './catalog.ts';
+import { STYLE_SKILLS } from './combat/data.ts';
 import { healsFor } from './combat/state.ts';
 
 export interface SkillAction {
@@ -143,7 +144,9 @@ export function skillSlots(def: SkillDef): Record<string, SlotFill> {
             ? t('find.foundOn', { date: fmt.date(at) })
             : f.greater
               ? t('find.greaterHint', { tier: fmt.int(GREATER_FROM_TIER) })
-              : t('find.anyAction', { skill: t(`skill.${skill}`) }),
+              : t((STYLE_SKILLS as readonly string[]).includes(skill) ? 'find.anyFoe' : 'find.anyAction', {
+                  skill: t(`skill.${skill}`),
+                }),
       };
     });
 
