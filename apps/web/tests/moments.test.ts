@@ -257,3 +257,27 @@ describe('moments', () => {
     expect(m.body).toMatch(/Also: Order done: /);
   });
 });
+
+// Session 68: a deed's moment and a milestone's had no picture (266 of 272 deeds have no icon).
+describe('the pictures of deeds and milestones', () => {
+  it('draws a deed by its medallion and a milestone by the gold it pays', () => {
+    const deed: GameEvent = {
+      type: 'deedDone',
+      at: T,
+      deed: 'level-mining-40',
+      name: 'Mining 40',
+      icon: null,
+      tier: 'hard',
+      points: 15,
+      mark: '40',
+    };
+    const [m] = momentsFrom([deed], T - 1, FEATURES);
+    expect(m).toMatchObject({ icon: null, medal: { tier: 'hard', mark: '40' } });
+    const [g] = momentsFrom(
+      [{ type: 'goalDone', at: T, goal: 'total-450', name: 'Reach total level 450' }],
+      T - 1,
+      FEATURES,
+    );
+    expect(g.icon).toBe('gold');
+  });
+});

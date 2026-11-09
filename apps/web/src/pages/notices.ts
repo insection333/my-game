@@ -24,6 +24,11 @@ const keyOf = (e: GameEvent): string =>
       ? JSON.stringify({ ...e, at: Math.floor(e.at / TOGETHER_MS) })
       : JSON.stringify(e);
 
+/** Deeds' tiers, least first: a line of deeds done together wears its best one's medallion (session 68). */
+const TIERS = ['easy', 'hard', 'elite', 'master'];
+const better = (a: Notice['medal'], b: Notice['medal']): Notice['medal'] =>
+  !a ? b : !b ? a : TIERS.indexOf(b.tier) > TIERS.indexOf(a.tier) ? b : a;
+
 // Asked on every draw (the bell is always there): worked out again only when the lists change.
 let last: { notices: GameEvent[]; events: GameEvent[]; length: number; out: Notice[] } | null = null;
 
@@ -55,6 +60,7 @@ function list(view: Pick<GameView, 'notices' | 'events'>): Notice[] {
       const names = [...(prev.deeds ?? [prev.deed]), e.name];
       out[out.length - 1] = {
         ...prev,
+        medal: better(prev.medal, line.medal),
         deeds: names,
         text: t('moment.deedsDone', { deeds: fmt.list([...names].reverse()) }),
       };

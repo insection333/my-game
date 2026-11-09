@@ -114,4 +114,29 @@ describe('the away recap', () => {
     expect(kinds.indexOf('defence')).toBeGreaterThan(kinds.indexOf('xp'));
     expect(kinds.indexOf('defence')).toBeLessThan(kinds.indexOf('stopped'));
   });
+
+  // Session 68: 266 of the 272 deeds have no picture, nor has a milestone or the XP line, so each stood on
+  // a bare dot. A deed carries its medallion (its tier and mark), a milestone its gold, the XP line the seal
+  // of the skill that earned most.
+  it('gives every deed its medallion, a milestone its gold and the XP its skill', () => {
+    const deed: GameEvent = {
+      type: 'deedDone',
+      at: 1,
+      deed: 'level-mining-40',
+      name: 'Mining 40',
+      icon: null,
+      tier: 'hard',
+      points: 15,
+      mark: '40',
+    };
+    expect(recap.noticeLine(deed)).toMatchObject({ icon: null, medal: { tier: 'hard', mark: '40' } });
+    // A notice kept from before marks rode with deeds: its tier alone.
+    const { mark: _, ...old } = deed;
+    expect(recap.noticeLine(old as GameEvent)?.medal).toEqual({ tier: 'hard', mark: '' });
+    expect(recap.noticeLine({ type: 'goalDone', at: 1, goal: 'milestone', name: 'Reach total level 450' })?.icon).toBe(
+      'gold',
+    );
+    const xp = recap.recapLines(away).find((l) => l.kind === 'xp');
+    expect(xp?.icon).toBe('woodcutting');
+  });
 });

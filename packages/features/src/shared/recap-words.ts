@@ -53,6 +53,9 @@ export interface RecapLine {
   icon: string | null;
   /** Where to go about it (a skill's page, the collection log, the item a lane ran out of). */
   href: string | null;
+  /** A deed's medallion, drawn where it has no icon (session 68): its tier and its mark ("40"), the mark
+   *  empty for a notice kept from before marks rode with deeds. */
+  medal?: { tier: string; mark: string };
 }
 
 export const lower = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
@@ -118,7 +121,8 @@ export function noticeLine(e: GameEvent): (RecapLine & { at: number }) | null {
       return {
         kind: 'goal',
         text: t('moment.goalDone', { goal: e.name ?? t(`goal.${e.goal}`) }),
-        icon: e.cache ? 'supply-cache' : null,
+        // A milestone pays gold; a short or daily goal, a cache (session 68: a milestone stood on a dot).
+        icon: e.cache ? 'supply-cache' : 'gold',
         href: '/',
         at: e.at,
       };
@@ -139,6 +143,7 @@ export function noticeLine(e: GameEvent): (RecapLine & { at: number }) | null {
         kind: 'deed',
         text: t('moment.deedDone', { deed: e.name }),
         icon: e.icon,
+        medal: { tier: e.tier, mark: e.mark ?? '' },
         href: '/hiscores/deeds',
         at: e.at,
       };

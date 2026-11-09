@@ -1,11 +1,17 @@
 // The moments region: the centre for big moments, a stack at the bottom for banners and toasts.
 // Each goes by itself a few seconds after its last event, or at once by the cross in its corner.
 import { t } from '@idle-clash/content';
-import { ItemIcon, Moment } from '@idle-clash/ui';
+import { ItemIcon, MedalSeal, Moment, type IconSize } from '@idle-clash/ui';
 import { useEffect, useMemo, useState } from 'react';
 import { useGame } from '../game/hooks.ts';
-import { momentsFrom } from './moments.ts';
+import { momentsFrom, type MomentView } from './moments.ts';
 import s from './shell.module.css';
+
+/** A moment's picture: its icon, else a deed's medallion (session 68). */
+function picture(m: MomentView, size: IconSize) {
+  if (m.icon) return <ItemIcon name={m.icon} size={size} />;
+  return m.medal ? <MedalSeal tier={m.medal.tier} mark={m.medal.mark} size={size} /> : undefined;
+}
 
 export function Moments() {
   const { events, now, features } = useGame();
@@ -36,7 +42,7 @@ export function Moments() {
             size="centre"
             title={centre.title}
             body={centre.body ?? undefined}
-            icon={centre.icon ? <ItemIcon name={centre.icon} size={96} /> : undefined}
+            icon={picture(centre, 96)}
             closeLabel={t('moment.close')}
             onClose={() => close(centre.key)}
           />
@@ -48,7 +54,7 @@ export function Moments() {
           size={m.size}
           title={m.title}
           body={m.body ?? undefined}
-          icon={m.icon ? <ItemIcon name={m.icon} size={m.size === 'toast' ? 32 : 48} /> : undefined}
+          icon={picture(m, m.size === 'toast' ? 32 : 48)}
           closeLabel={t('moment.close')}
           onClose={() => close(m.key)}
         />

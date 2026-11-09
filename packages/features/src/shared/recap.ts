@@ -132,7 +132,9 @@ export function recapLines(a: AwaySummary, notices: readonly GameEvent[] = []): 
       skills === 1
         ? t('recap.xpOne', { xp: fmt.int(xp), skill: t(`skill.${only}`) })
         : t('recap.xp', { xp: fmt.int(xp), skills: fmt.int(skills) });
-    lines.push({ kind: 'xp', text, icon: null, href: '/skills' });
+    // Pictured by the seal of the skill that earned most (session 68).
+    const most = Object.entries(a.xp).sort(([, x], [, y]) => y - x)[0][0];
+    lines.push({ kind: 'xp', text, icon: most, href: '/skills' });
   }
   for (const e of a.events)
     if (e.type === 'laneStopped' && !isQuietStop(e.reason.code))
