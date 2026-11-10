@@ -7,7 +7,7 @@ import { maxHealth, retreatShare } from '../shared/combat/fight.ts';
 import { fighterOf, healthAt, mealsOf } from '../shared/combat/state.ts';
 import { foeById, HITPOINTS, type Foe } from '../shared/combat/data.ts';
 import { BOSSES, bossIn, REGIONS, STAGE_MINUTES, type Boss, type Region } from '../shared/expeditions/data.ts';
-import { expeditionsOf, RUN_FINDS, setExpeditions, type Run } from '../shared/expeditions/state.ts';
+import { expeditionsOf, RUN_FINDS, setExpeditions, type Last, type Run } from '../shared/expeditions/state.ts';
 import { skillLevel } from '../shared/skill.ts';
 import { noRoom } from '../shared/storehouse.ts';
 import { dayOf, fightBoss, playBoss, restedToday } from './boss.ts';
@@ -36,9 +36,8 @@ function home(ctx: ActionContext, run: Run, outcome: 'won' | 'lost' | 'retreated
   const key = String(run.hours);
   const runs = outcome === 'won' ? { ...e.runs, [key]: (Object.hasOwn(e.runs, key) ? e.runs[key] : 0) + 1 } : e.runs;
   const watch = Math.round((run.marks * steadingMarksPct(ctx.state)) / 100);
-  setExpeditions(ctx.state, { ...e, marks: e.marks + watch, run: null, runs });
-  ctx.emit({
-    type: 'expeditionDone',
+  // Kept as said (session 74): the tab tells the last run until the next sets out.
+  const last: Last = {
     at: ctx.at,
     region: run.region,
     hours: run.hours,
@@ -48,8 +47,10 @@ function home(ctx: ActionContext, run: Run, outcome: 'won' | 'lost' | 'retreated
     cleared: run.cleared,
     stages: stageCount(run),
     marks: run.marks + watch,
-    finds,
-  });
+    finds: [...finds],
+  };
+  setExpeditions(ctx.state, { ...e, marks: e.marks + watch, run: null, runs, last });
+  ctx.emit({ type: 'expeditionDone', ...last });
 }
 
 /** The lane's events, with each new find also kept for the run's story. */

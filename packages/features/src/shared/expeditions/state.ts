@@ -39,6 +39,24 @@ export const Run = Route.extend({
 }).strict();
 export type Run = z.infer<typeof Run>;
 
+/** The last run home (session 74), as its homecoming said it: kept so the tab can tell it until the next
+ *  run sets out, since a run may come home while the player is elsewhere. */
+export const Last = z
+  .object({
+    at: Count,
+    region: z.enum(['march', 'fen', 'peaks']),
+    hours: z.union([z.literal(1), z.literal(2), z.literal(4), z.literal(8)]),
+    road: Key,
+    boss: Key,
+    outcome: z.enum(['won', 'lost', 'retreated']),
+    cleared: Count,
+    stages: Count,
+    marks: Count,
+    finds: z.array(Key).max(RUN_FINDS),
+  })
+  .strict();
+export type Last = z.infer<typeof Last>;
+
 export const ExpeditionState = z
   .object({
     marks: Count,
@@ -49,6 +67,8 @@ export const ExpeditionState = z
     wins: z.record(Key, Count),
     runs: z.record(z.string().regex(/^[1248]$/), Count),
     twists: z.array(Key).max(20),
+    /** Saves from before session 74 have none. */
+    last: Last.nullable().optional(),
   })
   .strict();
 export type ExpeditionState = z.infer<typeof ExpeditionState>;
