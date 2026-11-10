@@ -113,5 +113,6 @@ To change the game design: edit the model in `design/model/` or the template, ru
 | 72 A boss heard from | Done: a boss fought in the lane ends in a moment, a notice and a recap line saying what it paid (it said nothing), the first fall in the centre; Fight on a boss mid-fight queues that fight next, where the lane fell idle after the boss |
 | 73 Nearest to done | Done: the deeds nearest to done rank by what the player has done towards each, measured from a fresh save, where a newcomer's list led with "Builder I: 24 of 30" (the spaces every save starts with) |
 | 74 The last run, kept | Done: the last run home is kept in the save and told on the Expeditions tab until the next sets out, where a run that came home while the player was elsewhere left only grown marks |
+| 75 A stronghold out of reach | Done: a stronghold no roll can take says "Beyond you for now" and its Siege is closed, where a new lord could pay 27,000 gold and 20 AP for a certain loss at "0% to win" |
 
 Outstanding: the closed test waits on the server going up (the owner's call). Gold left once the Storehouse is fully enlarged now goes to the steading (session 25). Forgotten passwords are reset from the admin page while email is off; the owner's account is made an admin by naming it in `ADMIN_NAMES` after signing up. The contact address is admin@idleclash.com.

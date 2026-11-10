@@ -15,7 +15,7 @@ import { LatestReports } from './ReportsTab.tsx';
 import { castleRun, fight, loadTargets } from './store.ts';
 import { affords, hasAp, useSyncedCastle } from './synced.ts';
 import { TargetSheet } from './TargetSheet.tsx';
-import { defenceOf, paysLine, pct, sheetOf, standingOf, type Target } from './targets.ts';
+import { defenceOf, outOfReach, paysLine, pct, sheetOf, standingOf, type Target } from './targets.ts';
 import s from './castle.module.css';
 
 function useTargets(): { lords: Target[]; strongholds: Target[] } {
@@ -170,6 +170,7 @@ function TargetRow({ target }: { target: Target }) {
   const def = defenceOf(castle, target, logs, now);
   const best = def ? E.bestOffense(castle, def, now) : null;
   const chance = best ? E.winChance(best.r) : null;
+  const beyond = outOfReach(target, chance);
   const costs = target.merc
     ? E.mercenaryCosts(castle, target.merc, now)
     : E.siegeCosts(castle, E.brRatio(castle, { rating: target.rating }), now);
@@ -200,9 +201,11 @@ function TargetRow({ target }: { target: Target }) {
           : [
               chance === null
                 ? t('castle.target.unscouted')
-                : target.merc
-                  ? t('castle.target.chance', { pct: pct(chance) })
-                  : t('castle.target.chanceAbout', { pct: pct(chance) }),
+                : beyond
+                  ? t('castle.target.beyond')
+                  : target.merc
+                    ? t('castle.target.chance', { pct: pct(chance) })
+                    : t('castle.target.chanceAbout', { pct: pct(chance) }),
               paysLine(castle, target, view?.warChest ?? 0, logs, now),
               ...(standing?.kind === 'once' ? [standing.text] : []),
             ]
@@ -225,7 +228,7 @@ function TargetRow({ target }: { target: Target }) {
               </Button>
             ) : (
               <Button
-                disabled={busy || !hasAp(castle, costs.ap) || !affords(castle, purse, costs.gold)}
+                disabled={busy || beyond || !hasAp(castle, costs.ap) || !affords(castle, purse, costs.gold)}
                 onClick={attack}
               >
                 {t(target.struck !== null ? 'castle.strikeBackFor' : 'castle.siege', {
