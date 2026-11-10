@@ -259,6 +259,7 @@ export const en: Record<string, string> = {
   'action.opensAt': 'Opens at level {level}',
   'action.xpPerHour': '{xp} XP an hour',
   'action.gives': '{item} ×{count}',
+  'action.givesAverage': '{item} ×{count} on average',
   'action.takes': 'Takes {items}',
   'mastery.step': 'Mastery {step}',
 

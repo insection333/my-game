@@ -16,7 +16,7 @@ import { KINDLE_XP, kindlingsIn } from './kindling.ts';
 import { xpOf } from '@idle-clash/kernel';
 import type { Json, SlotFill } from '../define.ts';
 import { actionMastery, actionModifiers, nextUnlock, skillLevel, unlockText } from './skill.ts';
-import { xpBonusPct } from './complete.ts';
+import { extraYieldPct, xpBonusPct } from './complete.ts';
 import { itemOf } from './catalog.ts';
 import { STYLE_SKILLS } from './combat/data.ts';
 import { healsFor } from './combat/state.ts';
@@ -185,8 +185,15 @@ export function skillSlots(def: SkillDef): Record<string, SlotFill> {
           opensAt: level < a.level ? t('action.opensAt', { level: fmt.int(a.level) }) : null,
           time: fmt.seconds(Math.round(seconds * 100) / 100),
           xpPerHour: t('action.xpPerHour', { xp: fmt.int((a.xp * gain * 3600) / seconds) }),
+          // What a repetition pays on average where it is more than the base (session 70).
           gives: a.gives
-            .map((g) => t('action.gives', { item: t(`item.${g.item}`), count: fmt.int(g.count) }))
+            .map((g) =>
+              givesText(
+                t(`item.${g.item}`),
+                g.count,
+                extraYieldPct(state, skill, m.extraYield, !!a.takes?.length, g.count),
+              ),
+            )
             .join(', '),
           takes: a.takes?.length
             ? t('action.takes', {
@@ -226,4 +233,15 @@ export function skillSlots(def: SkillDef): Record<string, SlotFill> {
       };
     },
   };
+}
+
+/** What an action gives, in words (session 70): its base count and the percent chance of more. Whole extra
+ *  items are paid every time ("×2"); a part of one, on average to a tenth ("×3.2 on average"); an extra
+ *  too small to show, the base alone. */
+export function givesText(item: string, count: number, extraPct: number): string {
+  if (extraPct % 100 === 0) return t('action.gives', { item, count: fmt.int(count + extraPct / 100) });
+  const shown = Math.round((count + extraPct / 100) * 10) / 10;
+  return shown > count
+    ? t('action.givesAverage', { item, count: fmt.num(shown) })
+    : t('action.gives', { item, count: fmt.int(count) });
 }
