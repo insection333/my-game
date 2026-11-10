@@ -8,6 +8,7 @@ import {
   gearDoes,
   healsFor,
   items,
+  laneUsing,
   RARE_FIND_COMPLETIONS,
   type CapacityView,
 } from '@idle-clash/features';
@@ -162,7 +163,8 @@ export function ItemPanel({ item }: { item: string }) {
 }
 
 /** Selling to the vendor (one, ten, all but one) and, for gear, wearing it. Selling all but one asks
- *  first, saying what it comes to; every sale then says what it brought in. */
+ *  first, saying what it comes to and what a running lane uses it for (session 71); every sale then says
+ *  what it brought in. */
 function ItemActions({ item, value, gear }: { item: string; value: number; gear: boolean }) {
   const { state } = useGame();
   const [asking, setAsking] = useState(false);
@@ -180,12 +182,16 @@ function ItemActions({ item, value, gear }: { item: string; value: number; gear:
   };
   // Selling never takes the last of something worn; "all but one" leaves one either way.
   const max = worn.includes(item) ? have - 1 : have;
+  const using = laneUsing(state, item);
+  // A new question clears the last sale's line, which would stand under it as if it answered it.
+  const ask = () => (setAsking(true), setSold(''), focusIn('[data-answer]'));
   const shown = have > 0 && (value > 0 || gear);
   return (
     <div ref={box}>
       {shown && asking && (
         <div className={s.ask}>
           <p>{t('store.sellAsk', { count: fmt.int(have - 1), gold: fmt.int(value * (have - 1)) })}</p>
+          {using && <p className={s.inUse}>{using}</p>}
           <div className={s.actions}>
             <Button variant="primary" data-answer onClick={() => (sell(have - 1), focusIn('[data-status]'))}>
               {t('store.sellYes')}
@@ -215,7 +221,7 @@ function ItemActions({ item, value, gear }: { item: string; value: number; gear:
                 </Button>
               )}
               {have > 2 && (
-                <Button variant="secondary" data-sell-all onClick={() => (setAsking(true), focusIn('[data-answer]'))}>
+                <Button variant="secondary" data-sell-all onClick={ask}>
                   {t('store.sellAllButOne')}
                 </Button>
               )}

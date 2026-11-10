@@ -25,6 +25,7 @@ export type { CapacityView, FoodView } from './storehouse/index.ts';
 export * as storehouseData from './shared/storehouse.ts';
 export { actionsFor, RARE_FIND_COMPLETIONS } from './storehouse/finds.ts';
 export { findOf } from './shared/catalog.ts';
+export { laneUsing } from './shared/in-use.ts';
 export * as recap from './shared/recap.ts';
 export { rankUpWords } from './shared/rank-up.ts';
 export { allSkills, totalLevel } from './shared/standing.ts';
