@@ -269,7 +269,9 @@
   right: 0;
   margin: 0 auto;
   bottom: calc(var(--menu-h) + 72px);
-  z-index: 15;
+  /* Above an open sheet (20), which on a phone fills the foot of the screen and hid every toast raised
+     from it (session 69); below the tour (40). */
+  z-index: 25;
   width: min(420px, calc(100vw - 32px));
   pointer-events: none;
   display: grid;

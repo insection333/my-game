@@ -139,4 +139,18 @@ describe('the away recap', () => {
     const xp = recap.recapLines(away).find((l) => l.kind === 'xp');
     expect(xp?.icon).toBe('woodcutting');
   });
+
+  // Session 69: an order of the day had no line in the tray, and a spy mission no event at all.
+  it("lists an order of the day and a spy mission's end", () => {
+    const orders: GameEvent = { type: 'castleOrders', at: 1, orders: ['spy'], all: false, marks: 6 };
+    expect(recap.noticeLine(orders)).toMatchObject({ kind: 'castle', icon: 'castle-walls', href: '/castle' });
+    const spied: GameEvent = { type: 'castleSpied', at: 1, foe: 'Keeper', mission: 'scout', success: true };
+    expect(recap.noticeLine(spied)).toMatchObject({
+      kind: 'castle',
+      text: 'Scout the castle: Keeper. Done unseen',
+      icon: 'spy-scout',
+    });
+    const caught: GameEvent = { ...spied, mission: 'forge', success: false };
+    expect(recap.noticeLine(caught)).toMatchObject({ text: 'Forge orders: Keeper. Caught', icon: 'spy-forge' });
+  });
 });

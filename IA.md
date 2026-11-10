@@ -72,7 +72,7 @@ Between 768 and 1,023 px the rail collapses to icons (64 px) and the lanes panel
 | `shell.gold` | Header | storehouse | Pill |
 | `shell.tray` | Header | notices | TrayButton |
 | `shell.lane` (×4) | Lanes strip or panel | each lane's current feature | LaneCard (compact on phones) |
-| `shell.moment` | Over everything, centred or as a banner | any feature, through events | Moment |
+| `shell.moment` | Over everything but the tour, an open sheet included (session 69), centred or as a banner | any feature, through events | Moment |
 | `shell.deeds` | Not drawn: deeds done and not yet recorded, which the shell asks the server to record wherever the player is | deeds | Moment, through events |
 
 ## 3. Pages
@@ -205,7 +205,7 @@ The owner's castle system (`docs/castle-clash/`), between Storehouse and Hiscore
 | 17a | `castle.latest` | the server | War: the latest three report cards, and All reports (the Reports tab) |
 | 18 | `castle.target` | the page | A lord's sheet (`?panel=target&target=…`): their arms, their rating, Their profile (their card, session 44), a scouting's findings, the plan, what a breach brings, the siege with its fee and AP (or why it cannot go; sent, the sheet closes and its result lands on their row), the four spy missions, the last reports about them, and `player.report` at its foot |
 | 19 | `castle.account` | the server | A battle's account (`?panel=report&report=…`), over any tab, drawn as a report (session 42): the two sides' arms face to face over the outcome in a large word, their names and when; then the battle: attack and defence meeting on one bar with their numbers, the day's fortune, the ratio on a scale with the breach and decisive lines marked, the formation as three shares on one bar (for a defender, the one that came at them); a spy's findings; what came of it with its icons, the fee and the walls; for a lord, Strike back or Plan another siege |
-| 20 | `castle.missions` | the page | In a lord's sheet: the four spy missions, what each does, the chance, Send |
+| 20 | `castle.missions` | the page | In a lord's sheet: the four spy missions, what each does, the chance, Send; a mission sent says how it went in a toast ("Scout the castle: Keeper", Done unseen or Caught: session 69) |
 | 21 | `castle.plan` | the page | In a lord's sheet: the formation the attack goes in (set against the garrison known) and its chance to win (about: from their rating, the scouting and your own spies' sabotage) |
 | 22 | `castle.relics` | the page | Halls: the nine war relics, each drawn (in grey until forged), level of five, what each gives, Forge or raise, Wear and Take off, worn of three; at the last level, its tempers and how much stronger they make it, and Temper with its chance and cost (a temper that does not take says so on its row) |
 

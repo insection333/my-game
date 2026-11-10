@@ -80,6 +80,18 @@ describe('Castle Clash news', () => {
     await act(att, { type: 'spy', target: def.id, mission: 'scout' }).finally(() => rolls.mockRestore());
     expect((await notices(def)).find((e) => e.type === 'castleSpyCaught')).toMatchObject({ foe: 'Prowler' });
     expect((await notices(att)).some((e) => e.type === 'castleSpyCaught')).toBe(false);
+    // Session 69: the spy master hears how it went too; a mission sent said nothing to its sender.
+    expect((await notices(att)).find((e) => e.type === 'castleSpied')).toMatchObject({
+      foe: 'Watcher',
+      mission: 'scout',
+      success: false,
+    });
+    const done = vi.spyOn(Math, 'random').mockReturnValue(0.01);
+    await act(att, { type: 'spy', target: def.id, mission: 'poison' }).finally(() => done.mockRestore());
+    expect((await notices(att)).find((e) => e.type === 'castleSpied' && e.success)).toMatchObject({
+      foe: 'Watcher',
+      mission: 'poison',
+    });
   });
 
   it('takes the name of a deleted lord out of the notices of those they struck', async () => {

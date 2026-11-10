@@ -3,7 +3,7 @@
 import { t } from '@idle-clash/content';
 import { castleEngine } from '@idle-clash/features';
 
-export const { fortressName, outcomeName, mercName, relicName } = castleEngine;
+export const { fortressName, outcomeName, mercName, relicName, missionName } = castleEngine;
 
 const read = (map: Record<string, string>) => (id: string | null | undefined, params?: Record<string, string>) =>
   id && Object.hasOwn(map, id) ? t(map[id], params) : '';
@@ -95,12 +95,6 @@ export const techDoes = read({
   siegecraft: 'castle.tech.siegecraft.does',
   fortification: 'castle.tech.fortification.does',
   espionage: 'castle.tech.espionage.does',
-});
-export const missionName = read({
-  scout: 'castle.mission.scout',
-  poison: 'castle.mission.poison',
-  sabotage: 'castle.mission.sabotage',
-  forge: 'castle.mission.forge',
 });
 export const missionDoes = read({
   scout: 'castle.mission.scout.does',

@@ -43,6 +43,9 @@ export function cueFor(e: GameEvent): Cue | null {
       return e.outcome === 'repelled' ? 'goal' : 'stopped';
     case 'castleSpyCaught':
       return 'goal';
+    // Your own spy (session 69): done unseen the chime; caught, silent, as a siege repelled.
+    case 'castleSpied':
+      return e.success ? 'goal' : null;
     case 'castleTempered':
       return e.masterstroke ? 'rare' : 'goal';
     case 'castleOrders':

@@ -51,12 +51,19 @@ export const fortressName = read({
 });
 
 type CastleEvent = EventOf<
-  'castleSiege' | 'castleBesieged' | 'castleSpyCaught' | 'castleIncursion' | 'castleTempered' | 'castleOrders'
+  | 'castleSiege'
+  | 'castleBesieged'
+  | 'castleSpyCaught'
+  | 'castleSpied'
+  | 'castleIncursion'
+  | 'castleTempered'
+  | 'castleOrders'
 >;
 export const isCastleEvent = (e: GameEvent): e is CastleEvent =>
   e.type === 'castleSiege' ||
   e.type === 'castleBesieged' ||
   e.type === 'castleSpyCaught' ||
+  e.type === 'castleSpied' ||
   e.type === 'castleIncursion' ||
   e.type === 'castleTempered' ||
   e.type === 'castleOrders';
@@ -69,6 +76,14 @@ export const orderName = read({
   dig: 'castle.order.dig.short',
   spy: 'castle.order.spy.short',
   lord: 'castle.order.lord.short',
+});
+
+/** A spy mission by its name ("Scout the castle"). */
+export const missionName = read({
+  scout: 'castle.mission.scout',
+  poison: 'castle.mission.poison',
+  sabotage: 'castle.mission.sabotage',
+  forge: 'castle.mission.forge',
 });
 
 export const relicName = read({
@@ -101,6 +116,8 @@ export function castleIcon(e: CastleEvent): string {
       return 'castle-walls';
     case 'castleSpyCaught':
       return 'spy-scout';
+    case 'castleSpied':
+      return `spy-${e.mission}`;
     case 'castleTempered':
       return e.relic;
   }
@@ -149,6 +166,14 @@ export function castleMoment(e: CastleEvent): {
       return {
         title: sentence(t('castle.report.spyIn', { foe })),
         body: join(marksText(e.marks)),
+        href: '/castle',
+        size: 'toast',
+      };
+    case 'castleSpied':
+      // Worded as its report card is: the mission and the lord, then how it went.
+      return {
+        title: t('castle.report.spyOut', { mission: missionName(e.mission), foe }),
+        body: e.success ? t('castle.report.success') : t('castle.report.caught'),
         href: '/castle',
         size: 'toast',
       };

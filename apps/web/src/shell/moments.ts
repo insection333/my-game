@@ -57,7 +57,8 @@ function rank(e: GameEvent): number {
 }
 
 /** A press of the player's own in the castle answered: a siege, an assault, a relic tempered. */
-const byYou = (e: GameEvent) => e.type === 'castleSiege' || e.type === 'castleIncursion' || e.type === 'castleTempered';
+const byYou = (e: GameEvent) =>
+  e.type === 'castleSiege' || e.type === 'castleSpied' || e.type === 'castleIncursion' || e.type === 'castleTempered';
 
 function sizeOf(e: GameEvent): MomentSize {
   if (e.type === 'levelUp' || e.type === 'kindled' || (e.type === 'find' && e.rarity === 'legendary')) return 'centre';
