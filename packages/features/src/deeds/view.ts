@@ -2,7 +2,7 @@
 // steps are medallions; the deeds nearest to done and those done last; every deed's words, tier,
 // points, progress and what it unlocks, for its sheet.
 import { fmt, hasString, t } from '@idle-clash/content';
-import type { State } from '@idle-clash/kernel';
+import { newState, type State } from '@idle-clash/kernel';
 import { POINTS, wordsOf, type Deed, type DeedTier } from './content.ts';
 import { HONOURS, honourName } from './honours.ts';
 import { CATEGORIES, deedList } from './list.ts';
@@ -131,8 +131,20 @@ export function deedsView(state: State, now: number): DeedsView {
       }),
     };
   });
-  const open = [...steps.values()].filter((s) => !s.done && !s.secret && s.progress > 0 && s.progress < 1);
-  const nearest = open.sort((a, b) => b.progress - a.progress).slice(0, NEAREST);
+  // Ranked by what the player has done towards each deed (session 73): what every new save starts with (24
+  // Storehouse spaces, a total level of eleven) is no progress, or "Builder I" led a newcomer's list.
+  const fresh = new Reader(newState(state.seed, now), now);
+  const made = (d: Deed) => {
+    const start = d.measure(fresh);
+    return d.target > start ? (d.measure(r) - start) / (d.target - start) : 0;
+  };
+  const nearest = deedList()
+    .filter((d) => !Object.hasOwn(done, d.id) && !steps.get(d.id)!.secret)
+    .map((d) => ({ step: steps.get(d.id)!, made: made(d) }))
+    .filter((x) => x.made > 0 && x.made < 1)
+    .sort((a, b) => b.made - a.made)
+    .slice(0, NEAREST)
+    .map((x) => x.step);
   const recent = Object.entries(done)
     .sort((a, b) => b[1] - a[1])
     .flatMap(([id]) => steps.get(id) ?? [])
