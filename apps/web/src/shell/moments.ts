@@ -4,6 +4,7 @@
 // easy deeds a small toast.
 import { fmt, formatEffect, formatStop, isQuietStop, masteryEffects, t } from '@idle-clash/content';
 import {
+  bossFoughtWords,
   castleEngine,
   expeditionStory as storyOf,
   kindlingData,
@@ -43,6 +44,7 @@ function rank(e: GameEvent): number {
   if (e.type === 'find') return e.rarity === 'legendary' ? 0 : e.first ? 2 : e.rarity === 'rare' ? 4 : 9;
   if (e.type === 'deedDone') return e.tier === 'master' ? 1 : e.tier === 'elite' ? 5 : 7;
   if (e.type === 'expeditionDone') return e.outcome === 'won' ? 1 : 5;
+  if (e.type === 'bossFought') return e.won && e.first ? 1 : e.won ? 5 : 8;
   if (e.type === 'kindled') return 1;
   // First on a ladder ranks with a master deed; the top three or ten with an elite one.
   if (e.type === 'rankUp') return e.band === 1 ? 1 : e.band <= 10 ? 5 : 8;
@@ -66,6 +68,7 @@ function sizeOf(e: GameEvent): MomentSize {
   if (e.type === 'goalDone' && e.cache) return e.cache.grade === 'lucky' ? 'centre' : 'banner';
   if (e.type === 'deedDone') return e.tier === 'easy' ? 'toast' : e.tier === 'hard' ? 'banner' : 'centre';
   if (e.type === 'expeditionDone') return e.outcome === 'won' ? 'centre' : 'banner';
+  if (e.type === 'bossFought') return bossFoughtWords(e).size;
   if (e.type === 'masteryStep' || (e.type === 'find' && e.rarity === 'rare')) return 'banner';
   if (e.type === 'rankUp') return e.band === 1 ? 'centre' : e.band <= 10 ? 'banner' : 'toast';
   if (castleEngine.isCastleEvent(e)) return castleEngine.castleMoment(e).size;
@@ -127,6 +130,10 @@ function describe(
       };
     case 'expeditionDone':
       return { ...storyOf(e), icon: hasIcon(e.boss) ? e.boss : null };
+    case 'bossFought': {
+      const w = bossFoughtWords(e);
+      return { title: w.title, body: w.body, icon: hasIcon(e.boss) ? e.boss : null };
+    }
     case 'deedDone': {
       const worth = t('moment.deedPoints', { tier: t(`deeds.tier.${e.tier}`), points: fmt.int(e.points) });
       const unlocked = e.unlocks?.length ? t('moment.deedUnlocks', { honours: e.unlocks.join(', ') }) : null;

@@ -90,6 +90,12 @@ export function recapLines(a: AwaySummary, notices: readonly GameEvent[] = []): 
         href: '/combat/expeditions',
       });
     }
+  // Each boss fought alone in the lane (session 72).
+  for (const e of a.events)
+    if (e.type === 'bossFought') {
+      const line = noticeLine(e)!;
+      lines.push({ kind: line.kind, text: line.text, icon: line.icon, href: line.href });
+    }
   // Mastery, one line an action: the step it reached.
   const steps = new Map<string, Extract<GameEvent, { type: 'masteryStep' }>>();
   for (const e of a.events) if (e.type === 'masteryStep') steps.set(`${e.action.feature}:${e.action.id}`, e);

@@ -36,6 +36,9 @@ export interface EventMap {
   };
   /** A skill past 99 reached another Kindling (step 17): its count so far. */
   kindled: { skill: string; count: number };
+  /** A boss fought alone in the lane (session 72): beaten or held, what a win paid (gold, the boss's
+   *  trophy, marks), and whether it was the first time it fell. */
+  bossFought: { boss: string; won: boolean; gold: number; drop: string | null; marks: number; first: boolean };
   /** An expedition came home (step 16): where and how long, the road taken, how it ended (the boss
    *  beaten or not, or a retreat before it), the stages cleared of all, the marks and finds it brought. */
   expeditionDone: {
@@ -91,6 +94,7 @@ export const NOTABLE_EVENTS: readonly (keyof EventMap)[] = [
   'goalDone',
   'deedDone',
   'expeditionDone',
+  'bossFought',
   'kindled',
   'castleSiege',
   'castleBesieged',
