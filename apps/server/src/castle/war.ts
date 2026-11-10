@@ -147,10 +147,23 @@ export function spy(io: Io, att: Castle, target: string, missionId: string): Out
   store(io, r.defender);
   const report = r.success && missionId === 'scout' ? E.scoutReport(r.defender, io.now) : null;
   io.castles.log(io.playerId, io.now, 'spyOut', { foe: target, mission: missionId, success: r.success, report });
+  const names = io.castles.names([io.playerId, target]);
+  // The spy master hears how it went (session 69), as a siege's attacker does.
+  io.events.push({
+    type: 'castleSpied',
+    at: io.now,
+    foe: names.get(target) ?? '',
+    mission: missionId,
+    success: r.success,
+  });
   if (!r.success) {
     io.castles.log(target, io.now, 'spyIn', { foe: io.playerId, mission: missionId, marks: r.defenderMarks });
-    const foe = io.castles.names([io.playerId]).get(io.playerId) ?? '';
-    tell(io, target, { type: 'castleSpyCaught', at: io.now, foe, marks: r.defenderMarks });
+    tell(io, target, {
+      type: 'castleSpyCaught',
+      at: io.now,
+      foe: names.get(io.playerId) ?? '',
+      marks: r.defenderMarks,
+    });
   }
   return { ok: true, success: r.success, report, bribe: costs.gold };
 }
