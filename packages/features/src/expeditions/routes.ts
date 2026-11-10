@@ -27,6 +27,7 @@ export function setOut(state: State, region: Region, hours: Hours, road: string)
     drawn: e.drawn + 1,
     twists,
     run: { ...route, seq: e.drawn, road, at: 0, marks: 0, cleared: 0, finds: [] },
+    last: null,
   });
   return { state: out, result: { ok: true }, events: [] };
 }

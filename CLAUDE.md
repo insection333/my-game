@@ -112,5 +112,6 @@ To change the game design: edit the model in `design/model/` or the template, ru
 | 71 What a sale would take | Done: selling all but one says when a running lane uses the item (an artisan's ingredient, and that the lane stops; a fight's food; a style's supply), where it asked only the price |
 | 72 A boss heard from | Done: a boss fought in the lane ends in a moment, a notice and a recap line saying what it paid (it said nothing), the first fall in the centre; Fight on a boss mid-fight queues that fight next, where the lane fell idle after the boss |
 | 73 Nearest to done | Done: the deeds nearest to done rank by what the player has done towards each, measured from a fresh save, where a newcomer's list led with "Builder I: 24 of 30" (the spaces every save starts with) |
+| 74 The last run, kept | Done: the last run home is kept in the save and told on the Expeditions tab until the next sets out, where a run that came home while the player was elsewhere left only grown marks |
 
 Outstanding: the closed test waits on the server going up (the owner's call). Gold left once the Storehouse is fully enlarged now goes to the steading (session 25). Forgotten passwords are reset from the admin page while email is off; the owner's account is made an admin by naming it in `ADMIN_NAMES` after signing up. The contact address is admin@idleclash.com.

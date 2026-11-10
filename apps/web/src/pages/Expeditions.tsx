@@ -59,6 +59,21 @@ export function Expeditions() {
   );
 }
 
+/** The last run home (session 74), told above the next one's choices: it may have come home while the
+ *  player was elsewhere, and the tab moved on to the next route without a word of it. */
+function LastRun({ last }: { last: NonNullable<ExpeditionView['last']> }) {
+  return (
+    <div className={s.last} data-part="last-run">
+      {hasIcon(last.boss) && <ItemIcon name={last.boss} size={32} />}
+      <div>
+        <p className={s.note}>{t('expedition.lastRun', { when: last.when })}</p>
+        <p className={s.lastTitle}>{last.title}</p>
+        <p className={s.note}>{last.body}</p>
+      </div>
+    </div>
+  );
+}
+
 /** Choosing a run: the region and length, the route they make with its twists, then the fork's roads. */
 function Plan({ view }: { view: ExpeditionView }) {
   const { state } = useGame();
@@ -75,6 +90,7 @@ function Plan({ view }: { view: ExpeditionView }) {
     <>
       <Panel title={t('expedition.title')} aside={<Pill tone="gold">{view.marks}</Pill>}>
         <div className={s.stack}>
+          {view.last && <LastRun last={view.last} />}
           <Tabs
             label={t('combat.regions')}
             onNavigate={navigate}
