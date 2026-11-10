@@ -115,9 +115,21 @@ function bossRules(boss: Boss): ActionRules {
     },
     duration: (ctx) => (playBoss(ctx, boss, [])?.seconds ?? 3) * 1000,
     complete: (ctx) => {
-      fightBoss(ctx, boss, []);
+      const before = expeditionsOf(ctx.state).wins;
+      const fought = fightBoss(ctx, boss, []);
       const e = expeditionsOf(ctx.state);
       setExpeditions(ctx.state, { ...e, bossDay: { ...e.bossDay, [boss.id]: dayOf(ctx.at) } });
+      // How it ended, said (session 72): a day's win paid and said nothing.
+      ctx.emit({
+        type: 'bossFought',
+        at: ctx.at,
+        boss: boss.id,
+        won: fought.won,
+        gold: fought.won ? boss.gold : 0,
+        drop: fought.won ? boss.drop : null,
+        marks: fought.marks,
+        first: fought.won && !Object.hasOwn(before, boss.id),
+      });
     },
   };
 }

@@ -5,6 +5,7 @@ import type { GameEvent } from '@idle-clash/kernel';
 import { skillActions } from './catalog.ts';
 import { castleIcon, castleMoment, isCastleEvent } from './castle/words.ts';
 import { storyOf } from './expeditions/story.ts';
+import { bossFoughtWords } from './expeditions/boss-words.ts';
 import { rankUpWords } from './rank-up.ts';
 import { remedyFor } from './remedy.ts';
 
@@ -134,6 +135,16 @@ export function noticeLine(e: GameEvent): (RecapLine & { at: number }) | null {
         kind: 'expedition',
         text: `${story.title}. ${story.body}`,
         icon: e.region,
+        href: '/combat/expeditions',
+        at: e.at,
+      };
+    }
+    case 'bossFought': {
+      const w = bossFoughtWords(e);
+      return {
+        kind: 'expedition',
+        text: w.body ? `${w.title}. ${w.body}` : w.title,
+        icon: e.boss,
         href: '/combat/expeditions',
         at: e.at,
       };

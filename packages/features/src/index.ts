@@ -59,6 +59,7 @@ export type {
 export { routeView } from './expeditions/index.ts';
 export * as expeditionData from './shared/expeditions/data.ts';
 export { storyOf as expeditionStory } from './shared/expeditions/story.ts';
+export { bossFoughtWords } from './shared/expeditions/boss-words.ts';
 export type { KindlingView } from './kindling/index.ts';
 export * as kindlingData from './shared/kindling.ts';
 export type { SteadingView, WorkRow } from './steading/index.ts';

@@ -7,6 +7,7 @@ import { ActionRow, Button, hasIcon, ItemIcon, Panel, Pill } from '@idle-clash/u
 import { useGame } from '../game/hooks.ts';
 import { game } from '../game/store.ts';
 import { Slot } from '../slots.tsx';
+import { bossCommands } from './boss-start.ts';
 import { CombatArena, useFightClock } from './CombatArena.tsx';
 import s from './expeditions.module.css';
 
@@ -53,9 +54,10 @@ function Boss({ boss }: { boss: BossRow }) {
         !fighting && (
           <Button
             variant="primary"
-            onClick={() =>
-              game.command({ type: 'start', lane: 'combat', action: { feature: 'expeditions', id: boss.id } })
-            }
+            onClick={() => {
+              // The fight the lane was on is queued next, to go back to once the boss is done (session 72).
+              for (const cmd of bossCommands(state, boss.id)) if (!game.command(cmd).ok) break;
+            }}
           >
             {t('combat.fight')}
           </Button>

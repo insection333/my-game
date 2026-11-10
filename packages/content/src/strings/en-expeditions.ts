@@ -94,6 +94,12 @@ export const expeditions = {
   'expedition.marksOne': '1 mark',
 
   'boss.rested': 'Fought today: back tomorrow',
+  'boss.beaten': '{boss} beaten',
+  'boss.firstWin': '{boss} beaten for the first time',
+  'boss.held': '{boss} held: you retreated',
+  'boss.spoils.gold': '+{gold} gold',
+  'boss.spoils.marks': '+{marks} marks',
+  'boss.spoils.marksOne': '+1 mark',
   'boss.winsNone': 'Not yet beaten',
   'boss.winsOne': 'Beaten once',
   'boss.wins': 'Beaten {count} times',
