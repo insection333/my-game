@@ -123,7 +123,6 @@ export function completeSkillAction(ctx: ActionContext, def: SkillDefinition, ac
   // The Workshop keeps an ingredient now and then; the Woodyard brings more of what gathering makes.
   const artisan = !!act.takes?.length;
   if (artisan && !takeInputs(ctx, act.takes!, m.saveInput + steadingSavePct(state))) return false;
-  const yard = artisan ? 0 : steadingYieldPct(state);
   // A skill on the Path of Fortune finds more; on Bounty, makes more (past 99, see kindling.ts).
   rollFind(ctx, def, act, m.findChance + pathBonus(state, def.skill, 'finds') + edictPct(state, ctx.at, 'finds'));
 
@@ -131,8 +130,7 @@ export function completeSkillAction(ctx: ActionContext, def: SkillDefinition, ac
     give(
       state,
       g.item,
-      // Bounty's percent is of the whole stack, so two logs a chop come to 2.3 on +15%.
-      yieldOf(g.count, m.extraYield + yard + pathBonus(state, def.skill, 'items') * g.count, () => ctx.roll()),
+      yieldOf(g.count, extraYieldPct(state, def.skill, m.extraYield, artisan, g.count), () => ctx.roll()),
     );
 
   const before = skillLevel(state, def.skill);
@@ -151,4 +149,11 @@ export function completeSkillAction(ctx: ActionContext, def: SkillDefinition, ac
   const step = masteryStep(done + 1, gain);
   if (step > masteryStep(done, gain))
     ctx.emit({ type: 'masteryStep', at: ctx.at, action: { feature: def.feature, id: act.id }, step });
+}
+
+/** The chance, in percent, of more of an item than an action's base count (past 100, whole extra items):
+ *  the perks', the Woodyard's for gathering, and the Path of Bounty's, whose percent is of the whole stack
+ *  (two logs a chop come to 2.3 on +15%). The engine pays by it and the rows say it (session 70). */
+export function extraYieldPct(state: State, skill: string, perks: number, artisan: boolean, count: number): number {
+  return perks + (artisan ? 0 : steadingYieldPct(state)) + pathBonus(state, skill, 'items') * count;
 }
