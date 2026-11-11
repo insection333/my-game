@@ -19,7 +19,7 @@ export const steading = defineFeature({
     raise: defineRoute({
       input: z.object({ work: z.string().regex(/^[a-z][a-z-]{0,31}$/) }).strict(),
       example: { work: 'woodyard' },
-      run: (state, input) => raise(state, input.work),
+      run: (state, input, now) => raise(state, input.work, now),
     }),
   },
   slots: {

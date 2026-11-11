@@ -9,9 +9,10 @@ import { notices } from '../db/schema.ts';
 export const NOTICES_KEPT = 100;
 
 /** What reaches the tray: notable moments (not the Uncommon finds the log already holds, which come
- *  by the dozen), and lanes that stopped by themselves. */
+ *  by the dozen, nor a work raised, a press its moment answers with no line in the tray: session 76),
+ *  and lanes that stopped by themselves. */
 export const isNotice = (e: GameEvent) =>
-  (isNotable(e) && !(e.type === 'find' && e.rarity === 'uncommon' && !e.first)) ||
+  (isNotable(e) && !(e.type === 'find' && e.rarity === 'uncommon' && !e.first) && e.type !== 'workRaised') ||
   (e.type === 'laneStopped' && !isQuietStop(e.reason.code));
 
 export class Notices {

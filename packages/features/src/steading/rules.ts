@@ -7,7 +7,7 @@ export type RaiseResult =
   { ok: true; stage: number } | { ok: false; reason: 'unknown' | 'top' | 'short'; item?: string };
 type Answer = { state: State; result: RaiseResult; events: GameEvent[] };
 
-export function raise(state: State, id: string): Answer {
+export function raise(state: State, id: string, now: number): Answer {
   const no = (reason: 'unknown' | 'top' | 'short', item?: string): Answer => ({
     state,
     result: { ok: false, reason, ...(item ? { item } : {}) },
@@ -25,5 +25,6 @@ export function raise(state: State, id: string): Answer {
   take(out, 'gold', cost.gold);
   for (const i of cost.items) take(out, i.item, i.count);
   out.features.steading = { stages: { ...steadingOf(state).stages, [id]: stage } };
-  return { state: out, result: { ok: true, stage }, events: [] };
+  // Said (session 76): past its building, a raising moved only the bar.
+  return { state: out, result: { ok: true, stage }, events: [{ type: 'workRaised', at: now, work: id, stage }] };
 }

@@ -1,7 +1,7 @@
 // The steading as the Hearth draws it: each work with its stage, what it gives now, and what its next
 // stage costs and gives, with whether the player holds enough of each.
 import { fmt, t } from '@idle-clash/content';
-import { countOf, type State } from '@idle-clash/kernel';
+import { countOf, type GameEvent, type State } from '@idle-clash/kernel';
 import { STAGE_GOLD, STAGES, stageCost, stageOf, WORKS, type Work, type WorkEffect } from '../shared/steading.ts';
 
 export interface WorkCost {
@@ -93,4 +93,18 @@ export function steadingView(state: State): SteadingView {
   });
   const open = rows.some((r) => r.stage > 0) || countOf(state, 'gold') >= STAGE_GOLD[0];
   return { open, rows, stages: Object.fromEntries(rows.map((r) => [r.id, r.stage])) };
+}
+
+/** A work raised, in words (session 76): the stage it reached, or fully raised, and what it now gives. */
+export function workRaisedWords(e: Extract<GameEvent, { type: 'workRaised' }>): { title: string; body: string } | null {
+  const w = WORKS.find((x) => x.id === e.work);
+  if (!w) return null;
+  const work = t(NAME[w.id]);
+  return {
+    title:
+      e.stage >= STAGES
+        ? t('steading.raisedTop', { work })
+        : t('steading.raised', { work, stage: fmt.int(e.stage), stages: fmt.int(STAGES) }),
+    body: t('steading.now', { gives: effectAt(w, e.stage) }),
+  };
 }

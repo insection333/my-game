@@ -28,6 +28,9 @@ export function cueFor(e: GameEvent): Cue | null {
       // A boss beaten at a run's end rings like a Rare find; any other homecoming, the goal's chime.
       return e.outcome === 'won' ? 'rare' : 'goal';
     // A boss fought alone (session 72): its first fall rings like a Rare find, a day's win the goal's chime.
+    // A work raised by the player's press (session 76): the goal's chime.
+    case 'workRaised':
+      return 'goal';
     case 'bossFought':
       return !e.won ? null : e.first ? 'rare' : 'goal';
     case 'deedDone':

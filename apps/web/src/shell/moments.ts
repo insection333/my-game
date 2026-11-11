@@ -5,6 +5,7 @@
 import { fmt, formatEffect, formatStop, isQuietStop, masteryEffects, t } from '@idle-clash/content';
 import {
   bossFoughtWords,
+  workRaisedWords,
   castleEngine,
   expeditionStory as storyOf,
   kindlingData,
@@ -60,7 +61,11 @@ function rank(e: GameEvent): number {
 
 /** A press of the player's own in the castle answered: a siege, an assault, a relic tempered. */
 const byYou = (e: GameEvent) =>
-  e.type === 'castleSiege' || e.type === 'castleSpied' || e.type === 'castleIncursion' || e.type === 'castleTempered';
+  e.type === 'castleSiege' ||
+  e.type === 'castleSpied' ||
+  e.type === 'castleIncursion' ||
+  e.type === 'castleTempered' ||
+  e.type === 'workRaised';
 
 function sizeOf(e: GameEvent): MomentSize {
   if (e.type === 'levelUp' || e.type === 'kindled' || (e.type === 'find' && e.rarity === 'legendary')) return 'centre';
@@ -69,6 +74,8 @@ function sizeOf(e: GameEvent): MomentSize {
   if (e.type === 'deedDone') return e.tier === 'easy' ? 'toast' : e.tier === 'hard' ? 'banner' : 'centre';
   if (e.type === 'expeditionDone') return e.outcome === 'won' ? 'centre' : 'banner';
   if (e.type === 'bossFought') return bossFoughtWords(e).size;
+  // A work raised: a press answered; fully raised, a banner (session 76).
+  if (e.type === 'workRaised') return e.stage >= 5 ? 'banner' : 'toast';
   if (e.type === 'masteryStep' || (e.type === 'find' && e.rarity === 'rare')) return 'banner';
   if (e.type === 'rankUp') return e.band === 1 ? 'centre' : e.band <= 10 ? 'banner' : 'toast';
   if (castleEngine.isCastleEvent(e)) return castleEngine.castleMoment(e).size;
@@ -130,6 +137,10 @@ function describe(
       };
     case 'expeditionDone':
       return { ...storyOf(e), icon: hasIcon(e.boss) ? e.boss : null };
+    case 'workRaised': {
+      const w = workRaisedWords(e);
+      return { title: w?.title ?? '', body: w?.body ?? null, icon: null };
+    }
     case 'bossFought': {
       const w = bossFoughtWords(e);
       return { title: w.title, body: w.body, icon: hasIcon(e.boss) ? e.boss : null };

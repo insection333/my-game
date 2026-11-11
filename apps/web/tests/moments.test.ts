@@ -281,3 +281,14 @@ describe('the pictures of deeds and milestones', () => {
     expect(g.icon).toBe('gold');
   });
 });
+
+// Session 76: raising a work a stage had no moment.
+describe('a work raised', () => {
+  it('says the stage it reached and what the work now gives', () => {
+    const [m] = momentsFrom([{ type: 'workRaised', at: T, work: 'woodyard', stage: 3 }], T - 1, FEATURES);
+    expect(m).toMatchObject({ size: 'toast', title: 'Woodyard raised: 3 of 5' });
+    expect(m.body).toMatch(/^Now: \+[0-9.]+% chance of an extra item when gathering$/);
+    const [top] = momentsFrom([{ type: 'workRaised', at: T, work: 'woodyard', stage: 5 }], T - 1, FEATURES);
+    expect(top).toMatchObject({ size: 'banner', title: 'Woodyard fully raised' });
+  });
+});
