@@ -78,6 +78,10 @@ export function standingOf(c: E.Castle, target: Target, now: number): Standing |
   return null;
 }
 
+/** A stronghold no roll can take (session 75): its chance is exact, and at nought a siege only pays and
+ *  wounds, so its button is closed. A lord's chance is an estimate, and stays open. */
+export const outOfReach = (target: Target, chance: number | null) => target.merc !== null && chance === 0;
+
 /** The chance against a target in words: with the attack as set, and set against them if that is better. */
 export function chanceLine(c: E.Castle, def: E.Side | null, estimate: boolean, now: number): string {
   if (!def) return t('castle.target.unscouted');
