@@ -116,5 +116,6 @@ To change the game design: edit the model in `design/model/` or the template, ru
 | 75 A stronghold out of reach | Done: a stronghold no roll can take says "Beyond you for now" and its Siege is closed, where a new lord could pay 27,000 gold and 20 AP for a certain loss at "0% to win" |
 | 76 A work raised, answered | Done: raising a steading work is answered by a toast saying the stage it reached and what it now gives (a banner when fully raised), where only the bar moved |
 | 77 How near a locked picture is | Done: a foe's locked display picture shows how many of that foe are slain ("47 of 100"), where it showed only its name; the settings sheet played cleanly |
+| 78 The mail monitor, read | Done: the realm's own warnings no longer offer Warn and Mute (they would act on a blank name), and the monitor's times read "14:24" today as the game's others do |
 
 Outstanding: the closed test waits on the server going up (the owner's call). Gold left once the Storehouse is fully enlarged now goes to the steading (session 25). Forgotten passwords are reset from the admin page while email is off; the owner's account is made an admin by naming it in `ADMIN_NAMES` after signing up. The contact address is admin@idleclash.com.

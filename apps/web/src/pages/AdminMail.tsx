@@ -12,6 +12,7 @@ import { handled } from '../game/session.ts';
 import { navigate, useLocation } from '../router.ts';
 import { Slot } from '../slots.tsx';
 import s from './admin.module.css';
+import { letterSender, letterWhen } from './admin-mail-words.ts';
 
 const VIEWS = ['sent', 'flagged', 'refused', 'watch'] as const;
 type View = (typeof VIEWS)[number];
@@ -190,17 +191,20 @@ export function AdminMail() {
                       <Pill tone="gold">{t('admin.mail.flag')}</Pill>
                     </span>
                   )}
-                  <time className={s.letterAt}>{`${fmt.date(m.at)} ${fmt.time(m.at)}`}</time>
+                  <time className={s.letterAt}>{letterWhen(m.at)}</time>
                 </div>
                 <p className={s.letterBody}>{m.body}</p>
-                <div className={s.letterActions}>
-                  <Button variant="quiet" onClick={() => void act(m.from, 'warn')}>
-                    {t('admin.mail.warnSender')}
-                  </Button>
-                  <Button variant="quiet" onClick={() => void act(m.from, 'mute')}>
-                    {t('admin.mail.mute')}
-                  </Button>
-                </div>
+                {/* The realm's own warnings have no sender to warn or mute (session 78). */}
+                {letterSender(m) && (
+                  <div className={s.letterActions}>
+                    <Button variant="quiet" onClick={() => void act(m.from, 'warn')}>
+                      {t('admin.mail.warnSender')}
+                    </Button>
+                    <Button variant="quiet" onClick={() => void act(m.from, 'mute')}>
+                      {t('admin.mail.mute')}
+                    </Button>
+                  </div>
+                )}
               </li>
             ))}
           </ul>
