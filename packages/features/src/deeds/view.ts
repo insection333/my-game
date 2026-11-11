@@ -84,7 +84,7 @@ export function stepOf(d: Deed, r: Reader, doneAt: number | undefined): DeedStep
     text: secret ? t('deeds.secret.text') : wordsOf(d, 'text'),
     aside: secret ? t('deeds.secret.text') : d.brief ? null : wordsOf(d, 'text'),
     worth: t('deeds.worth', { tier: t(`deeds.tier.${d.tier}`), points: fmt.int(POINTS[d.tier]) }),
-    done: doneAt === undefined ? null : t('deeds.doneOn', { date: fmt.date(doneAt) }),
+    done: doneAt === undefined ? null : t('deeds.doneOn', { date: fmt.day(doneAt, r.now) }),
     progress: doneAt === undefined ? Math.min(1, Math.max(0, measured / d.target)) : 1,
     count: secret || doneAt !== undefined ? null : countText(d, measured),
     unlocks: secret ? [] : unlocksOf(d.id),

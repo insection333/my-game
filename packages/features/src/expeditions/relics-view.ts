@@ -57,7 +57,7 @@ export function relicsView(state: State): RelicsView {
 }
 
 /** The bosses' finds, found or silhouetted, as one group of the collection log. */
-export function bossLog(state: State): CollectionGroup {
+export function bossLog(state: State, now: number): CollectionGroup {
   const finds = BOSSES.flatMap((b) =>
     (['rare', 'legendary'] as const).map((rarity) => {
       const item = b.finds[rarity];
@@ -68,7 +68,8 @@ export function bossLog(state: State): CollectionGroup {
         rarity: t(`rarity.${rarity}`),
         rarityId: rarity,
         found: at !== null,
-        note: at !== null ? t('find.foundOn', { date: fmt.date(at) }) : t('boss.findHint', { boss: t(`boss.${b.id}`) }),
+        note:
+          at !== null ? t('find.foundOn', { date: fmt.day(at, now) }) : t('boss.findHint', { boss: t(`boss.${b.id}`) }),
       };
     }),
   );

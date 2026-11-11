@@ -239,3 +239,13 @@ describe('the glossary', () => {
     expect(avoidedTerms('Skills')).toEqual([]);
   });
 });
+
+// Session 79: a find found, a deed done, a day in the tray said "9 Nov 2026" all year.
+describe('a day', () => {
+  it('is said without its year when it is this one', () => {
+    const noon = new Date(2026, 10, 10, 12).getTime();
+    expect(fmt.day(new Date(2026, 10, 10, 9).getTime(), noon)).toBe('10 Nov');
+    expect(fmt.day(new Date(2026, 0, 2, 9).getTime(), noon)).toBe('2 Jan');
+    expect(fmt.day(new Date(2025, 10, 9, 20).getTime(), noon)).toBe('9 Nov 2025');
+  });
+});

@@ -130,7 +130,7 @@ export function skillSlots(def: SkillDef): Record<string, SlotFill> {
     };
   };
 
-  const findEntries = (found: Record<string, number>): { [k: string]: Json }[] =>
+  const findEntries = (found: Record<string, number>, now: number): { [k: string]: Json }[] =>
     def.finds.map((f) => {
       const at = Object.hasOwn(found, f.item) ? found[f.item] : null;
       return {
@@ -141,7 +141,7 @@ export function skillSlots(def: SkillDef): Record<string, SlotFill> {
         found: at !== null,
         note:
           at !== null
-            ? t('find.foundOn', { date: fmt.date(at) })
+            ? t('find.foundOn', { date: fmt.day(at, now) })
             : f.greater
               ? t('find.greaterHint', { tier: fmt.int(GREATER_FROM_TIER) })
               : t((STYLE_SKILLS as readonly string[]).includes(skill) ? 'find.anyFoe' : 'find.anyAction', {
@@ -151,9 +151,9 @@ export function skillSlots(def: SkillDef): Record<string, SlotFill> {
     });
 
   return {
-    'skill.finds': ({ state }) => findEntries(state.found),
-    'collection.log': ({ state }) => {
-      const finds = findEntries(state.found);
+    'skill.finds': ({ state, now }) => findEntries(state.found, now),
+    'collection.log': ({ state, now }) => {
+      const finds = findEntries(state.found, now);
       return {
         skill,
         name: name(),

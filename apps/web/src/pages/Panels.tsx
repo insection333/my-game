@@ -41,7 +41,7 @@ export function Tray() {
   const today = new Date(view.now).setHours(0, 0, 0, 0);
   const label = (at: number) => {
     const d = new Date(at).setHours(0, 0, 0, 0);
-    return d === today ? t('tray.today') : d === today - 86_400_000 ? t('tray.yesterday') : fmt.date(at);
+    return d === today ? t('tray.today') : d === today - 86_400_000 ? t('tray.yesterday') : fmt.day(at, view.now);
   };
   const days = [...new Set(list.map((n) => label(n.at)))];
   return (
