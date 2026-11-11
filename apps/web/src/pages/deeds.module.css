@@ -295,6 +295,13 @@
   overflow-wrap: anywhere;
 }
 
+/* How near a locked picture is (session 77): the count its deed has reached, quiet under the name. */
+.pictureCount {
+  color: var(--ink-2);
+  font-size: var(--t-small);
+  font-variant-numeric: tabular-nums;
+}
+
 .pictureNote {
   padding: var(--s-2) var(--s-4) 0;
   color: var(--ink-2);
