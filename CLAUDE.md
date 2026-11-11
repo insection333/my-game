@@ -115,5 +115,6 @@ To change the game design: edit the model in `design/model/` or the template, ru
 | 74 The last run, kept | Done: the last run home is kept in the save and told on the Expeditions tab until the next sets out, where a run that came home while the player was elsewhere left only grown marks |
 | 75 A stronghold out of reach | Done: a stronghold no roll can take says "Beyond you for now" and its Siege is closed, where a new lord could pay 27,000 gold and 20 AP for a certain loss at "0% to win" |
 | 76 A work raised, answered | Done: raising a steading work is answered by a toast saying the stage it reached and what it now gives (a banner when fully raised), where only the bar moved |
+| 77 How near a locked picture is | Done: a foe's locked display picture shows how many of that foe are slain ("47 of 100"), where it showed only its name; the settings sheet played cleanly |
 
 Outstanding: the closed test waits on the server going up (the owner's call). Gold left once the Storehouse is fully enlarged now goes to the steading (session 25). Forgotten passwords are reset from the admin page while email is off; the owner's account is made an admin by naming it in `ADMIN_NAMES` after signing up. The contact address is admin@idleclash.com.

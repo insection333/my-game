@@ -70,7 +70,8 @@ function Preview({ kind, id }: { kind: HonourChoice['kind']; id: string }) {
   return <span className={s.swatch} data-kind={kind} style={kind === 'banner' ? bannerStyle(id) : frameStyle(id)} />;
 }
 
-/** The thirty pictures as a grid: those open to choose, the rest shown in grey with how they open beneath. */
+/** The thirty pictures as a grid: those open to choose, the rest shown in grey with how they open beneath,
+ *  a foe's with how many of it are slain ("47 of 100": session 77). */
 function Pictures({ choice }: { choice: HonourChoice }) {
   return (
     <section className={s.choice} aria-label={choice.name}>
@@ -90,6 +91,7 @@ function Pictures({ choice }: { choice: HonourChoice }) {
               >
                 <ItemIcon name={`portrait-${o.id}`} size={48} silhouette={!o.open} />
                 <span className={s.pictureName}>{o.name}</span>
+                {o.progress && <span className={s.pictureCount}>{o.progress}</span>}
               </button>
             </li>
           ),

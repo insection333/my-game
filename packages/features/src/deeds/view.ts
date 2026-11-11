@@ -60,7 +60,7 @@ const RECENT = 6;
 
 const of = (done: number, total: number) => t('deeds.of', { done: fmt.int(done), total: fmt.int(total) });
 
-function countText(d: Deed, now: number): string | null {
+export function countText(d: Deed, now: number): string | null {
   const n = Math.min(now, d.target);
   if (d.shows === 'count') return of(Math.floor(n), d.target);
   if (d.shows === 'minutes')

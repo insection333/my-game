@@ -10,10 +10,13 @@ import {
   shownHonours,
   unlocked,
   unlockText,
+  type Honour,
   type HonourKind,
   type Shown,
 } from './honours.ts';
-import { deedList, pointsOf } from './list.ts';
+import { deedById, deedList, pointsOf } from './list.ts';
+import { Reader } from './reader.ts';
+import { countText } from './view.ts';
 import { deedsOf } from './state.ts';
 
 export interface HonourOption {
@@ -23,6 +26,8 @@ export interface HonourOption {
   open: boolean;
   /** How it is unlocked, while it is not. */
   unlock: string | null;
+  /** While locked by a counted deed, how far that deed is ("47 of 100": session 77). */
+  progress: string | null;
   current: boolean;
 }
 export interface HonourChoice {
@@ -48,10 +53,18 @@ export function plaqueView(state: State): PlaqueView {
   return { ...s, title: s.title ? honourName({ kind: 'title', id: s.title }) : null };
 }
 
+/** How far the counted deed that opens a locked honour is, or null for one opened otherwise. */
+function progressOf(h: Honour, reader: Reader): string | null {
+  const id = h.unlock && 'deed' in h.unlock ? h.unlock.deed : null;
+  const d = id ? deedById(id) : undefined;
+  return d ? countText(d, d.measure(reader)) : null;
+}
+
 /** The kinds a player may also show none of; a banner, a picture and a scene always show one. */
 const NONE: ReadonlySet<HonourKind> = new Set(['title', 'frame', 'glow', 'badge']);
 
-export function honoursView(state: State): HonoursView {
+export function honoursView(state: State, now: number): HonoursView {
+  const reader = new Reader(state, now);
   const d = deedsOf(state);
   const points = pointsOf(state);
   const list = deedList();
@@ -73,6 +86,7 @@ export function honoursView(state: State): HonoursView {
         name: honourName(h),
         open,
         unlock: open ? null : unlockText(h),
+        progress: open ? null : progressOf(h, reader),
         current: shown[kind] === h.id,
       };
     });
@@ -83,7 +97,14 @@ export function honoursView(state: State): HonoursView {
       name: t(`honour.kind.${kind}`),
       options: none
         ? [
-            { id: null, name: t(`honour.none.${kind}`), open: true, unlock: null, current: shown[kind] === null },
+            {
+              id: null,
+              name: t(`honour.none.${kind}`),
+              open: true,
+              unlock: null,
+              progress: null,
+              current: shown[kind] === null,
+            },
             ...sorted,
           ]
         : sorted,

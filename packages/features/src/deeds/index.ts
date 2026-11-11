@@ -42,7 +42,7 @@ export const deeds = defineFeature({
         .join(' '),
     }),
     'hearth.plaque': ({ state }) => plaqueView(state),
-    'hiscores.honours': ({ state }) => honoursView(state) as unknown as Json,
+    'hiscores.honours': ({ state, now }) => honoursView(state, now) as unknown as Json,
     'hiscores.deeds': ({ state, now }) => deedsView(state, now) as unknown as Json,
   },
   help: { title: 'help.deeds.title', body: 'help.deeds.body' },
