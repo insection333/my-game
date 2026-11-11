@@ -61,6 +61,9 @@ export const fmt = {
   time: (ms: number): string => timeOfDay.format(ms),
   /** milliseconds since the epoch → "20 Oct 2026", in the player's own time zone */
   date: (ms: number): string => day.format(ms),
+  /** A day, as a find found or a deed done says it (session 79): "9 Nov" this year, "9 Nov 2025" before. */
+  day: (at: number, now: number): string =>
+    new Date(at).getFullYear() === new Date(now).getFullYear() ? dayMonth.format(at) : day.format(at),
   /** A moment in the last while, as a report or a pill says it (session 64): "20:22" today, "9 Nov,
    *  20:22" this year, "9 Nov 2025" before; where every day said its year, even yesterday. */
   when: (at: number, now: number): string => {

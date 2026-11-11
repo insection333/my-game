@@ -15,6 +15,9 @@ import { quoteOf, reasonText } from './mail-words.ts';
 import { Deleted, LetterRow } from './MailLetter.tsx';
 import s from './mail.module.css';
 
+/** A day as the game says it ("18 Nov" this year: session 79). */
+const dayOf = (at: number): string => fmt.day(at, Date.now());
+
 type Note = { text: string; bad: boolean } | null;
 
 const errorText = (err: unknown): string =>
@@ -137,7 +140,7 @@ export function Messages() {
   return (
     <Slot id="tray.mail" className={s.mail}>
       {muted ? (
-        <p className={s.muted}>{t('mail.muted', { date: fmt.date(muted) })}</p>
+        <p className={s.muted}>{t('mail.muted', { date: dayOf(muted) })}</p>
       ) : !writing ? (
         <div className={s.bar}>
           <Button

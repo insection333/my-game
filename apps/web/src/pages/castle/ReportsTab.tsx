@@ -37,7 +37,7 @@ function dayOf(at: number, now: number): string {
   const day = (x: number) => new Date(x).toDateString();
   if (day(at) === day(now)) return t('castle.reports.today');
   if (day(at) === day(now - DAY)) return t('castle.reports.yesterday');
-  return fmt.date(at);
+  return fmt.day(at, now);
 }
 
 /** The castle's reports as cards; a report the page cannot read (an older kind) is left out. */
