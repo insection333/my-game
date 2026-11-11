@@ -27,6 +27,8 @@ export const steading = {
   'steading.ready': 'Ready to raise',
   'steading.held': '{count} held',
   'steading.now': 'Now: {gives}',
+  'steading.raised': '{work} raised: {stage} of {stages}',
+  'steading.raisedTop': '{work} fully raised',
   'work.woodyard': 'Woodyard',
   'work.workshop': 'Workshop',
   'work.training-yard': 'Training yard',

@@ -25,7 +25,7 @@ const rich = (): State => ({
 describe('raising a work', () => {
   it('takes exactly its gold and materials, and raises it a step', () => {
     const cost = stageCost(workById('training-yard')!, 1);
-    const { state, result } = raise(rich(), 'training-yard');
+    const { state, result } = raise(rich(), 'training-yard', T0);
     expect(result).toEqual({ ok: true, stage: 1 });
     expect(steadingOf(state).stages['training-yard']).toBe(1);
     expect(state.items.gold).toBe(1e9 - cost.gold);
@@ -33,17 +33,25 @@ describe('raising a work', () => {
     expect(cost.items.map((i) => i.item)).toEqual(['copper-ore', 'pine-logs']);
   });
 
+  // Session 76: a raising past the first (whose building is a deed) said nothing; only the bar moved.
+  it('says what it raised, to which stage', () => {
+    const once = raise({ ...rich(), items: { ...rich().items, 'oak-logs': 1e5 } }, 'woodyard', T0).state;
+    expect(raise(once, 'woodyard', T0 + 5).events).toEqual([
+      { type: 'workRaised', at: T0 + 5, work: 'woodyard', stage: 2 },
+    ]);
+  });
+
   it('refuses, changing nothing, when short of anything, unknown, or fully raised', () => {
     const poor = { ...rich(), items: { gold: 10, 'pine-logs': 1e5 } };
-    expect(raise(poor, 'woodyard')).toEqual({
+    expect(raise(poor, 'woodyard', T0)).toEqual({
       state: poor,
       result: { ok: false, reason: 'short', item: 'gold' },
       events: [],
     });
     const noLogs = { ...rich(), items: { gold: 1e9 } };
-    expect(raise(noLogs, 'woodyard').result).toEqual({ ok: false, reason: 'short', item: 'pine-logs' });
-    expect(raise(rich(), 'castle').result).toEqual({ ok: false, reason: 'unknown' });
-    expect(raise(raised(rich(), { woodyard: STAGES }), 'woodyard').result).toEqual({ ok: false, reason: 'top' });
+    expect(raise(noLogs, 'woodyard', T0).result).toEqual({ ok: false, reason: 'short', item: 'pine-logs' });
+    expect(raise(rich(), 'castle', T0).result).toEqual({ ok: false, reason: 'unknown' });
+    expect(raise(raised(rich(), { woodyard: STAGES }), 'woodyard', T0).result).toEqual({ ok: false, reason: 'top' });
   });
 
   it('shows what the next raising costs and whether each part is held', () => {

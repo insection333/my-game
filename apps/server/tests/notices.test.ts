@@ -3,6 +3,7 @@
 // collecting it puts those events in the tray.
 import type { GameResponse, NoticesResponse } from '@idle-clash/contracts';
 import { afterEach, describe, expect, it } from 'vitest';
+import { isNotice } from '../src/game/notices.ts';
 import { post, server, signUp, type TestServer } from './helpers.ts';
 
 let s: TestServer;
@@ -58,5 +59,13 @@ describe('notices and the recap', () => {
     expect(list).toHaveLength(100);
     expect(list[0].at).toBe(129);
     expect((await get<NoticesResponse>(b, '/api/notices')).notices).toEqual([]);
+  });
+});
+
+// Session 76: a work raised is a moment for the press that raised it, and has no line in the tray, so it
+// is not kept among the hundred notices either.
+describe('a work raised', () => {
+  it('is not kept as a notice', () => {
+    expect(isNotice({ type: 'workRaised', at: 1, work: 'woodyard', stage: 2 })).toBe(false);
   });
 });
