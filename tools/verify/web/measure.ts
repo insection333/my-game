@@ -152,6 +152,15 @@ export function measurePage(): Measured {
         `${describe(side)} is squeezed to ${Math.round(side.getBoundingClientRect().width)}px in the arena`,
       );
 
+  // A group's heading stands inside its padding, not on the line above (session 90: the settings sheet's
+  // "Theme" sat on the divider under Privacy, a fieldset's legend being drawn in its top edge).
+  for (const legend of Array.from(document.querySelectorAll<HTMLElement>('fieldset > legend'))) {
+    const set = legend.parentElement!;
+    if (!shown(legend) || getComputedStyle(set).borderTopWidth !== '0px') continue;
+    const inset = legend.getBoundingClientRect().top - set.getBoundingClientRect().top;
+    if (inset < 8) problems.push(`${describe(legend)} sits ${Math.round(inset)}px from the top of its group`);
+  }
+
   const menus = Array.from(document.querySelectorAll('[data-menu]'));
   for (const m of menus) {
     const n = m.querySelectorAll('a[href]').length;
