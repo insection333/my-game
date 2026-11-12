@@ -73,6 +73,7 @@ function mendLane(id: LaneId, raw: unknown, now: number, repairs: string[]): Lan
   const st = raw.stopped;
   if (!lane.stopped && isObject(st) && isTime(st.at) && StopReason.safeParse(st.reason).success) {
     lane.stopped = { reason: StopReason.parse(st.reason), at: st.at };
+    if (ActionRef.safeParse(st.action).success) lane.stopped.action = ActionRef.parse(st.action);
   }
   return lane;
 }

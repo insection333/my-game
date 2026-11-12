@@ -41,7 +41,7 @@ const isCurrent = (href: string, path: string) =>
 export function Shell({ children }: { children: ReactNode }) {
   const { state, now, features } = useGame();
   const { path, panel } = useLocation();
-  const lanes = laneViews(state, now, features);
+  const lanes = laneViews(state, now, features, game.canStart);
   const close = () => navigate(withPanel(null));
   const gold = useCountUp(countOf(state, 'gold'));
   // Deeds done and not yet recorded, wherever the player is: the server records them, each with its moment.

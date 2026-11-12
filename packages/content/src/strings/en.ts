@@ -2,13 +2,14 @@
 // (see numbers.ts). The content check fails on a missing key, an unused key, or a term GLOSSARY.md
 // says to avoid. Keep sections in order; within a feature's section, keys follow its content. The gathering
 // and artisan skills' words are in en-skills.ts, Combat's in en-combat.ts, the privacy page's and the
-// terms' in en-legal.ts, Fishing's and Cooking's in en-food.ts, Fletching's, Runecraft's and the supplies' in en-supplies.ts, the goals ladder's, its rewards' and your standing's in en-progress.ts, Kindling's in en-kindling.ts, the steading's in en-steading.ts, the closed test's in en-test.ts, the admin page's and reporting's in en-moderation.ts.
+// terms' in en-legal.ts, Fishing's and Cooking's in en-food.ts, Fletching's, Runecraft's and the supplies' in en-supplies.ts, the goals ladder's, its rewards' and your standing's in en-progress.ts, Kindling's in en-kindling.ts, the lanes' in en-lanes.ts, the steading's in en-steading.ts, the closed test's in en-test.ts, the admin page's and reporting's in en-moderation.ts.
 import { combat } from './en-combat.ts';
 import { deeds } from './en-deeds.ts';
 import { honours } from './en-honours.ts';
 import { expeditions } from './en-expeditions.ts';
 import { food } from './en-food.ts';
 import { kindling } from './en-kindling.ts';
+import { lanes } from './en-lanes.ts';
 import { castle } from './en-castle.ts';
 import { castleWar } from './en-castle-war.ts';
 import { steading } from './en-steading.ts';
@@ -42,21 +43,6 @@ export const en: Record<string, string> = {
   'menu.storehouse': 'Storehouse',
   'menu.storehouse.short': 'Store',
   'menu.hiscores': 'Hiscores',
-
-  // The lanes
-  'lane.gathering': 'Gathering',
-  'lane.gathering2': 'Gathering (the fire)',
-  'lane.gathering2.chip': 'Fire lane',
-  'lane.artisan': 'Artisan',
-  'lane.combat': 'Combat',
-  'lane.resting': 'Resting',
-  'lane.next': 'Next: {action}',
-  'lane.stop': 'Stop',
-  'lane.fix.item': 'Where to get {item}',
-  'lane.fix.food': 'Buy food',
-  'lane.fix.weapon': 'Wear a weapon',
-  'lane.fix.space': 'Make room',
-  'lane.fix.train': 'Train {skill}',
 
   // Pages
   'hearth.title': 'Hearth',
@@ -315,6 +301,7 @@ export const en: Record<string, string> = {
   ...honours,
   ...expeditions,
   ...kindling,
+  ...lanes,
   ...steading,
   ...closedTest,
   ...moderation,

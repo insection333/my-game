@@ -53,7 +53,9 @@ export const Lane = z
   .object({
     current: Running.nullable(),
     next: ActionRef.nullable(),
-    stopped: z.object({ reason: StopReason, at: time }).strict().nullable(),
+    /** Why the lane stopped and when, with the action that stopped (session 89; older saves have none), so
+     *  the lane can offer to start it again once put right. */
+    stopped: z.object({ reason: StopReason, at: time, action: ActionRef.optional() }).strict().nullable(),
     /** How many random numbers this lane has drawn: its counter in the rng. */
     rolls: count,
   })

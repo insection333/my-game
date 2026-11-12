@@ -25,7 +25,12 @@ export interface LaneView {
   halted?: boolean;
   /** What puts it right, where the page can take the player there: an item's panel, or a page. */
   fix?: { label: string; item?: string; path?: string };
+  /** Put right (the engine would take it now): the stopped action, offered to start again (session 89). */
+  again?: { label: string; action: ActionRef };
 }
+
+/** Whether the engine would start this action on this lane now (the page's own engine, tried on a copy). */
+export type CanStart = (lane: LaneId, action: ActionRef) => boolean;
 
 /** Where a stop is put right (the same remedy the away recap offers): what ran out or is missing (its
  *  panel says where it comes from), food, a weapon, room in the Storehouse. */
@@ -34,6 +39,14 @@ const fixFor = (reason: { code: string; detail?: Record<string, string | number>
 
 const actionName = (a: { feature: string; id: string }) => t(`action.${a.feature}.${a.id}`);
 
+/** A lane stopped by itself, on an action the engine would now take again: bought food, mined ore, made
+ *  room (session 89). A stop the player made, or one still unmet, offers nothing. */
+function againOf(lane: LaneId, stopped: State['lanes'][LaneId]['stopped'], canStart?: CanStart): LaneView['again'] {
+  if (!stopped?.action || !canStart || isQuietStop(stopped.reason.code)) return undefined;
+  if (!canStart(lane, stopped.action)) return undefined;
+  return { label: t(lane === 'combat' ? 'lane.againFight' : 'lane.again'), action: stopped.action };
+}
+
 /** An action's icon: a foe's own, or what an action makes, when drawn. */
 export function iconOf(features: readonly Feature[], a: ActionRef, lane: LaneId): string | undefined {
   // A fight shows its foe, a boss too (its drop is incidental); any other action what it makes.
@@ -41,11 +54,20 @@ export function iconOf(features: readonly Feature[], a: ActionRef, lane: LaneId)
   return (lane === 'combat' ? [a.id, out] : [out, a.id]).find((n): n is string => !!n && hasIcon(n));
 }
 
-export function laneViews(state: State, now: number, features: readonly Feature[] = []): LaneView[] {
+export function laneViews(
+  state: State,
+  now: number,
+  features: readonly Feature[] = [],
+  canStart?: CanStart,
+): LaneView[] {
   const fire = now < state.fireUntil;
   return LANE_IDS.filter((id) => id !== 'gathering2' || fire || state.lanes.gathering2.current).map((id) => {
     const l = state.lanes[id];
     const run = l.current;
+    // Put right, the stop offers its action again; an item it wanted is then held, so it no longer
+    // points to where to get it (food is another matter: a fight starts without it, so Buy food stays).
+    const again = !run && !l.next ? againOf(id, l.stopped, canStart) : undefined;
+    const fix = l.stopped ? fixFor(l.stopped.reason) : undefined;
     const note = l.next
       ? t('lane.next', { action: actionName(l.next) })
       : !run && l.stopped
@@ -62,7 +84,8 @@ export function laneViews(state: State, now: number, features: readonly Feature[
       note,
       short: !run && l.stopped ? formatStop(l.stopped.reason, 'short') : undefined,
       halted: !run && !!l.stopped && !isQuietStop(l.stopped.reason.code),
-      fix: !run && !l.next && l.stopped ? fixFor(l.stopped.reason) : undefined,
+      fix: !run && !l.next && l.stopped && !(again && fix?.item) ? fix : undefined,
+      again,
     };
   });
 }
@@ -86,12 +109,21 @@ export function LaneList({ lanes }: { lanes: LaneView[] }) {
           note={l.halted ? undefined : l.note}
           actions={
             l.idle ? (
-              l.halted &&
-              l.fix && (
-                <Button variant="secondary" onClick={() => fix(l.fix!)}>
-                  {l.fix.label}
-                </Button>
-              )
+              <>
+                {l.halted && l.fix && (
+                  <Button variant="secondary" onClick={() => fix(l.fix!)}>
+                    {l.fix.label}
+                  </Button>
+                )}
+                {l.again && (
+                  <Button
+                    variant="primary"
+                    onClick={() => game.command({ type: 'start', lane: l.id, action: l.again!.action })}
+                  >
+                    {l.again.label}
+                  </Button>
+                )}
+              </>
             ) : (
               <Button variant="secondary" onClick={() => game.command({ type: 'stop', lane: l.id })}>
                 {t('lane.stop')}
