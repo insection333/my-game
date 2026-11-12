@@ -82,7 +82,7 @@ function Side({
           </span>
         )}
       </div>
-      <div className={s.sideText}>
+      <div className={s.sideText} data-part="side">
         <span className={s.sideName}>{name}</span>
         <div className={s.health} aria-hidden="true">
           <span style={{ width: `${share * 100}%` }} data-low={share < 0.25 || undefined} />
