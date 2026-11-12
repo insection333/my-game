@@ -160,5 +160,8 @@ describe('XP, marks and moments', () => {
       }[]
     ).map((f) => [f.item, f.note]);
     expect(styleNotes).toContainEqual([melee, 'Any foe fought with Melee']);
+    // Session 83: its greater finds come from foes of tier 3 and up, not a skill's tiers of action.
+    const greater = combatData.STYLE_FINDS.melee.find((f) => f.greater)!.item;
+    expect(styleNotes).toContainEqual([greater, 'Foes of tier 3 and up']);
   });
 });

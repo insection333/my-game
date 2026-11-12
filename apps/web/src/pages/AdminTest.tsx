@@ -3,6 +3,7 @@
 // them now; and the feedback sent from Settings, newest first, each note and all of them copyable as
 // plain text to pass on. Each list scrolls in its own box, so no panel outgrows a phone's screen.
 import { fmt, t } from '@idle-clash/content';
+import { dayOf } from './days.ts';
 import type { AdminTestResponse, TesterView } from '@idle-clash/contracts';
 import { ActionRow, Panel, Pill } from '@idle-clash/ui';
 import { useEffect, useState } from 'react';
@@ -50,7 +51,7 @@ export function AdminTest() {
                     {t('admin.test.from', {
                       name: f.name ?? t('admin.test.someone'),
                       page: f.page,
-                      date: fmt.date(f.at),
+                      date: dayOf(f.at),
                     })}
                   </p>
                   <CopyButton label={t('admin.test.copy')} text={() => feedbackNote(f)} />
@@ -70,7 +71,7 @@ function Tester({ p }: { p: TesterView }) {
     <ActionRow
       name={p.name}
       facts={[
-        t('admin.joined', { date: fmt.date(p.joinedAt) }),
+        t('admin.joined', { date: dayOf(p.joinedAt) }),
         p.daysPlayed === 1 ? t('admin.test.dayOne') : t('admin.test.days', { days: fmt.int(p.daysPlayed) }),
         t('admin.totalLevel', { level: fmt.int(p.totalLevel) }),
         p.aims.length ? t('admin.test.aims', { aims: p.aims.join('; ') }) : t('admin.test.noAims'),

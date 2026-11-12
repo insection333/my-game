@@ -11,12 +11,10 @@ import { useEffect, useId, useRef, useState, type FormEvent, type KeyboardEvent 
 import { api, ApiError } from '../api.ts';
 import { setUnreadMail, useUnreadMail } from '../game/mail.ts';
 import { Slot } from '../slots.tsx';
+import { dayOf } from './days.ts';
 import { quoteOf, reasonText } from './mail-words.ts';
 import { Deleted, LetterRow } from './MailLetter.tsx';
 import s from './mail.module.css';
-
-/** A day as the game says it ("18 Nov" this year: session 79). */
-const dayOf = (at: number): string => fmt.day(at, Date.now());
 
 type Note = { text: string; bad: boolean } | null;
 

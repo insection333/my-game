@@ -130,6 +130,8 @@ export function skillSlots(def: SkillDef): Record<string, SlotFill> {
     };
   };
 
+  // A combat style's finds come from foes (sessions 65 and 83), a skill's from its actions.
+  const style = (STYLE_SKILLS as readonly string[]).includes(skill);
   const findEntries = (found: Record<string, number>, now: number): { [k: string]: Json }[] =>
     def.finds.map((f) => {
       const at = Object.hasOwn(found, f.item) ? found[f.item] : null;
@@ -143,10 +145,8 @@ export function skillSlots(def: SkillDef): Record<string, SlotFill> {
           at !== null
             ? t('find.foundOn', { date: fmt.day(at, now) })
             : f.greater
-              ? t('find.greaterHint', { tier: fmt.int(GREATER_FROM_TIER) })
-              : t((STYLE_SKILLS as readonly string[]).includes(skill) ? 'find.anyFoe' : 'find.anyAction', {
-                  skill: t(`skill.${skill}`),
-                }),
+              ? t(style ? 'find.greaterFoe' : 'find.greaterHint', { tier: fmt.int(GREATER_FROM_TIER) })
+              : t(style ? 'find.anyFoe' : 'find.anyAction', { skill: t(`skill.${skill}`) }),
       };
     });
 

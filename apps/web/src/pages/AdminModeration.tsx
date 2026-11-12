@@ -4,6 +4,7 @@
 // flowing one way between two accounts shows. Each list scrolls in its own box.
 import type { AdminReportsResponse, AdminSiegeFlowsResponse } from '@idle-clash/contracts';
 import { fmt, t } from '@idle-clash/content';
+import { dayOf } from './days.ts';
 import { ActionRow, Button, Panel, Pill } from '@idle-clash/ui';
 import { useEffect, useState } from 'react';
 import { api } from '../api.ts';
@@ -47,7 +48,7 @@ export function AdminModeration({ open, version }: { open: (id: string) => void;
                     ? [t('admin.reports.forCheating', { count: fmt.int(r.reasons.cheating) })]
                     : []),
                   t('admin.reports.by', { count: fmt.int(r.reporters), listed: fmt.int(r.listedReporters) }),
-                  t('admin.reports.when', { date: fmt.date(r.last) }),
+                  t('admin.reports.when', { date: dayOf(r.last) }),
                 ]}
                 actions={
                   <>
