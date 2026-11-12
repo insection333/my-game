@@ -74,7 +74,6 @@ export const expeditions = {
   'story.lost': 'Home from {region}: {boss} still stands',
   'story.retreated': 'Turned back in {region} at stage {stage} of {stages}',
   'story.road': 'took {road}',
-  'story.beat': 'beat {boss}',
   'story.found': 'found {items}',
   'story.foundMoreOne': 'and one more find',
   'story.foundMore': 'and {count} more finds',

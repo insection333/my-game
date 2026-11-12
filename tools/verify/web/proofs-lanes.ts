@@ -3,6 +3,8 @@
 // - Every lane stop says why: a forge that runs out of ore says so in its lane and in a notice.
 // - A queued action starts while away: a smith who queued a sword behind bars and left three hours ago
 //   comes back to swords in the Storehouse and the forge stopped, saying why.
+// - A chip keeps its words whole (session 86): beside a fight, the resting Gathering chip read "Gatherin / g"
+//   on a phone, its word split where the working chip took twice the room.
 import { HOUR, seeded, type Command, type State } from '@idle-clash/kernel';
 import type { Page } from 'playwright';
 import { newcomer, openPage, type Served } from './session.ts';
@@ -87,8 +89,60 @@ async function queuedWhileAway(served: Served, problems: string[]) {
   }
 }
 
+/** Words in the phone's lane chips broken across lines, as "word" each. */
+const brokenWords = (page: Page) =>
+  page.$$eval('[data-ui="LaneChip"]', (chips) =>
+    chips.flatMap((chip) => {
+      const out: string[] = [];
+      const walk = document.createTreeWalker(chip, NodeFilter.SHOW_TEXT);
+      for (let n = walk.nextNode(); n; n = walk.nextNode()) {
+        const text = n.textContent ?? '';
+        for (const m of text.matchAll(/\S+/g)) {
+          const r = document.createRange();
+          r.setStart(n, m.index);
+          r.setEnd(n, m.index + m[0].length);
+          if (new Set([...r.getClientRects()].map((x) => Math.round(x.top))).size > 1) out.push(m[0]);
+        }
+      }
+      return out;
+    }),
+  );
+
+async function chipsKeepWords(served: Served, problems: string[]) {
+  const page = await playerWith(served, 'Rail Watcher', '/combat', (s, now) =>
+    run(
+      served,
+      {
+        ...s,
+        fireUntil: now + 5 * 60_000,
+        items: { 'copper-sword': 1, bread: 50 },
+        features: {
+          ...s.features,
+          combat: { worn: { weapon: 'copper-sword' }, health: null, healthAt: now, retreated: null },
+        },
+      },
+      now,
+      [{ type: 'start', lane: 'combat', action: { feature: 'combat', id: 'hollow-rat' } }],
+    ),
+  );
+  try {
+    await page.locator('[data-ui="LaneChip"]').nth(3).waitFor({ timeout: 10_000 });
+    for (const width of [390, 320]) {
+      await page.setViewportSize({ width, height: 844 });
+      await page.waitForTimeout(200);
+      const broken = await brokenWords(page);
+      if (broken.length) problems.push(`Lane chips at ${width} px split a word across lines: ${broken.join(', ')}`);
+    }
+  } catch (err) {
+    problems.push(`Lane chips: four lanes beside a fight did not show (${say(err)})`);
+  } finally {
+    await page.close();
+  }
+}
+
 export async function runLaneProofs(served: Served): Promise<string[]> {
   const problems: string[] = [];
+  await chipsKeepWords(served, problems);
   await stopSaysWhy(served, problems);
   await queuedWhileAway(served, problems);
   return problems;
