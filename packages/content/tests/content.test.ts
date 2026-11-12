@@ -75,6 +75,17 @@ describe('fmt', () => {
 });
 
 describe('t', () => {
+  it('ends a note under a panel that is a sentence with a full stop, as every other note does', () => {
+    // Session 85: Kindling's notes ("Change your Path whenever you like; it costs nothing") had none.
+    const bare = allStringKeys()
+      .filter((k) => /(\.note|Note|\.locked|\.noPath)$/.test(k))
+      .filter((k) => {
+        const text = templateOf(k) ?? '';
+        return text.split(' ').length >= 4 && !/[.!?)]$/.test(text);
+      });
+    expect(bare).toEqual([]);
+  });
+
   it('fills a template', () => {
     expect(t('skill.toNext', { xp: '1,200', level: '5' })).toBe('1,200 XP to level 5');
   });

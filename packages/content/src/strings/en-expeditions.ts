@@ -124,6 +124,7 @@ export const expeditions = {
   'relic.rank': 'Rank {rank} of {ranks}',
   'relic.raise': 'Raise',
   'relic.next': 'Next rank: {marks} marks',
+  'relic.perRank': '{effect} a rank',
   'relic.effect.xp': '+{pct} {skill} XP',
   'relic.effect.foodHeal': 'Food heals {pct} more',
   'relic.effect.finds': 'Finds {pct} more likely',

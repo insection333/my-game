@@ -12,7 +12,8 @@ export interface RelicRow {
   name: string;
   /** "Rank 2 of 5" */
   rank: string;
-  /** What it gives at its rank now ("+2% Woodcutting XP"), or at its first rank while unbought. */
+  /** What it gives at its rank now ("+2% Woodcutting XP"), or what each rank gives while it has none ("+1%
+   *  Woodcutting XP a rank": session 85, where the first rank's gift read as though already given). */
   effect: string;
   /** What its next rank costs ("Next rank: 50 marks"), or null at its last rank. */
   raise: string | null;
@@ -23,8 +24,7 @@ export interface RelicsView {
   relics: RelicRow[];
 }
 
-function effectText(e: RelicEffect, rank: number): string {
-  const n = Math.max(1, rank);
+function effectText(e: RelicEffect, n: number): string {
   switch (e.kind) {
     case 'xp':
       return t('relic.effect.xp', { pct: fmt.pct(e.pct * n), skill: t(`skill.${e.skill}`) });
@@ -48,7 +48,7 @@ export function relicsView(state: State): RelicsView {
         id: r.id,
         name: t(`relic.${r.id}`),
         rank: t('relic.rank', { rank: fmt.int(rank), ranks: fmt.int(r.ranks) }),
-        effect: effectText(r.effect, rank),
+        effect: rank ? effectText(r.effect, rank) : t('relic.perRank', { effect: effectText(r.effect, 1) }),
         raise: cost === null ? null : t('relic.next', { marks: fmt.int(cost) }),
         affordable: cost !== null && marks >= cost,
       };
