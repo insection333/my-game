@@ -291,4 +291,22 @@ describe('a work raised', () => {
     const [top] = momentsFrom([{ type: 'workRaised', at: T, work: 'woodyard', stage: 5 }], T - 1, FEATURES);
     expect(top).toMatchObject({ size: 'banner', title: 'Woodyard fully raised' });
   });
+
+  // Session 86: the deed of the same name read "Smokehouse fully raised. Now: …. Also done: Smokehouse
+  // fully raised."; a deed named as the moment it follows is said as that moment's own deed.
+  it('says the deed of the same name as its deed, not its name again', () => {
+    const deed: GameEvent = {
+      type: 'deedDone',
+      at: T + 50,
+      deed: 'raised-smokehouse',
+      name: 'Smokehouse fully raised',
+      icon: null,
+      tier: 'hard',
+      points: 15,
+      mark: '',
+    };
+    const [m] = momentsFrom([{ type: 'workRaised', at: T, work: 'smokehouse', stage: 5 }, deed], T - 1, FEATURES);
+    expect(m.title).toBe('Smokehouse fully raised');
+    expect(m.body).toMatch(/^Now: Food heals [0-9.]+% more\. Also done: its deed \(Hard, 15 points\)\.$/);
+  });
 });
