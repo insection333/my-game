@@ -44,6 +44,7 @@
   padding: var(--s-3) var(--s-4);
   border-bottom: 1px solid var(--line);
   background: var(--surface-2);
+  container: arena / inline-size;
 }
 
 .duel {
@@ -88,6 +89,25 @@
   color: var(--ink-2);
   font-size: var(--t-small);
   font-variant-numeric: tabular-nums;
+}
+
+/* A narrow arena (a phone) stands each side's picture above its name and health, so the words have the
+   side's whole width: beside the picture "The Troll-chief of the hill" stood in four lines 54px wide
+   (session 88). */
+@container arena (max-width: 479px) {
+  .duel > .side {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .duel > .side:last-child {
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  .sideText {
+    align-self: stretch;
+  }
 }
 
 .versus {

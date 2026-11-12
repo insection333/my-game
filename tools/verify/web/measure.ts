@@ -142,6 +142,16 @@ export function measurePage(): Measured {
         `${describe(main)} is squeezed to ${Math.round(main.getBoundingClientRect().width)}px beside its buttons`,
       );
 
+  // An arena side's name and health never squeezed beside its picture (session 88: on a 320px phone "The
+  // Troll-chief of the hill" stood in four lines 54px wide, its health over two).
+  for (const side of Array.from(
+    document.querySelectorAll<HTMLElement>('[data-slot="combat.arena"] [data-part="side"]'),
+  ))
+    if (shown(side) && side.getBoundingClientRect().width < 96)
+      problems.push(
+        `${describe(side)} is squeezed to ${Math.round(side.getBoundingClientRect().width)}px in the arena`,
+      );
+
   const menus = Array.from(document.querySelectorAll('[data-menu]'));
   for (const m of menus) {
     const n = m.querySelectorAll('a[href]').length;
