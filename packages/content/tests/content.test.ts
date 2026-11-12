@@ -38,6 +38,14 @@ describe('fmt', () => {
     expect(fmt.when(new Date(2026, 10, 10, 9, 5).getTime(), noon)).toBe('09:05');
     expect(fmt.when(new Date(2026, 10, 9, 20, 22).getTime(), noon)).toBe('9 Nov, 20:22');
     expect(fmt.when(new Date(2025, 10, 9, 20, 22).getTime(), noon)).toBe('9 Nov 2025');
+    // Session 84: every month in three letters, the same in every browser, where September read "Sept"
+    // beside "Oct" (en-GB's short month in newer browsers, "Sep" in older ones).
+    expect(Array.from({ length: 12 }, (_, m) => fmt.day(new Date(2026, m, 13, 9).getTime(), noon))).toEqual(
+      ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map((m) => `13 ${m}`),
+    );
+    expect(fmt.when(new Date(2026, 8, 13, 20, 22).getTime(), noon)).toBe('13 Sep, 20:22');
+    expect(fmt.day(new Date(2025, 8, 3, 9).getTime(), noon)).toBe('3 Sep 2025');
+    expect(fmt.date(new Date(2026, 8, 3, 9).getTime())).toBe('3 Sep 2026');
     expect([0, 0.001, 0.004, 0.005, 0.37, 0.994, 0.995, 0.9999, 1].map(fmt.chance)).toEqual([
       '0%',
       '<1%',
