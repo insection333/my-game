@@ -6,8 +6,16 @@ const decimal = new Intl.NumberFormat('en', { maximumFractionDigits: 2 });
 const tenths = new Intl.NumberFormat('en', { maximumFractionDigits: 1 });
 const compact = new Intl.NumberFormat('en', { notation: 'compact', maximumFractionDigits: 1 });
 const timeOfDay = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit' });
-const day = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
-const dayMonth = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short' });
+// Months in three letters, the same in every browser (session 84): en-GB's short month is "Sept" in newer
+// browsers and "Sep" in older ones, so September stood out beside "Oct" and read differently by browser.
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+/** "9 Nov", in the player's own time zone. */
+const dayMonth = (ms: number): string => {
+  const d = new Date(ms);
+  return `${whole.format(d.getDate())} ${MONTHS[d.getMonth()]}`;
+};
+/** "9 Nov 2025" */
+const fullDay = (ms: number): string => `${dayMonth(ms)} ${new Date(ms).getFullYear()}`;
 const conjunction = new Intl.ListFormat('en-GB', { type: 'conjunction' });
 const ordinals = new Intl.PluralRules('en-GB', { type: 'ordinal' });
 const SUFFIX: Record<string, string> = { one: 'st', two: 'nd', few: 'rd', other: 'th' };
@@ -60,17 +68,17 @@ export const fmt = {
   /** milliseconds since the epoch → "09:42", in the player's own time zone */
   time: (ms: number): string => timeOfDay.format(ms),
   /** milliseconds since the epoch → "20 Oct 2026", in the player's own time zone */
-  date: (ms: number): string => day.format(ms),
+  date: (ms: number): string => fullDay(ms),
   /** A day, as a find found or a deed done says it (session 79): "9 Nov" this year, "9 Nov 2025" before. */
   day: (at: number, now: number): string =>
-    new Date(at).getFullYear() === new Date(now).getFullYear() ? dayMonth.format(at) : day.format(at),
+    new Date(at).getFullYear() === new Date(now).getFullYear() ? dayMonth(at) : fullDay(at),
   /** A moment in the last while, as a report or a pill says it (session 64): "20:22" today, "9 Nov,
    *  20:22" this year, "9 Nov 2025" before; where every day said its year, even yesterday. */
   when: (at: number, now: number): string => {
     const [a, n] = [new Date(at), new Date(now)];
     if (a.toDateString() === n.toDateString()) return timeOfDay.format(at);
-    if (a.getFullYear() === n.getFullYear()) return `${dayMonth.format(at)}, ${timeOfDay.format(at)}`;
-    return day.format(at);
+    if (a.getFullYear() === n.getFullYear()) return `${dayMonth(at)}, ${timeOfDay.format(at)}`;
+    return fullDay(at);
   },
   /** ["a", "b", "c"] → "a, b and c": words joined as a sentence joins them */
   list: (items: readonly string[]): string => conjunction.format(items),
