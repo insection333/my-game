@@ -5,6 +5,7 @@
 // server's admin list reach it; everyone else gets the page that does not exist.
 import type { AdminPlayerView, AdminSaveResponse } from '@idle-clash/contracts';
 import { fmt, t } from '@idle-clash/content';
+import { dayOf } from './days.ts';
 import { ActionRow, Button, Field, Panel, Pill } from '@idle-clash/ui';
 import { useEffect, useState, type FormEvent } from 'react';
 import { api, ApiError } from '../api.ts';
@@ -93,7 +94,7 @@ export function Admin() {
                     key={p.id}
                     name={p.name}
                     facts={[
-                      t('admin.joined', { date: fmt.date(p.createdAt) }),
+                      t('admin.joined', { date: dayOf(p.createdAt) }),
                       t('admin.totalLevel', { level: fmt.int(p.totalLevel) }),
                     ]}
                     status={p.bannedAt ? <Pill tone="ember">{t('admin.banned')}</Pill> : undefined}
@@ -202,7 +203,7 @@ function PlayerPanel({
           <ul className={s.repairs}>
             {save.repairs.map((r) => (
               <li key={r.at}>
-                {fmt.date(r.at)}: {r.repairs.join('; ')}
+                {dayOf(r.at)}: {r.repairs.join('; ')}
               </li>
             ))}
           </ul>
