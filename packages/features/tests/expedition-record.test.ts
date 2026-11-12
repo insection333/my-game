@@ -74,5 +74,10 @@ describe('an expedition record', () => {
     });
     expect(story.body).toContain('and 2 more finds');
     expect(story.body.match(/found/g)).toHaveLength(1);
+    // Session 87: the title says the boss fell, so the body does not say it again ("… the Troll-chief of
+    // the hill beaten. Took the high pass, beat the Troll-chief of the hill, …").
+    expect(story.title).toMatch(/the Troll-chief of the hill beaten$/);
+    expect(story.body).not.toMatch(/Troll-chief/);
+    expect(story.body).toMatch(/^Took the high pass, found /);
   });
 });

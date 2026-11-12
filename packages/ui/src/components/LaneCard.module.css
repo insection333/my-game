@@ -69,6 +69,13 @@
   border-style: dashed;
 }
 
+/* A resting chip names its lane in a word or two ("Gathering", "Fire lane"), never split mid-word (session
+   86: "Gatherin / g" beside a fight); the strip gives it at least that word's width. */
+.chip[data-idle] .chipText {
+  overflow-wrap: normal;
+  hyphens: manual;
+}
+
 .chip[data-halted] {
   color: var(--alert);
   border-style: solid;

@@ -71,7 +71,7 @@ Between 768 and 1,023 px the rail collapses to icons (64 px) and the lanes panel
 | `shell.fire` | Header | the fire | FireBadge |
 | `shell.gold` | Header | storehouse | Pill |
 | `shell.tray` | Header | notices | TrayButton |
-| `shell.lane` (×4) | Lanes strip or panel | each lane's current feature | LaneCard (compact on phones) |
+| `shell.lane` (×4) | Lanes strip or panel | each lane's current feature | LaneCard (compact on phones; a resting chip is never narrower than its name's longest word, which is never split: session 87) |
 | `shell.moment` | Over everything but the tour, an open sheet included (session 69), centred or as a banner | any feature, through events | Moment |
 | `shell.deeds` | Not drawn: deeds done and not yet recorded, which the shell asks the server to record wherever the player is | deeds | Moment, through events |
 
@@ -144,7 +144,7 @@ Two tabs under the title: **Fight** (`/combat`: the loadout, the foes and the fo
 
 - **At 390:** the loadout (the figure with your style, triangle and health beside it) and the first foes. **At 1,440:** the loadout with the food under it, and every foe of the tier beside them.
 - **Expeditions at 390:** the run (or the route to choose), then the bosses and the relics. **At 1,440:** the run beside the bosses and the relics.
-- **A run's homecoming** has its moment (the boss beaten takes the centre, otherwise a banner) and its story in the away recap and the notices: "Home from the Sunken Fen: the Drowned Warden beaten. Took the high pass, beat the Drowned Warden, found a sunken locket. 18 marks."
+- **A run's homecoming** has its moment (the boss beaten takes the centre, otherwise a banner) and its story in the away recap and the notices: "Home from the Sunken Fen: the Drowned Warden beaten. Took the high pass, found a sunken locket. 18 marks." (the title says how the boss went, so the story does not say it again: session 87)
 - **Region and tier tabs** never scroll: on a narrow screen the regions shorten (March, Fen, Peaks) and the tiers show their first foe's icon, sharing the width.
 
 **Visible without scrolling** (checked by verify at 390 × 844 and 1,440 × 900; a slot no built feature fills yet is skipped):

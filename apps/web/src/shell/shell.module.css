@@ -226,6 +226,11 @@
   flex-grow: 2;
 }
 
+/* A resting lane's chip is never narrower than its name's longest word (session 86). */
+.strip > [data-idle] {
+  min-width: min-content;
+}
+
 .strip > [data-halted] {
   flex-grow: 1.5;
 }
