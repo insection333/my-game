@@ -58,6 +58,12 @@ function SkillPage({ feature }: { feature: Feature }) {
       const cur = state.lanes[l].current;
       return cur ? actionKey(cur.action) === actionKey(a.action) : false;
     });
+  // Next does nothing for what a lane runs (it repeats) or already has next (session 81).
+  const queued = (a: SkillActionRow) =>
+    LANE_IDS.some((l) => {
+      const next = state.lanes[l].next;
+      return next ? actionKey(next) === actionKey(a.action) : false;
+    });
   return (
     <>
       {head && (
@@ -146,6 +152,7 @@ function SkillPage({ feature }: { feature: Feature }) {
                         </Button>
                         <Button
                           variant="secondary"
+                          disabled={running(a) || queued(a)}
                           onClick={() => game.command({ type: 'queueNext', lane: lane(a), action: a.action })}
                         >
                           {t('action.queue')}
