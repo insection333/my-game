@@ -87,7 +87,8 @@ describe('advance', () => {
       { type: 'laneStopped', at: T0 + 37.5 * SECOND, lane: 'artisan', action: A.sword, reason: outOf('copper-bar') },
     ]);
     expect(state.items).toEqual({ 'copper-sword': 1 });
-    expect(state.lanes.artisan).toMatchObject({ current: null, next: null, stopped: { reason: outOf('copper-bar') } });
+    expect(state.lanes.artisan).toMatchObject({ current: null, next: null, stopped: { reason: outOf('copper-bar') } }); // Session 89: the stop keeps what it stopped, so the lane can offer to start it again once put right.
+    expect(state.lanes.artisan.stopped?.action).toEqual(A.sword);
   });
 
   // Session 81: Next on the very row the lane runs queued it behind itself, where a lane repeats anyway.

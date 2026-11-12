@@ -7,10 +7,12 @@ import { actionRegistry, castleEngine, FEATURES, type Feature, type Json } from 
 import {
   createEngine,
   seeded,
+  type ActionRef,
   type AwaySummary,
   type Command,
   type CommandResult,
   type GameEvent,
+  type LaneId,
   type State,
 } from '@idle-clash/kernel';
 import { api, ApiError, requestId } from '../api.ts';
@@ -165,6 +167,9 @@ async function send<T>(go: () => Promise<T>): Promise<T | null> {
   return null;
 }
 
+/** The answers canStart gave for one save. */
+let tried: { state: unknown; answers: Map<string, boolean> } = { state: null, answers: new Map() };
+
 export const game = {
   get: (): GameView => view!,
   subscribe: (fn: () => void) => {
@@ -193,6 +198,19 @@ export const game = {
     if (!view) return;
     publish({ ...view, away: null });
     game.command({ type: 'stoke' });
+  },
+  /** Whether the engine would start this action on this lane now: tried on a copy of the save, remembered
+   *  for that save (the lanes ask each frame), so a stopped lane can offer to start again (session 89). */
+  canStart: (lane: LaneId, action: ActionRef): boolean => {
+    if (!view) return false;
+    if (tried.state !== view.state) tried = { state: view.state, answers: new Map() };
+    const key = `${lane}|${action.feature}:${action.id}`;
+    let ok = tried.answers.get(key);
+    if (ok === undefined) {
+      ok = engine.command(view.state, clock(), { type: 'start', lane, action }, seeded(view.state.seed)).result.ok;
+      tried.answers.set(key, ok);
+    }
+    return ok;
   },
   /** Runs a feature's own route (claim a goal): shown at once, then sent like a command. */
   act: (feature: string, route: string, input: unknown): Json | null => {

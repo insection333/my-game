@@ -111,7 +111,7 @@ export function createEngine(registry: ActionRegistry, config: KernelConfig = DE
   ) {
     const l = s.lanes[lane];
     l.current = null;
-    l.stopped = { reason: why, at };
+    l.stopped = action ? { reason: why, at, action } : { reason: why, at };
     events.push({ type: 'laneStopped', at, lane, action, reason: why });
     const next = l.next;
     if (!next) return;
@@ -119,7 +119,7 @@ export function createEngine(registry: ActionRegistry, config: KernelConfig = DE
     const refused = begin(s, lane, next, at, rng, events);
     if (!refused) events.push({ type: 'nextStarted', at, lane, action: next });
     else {
-      l.stopped = { reason: refused, at };
+      l.stopped = { reason: refused, at, action: next };
       events.push({ type: 'laneStopped', at, lane, action: next, reason: refused });
     }
   }

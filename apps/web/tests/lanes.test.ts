@@ -29,4 +29,24 @@ describe('laneViews', () => {
     expect(iconOf(FEATURES, { feature: 'combat', id: 'hollow-rat' }, 'combat')).toBe('hollow-rat');
     expect(iconOf(FEATURES, { feature: 'woodcutting', id: 'pine-tree' }, 'gathering')).toBe('pine-logs');
   });
+
+  // Session 89: a lane stopped for want of something, once put right, offers to start that action again
+  // (bought food, ore mined), where it went on offering the fix ("Buy food") until the player found the row.
+  it('offers to start a stopped action again once the engine would take it', () => {
+    let s: State = { ...newState(1, T0), items: { 'copper-ore': 1 } };
+    s = run(s, { type: 'start', lane: 'artisan', action: { feature: 'smithing', id: 'copper-bar' } });
+    s = engine.advance(s, T0 + 60_000, seeded(1)).state;
+    const canStart = (st: State) => (lane: 'artisan', action: { feature: string; id: string }) =>
+      engine.command(st, T0 + 60_000, { type: 'start', lane, action }, seeded(1)).result.ok;
+    const artisan = (st: State) =>
+      laneViews(st, T0 + 60_000, FEATURES, canStart(st) as never).find((v) => v.id === 'artisan')!;
+    expect(artisan(s)).toMatchObject({ halted: true, again: undefined });
+    expect(artisan(s).fix?.item).toBe('copper-ore');
+    const mined = { ...s, items: { ...s.items, 'copper-ore': 4 } };
+    expect(artisan(mined)).toMatchObject({
+      halted: true,
+      again: { label: 'Start again', action: { feature: 'smithing', id: 'copper-bar' } },
+      fix: undefined,
+    });
+  });
 });
