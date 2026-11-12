@@ -200,10 +200,18 @@ export function momentsFrom(events: readonly GameEvent[], since: number, feature
     // Deeds alone are named once, as a list ("Also done: Castle 10, War marks: 100 and Tempered +3"), not
     // each under its own heading; anything mixed keeps each its heading.
     const deedsOnly = rest.every((e) => e.type === 'deedDone');
+    // A deed named as the moment it follows ("Smokehouse fully raised") is said as its deed, with its worth,
+    // not by its name again (session 86).
+    const named = (e: GameEvent): string =>
+      e.type === 'deedDone' && e.name.toLowerCase() === best.title.toLowerCase()
+        ? t('moment.itsDeed', {
+            worth: t('moment.deedPoints', { tier: t(`deeds.tier.${e.tier}`), points: fmt.int(e.points) }),
+          })
+        : deedsOnly && e.type === 'deedDone'
+          ? e.name
+          : describe(e, features).title;
     const also = [
-      ...rest
-        .slice(0, ALSO_NAMED)
-        .map((e) => (deedsOnly && e.type === 'deedDone' ? e.name : describe(e, features).title)),
+      ...rest.slice(0, ALSO_NAMED).map(named),
       ...(rest.length > ALSO_NAMED ? [t('moment.andMore', { count: fmt.int(rest.length - ALSO_NAMED) })] : []),
     ];
     // Sentences, each ended: "Easy, 5 points. Also: …".
