@@ -53,6 +53,11 @@ function CombatPage({ combat }: { combat: Feature }) {
   const triangle = fillFor<TrianglePart[]>(combat, 'combat.triangle', state, now) ?? [];
   const fighting = (f: FoeRow) =>
     LANE_IDS.some((l) => state.lanes[l].current && actionKey(state.lanes[l].current.action) === actionKey(f.foe));
+  // Next does nothing for the foe the lane fights (it repeats) or already has next (session 81).
+  const queued = (f: FoeRow) => {
+    const next = state.lanes.combat.next;
+    return next ? actionKey(next) === actionKey(f.foe) : false;
+  };
   const sheetSlot = panel === 'gear' ? new URLSearchParams(location.search).get('slot') : null;
   const open = loadout.slots.find((x) => x.slot === sheetSlot);
   return (
@@ -129,6 +134,7 @@ function CombatPage({ combat }: { combat: Feature }) {
                         </Button>
                         <Button
                           variant="secondary"
+                          disabled={fighting(f) || queued(f)}
                           onClick={() => game.command({ type: 'queueNext', lane: 'combat', action: f.foe })}
                         >
                           {t('action.queue')}

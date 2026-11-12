@@ -206,6 +206,7 @@ export const en: Record<string, string> = {
   // Why a lane stopped (kernel codes)
   'stop.unavailable': 'That action is not available',
   'stop.wrongLane': 'That action belongs in another lane',
+  'stop.alreadyRunning': 'Your lane already does that, and repeats it',
   'stop.fireOut': 'The fire went out',
   'stop.stoppedByPlayer': 'Stopped',
   'stop.mended': 'Stopped while your save was mended',
@@ -217,6 +218,7 @@ export const en: Record<string, string> = {
   'stopShort.needsKey': 'Needs a key',
   'stopShort.unavailable': 'Not available',
   'stopShort.wrongLane': 'Wrong lane',
+  'stopShort.alreadyRunning': 'Already doing',
   'stopShort.fireOut': 'Fire went out',
   'stopShort.mended': 'Stopped',
   'stopShort.skillInOtherLane': 'Already busy',

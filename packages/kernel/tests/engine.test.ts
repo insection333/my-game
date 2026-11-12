@@ -90,6 +90,16 @@ describe('advance', () => {
     expect(state.lanes.artisan).toMatchObject({ current: null, next: null, stopped: { reason: outOf('copper-bar') } });
   });
 
+  // Session 81: Next on the very row the lane runs queued it behind itself, where a lane repeats anyway.
+  it('refuses to queue next what the lane already runs', () => {
+    let s = fresh();
+    s.items['copper-ore'] = 3;
+    s = run(s, T0, { type: 'start', lane: 'artisan', action: A.bar });
+    const out = engine.command(s, T0, { type: 'queueNext', lane: 'artisan', action: A.bar }, rng);
+    expect(out.result).toEqual({ ok: false, reason: { code: 'alreadyRunning' } });
+    expect(out.state.lanes.artisan.next).toBeNull();
+  });
+
   it('feeds one lane from another, in time order', () => {
     // Mining gives an ore every 7.5 s; smelting (5 s) uses ore faster, so it runs dry at 12.5 s.
     let s = run(fresh(), T0, { type: 'start', lane: 'gathering', action: A.copper });

@@ -33,6 +33,7 @@ export const KERNEL_STOP_CODES = [
   'stoppedByPlayer',
   'mended',
   'skillInOtherLane',
+  'alreadyRunning',
 ] as const;
 
 const reason = (code: string, detail?: Record<string, string | number>): StopReason =>
@@ -202,6 +203,9 @@ export function createEngine(registry: ActionRegistry, config: KernelConfig = DE
           const why = begin(s, cmd.lane, cmd.action, now, rng, events);
           return why ? { ok: false, reason: why } : { ok: true };
         }
+        // A lane repeats what it runs, so queueing that behind itself does nothing (session 81).
+        if (actionKey(l.current.action) === actionKey(cmd.action))
+          return { ok: false, reason: reason('alreadyRunning') };
         l.next = cmd.action;
         return { ok: true };
       }
