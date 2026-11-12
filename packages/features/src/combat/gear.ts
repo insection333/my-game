@@ -19,13 +19,17 @@ export function wearNeeds(item: string): { skill: string; level: number } | null
   return { skill: gear.style ?? HITPOINTS, level: TIER_LEVELS[gear.tier - 1] };
 }
 
-/** What a piece does in a fight, in words (session 51): a weapon's tier raises the most a swing can roll,
- *  armour's takes a share off every hit; the very numbers fight() uses. */
+/** What a piece does in a fight, in words (session 51): a weapon's style (which wearing it changes the
+ *  fighter to: session 80) and how much its tier raises the most a swing can roll, armour's share off every
+ *  hit; the very numbers fight() uses. */
 export function gearDoes(item: string): string | null {
   const gear = itemOf(item)?.gear;
   if (!gear) return null;
   return gear.slot === 'weapon'
-    ? t('gear.does.weapon', { hit: fmt.int(WEAPON_HIT_PER_TIER * gear.tier) })
+    ? t('gear.does.weapon', {
+        style: t(`skill.${gear.style}`),
+        hit: fmt.int(WEAPON_HIT_PER_TIER * gear.tier),
+      })
     : t('gear.does.armour', { pct: fmt.pct(ARMOUR_GUARD_PER_TIER * gear.tier) });
 }
 

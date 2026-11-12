@@ -41,7 +41,10 @@ describe('what gear says it does', () => {
   it("is a weapon's tier on the most a swing can roll", () => {
     const p = fighterOf(state, foe)!;
     const said = number(gearDoes('iron-sword')!);
-    expect(gearDoes('iron-sword')).toBe(`+${said} max hit`);
+    // Session 80: and the style it fights in, which wearing it changes to.
+    expect(gearDoes('iron-sword')).toBe(`Melee: +${said} max hit`);
+    expect(gearDoes('bronze-bow')).toMatch(/^Archery: \+[0-9]+ max hit$/);
+    expect(gearDoes('copper-staff')).toMatch(/^Magic: \+[0-9]+ max hit$/);
     const tier = 3; // iron
     const top = (t: number) => firstHits({ ...p, weaponTier: t }, 0.999_999).you;
     expect(top(tier) - top(0)).toBe(said);
