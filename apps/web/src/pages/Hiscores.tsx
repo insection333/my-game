@@ -90,7 +90,7 @@ export function Hiscores() {
               {ladder && ladder.rows.length === 0 && !you && <p className={s.note}>{t('hiscores.empty')}</p>}
               {ladder && (ladder.rows.length > 0 || you) && (
                 <table className={s.table}>
-                  <caption className="visually-hidden">{name(ladder.skill)}</caption>
+                  <caption className={s.caption}>{name(ladder.skill)}</caption>
                   <thead>
                     <tr>
                       <th scope="col">{t('hiscores.rank')}</th>

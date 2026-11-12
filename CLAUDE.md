@@ -120,5 +120,6 @@ To change the game design: edit the model in `design/model/` or the template, ru
 | 79 A first visit, and days said shortly | Done: the welcome page, sign-up and tour played cleanly; finds found, deeds done, the tray's and reports' day headings and a mute's end say "9 Nov" this year (`fmt.day`), where each said its year |
 | 80 A weapon says its style | Done: every weapon says the style it fights in ("Magic: +10 max hit") on the gear sheet and the item panel, where wearing a staff turned a Melee fighter to Magic without a word |
 | 81 Next where it does something | Done: Next is greyed on the row a lane runs and the row already queued, and the engine refuses queueing what a lane runs (`alreadyRunning`), where it queued "Next: Oak tree" under Oak tree |
+| 82 The ladder's name on a phone | Done: under 720 px, where the ladder tabs are icons alone, the ladder shown is named above its table ("Fishing"), where it was named only for screen readers |
 
 Outstanding: the closed test waits on the server going up (the owner's call). Gold left once the Storehouse is fully enlarged now goes to the steading (session 25). Forgotten passwords are reset from the admin page while email is off; the owner's account is made an admin by naming it in `ADMIN_NAMES` after signing up. The contact address is admin@idleclash.com.

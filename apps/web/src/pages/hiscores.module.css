@@ -11,9 +11,28 @@
   min-width: 0;
 }
 
+/* The ladder's name (session 82): seen above the table where the ladders' tabs are icons alone, hidden
+   (for screen readers only) where the tabs down the side name them. */
+.caption {
+  caption-side: top;
+  padding: var(--s-2) var(--s-3) 0;
+  text-align: start;
+  font: 600 var(--t-body) / 1.2 var(--font-book);
+}
+
 @container main (min-width: 720px) {
   .layout {
     grid-template-columns: 12rem minmax(0, 1fr);
+  }
+
+  .caption {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 }
 
