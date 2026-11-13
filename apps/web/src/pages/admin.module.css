@@ -253,3 +253,13 @@
 .letterHead > button:first-child {
   margin-left: calc(-1 * var(--s-2));
 }
+
+/* The opened player's panel, brought into view below the page's header and focused without a ring (its
+   heading says where the reader is: session 94). */
+.opened {
+  scroll-margin-top: var(--s-4);
+}
+
+.opened:focus {
+  outline: none;
+}

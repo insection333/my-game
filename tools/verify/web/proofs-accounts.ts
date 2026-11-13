@@ -4,7 +4,8 @@
 // - A deleted account leaves nothing: a player deletes theirs from Settings, lands on the welcome
 //   page, and no table in the database holds their id or their name any more.
 // - An admin can reset a password: the veteran (an admin here) sets a new password for a player on
-//   the admin page; the player signs in with it.
+//   the admin page, on a phone; the player signs in with it. Open brings the player's panel into view
+//   (session 94: on a phone it opened below every other panel, and Open looked dead).
 import { recap } from '@idle-clash/features';
 import type { Page } from 'playwright';
 import { playerWith, say } from './proofs-lanes.ts';
@@ -77,7 +78,7 @@ async function signsIn(served: Served, name: string, password: string): Promise<
 async function adminResetsPassword(served: Served, problems: string[]) {
   const forgetful = await playerWith(served, 'Forgetful', '/', (s) => s);
   await forgetful.close();
-  const admin = await openPage('chromium', '/admin', { viewport: { width: 1440, height: 900 } }, 'veteran');
+  const admin = await openPage('chromium', '/admin', { viewport: { width: 390, height: 844 } }, 'veteran');
   let step = 'the admin page finds the player';
   let password = '';
   try {
@@ -88,6 +89,17 @@ async function adminResetsPassword(served: Served, problems: string[]) {
       .locator('[data-ui="ActionRow"]', { hasText: 'Forgetful' })
       .getByRole('button', { name: 'Open' })
       .click();
+    step = "the player's panel comes into view";
+    const panel = admin.locator('[data-slot="admin.player"]');
+    await panel.waitFor({ timeout: 10_000 });
+    await admin.waitForFunction(
+      () => {
+        const r = document.querySelector('[data-slot="admin.player"]')?.getBoundingClientRect();
+        return !!r && r.top >= 0 && r.top < innerHeight - 80;
+      },
+      undefined,
+      { timeout: 3_000 },
+    );
     step = 'it sets a new password';
     await admin.getByRole('button', { name: 'Set a new password' }).click();
     password = ((await admin.locator('[data-password] code').textContent({ timeout: 10_000 })) ?? '').trim();
