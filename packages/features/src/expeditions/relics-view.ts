@@ -37,6 +37,21 @@ function effectText(e: RelicEffect, n: number): string {
   }
 }
 
+/** A relic raised, said for its moment (session 98): the rank reached, or fully raised, and what it now gives. */
+export function relicRaisedWords(relic: string, rank: number): { title: string; body: string; top: boolean } | null {
+  const r = relics().find((x) => x.id === relic);
+  if (!r) return null;
+  const name = t(`relic.${r.id}`);
+  const top = rank >= r.ranks;
+  return {
+    title: top
+      ? t('relic.raisedTop', { relic: name })
+      : t('relic.raised', { relic: name, rank: fmt.int(rank), ranks: fmt.int(r.ranks) }),
+    body: t('relic.now', { gives: effectText(r.effect, rank) }),
+    top,
+  };
+}
+
 export function relicsView(state: State): RelicsView {
   const marks = expeditionsOf(state).marks;
   return {

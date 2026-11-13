@@ -41,7 +41,7 @@ export const expeditions = defineFeature({
     relic: defineRoute({
       input: z.object({ relic: z.string().regex(/^[a-z][a-z-]{0,63}$/) }).strict(),
       example: { relic: 'hearthstone' },
-      run: (state, input) => buyRelic(state, input.relic),
+      run: (state, input, now) => buyRelic(state, input.relic, now),
     }),
   },
   slots: {

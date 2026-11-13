@@ -9,13 +9,15 @@ import { notices } from '../db/schema.ts';
 export const NOTICES_KEPT = 100;
 
 /** What reaches the tray: notable moments (not the Uncommon finds the log already holds, which come
- *  by the dozen, nor a work raised, a press its moment answers with no line in the tray: session 76),
+ *  by the dozen, nor a work raised, a find used or a relic raised, presses their moments answer with no
+ *  line in the tray: sessions 76, 93 and 98),
  *  and lanes that stopped by themselves. */
 export const isNotice = (e: GameEvent) =>
   (isNotable(e) &&
     !(e.type === 'find' && e.rarity === 'uncommon' && !e.first) &&
     e.type !== 'workRaised' &&
-    e.type !== 'findUsed') ||
+    e.type !== 'findUsed' &&
+    e.type !== 'relicRaised') ||
   (e.type === 'laneStopped' && !isQuietStop(e.reason.code));
 
 export class Notices {

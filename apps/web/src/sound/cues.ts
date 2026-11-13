@@ -31,6 +31,7 @@ export function cueFor(e: GameEvent): Cue | null {
     // A work raised by the player's press (session 76), a find used (session 93): the goal's chime.
     case 'workRaised':
     case 'findUsed':
+    case 'relicRaised':
       return 'goal';
     case 'bossFought':
       return !e.won ? null : e.first ? 'rare' : 'goal';
