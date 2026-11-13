@@ -36,6 +36,9 @@ export interface EventMap {
   };
   /** A skill past 99 reached another Kindling (step 17): its count so far. */
   kindled: { skill: string; count: number };
+  /** A Rare find used by the player's press (session 93): on what action, and the mastery completions it
+   *  added (its mastery steps, if any, follow as their own events). */
+  findUsed: { item: string; action: ActionRef; completions: number };
   /** A steading work raised a stage by the player's press (session 76); its building is also a deed. */
   workRaised: { work: string; stage: number };
   /** A boss fought alone in the lane (session 72): beaten or held, what a win paid (gold, the boss's
@@ -98,6 +101,7 @@ export const NOTABLE_EVENTS: readonly (keyof EventMap)[] = [
   'expeditionDone',
   'bossFought',
   'workRaised',
+  'findUsed',
   'kindled',
   'castleSiege',
   'castleBesieged',

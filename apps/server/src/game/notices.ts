@@ -12,7 +12,10 @@ export const NOTICES_KEPT = 100;
  *  by the dozen, nor a work raised, a press its moment answers with no line in the tray: session 76),
  *  and lanes that stopped by themselves. */
 export const isNotice = (e: GameEvent) =>
-  (isNotable(e) && !(e.type === 'find' && e.rarity === 'uncommon' && !e.first) && e.type !== 'workRaised') ||
+  (isNotable(e) &&
+    !(e.type === 'find' && e.rarity === 'uncommon' && !e.first) &&
+    e.type !== 'workRaised' &&
+    e.type !== 'findUsed') ||
   (e.type === 'laneStopped' && !isQuietStop(e.reason.code));
 
 export class Notices {

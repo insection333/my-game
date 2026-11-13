@@ -11,7 +11,7 @@ const use = (s: State, item: string, action: { feature: string; id: string }) =>
   store.routes.useFind.run(s, { item, action }, T0) as {
     state: State;
     result: { ok: boolean; reason?: { code: string } };
-    events?: { type: string; step?: number }[];
+    events?: { type: string; step?: number; item?: string; completions?: number }[];
   };
 const player: State = {
   ...newState(5, T0),
@@ -26,7 +26,14 @@ describe('using a Rare find', () => {
     expect(r.result).toEqual({ ok: true });
     expect(r.state.mastery['woodcutting:ash-tree']).toBe(600);
     expect(r.state.items['carved-acorn']).toBe(1);
-    expect(r.events?.map((e) => e.step)).toEqual([3, 4]);
+    // Session 92's play: the use announces itself first (it was silent when it crossed no step).
+    expect(r.events?.map((e) => e.type)).toEqual(['findUsed', 'masteryStep', 'masteryStep']);
+    expect(r.events?.[0]).toMatchObject({
+      item: 'carved-acorn',
+      action: { feature: 'woodcutting', id: 'ash-tree' },
+      completions: 500,
+    });
+    expect(r.events?.slice(1).map((e) => e.step)).toEqual([3, 4]);
   });
 
   it("goes to a foe for a combat style's find, and nowhere it does not belong", () => {

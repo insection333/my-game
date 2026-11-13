@@ -65,7 +65,8 @@ const byYou = (e: GameEvent) =>
   e.type === 'castleSpied' ||
   e.type === 'castleIncursion' ||
   e.type === 'castleTempered' ||
-  e.type === 'workRaised';
+  e.type === 'workRaised' ||
+  e.type === 'findUsed';
 
 function sizeOf(e: GameEvent): MomentSize {
   if (e.type === 'levelUp' || e.type === 'kindled' || (e.type === 'find' && e.rarity === 'legendary')) return 'centre';
@@ -107,6 +108,15 @@ function describe(
       return {
         title: t('moment.find', { rarity: t(`rarity.${e.rarity}`), item: t(`item.${e.item}`) }),
         body: e.first ? t('moment.find.first') : null,
+        icon: e.item,
+      };
+    case 'findUsed':
+      return {
+        title: t('moment.findUsed', {
+          item: t(`item.${e.item}`),
+          action: t(`action.${e.action.feature}.${e.action.id}`),
+        }),
+        body: t('moment.findUsed.body', { count: fmt.int(e.completions) }),
         icon: e.item,
       };
     case 'masteryStep':
@@ -196,7 +206,18 @@ export function momentsFrom(events: readonly GameEvent[], since: number, feature
     const best = describe(ordered[0], features);
     const size = group.map(sizeOf).reduce((a, b) => (SIZE_RANK.indexOf(b) > SIZE_RANK.indexOf(a) ? b : a));
     // A long run of moments at once (a returning player's deeds) names the first few and counts the rest.
-    const rest = ordered.slice(1);
+    // Steps one action climbed at once are said as the step reached (session 93: "Pine tree: mastery 1;
+    // Pine tree: mastery 2; …" after a Rare find's 500 completions).
+    const top = (e: GameEvent) =>
+      e.type !== 'masteryStep' ||
+      !ordered.some(
+        (o) =>
+          o.type === 'masteryStep' &&
+          o.action.feature === e.action.feature &&
+          o.action.id === e.action.id &&
+          o.step > e.step,
+      );
+    const rest = ordered.slice(1).filter(top);
     // Deeds alone are named once, as a list ("Also done: Castle 10, War marks: 100 and Tempered +3"), not
     // each under its own heading; anything mixed keeps each its heading.
     const deedsOnly = rest.every((e) => e.type === 'deedDone');
