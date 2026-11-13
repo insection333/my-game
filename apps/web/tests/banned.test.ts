@@ -16,4 +16,10 @@ describe('a banned player', () => {
     expect(handled(new ApiError(401, { error: { code: 'notSignedIn' } }))).toBe(true);
     expect(sessionStore.get().bounced).toBeNull();
   });
+
+  // Session 96: a deleted account landed on the welcome page with nothing to say it had worked.
+  it('keeps word of an account deleted for the welcome page', () => {
+    signedOut('deleted');
+    expect(sessionStore.get()).toMatchObject({ phase: 'signedOut', bounced: 'deleted' });
+  });
 });

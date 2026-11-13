@@ -8,6 +8,7 @@ import { replace } from '../router.ts';
 import type * as Store from './store.ts';
 
 export type Phase = 'loading' | 'signedOut' | 'playing' | 'offline';
+export type Bounced = 'banned' | 'deleted';
 export interface Session {
   phase: Phase;
   player: PlayerView | null;
@@ -17,8 +18,9 @@ export interface Session {
   email: boolean;
   /** Whether this player may open the admin page. */
   admin: boolean;
-  /** Why the server ended the session, for the welcome page to say: a ban (session 95). */
-  bounced: 'banned' | null;
+  /** Why the session ended, for the welcome page to say: a ban (session 95), or the account deleted
+   *  (session 96). */
+  bounced: Bounced | null;
 }
 
 let session: Session = { phase: 'loading', player: null, flags: {}, email: false, admin: false, bounced: null };
@@ -43,7 +45,7 @@ let game: Promise<typeof Store> | null = null;
 export const loadGame = () => (game ??= import('./store.ts'));
 
 /** The session ended (signed out here, or found ended by the server): back to the welcome page. */
-export function signedOut(why: 'banned' | null = null) {
+export function signedOut(why: Bounced | null = null) {
   void game?.then((m) => m.stop());
   setSession({ phase: 'signedOut', player: null, admin: false, bounced: why });
 }
@@ -89,7 +91,7 @@ export const account = {
   deleteAccount: async (password: string) => {
     await api.deleteAccount(password);
     replace('/welcome');
-    signedOut();
+    signedOut('deleted');
   },
   /** Ends the session and opens the sign-in form. */
   signOut: async () => {

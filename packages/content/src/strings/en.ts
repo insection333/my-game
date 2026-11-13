@@ -185,6 +185,7 @@ export const en: Record<string, string> = {
   'error.nameNotAllowed': 'That name is not allowed here. Try another.',
   'error.wrongNameOrPassword': 'That name and password do not match.',
   'error.banned': 'This account is closed.',
+  'welcome.deleted': 'Your account is deleted, and everything it held with it.',
   'error.tooManyTries': 'Too many tries. Try again in {wait}.',
   'error.offline': 'Could not reach the server. Check your connection and try again.',
   'error.other': 'Something went wrong on our side. Try again in a moment.',

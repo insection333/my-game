@@ -159,6 +159,15 @@
   line-height: 1.35;
 }
 
+/* An account deleted, said on arrival (session 96): calm, not an alarm. */
+.done {
+  margin: 0;
+  color: var(--moss);
+  font-size: var(--t-small);
+  font-weight: 700;
+  line-height: 1.35;
+}
+
 .hint {
   margin: 0;
   color: var(--ink-2);
