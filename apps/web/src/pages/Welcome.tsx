@@ -5,7 +5,7 @@ import { NAME_MAX } from '@idle-clash/contracts';
 import { Button, Field, GameMark, ItemIcon, MarchScene, Tabs, TextLink } from '@idle-clash/ui';
 import { useState, type FormEvent } from 'react';
 import { ApiError } from '../api.ts';
-import { account, loadGame } from '../game/session.ts';
+import { account, loadGame, useSession } from '../game/session.ts';
 import { navigate } from '../router.ts';
 import { check, type Errors } from './welcome-check.ts';
 import s from './welcome.module.css';
@@ -42,6 +42,8 @@ export function Welcome({ path, next }: { path: string; next: string }) {
   const [age, setAge] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
   const [working, setWorking] = useState(false);
+  // Sent here by a ban (session 95): said at once, until the player tries again.
+  const bounced = useSession().bounced === 'banned' && !errors.form;
   const keep = next !== '/' ? `?next=${encodeURIComponent(next)}` : '';
 
   const submit = async (e: FormEvent) => {
@@ -77,6 +79,11 @@ export function Welcome({ path, next }: { path: string; next: string }) {
         </ol>
       </section>
       <section data-slot="welcome.form" className={s.card}>
+        {bounced && (
+          <p className={s.error} role="alert" data-part="bounced">
+            {t('error.banned')}
+          </p>
+        )}
         <Tabs
           label={t('welcome.tabs')}
           onNavigate={(href) => {

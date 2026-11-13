@@ -255,7 +255,7 @@ Anyone not signed in sees this page instead of the shell, at any address; afterw
 | # | Section (slot) | Filled by | Notes |
 | --- | --- | --- | --- |
 | 1 | `welcome.intro` | the shell | The name, one sentence on what the game is, and the loop it is built on drawn as four icons (ore, bar, sword, foe) |
-| 2 | `welcome.form` | the shell | Tabs for Create account and Sign in. Create: name, password, "I am 13 or older", one button. Sign in: name, password, one button, and how a forgotten password is reset. Each field says what it needs; a refusal says why, in place |
+| 2 | `welcome.form` | the shell | Tabs for Create account and Sign in. Create: name, password, "I am 13 or older", one button. Sign in: name, password, one button, and how a forgotten password is reset. Each field says what it needs; a refusal says why, in place. A player sent here by a ban, mid-game, is told at the top of the card ("This account is closed.": session 95) |
 
 - **At 390:** the intro, then the form, both whole. **At 1,440:** the intro and the form side by side. Verify opens these views signed out.
 

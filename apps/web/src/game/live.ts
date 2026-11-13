@@ -13,7 +13,7 @@ export interface LiveHandlers {
   events: (events: GameEvent[]) => void;
   /** How many letters wait, when a letter comes or letters are read (session 45). */
   mail: (unread: number) => void;
-  signedOut: () => void;
+  signedOut: (why?: 'banned') => void;
   reopened: () => void;
 }
 
@@ -51,6 +51,8 @@ export function openLive(on: LiveHandlers): { close: () => void } {
     socket.onclose = (e: CloseEvent) => {
       if (closed) return;
       if (e.code === 4401) return on.signedOut();
+      // Banned (session 95): the welcome page says the account is closed.
+      if (e.code === 4403) return on.signedOut('banned');
       // Closed for a newer page: commands still go through; live news waits for the player's return.
       if (e.code === 4408) {
         resting = true;

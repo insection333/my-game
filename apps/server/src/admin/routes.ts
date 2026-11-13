@@ -108,7 +108,7 @@ export function adminRoutes(app: FastifyInstance, ctx: Ctx): void {
       if (input.banned) settleReports(ctx, input.playerId, ctx.config.now());
       if (input.banned) {
         ctx.sessions.endAll(input.playerId);
-        ctx.live.closePlayer(input.playerId);
+        ctx.live.closePlayer(input.playerId, true);
       }
       record(input.banned ? 'ban' : 'unban', req.playerId!, input.playerId);
       return view(ctx, playerOf(ctx, input.playerId));
