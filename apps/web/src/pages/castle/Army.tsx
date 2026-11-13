@@ -7,7 +7,7 @@ import { ActionRow, Button, ItemIcon, Panel, Pill } from '@idle-clash/ui';
 import { Defences, Formations } from './Formation.tsx';
 import { evolutionName, unitName } from './labels.ts';
 import { castleAct } from './store.ts';
-import { affords, hasAp, useSyncedCastle } from './synced.ts';
+import { affords, hasAp, shortText, useSyncedCastle } from './synced.ts';
 import s from './castle.module.css';
 
 /** Drills at one press, for AP saved up. */
@@ -59,6 +59,7 @@ function Troops() {
                           level: fmt.int(EVOLUTION_LEVELS[next]),
                         }),
                       ]),
+                  ...(level < ECONOMY.MAX_LEVEL ? [shortText(castle, purse, cost)].filter((x) => x !== null) : []),
                 ]}
                 progress={
                   <div className={s.drills}>

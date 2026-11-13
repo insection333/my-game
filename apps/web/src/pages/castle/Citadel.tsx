@@ -7,7 +7,7 @@ import { ActionRow, Button, Field, ItemIcon, Panel, Pill } from '@idle-clash/ui'
 import { useState } from 'react';
 import { buildingDoes, buildingName, decreeDoes, edictGives, edictName } from './labels.ts';
 import { castleAct } from './store.ts';
-import { affords, hasAp, useSyncedCastle } from './synced.ts';
+import { affords, hasAp, shortText, useSyncedCastle } from './synced.ts';
 import s from './castle.module.css';
 
 /** Each building's icon (the castle's family of icons, ART.md). */
@@ -191,7 +191,10 @@ function Buildings() {
                 icon={<ItemIcon name={BUILDING_ICON[b.id]} size={32} />}
                 name={buildingName(b.id)}
                 status={<Pill>{t('castle.level', { level: fmt.int(level) })}</Pill>}
-                facts={[does(castle, b.id, now)]}
+                facts={[
+                  does(castle, b.id, now),
+                  ...(top ? [] : [shortText(castle, purse, cost)].filter((x) => x !== null)),
+                ]}
                 actions={
                   top ? (
                     <Pill tone="moss">{t('castle.highest')}</Pill>
