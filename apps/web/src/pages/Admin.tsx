@@ -7,7 +7,7 @@ import type { AdminPlayerView, AdminSaveResponse } from '@idle-clash/contracts';
 import { fmt, t } from '@idle-clash/content';
 import { dayOf } from './days.ts';
 import { ActionRow, Button, Field, Panel, Pill } from '@idle-clash/ui';
-import { useEffect, useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { api, ApiError } from '../api.ts';
 import { handled, useSession } from '../game/session.ts';
 import { untilLoaded } from '../Ready.tsx';
@@ -44,6 +44,17 @@ export function Admin() {
         (err: unknown) => void handled(err),
       );
   }, [admin]);
+  // Opened, the player's panel comes into view and takes the focus (session 94): on a phone it stands
+  // below every other panel, where Open looked as though it did nothing.
+  const playerRef = useRef<HTMLElement>(null);
+  const shown = save?.player.id;
+  useEffect(() => {
+    const el = playerRef.current;
+    if (!el) return;
+    const top = el.getBoundingClientRect().top;
+    if (top < 0 || top > innerHeight - 80) el.scrollIntoView({ block: 'start' });
+    el.focus({ preventScroll: true });
+  }, [shown]);
   if (!admin) return <NotFound />;
   const run = async <T,>(go: () => Promise<T>, then: (r: T) => void) => {
     setError(null);
@@ -113,7 +124,7 @@ export function Admin() {
           <AdminTest />
         </section>
         {save && (
-          <section data-section>
+          <section data-section ref={playerRef} tabIndex={-1} className={s.opened}>
             <PlayerPanel key={save.player.id} save={save} reload={open} run={run} />
           </section>
         )}
