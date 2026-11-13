@@ -53,8 +53,14 @@ export function plaqueView(state: State): PlaqueView {
   return { ...s, title: s.title ? honourName({ kind: 'title', id: s.title }) : null };
 }
 
-/** How far the counted deed that opens a locked honour is, or null for one opened otherwise. */
-function progressOf(h: Honour, reader: Reader): string | null {
+/** How far a locked honour is: the deed points so far for one opened by points (session 97), the count of
+ *  the deed that opens it, or null for one opened otherwise (a hidden deed says nothing). */
+function progressOf(h: Honour, reader: Reader, points: number): string | null {
+  if (h.unlock && 'points' in h.unlock)
+    return t('honour.pointsSoFar', {
+      done: fmt.int(Math.min(points, h.unlock.points)),
+      total: fmt.int(h.unlock.points),
+    });
   const id = h.unlock && 'deed' in h.unlock ? h.unlock.deed : null;
   const d = id ? deedById(id) : undefined;
   return d ? countText(d, d.measure(reader)) : null;
@@ -85,8 +91,9 @@ export function honoursView(state: State, now: number): HonoursView {
         id: h.id,
         name: honourName(h),
         open,
-        unlock: open ? null : unlockText(h),
-        progress: open ? null : progressOf(h, reader),
+        // Opened by points, the line of progress says the condition too ("1,570 of 2,500 deed points").
+        unlock: open || (h.unlock && 'points' in h.unlock) ? null : unlockText(h),
+        progress: open ? null : progressOf(h, reader, points),
         current: shown[kind] === h.id,
       };
     });

@@ -24,4 +24,23 @@ describe('how near a locked honour is', () => {
     // A hundred slain, the deed not yet recorded (the page records it as it opens): full, not past it.
     expect(picture({ ...state, mastery: { 'combat:hollow-rat': 140 } }, 'hollow-rat').progress).toBe('100 of 100');
   });
+
+  // Session 97: a locked title, badge, frame or glow said only "At 2,500 deed points" or "With the deed
+  // Woodcutting 99", never how far the player was; the deed-points ones had no progress at all.
+  it('is the deed points so far, for an honour opened by points', () => {
+    const titles = honoursView(state, T0).choices.find((c) => c.kind === 'title')!.options;
+    expect(titles.find((o) => o.id === 'renowned')).toMatchObject({
+      open: false,
+      progress: '0 of 2,500 deed points',
+      unlock: null,
+    });
+    const frames = honoursView(state, T0).choices.find((c) => c.kind === 'frame')!.options;
+    expect(frames.find((o) => o.id === 'silver')?.progress).toBe('0 of 2,000 deed points');
+  });
+
+  it("is the deed's count for a deed-gated title, and nothing for a hidden deed", () => {
+    const titles = honoursView(state, T0).choices.find((c) => c.kind === 'title')!.options;
+    expect(titles.find((o) => o.name === 'Forester')?.progress).toMatch(/ of 99$/);
+    expect(titles.find((o) => o.name === 'the Even-handed')?.progress).toBeNull();
+  });
 });
