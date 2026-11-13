@@ -88,6 +88,7 @@ import { CASTLE_ICONS } from './castle-index.tsx';
 import { HONOUR_ICONS } from './honours-index.tsx';
 import { PathFortune, PathLore, PathBounty } from './kindling.tsx';
 import { M, type Tone } from './style.tsx';
+import { Coins } from './castle-spies.tsx';
 import {
   AshLogs,
   Bread,
@@ -275,6 +276,9 @@ const NAMED = {
   'wardens-feast': { draw: WardensFeast, family: 'food', title: "Warden's feast" },
   // Session 11: the cache a goal pays in.
   'supply-cache': { draw: SupplyCache, family: 'reward', title: "Supply cache (a goal's reward)" },
+  // Session 92: gold paid as a reward (a milestone's), drawn as the castle's coins; the moment and the tray
+  // named 'gold' with no drawing behind it, so a milestone stood on an empty box or a dot.
+  gold: { draw: Coins, family: 'reward', title: 'Gold (a reward)' },
 } satisfies Record<string, IconDef>;
 
 export const ICONS: Record<string, IconDef> = {
