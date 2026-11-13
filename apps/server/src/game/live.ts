@@ -47,9 +47,10 @@ export class LiveHub {
     return this.sockets.size;
   }
 
-  /** Closes a player's pages (signed out everywhere: banned, or the account deleted). */
-  closePlayer(playerId: string): void {
-    for (const s of this.sockets.get(playerId) ?? []) s.close(4401, 'signed out');
+  /** Closes a player's pages: signed out everywhere (4401: the account deleted, a password reset), or
+   *  banned (4403), which the page says on the welcome page it lands on (session 95). */
+  closePlayer(playerId: string, banned = false): void {
+    for (const s of this.sockets.get(playerId) ?? []) s.close(banned ? 4403 : 4401, banned ? 'banned' : 'signed out');
     this.sockets.delete(playerId);
   }
 

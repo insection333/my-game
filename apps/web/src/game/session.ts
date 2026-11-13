@@ -17,9 +17,11 @@ export interface Session {
   email: boolean;
   /** Whether this player may open the admin page. */
   admin: boolean;
+  /** Why the server ended the session, for the welcome page to say: a ban (session 95). */
+  bounced: 'banned' | null;
 }
 
-let session: Session = { phase: 'loading', player: null, flags: {}, email: false, admin: false };
+let session: Session = { phase: 'loading', player: null, flags: {}, email: false, admin: false, bounced: null };
 const listeners = new Set<() => void>();
 
 function setSession(next: Partial<Session>) {
@@ -41,15 +43,15 @@ let game: Promise<typeof Store> | null = null;
 export const loadGame = () => (game ??= import('./store.ts'));
 
 /** The session ended (signed out here, or found ended by the server): back to the welcome page. */
-export function signedOut() {
+export function signedOut(why: 'banned' | null = null) {
   void game?.then((m) => m.stop());
-  setSession({ phase: 'signedOut', player: null, admin: false });
+  setSession({ phase: 'signedOut', player: null, admin: false, bounced: why });
 }
 
 /** What every failed request does first: a lost session sends the player back to the welcome page. */
 export function handled(err: unknown): err is ApiError {
   if (err instanceof ApiError && (err.code === 'notSignedIn' || err.code === 'banned')) {
-    signedOut();
+    signedOut(err.code === 'banned' ? 'banned' : null);
     return true;
   }
   return false;
@@ -58,7 +60,7 @@ export function handled(err: unknown): err is ApiError {
 async function enter(player: PlayerView) {
   const m = await loadGame();
   await m.start(session.flags);
-  setSession({ phase: 'playing', player });
+  setSession({ phase: 'playing', player, bounced: null });
 }
 
 /** Asks the server who is here and which features are on, then loads the game for a player. */

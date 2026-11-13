@@ -137,6 +137,20 @@ describe('the admin page', () => {
     expect((await signIn('Rowena', PASSWORD)).statusCode).toBe(200);
   });
 
+  // Session 95: a banned player's open page was closed as though signed out, and landed on the welcome
+  // page with no word of why; it is closed as banned (4403), so the page can say the account is closed.
+  it("closes a banned player's open pages as banned, not merely signed out", async () => {
+    s = await server();
+    await s.app.ready();
+    const rowan = await signUp(s, 'Rowan');
+    const warden = await signUpAdmin(s, 'Warden');
+    const { player } = await meOf(rowan);
+    const ws = await s.app.injectWS('/api/live', { headers: { cookie: rowan } });
+    const closed = new Promise<number>((r) => ws.on('close', (c: number) => r(c)));
+    await post(s, '/api/admin/ban', { playerId: player!.id, banned: true }, warden);
+    expect(await closed).toBe(4403);
+  });
+
   it('resets a forgotten password: the new one works, the old one and old sessions do not', async () => {
     s = await server();
     const rowan = await signUp(s, 'Rowan');
