@@ -260,6 +260,8 @@ export const en: Record<string, string> = {
   'moment.find': '{rarity} find: {item}',
   'moment.find.first': 'New in your collection log.',
   'moment.masteryStep': '{action}: mastery {step}',
+  'moment.findUsed': '{item} used on {action}',
+  'moment.findUsed.body': '+{count} mastery completions',
   'moment.goalDone': 'Goal done: {goal}',
   'moment.also': 'Also: {what}.',
   'moment.alsoDone': 'Also done: {what}.',

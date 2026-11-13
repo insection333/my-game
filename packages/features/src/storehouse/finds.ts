@@ -57,8 +57,9 @@ export function useFind(
   next.mastery[key] = before + RARE_FIND_COMPLETIONS;
   const gain = perksAt(f.ladder, skillLevel(state, f.skill)).masteryGain;
   const [was, now_] = [masteryStep(before, gain), masteryStep(before + RARE_FIND_COMPLETIONS, gain)];
-  const events: GameEvent[] = [];
+  // The press answered first (session 93), then any mastery steps it brought.
+  const events: GameEvent[] = [{ type: 'findUsed', at: now, item, action, completions: RARE_FIND_COMPLETIONS }];
   for (let step = was + 1; step <= now_; step++) events.push({ type: 'masteryStep', at: now, action, step });
-  if (events.length) noteMoment(next, now);
+  noteMoment(next, now);
   return { state: next, result: { ok: true }, events };
 }

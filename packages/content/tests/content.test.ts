@@ -102,6 +102,7 @@ describe('t', () => {
     const neverOne = [
       // The 500 completions a Rare find gives, and the log sizes milestones ask for.
       'item.panel.use',
+      'moment.findUsed.body',
       'item.panel.useOn',
       'item.panel.useOnFoe',
       'item.panel.useOnRegion',
