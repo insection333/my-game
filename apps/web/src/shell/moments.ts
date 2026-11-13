@@ -6,6 +6,7 @@ import { fmt, formatEffect, formatStop, isQuietStop, masteryEffects, t } from '@
 import {
   bossFoughtWords,
   workRaisedWords,
+  relicRaisedWords,
   castleEngine,
   expeditionStory as storyOf,
   kindlingData,
@@ -66,7 +67,8 @@ const byYou = (e: GameEvent) =>
   e.type === 'castleIncursion' ||
   e.type === 'castleTempered' ||
   e.type === 'workRaised' ||
-  e.type === 'findUsed';
+  e.type === 'findUsed' ||
+  e.type === 'relicRaised';
 
 function sizeOf(e: GameEvent): MomentSize {
   if (e.type === 'levelUp' || e.type === 'kindled' || (e.type === 'find' && e.rarity === 'legendary')) return 'centre';
@@ -77,6 +79,8 @@ function sizeOf(e: GameEvent): MomentSize {
   if (e.type === 'bossFought') return bossFoughtWords(e).size;
   // A work raised: a press answered; fully raised, a banner (session 76).
   if (e.type === 'workRaised') return e.stage >= 5 ? 'banner' : 'toast';
+  // A relic raised, as a work is (session 98).
+  if (e.type === 'relicRaised') return relicRaisedWords(e.relic, e.rank)?.top ? 'banner' : 'toast';
   if (e.type === 'masteryStep' || (e.type === 'find' && e.rarity === 'rare')) return 'banner';
   if (e.type === 'rankUp') return e.band === 1 ? 'centre' : e.band <= 10 ? 'banner' : 'toast';
   if (castleEngine.isCastleEvent(e)) return castleEngine.castleMoment(e).size;
@@ -150,6 +154,10 @@ function describe(
     case 'workRaised': {
       const w = workRaisedWords(e);
       return { title: w?.title ?? '', body: w?.body ?? null, icon: null };
+    }
+    case 'relicRaised': {
+      const w = relicRaisedWords(e.relic, e.rank);
+      return { title: w?.title ?? '', body: w?.body ?? null, icon: hasIcon(e.relic) ? e.relic : null };
     }
     case 'bossFought': {
       const w = bossFoughtWords(e);

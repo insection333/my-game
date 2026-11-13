@@ -176,6 +176,10 @@ describe('relics', () => {
     let s = fighterAt('march', 8);
     s.features.expeditions = { ...expeditionsOf(s), marks: 40 };
     expect(buyRelic(s, 'no-such-relic').result).toEqual({ ok: false, reason: 'unknown' });
+    // Session 98: a raise is answered (it changed the row in silence).
+    expect(buyRelic(s, 'hearthstone', 5).events).toEqual([
+      { type: 'relicRaised', at: 5, relic: 'hearthstone', rank: 1 },
+    ]);
     s = buyRelic(s, 'hearthstone').state;
     s = buyRelic(s, 'relic-magic').state;
     expect(expeditionsOf(s).marks).toBe(20);

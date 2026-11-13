@@ -43,8 +43,8 @@ export function abandon(state: State): Answer<{ ok: true }> {
 
 export type RelicResult = { ok: true } | { ok: false; reason: 'unknown' | 'full' | 'marks' };
 
-/** Buys a relic's next rank. */
-export function buyRelic(state: State, id: string): Answer<RelicResult> {
+/** Buys a relic's next rank, answered by its moment (session 98). */
+export function buyRelic(state: State, id: string, now: number = state.clock): Answer<RelicResult> {
   const relic = relicById(id);
   if (!relic) return no(state, { ok: false, reason: 'unknown' });
   const rank = rankOf(state, id);
@@ -54,5 +54,5 @@ export function buyRelic(state: State, id: string): Answer<RelicResult> {
   if (e.marks < cost) return no(state, { ok: false, reason: 'marks' });
   const out = structuredClone(state);
   setExpeditions(out, { ...e, marks: e.marks - cost, relics: { ...e.relics, [id]: rank + 1 } });
-  return { state: out, result: { ok: true }, events: [] };
+  return { state: out, result: { ok: true }, events: [{ type: 'relicRaised', at: now, relic: id, rank: rank + 1 }] };
 }

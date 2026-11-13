@@ -46,4 +46,21 @@ describe('moments for presses and rewards', () => {
     const [m] = momentsFrom([used, ...steps], T - 1, FEATURES);
     expect(m.body).toBe('+500 mastery completions. Also: Pine tree: mastery 4.');
   });
+
+  // Session 98: raising a relic changed its row in silence; it is answered as a work raised is.
+  it('answers a relic raised, a banner at its last rank', () => {
+    const [m] = momentsFrom([{ type: 'relicRaised', at: T, relic: 'relic-woodcutting', rank: 1 }], T - 1, FEATURES);
+    expect(m).toMatchObject({
+      size: 'toast',
+      title: 'Heartwood charm raised to rank 1 of 5',
+      body: 'Now: +1% Woodcutting XP',
+      icon: 'relic-woodcutting',
+    });
+    const [top] = momentsFrom([{ type: 'relicRaised', at: T, relic: 'relic-woodcutting', rank: 5 }], T - 1, FEATURES);
+    expect(top).toMatchObject({
+      size: 'banner',
+      title: 'Heartwood charm fully raised',
+      body: 'Now: +5% Woodcutting XP',
+    });
+  });
 });

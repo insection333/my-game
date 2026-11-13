@@ -39,6 +39,8 @@ export interface EventMap {
   /** A Rare find used by the player's press (session 93): on what action, and the mastery completions it
    *  added (its mastery steps, if any, follow as their own events). */
   findUsed: { item: string; action: ActionRef; completions: number };
+  /** An expedition relic raised a rank by the player's press (session 98). */
+  relicRaised: { relic: string; rank: number };
   /** A steading work raised a stage by the player's press (session 76); its building is also a deed. */
   workRaised: { work: string; stage: number };
   /** A boss fought alone in the lane (session 72): beaten or held, what a win paid (gold, the boss's
@@ -102,6 +104,7 @@ export const NOTABLE_EVENTS: readonly (keyof EventMap)[] = [
   'bossFought',
   'workRaised',
   'findUsed',
+  'relicRaised',
   'kindled',
   'castleSiege',
   'castleBesieged',
