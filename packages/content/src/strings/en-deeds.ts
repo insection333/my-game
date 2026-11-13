@@ -196,6 +196,7 @@ export const deeds = {
   'honour.none.frame': 'No frame',
   'honour.unlock.always': 'Yours from the start',
   'honour.unlock.points': 'At {points} deed points',
+  'honour.pointsSoFar': '{done} of {total} deed points',
   'honour.unlock.deed': 'With the deed {deed}',
   'honour.unlock.hidden': 'With a hidden deed',
   'honour.unlock.any99': 'With level 99 in any skill',

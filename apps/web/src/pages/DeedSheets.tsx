@@ -113,7 +113,7 @@ function Choice({ choice }: { choice: HonourChoice }) {
           locked={!o.open}
           icon={choice.kind !== 'title' && o.id ? <Preview kind={choice.kind} id={o.id} /> : undefined}
           name={o.name}
-          facts={o.unlock ? [o.unlock] : []}
+          facts={[o.unlock, o.progress].filter((f) => f !== null)}
           status={o.current ? <Pill tone="woad">{t('deeds.showing')}</Pill> : undefined}
           actions={
             o.open &&
