@@ -18,11 +18,11 @@ export const legal: Record<string, string> = {
     'Questions\nWrite to admin@idleclash.com.',
   ].join('\n\n'),
   'legal.terms.title': 'Terms of use',
-  'legal.terms.updated': 'Last changed 7 November 2026',
+  'legal.terms.updated': 'Last changed 14 November 2026',
   'legal.terms.body': [
     'Who can play\nYou must be 13 or older to make an account. One account per person.',
     'Your name\nChoose a name others will be glad to see on the hiscores. We may rename an account whose name is offensive, or that passes for the game or its team.',
-    'Play fair\nPlay with your own hands: no scripts or programs that play for you, no exploiting bugs (tell us instead), no second account to feed your first, and no attempts to break or overload the game. Accounts that do may be banned. If you see a player doing this, or an offensive name, report them from their name on the hiscores or their sheet in the War room.',
+    'Play fair\nPlay with your own hands: no scripts or programs that play for you, no exploiting bugs (tell us instead), no second account to feed your first, and no attempts to break or overload the game. Accounts that do may be banned. If you see a player doing this, or an offensive name, tap their name on the hiscores or in Castle Clash and choose Report this player.',
     'Messages\nYou can send short messages to other players. Keep them friendly: no insults, harassment, threats, foul language, or tricks to get past the language filter. To keep the game safe for everyone, our moderators can read the messages players send, and the ones the filter stops (which are kept for 30 days). A player who breaks these rules may be warned, stopped from sending messages, or banned. Anyone can block you from writing to them.',
     'The game changes\nThe game is being built and will change: numbers are balanced, things are added, and now and then something breaks. Nothing in the game has money value, and there is nothing to buy.',
     'Your account\nKeep your password to yourself. If you forget it, write to admin@idleclash.com with your player name and an admin can help you set a new one. You can delete your account from Settings whenever you like.',

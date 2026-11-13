@@ -1,5 +1,5 @@
 // The admin page (session 9) and bad actors (session 39): finding and acting on a player, reporting a
-// player from Hiscores or the War room, and the admin's queue of reports and sieges between lords. Part of
+// player from Hiscores or Castle Clash, and the admin's queue of reports and sieges between lords. Part of
 // the strings file (en.ts).
 export const moderation = {
   'admin.title': 'Admin',

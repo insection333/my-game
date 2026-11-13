@@ -146,6 +146,16 @@ describe('t', () => {
   });
 });
 
+describe('the terms of use', () => {
+  // Session 96: they sent a reporter to "their sheet in the War room", a name no tab bears; reporting is
+  // done from a player's card, by the button's own words.
+  it('tell a reporter where the game itself puts Report', () => {
+    const terms = templateOf('legal.terms.body')!;
+    expect(terms).toContain(t('report.title'));
+    expect(terms).not.toContain('War room');
+  });
+});
+
 describe('the contact address', () => {
   it('is given wherever a player is told to write to us', () => {
     for (const k of ['legal.privacy.body', 'legal.terms.body']) expect(templateOf(k), k).toContain(CONTACT_ADDRESS);

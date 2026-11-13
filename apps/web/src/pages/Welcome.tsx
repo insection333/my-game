@@ -43,7 +43,8 @@ export function Welcome({ path, next }: { path: string; next: string }) {
   const [errors, setErrors] = useState<Errors>({});
   const [working, setWorking] = useState(false);
   // Sent here by a ban (session 95): said at once, until the player tries again.
-  const bounced = useSession().bounced === 'banned' && !errors.form;
+  const ended = useSession().bounced;
+  const bounced = errors.form ? null : ended;
   const keep = next !== '/' ? `?next=${encodeURIComponent(next)}` : '';
 
   const submit = async (e: FormEvent) => {
@@ -79,9 +80,14 @@ export function Welcome({ path, next }: { path: string; next: string }) {
         </ol>
       </section>
       <section data-slot="welcome.form" className={s.card}>
-        {bounced && (
+        {bounced === 'banned' && (
           <p className={s.error} role="alert" data-part="bounced">
             {t('error.banned')}
+          </p>
+        )}
+        {bounced === 'deleted' && (
+          <p className={s.done} role="status" data-part="bounced">
+            {t('welcome.deleted')}
           </p>
         )}
         <Tabs
