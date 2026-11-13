@@ -1,6 +1,7 @@
 // Moments: what the page shows for notable events, and how close ones are grouped.
-import { FEATURES } from '@idle-clash/features';
+import { FEATURES, recap } from '@idle-clash/features';
 import type { GameEvent } from '@idle-clash/kernel';
+import { hasIcon } from '@idle-clash/ui';
 import { describe, expect, it } from 'vitest';
 import { momentsFrom } from '../src/shell/moments.ts';
 
@@ -308,5 +309,16 @@ describe('a work raised', () => {
     const [m] = momentsFrom([{ type: 'workRaised', at: T, work: 'smokehouse', stage: 5 }, deed], T - 1, FEATURES);
     expect(m.title).toBe('Smokehouse fully raised');
     expect(m.body).toMatch(/^Now: Food heals [0-9.]+% more\. Also done: its deed \(Hard, 15 points\)\.$/);
+  });
+
+  // Session 92: a milestone paid in gold drew an empty box in its moment (and a dot in the tray): its
+  // picture, 'gold', was named but never drawn.
+  it('draws a milestone paid in gold with a drawn picture, in its moment and its notice', () => {
+    const e: GameEvent = { type: 'goalDone', at: T, goal: 'milestone-total-50', name: 'Reach total level 50' };
+    const [m] = momentsFrom([e], T - 1, FEATURES);
+    expect(m.icon).not.toBeNull();
+    expect(hasIcon(m.icon!)).toBe(true);
+    const line = recap.noticeLine(e)!;
+    expect(hasIcon(line.icon!)).toBe(true);
   });
 });
