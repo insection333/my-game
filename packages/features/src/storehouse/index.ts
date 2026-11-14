@@ -7,7 +7,7 @@ import { defineFeature, defineRoute, type Json } from '../define.ts';
 import { FOODS, HITPOINTS } from '../shared/combat/data.ts';
 import { healsFor } from '../shared/combat/state.ts';
 import { skillLevel } from '../shared/skill.ts';
-import { capacity, ENLARGE_COSTS, SLOTS_PER_ENLARGEMENT, slotsUsed, storeOf } from '../shared/storehouse.ts';
+import { capacity, ENLARGE_COSTS, noRoom, SLOTS_PER_ENLARGEMENT, slotsUsed, storeOf } from '../shared/storehouse.ts';
 import { useFind } from './finds.ts';
 import { buy, enlarge, sell } from './rules.ts';
 
@@ -34,6 +34,8 @@ export interface FoodView {
     carried: number;
     /** Whether the player has the gold for ten. */
     affordable: boolean;
+    /** Why ten cannot be bought: a food not carried with every space taken (session 101), or null. */
+    noRoom: string | null;
     locked: boolean;
     opensAt: string | null;
   }[];
@@ -74,6 +76,7 @@ function foodView(state: State): FoodView {
       price: f.price,
       carried: countOf(state, f.id),
       affordable: gold >= f.price * 10,
+      noRoom: noRoom(state, [f.id]) ? t('food.noRoom') : null,
       locked: f.level > level,
       opensAt: f.level > level ? t('combat.opensAt', { level: fmt.int(f.level) }) : null,
     })),

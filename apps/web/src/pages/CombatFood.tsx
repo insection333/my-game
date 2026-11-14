@@ -31,15 +31,17 @@ export function CombatFood() {
                   {x.have && <span className={f.have}>{x.have}</span>}
                 </div>
                 <div className={f.facts}>
-                  {[...x.facts, ...(x.opensAt ? [x.opensAt] : [])].map((fact) => (
-                    <span key={fact}>{fact}</span>
-                  ))}
+                  {[...x.facts, ...(x.opensAt ? [x.opensAt] : []), ...(x.noRoom && !x.locked ? [x.noRoom] : [])].map(
+                    (fact) => (
+                      <span key={fact}>{fact}</span>
+                    ),
+                  )}
                 </div>
               </div>
               {!x.locked && (
                 <Button
                   variant="secondary"
-                  disabled={!x.affordable}
+                  disabled={!x.affordable || x.noRoom !== null}
                   onClick={() => game.act('storehouse', 'buy', { item: x.item, count: 10 })}
                 >
                   {t('store.buyTen')}
