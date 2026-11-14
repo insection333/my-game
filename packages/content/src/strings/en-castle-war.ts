@@ -43,7 +43,7 @@ export const castleWar = {
   'castle.target.chanceAbout': 'About {pct} to win',
   'castle.target.beyond': 'Beyond you for now: no roll takes it',
   'castle.target.chanceAbout.set': 'About {pct} to win, {best} set against them',
-  'castle.target.pays': 'Taken: {marks} war marks and a {gold} bounty',
+  'castle.target.pays': 'Taken: {marks} war marks and a bounty of {gold} gold',
   'castle.target.paysMarks': 'Taken: {marks} war marks',
   'castle.target.paysLord': 'A breach: up to {gold} and {marks} war marks',
   'castle.target.paysLordUnscouted': 'A breach: {marks} war marks, and gold from their treasury',
