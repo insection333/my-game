@@ -45,7 +45,7 @@ export const castleWar = {
   'castle.target.chanceAbout.set': 'About {pct} to win, {best} set against them',
   'castle.target.pays': 'Taken: {marks} war marks and a bounty of {gold} gold',
   'castle.target.paysMarks': 'Taken: {marks} war marks',
-  'castle.target.paysLord': 'A breach: up to {gold} and {marks} war marks',
+  'castle.target.paysLord': 'A breach: up to {gold} gold and {marks} war marks',
   'castle.target.paysLordUnscouted': 'A breach: {marks} war marks, and gold from their treasury',
   'castle.strongholds.title': "Today's strongholds",
   'castle.strongholds.fallen': '{count} of {total} fallen',
@@ -60,7 +60,7 @@ export const castleWar = {
   'castle.siege.scouted': 'Scouted {when}',
   'castle.siege.unscouted': 'Scout first to see their garrison, trap and treasury.',
   'castle.siege.weaken':
-    'Too strong as they stand. Poison their wells, sabotage their gatehouse or forge their orders below: the chance above counts what your spies have done.',
+    'The odds are against you as they stand. Poison their wells, sabotage their gatehouse or forge their orders below: the chance above counts what your spies have done.',
   'castle.spy.title': 'Spies',
   'castle.mission.scout': 'Scout the castle',
   'castle.mission.poison': 'Poison the wells',
