@@ -118,8 +118,15 @@ function SkillPage({ feature }: { feature: Feature }) {
                   locked={a.locked}
                   facts={
                     a.locked
-                      ? [a.gives]
-                      : [a.time, a.xpPerHour, a.gives, ...(a.heals ? [a.heals] : []), ...(a.takes ? [a.takes] : [])]
+                      ? [a.gives, ...(a.needs ? [a.needs] : [])]
+                      : [
+                          a.time,
+                          a.xpPerHour,
+                          a.gives,
+                          ...(a.heals ? [a.heals] : []),
+                          ...(a.takes ? [a.takes] : []),
+                          ...(a.needs ? [a.needs] : []),
+                        ]
                   }
                   status={
                     a.locked ? (

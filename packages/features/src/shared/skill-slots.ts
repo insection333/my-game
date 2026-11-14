@@ -13,7 +13,7 @@ import {
   type Ladder,
 } from '@idle-clash/content';
 import { KINDLE_XP, kindlingsIn } from './kindling.ts';
-import { xpOf } from '@idle-clash/kernel';
+import { countOf, xpOf } from '@idle-clash/kernel';
 import type { Json, SlotFill } from '../define.ts';
 import { actionMastery, actionModifiers, nextUnlock, skillLevel, unlockText } from './skill.ts';
 import { extraYieldPct, xpBonusPct } from './complete.ts';
@@ -28,6 +28,8 @@ export interface SkillAction {
   xp: number;
   gives: { item: string; count: number }[];
   takes?: { item: string; count: number }[];
+  /** What it needs to have but keeps (a standing stone's key). */
+  needs?: { item: string }[];
 }
 
 /** What the skill slots give the shell, so the page can type what it draws. */
@@ -56,6 +58,8 @@ export interface SkillActionRow {
   gives: string;
   /** What one repetition uses up, or null when it takes nothing. */
   takes: string | null;
+  /** What it needs and keeps, and whether it is held ("Needs Iron key (kept)"), or null (session 102). */
+  needs: string | null;
   /** What the food it makes heals in your fights ("Each heals 161"), or null when it makes no food. */
   heals: string | null;
   mastery: string;
@@ -202,6 +206,11 @@ export function skillSlots(def: SkillDef): Record<string, SlotFill> {
                 items: a.takes
                   .map((g) => t('action.gives', { item: t(`item.${g.item}`), count: fmt.int(g.count) }))
                   .join(', '),
+              })
+            : null,
+          needs: a.needs?.length
+            ? t(a.needs.every((n) => countOf(state, n.item) > 0) ? 'action.needs' : 'action.needsMissing', {
+                items: a.needs.map((n) => t(`item.${n.item}`)).join(', '),
               })
             : null,
           heals: food === undefined ? null : t('action.heals', { health: fmt.int(healsFor(state, food)) }),

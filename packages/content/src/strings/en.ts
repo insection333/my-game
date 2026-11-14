@@ -201,7 +201,7 @@ export const en: Record<string, string> = {
   'stop.levelTooLow': 'Needs level {level}',
   'stop.skillInOtherLane': 'Already working in your other Gathering lane',
   'stop.outOfInputs': 'Out of {item}',
-  'stop.needsKey': 'Needs a {item}',
+  'stop.needsKey': 'Needs the {item}',
   // The same, short enough for a lane's chip on a phone (where a reason's full words are longer)
   'stopShort.needsKey': 'Needs a key',
   'stopShort.unavailable': 'Not available',
@@ -254,6 +254,8 @@ export const en: Record<string, string> = {
   'action.gives': '{item} ×{count}',
   'action.givesAverage': '{item} ×{count} on average',
   'action.takes': 'Takes {items}',
+  'action.needs': 'Needs {items} (kept)',
+  'action.needsMissing': 'Needs {items}, not held',
   'mastery.step': 'Mastery {step}',
 
   // Moments
