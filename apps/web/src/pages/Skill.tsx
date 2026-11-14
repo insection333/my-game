@@ -210,7 +210,12 @@ const Ladder = memo(
         <Slot id="skill.ladder">
           <ol className={s.ladder} ref={ref} data-scrollbox tabIndex={0} aria-label={t('skill.ladder.title')}>
             {ladder.map((l) => (
-              <li key={l.level} data-reached={l.reached || undefined}>
+              <li
+                key={l.level}
+                data-reached={l.reached || undefined}
+                data-current={l.current || undefined}
+                aria-current={l.current ? 'step' : undefined}
+              >
                 <span className={s.lv}>{l.level}</span>
                 <span>{l.unlocks.join('; ')}</span>
               </li>

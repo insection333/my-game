@@ -267,6 +267,17 @@ a.row:hover {
   color: var(--ink-2);
 }
 
+/* The level the player stands at (session 100): the spec marks it, where only past rows were muted. */
+.ladder li[data-current] {
+  color: var(--ink);
+  background: var(--moss-soft);
+  box-shadow: inset 3px 0 0 var(--moss);
+}
+
+.ladder li[data-current] .lv {
+  color: var(--moss);
+}
+
 .choices {
   border: 0;
   margin: 0;

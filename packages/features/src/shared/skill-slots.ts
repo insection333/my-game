@@ -66,6 +66,8 @@ export interface SkillActionRow {
 export interface LadderRow {
   level: string;
   reached: boolean;
+  /** The level the player stands at, marked on the ladder (session 100). */
+  current: boolean;
   unlocks: string[];
 }
 /** One find as the skill page and the collection log show it: found, or a silhouette. */
@@ -214,6 +216,7 @@ export function skillSlots(def: SkillDef): Record<string, SlotFill> {
       return ladder.map((unlocks, i) => ({
         level: t('skill.level', { level: fmt.int(i + 1) }),
         reached: i + 1 <= level,
+        current: i + 1 === level,
         unlocks: unlocks.map((u) => unlockText(feature, ladder, u)),
       }));
     },
