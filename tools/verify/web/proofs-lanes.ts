@@ -4,7 +4,8 @@
 // - A queued action starts while away: a smith who queued a sword behind bars and left three hours ago
 //   comes back to swords in the Storehouse and the forge stopped, saying why.
 // - A chip keeps its words whole (session 86): beside a fight, the resting Gathering chip read "Gatherin / g"
-//   on a phone, its word split where the working chip took twice the room.
+//   on a phone, its word split where the working chip took twice the room; and an expedition set out
+//   (session 103) read "Expeditio / n into th…" in four lanes on a phone.
 import { HOUR, seeded, type Command, type State } from '@idle-clash/kernel';
 import type { Page } from 'playwright';
 import { newcomer, openPage, type Served } from './session.ts';
@@ -140,9 +141,52 @@ async function chipsKeepWords(served: Served, problems: string[]) {
   }
 }
 
+/** An expedition set out from its tab, with the fire lit, a tree chopped and bars smelted: four chips, three at work. */
+async function runChipKeepsWords(served: Served, problems: string[]) {
+  const page = await playerWith(served, 'Far Walker', '/combat/expeditions', (s, now) =>
+    run(
+      served,
+      {
+        ...s,
+        fireUntil: now + 5 * 60_000,
+        items: { 'copper-sword': 1, bread: 50, 'copper-ore': 500 },
+        features: {
+          ...s.features,
+          combat: { worn: { weapon: 'copper-sword' }, health: null, healthAt: now, retreated: null },
+        },
+      },
+      now,
+      [
+        { type: 'start', lane: 'gathering', action: { feature: 'woodcutting', id: 'pine-tree' } },
+        { type: 'start', lane: 'artisan', action: { feature: 'smithing', id: 'copper-bar' } },
+      ],
+    ),
+  );
+  try {
+    await page
+      .getByRole('button', { name: /^Go by / })
+      .first()
+      .click({ timeout: 10_000 });
+    await page.locator('[data-ui="LaneChip"]').nth(3).waitFor({ timeout: 10_000 });
+    await page.locator('[data-ui="LaneChip"]:not([data-idle])').nth(1).waitFor({ timeout: 10_000 });
+    for (const width of [390, 320]) {
+      await page.setViewportSize({ width, height: 844 });
+      await page.waitForTimeout(200);
+      const broken = await brokenWords(page);
+      if (broken.length)
+        problems.push(`Lane chips with an expedition out at ${width} px split a word: ${broken.join(', ')}`);
+    }
+  } catch (err) {
+    problems.push(`Lane chips: an expedition set out beside the fire did not show (${say(err)})`);
+  } finally {
+    await page.close();
+  }
+}
+
 export async function runLaneProofs(served: Served): Promise<string[]> {
   const problems: string[] = [];
   await chipsKeepWords(served, problems);
+  await runChipKeepsWords(served, problems);
   await stopSaysWhy(served, problems);
   await queuedWhileAway(served, problems);
   return problems;

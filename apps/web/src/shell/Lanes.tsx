@@ -19,6 +19,8 @@ export interface LaneView {
   note?: string;
   /** Why it stopped, in the few words a phone's chip has room for. */
   short?: string;
+  /** What it is doing, in the words a phone's chip has room for. */
+  chip?: string;
   /** What the action makes (or the foe fought), for its icon. */
   icon?: string;
   /** Stopped by itself (not by the player), so it needs the player: out of ore, the fire out. */
@@ -38,6 +40,10 @@ const fixFor = (reason: { code: string; detail?: Record<string, string | number>
   remedyFor(reason, null) ?? undefined;
 
 const actionName = (a: { feature: string; id: string }) => t(`action.${a.feature}.${a.id}`);
+/** What a working lane's chip says: the action's name, but an expedition by where it went ("To the Fen"),
+ *  where "Expedition into the Sunken Fen" split mid-word in a phone's narrow chip (session 103). */
+const chipDoing = (a: { feature: string; id: string }) =>
+  a.feature === 'expeditions' ? t('expedition.chip', { region: t(`combat.region.${a.id}.short`) }) : actionName(a);
 
 /** A lane stopped by itself, on an action the engine would now take again: bought food, mined ore, made
  *  room (session 89). A stop the player made, or one still unmet, offers nothing. */
@@ -83,6 +89,7 @@ export function laneViews(
       icon: run ? iconOf(features, run.action, id) : undefined,
       note,
       short: !run && l.stopped ? formatStop(l.stopped.reason, 'short') : undefined,
+      chip: run ? chipDoing(run.action) : undefined,
       halted: !run && !!l.stopped && !isQuietStop(l.stopped.reason.code),
       fix: !run && !l.next && l.stopped && !(again && fix?.item) ? fix : undefined,
       again,
@@ -147,7 +154,7 @@ export function LaneStrip({ lanes }: { lanes: LaneView[] }) {
           key={l.id}
           compact
           lane={l.name}
-          doing={l.halted && l.short ? l.short : l.idle ? chipName(l.id) : l.doing}
+          doing={l.halted && l.short ? l.short : l.idle ? chipName(l.id) : (l.chip ?? l.doing)}
           label={`${l.name}: ${l.halted && l.note ? l.note : l.doing}`}
           idle={l.idle}
           halted={l.halted}
