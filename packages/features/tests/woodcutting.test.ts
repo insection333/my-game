@@ -89,4 +89,13 @@ describe('woodcutting', () => {
     expect(ladder[39].unlocks).toEqual(['Maple tree', 'Master woodcutter (+10% chance of an extra item)']);
     expect(ladder[98].unlocks).toEqual(['Grandmaster woodcutter (+15% chance of an extra item)']);
   });
+
+  // Session 100: the ladder's spec marks the current level; only past unlocks were told apart (muted).
+  it('marks the level the player stands at on the ladder, and only that one', () => {
+    const ladder = woodcutting.slots['skill.ladder']({ state: atLevel(14), now: T0 }) as {
+      level: string;
+      current: boolean;
+    }[];
+    expect(ladder.filter((l) => l.current).map((l) => l.level)).toEqual(['Level 14']);
+  });
 });
