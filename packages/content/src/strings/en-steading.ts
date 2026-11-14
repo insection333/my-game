@@ -19,7 +19,7 @@ export const steading = {
   'steading.effect.marks': 'Expeditions bring {pct} more marks',
   'steading.effect.xp': '+{pct} XP in every skill',
   'steading.short.gatherYield': '+{pct} items',
-  'steading.short.artisanSave': '{pct} kept',
+  'steading.short.artisanSave': '{pct} ingredients kept',
   'steading.short.damage': '+{pct} damage',
   'steading.short.foodHeal': '+{pct} healing',
   'steading.short.marks': '+{pct} marks',
