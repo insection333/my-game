@@ -17,7 +17,8 @@ export const moderation = {
   'admin.unban': 'Unban',
   'admin.mend': 'Check and mend save',
   'admin.reset': 'Set a new password',
-  'admin.newPassword': 'Their new password. Pass it on; it replaces the old one, and they are signed out everywhere:',
+  'admin.newPassword':
+    'Their new password. Pass it on; it replaces the old one, they are signed out everywhere, and they can change it in Settings:',
   'admin.repairs': 'Repairs to this save',
   'admin.noRepairs': 'None: the save has always read cleanly.',
   'admin.save': 'The save',

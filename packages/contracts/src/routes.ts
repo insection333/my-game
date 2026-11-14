@@ -30,6 +30,7 @@ export const ConfirmEmail = z.object({ token: Token }).strict();
 export const Recover = z.object({ name: plainText(64) }).strict();
 export const ResetPassword = z.object({ token: Token, password: Password }).strict();
 export const DeleteAccount = z.object({ password: plainText(PASSWORD_MAX), confirm: z.literal(true) }).strict();
+export const ChangePassword = z.object({ current: plainText(PASSWORD_MAX), password: Password }).strict();
 const PlayerId = z.string().uuid();
 export const AdminSearch = z.object({ query: plainText(64, 0) }).strict();
 export const AdminPlayer = z.object({ playerId: PlayerId }).strict();
@@ -139,6 +140,14 @@ export const ROUTES = {
     auth: 'player',
     input: DeleteAccount,
     example: { password: 'a long enough secret', confirm: true },
+  }),
+  changePassword: route({
+    id: 'changePassword',
+    method: 'POST',
+    path: PATHS.changePassword,
+    auth: 'player',
+    input: ChangePassword,
+    example: { current: 'a long enough secret', password: 'a new long secret' },
   }),
   adminPlayers: route({
     id: 'adminPlayers',

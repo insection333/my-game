@@ -81,6 +81,7 @@ export const api = {
   signIn: (name: string, password: string) => post<AuthResponse>(PATHS.signIn, { name, password }),
   signOut: () => post<void>(PATHS.signOut),
   deleteAccount: (password: string) => post<void>(PATHS.deleteAccount, { password, confirm: true }),
+  changePassword: (current: string, password: string) => post<void>(PATHS.changePassword, { current, password }),
   report: (name: string, reason: ReportReason) => post<void>(PATHS.reportPlayer, { name, reason }),
   profile: (name: string) => post<Profile>(PATHS.profile, { name }),
   mail: {

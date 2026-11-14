@@ -13,7 +13,7 @@ import { bastionLogs, castleRecords, emailTokens, playerBastions, players, sessi
 import { contractRoute, fail } from '../http.ts';
 import { eraseFeedback } from '../feedback.ts';
 import { eraseModeration } from '../moderation.ts';
-import { checkPassword } from './passwords.ts';
+import { checkPassword, hashPassword } from './passwords.ts';
 import { requirePlayer } from './routes.ts';
 import { SESSION_COOKIE } from './sessions.ts';
 
@@ -69,6 +69,24 @@ export function accountRoutes(app: FastifyInstance, ctx: Ctx): void {
       // Counted, but with no player id: the account is gone.
       ctx.telemetry.record('accountDeleted', null);
       reply.clearCookie(SESSION_COOKIE, { path: '/' });
+      return reply.code(204).send();
+    },
+    requirePlayer(ctx),
+  );
+  // A password changed by its player (session 105): with the current one, as deleting asks; the page it was
+  // changed from stays signed in and every other session ends, as an admin's reset ends them all.
+  contractRoute<{ current: string; password: string }>(
+    app,
+    ROUTES.changePassword,
+    async ({ req, reply, input }) => {
+      const id = req.playerId!;
+      limit(ctx, reply, `password:${id}`, 5, HOUR);
+      const row = ctx.db.select().from(players).where(eq(players.id, id)).get();
+      if (!row || !(await checkPassword(row.passwordHash, input.current))) throw fail(401, 'wrongPassword');
+      const passwordHash = await hashPassword(input.password);
+      ctx.db.update(players).set({ passwordHash }).where(eq(players.id, id)).run();
+      ctx.sessions.endOthers(id, req.cookies[SESSION_COOKIE] ?? '');
+      ctx.telemetry.record('passwordChanged', id);
       return reply.code(204).send();
     },
     requirePlayer(ctx),
