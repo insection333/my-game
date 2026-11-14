@@ -106,13 +106,25 @@ export function recapLines(a: AwaySummary, notices: readonly GameEvent[] = []): 
       icon: actionIcon(e.action),
       href: skillHref(e.action.feature),
     });
-  if (a.uncommon)
+  // Uncommon finds the log already holds, counted, then named by the three found most (session 107: the line
+  // stood on a bare dot and named none).
+  if (a.uncommon) {
+    const most = Object.entries(a.uncommonItems ?? {})
+      .sort((x, y) => y[1] - x[1])
+      .slice(0, 3);
+    const count = a.uncommon === 1 ? t('recap.uncommonOne') : t('recap.uncommon', { count: fmt.int(a.uncommon) });
     lines.push({
       kind: 'uncommon',
-      text: a.uncommon === 1 ? t('recap.uncommonOne') : t('recap.uncommon', { count: fmt.int(a.uncommon) }),
-      icon: null,
+      text: most.length
+        ? t('recap.uncommonNamed', {
+            count,
+            items: most.map(([id, n]) => t('action.gives', { item: t(`item.${id}`), count: fmt.int(n) })).join(', '),
+          })
+        : count,
+      icon: most[0]?.[0] ?? null,
       href: '/storehouse/log',
     });
+  }
   // What the lanes brought in: gold first, then the three items worth most.
   const gained = Object.entries(a.items).filter(([, n]) => n > 0);
   const worth = ([id, n]: [string, number]) => (id === 'gold' ? Infinity : n * (itemOf(id)?.value ?? 0));

@@ -278,6 +278,7 @@ export const en: Record<string, string> = {
   'recap.newFind': 'First find: {item} ({rarity})',
   'recap.uncommon': '{count} Uncommon finds',
   'recap.uncommonOne': 'An Uncommon find',
+  'recap.uncommonNamed': '{count}: {items}',
   'recap.times': '{what} ×{count}',
   'recap.more': 'And {count} more',
   'recap.gold': '+{count} gold',
