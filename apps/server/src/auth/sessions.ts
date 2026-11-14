@@ -1,6 +1,6 @@
 // Sessions: a random 32-byte token in an HttpOnly cookie; only its SHA-256 is stored. A session
 // lasts 30 days from its last use.
-import { and, desc, eq, gt, inArray, lt, sql } from 'drizzle-orm';
+import { and, desc, eq, gt, inArray, lt, ne, sql } from 'drizzle-orm';
 import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
 import { createHash, randomBytes } from 'node:crypto';
 import { sessions } from '../db/schema.ts';
@@ -77,6 +77,14 @@ export class Sessions {
     this.db
       .delete(sessions)
       .where(eq(sessions.tokenHash, tokenHash(token)))
+      .run();
+  }
+
+  /** Ends every session of a player but the one this token holds (a password changed from it). */
+  endOthers(playerId: string, keep: string): void {
+    this.db
+      .delete(sessions)
+      .where(and(eq(sessions.playerId, playerId), ne(sessions.tokenHash, tokenHash(keep))))
       .run();
   }
 

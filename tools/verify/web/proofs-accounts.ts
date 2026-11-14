@@ -5,7 +5,8 @@
 //   page, and no table in the database holds their id or their name any more.
 // - An admin can reset a password: the veteran (an admin here) sets a new password for a player on
 //   the admin page, on a phone; the player signs in with it. Open brings the player's panel into view
-//   (session 94: on a phone it opened below every other panel, and Open looked dead).
+//   (session 94: on a phone it opened below every other panel, and Open looked dead). The player then
+//   changes it to one of their own in Settings (session 105: there was no way to) and signs in with that.
 import { recap } from '@idle-clash/features';
 import type { Page } from 'playwright';
 import { playerWith, say } from './proofs-lanes.ts';
@@ -110,12 +111,28 @@ async function adminResetsPassword(served: Served, problems: string[]) {
   }
   if (!password) return;
   const back = await signsIn(served, 'Forgetful', password);
+  let step2 = 'the player signs in with the new password';
   try {
     await back.locator('[data-slot="hearth.goals"]').waitFor({ timeout: 15_000 });
+    step2 = 'Settings changes it to their own';
+    await back.goto(served.url + '/?panel=settings');
+    await back.getByRole('button', { name: 'Change password' }).click();
+    await back.getByLabel('Current password').fill(password);
+    await back.getByLabel('New password').fill('my own long secret');
+    await back.getByRole('button', { name: 'Change password' }).click();
+    await back.getByText('Password changed.').waitFor({ timeout: 10_000 });
   } catch (err) {
-    problems.push(`Admin: the player could not sign in with the new password (${say(err)})`);
+    problems.push(`Admin: failed where ${step2} (${say(err)})`);
   } finally {
     await back.close();
+  }
+  const own = await signsIn(served, 'Forgetful', 'my own long secret');
+  try {
+    await own.locator('[data-slot="hearth.goals"]').waitFor({ timeout: 15_000 });
+  } catch (err) {
+    problems.push(`Admin: the player could not sign in with the password they chose (${say(err)})`);
+  } finally {
+    await own.close();
   }
 }
 

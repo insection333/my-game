@@ -5,6 +5,7 @@ import { useEffect, useState, type FormEvent } from 'react';
 import { ApiError } from '../api.ts';
 import { useGame } from '../game/hooks.ts';
 import { navigate } from '../router.ts';
+import { ChangePassword } from './ChangePassword.tsx';
 import { Feedback } from './Feedback.tsx';
 import { LineMark } from './LineMark.tsx';
 import { noticesOf } from './notices.ts';
@@ -213,6 +214,7 @@ export function Settings() {
       </fieldset>
       <SoundChoices />
       <Feedback />
+      <ChangePassword />
       <DeleteAccount />
     </>
   );

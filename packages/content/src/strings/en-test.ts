@@ -7,6 +7,13 @@ export const closedTest = {
   'feedback.send': 'Send feedback',
   'feedback.sent': 'Sent. Thank you.',
   'feedback.empty': 'Write something first.',
+  'settings.password': 'Change password',
+  'settings.password.current': 'Current password',
+  'settings.password.new': 'New password',
+  'settings.password.others': 'You stay signed in here and are signed out everywhere else.',
+  'settings.password.save': 'Change password',
+  'settings.password.cancel': 'Keep it',
+  'settings.password.done': 'Password changed.',
 
   'admin.test.testers': 'Player activity',
   'admin.test.noPlayers': 'No players yet.',
