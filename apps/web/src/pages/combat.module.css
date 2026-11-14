@@ -13,6 +13,8 @@
 }
 .foesArea {
   grid-area: foes;
+  /* Brought into view by a region tab, it stands a little below the screen's top (session 99). */
+  scroll-margin-top: var(--s-3);
 }
 .foodArea {
   grid-area: food;

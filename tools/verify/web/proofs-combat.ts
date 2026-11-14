@@ -3,6 +3,8 @@
 //   with First steps' ten loaves.
 // - A retreat costs nothing: a fighter who took on a hill troll with two loaves an hour ago comes back
 //   to the lane stopped with the reason, the sword and helm still worn, and nothing else gone.
+// - A region tab brings its foes into view (session 99): on a phone the loadout fills the screen under
+//   the tabs, and pressing Fen changed only the tab's underline.
 import { XP_TABLE } from '@idle-clash/content';
 import { HOUR, type State } from '@idle-clash/kernel';
 import { playerWith, run, say } from './proofs-lanes.ts';
@@ -93,8 +95,29 @@ async function retreatCostsNothing(served: Served, problems: string[]) {
   }
 }
 
+async function regionInView(served: Served, problems: string[]) {
+  const page = await playerWith(served, 'Fen Walker', '/combat', (s) => s);
+  try {
+    await page.setViewportSize({ width: 320, height: 700 });
+    await page.getByRole('link', { name: /Fen/ }).first().click();
+    await page.waitForFunction(
+      () => {
+        const r = document.querySelector('[data-slot="combat.foes"]')?.getBoundingClientRect();
+        return !!r && r.top >= 0 && r.top < innerHeight / 2;
+      },
+      undefined,
+      { timeout: 3_000 },
+    );
+  } catch (err) {
+    problems.push(`Combat: on a phone, the Fen tab did not bring its foes into view (${say(err)})`);
+  } finally {
+    await page.close();
+  }
+}
+
 export async function runCombatProofs(served: Served): Promise<string[]> {
   const problems: string[] = [];
+  await regionInView(served, problems);
   await wearFromThePage(served, problems);
   await retreatCostsNothing(served, problems);
   return problems;

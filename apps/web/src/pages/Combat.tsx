@@ -5,6 +5,7 @@ import { fmt, t } from '@idle-clash/content';
 import type { Feature, FoeRow, LoadoutSlot, LoadoutView, TrianglePart } from '@idle-clash/features';
 import { actionKey, LANE_IDS } from '@idle-clash/kernel';
 import { ActionRow, Button, hasIcon, ItemIcon, Panel, Pill, Sheet, Tabs } from '@idle-clash/ui';
+import { useEffect, useRef } from 'react';
 import { useGame } from '../game/hooks.ts';
 import { game } from '../game/store.ts';
 import { navigate, useLocation, withPanel } from '../router.ts';
@@ -58,6 +59,18 @@ function CombatPage({ combat }: { combat: Feature }) {
     const next = state.lanes.combat.next;
     return next ? actionKey(next) === actionKey(f.foe) : false;
   };
+  // A region chosen brings its foes into view (session 99): on a phone the loadout fills the screen under
+  // the region tabs, and a press changed only the tab's underline. The first showing never moves.
+  const foesRef = useRef<HTMLElement>(null);
+  const shownRegion = useRef(region);
+  useEffect(() => {
+    if (shownRegion.current === region) return;
+    shownRegion.current = region;
+    const el = foesRef.current;
+    if (!el) return;
+    const top = el.getBoundingClientRect().top;
+    if (top < 0 || top > innerHeight / 2) el.scrollIntoView({ block: 'start' });
+  }, [region]);
   const sheetSlot = panel === 'gear' ? new URLSearchParams(location.search).get('slot') : null;
   const open = loadout.slots.find((x) => x.slot === sheetSlot);
   return (
@@ -80,7 +93,7 @@ function CombatPage({ combat }: { combat: Feature }) {
         <section data-section className={s.loadoutArea}>
           <Loadout loadout={loadout} triangle={triangle} />
         </section>
-        <section data-section className={s.foesArea}>
+        <section data-section className={s.foesArea} ref={foesRef}>
           <Panel title={t('combat.foes')} flush>
             {tiers.length > 1 && (
               <div className={s.tierTabs}>
