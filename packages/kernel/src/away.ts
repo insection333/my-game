@@ -12,6 +12,8 @@ export interface AwaySummary {
    *  in `uncommon` instead (a long day away brings dozens). */
   events: GameEvent[];
   uncommon: number;
+  /** Those Uncommon finds by item (session 107), for the recap to name and picture; absent in older ones. */
+  uncommonItems?: Record<string, number>;
   /** Each item's count now less its count before (gold included); unchanged items are left out. */
   items: Record<string, number>;
   /** XP earned in each skill. */
@@ -34,5 +36,7 @@ export function summarizeAway(before: State, after: State, events: readonly Game
   }
   const plain = (e: GameEvent) => e.type === 'find' && e.rarity === 'uncommon' && !e.first;
   const kept = events.filter((e) => (isNotable(e) || e.type === 'laneStopped') && !plain(e));
-  return { from: before.lastSeen, to, events: kept, uncommon: events.filter(plain).length, items, xp };
+  const uncommonItems: Record<string, number> = {};
+  for (const e of events) if (plain(e) && e.type === 'find') uncommonItems[e.item] = (uncommonItems[e.item] ?? 0) + 1;
+  return { from: before.lastSeen, to, events: kept, uncommon: events.filter(plain).length, uncommonItems, items, xp };
 }
