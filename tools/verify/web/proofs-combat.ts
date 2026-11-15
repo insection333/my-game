@@ -5,6 +5,8 @@
 //   to the lane stopped with the reason, the sword and helm still worn, and nothing else gone.
 // - A region tab brings its foes into view (session 99): on a phone the loadout fills the screen under
 //   the tabs, and pressing Fen changed only the tab's underline.
+// - A boss fought in the lane is named on its chip (session 108): Fight on the Troll-chief blanked the
+//   whole game, its chip asking for a region's short name.
 import { XP_TABLE } from '@idle-clash/content';
 import { HOUR, type State } from '@idle-clash/kernel';
 import { playerWith, run, say } from './proofs-lanes.ts';
@@ -115,9 +117,38 @@ async function regionInView(served: Served, problems: string[]) {
   }
 }
 
+async function bossFoughtInTheLane(served: Served, problems: string[]) {
+  const page = await playerWith(served, 'Boss Hunter', '/combat/expeditions', (s) => ({
+    ...s,
+    skills: skills({ hitpoints: 60, melee: 40 }),
+    items: { 'copper-sword': 1, bread: 50 },
+    features: {
+      ...s.features,
+      combat: { worn: { weapon: 'copper-sword' }, health: null, healthAt: s.clock, retreated: null },
+    },
+  }));
+  try {
+    await page.setViewportSize({ width: 390, height: 844 });
+    const troll = page.locator('[data-slot="combat.bosses"] [data-ui="ActionRow"]', {
+      hasText: 'The Troll-chief of the hill',
+    });
+    await troll.getByRole('button', { name: 'Fight' }).click({ timeout: 10_000 });
+    await page
+      .locator('[data-ui="LaneChip"]', { hasText: 'The Troll-chief of the hill' })
+      .first()
+      .waitFor({ timeout: 10_000 });
+    if (await page.getByText('Something broke here').count()) problems.push('Combat: Fight on a boss broke the page');
+  } catch (err) {
+    problems.push(`Combat: a boss fought in the lane was not named on its chip (${say(err)})`);
+  } finally {
+    await page.close();
+  }
+}
+
 export async function runCombatProofs(served: Served): Promise<string[]> {
   const problems: string[] = [];
   await regionInView(served, problems);
+  await bossFoughtInTheLane(served, problems);
   await wearFromThePage(served, problems);
   await retreatCostsNothing(served, problems);
   return problems;

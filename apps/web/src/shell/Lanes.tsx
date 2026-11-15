@@ -1,6 +1,6 @@
 // The lanes as the shell shows them: full cards in the desktop panel and on the phone's Hearth,
 // chips in the phone's strip. Each lane says what it is doing, how far along, and why it stopped.
-import { formatStop, isQuietStop, t } from '@idle-clash/content';
+import { formatStop, hasString, isQuietStop, t } from '@idle-clash/content';
 import { remedyFor, type Feature } from '@idle-clash/features';
 import { LANE_IDS, type ActionRef, type LaneId, type State } from '@idle-clash/kernel';
 import { Button, hasIcon, ItemIcon, LaneCard } from '@idle-clash/ui';
@@ -42,8 +42,12 @@ const fixFor = (reason: { code: string; detail?: Record<string, string | number>
 const actionName = (a: { feature: string; id: string }) => t(`action.${a.feature}.${a.id}`);
 /** What a working lane's chip says: the action's name, but an expedition by where it went ("To the Fen"),
  *  where "Expedition into the Sunken Fen" split mid-word in a phone's narrow chip (session 103). */
+// A run's action is its region; a boss fought in the lane is an expeditions action too, named as itself
+// (session 108: asking it for a region's short name blanked the page).
 const chipDoing = (a: { feature: string; id: string }) =>
-  a.feature === 'expeditions' ? t('expedition.chip', { region: t(`combat.region.${a.id}.short`) }) : actionName(a);
+  a.feature === 'expeditions' && hasString(`combat.region.${a.id}.short`)
+    ? t('expedition.chip', { region: t(`combat.region.${a.id}.short`) })
+    : actionName(a);
 
 /** A lane stopped by itself, on an action the engine would now take again: bought food, mined ore, made
  *  room (session 89). A stop the player made, or one still unmet, offers nothing. */

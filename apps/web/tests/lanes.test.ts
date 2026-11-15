@@ -1,6 +1,7 @@
 // The lanes as the shell shows them: each says what it is doing, with that action's icon (a fight its
 // foe, not the foe's drop), and a stopped lane says why and what puts it right.
 import { actionRegistry, FEATURES } from '@idle-clash/features';
+import { XP_TABLE } from '@idle-clash/content';
 import { createEngine, newState, seeded, type Command, type State } from '@idle-clash/kernel';
 import { describe, expect, it } from 'vitest';
 import { iconOf, laneViews } from '../src/shell/Lanes.tsx';
@@ -47,6 +48,22 @@ describe('laneViews', () => {
       halted: true,
       again: { label: 'Start again', action: { feature: 'smithing', id: 'copper-bar' } },
       fix: undefined,
+    });
+  });
+
+  // Session 108: a boss fought in the lane is an expeditions action too, and its chip asked for a region's
+  // short name ("combat.region.troll-chief.short"), so Fight on a boss blanked the page.
+  it('names a boss fought in the lane on its chip, as only a run is named by its region', () => {
+    let s: State = {
+      ...newState(1, T0),
+      skills: { hitpoints: { xp: XP_TABLE[60] }, melee: { xp: XP_TABLE[40] } },
+      items: { 'copper-sword': 1, bread: 50 },
+      features: { combat: { worn: { weapon: 'copper-sword' }, health: null, healthAt: 0, retreated: null } },
+    };
+    s = run(s, { type: 'start', lane: 'combat', action: { feature: 'expeditions', id: 'troll-chief' } });
+    expect(s.lanes.combat.current?.action.id).toBe('troll-chief');
+    expect(laneViews(s, T0 + 1000, FEATURES).find((v) => v.id === 'combat')).toMatchObject({
+      chip: 'The Troll-chief of the hill',
     });
   });
 });

@@ -540,3 +540,15 @@ a.line:hover {
   gap: var(--s-4);
   margin: var(--s-4) 0 0;
 }
+
+/* A fault in the shell itself (session 108): said on the page's own ground, without the shell. */
+.faultBare {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: var(--s-6) var(--s-4);
+}
+
+.faultReload {
+  justify-self: start;
+  align-self: flex-start;
+}

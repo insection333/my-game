@@ -17,6 +17,7 @@ Six entries, in this order (the sixth, Castle Clash, the owner's choice in sessi
 
 Outside the menu:
 
+- **A fault** (session 108): a page that throws while drawing is replaced by "Something broke here" with Reload, under the header and menu, and reported to the server's log; a fault in the shell itself says the same on the page's own ground.
 - **The notices tray**: a bell in the header with a count of new notices and unread messages. Two tabs: Notices (lane stops, goals claimed, the away recap) and Messages (session 45).
 - **The account menu**: behind the account button. Settings, privacy, terms, sign out, and (session 9) delete account.
 - **The tour**: a short overlay on first visit, pointing at slots by name, never at layout classes.
@@ -71,7 +72,7 @@ Between 768 and 1,023 px the rail collapses to icons (64 px) and the lanes panel
 | `shell.fire` | Header | the fire | FireBadge |
 | `shell.gold` | Header | storehouse | Pill |
 | `shell.tray` | Header | notices | TrayButton |
-| `shell.lane` (×4) | Lanes strip or panel | each lane's current feature | LaneCard (compact on phones; a resting chip is never narrower than its name's longest word, which is never split: session 87; an expedition's chip says where it went, "To the Fen": session 103) |
+| `shell.lane` (×4) | Lanes strip or panel | each lane's current feature | LaneCard (compact on phones; a resting chip is never narrower than its name's longest word, which is never split: session 87; an expedition's chip says where it went, "To the Fen": session 103; a boss fought in the lane is named as itself: session 108) |
 | `shell.moment` | Over everything but the tour, an open sheet included (session 69), centred or as a banner | any feature, through events | Moment |
 | `shell.deeds` | Not drawn: deeds done and not yet recorded, which the shell asks the server to record wherever the player is | deeds | Moment, through events |
 
