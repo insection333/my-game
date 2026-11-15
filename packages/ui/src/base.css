@@ -20,6 +20,9 @@ body {
   line-height: 1.45;
   font-variant-numeric: tabular-nums;
   -webkit-font-smoothing: antialiased;
+  /* A word longer than its line (a name of sixteen W's) breaks rather than running out of its box
+     (session 112); it changes no box's smallest width. */
+  overflow-wrap: break-word;
 }
 
 h1,

@@ -25,7 +25,7 @@ export function Moment({ size, title, body, icon, action, onClose, closeLabel }:
           {icon}
         </div>
       )}
-      <div>
+      <div className={s.text}>
         <div className={s.title}>{title}</div>
         {body && <div className={s.body}>{body}</div>}
       </div>

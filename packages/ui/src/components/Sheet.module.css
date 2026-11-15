@@ -48,6 +48,14 @@
 
 .title {
   font-size: var(--t-h3);
+  /* A name of sixteen W's is one unbroken word: it breaks inside the header rather than running over the
+     cross beside it (session 112). */
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.head > :last-child {
+  flex-shrink: 0;
 }
 
 .body {
