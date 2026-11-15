@@ -195,7 +195,11 @@ function Row({ row, you, ladder }: { row: HiscoreRow; you: boolean; ladder: stri
         )}
       </td>
       <td data-num>{fmt.int(row.level)}</td>
-      <td data-num>{fmt.int(row.xp)}</td>
+      <td data-num>
+        {/* Shortened on a narrow ladder ("673.6M"), so a long name keeps its line (session 113). */}
+        <span className={s.full}>{fmt.int(row.xp)}</span>
+        <span className={s.short}>{fmt.short(row.xp)}</span>
+      </td>
     </tr>
   );
 }
