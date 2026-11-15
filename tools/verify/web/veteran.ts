@@ -101,10 +101,12 @@ export function veteran(ctx: Ctx, base: State, now: number): State {
   };
 }
 
-/** Other players for the hiscores: a dozen invented names at a spread of levels. */
+/** Other players for the hiscores: a dozen invented names at a spread of levels. The second is as long as a
+ *  name may be and one unbroken word of wide letters (session 113), so every ladder on every sheet carries
+ *  the hardest name to fit. */
 export const CROWD = [
   'Ashgrove',
-  'Brindle',
+  'MightyWoodwarden',
   'Corrin Vale',
   'Dunmere',
   'Elsbeth',

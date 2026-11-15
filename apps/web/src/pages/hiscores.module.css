@@ -84,9 +84,29 @@
   flex: none;
 }
 
+.table .short {
+  display: none;
+}
+
 @container main (max-width: 479px) {
   .rowPicture {
     display: none;
+  }
+
+  /* A narrow ladder's cells keep less room at their sides and its XP is shortened, so a name as long as
+     names may be keeps one line and the ten rows fit the screen (session 113: "MightyWoodwarden" stood
+     in two lines 65 px wide, and the ladder ran taller than the page area). */
+  .table th,
+  .table td {
+    padding-inline: var(--s-2);
+  }
+
+  .table .full {
+    display: none;
+  }
+
+  .table .short {
+    display: inline;
   }
 }
 
