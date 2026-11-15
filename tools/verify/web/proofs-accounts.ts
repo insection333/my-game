@@ -7,6 +7,8 @@
 //   the admin page, on a phone; the player signs in with it. Open brings the player's panel into view
 //   (session 94: on a phone it opened below every other panel, and Open looked dead). The player then
 //   changes it to one of their own in Settings (session 105: there was no way to) and signs in with that.
+// - The longest name keeps a sheet's cross in view (session 112): sixteen W's, one unbroken word, as the
+//   title of the player's own profile card on a phone ran past the sheet's edge and over its cross.
 import { recap } from '@idle-clash/features';
 import type { Page } from 'playwright';
 import { playerWith, say } from './proofs-lanes.ts';
@@ -136,10 +138,38 @@ async function adminResetsPassword(served: Served, problems: string[]) {
   }
 }
 
+async function longNameKeepsTheCross(served: Served, problems: string[]) {
+  const name = 'WWWWWWWWWWWWWWWW';
+  const page = await playerWith(served, name, `/hiscores?panel=player&name=${name}`, (s) => s);
+  try {
+    await page.setViewportSize({ width: 320, height: 700 });
+    const sheet = page.locator('[role="dialog"]').last();
+    await sheet.getByRole('heading', { name }).first().waitFor({ timeout: 10_000 });
+    const found = await sheet.evaluate((d, n) => {
+      const box = d.getBoundingClientRect();
+      const title = [...d.querySelectorAll('h1, h2, h3')].find((h) => h.textContent === n);
+      const cross = d.querySelector('button[aria-label="Close"]');
+      if (!title || !cross) return 'no title or no cross';
+      const t = title.getBoundingClientRect();
+      const c = cross.getBoundingClientRect();
+      const hit = document.elementFromPoint(c.left + c.width / 2, c.top + c.height / 2);
+      if (t.right > box.right + 0.5) return `its title runs ${Math.round(t.right - box.right)} px past the sheet`;
+      if (!hit || !cross.contains(hit)) return 'its cross is covered';
+      return null;
+    }, name);
+    if (found) problems.push(`A profile card for the longest name on a phone: ${found}`);
+  } catch (err) {
+    problems.push(`A profile card for the longest name did not open (${say(err)})`);
+  } finally {
+    await page.close();
+  }
+}
+
 export async function runAccountProofs(served: Served): Promise<string[]> {
   const problems: string[] = [];
   await recapBestFirst(served, problems);
   await deleteLeavesNothing(served, problems);
   await adminResetsPassword(served, problems);
+  await longNameKeepsTheCross(served, problems);
   return problems;
 }

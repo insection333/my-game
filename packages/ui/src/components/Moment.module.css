@@ -18,6 +18,11 @@
   right: var(--s-1);
 }
 
+/* Its words shrink with it, so a lord's long name breaks before the cross (session 112). */
+.text {
+  min-width: 0;
+}
+
 .moment:has(.close) {
   padding-right: calc(var(--s-4) + 28px);
 }
