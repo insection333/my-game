@@ -3,7 +3,7 @@
 // what it pays and its button; an attack goes in the formation set against the foe where the foe is known
 // (no setting it first), and its result lands on its own row, with the battle's account a tap away. Your
 // reports beside them. A lord's Plan opens their sheet: spies, the full plan, Report this player.
-import { SINKS, SPY_MISSIONS, UNLOCKS, fmt, t } from '@idle-clash/content';
+import { dayTurns, SINKS, SPY_MISSIONS, UNLOCKS, fmt, t } from '@idle-clash/content';
 import { castleEngine as E } from '@idle-clash/features';
 import { ActionRow, Button, ItemIcon, Panel, Pill } from '@idle-clash/ui';
 import { useEffect } from 'react';
@@ -197,7 +197,7 @@ function TargetRow({ target }: { target: Target }) {
       }
       facts={
         standing?.kind === 'fallen'
-          ? [t('castle.target.fellAt', { when: when(taken, now) })]
+          ? [t('castle.target.fellAt', { when: when(taken, now), back: dayTurns(now) })]
           : [
               chance === null
                 ? t('castle.target.unscouted')

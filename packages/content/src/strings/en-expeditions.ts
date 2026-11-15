@@ -23,7 +23,7 @@ export const expeditions = {
 
   'stop.expeditionHome': 'The expedition is home',
   'stopShort.expeditionHome': 'Home',
-  'stop.bossRested': 'Already fought today, back tomorrow',
+  'stop.bossRested': 'Already fought today',
   'stopShort.bossRested': 'Fought today',
 
   'twist.fog': 'Fog',
@@ -93,7 +93,7 @@ export const expeditions = {
   'expedition.marks': '{marks} marks',
   'expedition.marksOne': '1 mark',
 
-  'boss.rested': 'Fought today: back tomorrow',
+  'boss.rested': 'Fought today: back {back}',
   'expedition.lastRun': 'Last run, {when}',
   'boss.beaten': '{boss} beaten',
   'boss.firstWin': '{boss} beaten for the first time',

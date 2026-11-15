@@ -1,6 +1,6 @@
 // The Hearth's rows for the goals after First steps: three short goals, today's daily goal and the
 // nearest milestone, each with its progress, reward and one button.
-import { fmt, t } from '@idle-clash/content';
+import { dayTurns, fmt, t } from '@idle-clash/content';
 import type { State } from '@idle-clash/kernel';
 import { combatOf } from '../shared/combat/state.ts';
 import type { Milestone } from './content.ts';
@@ -73,7 +73,7 @@ function dailyRow(state: State, now: number, d: DailyGoal): GoalRow {
       progress: 1,
       state: 'claimed',
       button: null,
-      note: t('goals.doneToday'),
+      note: t('goals.doneToday', { back: dayTurns(now) }),
     };
   return row('daily', name, d.reward, dailyProgress(state, d), () => {
     const best = bestIn(paces(state), d.skill);
