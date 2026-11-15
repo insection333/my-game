@@ -2,7 +2,7 @@
 // reward. Wearing the sword is done once a weapon is worn; the first fight's bread is given when the
 // step before it is claimed. Goals read shared state (completions, items, the gear worn) through the
 // kernel and shared helpers, never the features they name.
-import { fmt, levelFor, t, TIER_LEVELS } from '@idle-clash/content';
+import { fmt, levelFor, midSentence, t, TIER_LEVELS } from '@idle-clash/content';
 import { actionKey, countOf, give, xpOf, type State } from '@idle-clash/kernel';
 import { itemOf } from '../shared/catalog.ts';
 import { combatOf } from '../shared/combat/state.ts';
@@ -64,6 +64,8 @@ function todo(state: State, now: number, step: FirstStep): Pick<GoalRow, 'button
       button: null,
       note: t('goals.needs', { skill: t(`skill.${step.needs.skill}`), level: fmt.int(step.needs.level) }),
     };
+  if (step.takes && countOf(state, step.takes) < 1)
+    return { button: null, note: t('goals.needsItem', { item: midSentence(t(`item.${step.takes}`)) }) };
   if (step.start.kind === 'combat' && combatOf(state).worn.weapon === undefined)
     return { button: null, note: t('stop.noWeapon') };
   return {

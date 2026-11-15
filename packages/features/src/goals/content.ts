@@ -13,6 +13,8 @@ export interface FirstStep {
   rewardFirst?: true;
   /** A level the action needs first, shown instead of the button until it is reached. */
   needs?: { skill: string; level: number };
+  /** An ingredient the action takes, shown instead of the button until one is held (session 110). */
+  takes?: string;
   /** Done once this action has been completed this many times. */
   completions: number;
   reward: { item: string; count: number };
@@ -34,6 +36,7 @@ export const FIRST_STEPS: readonly FirstStep[] = [
   {
     id: 'smelt-a-copper-bar',
     start: { kind: 'artisan', action: { feature: 'smithing', id: 'copper-bar' } },
+    takes: 'copper-ore',
     completions: 1,
     reward: { item: 'gold', count: 25 },
   },
@@ -41,6 +44,7 @@ export const FIRST_STEPS: readonly FirstStep[] = [
     id: 'forge-a-copper-sword',
     start: { kind: 'artisan', action: { feature: 'smithing', id: 'copper-sword' } },
     needs: { skill: 'smithing', level: 2 },
+    takes: 'copper-bar',
     completions: 1,
     reward: { item: 'gold', count: 25 },
   },
