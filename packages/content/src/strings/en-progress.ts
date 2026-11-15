@@ -37,6 +37,7 @@ export const progress: Record<string, string> = {
   'goal.defeat-a-hollow-rat': 'Defeat a hollow rat',
   'goal.defeat-a-hollow-rat.start': 'Fight',
   'goals.needs': 'Needs {skill} level {level}',
+  'goals.needsItem': 'Needs {item}',
   'help.goals.title': 'Goals',
   'help.goals.body':
     'Goals show what to aim for next. First steps walk you through the game, each with a button that starts it; claim each for its reward.',
