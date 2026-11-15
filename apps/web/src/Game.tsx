@@ -1,5 +1,6 @@
 // The game's part of the page: the shell and its pages. Loaded as its own file once a player is
 // signed in, so the welcome page stays small.
+import { Fault } from './Fault.tsx';
 import { Ready } from './Ready.tsx';
 import { Hearth } from './pages/Hearth.tsx';
 import { Skill } from './pages/Skill.tsx';
@@ -33,9 +34,13 @@ function Page({ path }: { path: string }) {
 
 export default function Game({ path }: { path: string }) {
   return (
-    <Shell>
-      <Page path={path} />
-      <Ready />
-    </Shell>
+    <Fault bare>
+      <Shell>
+        <Fault key={path}>
+          <Page path={path} />
+        </Fault>
+        <Ready />
+      </Shell>
+    </Fault>
   );
 }
