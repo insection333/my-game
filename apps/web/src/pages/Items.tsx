@@ -111,12 +111,13 @@ export function ItemGrid() {
   );
 }
 
-function Sources({ title, list }: { title: string; list: items.ItemSource[] }) {
+// An item used nowhere is a find kept to sell (session 111: "Nothing yet." promised a use to come).
+function Sources({ title, list, none }: { title: string; list: items.ItemSource[]; none?: string }) {
   return (
     <section className={s.sources}>
       <h3>{title}</h3>
       {list.length === 0 ? (
-        <p className={s.none}>{t('item.panel.nothing')}</p>
+        <p className={s.none}>{none ?? t('item.panel.nothing')}</p>
       ) : (
         <ul>
           {list.map((src, i) => {
@@ -157,7 +158,7 @@ export function ItemPanel({ item }: { item: string }) {
       <ItemActions key={item} item={item} value={def.value} gear={def.kind === 'gear'} />
       <UseFind item={item} />
       <Sources title={t('item.panel.comesFrom')} list={items.comesFrom(features, item)} />
-      <Sources title={t('item.panel.usedIn')} list={items.usedIn(features, item)} />
+      <Sources title={t('item.panel.usedIn')} list={items.usedIn(features, item)} none={t('item.panel.unused')} />
     </div>
   );
 }
