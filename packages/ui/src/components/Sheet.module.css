@@ -34,9 +34,12 @@
   }
 }
 
+/* The header stands above what scrolls under it, a profile card's picture (positioned to hang over its
+   scene) among them (session 114: it was drawn over the header and the name). */
 .head {
   position: sticky;
   top: 0;
+  z-index: 1;
   display: flex;
   justify-content: space-between;
   align-items: center;

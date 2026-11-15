@@ -8,7 +8,8 @@
 //   (session 94: on a phone it opened below every other panel, and Open looked dead). The player then
 //   changes it to one of their own in Settings (session 105: there was no way to) and signs in with that.
 // - The longest name keeps a sheet's cross in view (session 112): sixteen W's, one unbroken word, as the
-//   title of the player's own profile card on a phone ran past the sheet's edge and over its cross.
+//   title of the player's own profile card on a phone ran past the sheet's edge and over its cross; and
+//   scrolled to its foot (session 114), the card's picture was drawn over its header and the name.
 import { recap } from '@idle-clash/features';
 import type { Page } from 'playwright';
 import { playerWith, say } from './proofs-lanes.ts';
@@ -158,6 +159,27 @@ async function longNameKeepsTheCross(served: Served, problems: string[]) {
       return null;
     }, name);
     if (found) problems.push(`A profile card for the longest name on a phone: ${found}`);
+    // Another's card is the long one (their places, Report this player): the crowd's longest name.
+    const other = 'MightyWoodwarden';
+    await page.goto(`${served.url}/hiscores?panel=player&name=${other}`);
+    const card = page.locator('[role="dialog"]').last();
+    await card.getByText('Report this player').waitFor({ timeout: 10_000 });
+    const underPicture = await card.evaluate(async (d) => {
+      // Down the whole card in steps, the header must be what lies under every point across it.
+      const head = d.firstElementChild as HTMLElement;
+      for (let top = 0; top <= d.scrollHeight; top += 40) {
+        d.scrollTop = top;
+        await new Promise((r) => requestAnimationFrame(() => r(null)));
+        const h = head.getBoundingClientRect();
+        for (let x = h.left + 8; x < h.right - 8; x += 16)
+          for (const y of [h.top + 4, h.top + h.height / 2, h.bottom - 4]) {
+            const hit = document.elementFromPoint(x, y);
+            if (hit && !head.contains(hit)) return true;
+          }
+      }
+      return false;
+    });
+    if (underPicture) problems.push('A profile card scrolled to its foot draws over its own header');
   } catch (err) {
     problems.push(`A profile card for the longest name did not open (${say(err)})`);
   } finally {
