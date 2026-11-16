@@ -1,7 +1,7 @@
 // How expeditions read on the Combat page's Expeditions tab: each region (open or not), the route the
 // next run would take with its twists and the fork's two roads, the run under way stage by stage,
 // the bosses with Your odds, and the relics with their ranks. Formatted already; the page draws it.
-import { fmt, midSentence, t } from '@idle-clash/content';
+import { dayTurns, fmt, midSentence, t } from '@idle-clash/content';
 import { actionKey, LANE_IDS, type State } from '@idle-clash/kernel';
 import { FOES, regionOf } from '../shared/combat/data.ts';
 import { oddsFor } from '../shared/combat/odds.ts';
@@ -217,7 +217,7 @@ export function bossRows(state: State, now: number): BossRow[] {
       status: locked
         ? t('combat.opensAt', { level: fmt.int(b.hitpoints) })
         : rested
-          ? t('boss.rested')
+          ? t('boss.rested', { back: dayTurns(now) })
           : !o
             ? t('stop.noWeapon')
             : null,

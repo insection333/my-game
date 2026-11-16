@@ -33,7 +33,7 @@ export const castleWar = {
   'castle.target.strikeBack': 'Strike back',
   'castle.target.struckAt': 'Struck you {when}',
   'castle.target.fallen': 'Fallen',
-  'castle.target.fellAt': 'Taken {when}; it stands again tomorrow',
+  'castle.target.fellAt': 'Taken {when}; it stands again {back}',
   'castle.target.shielded': 'Shielded for {time}',
   'castle.target.once': 'Sieged once today: once more allowed',
   'castle.target.twice': 'Sieged twice today',
@@ -51,7 +51,7 @@ export const castleWar = {
   'castle.strongholds.fallen': '{count} of {total} fallen',
   'castle.strongholds.routed': 'Routed',
   'castle.strongholds.note':
-    'A stronghold taken falls until tomorrow. The harder ones pay more; take all five in a day for a rout.',
+    'A stronghold taken stays fallen until the day turns. The harder ones pay more; take all five in a day for a rout.',
   'castle.siege': 'Siege for {gold} and {ap} AP',
   'castle.siege.title': 'Siege',
   'castle.chance': '{pct} chance to win',
