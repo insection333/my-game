@@ -1,6 +1,6 @@
 // Part of step 6, in Chromium: session 8's proofs in the page itself.
 // - Gear is worn from the Combat page, and Your odds then rates the hollow rat: Fair for a newcomer
-//   with First steps' ten loaves.
+//   with First steps' ten loaves; the Storehouse's tile then marks the sword worn (session 123).
 // - A retreat costs nothing: a fighter who took on a hill troll with two loaves an hour ago comes back
 //   to the lane stopped with the reason, the sword and helm still worn, and nothing else gone.
 // - A region tab brings its foes into view (session 99): on a phone the loadout fills the screen under
@@ -35,6 +35,12 @@ async function wearFromThePage(served: Served, problems: string[]) {
     step = 'Your odds rates the hollow rat Fair';
     await rat.getByText('Fair').waitFor({ timeout: 5_000 });
     await rat.getByRole('button', { name: 'Fight' }).waitFor({ timeout: 5_000 });
+    // The Storehouse marks the piece worn on its tile (session 123: only its panel said so).
+    step = "the Storehouse's tile marks the sword worn";
+    await page.getByRole('link', { name: 'Storehouse' }).first().click();
+    const tile = (name: string) => page.locator('[data-ui="ItemTile"]', { hasText: name });
+    await tile('Copper sword').getByText('Worn').waitFor({ timeout: 5_000 });
+    if (await tile('Bread').getByText('Worn').count()) throw new Error('the bread is marked worn');
   } catch (err) {
     problems.push(`Gear: wearing a sword from the Combat page failed where ${step} (${say(err)})`);
   } finally {
