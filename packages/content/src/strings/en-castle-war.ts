@@ -107,7 +107,7 @@ export const castleWar = {
   'castle.account.moved': 'What came of it',
   'castle.account.nothing': 'Nothing changed hands.',
   'castle.account.fee': 'The fee: {gold}, burned win or lose',
-  'castle.account.walls': 'Your walls stand at {pct}, mending 5 an hour',
+  'castle.account.walls': 'Your walls stand at {pct}, mending {rate} an hour',
   'castle.account.again': 'Plan another siege',
   'castle.reports.none': 'Sieges, spies and incursions are reported here.',
   'castle.report.siegeOut': '{outcome}: {foe}',

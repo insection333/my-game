@@ -10,6 +10,9 @@ export const lanes = {
   'lane.next': 'Next: {action}',
   // A row queued in a lane (session 124), beside a running row's 'action.working'.
   'action.queued': 'Next in your lane',
+  // Ingredients short of one go, said on the row (session 125).
+  'action.takesShort': 'Takes {items}; short of {missing}',
+  'list.and': '{first} and {last}',
   'lane.stop': 'Stop',
   'lane.fix.item': 'Where to get {item}',
   'lane.fix.food': 'Buy food',

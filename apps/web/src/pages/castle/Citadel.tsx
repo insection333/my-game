@@ -214,7 +214,12 @@ function Buildings() {
         {mending && (
           <div className={s.note}>
             <div className={s.save}>
-              <span>{t('castle.walls.integrity', { pct: fmt.pct(Math.floor(castle.wallIntegrity)) })}</span>
+              <span>
+                {t('castle.walls.integrity', {
+                  pct: fmt.pct(Math.floor(castle.wallIntegrity)),
+                  rate: fmt.pct(E.recoveryPerHour(castle, now)),
+                })}
+              </span>
               <Button
                 variant="quiet"
                 disabled={busy || !hasAp(castle, repair.ap) || !affords(castle, purse, repair.gold)}

@@ -100,7 +100,12 @@ function Troops() {
         {castle.infirmaryPct > 0.01 && (
           <div className={s.note}>
             <div className={s.save}>
-              <span>{t('castle.wounds', { pct: fmt.pct(Math.ceil(castle.infirmaryPct)) })}</span>
+              <span>
+                {t('castle.wounds', {
+                  pct: fmt.pct(Math.ceil(castle.infirmaryPct)),
+                  rate: fmt.pct(E.recoveryPerHour(castle, now)),
+                })}
+              </span>
               <Button
                 variant="quiet"
                 disabled={busy || !hasAp(castle, heal.ap) || !affords(castle, purse, heal.gold)}
