@@ -70,6 +70,18 @@ export function Messages() {
     if (!box || unread > 0) void load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [unread]);
+  // Not loaded: tried again every few seconds and as soon as the device is back online, so the inbox comes
+  // back with the connection, where it kept saying the server could not be reached (session 118).
+  useEffect(() => {
+    if (!failed) return;
+    const again = () => void load();
+    const every = setInterval(again, 5000);
+    window.addEventListener('online', again);
+    return () => {
+      clearInterval(every);
+      window.removeEventListener('online', again);
+    };
+  }, [failed]);
   // Opened to write: the cursor where the words go next (the message once a name is in).
   useEffect(() => {
     if (writing) form.current?.querySelector<HTMLElement>(to ? 'textarea' : 'input')?.focus();

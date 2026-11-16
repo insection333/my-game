@@ -8,13 +8,16 @@ import { api, requestId } from '../../api.ts';
 import { useGame } from '../../game/hooks.ts';
 import { handled, sessionStore } from '../../game/session.ts';
 import { untilLoaded } from '../../Ready.tsx';
+import { refused as refusedWords } from '../../refused.ts';
+import { refusal } from './labels.ts';
 
 export interface CastleSnapshot {
   view: castleEngine.CastleView | null;
   targets: castleEngine.CastleTargets | null;
   /** An action is on its way: buttons wait for it. */
   busy: boolean;
-  /** Why the last action was refused, while it is worth reading. */
+  /** Why the last action was refused, in words, while they are worth reading: the castle's own refusal,
+   *  or one that never reached it (offline, too many tries; session 118). */
   refused: string | null;
   /** The last battle fought from the War tab (session 40), shown on the row it was fought from: which
    *  target (`incursion` for the fortress), what came of it, and its report. */
@@ -68,6 +71,13 @@ export async function loadTargets(first = false): Promise<void> {
   }
 }
 
+/** Shows why an action was refused for a while (or clears it). */
+function say(refused: string | null): void {
+  clearTimeout(refusedTimer);
+  set({ refused });
+  if (refused) refusedTimer = setTimeout(() => set({ refused: null }), 8000);
+}
+
 /** Sends one action and gives back its result (null when it never got through); the answer's castle
  *  replaces the one held, and a refusal is shown for a while. */
 export async function castleRun(
@@ -77,14 +87,13 @@ export async function castleRun(
   set({ busy: true, refused: null });
   try {
     const r = await (action === 'open' ? api.castle.open(requestId()) : api.castle.act(requestId(), action));
-    clearTimeout(refusedTimer);
-    const refused = r.result.ok ? null : (r.result.reason ?? 'unknown');
-    set({ view: r.castle, refused });
-    if (refused) refusedTimer = setTimeout(() => set({ refused: null }), 8000);
+    const refused = r.result.ok ? null : refusal(r.result.reason ?? 'unknown');
+    set({ view: r.castle });
+    say(refused);
     if (r.result.ok && (action === 'open' || action.type === 'siege' || action.type === 'spy')) void loadTargets();
     return r.result;
   } catch (err) {
-    handled(err);
+    say(handled(err) ? null : refusedWords(err));
     return null;
   } finally {
     set({ busy: false });
