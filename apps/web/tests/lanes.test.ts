@@ -66,4 +66,18 @@ describe('laneViews', () => {
       chip: 'The Troll-chief of the hill',
     });
   });
+
+  // Session 122: a stopped lane said why ("Out of copper ore") but not what it had been doing, so a run
+  // stopped by a full Storehouse read only "Storehouse full" under Combat, with no word of the run waiting.
+  it('names what a stopped lane was doing, with its picture, and says why below it', () => {
+    let s: State = { ...newState(1, T0), items: { 'copper-ore': 1 } };
+    s = run(s, { type: 'start', lane: 'artisan', action: { feature: 'smithing', id: 'copper-bar' } });
+    s = engine.advance(s, T0 + 60_000, seeded(1)).state;
+    expect(laneViews(s, T0 + 60_000, FEATURES).find((v) => v.id === 'artisan')).toMatchObject({
+      halted: true,
+      doing: 'Copper bar',
+      icon: 'copper-bar',
+      note: 'Out of copper ore',
+    });
+  });
 });
