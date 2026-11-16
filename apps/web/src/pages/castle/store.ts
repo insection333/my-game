@@ -19,6 +19,9 @@ export interface CastleSnapshot {
   /** Why the last action was refused, in words, while they are worth reading: the castle's own refusal,
    *  or one that never reached it (offline, too many tries; session 118). */
   refused: string | null;
+  /** The War's row a refusal belongs to (session 119), said there and not in the header: on a phone the
+   *  header was a screen above a stronghold's Siege. Null for a press elsewhere. */
+  refusedAt: string | null;
   /** The last battle fought from the War tab (session 40), shown on the row it was fought from: which
    *  target (`incursion` for the fortress), what came of it, and its report. */
   battle: Battle | null;
@@ -30,7 +33,14 @@ export interface Battle {
   report: number | null;
 }
 
-let snapshot: CastleSnapshot = { view: null, targets: null, busy: false, refused: null, battle: null };
+let snapshot: CastleSnapshot = {
+  view: null,
+  targets: null,
+  busy: false,
+  refused: null,
+  refusedAt: null,
+  battle: null,
+};
 const listeners = new Set<() => void>();
 const set = (next: Partial<CastleSnapshot>) => {
   snapshot = { ...snapshot, ...next };
@@ -42,7 +52,7 @@ let refusedTimer: ReturnType<typeof setTimeout> | undefined;
 // sees it while their own loads.
 sessionStore.subscribe(() => {
   if (sessionStore.get().phase === 'signedOut' && (snapshot.view || snapshot.targets))
-    set({ view: null, targets: null, busy: false, refused: null, battle: null });
+    set({ view: null, targets: null, busy: false, refused: null, refusedAt: null, battle: null });
 });
 
 export const castleStore = {
@@ -72,28 +82,29 @@ export async function loadTargets(first = false): Promise<void> {
 }
 
 /** Shows why an action was refused for a while (or clears it). */
-function say(refused: string | null): void {
+function say(refused: string | null, at: string | null): void {
   clearTimeout(refusedTimer);
-  set({ refused });
-  if (refused) refusedTimer = setTimeout(() => set({ refused: null }), 8000);
+  set({ refused, refusedAt: refused ? at : null });
+  if (refused) refusedTimer = setTimeout(() => set({ refused: null, refusedAt: null }), 8000);
 }
 
 /** Sends one action and gives back its result (null when it never got through); the answer's castle
- *  replaces the one held, and a refusal is shown for a while. */
+ *  replaces the one held, and a refusal is shown for a while: on the War's row `at`, else in the header. */
 export async function castleRun(
   action: CastleAction | 'open',
+  at: string | null = null,
 ): Promise<castleEngine.CastleActResponse['result'] | null> {
   if (snapshot.busy) return null;
-  set({ busy: true, refused: null });
+  set({ busy: true, refused: null, refusedAt: null });
   try {
     const r = await (action === 'open' ? api.castle.open(requestId()) : api.castle.act(requestId(), action));
     const refused = r.result.ok ? null : refusal(r.result.reason ?? 'unknown');
     set({ view: r.castle });
-    say(refused);
+    say(refused, at);
     if (r.result.ok && (action === 'open' || action.type === 'siege' || action.type === 'spy')) void loadTargets();
     return r.result;
   } catch (err) {
-    say(handled(err) ? null : refusedWords(err));
+    say(handled(err) ? null : refusedWords(err), at);
     return null;
   } finally {
     set({ busy: false });
@@ -102,7 +113,7 @@ export async function castleRun(
 
 /** Fights a battle from the War tab: the siege or assault, then its result kept for the row it came from. */
 export async function fight(key: string, action: CastleAction): Promise<void> {
-  const result = await castleRun(action);
+  const result = await castleRun(action, key);
   if (!result?.ok) return;
   set({ battle: { key, result, report: snapshot.view?.logs[0]?.id ?? null } });
 }

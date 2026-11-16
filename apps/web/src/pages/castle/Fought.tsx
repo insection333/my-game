@@ -1,7 +1,8 @@
 // A battle just fought, on the row it was fought from (session 40): the two sides' arms at either end of
 // one bar, your attack pushing in from the left against their defence from the right until they meet
 // where the battle stood (session 41); then won or lost in a word and what it brought, and the battle's
-// account a tap away. It stays until the next battle is fought.
+// account a tap away. It stays until the next battle is fought. A battle refused, or one that never reached
+// the server, is said here in its place for a while (session 119), where the header said it a screen above.
 import { fmt, t } from '@idle-clash/content';
 import { castleEngine as E } from '@idle-clash/features';
 import { ItemIcon, TextLink } from '@idle-clash/ui';
@@ -15,7 +16,13 @@ import s from './castle.module.css';
 const num = (x: unknown) => (typeof x === 'number' && Number.isFinite(x) ? x : 0);
 
 export function Fought({ battle }: { battle: string }) {
-  const { battle: last, castle } = useSyncedCastle();
+  const { battle: last, castle, refused, refusedAt } = useSyncedCastle();
+  if (refused && refusedAt === battle)
+    return (
+      <p className={s.refused} data-slot="castle.fought.refused" role="status">
+        {refused}
+      </p>
+    );
   if (!last || last.key !== battle) return null;
   const r = last.result;
   const won = battle === 'incursion' ? r.won === true : r.outcome !== 'repelled';
