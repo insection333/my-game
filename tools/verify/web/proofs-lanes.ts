@@ -105,6 +105,9 @@ const brokenWords = (page: Page) =>
           if (new Set([...r.getClientRects()].map((x) => Math.round(x.top))).size > 1) out.push(m[0]);
         }
       }
+      // Words past the chip's two lines are lost as surely as a split one (session 120: "Out of / coppe…").
+      const words = chip.querySelector('[data-chip-text]');
+      if (words && words.scrollHeight > words.clientHeight + 1) out.push(`${chip.textContent} (cut short)`);
       return out;
     }),
   );
@@ -136,6 +139,45 @@ async function chipsKeepWords(served: Served, problems: string[]) {
     }
   } catch (err) {
     problems.push(`Lane chips: four lanes beside a fight did not show (${say(err)})`);
+  } finally {
+    await page.close();
+  }
+}
+
+/** A lane stopped beside the fire, a tree and a fight (session 120): four chips on a phone, the stopped one's
+ *  "Out of copper ore" split and cut short as "Out of / coppe…" while "Oak tree" had room to spare. */
+async function stoppedChipKeepsWords(served: Served, problems: string[]) {
+  const page = await playerWith(served, 'Ore Spent', '/combat', (s, now) =>
+    run(
+      served,
+      {
+        ...s,
+        fireUntil: now + 5 * 60_000,
+        items: { 'copper-sword': 1, bread: 50, 'copper-ore': 2 },
+        features: {
+          ...s.features,
+          combat: { worn: { weapon: 'copper-sword' }, health: null, healthAt: now, retreated: null },
+        },
+      },
+      now,
+      [
+        { type: 'start', lane: 'gathering', action: { feature: 'woodcutting', id: 'pine-tree' } },
+        { type: 'start', lane: 'artisan', action: bar },
+        { type: 'start', lane: 'combat', action: { feature: 'combat', id: 'hollow-rat' } },
+      ],
+    ),
+  );
+  try {
+    await page.locator('[data-ui="LaneChip"][data-halted]').getByText('Out of copper ore').waitFor({ timeout: 25_000 });
+    for (const width of [390, 320]) {
+      await page.setViewportSize({ width, height: 844 });
+      await page.waitForTimeout(200);
+      const broken = await brokenWords(page);
+      if (broken.length)
+        problems.push(`Lane chips with a lane stopped at ${width} px lose words: ${broken.join(', ')}`);
+    }
+  } catch (err) {
+    problems.push(`Lane chips: a lane stopped beside the fire did not show (${say(err)})`);
   } finally {
     await page.close();
   }
@@ -187,6 +229,7 @@ export async function runLaneProofs(served: Served): Promise<string[]> {
   const problems: string[] = [];
   await chipsKeepWords(served, problems);
   await runChipKeepsWords(served, problems);
+  await stoppedChipKeepsWords(served, problems);
   await stopSaysWhy(served, problems);
   await queuedWhileAway(served, problems);
   return problems;

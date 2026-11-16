@@ -39,6 +39,13 @@
   font-size: var(--t-small);
 }
 
+/* A run stopped by itself says why, as a stopped lane does (session 120). */
+.stopped {
+  margin: 0;
+  color: var(--alert);
+  font-weight: 600;
+}
+
 /* The last run home (session 74): its boss, when, and its story, set off from the choices below. */
 .last {
   display: flex;

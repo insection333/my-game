@@ -9,6 +9,7 @@ import {
   type RelicsView,
   type RouteView,
   type RunView,
+  type Remedy,
   type TwistView,
 } from '@idle-clash/features';
 import { actionKey, LANE_IDS } from '@idle-clash/kernel';
@@ -16,6 +17,7 @@ import { ActionRow, Button, hasIcon, ItemIcon, Panel, Pill, ProgressBar, Tabs } 
 import { useState } from 'react';
 import { useGame } from '../game/hooks.ts';
 import { game } from '../game/store.ts';
+import { runStopped } from './run-stopped.ts';
 import { navigate, useLocation } from '../router.ts';
 import { fills, Slot } from '../slots.tsx';
 import { CombatHead } from './CombatHead.tsx';
@@ -163,6 +165,10 @@ function Run({ view, run }: { view: ExpeditionView; run: RunView }) {
     const c = state.lanes[l].current;
     return c !== null && actionKey(c.action) === `expeditions:${run.region}`;
   });
+  // Stopped by itself (session 120): why, what puts it right, and Carry on only once it would go.
+  const stopped = fighting ? null : runStopped(state, run.region, game.canStart);
+  const fix = (f: Remedy) =>
+    navigate(f.item ? `${location.pathname}?panel=item&item=${encodeURIComponent(f.item)}` : f.path!);
   return (
     <Panel title={t('expedition.title')} aside={<Pill tone="gold">{view.marks}</Pill>}>
       <div className={s.stack}>
@@ -184,8 +190,18 @@ function Run({ view, run }: { view: ExpeditionView; run: RunView }) {
             )}
           </p>
         )}
+        {stopped && (
+          <p className={s.stopped} role="status">
+            {stopped.why}
+          </p>
+        )}
         <div className={s.buttons}>
-          {!fighting && (
+          {stopped?.fix && (
+            <Button variant="secondary" onClick={() => fix(stopped.fix!)}>
+              {stopped.fix.label}
+            </Button>
+          )}
+          {!fighting && (!stopped || stopped.again) && (
             <Button
               variant="primary"
               onClick={() =>
