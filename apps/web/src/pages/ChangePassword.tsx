@@ -5,7 +5,8 @@ import { t } from '@idle-clash/content';
 import { passwordOk } from '@idle-clash/contracts';
 import { Button, Field } from '@idle-clash/ui';
 import { useState, type FormEvent } from 'react';
-import { api, ApiError } from '../api.ts';
+import { api } from '../api.ts';
+import { refused } from '../refused.ts';
 import s from './pages.module.css';
 
 export function ChangePassword() {
@@ -36,11 +37,9 @@ export function ChangePassword() {
       await api.changePassword(current, next);
       setState('done');
     } catch (err) {
-      setErrors(
-        err instanceof ApiError && err.code === 'wrongPassword'
-          ? { current: t('settings.delete.wrong') }
-          : { next: t('error.other') },
-      );
+      // Tries count against the current password, so every refusal is said under it, as Delete account
+      // says its own; the new password keeps its hint.
+      setErrors({ current: refused(err, { wrongPassword: t('settings.delete.wrong') }) });
       setState('writing');
     }
   };

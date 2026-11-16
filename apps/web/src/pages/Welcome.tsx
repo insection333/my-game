@@ -1,10 +1,10 @@
 // The welcome page: what the game is, and creating an account or signing in. Shown at /welcome
 // (create) and /welcome/sign-in, outside the shell, to anyone not signed in.
-import { CONTACT_ADDRESS, fmt, t } from '@idle-clash/content';
+import { CONTACT_ADDRESS, t } from '@idle-clash/content';
 import { NAME_MAX } from '@idle-clash/contracts';
 import { Button, Field, GameMark, ItemIcon, MarchScene, Tabs, TextLink } from '@idle-clash/ui';
 import { useState, type FormEvent } from 'react';
-import { ApiError } from '../api.ts';
+import { refused } from '../refused.ts';
 import { account, loadGame, useSession } from '../game/session.ts';
 import { navigate } from '../router.ts';
 import { check, type Errors } from './welcome-check.ts';
@@ -13,25 +13,13 @@ import s from './welcome.module.css';
 /** The loop the game is built on: ore to bars to gear to the foes it beats. */
 const LOOP = ['copper-ore', 'iron-bar', 'copper-sword', 'hollow-rat'] as const;
 
-function refusal(err: unknown): string {
-  if (!(err instanceof ApiError)) return t('error.other');
-  switch (err.code) {
-    case 'nameTaken':
-      return t('error.nameTaken');
-    case 'nameNotAllowed':
-      return t('error.nameNotAllowed');
-    case 'wrongNameOrPassword':
-      return t('error.wrongNameOrPassword');
-    case 'banned':
-      return t('error.banned');
-    case 'offline':
-      return t('error.offline');
-    case 'tooManyTries':
-      return t('error.tooManyTries', { wait: fmt.duration((err.retryAfterSeconds ?? 60) * 1000) });
-    default:
-      return t('error.other');
-  }
-}
+const refusal = (err: unknown): string =>
+  refused(err, {
+    nameTaken: t('error.nameTaken'),
+    nameNotAllowed: t('error.nameNotAllowed'),
+    wrongNameOrPassword: t('error.wrongNameOrPassword'),
+    banned: t('error.banned'),
+  });
 
 const prefetch = () => void loadGame().then(() => import('../Game.tsx'));
 

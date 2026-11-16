@@ -8,7 +8,8 @@ import { MAIL, NAME_MAX, type InboxResponse, type Letter } from '@idle-clash/con
 import { fmt, t } from '@idle-clash/content';
 import { Button, Field } from '@idle-clash/ui';
 import { useEffect, useId, useRef, useState, type FormEvent, type KeyboardEvent } from 'react';
-import { api, ApiError } from '../api.ts';
+import { api } from '../api.ts';
+import { refused } from '../refused.ts';
 import { setUnreadMail, useUnreadMail } from '../game/mail.ts';
 import { Slot } from '../slots.tsx';
 import { dayOf } from './days.ts';
@@ -18,15 +19,14 @@ import s from './mail.module.css';
 
 type Note = { text: string; bad: boolean } | null;
 
-const errorText = (err: unknown): string =>
-  err instanceof ApiError && err.code === 'tooManyTries' ? t('mail.reason.cooldown') : t('error.other');
+const errorText = (err: unknown): string => refused(err, { tooManyTries: t('mail.reason.cooldown') });
 
 /** How long a deleted letter waits, with Undo, before it goes for good. */
 const UNDO_MS = 5000;
 
 export function Messages() {
   const [box, setBox] = useState<InboxResponse | null>(null);
-  const [failed, setFailed] = useState(false);
+  const [failed, setFailed] = useState<string | null>(null);
   const [to, setTo] = useState(() => new URLSearchParams(location.search).get('to') ?? '');
   const [body, setBody] = useState('');
   const [note, setNote] = useState<Note>(null);
@@ -55,7 +55,7 @@ export function Messages() {
     api.mail.inbox().then(
       (r) => {
         setBox(r);
-        setFailed(false);
+        setFailed(null);
         // Seen here, so read: the bell clears; the letters keep their New until the view closes.
         if (r.unread > 0)
           void api.mail.read().then(
@@ -63,7 +63,7 @@ export function Messages() {
             () => undefined,
           );
       },
-      () => setFailed(true),
+      (err: unknown) => setFailed(refused(err)),
     );
   // On opening, and whenever a letter arrives while the view is open.
   useEffect(() => {
@@ -208,7 +208,7 @@ export function Messages() {
         {note?.text}
       </p>
       {!box ? (
-        <p className={s.note}>{failed ? t('error.other') : t('mail.reading')}</p>
+        <p className={s.note}>{failed ?? t('mail.reading')}</p>
       ) : box.letters.length === 0 ? (
         <p className={s.note}>{t('mail.empty')}</p>
       ) : (
