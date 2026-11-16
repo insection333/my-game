@@ -168,7 +168,8 @@ export function LaneStrip({ lanes }: { lanes: LaneView[] }) {
           halted={l.halted}
           progress={l.progress}
           run={l.run}
-          icon={l.icon && <ItemIcon name={l.icon} size={24} />}
+          // A stopped lane's chip has room only for why (session 122: its picture cut "Out of copper ore").
+          icon={!l.idle && l.icon && <ItemIcon name={l.icon} size={24} />}
           onOpen={() => navigate(withPanel('lanes'))}
         />
       ))}
