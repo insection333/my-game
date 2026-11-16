@@ -135,6 +135,7 @@ export const en: Record<string, string> = {
   'action.start': 'Start',
   'action.queue': 'Next',
   'action.working': 'In your lane',
+  'action.queued': 'Next in your lane',
   'notFound.title': 'Nothing here',
   'notFound.lead': 'This page does not exist.',
   'fault.title': 'Something broke here',
