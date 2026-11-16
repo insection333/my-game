@@ -261,3 +261,4 @@
 - Session 121: a stop said inside a sentence keeps a name's capital ("Combat stopped: Storehouse full"), where the away recap, the notices tray and the stop's toast lowered the Storehouse, a page of the game's own menu, to "storehouse full".
 - Session 122: a lane stopped by itself names what it was doing, with its picture ("Bronze bar", "Expedition into the march"), and says why below it above its remedy, where it said only why, so a run waiting on a full Storehouse read "Combat: Storehouse full" with no word of the run.
 - Session 123: the Storehouse marks the gear the fighter has on, a Worn chip and a moss edge on its tile, where only the item's panel said so and the grid showed a worn iron sword as any other.
+- Session 124: a row queued in a lane says "Next in your lane" beside the running row's "In your lane", on a skill and on Combat, where pressing Next only greyed the row's Next, which reads as "not available".

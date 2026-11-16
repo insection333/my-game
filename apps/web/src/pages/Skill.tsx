@@ -11,6 +11,7 @@ import { navigate } from '../router.ts';
 import { fillFor, fills, Slot } from '../slots.tsx';
 import { FindGrid } from './Finds.tsx';
 import { KindlingPanel } from './Kindling.tsx';
+import { laneStatus } from './lane-status.ts';
 import { NotFound } from './Simple.tsx';
 import s from './pages.module.css';
 
@@ -131,8 +132,8 @@ function SkillPage({ feature }: { feature: Feature }) {
                   status={
                     a.locked ? (
                       <Pill>{a.opensAt}</Pill>
-                    ) : running(a) ? (
-                      <Pill tone="woad">{t('action.working')}</Pill>
+                    ) : laneStatus(state, a.action) ? (
+                      <Pill tone="woad">{laneStatus(state, a.action)}</Pill>
                     ) : (
                       <Pill tone="moss">{a.mastery}</Pill>
                     )

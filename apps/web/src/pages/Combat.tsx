@@ -130,6 +130,9 @@ function CombatPage({ combat }: { combat: Feature }) {
                       <Pill>{t('stop.noWeapon')}</Pill>
                     ) : fighting(f) ? (
                       <Pill tone="woad">{t('action.working')}</Pill>
+                    ) : queued(f) ? (
+                      // Next in the lane, said where Next was pressed (session 124).
+                      <Pill tone="woad">{t('action.queued')}</Pill>
                     ) : f.verdict ? (
                       <Pill tone={VERDICT_TONE[f.verdictId as keyof typeof VERDICT_TONE]}>{f.verdict}</Pill>
                     ) : undefined

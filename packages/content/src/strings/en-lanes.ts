@@ -8,6 +8,8 @@ export const lanes = {
   'lane.combat': 'Combat',
   'lane.resting': 'Resting',
   'lane.next': 'Next: {action}',
+  // A row queued in a lane (session 124), beside a running row's 'action.working'.
+  'action.queued': 'Next in your lane',
   'lane.stop': 'Stop',
   'lane.fix.item': 'Where to get {item}',
   'lane.fix.food': 'Buy food',
