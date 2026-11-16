@@ -83,18 +83,22 @@ export function laneViews(
       : !run && l.stopped
         ? formatStop(l.stopped.reason)
         : undefined;
+    // A lane stopped by itself names what it was doing, with its picture, and says why below (session 122:
+    // "Storehouse full" under Combat said nothing of the run waiting). Older saves keep no action.
+    const halted = !run && !!l.stopped && !isQuietStop(l.stopped.reason.code);
+    const on = halted ? l.stopped?.action : undefined;
     return {
       id,
       name: t(`lane.${id}`),
-      doing: run ? actionName(run.action) : t('lane.resting'),
+      doing: run ? actionName(run.action) : on ? actionName(on) : halted && note ? note : t('lane.resting'),
       idle: !run,
       progress: run ? Math.min(1, Math.max(0, (now - run.startedAt) / (run.endsAt - run.startedAt))) : undefined,
       run: run ? { key: run.startedAt, msLeft: run.endsAt - now } : undefined,
-      icon: run ? iconOf(features, run.action, id) : undefined,
-      note,
+      icon: run ? iconOf(features, run.action, id) : on ? iconOf(features, on, id) : undefined,
+      note: halted && !on ? undefined : note,
       short: !run && l.stopped ? formatStop(l.stopped.reason, 'short') : undefined,
       chip: run ? chipDoing(run.action) : undefined,
-      halted: !run && !!l.stopped && !isQuietStop(l.stopped.reason.code),
+      halted,
       fix: !run && !l.next && l.stopped && !(again && fix?.item) ? fix : undefined,
       again,
     };
@@ -111,13 +115,13 @@ export function LaneList({ lanes }: { lanes: LaneView[] }) {
         <LaneCard
           key={l.id}
           lane={l.name}
-          doing={l.halted && l.note ? l.note : l.doing}
+          doing={l.doing}
           idle={l.idle}
           halted={l.halted}
           progress={l.progress}
           run={l.run}
           icon={l.icon && <ItemIcon name={l.icon} size={32} />}
-          note={l.halted ? undefined : l.note}
+          note={l.note}
           actions={
             l.idle ? (
               <>

@@ -31,9 +31,21 @@
   font-size: var(--t-body);
 }
 
+/* A stopped lane names what it was doing as a working one does, and says why below in the alert's
+   colour (session 122); one with nothing to name (an older save) says why in its place. */
 .card[data-halted] .doing {
+  color: var(--ink);
+  font: 500 var(--t-lead) / 1.25 var(--font-book);
+}
+
+.card[data-halted]:not(:has(.note)) .doing,
+.card[data-halted] .note {
   color: var(--alert);
   font-weight: 600;
+}
+
+.card[data-halted] .note {
+  font-size: var(--t-body);
 }
 
 .note {
