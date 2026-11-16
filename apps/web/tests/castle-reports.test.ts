@@ -42,6 +42,9 @@ describe('a report as its card', () => {
       ME,
     )!;
     expect([merc.filter, merc.good, merc.right.seed]).toEqual(['strongholds', false, 'merc:1:0']);
+    // A stronghold is taken by a siege, as its button says (session 116: the card said "assault", the
+    // fortress's word).
+    expect(merc.title).toMatch(/^Your siege on /);
     const fort = cardOf(
       report(5, 'incursion', { fortress: 'ashen-redoubt', tier: 3, won: true, spoils: 'armoury' }),
       ME,

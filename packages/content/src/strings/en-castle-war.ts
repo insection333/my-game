@@ -43,8 +43,8 @@ export const castleWar = {
   'castle.target.chanceAbout': 'About {pct} to win',
   'castle.target.beyond': 'Beyond you for now: no roll takes it',
   'castle.target.chanceAbout.set': 'About {pct} to win, {best} set against them',
-  'castle.target.pays': 'Taken: {marks} war marks and a bounty of {gold} gold',
-  'castle.target.paysMarks': 'Taken: {marks} war marks',
+  'castle.target.pays': 'Pays {marks} war marks and a bounty of {gold} gold',
+  'castle.target.paysMarks': 'Pays {marks} war marks',
   'castle.target.paysLord': 'A breach: up to {gold} gold and {marks} war marks',
   'castle.target.paysLordUnscouted': 'A breach: {marks} war marks, and gold from their treasury',
   'castle.strongholds.title': "Today's strongholds",
@@ -88,7 +88,7 @@ export const castleWar = {
   'castle.reports.all': 'All reports',
   'castle.reports.siegeOut': 'Your siege on {foe}',
   'castle.reports.siegeIn': '{foe} besieged your castle',
-  'castle.reports.stronghold': 'Your assault on {foe}',
+  'castle.reports.stronghold': 'Your siege on {foe}',
   'castle.reports.fortress': '{fortress}, tier {tier}',
   'castle.reports.spyOut': '{mission}: {foe}',
   'castle.reports.spyIn': 'A spy from {foe}, caught by your watch',
@@ -144,7 +144,7 @@ export const castleWar = {
   'castle.spoils.armoury': 'the hidden armoury: war marks twice over',
   'castle.spoils.hoard': 'a war hoard: war marks five times over',
   'castle.rout': "A rout: all five of the day's strongholds have fallen",
-  'castle.incursion.rewards': 'Taken: {marks} war marks and drill',
+  'castle.incursion.rewards': 'Pays {marks} war marks and drill',
 
   // The Reliquary.
   'castle.reliquary.title': 'The Reliquary',
