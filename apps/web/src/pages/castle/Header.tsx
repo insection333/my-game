@@ -6,7 +6,7 @@ import { AP, fmt, t } from '@idle-clash/content';
 import { castleEngine as E } from '@idle-clash/features';
 import { Button, Panel, Pill, ProgressBar, TextLink } from '@idle-clash/ui';
 import { navigate } from '../../router.ts';
-import { decreeName, refusal } from './labels.ts';
+import { decreeName } from './labels.ts';
 import { castleAct } from './store.ts';
 import { useSyncedCastle } from './synced.ts';
 import s from './castle.module.css';
@@ -57,7 +57,7 @@ export function Header({ note }: { note: string | null }) {
           {note && <p className={s.closed}>{note}</p>}
           {refused && (
             <p className={s.refused} role="status">
-              {refusal(refused)}
+              {refused}
             </p>
           )}
         </div>
