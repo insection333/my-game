@@ -2,7 +2,6 @@
 import { fmt, t } from '@idle-clash/content';
 import { Button, Field, TextLink } from '@idle-clash/ui';
 import { useEffect, useState, type FormEvent } from 'react';
-import { ApiError } from '../api.ts';
 import { useGame } from '../game/hooks.ts';
 import { navigate } from '../router.ts';
 import { ChangePassword } from './ChangePassword.tsx';
@@ -11,6 +10,7 @@ import { LineMark } from './LineMark.tsx';
 import { noticesOf } from './notices.ts';
 import { profileHref } from './ProfileSheet.tsx';
 import { account, useSession } from '../game/session.ts';
+import { refused } from '../refused.ts';
 import { readSound, type SoundChoice } from '../sound/cues.ts';
 import { play, unlockAudio } from '../sound/synth.ts';
 import { applyTheme, readTheme, THEMES, type Theme } from '../theme.ts';
@@ -127,7 +127,7 @@ function DeleteAccount() {
     try {
       await account.deleteAccount(password);
     } catch (err) {
-      setError(err instanceof ApiError && err.code === 'wrongPassword' ? t('settings.delete.wrong') : t('error.other'));
+      setError(refused(err, { wrongPassword: t('settings.delete.wrong') }));
       setBusy(false);
     }
   };

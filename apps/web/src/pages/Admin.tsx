@@ -8,9 +8,10 @@ import { fmt, t } from '@idle-clash/content';
 import { dayOf } from './days.ts';
 import { ActionRow, Button, Field, Panel, Pill } from '@idle-clash/ui';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
-import { api, ApiError } from '../api.ts';
+import { api } from '../api.ts';
 import { handled, useSession } from '../game/session.ts';
 import { untilLoaded } from '../Ready.tsx';
+import { refused } from '../refused.ts';
 import { Slot } from '../slots.tsx';
 import { AdminMail } from './AdminMail.tsx';
 import { AdminModeration } from './AdminModeration.tsx';
@@ -20,13 +21,7 @@ import { NotFound } from './Simple.tsx';
 import s from './admin.module.css';
 
 const why = (err: unknown) =>
-  !(err instanceof ApiError)
-    ? t('error.other')
-    : err.code === 'nameTaken'
-      ? t('error.nameTaken')
-      : err.code === 'nameNotAllowed'
-        ? t('error.nameNotAllowed')
-        : t('error.other');
+  refused(err, { nameTaken: t('error.nameTaken'), nameNotAllowed: t('error.nameNotAllowed') });
 
 export function Admin() {
   const { admin } = useSession();

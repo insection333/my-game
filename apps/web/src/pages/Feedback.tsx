@@ -5,6 +5,7 @@ import { FEEDBACK_MAX } from '@idle-clash/contracts';
 import { Button, Field } from '@idle-clash/ui';
 import { useState, type FormEvent } from 'react';
 import { api } from '../api.ts';
+import { refused } from '../refused.ts';
 import s from './pages.module.css';
 
 /** The page behind the sheet: where the player was when they opened Settings. */
@@ -40,8 +41,8 @@ export function Feedback() {
     try {
       await api.feedback(text.trim(), pageOf());
       setState('sent');
-    } catch {
-      setError(t('error.other'));
+    } catch (err) {
+      setError(refused(err));
       setState('writing');
     }
   };
