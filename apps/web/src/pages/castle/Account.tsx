@@ -4,6 +4,7 @@
 // that went in; a spy's findings; then what came of it, with its icons. A lord's report offers the next
 // siege.
 import { SIEGE, UNIT_IDS, fmt, t } from '@idle-clash/content';
+import { castleEngine as E } from '@idle-clash/features';
 import { Button, Pill, Sheet } from '@idle-clash/ui';
 import type { CSSProperties } from 'react';
 import { navigate, withPanel } from '../../router.ts';
@@ -137,8 +138,13 @@ export function ReportSheet() {
           <h3>{t('castle.account.moved')}</h3>
           {card.spoils.length ? <Spoils card={card} /> : <p>{t('castle.account.nothing')}</p>}
           {fee !== null && <p className={s.muted}>{t('castle.account.fee', { gold: fmt.short(fee) })}</p>}
-          {defending && walls !== null && (
-            <p className={s.muted}>{t('castle.account.walls', { pct: fmt.pct(Math.floor(walls)) })}</p>
+          {defending && walls !== null && castle && (
+            <p className={s.muted}>
+              {t('castle.account.walls', {
+                pct: fmt.pct(Math.floor(walls)),
+                rate: fmt.pct(E.recoveryPerHour(castle, now)),
+              })}
+            </p>
           )}
         </div>
         {foe && (

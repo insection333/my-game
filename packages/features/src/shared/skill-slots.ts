@@ -6,6 +6,7 @@ import {
   levelProgress,
   MASTERY_STEPS,
   MAX_LEVEL,
+  midSentence,
   tierOf,
   t,
   XP_TABLE,
@@ -13,7 +14,7 @@ import {
   type Ladder,
 } from '@idle-clash/content';
 import { KINDLE_XP, kindlingsIn } from './kindling.ts';
-import { countOf, xpOf } from '@idle-clash/kernel';
+import { countOf, xpOf, type State } from '@idle-clash/kernel';
 import type { Json, SlotFill } from '../define.ts';
 import { actionMastery, actionModifiers, nextUnlock, skillLevel, unlockText } from './skill.ts';
 import { extraYieldPct, xpBonusPct } from './complete.ts';
@@ -104,6 +105,17 @@ export interface SkillDef {
   ladder: Ladder;
   finds: readonly Find[];
   actions: SkillAction[];
+}
+
+/** What an action takes, and which ingredients are short of one go (session 125: Cooked perch said "Takes
+ *  Perch ×2" to a player with none, and Start was answered only by "Out of perch"). */
+function takesLine(state: State, takes: readonly { item: string; count: number }[]): string {
+  const items = takes.map((g) => t('action.gives', { item: t(`item.${g.item}`), count: fmt.int(g.count) })).join(', ');
+  const short = takes.filter((g) => countOf(state, g.item) < g.count).map((g) => midSentence(t(`item.${g.item}`)));
+  if (!short.length) return t('action.takes', { items });
+  const missing =
+    short.length === 1 ? short[0] : t('list.and', { first: short.slice(0, -1).join(', '), last: short.at(-1)! });
+  return t('action.takesShort', { items, missing });
 }
 
 export function skillSlots(def: SkillDef): Record<string, SlotFill> {
@@ -201,13 +213,7 @@ export function skillSlots(def: SkillDef): Record<string, SlotFill> {
               ),
             )
             .join(', '),
-          takes: a.takes?.length
-            ? t('action.takes', {
-                items: a.takes
-                  .map((g) => t('action.gives', { item: t(`item.${g.item}`), count: fmt.int(g.count) }))
-                  .join(', '),
-              })
-            : null,
+          takes: a.takes?.length ? takesLine(state, a.takes) : null,
           needs: a.needs?.length
             ? t(a.needs.every((n) => countOf(state, n.item) > 0) ? 'action.needs' : 'action.needsMissing', {
                 items: a.needs.map((n) => t(`item.${n.item}`)).join(', '),

@@ -13,11 +13,15 @@ import { bastionRating } from './rating.ts';
 
 const HOUR = 3_600_000;
 
+/** The points an hour walls and wounds mend, as said on the Army, the Citadel and an account (session 125:
+ *  they said "5 an hour", with no unit, even with Mender's mortar worn). */
+export const recoveryPerHour = (c: Castle, now: number): number => RECOVERY.PER_HOUR * lift(modifiers(c, now).recovery);
+
 /** Walls and wounds mend 5 points an hour (more with Mender's mortar), walls never under 50, wounds
  *  never over 30. */
 export function syncRecovery(c: Castle, now: number): Castle {
   const hours = Math.max(0, (now - c.recoverySyncedAt) / HOUR);
-  const mend = hours * RECOVERY.PER_HOUR * lift(modifiers(c, now).recovery);
+  const mend = hours * recoveryPerHour(c, now);
   return {
     ...c,
     wallIntegrity: Math.min(100, Math.max(RECOVERY.WALL_FLOOR, c.wallIntegrity + mend)),
