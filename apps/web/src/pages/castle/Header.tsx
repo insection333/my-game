@@ -13,7 +13,7 @@ import s from './castle.module.css';
 
 /** `note`: what opens the tab shown, while it is closed. */
 export function Header({ note }: { note: string | null }) {
-  const { castle, now, busy, refused } = useSyncedCastle();
+  const { castle, now, busy, refused, refusedAt } = useSyncedCastle();
   if (!castle) return null;
   const cap = E.apCap(castle, now);
   const answered = castle.lastCtaDateUtc === E.formatUtcDate(now);
@@ -55,7 +55,8 @@ export function Header({ note }: { note: string | null }) {
           </div>
           <Orders />
           {note && <p className={s.closed}>{note}</p>}
-          {refused && (
+          {/* A battle's refusal is said on its own row in the War (session 119). */}
+          {refused && refusedAt === null && (
             <p className={s.refused} role="status">
               {refused}
             </p>

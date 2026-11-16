@@ -7,7 +7,7 @@ import { useGame } from '../../game/hooks.ts';
 import { useCastle } from './store.ts';
 
 export function useSyncedCastle() {
-  const { view, busy, refused, targets, battle } = useCastle();
+  const { view, busy, refused, refusedAt, targets, battle } = useCastle();
   const { state, now: clock } = useGame();
   const now = Math.max(clock, view?.now ?? 0);
   const castle = view?.castle ? E.syncCastle(view.castle, now).castle : null;
@@ -17,6 +17,7 @@ export function useSyncedCastle() {
     now,
     busy,
     refused,
+    refusedAt,
     targets,
     battle,
     purse: countOf(state, 'gold'),
