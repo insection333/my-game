@@ -12,7 +12,7 @@ import {
   RARE_FIND_COMPLETIONS,
   type CapacityView,
 } from '@idle-clash/features';
-import { countOf } from '@idle-clash/kernel';
+import { countOf, type State } from '@idle-clash/kernel';
 import { useRef, useState } from 'react';
 import { ActionRow, Button, ItemIcon, Panel, Pill, ProgressBar } from '@idle-clash/ui';
 import { useGame } from '../game/hooks.ts';
@@ -29,6 +29,10 @@ const KIND_TITLE: Record<(typeof KINDS)[number], string> = {
   food: 'store.kind.food',
   find: 'store.kind.find',
 };
+
+/** The gear the fighter has on. */
+const wornBy = (state: State): string[] =>
+  Object.values((state.features.combat as { worn?: Record<string, string> } | undefined)?.worn ?? {});
 
 export const itemHref = (item: string) => `${location.pathname}?panel=item&item=${encodeURIComponent(item)}`;
 
@@ -60,6 +64,7 @@ function Capacity() {
 export function ItemGrid() {
   const { state, features } = useGame();
   const held = items.catalog(features).filter((i) => countOf(state, i.id) > 0);
+  const worn = wornBy(state);
   return (
     <>
       <Capacity />
@@ -89,6 +94,7 @@ export function ItemGrid() {
                     <a
                       href={itemHref(i.id)}
                       data-ui="ItemTile"
+                      data-worn={worn.includes(i.id) || undefined}
                       className={s.tile}
                       onClick={(e) => (e.preventDefault(), navigate(itemHref(i.id)))}
                     >
@@ -97,6 +103,8 @@ export function ItemGrid() {
                         {/* On its own chip at the icon's corner, never over the art; large counts shortened
                             from 100,000 (the item's panel gives the exact number). */}
                         <span className={s.count}>{fmt.short(countOf(state, i.id))}</span>
+                        {/* Gear the fighter has on (session 123: only its panel said so). */}
+                        {worn.includes(i.id) && <span className={s.worn}>{t('store.worn')}</span>}
                       </span>
                       <span className={s.name}>{t(`item.${i.id}`)}</span>
                     </a>
@@ -172,7 +180,7 @@ function ItemActions({ item, value, gear }: { item: string; value: number; gear:
   const [sold, setSold] = useState('');
   const box = useRef<HTMLDivElement>(null);
   const have = countOf(state, item);
-  const worn = Object.values((state.features.combat as { worn?: Record<string, string> } | undefined)?.worn ?? {});
+  const worn = wornBy(state);
   // Where the focus goes when the button pressed gives way: the question's answer, or back.
   const focusIn = (selector: string) =>
     requestAnimationFrame(() => box.current?.querySelector<HTMLElement>(selector)?.focus());

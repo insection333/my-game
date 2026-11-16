@@ -162,6 +162,7 @@ export const TERMS: [term: string, meaning: string][] = [
   ['War marks', 'Castle Clash: earned in battle and incursions; they pay for the War College and war relics'],
   ['War relic', 'Castle Clash: one of nine relics forged with war marks, three worn at once'],
   ['Work', 'One of the six buildings of the steading, raised five times, each time for a little more'],
+  ['Worn', 'Gear your fighter has on, marked on its tile in the Storehouse; the one worn is never sold'],
   ['XP', 'Experience; earned by actions, it raises levels'],
   ['Your odds', "The fight engine's verdict on a foe with your current gear and food"],
 ];

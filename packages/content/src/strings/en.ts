@@ -102,6 +102,7 @@ export const en: Record<string, string> = {
   'item.panel.find': '{skill}: {rarity} find',
   'item.panel.nothing': 'Nothing.',
   'item.panel.unused': 'Nothing; it is kept to sell.',
+  'store.worn': 'Worn',
   'item.panel.wearing': 'Your fighter wears it now: the one worn is never sold.',
   'item.panel.vendor': 'The vendor in Combat: {gold} gold each',
   'item.panel.vendorFrom': 'The vendor in Combat: {gold} gold each, from Hitpoints level {level}',
