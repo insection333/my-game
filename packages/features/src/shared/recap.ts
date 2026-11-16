@@ -158,7 +158,7 @@ export function recapLines(a: AwaySummary, notices: readonly GameEvent[] = []): 
     if (e.type === 'laneStopped' && !isQuietStop(e.reason.code))
       lines.push({
         kind: 'stopped',
-        text: t('moment.laneStopped', { lane: t(`lane.${e.lane}`), reason: lower(formatStop(e.reason)) }),
+        text: t('moment.laneStopped', { lane: t(`lane.${e.lane}`), reason: formatStop(e.reason, 'mid') }),
         icon: stopIcon(e),
         href: stopHref(e),
       });

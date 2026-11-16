@@ -270,7 +270,6 @@ export function momentsFrom(events: readonly GameEvent[], since: number, feature
 
 /** What did not happen, and why: a refused command, or a lane that stopped by itself. A small toast each. */
 function notices(events: readonly GameEvent[], since: number): MomentView[] {
-  const lower = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
   return events.flatMap((e): MomentView[] => {
     if (e.at <= since) return [];
     if (e.type === 'refused')
@@ -290,7 +289,7 @@ function notices(events: readonly GameEvent[], since: number): MomentView[] {
           key: `stopped-${e.lane}-${e.at}`,
           size: 'toast',
           icon: null,
-          title: t('moment.laneStopped', { lane: t(`lane.${e.lane}`), reason: lower(formatStop(e.reason)) }),
+          title: t('moment.laneStopped', { lane: t(`lane.${e.lane}`), reason: formatStop(e.reason, 'mid') }),
           body: e.action ? t(`action.${e.action.feature}.${e.action.id}`) : null,
           until: e.at + SHOW_MS.toast,
         },

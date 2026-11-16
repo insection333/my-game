@@ -183,7 +183,7 @@ export function noticeLine(e: GameEvent): (RecapLine & { at: number }) | null {
       if (isQuietStop(e.reason.code)) return null;
       return {
         kind: 'stopped',
-        text: t('moment.laneStopped', { lane: t(`lane.${e.lane}`), reason: lower(formatStop(e.reason)) }),
+        text: t('moment.laneStopped', { lane: t(`lane.${e.lane}`), reason: formatStop(e.reason, 'mid') }),
         icon: stopIcon(e),
         href: stopHref(e),
         at: e.at,

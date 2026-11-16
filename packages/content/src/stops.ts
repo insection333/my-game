@@ -1,7 +1,7 @@
 // Why a lane stopped, as the player reads it: "Needs level 14", "Out of tin ore". Numbers in a
 // reason's detail go through the formatter; an `item` or a `foe` is shown by its name.
 import { fmt } from './numbers.ts';
-import { placeholders, t, templateOf, type Params } from './t.ts';
+import { allStringKeys, placeholders, t, templateOf, type Params } from './t.ts';
 
 export interface Reason {
   code: string;
@@ -16,8 +16,24 @@ export const isQuietStop = (code: string): boolean => QUIET_STOPS.includes(code)
 
 export const midSentence = (name: string) => name.charAt(0).toLowerCase() + name.slice(1);
 
-/** `short`: the few words a lane's chip has room for ("Out of food"), where a reason has them. */
-export function formatStop(reason: Reason, form: 'full' | 'short' = 'full'): string {
+/** The game's own names, which keep their capital inside a sentence: its pages and its skills. */
+const NAMES = (): Set<string> =>
+  new Set(
+    allStringKeys()
+      .filter((k) => /^(menu|skill)\.[a-z0-9-]+$/.test(k))
+      .map((k) => templateOf(k)!)
+      .filter((name) => !name.includes('{'))
+      .map((name) => name.split(' ')[0]),
+  );
+
+/** `short`: the few words a lane's chip has room for ("Out of food"), where a reason has them. `mid`: said
+ *  inside a sentence ("Combat stopped: out of tin ore"), its first word lowered unless it is one of the
+ *  game's names ("Combat stopped: Storehouse full"; session 121). */
+export function formatStop(reason: Reason, form: 'full' | 'short' | 'mid' = 'full'): string {
+  if (form === 'mid') {
+    const said = formatStop(reason);
+    return NAMES().has(said.split(' ')[0]) ? said : midSentence(said);
+  }
   const short = `stopShort.${reason.code}`;
   const key = form === 'short' && templateOf(short) !== undefined ? short : `stop.${reason.code}`;
   const params: Params = {};
