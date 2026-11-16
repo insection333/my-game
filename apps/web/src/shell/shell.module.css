@@ -241,6 +241,12 @@
   .strip:has(> :nth-child(4)) [data-chip-icon] {
     display: none;
   }
+
+  /* ... and a stopped lane, whose words say why, takes the room a working one's name can spare (session
+     120: "Out of / coppe…" beside "Oak tree" with room to spare). */
+  .strip:has(> :nth-child(4)) > [data-halted] {
+    flex-grow: 3;
+  }
 }
 
 .main {

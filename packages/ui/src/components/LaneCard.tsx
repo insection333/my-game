@@ -55,7 +55,7 @@ export function LaneCard({
             {icon}
           </span>
         )}
-        <span className={s.chipText}>
+        <span className={s.chipText} data-chip-text>
           <span className="visually-hidden">{lane}: </span>
           {doing}
         </span>
