@@ -183,5 +183,6 @@ export const castle = {
   // The Castles ladder on Hiscores (session 38).
   'hiscores.castles': 'Castles',
   'hiscores.castleLevel': 'Castle',
+  'hiscores.unrankedCastle': 'Your castle is ranked once it is raised.',
   'hiscores.rating': 'Rating',
 };
