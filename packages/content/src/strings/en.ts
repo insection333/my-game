@@ -143,8 +143,7 @@ export const en: Record<string, string> = {
   'tour.title': 'Getting started',
   'tour.goals': 'Start here: each first step has a button that starts it, and pays when it is done.',
   'tour.lanes': 'Your lanes do the work, and keep at it for up to a day while you are away.',
-  'tour.fire':
-    'Everything you do keeps the fire burning for {time}: more XP the longer it goes, and a second Gathering lane.',
+  'tour.fire': 'All you do keeps the fire lit for {time}: more XP the longer it burns, and a second Gathering lane.',
   'tour.notices': 'Notices say when a lane stops and why, and what happened while you were away.',
   'tour.next': 'Next',
   'tour.skip': 'Skip the tour',
