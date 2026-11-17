@@ -13,13 +13,13 @@ Six entries, in this order (the sixth, Castle Clash, the owner's choice in sessi
 | Combat | Gear, foes, food | What should I fight, with what, and what are my odds? |
 | Storehouse | Items, the vendor, the collection log | What do I have, where does it come from, and what is it for? |
 | Castle Clash | A castle of your own: its edict, troops, sieges and spies (opens at total level 100) | What does my castle give me, and whom can I challenge? |
-| Hiscores | Ladders and who is online | How do I compare? |
+| Hiscores | Ladders and who is online (on a phone, in the account menu rather than the menu at the foot: session 130) | How do I compare? |
 
 Outside the menu:
 
 - **A fault** (session 108): a page that throws while drawing is replaced by "Something broke here" with Reload, under the header and menu, and reported to the server's log; a fault in the shell itself says the same on the page's own ground.
 - **The notices tray**: a bell in the header with a count of new notices and unread messages. Two tabs: Notices (lane stops, goals claimed, the away recap) and Messages (session 45).
-- **The account menu**: behind the account button. Settings, privacy, terms, sign out, and (session 9) delete account.
+- **The account menu** (session 130, the owner): the player's picture at the top right opens a small popup under it: Hiscores, Deeds, Your profile (their own card) and Settings (privacy, terms, sign out, and, session 9, delete account). A cross in its top right, Escape (which hands the focus back), a press outside or choosing a place closes it. On a phone, where Hiscores has no room at the foot, the picture is ringed in woad while the hiscores are open.
 - **The tour**: a short overlay on first visit, pointing at slots by name, never at layout classes.
 - **Closing what opens (session 42, the owner's rule):** every popup (a sheet, a moment of any size, the tour's card) closes from a cross in its top right; verify fails a popup without one.
 
@@ -31,7 +31,7 @@ Built at 320 px first. Three widths are specified and checked: 320, 390 and 1,44
 
 ```
 ┌──────────────────────────────────────┐
-│ ▣ Idle Clash   🔥 4:12   ⚜ 12,400  🔔 ◯│  header, 48 px: fire, gold, tray, account
+│ ▣ Idle Clash   🔥 4:12   ⚜ 12,400  🔔 ◯│  header, 48 px: fire, gold, tray, your picture (the account menu)
 ├──────────────────────────────────────┤
 │                                      │
 │              page content            │  scrolls
@@ -40,7 +40,7 @@ Built at 320 px first. Three widths are specified and checked: 320, 390 and 1,44
 │ [🪓 Oak tree ▓▓░] [⚒ Iron bar ▓░░]   │  lanes strip, 44 px: one chip per running lane;
 │ [⚔ Grave wight ▓▓▓] [⛏ Iron vein ▓░] │  wraps to two rows when four lanes run; tap opens the lane sheet
 ├──────────────────────────────────────┤
-│ Hearth Skills Combat Store Castle Hiscores│  menu, 56 px, icons with short labels
+│ Hearth  Skills  Combat  Store  Castle │  menu, 56 px, icons with short labels (Hiscores: the account menu)
 └──────────────────────────────────────┘
 ```
 
@@ -278,7 +278,7 @@ Opened from the header's bell; its address is `/?panel=tray`, and `/?panel=tray&
 
 ### Settings (account menu)
 
-Opened from the account button; its address is `/?panel=settings`.
+Opened from the account menu; its address is `/?panel=settings`.
 
 | # | Section (slot) | Filled by | Notes |
 | --- | --- | --- | --- |

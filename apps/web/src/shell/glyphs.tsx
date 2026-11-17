@@ -31,6 +31,15 @@ export const Person = () => (
   <G d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4.5 20.5c1.2-3.6 4-5.5 7.5-5.5s6.3 1.9 7.5 5.5" />
 );
 
+/** A medal on its ribbon (Deeds, in the account menu). */
+export const Medal = () => (
+  <G d="M8 3l2.5 6M16 3l-2.5 6M12 21a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM12 13l1 2h2l-1.6 1.3.6 2.2-2-1.3-2 1.3.6-2.2L9 15h2z" />
+);
+/** A cog (Settings, in the account menu). */
+export const Cog = () => (
+  <G d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1" />
+);
+
 /** The gold coin beside the gold count. */
 export const Coin = () => (
   <svg width={14} height={14} viewBox="0 0 16 16" aria-hidden="true">

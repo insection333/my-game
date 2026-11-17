@@ -58,7 +58,8 @@ export const honours: Record<string, string> = {
   'honour.scene.march': 'The march by day',
   'honour.scene.night': 'The march by night',
   'honour.scene.castle': 'Your castle',
-  // A player's profile card (session 44).
+  // A player's profile card (session 44), and the account menu's way to their own (session 130).
+  'account.profile': 'Your profile',
   'profile.reading': 'Reading their card…',
   'profile.none': 'There is no player of that name.',
   'profile.noTitle': 'No title shown',

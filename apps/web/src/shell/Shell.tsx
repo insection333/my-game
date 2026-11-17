@@ -17,7 +17,8 @@ import { TraySheet } from '../pages/TraySheet.tsx';
 import { useUnreadMail } from '../game/mail.ts';
 import { noticesOf } from '../pages/notices.ts';
 import { FireBadge } from './FireBadge.tsx';
-import { Bell, Coin, MenuGlyph, Person } from './glyphs.tsx';
+import { Bell, Coin, MenuGlyph } from './glyphs.tsx';
+import { AccountMenu } from './AccountMenu.tsx';
 import { LaneList, LaneStrip, laneViews } from './Lanes.tsx';
 import { useCountUp } from './countUp.ts';
 import { Sounds } from '../sound/Sounds.tsx';
@@ -26,13 +27,15 @@ import { Gains } from './Gains.tsx';
 import { Moments } from './Moments.tsx';
 import s from './shell.module.css';
 
-export const MENU: readonly { key: string; href: string; label: string; short?: string }[] = [
+/** The menu. `wide`: only where the menu is a rail (768 px and wider); on a phone the place is in the account
+ *  menu instead, so the foot keeps five (session 130, the owner: Hiscores). */
+export const MENU: readonly { key: string; href: string; label: string; short?: string; wide?: true }[] = [
   { key: 'hearth', href: '/', label: 'menu.hearth' },
   { key: 'skills', href: '/skills', label: 'menu.skills' },
   { key: 'combat', href: '/combat', label: 'menu.combat' },
   { key: 'storehouse', href: '/storehouse', label: 'menu.storehouse', short: 'menu.storehouse.short' },
   { key: 'castle', href: '/castle', label: 'menu.castle', short: 'menu.castle.short' },
-  { key: 'hiscores', href: '/hiscores', label: 'menu.hiscores' },
+  { key: 'hiscores', href: '/hiscores', label: 'menu.hiscores', wide: true },
 ];
 
 const isCurrent = (href: string, path: string) =>
@@ -71,9 +74,7 @@ export function Shell({ children }: { children: ReactNode }) {
           <span data-slot="shell.tray">
             <TrayButton />
           </span>
-          <IconButton label={t('shell.account')} onClick={() => navigate(withPanel('settings'))}>
-            <Person />
-          </IconButton>
+          <AccountMenu />
         </div>
       </header>
       <nav className={s.menu} aria-label={t('shell.menu')} data-menu>
@@ -82,6 +83,7 @@ export function Shell({ children }: { children: ReactNode }) {
             key={m.key}
             href={m.href}
             data-ui="MenuLink"
+            data-wide={m.wide}
             aria-current={isCurrent(m.href, path) ? 'page' : undefined}
             className={s.menuLink}
             onClick={(e) => (e.preventDefault(), navigate(m.href))}

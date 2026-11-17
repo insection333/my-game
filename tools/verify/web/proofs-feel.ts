@@ -11,6 +11,9 @@
 // - A goal pays in a supply cache, opened in a moment that says what it held.
 // - A big sale asks first: "Sell all but 1" says what it comes to and waits; "Keep them" keeps them
 //   and hands the focus back; selling says what it brought in, where the focus now is.
+// - On a phone the menu at the foot holds five places, and Hiscores is in the account menu behind the
+//   picture at the top right (session 130, the owner): it opens as a small popup with a cross, Escape
+//   closes it and hands the focus back, and its Hiscores leads to the ladders. The wide rail keeps it.
 import type { Page } from 'playwright';
 import { playerWith, say } from './proofs-lanes.ts';
 import type { Served } from './session.ts';
@@ -41,6 +44,42 @@ async function workLands(page: Page, problems: string[]) {
     await page.locator('[data-shell="gains"]', { hasText: 'Woodcutting XP' }).waitFor({ timeout: 2_000 });
   } catch (err) {
     problems.push(`Feel: failed where ${step} (${say(err)})`);
+  }
+}
+
+export async function accountMenu(page: Page, problems: string[]) {
+  let step = 'the Hearth opens on a phone';
+  try {
+    await page.goto(page.url().replace(/\/[^/?]*(\?.*)?$/, '/'));
+    await page.waitForFunction(() => document.documentElement.dataset.ready === 'true');
+    step = 'the menu at the foot leaves Hiscores out';
+    if (await page.locator('[data-menu] a[href="/hiscores"]').isVisible())
+      problems.push('Account menu: Hiscores is still in the menu at the foot on a phone');
+    step = 'the account button opens its menu';
+    const button = page.getByRole('button', { name: 'Your account' });
+    await button.click();
+    const menu = page.getByRole('dialog', { name: 'Your account' });
+    await menu.waitFor({ timeout: 5_000 });
+    for (const name of ['Hiscores', 'Deeds', 'Your profile', 'Settings'])
+      if (!(await menu.getByRole('link', { name }).isVisible())) problems.push(`Account menu: no ${name}`);
+    step = 'Escape closes it and hands the focus back';
+    await page.keyboard.press('Escape');
+    await menu.waitFor({ state: 'hidden', timeout: 2_000 });
+    if (!(await button.evaluate((el) => el === document.activeElement)))
+      problems.push('Account menu: closing it does not hand the focus back to its button');
+    step = 'its Hiscores leads to the ladders';
+    await button.click();
+    await menu.getByRole('link', { name: 'Hiscores' }).click();
+    await page.locator('[data-slot="hiscores.ladder"]').waitFor({ timeout: 10_000 });
+    if (await menu.isVisible()) problems.push('Account menu: still open on the page it led to');
+    step = 'the wide rail keeps Hiscores';
+    await page.setViewportSize({ width: 1440, height: 900 });
+    if (!(await page.locator('[data-menu] a[href="/hiscores"]').isVisible()))
+      problems.push('Account menu: the wide rail lost Hiscores');
+  } catch (err) {
+    problems.push(`Account menu: failed where ${step} (${say(err)})`);
+  } finally {
+    await page.setViewportSize({ width: 390, height: 844 });
   }
 }
 
@@ -195,6 +234,7 @@ export async function runFeelProofs(served: Served): Promise<string[]> {
   try {
     await workLands(page, problems);
     await keyboardHolds(page, problems);
+    await accountMenu(page, problems);
     await connectionSaid(page, problems);
   } finally {
     await page.close();

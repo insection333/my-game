@@ -167,7 +167,7 @@
   grid-area: menu;
   z-index: 10;
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   /* Clears the phone's home indicator (with viewport-fit=cover in index.html). */
   height: calc(var(--menu-h) + env(safe-area-inset-bottom, 0px));
   padding-bottom: env(safe-area-inset-bottom, 0px);
@@ -190,6 +190,11 @@
 
 .menuLink[aria-current='page'] {
   color: var(--woad);
+}
+
+/* On a phone the foot holds five places; Hiscores is in the account menu (session 130). */
+.menuLink[data-wide] {
+  display: none;
 }
 
 .menuLabel {
@@ -323,6 +328,10 @@
 
   .menuLabel {
     font-size: 0.6875rem;
+  }
+
+  .menuLink[data-wide] {
+    display: flex;
   }
 
   .stripArea {
