@@ -19,6 +19,8 @@ export const castle = {
   'castle.called': 'Answered today',
   'castle.short.purse': '{gold} more gold needed',
   'castle.short.treasury': '{gold} more needed in the treasury',
+  'castle.short.marks': '{marks} more war marks needed',
+  'castle.short.marksOne': '1 more war mark needed',
   'castle.streak': 'Streak {streak} of {max}',
   'castle.decree': 'This week: {decree}',
   'castle.decree.iron-ramparts': 'Iron ramparts',

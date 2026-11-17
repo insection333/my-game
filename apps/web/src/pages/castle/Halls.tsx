@@ -7,7 +7,7 @@ import { ActionRow, Button, ItemIcon, Panel, Pill } from '@idle-clash/ui';
 import { useState } from 'react';
 import { relicGives, relicName, techDoes, techName } from './labels.ts';
 import { castleAct, castleRun } from './store.ts';
-import { affords, useSyncedCastle } from './synced.ts';
+import { affords, lacks, useSyncedCastle } from './synced.ts';
 import s from './castle.module.css';
 
 /** What a relic gives at a level, in words. */
@@ -42,7 +42,7 @@ function College() {
                 icon={<ItemIcon name={`tech-${x.id}`} size={32} />}
                 name={techName(x.id)}
                 status={<Pill>{t('castle.rank', { rank: fmt.int(rank), ranks: fmt.int(TECH.RANKS) })}</Pill>}
-                facts={[techDoes(x.id)]}
+                facts={[techDoes(x.id), ...(cost ? lacks(castle, purse, cost) : [])]}
                 actions={
                   cost ? (
                     <Button
@@ -105,6 +105,9 @@ function Relic({ id }: { id: string }) {
   const cost = E.relicCost(castle, id);
   const temper = E.temperCost(castle, id);
   const isWorn = worn.includes(id);
+  // What the next forge or temper lacks, and why a forged relic cannot be put on (session 126).
+  const next = cost ?? temper;
+  const full = level > 0 && !isWorn && worn.length >= RELIC_SOCKETS;
   const levelText = t('castle.relic.level', { level: fmt.int(level), levels: fmt.int(RELIC.LEVELS) });
   const tryTemper = async () => {
     setHeld(false);
@@ -131,6 +134,8 @@ function Relic({ id }: { id: string }) {
           : []),
         ...(temper ? [t('castle.temper.cost', { gold: fmt.short(temper.gold), marks: fmt.int(temper.marks) })] : []),
         ...(held ? [t('castle.temper.held')] : []),
+        ...(full ? [t('castle.relic.socketsFull', { sockets: fmt.int(RELIC_SOCKETS) })] : []),
+        ...(next ? lacks(castle, purse, next) : []),
       ]}
       actions={
         <>
