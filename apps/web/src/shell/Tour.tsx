@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { useGame } from '../game/hooks.ts';
 import { useLocation } from '../router.ts';
 import { floorOf, placeCard, ringOf } from './tourPlace.ts';
+import { stepWords } from './tour-words.ts';
 import s from './tour.module.css';
 
 const STEPS = [
@@ -82,7 +83,7 @@ export function Tour() {
       />
       <div className={s.card} role="dialog" aria-label={t('tour.title')} data-tour-step={step + 1} style={place}>
         <CloseButton className={s.close} label={t('tour.skip')} onClick={end} />
-        <p>{t(STEPS[step].key)}</p>
+        <p>{stepWords(STEPS[step].key)}</p>
         <div className={s.buttons}>
           <Button variant="primary" onClick={next}>
             {step + 1 < STEPS.length ? t('tour.next') : t('tour.done')}
