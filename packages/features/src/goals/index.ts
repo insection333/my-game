@@ -36,7 +36,8 @@ export const goals = defineFeature({
     'hearth.goals': ({ state, now }) => {
       if (!firstStepsDone(state)) {
         const rows = firstStepRows(state, now);
-        const done = rows.filter((r) => r.state === 'claimed').length;
+        // A step done counts, its gold claimed or not (session 129: two steps offering Claim read "0 of 6").
+        const done = rows.filter((r) => r.state === 'claimed' || r.state === 'ready').length;
         return {
           title: t('goals.firstSteps'),
           progress: t('goals.progress', { done: fmt.int(done), total: fmt.int(rows.length) }),
