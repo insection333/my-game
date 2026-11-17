@@ -174,6 +174,8 @@ export const castleWar = {
   'castle.relic.wear': 'Wear',
   'castle.relic.remove': 'Take off',
   'castle.relic.worn': 'Worn',
+  // A forged relic that cannot be worn while every socket is filled (session 126).
+  'castle.relic.socketsFull': 'All {sockets} worn: take one off to wear this',
   'castle.relic.tempers': 'Tempered +{tempers}: {pct} stronger',
   'castle.temper': 'Temper: {pct} chance',
   'castle.temper.cost': '{gold} and {marks} war marks a try',

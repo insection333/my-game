@@ -38,5 +38,18 @@ export function shortText(castle: E.Castle, purse: number, gold: number): string
   return castle.payFromTreasury ? t('castle.short.treasury', { gold: more }) : t('castle.short.purse', { gold: more });
 }
 
+/** Every shortfall of a cost in gold and war marks, each said by how much more is needed (session 126:
+ *  the Halls' Study, Forge and Temper were greyed with no word of either). */
+export function lacks(castle: E.Castle, purse: number, cost: { gold: number; marks: number }): string[] {
+  const gold = shortText(castle, purse, cost.gold);
+  const marks = cost.marks - castle.warMarks;
+  return [
+    ...(gold ? [gold] : []),
+    ...(marks > 0
+      ? [marks === 1 ? t('castle.short.marksOne') : t('castle.short.marks', { marks: fmt.int(marks) })]
+      : []),
+  ];
+}
+
 /** Whether the castle holds the AP. */
 export const hasAp = (castle: E.Castle, ap: number): boolean => castle.activeAp + 1e-9 >= ap;
