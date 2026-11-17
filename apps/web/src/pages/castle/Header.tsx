@@ -2,7 +2,7 @@
 // work starts high on a phone: AP with the Call to arms (and its streak) on one, the castle's rating, war
 // marks, this week's decree and any shield on the other; the orders of the day (session 40); then why the
 // last action was refused, or what opens the tab shown.
-import { AP, fmt, t } from '@idle-clash/content';
+import { AP, dayTurns, fmt, t } from '@idle-clash/content';
 import { castleEngine as E } from '@idle-clash/features';
 import { Button, Panel, Pill, ProgressBar, TextLink } from '@idle-clash/ui';
 import { navigate } from '../../router.ts';
@@ -20,6 +20,16 @@ export function Header({ note }: { note: string | null }) {
   const streak = answered ? castle.streakAtLastCta : E.effectiveStreak(castle, now);
   const vigilance = E.vigilanceOf(castle, now);
   const ap = t('castle.ap', { ap: fmt.int(Math.floor(castle.activeAp)), cap: fmt.int(cap) });
+  // How AP comes back on a day answered (session 127: a lord short of AP had no word of when).
+  const flow = E.apFlow(castle, now);
+  const rate = flow && fmt.int(Math.round(flow.perHour));
+  const flowLine = !flow
+    ? null
+    : flow.full
+      ? t('castle.apFull')
+      : flow.fullAt !== null
+        ? t('castle.apFlow', { rate: rate!, time: fmt.when(flow.fullAt, now) })
+        : t('castle.apFlowDay', { rate: rate!, back: dayTurns(now) });
   return (
     <section data-section>
       <Panel>
@@ -28,13 +38,14 @@ export function Header({ note }: { note: string | null }) {
             <div className={s.ap}>
               <span className={s.apText}>{ap}</span>
               <ProgressBar value={castle.activeAp / cap} label={ap} />
+              {flowLine && <span className={s.muted}>{flowLine}</span>}
             </div>
             <div className={s.call}>
               {answered ? (
                 <Pill tone="moss">{t('castle.called')}</Pill>
               ) : (
                 <Button variant="primary" disabled={busy} onClick={() => void castleAct({ type: 'callToArms' })}>
-                  {t('castle.call', { ap: fmt.int(Math.floor(E.pendingReserve(castle, now))) })}
+                  {t('castle.call', { ap: fmt.int(Math.floor(E.callGain(castle, now))) })}
                 </Button>
               )}
               <span className={s.muted}>

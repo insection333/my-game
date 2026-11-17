@@ -17,6 +17,10 @@ export const castle = {
   'castle.ap': '{ap} of {cap} AP',
   'castle.call': 'Call to arms: +{ap} AP',
   'castle.called': 'Answered today',
+  // How AP comes back on a day answered (session 127).
+  'castle.apFlow': '+{rate} AP an hour, full at {time}',
+  'castle.apFlowDay': '+{rate} AP an hour until the day turns {back}',
+  'castle.apFull': 'Full: spend some to keep it flowing',
   'castle.short.purse': '{gold} more gold needed',
   'castle.short.treasury': '{gold} more needed in the treasury',
   'castle.short.marks': '{marks} more war marks needed',
