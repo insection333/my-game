@@ -71,3 +71,21 @@ export function claimCallToArms(c: Castle, now: number): CallResult {
 /** Spends AP, or null when there is not enough. */
 export const spendAp = (c: Castle, ap: number): Castle | null =>
   c.activeAp + 1e-9 >= ap ? { ...c, activeAp: Math.max(0, c.activeAp - ap) } : null;
+
+/** What answering today's Call to arms would give, as answering it reckons (session 127: the button said
+ *  today's reserve at the old streak, without the 5 AP more). 0 once answered. */
+export function callGain(c: Castle, now: number): number {
+  const r = claimCallToArms(c, now);
+  return r.ok ? r.gained : 0;
+}
+
+/** How AP flows on a day answered: its rate, and when the cap is reached if that comes before the day
+ *  turns; null on a day not yet answered, when AP waits for the call (session 127). */
+export function apFlow(c: Castle, now: number): { perHour: number; fullAt: number | null; full: boolean } | null {
+  if (c.lastCtaDateUtc !== formatUtcDate(now)) return null;
+  const perHour = apPerHour(c, now) * streakMult(c.streakAtLastCta);
+  const missing = apCap(c, now) - c.activeAp;
+  if (missing <= 0) return { perHour, fullAt: null, full: true };
+  const fullAt = now + (missing / perHour) * HOUR;
+  return { perHour, fullAt: fullAt <= endOfUtcDay(c.lastCtaDateUtc) ? fullAt : null, full: false };
+}
