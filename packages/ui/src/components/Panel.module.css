@@ -29,3 +29,24 @@
 .flush {
   padding: var(--s-2) 0 var(--s-1);
 }
+
+/* On wide screens a panel stands a little off the page, lit along its top edge, and its title is marked
+   with gold leaf (session 131). */
+@media (min-width: 1024px) {
+  .panel {
+    box-shadow:
+      var(--raise),
+      inset 0 1px 0 var(--lit);
+  }
+
+  .title::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 0.8em;
+    margin-right: 10px;
+    vertical-align: -0.04em;
+    border-radius: 2px;
+    background: var(--gold-leaf);
+  }
+}

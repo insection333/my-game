@@ -63,3 +63,15 @@
     var(--surface) calc(100% / var(--n) - 2px) calc(100% / var(--n))
   );
 }
+
+/* On wide screens a bar is a little heavier (session 131). */
+@media (min-width: 1024px) {
+  .track,
+  .fill {
+    border-radius: 4px;
+  }
+
+  .track {
+    height: 8px;
+  }
+}

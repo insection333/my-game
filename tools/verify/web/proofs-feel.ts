@@ -14,6 +14,9 @@
 // - On a phone the menu at the foot holds five places, and Hiscores is in the account menu behind the
 //   picture at the top right (session 130, the owner): it opens as a small popup with a cross, Escape
 //   closes it and hands the focus back, and its Hiscores leads to the ladders. The wide rail keeps it.
+// - On wide screens the game sits in its frame (session 131): the header and the rail in the lodge's
+//   night in the light theme too, the crest at the rail's head and who is playing at its foot, the page
+//   held in gold leaf on the rail; a phone keeps its own header, with neither.
 import type { Page } from 'playwright';
 import { playerWith, say } from './proofs-lanes.ts';
 import type { Served } from './session.ts';
@@ -78,6 +81,54 @@ export async function accountMenu(page: Page, problems: string[]) {
       problems.push('Account menu: the wide rail lost Hiscores');
   } catch (err) {
     problems.push(`Account menu: failed where ${step} (${say(err)})`);
+  } finally {
+    await page.setViewportSize({ width: 390, height: 844 });
+  }
+}
+
+/** How light a colour is, 0 to 1. */
+const lightness = (rgb: string) => {
+  const [r, g, b] = (rgb.match(/[\d.]+/g) ?? ['0', '0', '0']).map(Number);
+  return (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
+};
+
+export async function frameDrawn(page: Page, problems: string[]) {
+  let step = 'the Hearth opens wide';
+  try {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto(page.url().replace(/\/[^/?]*(\?.*)?$/, '/'));
+    await page.waitForFunction(() => document.documentElement.dataset.ready === 'true');
+    step = 'the frame is drawn in the night';
+    const look = () =>
+      page.evaluate(() => {
+        const header = document.querySelector('header')!;
+        const rail = document.querySelector('[data-menu]')!;
+        const here = rail.querySelector('[aria-current="page"]');
+        const crest = document.querySelector('[data-crest]');
+        const foot = document.querySelector('[data-rail-foot]');
+        const seen = (el: Element | null) => !!el && el.getBoundingClientRect().width > 0;
+        return {
+          header: getComputedStyle(header).backgroundImage,
+          headerInk: getComputedStyle(header).color,
+          rail: getComputedStyle(rail).backgroundImage,
+          here: here ? getComputedStyle(here).boxShadow : '',
+          crest: seen(crest),
+          foot: seen(foot),
+        };
+      });
+    const wide = await look();
+    if (!wide.header.includes('gradient') || !wide.rail.includes('gradient'))
+      problems.push('Frame: the header and the rail are not drawn in the night on a wide screen');
+    if (lightness(wide.headerInk) < 0.7) problems.push("Frame: the header's words are not light on its night");
+    if (!wide.here.includes('inset')) problems.push('Frame: the page you are on is not marked on the rail');
+    if (!wide.crest || !wide.foot) problems.push("Frame: the rail's crest or its foot is missing");
+    step = 'a phone keeps its own header';
+    await page.setViewportSize({ width: 390, height: 844 });
+    const narrow = await look();
+    if (narrow.header !== 'none' || narrow.crest || narrow.foot)
+      problems.push("Frame: a phone's header took the wide frame");
+  } catch (err) {
+    problems.push(`Frame: failed where ${step} (${say(err)})`);
   } finally {
     await page.setViewportSize({ width: 390, height: 844 });
   }
@@ -235,6 +286,7 @@ export async function runFeelProofs(served: Served): Promise<string[]> {
     await workLands(page, problems);
     await keyboardHolds(page, problems);
     await accountMenu(page, problems);
+    await frameDrawn(page, problems);
     await connectionSaid(page, problems);
   } finally {
     await page.close();
