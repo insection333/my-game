@@ -34,7 +34,7 @@ export const en: Record<string, string> = {
   'shell.gold': '{amount} gold',
   'shell.reconnecting': 'Reconnecting. Your lanes keep working.',
   'shell.notices': 'Notices',
-  'shell.account': 'Account and settings',
+  'shell.account': 'Your account',
   'shell.lanes': 'Lanes',
   'shell.close': 'Close',
   'menu.hearth': 'Hearth',
