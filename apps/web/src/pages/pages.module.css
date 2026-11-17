@@ -225,6 +225,23 @@ a.row:hover {
   max-width: 360px;
 }
 
+/* On wide screens a skill's head is a raised band across the page, its bar given more length (session 131). */
+@media (min-width: 1024px) {
+  .skillHead {
+    padding: var(--s-4) var(--s-5);
+    border: 1px solid var(--line);
+    border-radius: var(--r-panel);
+    background: linear-gradient(135deg, var(--surface), var(--surface-2));
+    box-shadow:
+      var(--raise),
+      inset 0 1px 0 var(--lit);
+  }
+
+  .skillBar {
+    max-width: 480px;
+  }
+}
+
 .iconCell {
   width: 32px;
   height: 32px;

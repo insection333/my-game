@@ -48,7 +48,7 @@ Built at 320 px first. Three widths are specified and checked: 320, 390 and 1,44
 
 ```
 ┌────────┬────────────────────────────────────────────┬──────────────────┐
-│ Idle   │ 🔥 The fire burns · 4:12      ⚜ 12,400   🔔 ◯ │                  │
+│ ▣ Idle │                    🔥 4:12   ⚜ 12,400   🔔 ◯ │                  │
 │ Clash  ├────────────────────────────────────────────┤  Lanes           │
 │        │                                            │  ┌─────────────┐ │
 │ Hearth │                                            │  │ Gathering   │ │
@@ -57,13 +57,16 @@ Built at 320 px first. Three widths are specified and checked: 320, 390 and 1,44
 │ Store- │        max 880 px, centred in the column   │  ┌─────────────┐ │
 │ house  │                                            │  │ Artisan …   │ │
 │ Hiscor.│                                            │  └─────────────┘ │
-│        │                                            │  (Combat, and the│
-│        │                                            │  fire's lane)    │
+│ ┌────┐ │                                            │  (Combat, and the│
+│ │you │ │                                            │  fire's lane)    │
+│ └────┘ │                                            │                  │
 └────────┴────────────────────────────────────────────┴──────────────────┘
   rail 200                                               lanes panel 320
 ```
 
 Between 768 and 1,023 px the rail collapses to icons (64 px) and the lanes panel becomes the phone's lanes strip under the header.
+
+**The frame** (session 131, the owner: the desktop should look like a high-end game). From 768 px the header and the rail are drawn in the lodge's night in either theme (what is in them takes the dark theme's colours), the page you are on marked on the rail in gold leaf with a bar at its left. From 1,024 px the rail's head carries the crest (the game's mark and name, level with the header, whose own name then gives way) and its foot who is playing (their picture in its frame, name, title or rank, total level; not on a window under 620 px tall); panels, a skill's head and buttons stand a little off the page, lit along their top edge, each panel's title marked with gold leaf; the Storehouse's tiles are slots that lift under the pointer; each lane in the lanes panel is its own tile edged on the left by how it stands (moss at work, grey at rest, the alert's colour stopped). From 1,600 px the page column widens to 1,080 px. Phones keep their own look.
 
 ### Slots the shell owns
 

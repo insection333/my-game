@@ -19,6 +19,7 @@ import { noticesOf } from '../pages/notices.ts';
 import { FireBadge } from './FireBadge.tsx';
 import { Bell, Coin, MenuGlyph } from './glyphs.tsx';
 import { AccountMenu } from './AccountMenu.tsx';
+import { RailFoot } from './RailFoot.tsx';
 import { LaneList, LaneStrip, laneViews } from './Lanes.tsx';
 import { useCountUp } from './countUp.ts';
 import { Sounds } from '../sound/Sounds.tsx';
@@ -57,7 +58,7 @@ export function Shell({ children }: { children: ReactNode }) {
       <a className={s.skip} href="#main" data-ui="Link">
         {t('shell.skip')}
       </a>
-      <header className={s.header}>
+      <header className={s.header} data-chrome>
         <a className={s.wordmark} href="/" data-ui="Wordmark" onClick={(e) => (e.preventDefault(), navigate('/'))}>
           <GameMark size={28} />
           <span className={s.wordmarkName}>{t('shell.name')}</span>
@@ -77,7 +78,13 @@ export function Shell({ children }: { children: ReactNode }) {
           <AccountMenu />
         </div>
       </header>
-      <nav className={s.menu} aria-label={t('shell.menu')} data-menu>
+      {/* The wide rail's crest and foot (session 131), in the frame's night with the menu between them. */}
+      <div className={s.crest} data-chrome data-crest aria-hidden="true">
+        <GameMark size={32} />
+        <span className={s.crestName}>{t('shell.name')}</span>
+      </div>
+      <RailFoot />
+      <nav className={s.menu} aria-label={t('shell.menu')} data-menu data-chrome>
         {MENU.map((m) => (
           <a
             key={m.key}
