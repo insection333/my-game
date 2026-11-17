@@ -141,6 +141,35 @@ export function castles(ctx: Ctx, ids: { elder: string; keeper: string }, now: n
     marks: 4,
     truce: false,
   });
+  // The keeper's side of the same battles, as the game writes both lords' reports, so the keeper's card
+  // counts them (session 128: it said "0 won, 0 lost" beside the elder's reports of them). Written after
+  // the elder's, whose ids stay 1 to 6.
+  const theirs = (h: number, kind: string, data: Record<string, unknown>) =>
+    store.log(ids.keeper, at(h), kind, { foe: ids.elder, ...data });
+  theirs(20, 'spyOut', { mission: 'poison', success: false });
+  theirs(5, 'siegeIn', {
+    outcome: 'decisive',
+    r: 1.31,
+    attack: 12_480,
+    defense: 9_710,
+    fortune: 0.019,
+    formation: [30, 25, 45],
+    walls: 61,
+    raided: 1_196_000,
+    marks: 0,
+    truce: false,
+  });
+  theirs(2, 'siegeOut', {
+    outcome: 'repelled',
+    r: 0.91,
+    attack: 10_130,
+    defense: 11_350,
+    fortune: 0.02,
+    formation: [20, 35, 45],
+    gold: 0,
+    marks: 0,
+    fee: 0,
+  });
 }
 
 /** For the admin page: the elder reports the keeper for cheating, and has besieged them five days running. */

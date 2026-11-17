@@ -15,6 +15,7 @@ import { badgeName, bannerStyle } from './honours-style.ts';
 import { MenuGlyph } from '../shell/glyphs.tsx';
 import { PageHead } from './PageHead.tsx';
 import { profileHref } from './ProfileSheet.tsx';
+import { unrankedNote } from './hiscores-words.ts';
 import s from './hiscores.module.css';
 
 const PHONE_ROWS = 10;
@@ -115,7 +116,7 @@ export function Hiscores() {
                   )}
                 </table>
               )}
-              {data && !you && <p className={s.note}>{t('hiscores.unranked')}</p>}
+              {data && !you && <p className={s.note}>{unrankedNote(ladder?.skill ?? 'total')}</p>}
             </Slot>
           </Panel>
         </section>
