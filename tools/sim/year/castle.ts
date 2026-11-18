@@ -33,6 +33,9 @@ export interface CastleDay {
   tier: number;
   marks: number;
   rating: number;
+  /** The troops' evolution, the least evolved of the three (0 to 3), and their lowest level. */
+  evolution: number;
+  troops: number;
 }
 
 /** A share of the gold left after the treasury is topped up, spent on the castle each visit; nearly all once
@@ -184,6 +187,8 @@ export class Lordship {
     if (sum(c.levels) > sum(was.levels)) firsts.push('castle:raise');
     if (sum(c.techs) > sum(was.techs)) firsts.push('castle:study');
     if (c.excavationDepth > was.excavationDepth) firsts.push('castle:dig');
+    const evolved = (x: E.Castle) => UNIT_IDS.reduce((n, u) => n + E.evolutionOf(x.levels[u]), 0);
+    if (evolved(c) > evolved(was)) firsts.push('castle:evolve');
     if (sum(c.relics) > sum(was.relics)) firsts.push('castle:relic');
     if (sum(c.tempers) > sum(was.tempers)) firsts.push('castle:temper');
     this.castle = c;
@@ -200,6 +205,8 @@ export class Lordship {
         tier: c.incursionTier,
         marks: c.warMarksEarned,
         rating: c.rating,
+        evolution: Math.min(...UNIT_IDS.map((u) => E.evolutionOf(c.levels[u]))),
+        troops: Math.min(...UNIT_IDS.map((u) => c.levels[u])),
       },
     };
   }

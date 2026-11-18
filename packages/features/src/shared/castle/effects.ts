@@ -87,7 +87,7 @@ function apply(m: Modifiers, e: CastleEffect, times = 1): void {
   }
 }
 
-/** A unit's evolution, 0 to 3, by its level (levels 1, 10, 25 and 50). */
+/** A unit's evolution, 0 to 3, by its level (EVOLUTION_LEVELS: 1, 6, 14 and 22). */
 export const evolutionOf = (level: number): number => EVOLUTION_LEVELS.filter((l) => level >= l).length - 1;
 
 /** This week's realm decree: floor(now in seconds ÷ 604,800) mod 5 (the plan, with no cron job). */

@@ -15,6 +15,8 @@ type Check = (ok: boolean, what: string) => void;
 const YEAR = 365;
 /** A year, and the 25% either side a target may stray. */
 const [EARLY, LATE] = [Math.round(YEAR * 0.75), Math.round(YEAR * 1.25)];
+/** The steady player plays on to eighteen months, for the castle's long arc (session 138). */
+const MONTHS_18 = 548;
 const STAGES = [1, 7, 30, 90, 180, 365];
 const SEED = 11;
 /** A skill kept in its lane: days to each level (docs/EXPANSION.md section 2). */
@@ -38,10 +40,16 @@ export function yearChecks(check: Check, lines: string[]): { steady: Year; light
   const points: number[] = [];
   /** The day each work of the steading reached each of its stages. */
   const raised: Record<string, number[]> = Object.fromEntries(WORKS.map((w) => [w.id, []]));
-  const steady = playYear(STEADY, SEED, LATE, (day, state) => {
-    points[day] = pointsOf(state);
-    for (const w of WORKS) for (let n = raised[w.id].length; n < stageOf(state, w.id); n++) raised[w.id].push(day);
-  });
+  const steady = playYear(
+    STEADY,
+    SEED,
+    MONTHS_18,
+    (day, state) => {
+      points[day] = pointsOf(state);
+      for (const w of WORKS) for (let n = raised[w.id].length; n < stageOf(state, w.id); n++) raised[w.id].push(day);
+    },
+    true,
+  );
   const light = playYear(LIGHT, SEED, LATE);
 
   for (const y of [steady, light]) {
@@ -203,6 +211,13 @@ export function yearChecks(check: Check, lines: string[]): { steady: Year; light
 /** Days in a year the edict may go unpowered (a short treasury), and what a castle reaches in a year. */
 const UNPOWERED_DAYS = 0.1;
 const CASTLE_YEAR = { level: 15, tier: 26, marks: 550 };
+/** The days each of the troops' later evolutions should come in (session 138): the second within the first
+ *  months, the third about half a year in, the fourth past the year, each gap about double the last. */
+const EVOLUTION_DAYS = [
+  [30, 120],
+  [150, 220],
+  [365, 450],
+] as const;
 
 function castleYear(y: Year, check: Check, lines: string[]) {
   lines.push(`\n## ${y.kind.name}'s castle`);
@@ -222,11 +237,21 @@ function castleYear(y: Year, check: Check, lines: string[]) {
     `${y.kind.name}'s edict is powered on ${kept.length - unpowered} of ${kept.length} days (at least 90%)`,
   );
   const end = kept.at(-1)?.castle;
-  const levels = [91, 182, 273, 365].map((n) => y.days[n - 1]?.castle?.level ?? 0);
+  const quarters = [91, 182, 273, 365, 456, 548].filter((n) => n <= y.days.length);
+  const levels = quarters.map((n) => y.days[n - 1]?.castle?.level ?? 0);
   check(
     levels.every((l, i) => i === 0 || l > levels[i - 1]),
     `${y.kind.name}'s castle grows every quarter (${levels.map((l) => l.toFixed(1)).join(', ')})`,
   );
+  // The troops' evolutions, each in its window (the light player's year ends at 365, before the fourth).
+  for (const [n, [from, to]] of EVOLUTION_DAYS.entries()) {
+    if (to > y.days.length) continue;
+    const day = y.days.find((d) => (d.castle?.evolution ?? 0) > n)?.day ?? Infinity;
+    check(
+      day >= from && day <= to,
+      `${y.kind.name}'s troops evolve a ${['second', 'third', 'fourth'][n]} time on day ${day} (between ${from} and ${to})`,
+    );
+  }
   if (y.kind.name === 'The steady player' && end) {
     check(
       end.level >= CASTLE_YEAR.level,
