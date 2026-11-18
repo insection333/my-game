@@ -16,12 +16,15 @@ const DRILL_MANY = 5;
 export function Army() {
   return (
     <div className={s.grid}>
+      {/* The troops and the castellan who leads them on one side, how they stand on the other: the
+          formations and the trap (session 133), so the columns run alike. */}
       <div className={s.column}>
         <Troops />
+        <Defences part="castellan" />
       </div>
       <div className={s.column}>
         <Formations />
-        <Defences />
+        <Defences part="trap" />
       </div>
     </div>
   );
@@ -61,8 +64,8 @@ function Troops() {
                       ]),
                   ...(level < ECONOMY.MAX_LEVEL ? [shortText(castle, purse, cost)].filter((x) => x !== null) : []),
                 ]}
-                progress={
-                  <div className={s.drills}>
+                foot={
+                  <>
                     <Button
                       variant="quiet"
                       disabled={busy || !hasAp(castle, SINKS.DRILL_AP)}
@@ -77,7 +80,7 @@ function Troops() {
                     >
                       {t('castle.drillMany', { times: fmt.int(DRILL_MANY) })}
                     </Button>
-                  </div>
+                  </>
                 }
                 actions={
                   <>

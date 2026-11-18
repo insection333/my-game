@@ -136,7 +136,9 @@ function Formation(props: {
   );
 }
 
-export function Defences() {
+/** The trap or the castellan, each its own panel (the Army sets them in different columns: session 133);
+ *  each says why a change waits. */
+export function Defences({ part }: { part: 'trap' | 'castellan' }) {
   const { castle, now, purse, totalLevel, busy } = useSyncedCastle();
   if (!castle) return null;
   const wait = defenceWait(castle, now);
@@ -150,37 +152,37 @@ export function Defences() {
         {t('castle.choose', { gold: fmt.short(cost) })}
       </Button>
     );
-  return (
-    <>
-      <section data-section>
-        <Panel title={t('castle.trap.title')} flush>
-          <div data-slot="castle.trap">
-            {TRAPS.map((x) => (
-              <ActionRow
-                key={x.id}
-                name={trapName(x.id)}
-                facts={[t('castle.trap.against', { unit: unitName(x.against) })]}
-                actions={choose(castle.activeTrap === x.id, () => void castleAct({ type: 'defense', trap: x.id }))}
-              />
-            ))}
-          </div>
-        </Panel>
-      </section>
-      <section data-section>
-        <Panel title={t('castle.castellan.title')} flush>
-          <div data-slot="castle.castellan">
-            {DOCTRINES.map((x) => (
-              <ActionRow
-                key={x.id}
-                name={castellanName(x.id)}
-                facts={[castellanDoes(x.id)]}
-                actions={choose(castle.castellan === x.id, () => void castleAct({ type: 'defense', castellan: x.id }))}
-              />
-            ))}
-          </div>
-          {wait && <p className={s.note}>{wait}</p>}
-        </Panel>
-      </section>
-    </>
+  return part === 'trap' ? (
+    <section data-section>
+      <Panel title={t('castle.trap.title')} flush>
+        <div data-slot="castle.trap">
+          {TRAPS.map((x) => (
+            <ActionRow
+              key={x.id}
+              name={trapName(x.id)}
+              facts={[t('castle.trap.against', { unit: unitName(x.against) })]}
+              actions={choose(castle.activeTrap === x.id, () => void castleAct({ type: 'defense', trap: x.id }))}
+            />
+          ))}
+        </div>
+        {wait && <p className={s.note}>{wait}</p>}
+      </Panel>
+    </section>
+  ) : (
+    <section data-section>
+      <Panel title={t('castle.castellan.title')} flush>
+        <div data-slot="castle.castellan">
+          {DOCTRINES.map((x) => (
+            <ActionRow
+              key={x.id}
+              name={castellanName(x.id)}
+              facts={[castellanDoes(x.id)]}
+              actions={choose(castle.castellan === x.id, () => void castleAct({ type: 'defense', castellan: x.id }))}
+            />
+          ))}
+        </div>
+        {wait && <p className={s.note}>{wait}</p>}
+      </Panel>
+    </section>
   );
 }

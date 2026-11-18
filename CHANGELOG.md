@@ -270,3 +270,4 @@
 - Session 130: on a phone Hiscores leaves the menu at the foot for an account menu behind your picture at the top right (Hiscores, Deeds, Your profile, Settings), a small popup with a cross; the wide rail keeps it.
 - Session 131: the desktop gets a frame: the header and rail in the lodge's night with gold leaf for where you are, a crest and who is playing on the rail, raised panels and buttons, the Storehouse as slots, and each lane in the lanes panel a tile edged by how it stands.
 - Session 132: the bug sweep: the account menu closes when Tab takes the focus out of it, and a phone on its side reaches every place on the rail (Hiscores fell below the screen).
+- Session 133: Castle Clash's tabs are a bar of the castle's pictures that stays at the top as you scroll; the banner and header are one card (side by side on a wide screen); the War and Army columns are rebalanced; Drill, Plan, Wear and Take off sit on one line with their row's button.
