@@ -153,7 +153,14 @@ async function onAWideScreen(served: Served, problems: string[]) {
     });
     if (!beside) problems.push('Castle: on a wide screen the banner does not stand beside the header');
     step = 'each stronghold standing says what holds it, and all cost alike';
-    const rows = await page.locator('[data-slot="castle.strongholds"] [data-ui="ActionRow"]').allInnerTexts();
+    // The strongholds come with the day's targets, after the castle: wait for one standing (on GitHub's
+    // slower machines they were read before they arrived).
+    const strongholds = page.locator('[data-slot="castle.strongholds"] [data-ui="ActionRow"]');
+    await strongholds
+      .filter({ hasText: /to win|Beyond you/ })
+      .first()
+      .waitFor({ timeout: 15_000 });
+    const rows = await strongholds.allInnerTexts();
     const standing = rows.filter((r) => /to win|Beyond you/.test(r));
     if (!standing.length || standing.some((r) => !r.includes('at the gate')))
       problems.push('Castle: a stronghold does not say what holds it beside its chance');
