@@ -2,7 +2,7 @@
 // defender's walls hold an even siege to 15–40%), and two poisonings take it near certain, yet the row
 // said only "About 0% to win" beside its Siege. A scouted lord under even odds now says the spies can tip
 // it, until they have.
-import { castleEngine as E } from '@idle-clash/features';
+import type { castleEngine as E } from '@idle-clash/features';
 import { describe, expect, it } from 'vitest';
 import { spiesWouldTip } from '../src/pages/castle/targets.ts';
 
