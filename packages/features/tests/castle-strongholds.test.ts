@@ -38,6 +38,17 @@ function assault(c: Castle, m: Mercenary, roll: number, chest = 1e15) {
 }
 
 describe("the day's strongholds", () => {
+  // Session 136: the easiest stands at 0.75 of the lord's rating, under the 0.8 where a siege on a far
+  // weaker lord costs more (a check on bullying, not on a stronghold): it cost a new lord 31,727 beside
+  // the others' 27,000. Every stronghold now costs the same to besiege, as fatigue alone adds to it.
+  it('all cost the same to besiege, the easiest too', () => {
+    for (const level of [1, 10, 25]) {
+      const c = castle(level);
+      const fees = mercenaries(c, T0, 5).map((m) => mercenaryCosts(c, m, T0).gold);
+      expect(new Set(fees).size).toBe(1);
+    }
+  });
+
   it('are always five, each paying more than the one before it', () => {
     const c = castle();
     const five = mercenaries(c, T0, 5);

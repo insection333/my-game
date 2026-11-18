@@ -11,6 +11,8 @@
 //   (session 135): half the treasury typed stands the slider at the middle, the slider at 10% writes a
 //   tenth, Withdraw says what arrives and what is lost on the way before the press, and the press moves
 //   that.
+// - Each stronghold standing says what holds it (its strongest troops and its trap) beside its chance, and
+//   all cost alike to besiege (session 136: the easiest cost more than the four harder ones).
 // - The wounded are healed by as much as the slider picks, at that much's price (session 134): 5% picked
 //   takes 5 points off the wounds, not all of them.
 import type { Page } from 'playwright';
@@ -150,6 +152,21 @@ async function onAWideScreen(served: Served, problems: string[]) {
       return a.right <= b.left + 1 && Math.abs(a.top - b.top) < 2;
     });
     if (!beside) problems.push('Castle: on a wide screen the banner does not stand beside the header');
+    step = 'each stronghold standing says what holds it, and all cost alike';
+    // The strongholds come with the day's targets, after the castle: wait for one standing (on GitHub's
+    // slower machines they were read before they arrived).
+    const strongholds = page.locator('[data-slot="castle.strongholds"] [data-ui="ActionRow"]');
+    await strongholds
+      .filter({ hasText: /to win|Beyond you/ })
+      .first()
+      .waitFor({ timeout: 15_000 });
+    const rows = await strongholds.allInnerTexts();
+    const standing = rows.filter((r) => /to win|Beyond you/.test(r));
+    if (!standing.length || standing.some((r) => !r.includes('at the gate')))
+      problems.push('Castle: a stronghold does not say what holds it beside its chance');
+    const fees = new Set(standing.map((r) => /Siege for ([^\n]+)/.exec(r)?.[1]));
+    if (fees.size !== 1)
+      problems.push(`Castle: the day's strongholds cost differently to besiege (${[...fees].join(', ')})`);
     step = "a lord's Plan shares its Siege's line";
     const lord = page.locator('[data-slot="castle.targets"] [data-ui="ActionRow"]').first();
     await lord.waitFor({ timeout: 10_000 });
