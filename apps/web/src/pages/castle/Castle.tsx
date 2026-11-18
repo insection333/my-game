@@ -98,7 +98,7 @@ export function Castle({ path }: { path: string }) {
       <div className={s.column}>
         <section data-section className={s.keep}>
           <Banner />
-          <Header note={E.tabOpen(castle, tab) ? null : t('castle.opens.halls')} />
+          <Header note={E.tabOpen(castle, tab) ? null : t('castle.opens.halls')} overview={tab === 'war'} />
         </section>
         {!E.tabOpen(castle, tab) ? null : tab === 'war' ? (
           <War />

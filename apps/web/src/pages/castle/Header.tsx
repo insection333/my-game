@@ -12,8 +12,10 @@ import { castleAct } from './store.ts';
 import { useSyncedCastle } from './synced.ts';
 import s from './castle.module.css';
 
-/** `note`: what opens the tab shown, while it is closed. */
-export function Header({ note }: { note: string | null }) {
+/** `note`: what opens the tab shown, while it is closed. `overview`: the War, where the day's orders and
+ *  the castle's next step are shown (session 141: on every tab they stood the keep 440 px tall on a phone,
+ *  and each tab's own work began below the first screen); the orders link to where each is done. */
+export function Header({ note, overview }: { note: string | null; overview: boolean }) {
   const { castle, now, busy, refused, refusedAt } = useSyncedCastle();
   if (!castle) return null;
   const cap = E.apCap(castle, now);
@@ -63,8 +65,8 @@ export function Header({ note }: { note: string | null }) {
         )}
         {vigilance > 0 && <Pill tone="moss">{t('castle.vigilance', { count: fmt.int(vigilance) })}</Pill>}
       </div>
-      <Orders />
-      <Next />
+      {overview && <Orders />}
+      {overview && <Next />}
       {note && <p className={s.closed}>{note}</p>}
       {/* A battle's refusal is said on its own row in the War (session 119). */}
       {refused && refusedAt === null && (
