@@ -185,7 +185,7 @@ export function playRealm(perKind: number, days: number, seed: number): Realm {
       // A careful lord goes to war at most three times a day (past that, fatigue raises every cost) and
       // never stakes more than a quarter of their purse on one fee.
       const war = l.castle.siegesToday < SIEGE.FATIGUE_FREE;
-      if (war && l.kind.raids && E.lordsOpen(l.castle) && siegeALord(l, t, day)) continue;
+      if (war && l.kind.raids && E.lordsOpen(l.castle, t) && siegeALord(l, t, day)) continue;
       if (war && l.kind.raids && mercenary(l, t, day)) continue;
       // A raider with AP and gold to spare (a week's earnings in hand, the edict paid for) presses on past
       // fatigue against the strongholds still standing, for the harder ones' pay and the rout (session 38).
@@ -219,8 +219,15 @@ export function playRealm(perKind: number, days: number, seed: number): Realm {
 
   /** A lord in the bracket, unshielded, worth the trip: scouted first, besieged at fair odds. */
   function siegeALord(l: Lord, t: number, day: number): boolean {
-    const near = lords
-      .filter((o) => o !== l && !E.isShielded(o.castle, t) && E.inBracket(l.castle.rating, o.castle.rating))
+    // As the server offers them (session 137): open to lords, those in reach (the near bracket while it
+    // holds three, shielded or not, else a step further), unshielded.
+    const open = lords.filter((o) => o !== l && E.lordsOpen(o.castle, t));
+    const near = E.lordsInReach(
+      l.castle.rating,
+      open.map((o) => ({ o, rating: o.castle.rating })),
+      (x) => !E.isShielded(x.o.castle, t),
+    )
+      .lords.map((x) => x.o)
       .sort((a, b) => b.castle.treasury - a.castle.treasury);
     for (const o of near) {
       sync(o, t);
@@ -232,7 +239,7 @@ export function playRealm(perKind: number, days: number, seed: number): Realm {
         E.castleSide(o.castle, t, 'defense', { totalLevel: o.kind.totalLevel, fair: true }),
         0.5,
       ).r;
-      const prize = E.raidableGold(o.castle, t);
+      const prize = E.raidableGold(o.castle, t, o.kind.totalLevel);
       if (odds < 1.02 || prize < costs.gold * 1.5 || costs.gold > l.purse / 4) continue;
       const paid = E.pay({ castle: l.castle, purse: l.purse }, costs.gold);
       if (!paid) return false;

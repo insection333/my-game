@@ -126,9 +126,10 @@ export function resolveSiege(
   const defMods = modifiers(def, now);
   const reward = overextensionReward(ratio);
 
-  // Spoils: what is raidable, less vigilance, less for a far weaker castle, never past the raid cap.
+  // Spoils: what is raidable (never what the edict needs), less vigilance, less for a far weaker castle,
+  // never past the raid cap.
   const raidable = Math.min(
-    raidableGold(def, now) * (1 - SIEGE.VIGILANCE_RAIDABLE * defSide.vigilance) * reward,
+    raidableGold(def, now, levels.defender) * (1 - SIEGE.VIGILANCE_RAIDABLE * defSide.vigilance) * reward,
     SIEGE.RAID_CAP_REQUIRED * requiredTreasury(def, levels.defender),
   );
   const factor = Math.min(1, lootFactor(r) * (outcome === 'repelled' ? 0 : lift(attMods.loot)));

@@ -1,6 +1,6 @@
 // Castle Clash over HTTP (docs/castle-clash/): a castle opens at total level 100; every change acts once
 // per request id, in one transaction with the save; a siege moves gold between two lords and the war
-// chest and never makes any; a raid that empties a treasury switches the lord's edict off in their save;
+// chest and never makes any; a treasury that runs short switches the lord's edict off in their save;
 // both lords read the siege in their reports.
 import { ORDERS, XP_TABLE } from '@idle-clash/content';
 import { allSkills, castleEngine as E } from '@idle-clash/features';
@@ -95,7 +95,7 @@ describe('Castle Clash over HTTP', () => {
     expect((await view(l)).warChest).toBe(1_000);
   });
 
-  it('writes the edict into the save, and takes it away when a raid leaves the treasury short', async () => {
+  it('writes the edict into the save, and takes it away when the treasury runs short', async () => {
     s = await server();
     const keeper = await lord('Keeper', 10, 2_000_000);
     await open(keeper);
@@ -104,7 +104,8 @@ describe('Castle Clash over HTTP', () => {
     const mirror = () => s.ctx.store.read(keeper.id, s.clock.now)!.doc.state.features.castle as E.CastleMirror;
     expect(mirror()).toMatchObject({ edict: 'vigor' });
     expect(mirror().pct).toBeGreaterThan(5);
-    // The treasury is emptied (as a raid would); the next game request rewrites the mirror.
+    // The treasury is emptied (as upkeep or a withdrawal would; a raid stops at the edict's floor, session
+    // 137); the next game request rewrites the mirror.
     const castles = new CastleStore(s.ctx);
     castles.write({ ...castles.read(keeper.id)!, treasury: 0 });
     await post(s, '/api/game/command', { requestId: 'req-stoke-0001', command: { type: 'stoke' } }, keeper.cookie);
@@ -245,7 +246,10 @@ describe('Castle Clash over HTTP', () => {
     expect((await view(l)).castle!.warMarks - before).toBe(won + (done ? ORDERS.MARKS : 0));
   });
 
-  it('refuses a shielded lord, an unknown one, yourself, and the war room before an average level of 5', async () => {
+  // Session 137: in a realm of a handful of castles the near bracket stood empty; the list reaches further
+  // until it holds three, and never offers a castle not yet open to lords (it was offered, and its Siege
+  // refused as "shielded").
+  it('refuses a shielded lord, an unknown one, yourself, and the war room before lords open', async () => {
     s = await server();
     const att = await lord('Eager', 20, 50_000_000);
     const def = await lord('Novice', 20, 0);

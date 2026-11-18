@@ -120,12 +120,12 @@ export class CastleStore {
       });
   }
 
-  /** Unshielded, unbanned lords within a rating bracket, nearest first (at most 20 to choose from). */
+  /** Unbanned lords within a rating bracket, nearest first, at most 40: shielded ones too, so the lords in
+   *  reach are counted as they stand (session 137); the caller offers only the unshielded. */
   lordsNear(
     self: string,
     rating: number,
     bracket: { low: number; high: number },
-    now: number,
   ): { id: string; name: string; rating: number }[] {
     const low = Math.floor(rating * bracket.low);
     const high = Math.ceil(rating * bracket.high);
@@ -137,13 +137,12 @@ export class CastleStore {
         and(
           gte(playerBastions.bastionRating, low),
           lte(playerBastions.bastionRating, high),
-          lte(playerBastions.shieldUntilUtc, now),
           ne(playerBastions.userId, self),
           isNull(players.bannedAt),
         ),
       )
       .orderBy(sql`abs(${playerBastions.bastionRating} - ${rating})`)
-      .limit(20)
+      .limit(40)
       .all();
   }
 

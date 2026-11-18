@@ -3,7 +3,7 @@
 export const castleWar = {
   // The War room.
   'castle.targets.title': 'Lords to challenge',
-  'castle.targets.none': 'No lord near your rating is open to attack today. The strongholds below always are.',
+  'castle.targets.none': 'No lord within reach of your rating is open to attack today. The strongholds always are.',
   'castle.target.rating': 'Rating {rating}',
   'castle.target.mercenary': 'Mercenary stronghold',
   'castle.merc.name': 'The {first} {second}',
@@ -29,7 +29,9 @@ export const castleWar = {
   'castle.fought.account': 'The battle',
   'castle.incursion.title': 'Incursion',
   'castle.lords.opens':
-    'Lords open to challenge once your castle averages level {level} (now {now}). Until then, the fortress and the strongholds are your war.',
+    'Lords open to challenge in {time}, or sooner once your castle averages level {level} (now {now}). Until then, the fortress and the strongholds are your war.',
+  // The lords on offer reach further where few stand near (session 137).
+  'castle.targets.wider': 'Few lords stand near your rating, so these reach further: a weaker lord pays less, a stronger one more.',
   'castle.target.strikeBack': 'Strike back',
   'castle.target.struckAt': 'Struck you {when}',
   'castle.target.fallen': 'Fallen',

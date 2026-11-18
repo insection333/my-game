@@ -18,15 +18,16 @@ import { TargetSheet } from './TargetSheet.tsx';
 import { defenceOf, outOfReach, paysLine, pct, sheetOf, standingOf, type Target } from './targets.ts';
 import s from './castle.module.css';
 
-function useTargets(): { lords: Target[]; strongholds: Target[] } {
+function useTargets(): { lords: Target[]; strongholds: Target[]; reach: number } {
   const { targets } = useSyncedCastle();
   useEffect(() => {
     void loadTargets(targets === null);
     // Loaded once each time the War opens; an action that changes them reloads them (store.ts).
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  if (!targets) return { lords: [], strongholds: [] };
+  if (!targets) return { lords: [], strongholds: [], reach: 0 };
   return {
+    reach: targets.reach ?? 0,
     lords: targets.lords.map((l) => ({ ...l, merc: null })),
     strongholds: targets.mercenaries.map((m) => ({
       id: m.id,
@@ -42,7 +43,7 @@ function useTargets(): { lords: Target[]; strongholds: Target[] } {
 
 export function War() {
   const { panel } = useLocation();
-  const { lords, strongholds } = useTargets();
+  const { lords, strongholds, reach } = useTargets();
   const id = panel === 'target' ? new URLSearchParams(location.search).get('target') : null;
   const open = id ? [...lords, ...strongholds].find((x) => x.id === id) : undefined;
   return (
@@ -54,7 +55,7 @@ export function War() {
         <Strongholds strongholds={strongholds} />
       </div>
       <div className={s.column}>
-        <Lords lords={lords} />
+        <Lords lords={lords} reach={reach} />
         <LatestReports />
       </div>
       {open && <TargetSheet target={open} onClose={() => navigate(withPanel(null).replace(/[?&]target=[^&]*/, ''))} />}
@@ -137,10 +138,10 @@ function Strongholds({ strongholds }: { strongholds: Target[] }) {
   );
 }
 
-function Lords({ lords }: { lords: Target[] }) {
-  const { castle } = useSyncedCastle();
+function Lords({ lords, reach }: { lords: Target[]; reach: number }) {
+  const { castle, now } = useSyncedCastle();
   if (!castle) return null;
-  const open = E.lordsOpen(castle);
+  const open = E.lordsOpen(castle, now);
   return (
     <section data-section>
       <Panel title={t('castle.targets.title')} flush>
@@ -148,6 +149,7 @@ function Lords({ lords }: { lords: Target[] }) {
           {!open ? (
             <p className={s.lead}>
               {t('castle.lords.opens', {
+                time: fmt.duration(E.lordsOpenAt(castle) - now),
                 level: fmt.int(UNLOCKS.LORDS_AVG_LEVEL),
                 now: fmt.num(Math.floor(E.avgLevel(castle) * 10) / 10),
               })}
@@ -158,6 +160,7 @@ function Lords({ lords }: { lords: Target[] }) {
             lords.map((x) => <TargetRow key={x.id} target={x} />)
           )}
         </div>
+        {open && reach > 0 && lords.length > 0 && <p className={s.note}>{t('castle.targets.wider')}</p>}
       </Panel>
     </section>
   );

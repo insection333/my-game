@@ -29,7 +29,7 @@ export function Treasury() {
           <p className={s.held}>
             {t('castle.treasuryHeld', {
               gold: fmt.short(castle.treasury),
-              raidable: fmt.short(E.raidableGold(castle, now)),
+              raidable: fmt.short(E.raidableGold(castle, now, totalLevel)),
             })}
           </p>
           <p>{t('castle.treasury.required', { gold: fmt.short(required) })}</p>

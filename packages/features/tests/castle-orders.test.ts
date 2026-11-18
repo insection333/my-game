@@ -8,8 +8,9 @@ import { bastionRating, newCastle, ordersOf, recordOrder, type Castle } from '..
 const T0 = Date.UTC(2026, 10, 3, 9);
 const DAY = 86_400_000;
 
-function castle(level: number, id = 'lord'): Castle {
-  const c = newCastle(id, T0 - 30 * DAY);
+/** A castle `days` old (30 by default: lords open at two weeks, or at an average level of 3). */
+function castle(level: number, id = 'lord', days = 30): Castle {
+  const c = newCastle(id, T0 - days * DAY);
   const levels = Object.fromEntries(Object.keys(c.levels).map((k) => [k, level])) as Castle['levels'];
   const out = { ...c, levels };
   return { ...out, rating: bastionRating(out) };
@@ -18,7 +19,7 @@ function castle(level: number, id = 'lord'): Castle {
 describe('the orders of the day', () => {
   it('are three, the strongholds first, spies and lords only once lords are open', () => {
     for (let i = 0; i < 40; i++) {
-      const young = ordersOf(castle(1, `young-${i}`), T0);
+      const young = ordersOf(castle(1, `young-${i}`, 1), T0);
       expect(young.list).toHaveLength(3);
       expect(young.list[0].kind).toBe('strongholds');
       // A young castle is asked for one stronghold; an older one for two or three.

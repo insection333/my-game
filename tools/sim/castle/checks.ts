@@ -1,6 +1,6 @@
 // Castle Clash's checks on simulated play (session 33): a realm of 24 lords (steady raiders, light lords
-// who keep to themselves, lapsed lords who come back one day in four) for twelve weeks on the pure engine
-// (realm.ts), and the odds a lord meets at each castle level. The year's own checks (year/checks.ts) hold
+// who keep to themselves, lapsed lords who come back one day in four) for 26 weeks on the pure engine
+// (realm.ts), realms of 6 and 12 (session 137), and the odds a lord meets at each castle level. The year's own checks (year/checks.ts) hold
 // the rest of the game to its targets with an edict running.
 import { SPOILS, TEMPER } from '@idle-clash/content';
 import { castleEngine as E } from '@idle-clash/features';
@@ -126,6 +126,8 @@ export function castleChecks(check: Check, lines: string[]): void {
     `It never ends and never runs away: at +20 a relic is ×${E.temperMult(20).toFixed(2)}, and a try always has at least ${(TEMPER.CHANCE_MIN * 100).toFixed(0)}%`,
   );
 
+  smallRealms(check, lines);
+
   // What a lord meets at each castle level, with an even formation: a stronghold for every taste, a fair
   // siege held by the walls, and fortresses as far as the castle's level and a little past.
   lines.push(`\n## The odds a castle meets, with an even formation`);
@@ -151,6 +153,31 @@ export function castleChecks(check: Check, lines: string[]): void {
       `Level ${level}: incursions open up to about the castle's level (tier ${frontier})`,
     );
   }
+}
+
+/** A realm of a handful of lords (session 137): a test among friends. Lords open two weeks in (or at an
+ *  average level of 3), and the lords on offer reach further when few stand near, so every lord who goes to
+ *  war meets another lord within four weeks; and no edict goes dark for it. */
+function smallRealms(check: Check, lines: string[]): void {
+  for (const perKind of [2, 4])
+    for (const seed of [33, 7]) {
+      const realm = playRealm(perKind, 42, seed);
+      const n = realm.lords.length;
+      const raiders = realm.lords.filter((l) => l.kind.raids);
+      const first = raiders.map((l) =>
+        Math.min(99, ...realm.sieges.filter((x) => x.attacker === l.id).map((x) => x.day)),
+      );
+      const powered = Math.min(...realm.lords.map((l) => l.powered.filter(Boolean).length / l.powered.length));
+      lines.push(
+        `A realm of ${n} lords (seed ${seed}): ${realm.sieges.length} sieges on lords in six weeks; each raider's first on day ${first.join(', ')}; the least powered edict ${pct(powered)} of days`,
+      );
+      check(
+        Math.max(...first) <= 28,
+        `In a realm of ${n} lords, every lord at war meets another lord within four weeks (the last on day ${Math.max(...first)})`,
+      );
+      check(powered >= 0.9, `In a realm of ${n} lords, every edict stays powered on 90% of days (${pct(powered)})`);
+      check(goldOf(realm) === realm.start + realm.income, `In a realm of ${n} lords, the gold balances to the coin`);
+    }
 }
 
 /** Tries and war marks, on average over `runs` chases, to temper one relic to +5, +10 and +20. */

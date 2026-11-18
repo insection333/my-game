@@ -274,3 +274,4 @@
 - Session 134: Castle Clash's presses say a verb, its amount and its price (Level up +1/+5, Train +1/+5, Rank up +1); healing and wall repair take a slider for how much, priced so no split is cheaper.
 - Session 135: the treasury's typed amount gains a slider beside it (each moves the other), saying before the press what it leaves, what arrives and what is lost on the way; all is moved as all there is when the press lands.
 - Session 136: every stronghold costs the same to besiege (the easiest cost more), and each says what holds it (its strongest troops and the trap at its gate) beside its chance.
+- Session 137: lords open at an average castle level of 3 or two weeks after the castle is raised (about day 50 before), and the lords on offer reach further when few stand near, so a small realm has a war between lords; a siege never takes what the defender's edict needs, so a lord away never comes back to a dark edict.

@@ -23,13 +23,13 @@ function opponent(io: Io, att: Castle, target: string): Castle | 'unknown' | 'se
 }
 
 /** A siege: on one of the day's strongholds from the first day, on a lord once lords are open (each side's
- *  castle at an average level of 5: below it, a castle cannot be besieged). */
+ *  castle at an average level of 3 or two weeks raised: before, a castle cannot be besieged). */
 export function siege(io: Io, att: Castle, target: string): Outcome {
   if (target.startsWith('merc:')) return mercenarySiege(io, att, target);
-  if (!E.lordsOpen(att)) return { ok: false, reason: 'locked' };
+  if (!E.lordsOpen(att, io.now)) return { ok: false, reason: 'locked' };
   const def = opponent(io, att, target);
   if (typeof def === 'string') return { ok: false, reason: def };
-  if (!E.lordsOpen(def)) return { ok: false, reason: 'shielded' };
+  if (!E.lordsOpen(def, io.now)) return { ok: false, reason: 'shielded' };
   const costs = E.siegeCosts(att, E.brRatio(att, def), io.now);
   const refusal = E.siegeRefusal(att, target, E.isShielded(def, io.now), costs.ap, io.now);
   if (refusal) return { ok: false, reason: refusal };
@@ -130,10 +130,10 @@ function mercenarySiege(io: Io, att: Castle, target: string): Outcome {
 
 export function spy(io: Io, att: Castle, target: string, missionId: string): Outcome {
   if (target.startsWith('merc:')) return { ok: false, reason: 'unknown' };
-  if (!E.lordsOpen(att)) return { ok: false, reason: 'locked' };
+  if (!E.lordsOpen(att, io.now)) return { ok: false, reason: 'locked' };
   const def = opponent(io, att, target);
   if (typeof def === 'string') return { ok: false, reason: def };
-  if (!E.lordsOpen(def)) return { ok: false, reason: 'shielded' };
+  if (!E.lordsOpen(def, io.now)) return { ok: false, reason: 'shielded' };
   const refusal = E.spyRefusal(att, def, missionId, io.now);
   if (refusal) return { ok: false, reason: refusal };
   const mission = E.missionOf(missionId)!;
@@ -145,7 +145,7 @@ export function spy(io: Io, att: Castle, target: string, missionId: string): Out
   const r = E.runMission(paid.castle, def, missionId, io.now, roll());
   store(io, r.attacker);
   store(io, r.defender);
-  const report = r.success && missionId === 'scout' ? E.scoutReport(r.defender, io.now) : null;
+  const report = r.success && missionId === 'scout' ? E.scoutReport(r.defender, io.now, totalLevelOf(io.ctx, target)) : null;
   io.castles.log(io.playerId, io.now, 'spyOut', { foe: target, mission: missionId, success: r.success, report });
   const names = io.castles.names([io.playerId, target]);
   // The spy master hears how it went (session 69), as a siege's attacker does.

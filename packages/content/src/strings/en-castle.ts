@@ -87,7 +87,7 @@ export const castle = {
   'castle.edict.active': '{edict}: {gives}',
   'castle.edict.unpaid': 'Needs {gold} in the treasury',
   'castle.treasury.title': 'Treasury',
-  'castle.treasury.required': 'An edict needs {gold}; under it, your garrison fights at 80%.',
+  'castle.treasury.required': 'An edict needs {gold}; under it, your garrison fights at 80%. A siege never takes that.',
   'castle.treasury.upkeep': 'An edict costs 2% of the treasury a day, paused two days after your last Call to arms.',
   'castle.deposit': 'Deposit',
   'castle.topUp': 'Top up to {target}',

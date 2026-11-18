@@ -153,6 +153,10 @@ export const SIEGE = {
   SPOILS_TO_WAR_CHEST: 0.05,
   /** One siege raids at most this many times the defender's required treasury (DESIGN.md 11.3). */
   RAID_CAP_REQUIRED: 2,
+  /** A siege never takes the treasury below what the defender's edict needs, with two days' upkeep on top
+   *  (session 137): the edict is the castle's gift to the rest of the game, and a lord away for days should
+   *  not come back to find it dark. What a lord keeps above it, for a stronger edict, is the stake. */
+  EDICT_FLOOR: 1.05,
   /** War marks: a grazing and a decisive breach, and a defender who repels a siege. */
   MARKS_GRAZE: 8,
   MARKS_DECISIVE: 14,
@@ -161,6 +165,15 @@ export const SIEGE = {
   TARGETS: 5,
   BRACKET_LOW: 0.75,
   BRACKET_HIGH: 1.35,
+  /** The lords on offer reach a step further while fewer than LORDS_WANTED stand in reach (session 137: in
+   *  a realm of a handful of castles the near bracket stood empty). The far weaker cost more and pay less
+   *  (overextension); the far stronger pay more (bold sieges). */
+  BRACKET_STEPS: [
+    [0.75, 1.35],
+    [0.6, 1.6],
+    [0.5, 2],
+  ] as readonly (readonly [number, number])[],
+  LORDS_WANTED: 3,
   /** Today's strongholds, by your rating. Walls favour a defender, so a stronghold of your own rating holds
    *  (R about 0.87 with an even formation): from 0.75 to 1.15, two fall to any attack, one is even, and two
    *  need a formation set against them (DESIGN.md 11.7; the plan's 0.85 to 1.2 left four of five out of reach). */
@@ -253,11 +266,14 @@ export const SINKS = {
 /** The weekly decree: floor(now in seconds ÷ 604,800) mod 5. */
 export const DECREE_WEEK_SECONDS = 604_800;
 
-/** When Castle Clash and its tabs open (DESIGN.md section 6; session 40: the war from the first day, lords
- *  at an average castle level of 5). */
+/** When Castle Clash and its tabs open (DESIGN.md section 6; session 40: the war from the first day; session
+ *  137: lords at an average castle level of 3 or two weeks in). */
 export const UNLOCKS = {
   TOTAL_LEVEL: 100,
-  LORDS_AVG_LEVEL: 5,
+  /** Lords open at this average castle level or LORDS_AFTER_DAYS after the castle is raised, whichever is
+   *  first (session 137: at 5 alone they opened about day 50, past any test among friends). */
+  LORDS_AVG_LEVEL: 3,
+  LORDS_AFTER_DAYS: 14,
   RELIQUARY_MARKS_EARNED: 1,
 } as const;
 

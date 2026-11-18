@@ -93,7 +93,7 @@ Every player-facing name comes from the strings file in Phase 4; ids below are t
 - **Progressive tabs** (the plan's "progressive unlock gates"):
   - Citadel and Garrison are open from the start.
   - Incursions opens once any unit reaches level 3.
-  - The War Room opens at an average castle level of 5, with its novice shield noted.
+  - Lords open at an average castle level of 3, or two weeks after the castle is raised, whichever comes first (session 137; at 5 alone, about day 50).
   - The Reliquary opens with the first war mark earned.
 
 ## 7. How Castle Clash touches the rest of the game
@@ -226,7 +226,7 @@ What changed:
 
 18. **Four tabs, the War first.** War (`/castle`: the fortress, the day's strongholds, lords, reports), Army, Citadel and Halls. Old addresses lead to the new tabs.
 19. **Every battle a press away, set against the foe.** An attack on a known foe goes in the formation that does best against it, sent with the attack (`shares` on `siege` and `incursion`, checked whole). The standing attack formation is used only against a lord not scouted. A fortress's garrison is known without scouting. Its result lands on its own row: two bars race out, then the word and what it brought, with The battle a tap away. Nothing opens over the page.
-20. **The war from the first day.** The fortress and the strongholds open with the castle. Lords open at an average level of 5, on both sides: a castle below it can neither besiege nor be besieged. A siege on a stronghold no longer ends the novice shield.
+20. **The war from the first day.** The fortress and the strongholds open with the castle. Lords open at an average level of 5 (from session 137: level 3, or two weeks in), on both sides: a castle below it can neither besiege nor be besieged. A siege on a stronghold no longer ends the novice shield.
 21. **Orders of the day.** Three small aims each UTC day, shown in the header, each a link to where it is done:
     - The day's strongholds are always first (one for a young castle, two or three after).
     - Two more come from an incursion won, drilling (two for a young castle, five after), a dig, and, once lords are open, a spy or a siege on a lord.
@@ -265,6 +265,22 @@ The owner asked for a battle reports section that shows past battles and spy war
     - the formation as three named shares;
     - a spy's findings, and the spoils with their icons.
     A stronghold's report now keeps its id, so its arms match its row.
+
+### Sessions 136 and 137: the castle review (the owner, 18 November)
+
+The owner asked for a review of Castle Clash early, middle and late, and gave the decisions to Claude. The realm's simulation and the year's numbers found:
+
+28. **The strongholds made fair** (session 136). The day's easiest, at 0.75 of the lord's rating, fell under the 0.8 where a siege on a far weaker castle costs more, so it cost more than the four harder ones. Every stronghold now costs what a siege on a lord of your own rating does, and each says what holds it beside its chance.
+29. **Lords sooner** (session 137). At an average level of 5, a steady player first met another lord about day 50, past any test among friends. Lords now open at level 3 or two weeks after the castle is raised, whichever comes first, on both sides.
+30. **Lords in a small realm** (session 137). Lords were offered only from 0.75 to 1.35 of your rating, so in a realm of a handful of castles the list stood empty. The list now reaches a step further while fewer than three stand near: 0.6 to 1.6, then 0.5 to 2 (`SIEGE.BRACKET_STEPS`).
+    - The step is chosen over every lord open to lords, shielded or not, so a crowded bracket whose lords are shielded today does not spill onto the far weaker.
+    - A far weaker lord costs more to besiege and pays less (overextension); a far stronger one pays more. The page says when the list reaches further.
+    - Realms of 6 and 12 lords are now in the simulation: every lord at war meets another lord within four weeks (by day 16 in most).
+31. **The edict's floor** (session 137). With lords open sooner, the simulation found lords who play one day in four raiding each other on the day they come back. The raid left a treasury a coin under the edict's need, and upkeep put the edict out for the three days they were away: such lords kept it on 78% of days, where the check asks 90%.
+    - A siege now never takes the treasury below what the edict needs, plus two days' upkeep (`SIEGE.EDICT_FLOOR`, 1.05).
+    - The edict is the castle's gift to the rest of the game; a lord away should not come back to find it dark. What a lord keeps above it, for a stronger edict, is what war puts at stake.
+    - The scouting report and the treasury's "raidable" say the same.
+    - Every kind of lord now keeps the edict on 100% of days. The realm sees more sieges between lords than before (1,685 in 26 weeks, where 1,325 stood), each earning back its fee (1.00 of it).
 
 ## 12. Phases
 
