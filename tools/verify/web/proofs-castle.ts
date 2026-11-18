@@ -100,7 +100,8 @@ async function onAPhone(served: Served, problems: string[]) {
         return { treasury: c.castle.treasury, gold: g.state.items.gold ?? 0 };
       });
     const was = await read();
-    const treasury = page.locator('[data-slot="castle.treasury"]');
+    // The treasury's section: the treasury and Move gold, its own panel since session 139.
+    const treasury = page.locator('section').filter({ has: page.locator('[data-slot="castle.treasury"]') });
     await treasury.getByRole('button', { name: 'Withdraw', exact: true }).click();
     // Typing an amount moves the slider: half the treasury stands it at the middle.
     await treasury.getByLabel('Gold', { exact: true }).fill(String(Math.floor(was.treasury / 2)));

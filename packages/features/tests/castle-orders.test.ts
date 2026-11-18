@@ -65,3 +65,14 @@ describe('the orders of the day', () => {
     expect(ordersOf(c, T0 + DAY).paid).toBe(false);
   });
 });
+
+describe('an incursion asked for', () => {
+  it('is not drawn while no roll takes the fortress at the castle tier (session 139)', () => {
+    for (let i = 0; i < 60; i++) {
+      const far = { ...castle(2, `far-${i}`), incursionTier: 14 };
+      expect(ordersOf(far, T0).list.some((o) => o.kind === 'incursion')).toBe(false);
+    }
+    const near = Array.from({ length: 60 }, (_, i) => ordersOf(castle(10, `near-${i}`), T0).list).flat();
+    expect(near.some((o) => o.kind === 'incursion')).toBe(true);
+  });
+});

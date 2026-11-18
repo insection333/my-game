@@ -63,15 +63,22 @@ export function War() {
   );
 }
 
-/** The fortress at your tier: its garrison and trap, the chance in the formation set against it, what
- *  taking it gives, and Assault. */
+/** The fortress at a castle's tier: the formation set against it, its chance, and whether any roll takes
+ *  it (session 139: one beyond every roll offered Assault beside "0% to win"). */
+export function fortressOdds(castle: E.Castle, now: number) {
+  const best = E.bestOffense(castle, E.fortressSide(castle.incursionTier), now);
+  const chance = E.winChance(best.r);
+  return { best, chance, beyond: chance === 0 };
+}
+
+/** The fortress at your tier: its garrison and trap, the chance in the formation set against it (or that it
+ *  is beyond you for now), what taking it gives, and Assault. */
 function Fortress() {
   const { castle, now, busy } = useSyncedCastle();
   if (!castle) return null;
   const tier = castle.incursionTier;
   const fortress = E.fortressAt(tier);
-  const def = E.fortressSide(tier);
-  const best = E.bestOffense(castle, def, now);
+  const { best, chance, beyond } = fortressOdds(castle, now);
   const marks = Math.round(
     (SINKS.INCURSION_MARKS_BASE + Math.floor(tier / 2)) * E.lift(E.modifiers(castle, now).marks),
   );
@@ -88,14 +95,14 @@ function Fortress() {
             icon={<ItemIcon name="crest" crest={fortress.id} size={32} />}
             name={fortressName(fortress.id)}
             facts={[
-              t('castle.target.chance', { pct: pct(E.winChance(best.r)) }),
+              beyond ? t('castle.target.beyond') : t('castle.target.chance', { pct: pct(chance) }),
               t('castle.incursion.rewards', { marks: fmt.int(marks) }),
             ]}
             progress={<Fought battle="incursion" />}
             actions={
               <Button
                 variant="primary"
-                disabled={busy || !hasAp(castle, SINKS.INCURSION_AP)}
+                disabled={busy || beyond || !hasAp(castle, SINKS.INCURSION_AP)}
                 onClick={() => void fight('incursion', { type: 'incursion', shares: [...best.shares] })}
               >
                 {t('castle.incursion.assault', { ap: fmt.int(SINKS.INCURSION_AP) })}
