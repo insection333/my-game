@@ -145,7 +145,8 @@ export function spy(io: Io, att: Castle, target: string, missionId: string): Out
   const r = E.runMission(paid.castle, def, missionId, io.now, roll());
   store(io, r.attacker);
   store(io, r.defender);
-  const report = r.success && missionId === 'scout' ? E.scoutReport(r.defender, io.now, totalLevelOf(io.ctx, target)) : null;
+  const report =
+    r.success && missionId === 'scout' ? E.scoutReport(r.defender, io.now, totalLevelOf(io.ctx, target)) : null;
   io.castles.log(io.playerId, io.now, 'spyOut', { foe: target, mission: missionId, success: r.success, report });
   const names = io.castles.names([io.playerId, target]);
   // The spy master hears how it went (session 69), as a siege's attacker does.

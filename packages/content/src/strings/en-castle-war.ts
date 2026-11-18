@@ -31,7 +31,8 @@ export const castleWar = {
   'castle.lords.opens':
     'Lords open to challenge in {time}, or sooner once your castle averages level {level} (now {now}). Until then, the fortress and the strongholds are your war.',
   // The lords on offer reach further where few stand near (session 137).
-  'castle.targets.wider': 'Few lords stand near your rating, so these reach further: a weaker lord pays less, a stronger one more.',
+  'castle.targets.wider':
+    'Few lords stand near your rating, so these reach further: a weaker lord pays less, a stronger one more.',
   'castle.target.strikeBack': 'Strike back',
   'castle.target.struckAt': 'Struck you {when}',
   'castle.target.fallen': 'Fallen',
