@@ -2,7 +2,7 @@
 // fortress at your tier, the day's five strongholds and the lords to challenge, each row with its chance,
 // what it pays and its button; an attack goes in the formation set against the foe where the foe is known
 // (no setting it first), and its result lands on its own row, with the battle's account a tap away. Your
-// reports beside them. A lord's Plan opens their sheet: spies, the full plan, Report this player.
+// reports under the lords (session 133). A lord's Plan opens their sheet: spies, the full plan, Report this player.
 import { dayTurns, SINKS, SPY_MISSIONS, UNLOCKS, fmt, t } from '@idle-clash/content';
 import { castleEngine as E } from '@idle-clash/features';
 import { ActionRow, Button, ItemIcon, Panel, Pill } from '@idle-clash/ui';
@@ -47,12 +47,16 @@ export function War() {
   const open = id ? [...lords, ...strongholds].find((x) => x.id === id) : undefined;
   return (
     <div className={s.grid}>
+      {/* The day's foes on one side, the lords and what came of the war on the other (session 133), so
+          neither column runs long while the other ends early. */}
       <div className={s.column}>
         <Fortress />
         <Strongholds strongholds={strongholds} />
-        <Lords lords={lords} />
       </div>
-      <LatestReports />
+      <div className={s.column}>
+        <Lords lords={lords} />
+        <LatestReports />
+      </div>
       {open && <TargetSheet target={open} onClose={() => navigate(withPanel(null).replace(/[?&]target=[^&]*/, ''))} />}
     </div>
   );
@@ -182,6 +186,7 @@ function TargetRow({ target }: { target: Target }) {
   return (
     <ActionRow
       iconYields
+      wide={!target.merc}
       icon={<ItemIcon name="crest" crest={target.id} size={32} />}
       name={target.name}
       status={
@@ -211,14 +216,16 @@ function TargetRow({ target }: { target: Target }) {
             ]
       }
       progress={<Fought battle={target.id} />}
+      foot={
+        done || target.merc ? undefined : (
+          <Button variant="quiet" onClick={() => navigate(sheetOf(target.id))}>
+            {t('castle.target.open')}
+          </Button>
+        )
+      }
       actions={
         done ? undefined : (
           <>
-            {!target.merc && (
-              <Button variant="quiet" onClick={() => navigate(sheetOf(target.id))}>
-                {t('castle.target.open')}
-              </Button>
-            )}
             {!target.merc && chance === null ? (
               <Button
                 disabled={busy || !hasAp(castle, scoutCost.ap) || !affords(castle, purse, scoutCost.gold)}

@@ -1,10 +1,10 @@
-// Castle Clash's header, above every tab (SPEC.md section 5), kept to two short rows so each tab's own
-// work starts high on a phone: AP with the Call to arms (and its streak) on one, the castle's rating, war
+// Castle Clash's header, above every tab (SPEC.md section 5), in the keep's card beside or under the
+// castle's banner (session 133), kept to two short rows so each tab's own work starts high on a phone: AP with the Call to arms (and its streak) on one, the castle's rating, war
 // marks, this week's decree and any shield on the other; the orders of the day (session 40); then why the
 // last action was refused, or what opens the tab shown.
 import { AP, dayTurns, fmt, t } from '@idle-clash/content';
 import { castleEngine as E } from '@idle-clash/features';
-import { Button, Panel, Pill, ProgressBar, TextLink } from '@idle-clash/ui';
+import { Button, Pill, ProgressBar, TextLink } from '@idle-clash/ui';
 import { navigate } from '../../router.ts';
 import { decreeName } from './labels.ts';
 import { castleAct } from './store.ts';
@@ -31,50 +31,46 @@ export function Header({ note }: { note: string | null }) {
         ? t('castle.apFlow', { rate: rate!, time: fmt.when(flow.fullAt, now) })
         : t('castle.apFlowDay', { rate: rate!, back: dayTurns(now) });
   return (
-    <section data-section>
-      <Panel>
-        <div data-slot="castle.header" className={s.header}>
-          <div className={s.apRow}>
-            <div className={s.ap}>
-              <span className={s.apText}>{ap}</span>
-              <ProgressBar value={castle.activeAp / cap} label={ap} />
-              {flowLine && <span className={s.muted}>{flowLine}</span>}
-            </div>
-            <div className={s.call}>
-              {answered ? (
-                <Pill tone="moss">{t('castle.called')}</Pill>
-              ) : (
-                <Button variant="primary" disabled={busy} onClick={() => void castleAct({ type: 'callToArms' })}>
-                  {t('castle.call', { ap: fmt.int(Math.floor(E.callGain(castle, now))) })}
-                </Button>
-              )}
-              <span className={s.muted}>
-                {t('castle.streak', { streak: fmt.int(streak), max: fmt.int(AP.MAX_STREAK) })}
-              </span>
-            </div>
-          </div>
-          <div className={s.pills}>
-            <Pill tone="woad">{t('castle.rating', { rating: fmt.int(castle.rating) })}</Pill>
-            <Pill tone="gold">
-              {castle.warMarks === 1 ? t('castle.marksOne') : t('castle.marks', { marks: fmt.int(castle.warMarks) })}
-            </Pill>
-            <Pill>{t('castle.decree', { decree: decreeName(E.decreeOf(now).id) })}</Pill>
-            {E.isShielded(castle, now) && (
-              <Pill tone="moss">{t('castle.shielded', { time: fmt.duration(castle.shieldUntil - now) })}</Pill>
-            )}
-            {vigilance > 0 && <Pill tone="moss">{t('castle.vigilance', { count: fmt.int(vigilance) })}</Pill>}
-          </div>
-          <Orders />
-          {note && <p className={s.closed}>{note}</p>}
-          {/* A battle's refusal is said on its own row in the War (session 119). */}
-          {refused && refusedAt === null && (
-            <p className={s.refused} role="status">
-              {refused}
-            </p>
-          )}
+    <div data-slot="castle.header" className={s.header}>
+      <div className={s.apRow}>
+        <div className={s.ap}>
+          <span className={s.apText}>{ap}</span>
+          <ProgressBar value={castle.activeAp / cap} label={ap} />
+          {flowLine && <span className={s.muted}>{flowLine}</span>}
         </div>
-      </Panel>
-    </section>
+        <div className={s.call}>
+          {answered ? (
+            <Pill tone="moss">{t('castle.called')}</Pill>
+          ) : (
+            <Button variant="primary" disabled={busy} onClick={() => void castleAct({ type: 'callToArms' })}>
+              {t('castle.call', { ap: fmt.int(Math.floor(E.callGain(castle, now))) })}
+            </Button>
+          )}
+          <span className={s.muted}>
+            {t('castle.streak', { streak: fmt.int(streak), max: fmt.int(AP.MAX_STREAK) })}
+          </span>
+        </div>
+      </div>
+      <div className={s.pills}>
+        <Pill tone="woad">{t('castle.rating', { rating: fmt.int(castle.rating) })}</Pill>
+        <Pill tone="gold">
+          {castle.warMarks === 1 ? t('castle.marksOne') : t('castle.marks', { marks: fmt.int(castle.warMarks) })}
+        </Pill>
+        <Pill>{t('castle.decree', { decree: decreeName(E.decreeOf(now).id) })}</Pill>
+        {E.isShielded(castle, now) && (
+          <Pill tone="moss">{t('castle.shielded', { time: fmt.duration(castle.shieldUntil - now) })}</Pill>
+        )}
+        {vigilance > 0 && <Pill tone="moss">{t('castle.vigilance', { count: fmt.int(vigilance) })}</Pill>}
+      </div>
+      <Orders />
+      {note && <p className={s.closed}>{note}</p>}
+      {/* A battle's refusal is said on its own row in the War (session 119). */}
+      {refused && refusedAt === null && (
+        <p className={s.refused} role="status">
+          {refused}
+        </p>
+      )}
+    </div>
   );
 }
 

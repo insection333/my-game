@@ -73,6 +73,19 @@
   gap: var(--s-2);
 }
 
+/* Lesser presses on their own line under the name, side by side (session 133). */
+.foot {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-1) var(--s-3);
+}
+
+.grid[data-icon] > .foot {
+  grid-column: 2 / -1;
+}
+
 /* Narrow rows keep their buttons at the right, one above the other, so a row stays short; a button
    too wide to sit beside the name ("Study for 738.1K and 40 war marks") moves to a line of its own
    below it rather than squeezing the name and facts into a sliver (session 57). */
@@ -110,11 +123,38 @@
   .actions > * {
     min-width: 4.5rem;
   }
+
+  .foot {
+    flex: 1 1 100%;
+  }
+
+  /* Under the name, past the icon (Castle Clash's are 32 px). */
+  .grid[data-icon] > .foot {
+    padding-left: calc(32px + var(--s-3));
+  }
+
+  /* A wide button: the name takes its line; the foot (left) and the button (right) share the next. */
+  .grid[data-wide] > .main {
+    flex: 1 1 calc(100% - 4rem);
+  }
+
+  .grid[data-wide] > .foot {
+    flex: 0 1 auto;
+    order: 1;
+  }
+
+  .grid[data-wide] > .actions {
+    order: 2;
+  }
 }
 
 /* The narrowest rows (a 320 px phone): an icon that yields leaves its room to the name and the buttons. */
 @container (max-width: 300px) {
   .grid[data-yields] .icon {
     display: none;
+  }
+
+  .grid[data-yields] > .foot {
+    padding-left: 0;
   }
 }

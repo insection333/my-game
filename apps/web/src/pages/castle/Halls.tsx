@@ -117,6 +117,7 @@ function Relic({ id }: { id: string }) {
   return (
     <ActionRow
       iconYields
+      wide
       icon={<ItemIcon name={id} size={32} silhouette={level === 0} />}
       name={relicName(id)}
       status={
@@ -137,22 +138,19 @@ function Relic({ id }: { id: string }) {
         ...(full ? [t('castle.relic.socketsFull', { sockets: fmt.int(RELIC_SOCKETS) })] : []),
         ...(next ? lacks(castle, purse, next) : []),
       ]}
+      foot={
+        level === 0 ? undefined : isWorn ? (
+          <Button variant="quiet" disabled={busy} onClick={() => wear(worn.filter((x) => x !== id))}>
+            {t('castle.relic.remove')}
+          </Button>
+        ) : (
+          <Button variant="quiet" disabled={busy || worn.length >= RELIC_SOCKETS} onClick={() => wear([...worn, id])}>
+            {t('castle.relic.wear')}
+          </Button>
+        )
+      }
       actions={
         <>
-          {level > 0 &&
-            (isWorn ? (
-              <Button variant="quiet" disabled={busy} onClick={() => wear(worn.filter((x) => x !== id))}>
-                {t('castle.relic.remove')}
-              </Button>
-            ) : (
-              <Button
-                variant="quiet"
-                disabled={busy || worn.length >= RELIC_SOCKETS}
-                onClick={() => wear([...worn, id])}
-              >
-                {t('castle.relic.wear')}
-              </Button>
-            ))}
           {cost ? (
             <Button
               disabled={busy || castle.warMarks < cost.marks || !affords(castle, purse, cost.gold)}

@@ -1,17 +1,20 @@
-// Castle Clash (docs/castle-clash/, IA.md): the castle's banner (session 41) and its header (AP, the Call
-// to arms, the orders of the day, the decree, shields) over five tabs: the War first, where every battle
-// of the day is (session 40), then the Army, the Citadel, the Halls and the Reports (session 42). Before
-// total level 100 the page says when it opens; at 100 a lord raises their castle here. The tabs' old addresses still lead to them.
+// Castle Clash (docs/castle-clash/, IA.md): five tabs, the War first, where every battle of the day is
+// (session 40), then the Army, the Citadel, the Halls and the Reports (session 42), as a bar of the
+// castle's pictures that stays at the top as the page scrolls (session 133); under it the keep: the
+// castle's banner (session 41) and its header (AP, the Call to arms, the orders of the day, the decree,
+// shields) as one card, side by side where there is room. Before total level 100 the page says when it
+// opens; at 100 a lord raises their castle here. The tabs' old addresses still lead to them.
 import { fmt, t, UNLOCKS } from '@idle-clash/content';
 import { castleEngine as E } from '@idle-clash/features';
-import { Button, Panel, ProgressBar, Tabs } from '@idle-clash/ui';
+import { Button, Panel, ProgressBar } from '@idle-clash/ui';
 import type { ReactNode } from 'react';
-import { navigate, useLocation } from '../../router.ts';
+import { useLocation } from '../../router.ts';
 import { PageHead } from '../PageHead.tsx';
 import { Citadel } from './Citadel.tsx';
 import { Army } from './Army.tsx';
 import { Banner } from './Banner.tsx';
 import { Header } from './Header.tsx';
+import { CastleNav } from './Nav.tsx';
 import { Halls } from './Halls.tsx';
 import { ReportSheet } from './Account.tsx';
 import { ReportsTab } from './ReportsTab.tsx';
@@ -87,13 +90,16 @@ export function Castle({ path }: { path: string }) {
         </section>
       </>
     );
-  const tabs = CASTLE_TABS.map((id) => ({ href: PATH[id], label: t(LABEL[id]), current: id === tab }));
+  const tabs = CASTLE_TABS.map((id) => ({ id, href: PATH[id], label: t(LABEL[id]) }));
   return (
     <>
-      {head(<Tabs tabs={tabs} label={t('castle.title')} onNavigate={navigate} />)}
+      {head()}
+      <CastleNav tabs={tabs} current={tab} />
       <div className={s.column}>
-        <Banner />
-        <Header note={E.tabOpen(castle, tab) ? null : t('castle.opens.halls')} />
+        <section data-section className={s.keep}>
+          <Banner />
+          <Header note={E.tabOpen(castle, tab) ? null : t('castle.opens.halls')} />
+        </section>
         {!E.tabOpen(castle, tab) ? null : tab === 'war' ? (
           <War />
         ) : tab === 'army' ? (
