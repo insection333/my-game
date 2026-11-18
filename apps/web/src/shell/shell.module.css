@@ -542,6 +542,18 @@
   }
 }
 
+/* A phone turned on its side (844 by 390) has the rail and too little height for its rows of 64 px:
+   Hiscores fell below the screen's foot (session 132). The rows close up, and the rail scrolls if
+   even that is not enough. */
+@media (min-width: 768px) and (max-width: 1023px) and (max-height: 520px) {
+  .menu {
+    grid-auto-rows: 52px;
+    padding-top: calc(var(--header-h) + 2px);
+    min-height: 0;
+    overflow-y: auto;
+  }
+}
+
 /* A short window keeps the rail's foot off its menu. */
 @media (min-width: 1024px) and (max-height: 620px) {
   .railFoot {

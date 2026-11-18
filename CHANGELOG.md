@@ -269,3 +269,4 @@
 - Session 129: the tour says "All you do keeps the fire lit for 5 min", where "While you are here the fire burns" stood beside a newcomer's unlit fire and its Stoke; the first steps count a step done once it is done, where two steps offering Claim read "0 of 6 done".
 - Session 130: on a phone Hiscores leaves the menu at the foot for an account menu behind your picture at the top right (Hiscores, Deeds, Your profile, Settings), a small popup with a cross; the wide rail keeps it.
 - Session 131: the desktop gets a frame: the header and rail in the lodge's night with gold leaf for where you are, a crest and who is playing on the rail, raised panels and buttons, the Storehouse as slots, and each lane in the lanes panel a tile edged by how it stands.
+- Session 132: the bug sweep: the account menu closes when Tab takes the focus out of it, and a phone on its side reaches every place on the rail (Hiscores fell below the screen).

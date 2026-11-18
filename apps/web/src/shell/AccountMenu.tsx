@@ -1,7 +1,8 @@
 // The account menu (session 130, the owner): the player's picture at the top right opens a small popup of
 // the places that are theirs: the hiscores (which on a phone have no room in the menu at the foot), their
 // deeds, their own profile card and Settings. A cross in its top right, Escape, a press outside it or
-// choosing a place closes it; Escape hands the focus back to the picture.
+// choosing a place closes it; Escape hands the focus back to the picture; so does the focus leaving it (Tab
+// past its last place), where it stayed open over the page the focus had gone on to (session 132).
 import { t } from '@idle-clash/content';
 import type { PlaqueView } from '@idle-clash/features';
 import { CloseButton, Picture } from '@idle-clash/ui';
@@ -107,7 +108,18 @@ export function AccountMenu() {
         )}
       </button>
       {open && (
-        <div ref={pop} id={id} role="dialog" aria-label={t('shell.account')} className={s.pop} onKeyDown={keys}>
+        <div
+          ref={pop}
+          id={id}
+          role="dialog"
+          aria-label={t('shell.account')}
+          className={s.pop}
+          onKeyDown={keys}
+          onBlur={(e) => {
+            const to = e.relatedTarget as Node | null;
+            if (to && !pop.current?.contains(to) && !button.current?.contains(to)) setOpen(false);
+          }}
+        >
           <div className={s.head}>
             <span className={s.name}>{player?.name ?? t('shell.account')}</span>
             <CloseButton label={t('shell.close')} onClick={() => close(true)} />
@@ -119,7 +131,7 @@ export function AccountMenu() {
                   href={e.href}
                   data-ui="AccountLink"
                   className={s.link}
-                  aria-current={e.key === 'hiscores' && path === '/hiscores' ? 'page' : undefined}
+                  aria-current={e.href === path ? 'page' : undefined}
                   onClick={(ev) => (ev.preventDefault(), go(e.href))}
                 >
                   {e.glyph}
