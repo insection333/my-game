@@ -6,6 +6,7 @@ import { castleEngine as E } from '@idle-clash/features';
 import { ActionRow, Button, Field, ItemIcon, Panel, Pill } from '@idle-clash/ui';
 import { useState } from 'react';
 import { buildingDoes, buildingName, decreeDoes, edictGives, edictName } from './labels.ts';
+import { LevelUp, Mend } from './Steps.tsx';
 import { castleAct } from './store.ts';
 import { affords, hasAp, shortText, useSyncedCastle } from './synced.ts';
 import s from './castle.module.css';
@@ -172,14 +173,14 @@ function does(c: E.Castle, id: string, now: number): string {
 }
 
 function Buildings() {
-  const { castle, now, purse, busy } = useSyncedCastle();
+  const { castle, now, purse } = useSyncedCastle();
   if (!castle) return null;
   const mending = 100 - castle.wallIntegrity > 0.01;
-  const repair = E.instantCost(castle, 100 - castle.wallIntegrity, now);
   return (
     <section data-section>
       <Panel title={t('castle.buildings.title')} flush>
-        <div data-slot="castle.buildings">
+        {/* Four rows, each with its Level up: on a short screen they scroll inside the panel (session 134). */}
+        <div data-slot="castle.buildings" className={s.relics} data-scrollbox>
           {BUILDINGS.map((b) => {
             const level = castle.levels[b.id];
             const top = level >= ECONOMY.MAX_LEVEL;
@@ -195,39 +196,20 @@ function Buildings() {
                   does(castle, b.id, now),
                   ...(top ? [] : [shortText(castle, purse, cost)].filter((x) => x !== null)),
                 ]}
-                actions={
-                  top ? (
-                    <Pill tone="moss">{t('castle.highest')}</Pill>
-                  ) : (
-                    <Button
-                      disabled={busy || !affords(castle, purse, cost)}
-                      onClick={() => void castleAct({ type: 'upgrade', id: b.id })}
-                    >
-                      {t('castle.raiseFor', { gold: fmt.short(cost) })}
-                    </Button>
-                  )
-                }
+                foot={<LevelUp id={b.id} />}
               />
             );
           })}
         </div>
         {mending && (
           <div className={s.note}>
-            <div className={s.save}>
-              <span>
-                {t('castle.walls.integrity', {
-                  pct: fmt.pct(Math.floor(castle.wallIntegrity)),
-                  rate: fmt.pct(E.recoveryPerHour(castle, now)),
-                })}
-              </span>
-              <Button
-                variant="quiet"
-                disabled={busy || !hasAp(castle, repair.ap) || !affords(castle, purse, repair.gold)}
-                onClick={() => void castleAct({ type: 'mend', what: 'walls' })}
-              >
-                {t('castle.repair', { gold: fmt.short(repair.gold), ap: fmt.int(repair.ap) })}
-              </Button>
-            </div>
+            <span>
+              {t('castle.walls.integrity', {
+                pct: fmt.pct(Math.floor(castle.wallIntegrity)),
+                rate: fmt.pct(E.recoveryPerHour(castle, now)),
+              })}
+            </span>
+            <Mend what="walls" points={100 - castle.wallIntegrity} />
           </div>
         )}
       </Panel>

@@ -12,7 +12,7 @@ Plain, warm and brief, with an old-world flavour in names rather than in instruc
 | --- | --- |
 | Action | One thing a lane repeats: chopping a pine, forging a helm, fighting a foe |
 | Advantage | Your style beats the foe's: you deal more damage and take less |
-| AP | Action points in Castle Clash: earned by the hour and by the Call to arms, spent on drilling, spies, sieges and incursions |
+| AP | Action points in Castle Clash: earned by the hour and by the Call to arms, spent on training, spies, sieges and incursions |
 | Arena | The fight in your Combat lane played out on the Combat page, swing by swing: the very fight the game settles |
 | Arms | Castle Clash: the shield each lord, stronghold and fortress bears, its own and the same every time |
 | Artisan lane | The lane that turns materials into bars and gear (Smithing), fish into food (Cooking) and bars and logs into arrows (Fletching) |
@@ -38,7 +38,6 @@ Plain, warm and brief, with an old-world flavour in names rather than in instruc
 | Deed points | What deeds give by tier (easy 5, hard 15, elite 40, master 100); they open titles, a banner and frames |
 | Disadvantage | The foe's style beats yours: you deal less damage and take more |
 | Dish | A pie or a stew: Cooking mixes a tier's fish with the one before, and it heals a quarter more |
-| Drill | Castle Clash: AP spent on a troop for a lasting bonus, up to half again |
 | Drop | An item a foe leaves behind |
 | Easy, Fair, Costly, Too strong | Your odds verdicts, by how much food a fight costs and whether you would retreat |
 | Edict | Castle Clash: a lift to XP, fight gold or finds across the game while the treasury holds what it needs |
@@ -57,7 +56,7 @@ Plain, warm and brief, with an old-world flavour in names rather than in instruc
 | Hiscores | The ladders of every skill and the total |
 | Hitpoints | The skill that raises health, opens foes and lets you wear armour; trained by every fight |
 | Honours | Your title, banner and frame: chosen on the Deeds tab, seen by everyone |
-| Incursion | Castle Clash: an assault on a fortress, tier after tier, for war marks and drill |
+| Incursion | Castle Clash: an assault on a fortress, tier after tier, for war marks and training |
 | Key | Opens a tier's standing stones for Runecraft; Smithing binds it from two bars, and it is kept |
 | Kindling | Each long stretch of XP a skill earns past 99 (the skill page says how far): a flame on its seal and, for the first five, a stronger Path. Nothing is reset |
 | Lane | One of your workers: Gathering, Artisan, Combat; each runs one action at a time |
@@ -100,6 +99,7 @@ Plain, warm and brief, with an old-world flavour in names rather than in instruc
 | Total level | Every skill's level added together |
 | Tempering | Castle Clash: war marks and gold for a chance to strengthen a relic at its last level; the chance falls with each temper, never below 5%, and a masterstroke tempers twice |
 | The hidden armoury | Castle Clash: now and then a fortress taken yields its war marks twice over; once in a hundred, a hoard, five times over |
+| Training | Castle Clash: AP spent on a troop for a lasting bonus to its power, up to half again (Train +1, Train +5) |
 | Treasury | Castle Clash: gold kept in your castle; it powers the edict, and part of it can be raided |
 | Twist | Something that holds for a whole expedition, giving and taking: fog, hungry wolves, a storm |
 | Uncommon | The most frequent find, about 1 in 50 actions |

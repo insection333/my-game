@@ -52,6 +52,6 @@ describe("a lord's breach", () => {
         /^Pays [0-9,]+ war marks( and a bounty of [0-9.,]+[KM]? gold)?$/,
       );
     }
-    expect(t('castle.incursion.rewards', { marks: '14' })).toBe('Pays 14 war marks and drill');
+    expect(t('castle.incursion.rewards', { marks: '14' })).toBe('Pays 14 war marks and training');
   });
 });

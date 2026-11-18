@@ -23,14 +23,16 @@ export const CastleAction = z.discriminatedUnion('type', [
   act('withdraw', { gold: Gold }),
   act('edict', { edict: Id.nullable() }),
   act('payFrom', { treasury: z.boolean() }),
-  act('upgrade', { id: Id }),
+  // Levels raised at one press, 1 to 5 (session 134); one when left out.
+  act('upgrade', { id: Id, times: z.number().int().min(1).max(5).optional() }),
   act('research', { tech: Id }),
   act('forgeRelic', { relic: Id }),
   act('temperRelic', { relic: Id }),
   act('equipRelics', { relics: z.array(Id).max(3) }),
   act('offense', { shares: Shares }),
   act('defense', { defense: Shares.optional(), trap: Id.nullable().optional(), castellan: Id.nullable().optional() }),
-  act('mend', { what: z.enum(['walls', 'wounds']) }),
+  // How many points to mend, a whole percent (session 134's slider); all of it when left out.
+  act('mend', { what: z.enum(['walls', 'wounds']), pct: z.number().int().min(1).max(100).optional() }),
   act('drill', { unit: Unit, times: z.number().int().min(1).max(50) }),
   act('excavate', {}),
   act('incursion', { shares: Shares.optional() }),

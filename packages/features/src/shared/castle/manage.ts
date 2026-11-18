@@ -46,15 +46,28 @@ const spend = (w: Wallet, gold: number, next: (c: Castle) => Castle): Done => {
 };
 
 /** Raises a building or unit a level (to 100 at most). */
-export function upgrade(w: Wallet, id: BuildingId | UnitId, now: number): Done {
+export function upgrade(w: Wallet, id: BuildingId | UnitId, now: number, times = 1): Done {
   const base = [...BUILDINGS, ...UNITS].find((x) => x.id === id);
   if (!base) return no('unknown');
+  if (!Number.isInteger(times) || times < 1 || times > LEVEL_UP_MOST) return no('invalid');
   const level = w.castle.levels[id];
-  if (level >= ECONOMY.MAX_LEVEL) return no('top');
-  return spend(w, levelCost(w.castle, base.cost, level, now), (c) => ({
+  if (level + times > ECONOMY.MAX_LEVEL) return no('top');
+  return spend(w, levelUpCost(w.castle, id, times, now), (c) => ({
     ...c,
-    levels: { ...c.levels, [id]: level + 1 },
+    levels: { ...c.levels, [id]: level + times },
   }));
+}
+
+/** The most levels one press raises (session 134: Level up +1 or +5). */
+export const LEVEL_UP_MOST = 5;
+
+/** What `times` levels of a troop or building cost from where it stands: each level's price, summed, as
+ *  that many single presses would pay. */
+export function levelUpCost(c: Castle, id: BuildingId | UnitId, times: number, now: number): number {
+  const base = [...BUILDINGS, ...UNITS].find((x) => x.id === id)!;
+  let gold = 0;
+  for (let i = 0; i < times; i++) gold += levelCost(c, base.cost, c.levels[id] + i, now);
+  return gold;
 }
 
 /** A War College rank, for gold and war marks. */
@@ -167,21 +180,29 @@ export const setPayFrom = (w: Wallet, treasury: boolean): Done =>
     ? no('unchanged')
     : { ok: true, castle: { ...w.castle, payFromTreasury: treasury }, purse: w.purse, burned: 0 };
 
-/** Mending at once instead of 5 points an hour: AP, and gold by the points restored and the castle's level. */
+/** Mending at once instead of 5 points an hour: AP, and gold by the points restored and the castle's level,
+ *  rounded up to the coin, so no part of a heal is ever cheaper than its share (session 134). */
 export function instantCost(c: Castle, points: number, now: number): { ap: number; gold: number } {
   const gold = RECOVERY.INSTANT_GOLD_PER_POINT_LEVEL * points * avgLevel(c) * lift(modifiers(c, now).costs.repair);
-  return { ap: RECOVERY.INSTANT_AP, gold: Math.round(gold) };
+  return { ap: RECOVERY.INSTANT_AP, gold: Math.max(1, Math.ceil(gold - 1e-9)) };
 }
 
-/** Repairs the walls to whole, or heals every wound, at once. */
-export function mendNow(w: Wallet, what: 'walls' | 'wounds', now: number): Done {
+/** Repairs the walls or heals the wounds at once: all of it, or `pct` points of it (a whole number from 1
+ *  to 100; session 134, the owner's slider), never past whole. Each press pays the AP whole and the gold
+ *  for what it mends, rounded up, so a heal split in parts never costs less than one heal. */
+export function mendNow(w: Wallet, what: 'walls' | 'wounds', now: number, pct?: number): Done {
+  if (pct !== undefined && (!Number.isInteger(pct) || pct < 1 || pct > 100)) return no('invalid');
   const points = what === 'walls' ? 100 - w.castle.wallIntegrity : w.castle.infirmaryPct;
   if (points <= 0.01) return no('unchanged');
-  const cost = instantCost(w.castle, points, now);
+  const all = pct === undefined || pct >= points;
+  const mended = all ? points : pct;
+  const cost = instantCost(w.castle, mended, now);
   if (w.castle.activeAp + 1e-9 < cost.ap) return no('ap');
   return spend(w, cost.gold, (c) => ({
     ...c,
     activeAp: c.activeAp - cost.ap,
-    ...(what === 'walls' ? { wallIntegrity: 100 } : { infirmaryPct: 0 }),
+    ...(what === 'walls'
+      ? { wallIntegrity: all ? 100 : Math.min(100, c.wallIntegrity + mended) }
+      : { infirmaryPct: all ? 0 : Math.max(0, c.infirmaryPct - mended) }),
   }));
 }

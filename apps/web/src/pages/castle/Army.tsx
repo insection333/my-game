@@ -3,15 +3,16 @@
 // castellan (Formation.tsx). The War College is in the Halls, beside the Reliquary.
 import { EVOLUTION_LEVELS, ECONOMY, SINKS, UNITS, fmt, t } from '@idle-clash/content';
 import { castleEngine as E } from '@idle-clash/features';
-import { ActionRow, Button, ItemIcon, Panel, Pill } from '@idle-clash/ui';
+import { ActionRow, ItemIcon, Panel, Pill } from '@idle-clash/ui';
 import { Defences, Formations } from './Formation.tsx';
+import { LevelUp, Mend, Steps } from './Steps.tsx';
 import { evolutionName, unitName } from './labels.ts';
 import { castleAct } from './store.ts';
-import { affords, hasAp, shortText, useSyncedCastle } from './synced.ts';
+import { hasAp, shortText, useSyncedCastle } from './synced.ts';
 import s from './castle.module.css';
 
-/** Drills at one press, for AP saved up. */
-const DRILL_MANY = 5;
+/** Trainings at one press, for AP saved up. */
+const TRAIN_MANY = 5;
 
 export function Army() {
   return (
@@ -33,7 +34,6 @@ export function Army() {
 function Troops() {
   const { castle, now, purse, busy } = useSyncedCastle();
   if (!castle) return null;
-  const heal = E.instantCost(castle, castle.infirmaryPct, now);
   return (
     <section data-section>
       <Panel title={t('castle.units.title')} flush>
@@ -66,34 +66,16 @@ function Troops() {
                 ]}
                 foot={
                   <>
-                    <Button
-                      variant="quiet"
-                      disabled={busy || !hasAp(castle, SINKS.DRILL_AP)}
-                      onClick={() => void castleAct({ type: 'drill', unit: u.id, times: 1 })}
-                    >
-                      {t('castle.drill', { ap: fmt.int(SINKS.DRILL_AP) })}
-                    </Button>
-                    <Button
-                      variant="quiet"
-                      disabled={busy || !hasAp(castle, SINKS.DRILL_AP * DRILL_MANY)}
-                      onClick={() => void castleAct({ type: 'drill', unit: u.id, times: DRILL_MANY })}
-                    >
-                      {t('castle.drillMany', { times: fmt.int(DRILL_MANY) })}
-                    </Button>
-                  </>
-                }
-                actions={
-                  <>
-                    {level >= ECONOMY.MAX_LEVEL ? (
-                      <Pill tone="moss">{t('castle.highest')}</Pill>
-                    ) : (
-                      <Button
-                        disabled={busy || !affords(castle, purse, cost)}
-                        onClick={() => void castleAct({ type: 'upgrade', id: u.id })}
-                      >
-                        {t('castle.raiseFor', { gold: fmt.short(cost) })}
-                      </Button>
-                    )}
+                    <LevelUp id={u.id} />
+                    <Steps
+                      label={t('castle.train.label')}
+                      steps={[1, TRAIN_MANY].map((more) => ({
+                        text: t('castle.step.ap', { more: fmt.int(more), ap: fmt.int(SINKS.DRILL_AP * more) }),
+                        name: t('castle.train', { more: fmt.int(more), ap: fmt.int(SINKS.DRILL_AP * more) }),
+                        disabled: busy || !hasAp(castle, SINKS.DRILL_AP * more),
+                        onPress: () => void castleAct({ type: 'drill', unit: u.id, times: more }),
+                      }))}
+                    />
                   </>
                 }
               />
@@ -102,21 +84,13 @@ function Troops() {
         </div>
         {castle.infirmaryPct > 0.01 && (
           <div className={s.note}>
-            <div className={s.save}>
-              <span>
-                {t('castle.wounds', {
-                  pct: fmt.pct(Math.ceil(castle.infirmaryPct)),
-                  rate: fmt.pct(E.recoveryPerHour(castle, now)),
-                })}
-              </span>
-              <Button
-                variant="quiet"
-                disabled={busy || !hasAp(castle, heal.ap) || !affords(castle, purse, heal.gold)}
-                onClick={() => void castleAct({ type: 'mend', what: 'wounds' })}
-              >
-                {t('castle.heal', { gold: fmt.short(heal.gold), ap: fmt.int(heal.ap) })}
-              </Button>
-            </div>
+            <span>
+              {t('castle.wounds', {
+                pct: fmt.pct(Math.ceil(castle.infirmaryPct)),
+                rate: fmt.pct(E.recoveryPerHour(castle, now)),
+              })}
+            </span>
+            <Mend what="wounds" points={castle.infirmaryPct} />
           </div>
         )}
       </Panel>
