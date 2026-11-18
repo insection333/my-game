@@ -5,6 +5,8 @@
 import { ORDERS } from '@idle-clash/content';
 import { formatUtcDate, type Castle } from './castle.ts';
 import { hash } from './mercenaries.ts';
+import { fortressSide } from './sinks.ts';
+import { bestOffense, winChance } from './tactics.ts';
 import { lordsOpen } from './unlocks.ts';
 
 export type OrderKind = 'strongholds' | 'incursion' | 'drill' | 'dig' | 'spy' | 'lord';
@@ -35,7 +37,12 @@ function targetOf(kind: OrderKind, h: number, young: boolean): number {
 export function ordersOf(c: Castle, now: number): Orders {
   const day = formatUtcDate(now);
   if (c.orders && c.orders.day === day) return c.orders;
-  const open = OTHERS.filter((k) => lordsOpen(c, now) || (k !== 'spy' && k !== 'lord'));
+  // Spies and lords once lords are open; an incursion while some roll takes the fortress at the castle's
+  // tier (session 139: a castle a week in was asked to win one it could not).
+  const reach = winChance(bestOffense(c, fortressSide(c.incursionTier), now).r) > 0;
+  const open = OTHERS.filter(
+    (k) => (lordsOpen(c, now) || (k !== 'spy' && k !== 'lord')) && (k !== 'incursion' || reach),
+  );
   const drawn = open
     .map((kind) => ({ kind, k: hash(`${c.userId}:${day}:${kind}`) }))
     .sort((a, b) => a.k - b.k)

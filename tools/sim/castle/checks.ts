@@ -109,6 +109,28 @@ export function castleChecks(check: Check, lines: string[]): void {
   lines.push(
     `Tempering: ${t.tries} tries, ${t.taken} taken, ${t.masterstrokes} masterstrokes; the best relic at +${best}`,
   );
+  // The end game's sink in use (session 139): lords at war spend their war marks on relics and tempering, not
+  // a hoard with nothing to buy.
+  for (const kind of KINDS.filter((k) => k.raids)) {
+    const lords = realm.lords.filter((l) => l.kind === kind);
+    const tries = lords.map((l) => Object.values(l.castle.tempers).reduce((a, b) => a + b, 0));
+    const held = lords.reduce((n, l) => n + l.castle.warMarks, 0) / lords.length;
+    const earned = lords.reduce((n, l) => n + l.castle.warMarksEarned, 0) / lords.length;
+    lines.push(
+      `${kind.name} lords' tempers taken: ${tries.join(', ')}; war marks held ${held.toFixed(0)} of ${earned.toFixed(0)} earned`,
+    );
+    check(
+      held <= earned * 0.25,
+      `${kind.name} lords spend their war marks (${held.toFixed(0)} held of ${earned.toFixed(0)} earned, at most a quarter)`,
+    );
+  }
+  const steadyTempers = realm.lords
+    .filter((l) => l.kind.name === 'steady')
+    .map((l) => Object.keys(l.castle.tempers).length);
+  check(
+    steadyTempers.every((n) => n > 0),
+    `Every steady lord tempers a relic within 26 weeks (relics tempered: ${steadyTempers.join(', ')})`,
+  );
   // The chase itself: one relic tempered try after try, as long as a lord keeps paying, a thousand times
   // over, for what each step of it costs on average.
   const chase = temperChase(1000);

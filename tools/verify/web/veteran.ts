@@ -119,6 +119,9 @@ export const CROWD = [
   'Lowenna',
 ];
 
+/** The elder's rival lord in Castle Clash (castles.ts), one of the crowd. */
+export const RIVAL = CROWD[2];
+
 export function crowd(base: State, i: number): State {
   const level = (n: number) => ({ xp: XP_TABLE[Math.max(1, Math.min(40, n))] + 1 });
   const top = 34 - i * 2;

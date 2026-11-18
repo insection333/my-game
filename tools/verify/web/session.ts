@@ -23,7 +23,7 @@ import { totalLevel } from '@idle-clash/features';
 import { castles, wrongdoing } from './castles.ts';
 import { elder, keeper } from './elder.ts';
 import { withHonours } from './honours.ts';
-import { crowd, CROWD, veteran } from './veteran.ts';
+import { crowd, CROWD, RIVAL, veteran } from './veteran.ts';
 import { letters } from './letters.ts';
 import { SHEETS } from './sheets.ts';
 import { readPageMap, type ViewSpec } from '../ia.ts';
@@ -45,6 +45,16 @@ export interface View extends ViewSpec {
 export function views(): View[] {
   const map = readPageMap(readFileSync(join(ROOT, 'IA.md'), 'utf8'));
   const sheets = SHEETS;
+  /** The page a path is on, for its spec on the review sheets. */
+  const pageOf = (path: string, otherwise: string) =>
+    map.views.find((v) => v.path === path)?.page ??
+    ([
+      ['/skills/', 'Skill'],
+      ['/hiscores', 'Hiscores'],
+      ['/combat', 'Combat'],
+      ['/castle', 'Castle Clash'],
+    ].find(([p]) => path.startsWith(p))?.[1] ||
+      otherwise);
   // The same pages for a player three weeks in, whose rows carry odds, pills and long names.
   const veteran: ViewSpec[] = [
     ...map.views.filter((v) => !signedOut(v.path)).map((v) => ({ ...v, as: 'veteran' as const })),
@@ -90,35 +100,25 @@ export function views(): View[] {
     // The Reports tab (session 42): every report as a card, and one filter.
     '/castle/reports',
     '/castle/reports?show=spies',
-  ].map((path) => ({
-    page:
-      map.views.find((v) => v.path === path)?.page ??
-      (path.startsWith('/skills/')
-        ? 'Skill'
-        : path.startsWith('/hiscores')
-          ? 'Hiscores'
-          : path.startsWith('/combat')
-            ? 'Combat'
-            : path.startsWith('/castle')
-              ? 'Castle Clash'
-              : 'Hearth'),
-    path,
-    phone: [],
-    desktop: [],
-    as: 'elder' as const,
-  }));
-  // A year in: skills at 99, kindled, walking their Paths; the ladder that counts Kindlings.
+  ].map((path) => ({ page: pageOf(path, 'Hearth'), path, phone: [], desktop: [], as: 'elder' as const }));
+  // A year in: skills at 99, kindled, walking their Paths; the ladder that counts Kindlings; and a castle a
+  // year in (session 139): every troop at its fourth evolution, the Halls full.
   const keepers: ViewSpec[] = [
     '/skills',
     '/skills/woodcutting',
     '/skills/hitpoints',
     '/hiscores?skill=woodcutting',
-  ].map((path) => ({
-    page: path.startsWith('/skills/') ? 'Skill' : path.startsWith('/hiscores') ? 'Hiscores' : 'Skills',
+    '/castle',
+    '/castle/army',
+    '/castle/halls',
+  ].map((path) => ({ page: pageOf(path, 'Skills'), path, phone: [], desktop: [], as: 'keeper' as const }));
+  // A week in (session 139): a castle raised five days ago, its lords not yet open.
+  const squires: ViewSpec[] = ['/castle', '/castle/army', '/castle/citadel'].map((path) => ({
+    page: 'Castle Clash',
     path,
     phone: [],
     desktop: [],
-    as: 'keeper' as const,
+    as: 'squire' as const,
   }));
   // The privacy page and the terms, as a visitor reads them from the welcome page.
   const visitor: ViewSpec[] = map.views
@@ -126,7 +126,7 @@ export function views(): View[] {
     .map((v) => ({ ...v, as: 'visitor' as const }));
   // The admin page is the admin's: a newcomer gets the page that does not exist.
   const newcomer = map.views.filter((v) => v.path !== '/admin');
-  return [...newcomer, ...sheets, ...veteran, ...elders, ...keepers, ...visitor].map((v) => ({
+  return [...newcomer, ...sheets, ...veteran, ...elders, ...keepers, ...squires, ...visitor].map((v) => ({
     ...v,
     name: (v.as ? `${v.as}-` : '') + (v.path.replace(/^\//, '').replace(/[^a-z0-9]+/gi, '-') || 'hearth'),
   }));
@@ -152,6 +152,8 @@ export interface Served {
   elder: { name: string; value: string };
   /** And of one a year in, with skills kindled past 99 (`elder.ts`). */
   keeper: { name: string; value: string };
+  /** And of one a week in, whose castle was raised five days ago (`castles.ts`). */
+  squire: { name: string; value: string };
   /** The server's insides, for flows that set up a save the way the admin page will. */
   ctx: Ctx;
   close: () => Promise<void>;
@@ -228,19 +230,30 @@ async function start(): Promise<Served> {
   const vet = await settle('Veteran', (s) => veteran(ctx, s, now));
   const eld = await settle('Elder', (s) => elder(ctx, s, now));
   const kpr = await settle('Keeper', (s) => keeper(ctx, s, now));
-  // Castle Clash: the elder's castle raised for weeks, and the keeper's beside it as a rival lord.
+  // A player a week in, whose castle was raised five days ago (session 139).
+  const sqr = await settle('Squire', (s) => {
+    const c = crowd(s, 0);
+    return { ...c, items: { ...c.items, gold: 1_400_000 } };
+  });
   const elderId = ids.get('Elder')!;
-  castles(
-    ctx,
-    { elder: elderId, keeper: ids.get('Keeper')! },
-    now,
-    totalLevel(ctx.store.read(elderId, now)!.doc.state),
-  );
   // The veteran keeps the game's admin page, so it is screenshot with players on it. Named on the list
   // once signed up, as the owner is: a name already on it cannot be signed up for.
   ctx.config.adminNames.push('Veteran');
   // Others on the hiscores, so the ladders read as they will with players on them.
   for (const [i, name] of CROWD.entries()) await settle(name, (s) => crowd(s, i));
+  // Castle Clash at three stages (session 139): the squire's a week in, the elder's two months in beside a
+  // rival near its rating (one of the crowd), and the keeper's a year in.
+  const lord = (name: string) => ({
+    id: ids.get(name)!,
+    level: totalLevel(ctx.store.read(ids.get(name)!, now)!.doc.state),
+  });
+  const [squireL, elderL, rivalL, keeperL] = ['Squire', 'Elder', RIVAL, 'Keeper'].map(lord);
+  castles(ctx, { squire: squireL.id, elder: elderL.id, rival: rivalL.id, keeper: keeperL.id }, now, {
+    squire: squireL.level,
+    elder: elderL.level,
+    rival: rivalL.level,
+    keeper: keeperL.level,
+  });
   // Feedback on the admin page, so its notes and Copy buttons are seen at every width.
   const say = (c: { name: string; value: string }, text: string, page: string) =>
     fetch(`${url}/api/feedback`, {
@@ -268,6 +281,7 @@ async function start(): Promise<Served> {
     veteran: vet,
     elder: eld,
     keeper: kpr,
+    squire: sqr,
     ctx,
     close: async () => {
       await close();
@@ -287,11 +301,11 @@ export async function openPage(
   engine: Engine,
   path: string,
   options: BrowserContextOptions,
-  as?: 'veteran' | 'elder' | 'keeper' | 'visitor',
+  as?: 'veteran' | 'elder' | 'keeper' | 'squire' | 'visitor',
 ): Promise<Page> {
   const served = await ensureServer();
   const ctx = await (await browser(engine)).newContext(options);
-  const players = { veteran: served.veteran, elder: served.elder, keeper: served.keeper };
+  const players = { veteran: served.veteran, elder: served.elder, keeper: served.keeper, squire: served.squire };
   const cookie = as && as !== 'visitor' ? players[as] : served.cookie;
   if (!signedOut(path) && as !== 'visitor') await ctx.addCookies([{ ...cookie, url: served.url }]);
   const page = await ctx.newPage();

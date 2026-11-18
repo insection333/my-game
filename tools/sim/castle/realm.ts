@@ -14,6 +14,10 @@ export type { Lord, MercRecord, Realm, SiegeRecord } from './records.ts';
 
 const HOUR = 3_600_000;
 export const DAY = 24 * HOUR;
+/** The share of a lord's purse that relics and tempering may draw on each visit, and the war marks under
+ *  which a lord presses past fatigue for more (session 139). */
+const MARKS_SHARE = 0.5;
+const MARKS_WANTED = 300;
 /** The realm opens on a Monday at midnight, UTC. */
 export const T0 = Date.UTC(2026, 10, 2);
 
@@ -141,25 +145,30 @@ export function playRealm(perKind: number, days: number, seed: number): Realm {
       if (cost && cost.gold <= budget && l.castle.warMarks >= cost.marks && done(E.research(w(), tech, t)))
         budget -= cost.gold;
     }
+    // War marks are spent as a lord holding them would (session 139: the realm's raiders ended 26 weeks with
+    // 5,000 unspent and a relic at level 4, their gold gone on fees): relics and tempering draw on half the
+    // purse, beside the share for building.
+    let marksBudget = l.purse * MARKS_SHARE;
     // Relics one at a time to their last level (the first three are worn), then the next.
     // (Saving up for the relic in hand rather than starting another.)
     const forging = RELICS.find((r) => E.relicCost(l.castle, r.id));
     for (let guard = 0; forging && guard < 5; guard++) {
       const cost = E.relicCost(l.castle, forging.id);
-      if (!cost || cost.gold > budget || l.castle.warMarks < cost.marks || !done(E.forgeRelic(w(), forging.id))) break;
-      budget -= cost.gold;
+      if (!cost || cost.gold > marksBudget || l.castle.warMarks < cost.marks || !done(E.forgeRelic(w(), forging.id)))
+        break;
+      marksBudget -= cost.gold;
     }
     // Tempering: a relic at its last level, while war marks and the budget last, for a chance each time.
     for (const r of RELICS)
       for (let tries = 0; tries < 5; tries++) {
         const cost = E.temperCost(l.castle, r.id);
-        if (!cost || cost.gold > budget || l.castle.warMarks < cost.marks) break;
+        if (!cost || cost.gold > marksBudget || l.castle.warMarks < cost.marks) break;
         const t2 = E.temperRelic(w(), r.id, roll(), roll());
         if (!t2.ok) break;
         l.castle = t2.castle;
         l.purse = t2.purse;
         burn(t2.burned, 'tempering');
-        budget -= t2.burned;
+        marksBudget -= t2.burned;
         realm.tempers.tries++;
         if (t2.outcome !== 'held') realm.tempers.taken++;
         if (t2.outcome === 'masterstroke') realm.tempers.masterstrokes++;
@@ -191,7 +200,8 @@ export function playRealm(perKind: number, days: number, seed: number): Realm {
       // fatigue against the strongholds still standing, for the harder ones' pay and the rout (session 38).
       const spare =
         l.purse > 7 * l.kind.income && l.castle.treasury >= E.requiredTreasury(l.castle, l.kind.totalLevel) * 1.5;
-      const pressing = spare && l.castle.siegesToday < SIEGE.STRONGHOLD_PAY.length;
+      // Only while war marks are wanted (session 139): a lord with marks to spare spends gold on them first.
+      const pressing = spare && l.castle.warMarks < MARKS_WANTED && l.castle.siegesToday < SIEGE.STRONGHOLD_PAY.length;
       if (pressing && l.kind.raids && l.castle.activeAp >= SIEGE.AP * 2 && mercenary(l, t, day)) continue;
       if (l.castle.activeAp >= SINKS.INCURSION_AP) {
         const odds = E.combatRatio(att(), E.fortressSide(l.castle.incursionTier), 0.5).r;

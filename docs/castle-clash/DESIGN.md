@@ -266,7 +266,7 @@ The owner asked for a battle reports section that shows past battles and spy war
     - a spy's findings, and the spoils with their icons.
     A stronghold's report now keeps its id, so its arms match its row.
 
-### Sessions 136 to 138: the castle review (the owner, 18 November)
+### Sessions 136 to 139: the castle review (the owner, 18 November)
 
 The owner asked for a review of Castle Clash early, middle and late, and gave the decisions to Claude. The realm's simulation and the year's numbers found:
 
@@ -287,6 +287,18 @@ The owner asked for a review of Castle Clash early, middle and late, and gave th
     - The 100-level cap stays. No page shows it as a goal; it only bounds Level up +5.
     - The year's simulation now plays the steady player to eighteen months and checks each evolution in its window (the second between days 30 and 120, the third 150 to 220, the fourth 365 to 450), and that the castle grows every quarter through the eighteen months (to 23.0 and 24.1). A lord who puts their gold into troops first evolves them sooner: that is the lord's choice.
 
+33. **Three castles on the review sheets** (session 139). Every page had been checked against one castle only: the elder's at level 24, the castle a steady player has about day 400. The review sheets now show three, from the year's simulation:
+    - a castle raised five days ago (about day 7, level 2, lords not yet open), the squire's;
+    - the elder's two months in (level 7), beside a rival near its rating whose battle accounts come from the engine at those castles;
+    - the keeper's a year in (level 22): every troop at its fourth evolution, the Halls full.
+    What they found, each fixed:
+    - **A fortress no roll could take offered Assault beside "0% to win"**, a certain loss for 30 AP, as strongholds did before session 75. It now says "Beyond you for now" with Assault closed. The day's orders no longer ask for an incursion while the fortress is beyond reach.
+    - **Top up came back moments after every top-up.** It was offered a coin short of half again what the edict needs, and upkeep takes about a coin a second. It is now offered under a quarter over the need.
+    - **The treasury ran taller than a phone's page area** with Top up and an empty purse's words. Move gold is now a panel of its own.
+    - **A castle's lists could not be reached by keyboard** when every button in them was greyed (a new lord's, with little gold). Each list now takes the focus itself.
+    - **An empty "Latest reports"** stood alone under the lords. It now waits for the first battle.
+    - **The hiscores ladder ran past a wide screen's page area** once twenty-five players stood on it. It now scrolls inside its box, under its headings, with your own place kept at its foot.
+34. **The realm's lords spend their war marks** (session 139). The simulation's raiders ended 26 weeks with 5,000 war marks unspent and a relic at level 4. Their gold went on stronghold fees, pressed past fatigue for more marks. Relics and tempering now draw on half a lord's purse, and a lord presses on only while it wants war marks. Every steady lord now tempers, holding a few dozen marks of thousands earned (tempers taken across the realm: 223, where 23 stood). The checks hold lords at war to spending at least three quarters of what they earn.
 ## 12. Phases
 
 | Phase | Session | Delivers |

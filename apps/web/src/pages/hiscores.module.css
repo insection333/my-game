@@ -184,7 +184,36 @@
   color: var(--ink-2);
 }
 
-/* Phones show the first ten; wide screens all twenty-five. */
+/* Phones show the first ten; wide screens all twenty-five, scrolling inside the ladder's box under its
+   headings, your own place kept at its foot (session 139: twenty-five rows ran 1,450 px tall, past a
+   1,440 × 900 screen's page area, once the realm had as many players as the ladder holds). */
+@container main (min-width: 720px) {
+  /* The headings and your own place stand at the box's edges, so rows slide under them, unfaded. */
+  .ladder[data-scrollbox] {
+    max-height: min(44rem, 72dvh);
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  .ladder thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: var(--surface);
+  }
+
+  .ladder .pinned td {
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
+    background: var(--surface);
+  }
+
+  .ladder .pinned tr[data-you] td {
+    background: linear-gradient(var(--woad-soft), var(--woad-soft)), var(--surface);
+  }
+}
+
 @container main (max-width: 719px) {
   .ladder tbody:first-of-type tr:nth-child(n + 11) {
     display: none;
