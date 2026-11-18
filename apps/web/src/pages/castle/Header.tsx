@@ -147,40 +147,39 @@ function Orders() {
 }
 
 /** The castle's next milestone and how far off it is (session 140): a troop's next evolution, a relic's
- *  next level, or the next temper, as a link to the tab where it is reached. */
+ *  next level, or the next temper. Its name links to the tab where it is reached, and what it takes follows
+ *  ("Sunforged Phalanx at vanguard level 14: 3 more levels, 5.2M gold"), so the link keeps one line as the
+ *  orders' links do. */
 function Next() {
   const { castle, now } = useSyncedCastle();
   const next = castle && E.nextForCastle(castle, now);
   if (!next) return null;
-  const words =
+  const name = next.kind === 'evolution' ? evolutionName(next.evolution) : relicName(next.relic);
+  const rest =
     next.kind === 'evolution'
       ? t(next.levels === 1 ? 'castle.next.evolutionOne' : 'castle.next.evolution', {
-          name: evolutionName(next.evolution),
           unit: unitName(next.unit).toLowerCase(),
           level: fmt.int(next.level),
           levels: fmt.int(next.levels),
           gold: fmt.short(next.gold),
         })
       : next.kind === 'relic'
-        ? t('castle.next.relic', {
-            name: relicName(next.relic),
-            level: fmt.int(next.level),
-            gold: fmt.short(next.gold),
-            marks: fmt.int(next.marks),
-          })
+        ? t('castle.next.relic', { level: fmt.int(next.level), gold: fmt.short(next.gold), marks: fmt.int(next.marks) })
         : t('castle.next.temper', {
-            name: relicName(next.relic),
             temper: fmt.int(next.temper),
             pct: pct(next.chance),
             gold: fmt.short(next.gold),
             marks: fmt.int(next.marks),
           });
   return (
-    <p className={s.next} data-slot="castle.next">
-      <span className={s.ordersHead}>{t('castle.next.title')}</span>{' '}
-      <TextLink href={next.kind === 'evolution' ? '/castle/army' : '/castle/halls'} onNavigate={navigate}>
-        {words}
-      </TextLink>
-    </p>
+    <div className={s.next} data-slot="castle.next">
+      <span className={s.ordersHead}>{t('castle.next.title')}</span>
+      <p>
+        <TextLink href={next.kind === 'evolution' ? '/castle/army' : '/castle/halls'} onNavigate={navigate}>
+          {name}
+        </TextLink>{' '}
+        {rest}
+      </p>
+    </div>
   );
 }

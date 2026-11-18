@@ -449,9 +449,11 @@
   font-weight: 600;
 }
 
-/* The castle's next milestone, under the orders (session 140). */
+/* The castle's next milestone, under the orders as they stand (session 140): its heading on a line, then
+   its name's link and what it takes. */
 .next {
-  margin: 0;
+  display: grid;
+  gap: var(--s-1);
 }
 
 .orderList {
