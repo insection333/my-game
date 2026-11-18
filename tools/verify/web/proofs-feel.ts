@@ -13,10 +13,12 @@
 //   and hands the focus back; selling says what it brought in, where the focus now is.
 // - On a phone the menu at the foot holds five places, and Hiscores is in the account menu behind the
 //   picture at the top right (session 130, the owner): it opens as a small popup with a cross, Escape
-//   closes it and hands the focus back, and its Hiscores leads to the ladders. The wide rail keeps it.
+//   closes it and hands the focus back, the focus tabbing out of it closes it (session 132), and its
+//   Hiscores leads to the ladders. The wide rail keeps it.
 // - On wide screens the game sits in its frame (session 131): the header and the rail in the lodge's
 //   night in the light theme too, the crest at the rail's head and who is playing at its foot, the page
-//   held in gold leaf on the rail; a phone keeps its own header, with neither.
+//   held in gold leaf on the rail; a phone keeps its own header, with neither; a phone on its side (844 by
+//   390) reaches every place on its rail (session 132).
 import type { Page } from 'playwright';
 import { playerWith, say } from './proofs-lanes.ts';
 import type { Served } from './session.ts';
@@ -70,6 +72,11 @@ export async function accountMenu(page: Page, problems: string[]) {
     await menu.waitFor({ state: 'hidden', timeout: 2_000 });
     if (!(await button.evaluate((el) => el === document.activeElement)))
       problems.push('Account menu: closing it does not hand the focus back to its button');
+    step = 'tabbing past its last place closes it';
+    await button.click();
+    await menu.waitFor({ timeout: 5_000 });
+    for (let i = 0; i < 6; i++) await page.keyboard.press('Tab');
+    if (await menu.isVisible()) problems.push('Account menu: still open once the focus has left it');
     step = 'its Hiscores leads to the ladders';
     await button.click();
     await menu.getByRole('link', { name: 'Hiscores' }).click();
@@ -122,6 +129,14 @@ export async function frameDrawn(page: Page, problems: string[]) {
     if (lightness(wide.headerInk) < 0.7) problems.push("Frame: the header's words are not light on its night");
     if (!wide.here.includes('inset')) problems.push('Frame: the page you are on is not marked on the rail');
     if (!wide.crest || !wide.foot) problems.push("Frame: the rail's crest or its foot is missing");
+    step = 'a phone on its side reaches every place on the rail';
+    await page.setViewportSize({ width: 844, height: 390 });
+    const foot = await page.evaluate(() => {
+      const links = Array.from(document.querySelectorAll('[data-menu] a'));
+      return Math.max(...links.map((a) => a.getBoundingClientRect().bottom)) - innerHeight;
+    });
+    if (foot > 1)
+      problems.push(`Frame: on a phone on its side the rail's last place is ${Math.round(foot)} px below the screen`);
     step = 'a phone keeps its own header';
     await page.setViewportSize({ width: 390, height: 844 });
     const narrow = await look();
