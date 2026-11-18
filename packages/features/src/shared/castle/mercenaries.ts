@@ -155,9 +155,10 @@ export function resolveMercenary(att: Castle, m: Mercenary, now: number, roll: n
   };
 }
 
-/** A stronghold's siege costs: as a lord's of the same rating. */
-export const mercenaryCosts = (c: Castle, m: Mercenary, now: number) =>
-  siegeCosts(c, m.rating / Math.max(1, c.rating), now);
+/** A stronghold's siege costs: as a siege on a lord of your own rating, whatever its place (session 136).
+ *  The surcharge on a far weaker castle checks bullying; the day's easiest stronghold, at 0.75 of your
+ *  rating, is no one to bully, and it cost more than the four harder ones. Fatigue adds to all alike. */
+export const mercenaryCosts = (c: Castle, _m: Mercenary, now: number) => siegeCosts(c, 1, now);
 
 /** Whether a lord is a fair match: unshielded, not you, within 0.75 to 1.35 of your rating. */
 export const inBracket = (mine: number, theirs: number): boolean =>

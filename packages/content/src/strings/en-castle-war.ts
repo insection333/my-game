@@ -51,7 +51,10 @@ export const castleWar = {
   'castle.strongholds.fallen': '{count} of {total} fallen',
   'castle.strongholds.routed': 'Routed',
   'castle.strongholds.note':
-    'A stronghold taken stays fallen until the day turns. The harder ones pay more; take all five in a day for a rout.',
+    'A stronghold taken stays fallen until the day turns. Each pays more than the one above it; your chance turns on its garrison and trap against your troops. Take all five in a day for a rout.',
+  // What holds a stronghold, beside its chance (session 136).
+  'castle.merc.strongest': 'Strongest in {units}; {trap} at the gate',
+  'castle.merc.even': 'An even garrison; {trap} at the gate',
   'castle.siege': 'Siege for {gold} and {ap} AP',
   'castle.siege.title': 'Siege',
   'castle.chance': '{pct} chance to win',

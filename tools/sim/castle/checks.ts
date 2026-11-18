@@ -63,14 +63,16 @@ export function castleChecks(check: Check, lines: string[]): void {
   // are reached only by some, on some days; all five falling, a rout, is rare.
   const byPlace = [0, 1, 2, 3, 4].map((n) => realm.mercs.filter((m) => m.n === n));
   const fell = byPlace.map((ms) => ms.filter((m) => m.outcome !== 'repelled').length);
-  const marksAt = byPlace.map((ms) => {
-    const won = ms.filter((m) => m.outcome !== 'repelled' && !m.rout);
-    return won.reduce((n, m) => n + m.marks, 0) / Math.max(1, won.length);
+  // The fifth to fall is the rout, so the fifth stronghold's marks are counted with the rout's (session
+  // 136: left out, the fifth read "0.0" as though it paid nothing).
+  const marksAt = byPlace.map((ms, n) => {
+    const won = ms.filter((m) => m.outcome !== 'repelled' && (n === 4 || !m.rout));
+    return won.reduce((sum, m) => sum + m.marks, 0) / Math.max(1, won.length);
   });
   const routs = realm.mercs.filter((m) => m.rout).length;
   const warDays = new Set(realm.mercs.map((m) => `${m.lord}:${m.day}`)).size;
   lines.push(
-    `Strongholds taken, easiest first: ${fell.join(', ')}; war marks for each: ${marksAt.map((x) => x.toFixed(1)).join(', ')}; routs ${routs} in ${warDays} days at war`,
+    `Strongholds taken, easiest first: ${fell.join(', ')}; war marks for each: ${marksAt.map((x) => x.toFixed(1)).join(', ')} (the fifth with its rout's); routs ${routs} in ${warDays} days at war`,
   );
   check(
     marksAt.every((x, i) => i === 0 || x === 0 || x > marksAt[i - 1]),

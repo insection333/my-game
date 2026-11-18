@@ -44,6 +44,17 @@ export const trapName = read({
   'spiked-palisades': 'castle.trap.spiked-palisades',
   'counter-battery': 'castle.trap.counter-battery',
 });
+/** What holds a stronghold (session 136): where its garrison is strongest (each unit at 40% or more of
+ *  it; under that, even) and the trap at its gate, so its odds have a reason beside them. */
+export function garrisonWords(garrison: readonly number[], trap: string): string {
+  const ids = ['vanguard', 'outriders', 'siege'] as const;
+  const strong = ids.filter((_, i) => garrison[i] >= 40).map((id) => unitName(id));
+  const gate = trapName(trap);
+  if (strong.length === 0) return t('castle.merc.even', { trap: gate });
+  const units =
+    strong.length === 1 ? strong[0] : t('list.and', { first: strong.slice(0, -1).join(', '), last: strong.at(-1)! });
+  return t('castle.merc.strongest', { units, trap: gate });
+}
 export const presetName = read({
   even: 'castle.preset.even',
   vanguard: 'castle.preset.vanguard',

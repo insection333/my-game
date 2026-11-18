@@ -9,7 +9,7 @@ import { ActionRow, Button, ItemIcon, Panel, Pill } from '@idle-clash/ui';
 import { useEffect } from 'react';
 import { navigate, useLocation, withPanel } from '../../router.ts';
 import { Fought } from './Fought.tsx';
-import { fortressName, mercName } from './labels.ts';
+import { fortressName, garrisonWords, mercName } from './labels.ts';
 import { when } from './Reports.tsx';
 import { LatestReports } from './ReportsTab.tsx';
 import { castleRun, fight, loadTargets } from './store.ts';
@@ -211,6 +211,7 @@ function TargetRow({ target }: { target: Target }) {
                   : target.merc
                     ? t('castle.target.chance', { pct: pct(chance) })
                     : t('castle.target.chanceAbout', { pct: pct(chance) }),
+              ...(target.merc ? [garrisonWords(target.merc.garrison, target.merc.trap)] : []),
               paysLine(castle, target, view?.warChest ?? 0, logs, now),
               ...(standing?.kind === 'once' ? [standing.text] : []),
             ]
