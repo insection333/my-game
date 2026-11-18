@@ -156,7 +156,10 @@ function Relic({ id }: { id: string }) {
               disabled={busy || castle.warMarks < cost.marks || !affords(castle, purse, cost.gold)}
               onClick={() => void castleAct({ type: 'forgeRelic', relic: id })}
             >
-              {t('castle.relic.forge', { gold: fmt.short(cost.gold), marks: fmt.int(cost.marks) })}
+              {t(level === 0 ? 'castle.relic.forge' : 'castle.relic.levelUp', {
+                gold: fmt.short(cost.gold),
+                marks: fmt.int(cost.marks),
+              })}
             </Button>
           ) : temper ? (
             <Button

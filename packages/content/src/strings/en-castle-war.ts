@@ -144,7 +144,7 @@ export const castleWar = {
   'castle.spoils.armoury': 'the hidden armoury: war marks twice over',
   'castle.spoils.hoard': 'a war hoard: war marks five times over',
   'castle.rout': "A rout: all five of the day's strongholds have fallen",
-  'castle.incursion.rewards': 'Pays {marks} war marks and drill',
+  'castle.incursion.rewards': 'Pays {marks} war marks and training',
 
   // The Reliquary.
   'castle.reliquary.title': 'The Reliquary',
@@ -171,6 +171,7 @@ export const castleWar = {
   'castle.relic.level': 'Level {level} of {levels}',
   'castle.relic.unforged': 'Not yet forged',
   'castle.relic.forge': 'Forge for {gold} and {marks} war marks',
+  'castle.relic.levelUp': 'Level up +1 for {gold} and {marks} war marks',
   'castle.relic.wear': 'Wear',
   'castle.relic.remove': 'Take off',
   'castle.relic.worn': 'Worn',

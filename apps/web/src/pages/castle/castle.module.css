@@ -592,3 +592,65 @@
       inset 0 1px 0 var(--lit);
   }
 }
+
+/* A verb and its steps on one line (session 134): "Level up [+1 · 29.6M] [+5 · 160M]", the word in a
+   column of its own so a troop's Level up and Train line up. */
+.steps {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.stepsLabel {
+  min-width: 4.5rem;
+  color: var(--ink-2);
+  font: 600 var(--t-small) / 1.2 var(--font-ui);
+}
+
+/* Healing or repairing by as much as the lord picks: the amount and its slider, then the button with
+   that much's price. */
+.mend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2) var(--s-3);
+  margin-top: var(--s-2);
+}
+
+.mendBy {
+  display: flex;
+  flex: 1 1 12rem;
+  align-items: center;
+  gap: var(--s-2);
+  min-width: 0;
+  color: var(--ink);
+  font: 600 var(--t-small) / 1.2 var(--font-ui);
+}
+
+.mendBy output {
+  display: inline-block;
+  min-width: 2.75em;
+  font-variant-numeric: tabular-nums;
+}
+
+.slider {
+  flex: 1 1 8rem;
+  min-width: 0;
+  height: 32px;
+  margin: 0;
+  accent-color: var(--woad);
+  cursor: pointer;
+}
+
+/* On the narrowest rows (a 320 px phone) the word stands over its buttons, which share the line. */
+@container (max-width: 340px) {
+  .stepsLabel {
+    flex: 1 1 100%;
+  }
+
+  .steps > button {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+}

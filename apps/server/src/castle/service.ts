@@ -144,7 +144,7 @@ export function act(io: Io, action: CastleAction): Outcome {
     case 'payFrom':
       return own(io, E.setPayFrom(w, action.treasury));
     case 'upgrade':
-      return own(io, E.upgrade(w, action.id as Parameters<typeof E.upgrade>[1], io.now));
+      return own(io, E.upgrade(w, action.id as Parameters<typeof E.upgrade>[1], io.now, action.times ?? 1));
     case 'research':
       return own(io, E.research(w, action.tech as Parameters<typeof E.research>[1], io.now));
     case 'forgeRelic':
@@ -174,7 +174,7 @@ export function act(io: Io, action: CastleAction): Outcome {
     case 'defense':
       return own(io, E.setDefense(w, action, io.totalLevel, io.now));
     case 'mend':
-      return own(io, E.mendNow(w, action.what, io.now));
+      return own(io, E.mendNow(w, action.what, io.now, action.pct));
     case 'drill':
       return own(io, E.drill(w, action.unit, action.times));
     case 'excavate':

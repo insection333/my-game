@@ -129,6 +129,7 @@ describe('t', () => {
       'castle.incursion.rewards',
       'castle.study',
       'castle.relic.forge',
+      'castle.relic.levelUp',
       'castle.temper.cost',
       // A lord's spoils are a range ("2–5 war marks").
       'castle.target.paysLord',

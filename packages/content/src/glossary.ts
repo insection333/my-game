@@ -9,7 +9,7 @@ export const TERMS: [term: string, meaning: string][] = [
   ['Advantage', "Your style beats the foe's: you deal more damage and take less"],
   [
     'AP',
-    'Action points in Castle Clash: earned by the hour and by the Call to arms, spent on drilling, spies, sieges and incursions',
+    'Action points in Castle Clash: earned by the hour and by the Call to arms, spent on training, spies, sieges and incursions',
   ],
   [
     'Arena',
@@ -57,7 +57,6 @@ export const TERMS: [term: string, meaning: string][] = [
   ],
   ['Disadvantage', "The foe's style beats yours: you deal less damage and take more"],
   ['Dish', "A pie or a stew: Cooking mixes a tier's fish with the one before, and it heals a quarter more"],
-  ['Drill', 'Castle Clash: AP spent on a troop for a lasting bonus, up to half again'],
   ['Drop', 'An item a foe leaves behind'],
   [
     'Easy, Fair, Costly, Too strong',
@@ -82,7 +81,7 @@ export const TERMS: [term: string, meaning: string][] = [
   ['Hiscores', 'The ladders of every skill and the total'],
   ['Hitpoints', 'The skill that raises health, opens foes and lets you wear armour; trained by every fight'],
   ['Honours', 'Your title, banner and frame: chosen on the Deeds tab, seen by everyone'],
-  ['Incursion', 'Castle Clash: an assault on a fortress, tier after tier, for war marks and drill'],
+  ['Incursion', 'Castle Clash: an assault on a fortress, tier after tier, for war marks and training'],
   ['Key', "Opens a tier's standing stones for Runecraft; Smithing binds it from two bars, and it is kept"],
   [
     'Kindling',
@@ -151,6 +150,10 @@ export const TERMS: [term: string, meaning: string][] = [
   [
     'The hidden armoury',
     'Castle Clash: now and then a fortress taken yields its war marks twice over; once in a hundred, a hoard, five times over',
+  ],
+  [
+    'Training',
+    'Castle Clash: AP spent on a troop for a lasting bonus to its power, up to half again (Train +1, Train +5)',
   ],
   ['Treasury', 'Castle Clash: gold kept in your castle; it powers the edict, and part of it can be raided'],
   ['Twist', 'Something that holds for a whole expedition, giving and taking: fog, hungry wolves, a storm'],

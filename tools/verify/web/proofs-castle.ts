@@ -4,8 +4,11 @@
 //   pressed from the foot of the long Army tab opens its own.
 // - The castle's banner and its header are one card (beside each other on a wide screen), where they
 //   stood as two cards one above the other on every tab.
-// - A troop's Drill and Drill ×5 share a line on a phone, where they stood one under the other; a lord's
-//   Plan shares the line of their Siege, where it stood alone on a line above it.
+// - A troop's Train +1 and +5 share a line on a phone (Drill and Drill ×5 stood one under the other), and
+//   its Level up offers +1 and +5 (session 134, the owner); a lord's Plan shares the line of their Siege,
+//   where it stood alone on a line above it.
+// - The wounded are healed by as much as the slider picks, at that much's price (session 134): 5% picked
+//   takes 5 points off the wounds, not all of them.
 import type { Page } from 'playwright';
 import { openPage, type Served } from './session.ts';
 
@@ -31,16 +34,43 @@ async function onAPhone(served: Served, problems: string[]) {
       return !!banner && banner === header;
     });
     if (!one) problems.push('Castle: the banner and the header stand as two cards');
-    step = "a troop's drills share a line";
-    const drills = await page.evaluate(() => {
+    step = "a troop's training shares a line";
+    const train = await page.evaluate(() => {
       const row = document.querySelector('[data-slot="castle.units"] [data-ui="ActionRow"]');
       const [a, b] = Array.from(row?.querySelectorAll('button') ?? []).filter((x) =>
-        /^Drill/.test(x.textContent ?? ''),
+        /^Train \+/.test(x.getAttribute('aria-label') ?? ''),
       );
       return a && b ? Math.abs(a.getBoundingClientRect().top - b.getBoundingClientRect().top) : -1;
     });
-    if (drills < 0 || drills > 2)
-      problems.push("Castle: a troop's Drill and Drill ×5 stand one under the other on a phone");
+    if (train < 0 || train > 2) problems.push("Castle: a troop's Train +1 and +5 do not share a line on a phone");
+    step = 'a troop levels up by one or five';
+    const units = page.locator('[data-slot="castle.units"]');
+    for (const more of [1, 5])
+      if (!(await units.getByRole('button', { name: new RegExp(`^Level up \\+${more} for`) }).count()))
+        problems.push(`Castle: no troop offers Level up +${more}`);
+    step = 'the slider heals by the part picked';
+    const wounded = () =>
+      page.evaluate(() => {
+        const m = /(\d+)% of your troops wounded/.exec(document.querySelector('main')!.textContent ?? '');
+        return m ? Number(m[1]) : null;
+      });
+    const before = await wounded();
+    if (before === null || before < 7)
+      problems.push(`Castle: the elder's troops are not wounded enough to heal a part (${before})`);
+    else {
+      await page.getByLabel(/^Heal by/).fill('5');
+      const heal = page.getByRole('button', { name: /^Heal 5% for/ });
+      await heal.click();
+      await page.waitForFunction(
+        (was) =>
+          !new RegExp(`\\b${was}% of your troops wounded`).test(document.querySelector('main')!.textContent ?? ''),
+        before,
+        { timeout: 10_000 },
+      );
+      const after = await wounded();
+      if (after === null || after < before - 6 || after > before - 4)
+        problems.push(`Castle: healing 5% took the wounds from ${before}% to ${after ?? 'none'}%`);
+    }
     step = 'the tabs stay at the top as the page scrolls';
     await page.evaluate(() => {
       const main = document.querySelector('main')!;
