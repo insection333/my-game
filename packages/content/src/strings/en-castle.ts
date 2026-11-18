@@ -139,7 +139,8 @@ export const castle = {
   'castle.repair': 'Repair {pct} for {gold} and {ap} AP',
   'castle.repair.by': 'Repair by',
   'castle.dig.title': 'Deep foundations',
-  'castle.dig.depth': 'Depth {depth}: the edict and AP ×{mult}',
+  'castle.dig.depth': 'Depth {depth}: your edict and AP flow +{now}%',
+  'castle.dig.next': 'The next dig: +{next}% more to both, and the vault keeps {vault} more',
   'castle.dig': 'Dig for {gold} and {ap} AP',
 
   // The Garrison.
