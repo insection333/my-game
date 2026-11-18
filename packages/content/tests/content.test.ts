@@ -131,6 +131,9 @@ describe('t', () => {
       'castle.relic.forge',
       'castle.relic.levelUp',
       'castle.temper.cost',
+      // The castle's next step (session 140): a relic's level or a temper, 15 war marks or more.
+      'castle.next.relic',
+      'castle.next.temper',
       // A lord's spoils are a range ("2–5 war marks").
       'castle.target.paysLord',
       'castle.target.paysLordUnscouted',

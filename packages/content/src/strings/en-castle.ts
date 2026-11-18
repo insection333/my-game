@@ -71,6 +71,11 @@ export const castle = {
   'castle.orders.paid': "Today's orders: all done",
   'castle.orders.done': 'Order done: {order}',
   'castle.orders.allDone': "Today's orders, all done",
+  'castle.next.title': 'Next for your castle',
+  'castle.next.evolution': 'at {unit} level {level}: {levels} more levels, {gold} gold',
+  'castle.next.evolutionOne': 'at {unit} level {level}: one more level, {gold} gold',
+  'castle.next.relic': 'to level {level}: {gold} gold and {marks} war marks',
+  'castle.next.temper': 'tempered to +{temper}: {pct} chance, for {gold} gold and {marks} war marks',
   'castle.opens.halls': 'The Reliquary and the War College open with your first war mark.',
 
   // The Citadel.

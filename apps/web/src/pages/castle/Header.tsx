@@ -6,7 +6,8 @@ import { AP, dayTurns, fmt, t } from '@idle-clash/content';
 import { castleEngine as E } from '@idle-clash/features';
 import { Button, Pill, ProgressBar, TextLink } from '@idle-clash/ui';
 import { navigate } from '../../router.ts';
-import { decreeName } from './labels.ts';
+import { decreeName, evolutionName, relicName, unitName } from './labels.ts';
+import { pct } from './targets.ts';
 import { castleAct } from './store.ts';
 import { useSyncedCastle } from './synced.ts';
 import s from './castle.module.css';
@@ -63,6 +64,7 @@ export function Header({ note }: { note: string | null }) {
         {vigilance > 0 && <Pill tone="moss">{t('castle.vigilance', { count: fmt.int(vigilance) })}</Pill>}
       </div>
       <Orders />
+      <Next />
       {note && <p className={s.closed}>{note}</p>}
       {/* A battle's refusal is said on its own row in the War (session 119). */}
       {refused && refusedAt === null && (
@@ -140,6 +142,44 @@ function Orders() {
           );
         })}
       </ul>
+    </div>
+  );
+}
+
+/** The castle's next milestone and how far off it is (session 140): a troop's next evolution, a relic's
+ *  next level, or the next temper. Its name links to the tab where it is reached, and what it takes follows
+ *  ("Sunforged Phalanx at vanguard level 14: 3 more levels, 5.2M gold"), so the link keeps one line as the
+ *  orders' links do. */
+function Next() {
+  const { castle, now } = useSyncedCastle();
+  const next = castle && E.nextForCastle(castle, now);
+  if (!next) return null;
+  const name = next.kind === 'evolution' ? evolutionName(next.evolution) : relicName(next.relic);
+  const rest =
+    next.kind === 'evolution'
+      ? t(next.levels === 1 ? 'castle.next.evolutionOne' : 'castle.next.evolution', {
+          unit: unitName(next.unit).toLowerCase(),
+          level: fmt.int(next.level),
+          levels: fmt.int(next.levels),
+          gold: fmt.short(next.gold),
+        })
+      : next.kind === 'relic'
+        ? t('castle.next.relic', { level: fmt.int(next.level), gold: fmt.short(next.gold), marks: fmt.int(next.marks) })
+        : t('castle.next.temper', {
+            temper: fmt.int(next.temper),
+            pct: pct(next.chance),
+            gold: fmt.short(next.gold),
+            marks: fmt.int(next.marks),
+          });
+  return (
+    <div className={s.next} data-slot="castle.next">
+      <span className={s.ordersHead}>{t('castle.next.title')}</span>
+      <p>
+        <TextLink href={next.kind === 'evolution' ? '/castle/army' : '/castle/halls'} onNavigate={navigate}>
+          {name}
+        </TextLink>{' '}
+        {rest}
+      </p>
     </div>
   );
 }

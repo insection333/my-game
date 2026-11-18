@@ -266,7 +266,7 @@ The owner asked for a battle reports section that shows past battles and spy war
     - a spy's findings, and the spoils with their icons.
     A stronghold's report now keeps its id, so its arms match its row.
 
-### Sessions 136 to 139: the castle review (the owner, 18 November)
+### Sessions 136 to 140: the castle review (the owner, 18 November)
 
 The owner asked for a review of Castle Clash early, middle and late, and gave the decisions to Claude. The realm's simulation and the year's numbers found:
 
@@ -299,6 +299,10 @@ The owner asked for a review of Castle Clash early, middle and late, and gave th
     - **An empty "Latest reports"** stood alone under the lords. It now waits for the first battle.
     - **The hiscores ladder ran past a wide screen's page area** once twenty-five players stood on it. It now scrolls inside its box, under its headings, with your own place kept at its foot.
 34. **The realm's lords spend their war marks** (session 139). The simulation's raiders ended 26 weeks with 5,000 war marks unspent and a relic at level 4. Their gold went on stronghold fees, pressed past fatigue for more marks. Relics and tempering now draw on half a lord's purse, and a lord presses on only while it wants war marks. Every steady lord now tempers, holding a few dozen marks of thousands earned (tempers taken across the realm: 223, where 23 stood). The checks hold lords at war to spending at least three quarters of what they earn.
+35. **Next for your castle** (session 140). After every skill reaches 99 the castle is the longest stretch of the game, and nothing on its pages said what came next. The keep now names the castle's nearest milestone on every tab, with how far off it is, as a link to where it is reached:
+    - while a troop has an evolution ahead, the troop nearest its next one by the gold to get there ("Ironclad Halberdiers at vanguard level 6: 2 more levels, 1.2M gold");
+    - then the relics, in the Reliquary's order, to their last level;
+    - then the next temper of the worn relic with the best chance. Tempering never ends, so there is always a next step.
 ## 12. Phases
 
 | Phase | Session | Delivers |

@@ -20,3 +20,4 @@ export * from './words.ts';
 export * from './tactics.ts';
 export * from './temper.ts';
 export * from './orders.ts';
+export * from './next.ts';
