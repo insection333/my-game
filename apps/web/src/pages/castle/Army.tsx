@@ -37,7 +37,14 @@ function Troops() {
   return (
     <section data-section>
       <Panel title={t('castle.units.title')} flush>
-        <div data-slot="castle.units" className={s.relics} data-scrollbox>
+        <div
+          data-slot="castle.units"
+          className={s.relics}
+          data-scrollbox
+          tabIndex={0}
+          role="group"
+          aria-label={t('castle.units.title')}
+        >
           {UNITS.map((u) => {
             const level = castle.levels[u.id];
             const stage = E.evolutionOf(level);

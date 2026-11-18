@@ -87,7 +87,7 @@ export function Hiscores() {
         </div>
         <section data-section>
           <Panel flush>
-            <Slot id="hiscores.ladder" className={s.ladder}>
+            <Slot id="hiscores.ladder" className={s.ladder} scrolls>
               {ladder && ladder.rows.length === 0 && !you && <p className={s.note}>{t('hiscores.empty')}</p>}
               {ladder && (ladder.rows.length > 0 || you) && (
                 <table className={s.table}>

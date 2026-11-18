@@ -249,7 +249,10 @@ async function start(): Promise<Served> {
   const eld = await settle('Elder', (s) => elder(ctx, s, now));
   const kpr = await settle('Keeper', (s) => keeper(ctx, s, now));
   // A player a week in, whose castle was raised five days ago (session 139).
-  const sqr = await settle('Squire', (s) => crowd(s, 0));
+  const sqr = await settle('Squire', (s) => {
+    const c = crowd(s, 0);
+    return { ...c, items: { ...c.items, gold: 1_400_000 } };
+  });
   const elderId = ids.get('Elder')!;
   // The veteran keeps the game's admin page, so it is screenshot with players on it. Named on the list
   // once signed up, as the owner is: a name already on it cannot be signed up for.

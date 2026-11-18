@@ -70,7 +70,14 @@ export function ReportsTab() {
             }))}
           />
         </div>
-        <div data-slot="castle.reports" className={s.days} data-scrollbox>
+        <div
+          data-slot="castle.reports"
+          className={s.days}
+          data-scrollbox
+          tabIndex={0}
+          role="group"
+          aria-label={t('castle.reports.title')}
+        >
           {shown.length === 0 ? (
             <p className={s.none}>{t('castle.reports.none')}</p>
           ) : (
@@ -97,19 +104,18 @@ export function ReportsTab() {
 export function LatestReports() {
   const { cards, now } = useCards();
   const latest = cardsBy(cards, 'all').slice(0, 3);
+  // Before the first battle there is nothing to show here (session 139: an empty panel stood alone under
+  // the lords on a new castle and on a year-old one at peace); the Reports tab says so itself.
+  if (!latest.length) return null;
   return (
     <section data-section>
       <Panel title={t('castle.reports.latest')} flush>
         <div data-slot="castle.latest">
-          {latest.length ? (
-            <ul className={s.cards}>
-              {latest.map((c) => (
-                <ReportCardLink key={c.id} card={c} now={now} />
-              ))}
-            </ul>
-          ) : (
-            <p className={s.none}>{t('castle.reports.none')}</p>
-          )}
+          <ul className={s.cards}>
+            {latest.map((c) => (
+              <ReportCardLink key={c.id} card={c} now={now} />
+            ))}
+          </ul>
         </div>
         {cards.length > latest.length && (
           <p className={s.more}>

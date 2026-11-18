@@ -13,17 +13,26 @@ import { castleAct } from './store.ts';
 import { useSyncedCastle } from './synced.ts';
 import s from './castle.module.css';
 
-/** The treasury the Top up button fills to: half again what the edict needs. */
+/** The treasury the Top up button fills to: half again what the edict needs; offered once the treasury
+ *  falls under a quarter over it (session 139: offered a coin short, it came back moments after each top-up
+ *  as upkeep took its coin a second). */
 const TOP_UP = 1.5;
+const TOP_UP_BELOW = 1.25;
+
+/** What Top up would deposit and the treasury it fills to, or null when it is not offered. */
+export function topUpOf(treasury: number, required: number): { target: number; gold: number } | null {
+  if (treasury >= required * TOP_UP_BELOW) return null;
+  const target = Math.ceil(required * TOP_UP);
+  return { target, gold: target - treasury };
+}
 
 export function Treasury() {
   const { castle, now, purse, totalLevel, busy } = useSyncedCastle();
   if (!castle) return null;
   const required = E.requiredTreasury(castle, totalLevel);
-  const target = Math.ceil(required * TOP_UP);
-  const topUp = Math.max(0, target - castle.treasury);
+  const topUp = topUpOf(castle.treasury, required);
   return (
-    <section data-section>
+    <section data-section className={s.treasuries}>
       <Panel title={t('castle.treasury.title')}>
         <div data-slot="castle.treasury" className={s.treasury}>
           <p className={s.held}>
@@ -35,19 +44,18 @@ export function Treasury() {
           <p>{t('castle.treasury.required', { gold: fmt.short(required) })}</p>
           <p className={s.muted}>{t('castle.treasury.upkeep')}</p>
           <p className={s.muted}>{t('castle.decree.does', { does: decreeDoes(E.decreeOf(now).id) })}</p>
-          {topUp > 0 && (
+          {topUp && (
             <div className={s.save}>
               <Button
                 variant="primary"
                 disabled={busy || purse < 1}
-                onClick={() => void castleAct({ type: 'deposit', gold: Math.min(topUp, Math.floor(purse)) })}
+                onClick={() => void castleAct({ type: 'deposit', gold: Math.min(topUp.gold, Math.floor(purse)) })}
               >
-                {t('castle.topUp', { target: fmt.short(target) })}
+                {t('castle.topUp', { target: fmt.short(topUp.target) })}
               </Button>
               <span className={s.muted}>{t('castle.topUp.hint')}</span>
             </div>
           )}
-          <MoveGold />
           <div className={s.payFrom}>
             <span>{castle.payFromTreasury ? t('castle.payFrom.treasury') : t('castle.payFrom.purse')}</span>
             <Button
@@ -59,6 +67,11 @@ export function Treasury() {
             </Button>
           </div>
         </div>
+      </Panel>
+      {/* Gold moved in or out, a panel of its own (session 139: with Top up and an empty purse's words the
+          treasury ran taller than a phone's page area). */}
+      <Panel title={t('castle.move.label')}>
+        <MoveGold />
       </Panel>
     </section>
   );
@@ -111,7 +124,7 @@ function MoveGold() {
     if (await castleAct(all ? { type: way, all: true } : { type: way, gold })) setAmount('');
   };
   return (
-    <div className={s.moveGold} role="group" aria-label={t('castle.move.label')}>
+    <div className={s.moveGold}>
       <div className={s.ways}>
         {(['deposit', 'withdraw'] as const).map((w) => (
           <Button

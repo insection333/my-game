@@ -127,7 +127,14 @@ function Strongholds({ strongholds }: { strongholds: Target[] }) {
         flush
       >
         {/* Five rows: on a short screen they scroll inside the panel. */}
-        <div data-slot="castle.strongholds" className={s.relics} data-scrollbox>
+        <div
+          data-slot="castle.strongholds"
+          className={s.relics}
+          data-scrollbox
+          tabIndex={0}
+          role="group"
+          aria-label={t('castle.strongholds.title')}
+        >
           {strongholds.map((x) => (
             <TargetRow key={x.id} target={x} />
           ))}
@@ -145,7 +152,14 @@ function Lords({ lords, reach }: { lords: Target[]; reach: number }) {
   return (
     <section data-section>
       <Panel title={t('castle.targets.title')} flush>
-        <div data-slot="castle.targets" className={s.relics} data-scrollbox>
+        <div
+          data-slot="castle.targets"
+          className={s.relics}
+          data-scrollbox
+          tabIndex={0}
+          role="group"
+          aria-label={t('castle.targets.title')}
+        >
           {!open ? (
             <p className={s.lead}>
               {t('castle.lords.opens', {

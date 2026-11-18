@@ -103,7 +103,14 @@ function Buildings() {
     <section data-section>
       <Panel title={t('castle.buildings.title')} flush>
         {/* Four rows, each with its Level up: on a short screen they scroll inside the panel (session 134). */}
-        <div data-slot="castle.buildings" className={s.relics} data-scrollbox>
+        <div
+          data-slot="castle.buildings"
+          className={s.relics}
+          data-scrollbox
+          tabIndex={0}
+          role="group"
+          aria-label={t('castle.buildings.title')}
+        >
           {BUILDINGS.map((b) => {
             const level = castle.levels[b.id];
             const top = level >= ECONOMY.MAX_LEVEL;

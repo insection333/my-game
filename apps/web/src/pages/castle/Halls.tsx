@@ -31,7 +31,14 @@ function College() {
   return (
     <section data-section>
       <Panel title={t('castle.college.title')} flush>
-        <div data-slot="castle.college" className={s.college} data-scrollbox>
+        <div
+          data-slot="castle.college"
+          className={s.college}
+          data-scrollbox
+          tabIndex={0}
+          role="group"
+          aria-label={t('castle.college.title')}
+        >
           {TECHS.map((x) => {
             const cost = E.techCost(castle, x.id, now);
             const rank = castle.techs[x.id];
@@ -81,7 +88,14 @@ function Reliquary() {
         }
         flush
       >
-        <div data-slot="castle.relics" className={s.relics} data-scrollbox>
+        <div
+          data-slot="castle.relics"
+          className={s.relics}
+          data-scrollbox
+          tabIndex={0}
+          role="group"
+          aria-label={t('castle.reliquary.title')}
+        >
           {RELICS.map((r) => (
             <Relic key={r.id} id={r.id} />
           ))}
