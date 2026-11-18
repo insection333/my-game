@@ -132,16 +132,22 @@ export function castles(
   levels: { squire: number; elder: number; rival: number; keeper: number },
 ): void {
   const store = new CastleStore(ctx);
-  const keep = (c: E.Castle, total: number, times: number, edict: E.Castle['edict'], extra: Partial<E.Castle> = {}) =>
-    store.write({ ...c, treasury: Math.round(E.requiredTreasury(c, total) * times), edict, ...extra });
+  /** Writes a castle with its treasury at `times` what its edict needs, and returns it as written. */
+  const keep = (c: E.Castle, total: number, times: number, edict: E.Castle['edict'], extra: Partial<E.Castle> = {}) => {
+    const kept = { ...c, treasury: Math.round(E.requiredTreasury(c, total) * times), edict, ...extra };
+    store.write(kept);
+    return kept;
+  };
   keep(raised(ids.squire, now, 'early'), levels.squire, 1.5, 'vigor', { wallIntegrity: 100, infirmaryPct: 0 });
   keep(raised(ids.keeper, now, 'late'), levels.keeper, 2.2, 'fortune');
   const mine = fallen(raised(ids.elder, now, 'mid'), now);
   keep(mine, levels.elder, 2.4, 'vigor', { payFromTreasury: false });
   // The rival a level above the elder in its troops, so it stands near the elder's rating.
   const near = raised(ids.rival, now, 'mid');
-  const rival = { ...near, levels: { ...near.levels, outriders: near.levels.outriders + 1 } };
-  keep({ ...rival, rating: E.bastionRating(rival) }, levels.rival, 1.6, 'harvest');
+  const stronger = { ...near, levels: { ...near.levels, outriders: near.levels.outriders + 1 } };
+  // As written, treasury and all, so its scouting says what a siege could take (session 142: scouted before
+  // its treasury was set, the elder's row read "up to 0 gold").
+  const rival = keep({ ...stronger, rating: E.bastionRating(stronger) }, levels.rival, 1.6, 'harvest');
   // Each battle's numbers as the engine has them at these castles, so the accounts read as this stage's.
   const fight = (att: E.Side, def: E.Side, roll: number) => {
     const f = E.combatRatio(att, def, roll);

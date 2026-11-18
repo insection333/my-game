@@ -15,7 +15,7 @@ import { LatestReports } from './ReportsTab.tsx';
 import { castleRun, fight, loadTargets } from './store.ts';
 import { affords, hasAp, useSyncedCastle } from './synced.ts';
 import { TargetSheet } from './TargetSheet.tsx';
-import { defenceOf, outOfReach, paysLine, pct, sheetOf, standingOf, type Target } from './targets.ts';
+import { defenceOf, outOfReach, paysLine, pct, sheetOf, spiesWouldTip, standingOf, type Target } from './targets.ts';
 import s from './castle.module.css';
 
 function useTargets(): { lords: Target[]; strongholds: Target[]; reach: number } {
@@ -95,7 +95,7 @@ function Fortress() {
             icon={<ItemIcon name="crest" crest={fortress.id} size={32} />}
             name={fortressName(fortress.id)}
             facts={[
-              beyond ? t('castle.target.beyond') : t('castle.target.chance', { pct: pct(chance) }),
+              beyond ? t('castle.incursion.beyond') : t('castle.target.chance', { pct: pct(chance) }),
               t('castle.incursion.rewards', { marks: fmt.int(marks) }),
             ]}
             progress={<Fought battle="incursion" />}
@@ -236,6 +236,7 @@ function TargetRow({ target }: { target: Target }) {
                     ? t('castle.target.chance', { pct: pct(chance) })
                     : t('castle.target.chanceAbout', { pct: pct(chance) }),
               ...(target.merc ? [garrisonWords(target.merc.garrison, target.merc.trap)] : []),
+              ...(spiesWouldTip(target, chance) ? [t('castle.target.spies')] : []),
               paysLine(castle, target, view?.warChest ?? 0, logs, now),
               ...(standing?.kind === 'once' ? [standing.text] : []),
             ]
