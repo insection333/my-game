@@ -35,7 +35,7 @@ function targetOf(kind: OrderKind, h: number, young: boolean): number {
 export function ordersOf(c: Castle, now: number): Orders {
   const day = formatUtcDate(now);
   if (c.orders && c.orders.day === day) return c.orders;
-  const open = OTHERS.filter((k) => lordsOpen(c) || (k !== 'spy' && k !== 'lord'));
+  const open = OTHERS.filter((k) => lordsOpen(c, now) || (k !== 'spy' && k !== 'lord'));
   const drawn = open
     .map((kind) => ({ kind, k: hash(`${c.userId}:${day}:${kind}`) }))
     .sort((a, b) => a.k - b.k)
@@ -46,7 +46,7 @@ export function ordersOf(c: Castle, now: number): Orders {
     day,
     list: (['strongholds', ...drawn] as OrderKind[]).map((kind) => ({
       kind,
-      target: targetOf(kind, h, !lordsOpen(c)),
+      target: targetOf(kind, h, !lordsOpen(c, now)),
       progress: 0,
     })),
     paid: false,

@@ -160,6 +160,26 @@ export function resolveMercenary(att: Castle, m: Mercenary, now: number, roll: n
  *  rating, is no one to bully, and it cost more than the four harder ones. Fatigue adds to all alike. */
 export const mercenaryCosts = (c: Castle, _m: Mercenary, now: number) => siegeCosts(c, 1, now);
 
+/** The lords on offer from those open to you (session 137): those within 0.75 to 1.35 of your rating while
+ *  three or more stand there; else a step further (0.6 to 1.6, then 0.5 to 2), the first step that holds
+ *  three, or the widest. The step is chosen over every lord open to lords, shielded or not, so a crowded
+ *  bracket whose lords are shielded today does not spill onto the far weaker; only `available` ones (the
+ *  unshielded) are offered. `reach` is the step used, so the page can say the list reaches further. */
+export function lordsInReach<T extends { rating: number }>(
+  mine: number,
+  lords: readonly T[],
+  available: (l: T) => boolean = () => true,
+): { lords: T[]; reach: number } {
+  const steps = SIEGE.BRACKET_STEPS;
+  for (let reach = 0; reach < steps.length; reach++) {
+    const [low, high] = steps[reach];
+    const within = lords.filter((l) => l.rating >= low * mine && l.rating <= high * mine);
+    if (within.length >= SIEGE.LORDS_WANTED || reach === steps.length - 1)
+      return { lords: within.filter(available), reach };
+  }
+  return { lords: [], reach: 0 };
+}
+
 /** Whether a lord is a fair match: unshielded, not you, within 0.75 to 1.35 of your rating. */
 export const inBracket = (mine: number, theirs: number): boolean =>
   theirs >= SIEGE.BRACKET_LOW * mine && theirs <= SIEGE.BRACKET_HIGH * mine;

@@ -38,6 +38,9 @@ export interface LordTarget {
 
 export interface CastleTargets {
   lords: LordTarget[];
+  /** How far the lords on offer reach (session 137): 0 the near bracket, more a step further, while
+   *  fewer than three stood nearer (SIEGE.BRACKET_STEPS). */
+  reach: number;
   /** The day's five strongholds, easiest first. */
   mercenaries: Mercenary[];
 }

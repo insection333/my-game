@@ -43,15 +43,23 @@ const DAY = 86_400_000;
 export function targetsView(ctx: Ctx, playerId: string, now: number): TargetsView {
   const castles = new CastleStore(ctx);
   const row = castles.read(playerId);
-  if (!row) return { lords: [], mercenaries: [] };
+  if (!row) return { lords: [], reach: 0, mercenaries: [] };
   const c = E.syncCastle(row, now).castle;
   const day = new Date(now).toISOString().slice(0, 10);
   const struck = new Map<string, number>();
   for (const l of castles.logs(playerId))
     if (l.kind === 'siegeIn' && l.at > now - DAY && typeof l.data.foe === 'string' && !struck.has(l.data.foe))
       struck.set(l.data.foe, l.at);
-  const near = castles
-    .lordsNear(playerId, c.rating, { low: SIEGE.BRACKET_LOW, high: SIEGE.BRACKET_HIGH }, now)
+  // Lords open to lords, from half to twice your rating, nearest first; then those in reach (session 137):
+  // the near bracket while three stand there, shielded or not, else a step further; of those, the
+  // unshielded. A castle not yet open to lords is never offered (its Siege was refused as "shielded").
+  const widest = SIEGE.BRACKET_STEPS[SIEGE.BRACKET_STEPS.length - 1];
+  const open = castles.lordsNear(playerId, c.rating, { low: widest[0], high: widest[1] }).flatMap((l) => {
+    const theirs = castles.read(l.id);
+    return theirs && E.lordsOpen(theirs, now) ? [{ ...l, shielded: E.isShielded(theirs, now) }] : [];
+  });
+  const { lords: inReach, reach } = E.lordsInReach(c.rating, open, (l) => !l.shielded);
+  const near = inReach
     .map((l) => ({ l, k: E.hash(`${playerId}:${day}:${l.id}`) }))
     .sort((a, b) => a.k - b.k)
     .slice(0, SIEGE.TARGETS)
@@ -78,7 +86,7 @@ export function targetsView(ctx: Ctx, playerId: string, now: number): TargetsVie
       },
     ];
   });
-  return { lords, mercenaries: E.mercenaries(c, now, SIEGE.STRONGHOLD_PAY.length) };
+  return { lords, reach, mercenaries: E.mercenaries(c, now, SIEGE.STRONGHOLD_PAY.length) };
 }
 
 export function castleRoutes(app: FastifyInstance, ctx: Ctx): void {

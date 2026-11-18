@@ -128,13 +128,13 @@ export function runMission(att: Castle, def: Castle, missionId: string, now: num
   };
 }
 
-/** The report a successful scouting brings home. */
-export function scoutReport(def: Castle, now: number): ScoutReport {
+/** The report a successful scouting brings home: what a siege could take, given the lord's total level. */
+export function scoutReport(def: Castle, now: number, totalLevel: number): ScoutReport {
   return {
     defense: def.defense,
     trap: def.activeTrap,
     castellan: def.castellan,
     relics: [...def.equippedRelics],
-    raidable: raidableGold(def, now),
+    raidable: raidableGold(def, now, totalLevel),
   };
 }

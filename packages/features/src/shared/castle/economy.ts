@@ -8,6 +8,7 @@ import {
   ECONOMY,
   RELIC,
   RELICS,
+  SIEGE,
   SINKS,
   TECH,
   UNIT_IDS,
@@ -81,8 +82,12 @@ export function protectedGold(c: Castle, now: number): number {
   return Math.floor(Math.min(ECONOMY.VAULT_MAX_PROTECT * c.treasury, flat + share * c.treasury));
 }
 
-/** Gold a siege could take, before vigilance, overextension and the raid cap. */
-export const raidableGold = (c: Castle, now: number): number => Math.max(0, c.treasury - protectedGold(c, now));
+/** Gold a siege could take, before vigilance, overextension and the raid cap: past the deep vault and,
+ *  given the lord's total level, past the edict's floor (SIEGE.EDICT_FLOOR, session 137). */
+export function raidableGold(c: Castle, now: number, totalLevel?: number): number {
+  const floor = totalLevel === undefined ? 0 : Math.ceil(requiredTreasury(c, totalLevel) * SIEGE.EDICT_FLOOR);
+  return Math.max(0, c.treasury - Math.max(protectedGold(c, now), floor));
+}
 
 /** What raising a building or unit one level costs, with this castle's cost effects. */
 export function levelCost(c: Castle, base: number, level: number, now: number): number {
