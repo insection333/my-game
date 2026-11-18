@@ -123,7 +123,7 @@ The plan's Sovereign Edicts and Deep Foundation Excavation reach into the main g
 The plan's gold figures assume a small economy (`requiredTreasury` starts at 1,120). A steady player here holds about 16 million gold by day 30 and earns about 1.5 million a day all year (`.verify/year.md`). All castle gold is scaled by one constant, `GOLD_SCALE = 100`, applied to the plan's formulas without changing their shape:
 
 - **Required treasury:** `requiredTreasury = round(GOLD_SCALE × 1000 × 1.12^avgLevel)`, with the floor by total level of section 11.2. That is 112,000 at level 1, 3.3 million at 30 and 32 million at 50.
-- **Upgrades:** `upgradeGoldCost(base, level)` uses the plan's `1.18^level` from per-track bases of 2,000 to 5,000 gold. Every track to level 50 costs about 600 million in all, a year of a steady player's gold, and the climb goes on past it.
+- **Upgrades:** `upgradeGoldCost(base, level)` uses the plan's `1.18^level` from per-track bases of 2,000 to 5,000 gold. A troop or building to level 25 costs about 140 million gold and to level 50 about 8.7 billion; a steady player's castle averages level 22 after a year and 24 after eighteen months, and the climb goes on past it (session 138: this line said every track to 50 cost about 600 million).
 - Phase 6 replays a castle alongside the year's simulation and tunes the constants, never the formulas.
 
 ## 9. What must keep working
@@ -138,7 +138,7 @@ The plan's gold figures assume a small economy (`requiredTreasury` starts at 1,1
 
 `packages/content/src/castle/` holds every number and every piece of content, by id. Names reach the page through the strings file in Phase 4.
 
-- **Units** and their evolutions (levels 1, 10, 25, 50). Each later evolution adds a passive:
+- **Units** and their evolutions (levels 1, 6, 14, 22; the plan's 1, 10, 25, 50 until session 138). Each later evolution adds a passive:
   - Vanguard (Levy Spearmen → Ironclad Halberdiers → Sunforged Phalanx → Immortal Aegis): +10% in defence; −20% wounds; immune to traps.
   - Outriders (Border Scouts → Lancer Dragoons → Shadowmane Cavaliers → Stormhoof Cataphracts): +10% spy stealth; +10% loot; +10% in attack.
   - Siege (Timber Trebuchets → Dwarven Bombardiers → Alchemical Hellcannons → Arcane Conflux Engines): +5% wall penetration; +25% damage to walls; +10% more penetration.
@@ -266,7 +266,7 @@ The owner asked for a battle reports section that shows past battles and spy war
     - a spy's findings, and the spoils with their icons.
     A stronghold's report now keeps its id, so its arms match its row.
 
-### Sessions 136 and 137: the castle review (the owner, 18 November)
+### Sessions 136 to 138: the castle review (the owner, 18 November)
 
 The owner asked for a review of Castle Clash early, middle and late, and gave the decisions to Claude. The realm's simulation and the year's numbers found:
 
@@ -281,6 +281,11 @@ The owner asked for a review of Castle Clash early, middle and late, and gave th
     - The edict is the castle's gift to the rest of the game; a lord away should not come back to find it dark. What a lord keeps above it, for a stronger edict, is what war puts at stake.
     - The scouting report and the treasury's "raidable" say the same.
     - Every kind of lord now keeps the edict on 100% of days. The realm sees more sieges between lords than before (1,685 in 26 weeks, where 1,325 stood), each earning back its fee (1.00 of it).
+32. **The troops' evolutions within reach** (session 138). At levels 10, 25 and 50 a steady lord's troops evolved about day 115 and day 420, and never a fourth time: level 50 costs 8.7 billion gold a troop. So every troop row promised a fourth evolution no one would see, and the last passives (the vanguard's immunity to traps, the siege's extra penetration, the outriders' attack) never came into play.
+    - The evolutions now come at levels 1, 6, 14 and 22. For the year's steady player that is day 67, day 182 and day 386, each gap about double the last: a second form within the first two months, a third half a year in, and a fourth crowning the first year.
+    - The cost curve stays at 18% a level. Cheaper levels past 20 would let the castle outgrow its required treasury, which grows 12% a level.
+    - The 100-level cap stays. No page shows it as a goal; it only bounds Level up +5.
+    - The year's simulation now plays the steady player to eighteen months and checks each evolution in its window (the second between days 30 and 120, the third 150 to 220, the fourth 365 to 450), and that the castle grows every quarter through the eighteen months (to 23.0 and 24.1). A lord who puts their gold into troops first evolves them sooner: that is the lord's choice.
 
 ## 12. Phases
 

@@ -82,8 +82,15 @@ export interface Year {
 
 const TIER_LEVELS = [10, 20, 30, 40, 55, 70, 85];
 
-/** Plays `days` days (or until every skill is at 99 after a year); `onDay` sees each day's end. */
-export function playYear(kind: Kind, seed: number, days: number, onDay?: (day: number, state: State) => void): Year {
+/** Plays `days` days (or until every skill is at 99 after a year, unless `through`); `onDay` sees each
+ *  day's end. */
+export function playYear(
+  kind: Kind,
+  seed: number,
+  days: number,
+  onDay?: (day: number, state: State) => void,
+  through = false,
+): Year {
   const rng = seeded(seed);
   let state = newState(seed, T0);
   const out: Year = { kind, days: [], at99: {}, final: state, commands: 0, refused: 0, why: {} };
@@ -173,7 +180,7 @@ export function playYear(kind: Kind, seed: number, days: number, onDay?: (day: n
     day.slots = [storehouseData.slotsUsed(state), storehouseData.capacity(state)];
     out.days.push(day);
     onDay?.(d + 1, state);
-    if (ALL_SKILLS.every((s) => out.at99[s]) && d + 1 >= 365) break;
+    if (!through && ALL_SKILLS.every((s) => out.at99[s]) && d + 1 >= 365) break;
   }
   out.final = state;
   return out;

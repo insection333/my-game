@@ -19,8 +19,10 @@ export type CastleEffect =
   | { kind: 'apCap'; amount: number }
   | { kind: 'costs'; pct: number; of: 'upgrades' | 'bribes' | 'excavation' | 'repair' | 'upkeep' };
 
-/** A unit's four evolutions, at levels 1, 10, 25 and 50; each from the second adds its passive. */
-export const EVOLUTION_LEVELS = [1, 10, 25, 50] as const;
+/** A unit's four evolutions, at levels 1, 6, 14 and 22; each from the second adds its passive. Session 138:
+ *  at 10, 25 and 50 a steady lord's troops evolved about day 115 and day 420, and never a fourth time (level
+ *  50 costs 8.7 billion a troop); now about day 70, day 180 and day 380, a gap that doubles each time. */
+export const EVOLUTION_LEVELS = [1, 6, 14, 22] as const;
 export interface Unit {
   id: UnitId;
   /** Its base in the rating and in combat: statPower(100, level). */

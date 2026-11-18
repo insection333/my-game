@@ -37,9 +37,9 @@ describe("Castle Clash's configuration", () => {
     expect(c.SIEGE.SPOILS_TO_ATTACKER + c.SIEGE.SPOILS_DESTROYED + c.SIEGE.SPOILS_TO_WAR_CHEST).toBeCloseTo(1, 12);
   });
 
-  it('has three units with four evolutions at levels 1, 10, 25 and 50, and three passives each', () => {
+  it('has three units with four evolutions at levels 1, 6, 14 and 22, and three passives each', () => {
     expect(c.UNITS.map((u) => u.id)).toEqual(['vanguard', 'outriders', 'siege']);
-    expect(c.EVOLUTION_LEVELS).toEqual([1, 10, 25, 50]);
+    expect(c.EVOLUTION_LEVELS).toEqual([1, 6, 14, 22]);
     for (const u of c.UNITS) {
       expect(u.evolutions).toHaveLength(4);
       expect(u.passives).toHaveLength(3);
