@@ -80,6 +80,9 @@ describe('Castle Clash under random play', () => {
         { type: 'callToArms' },
         { type: 'deposit', gold: 1 + Math.floor(rand() * 30_000_000) },
         { type: 'withdraw', gold: 1 + Math.floor(rand() * 10_000_000) },
+        // All of it, as the press lands (session 135).
+        { type: 'deposit', all: true },
+        { type: 'withdraw', all: true },
         { type: 'edict', edict: pick(['harvest', 'vigor', 'fortune', null]) },
         { type: 'payFrom', treasury: rand() < 0.5 },
         { type: 'upgrade', id: pick(ids) },

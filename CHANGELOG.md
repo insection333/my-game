@@ -272,3 +272,4 @@
 - Session 132: the bug sweep: the account menu closes when Tab takes the focus out of it, and a phone on its side reaches every place on the rail (Hiscores fell below the screen).
 - Session 133: Castle Clash's tabs are a bar of the castle's pictures that stays at the top as you scroll; the banner and header are one card (side by side on a wide screen); the War and Army columns are rebalanced; Drill, Plan, Wear and Take off sit on one line with their row's button.
 - Session 134: Castle Clash's presses say a verb, its amount and its price (Level up +1/+5, Train +1/+5, Rank up +1); healing and wall repair take a slider for how much, priced so no split is cheaper.
+- Session 135: the treasury's typed amount gains a slider beside it (each moves the other), saying before the press what it leaves, what arrives and what is lost on the way; all is moved as all there is when the press lands.
