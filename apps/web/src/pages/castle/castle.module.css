@@ -140,20 +140,33 @@
   font: 500 var(--t-lead) / 1.25 var(--font-book);
 }
 
-.move {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: end;
+/* Moving gold (session 135): Deposit or Withdraw, the share by a slider, what it moves and leaves, the press. */
+.moveGold {
+  display: grid;
+  justify-items: start;
   gap: var(--s-2);
+  padding-top: var(--s-3);
+  border-top: 1px solid var(--line);
 }
 
-.move > :first-child {
-  flex: 1 1 140px;
-  min-width: 0;
+.moveGold > .mendBy,
+.amount {
+  justify-self: stretch;
+}
+
+.ways {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-1);
+}
+
+.wayButton[aria-pressed='true'] {
+  border-color: var(--woad);
+  background: var(--woad-soft);
+  color: var(--woad);
 }
 
 .treasury .hint {
-  margin-top: calc(-1 * var(--s-2));
   color: var(--ink-2);
   font-size: var(--t-small);
 }

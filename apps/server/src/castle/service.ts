@@ -136,9 +136,9 @@ export function act(io: Io, action: CastleAction): Outcome {
       return { ok: true, gained: r.gained, streak: r.streak };
     }
     case 'deposit':
-      return own(io, E.deposit(w, action.gold));
+      return own(io, E.deposit(w, action.all ? 'all' : (action.gold ?? 0)));
     case 'withdraw':
-      return own(io, E.withdraw(w, action.gold, io.now));
+      return own(io, E.withdraw(w, action.all ? 'all' : (action.gold ?? 0), io.now));
     case 'edict':
       return own(io, E.setEdict(w, action.edict));
     case 'payFrom':

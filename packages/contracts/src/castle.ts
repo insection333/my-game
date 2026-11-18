@@ -19,8 +19,9 @@ const act = <K extends string, T extends z.ZodRawShape>(type: K, shape: T) =>
 
 export const CastleAction = z.discriminatedUnion('type', [
   act('callToArms', {}),
-  act('deposit', { gold: Gold }),
-  act('withdraw', { gold: Gold }),
+  // An amount, or all of it as the press lands (session 135); the engine refuses neither or a bad amount.
+  act('deposit', { gold: Gold.optional(), all: z.literal(true).optional() }),
+  act('withdraw', { gold: Gold.optional(), all: z.literal(true).optional() }),
   act('edict', { edict: Id.nullable() }),
   act('payFrom', { treasury: z.boolean() }),
   // Levels raised at one press, 1 to 5 (session 134); one when left out.

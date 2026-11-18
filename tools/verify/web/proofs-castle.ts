@@ -7,6 +7,10 @@
 // - A troop's Train +1 and +5 share a line on a phone (Drill and Drill ×5 stood one under the other), and
 //   its Level up offers +1 and +5 (session 134, the owner); a lord's Plan shares the line of their Siege,
 //   where it stood alone on a line above it.
+// - Gold moves to and from the treasury by an amount typed or a slider's share, each moving the other
+//   (session 135): half the treasury typed stands the slider at the middle, the slider at 10% writes a
+//   tenth, Withdraw says what arrives and what is lost on the way before the press, and the press moves
+//   that.
 // - The wounded are healed by as much as the slider picks, at that much's price (session 134): 5% picked
 //   takes 5 points off the wounds, not all of them.
 import type { Page } from 'playwright';
@@ -86,6 +90,46 @@ async function onAPhone(served: Served, problems: string[]) {
     step = 'a tab pressed from the foot opens its own';
     await nav.getByRole('link', { name: 'Citadel' }).click();
     await page.locator('[data-slot="castle.buildings"]').waitFor({ timeout: 10_000 });
+    step = 'a share of the treasury is withdrawn as the page says';
+    const read = () =>
+      page.evaluate(async () => {
+        const c = (await (await fetch('/api/castle')).json()) as { castle: { treasury: number } };
+        const g = (await (await fetch('/api/game')).json()) as { state: { items: Record<string, number> } };
+        return { treasury: c.castle.treasury, gold: g.state.items.gold ?? 0 };
+      });
+    const was = await read();
+    const treasury = page.locator('[data-slot="castle.treasury"]');
+    await treasury.getByRole('button', { name: 'Withdraw', exact: true }).click();
+    // Typing an amount moves the slider: half the treasury stands it at the middle.
+    await treasury.getByLabel('Gold', { exact: true }).fill(String(Math.floor(was.treasury / 2)));
+    const middle = Number(await treasury.getByLabel(/of the treasury/).inputValue());
+    if (Math.abs(middle - 50) > 1) problems.push(`Castle: half the treasury typed stood the slider at ${middle}`);
+    // And the slider writes the amount.
+    await treasury.getByLabel(/of the treasury/).fill('10');
+    const written = Number((await treasury.getByLabel('Gold', { exact: true }).inputValue()).replace(/\D/g, ''));
+    if (Math.abs(written - was.treasury * 0.1) > was.treasury * 0.01)
+      problems.push(`Castle: the slider at 10% wrote ${written} for a treasury of ${was.treasury}`);
+    const moved = Math.floor(was.treasury * 0.1);
+    const lost = Math.ceil(moved * 0.2);
+    const said = await treasury.textContent();
+    if (!said?.includes('lost on the way'))
+      problems.push('Castle: Withdraw does not say what is lost before the press');
+    await treasury.getByRole('button', { name: /^Withdraw \d/ }).click();
+    await page.waitForFunction(
+      async (t) =>
+        ((await (await fetch('/api/castle')).json()) as { castle: { treasury: number } }).castle.treasury !== t,
+      was.treasury,
+      { timeout: 10_000 },
+    );
+    const now = await read();
+    // The treasury's upkeep and the elder's running lanes move gold by a little meanwhile: within 1%.
+    const took = was.treasury - now.treasury;
+    const paid = now.gold - was.gold;
+    const near = (a: number, b: number) => Math.abs(a - b) <= moved * 0.01;
+    if (!near(took, moved) || !near(paid, moved - lost))
+      problems.push(
+        `Castle: withdrawing 10% of ${was.treasury} took ${took} and paid ${paid} (expected ${moved} and ${moved - lost})`,
+      );
   } catch (err) {
     problems.push(`Castle: failed where ${step} (${say(err)})`);
   } finally {

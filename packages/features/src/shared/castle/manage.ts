@@ -153,18 +153,23 @@ export function setEdict(w: Wallet, edict: string | null): Done {
   return { ok: true, castle: { ...w.castle, edict }, purse: w.purse, burned: 0 };
 }
 
-/** Moves gold from the purse into the treasury. */
-export function deposit(w: Wallet, gold: number): Done {
+/** Moves gold from the purse into the treasury: an amount, or 'all' its whole coins as the press lands
+ *  (session 135). */
+export function deposit(w: Wallet, amount: number | 'all'): Done {
+  const gold = amount === 'all' ? Math.floor(w.purse) : amount;
   if (!Number.isInteger(gold) || gold <= 0) return no('invalid');
   if (w.purse < gold) return no('gold');
   return { ok: true, castle: { ...w.castle, treasury: w.castle.treasury + gold }, purse: w.purse - gold, burned: 0 };
 }
 
-/** Takes gold back to the purse, less the 20% smuggling burn; refused for 30 minutes after a scouting. */
-export function withdraw(w: Wallet, gold: number, now: number): Done {
+/** Takes gold back to the purse, less the 20% smuggling burn; refused for 30 minutes after a scouting. An
+ *  amount, or 'all' the treasury holds as the press lands (session 135: its upkeep takes a coin or so a
+ *  second, so all said as the number a page read was more than there was by the time it arrived). */
+export function withdraw(w: Wallet, amount: number | 'all', now: number): Done {
+  if (w.castle.withdrawLockdownUntil !== null && w.castle.withdrawLockdownUntil > now) return no('locked');
+  const gold = amount === 'all' ? Math.floor(w.castle.treasury) : amount;
   if (!Number.isInteger(gold) || gold <= 0) return no('invalid');
   if (w.castle.treasury < gold) return no('gold');
-  if (w.castle.withdrawLockdownUntil !== null && w.castle.withdrawLockdownUntil > now) return no('locked');
   const burned = Math.ceil(gold * ECONOMY.WITHDRAW_TAX);
   return {
     ok: true,
