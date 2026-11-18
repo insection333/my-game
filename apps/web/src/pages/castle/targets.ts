@@ -82,6 +82,11 @@ export function standingOf(c: E.Castle, target: Target, now: number): Standing |
  *  wounds, so its button is closed. A lord's chance is an estimate, and stays open. */
 export const outOfReach = (target: Target, chance: number | null) => target.merc !== null && chance === 0;
 
+/** A scouted lord under even odds (session 142): their walls hold an even siege, and the spies can tip it
+ *  (two poisonings take an even siege near certain), so the row says so until they have. */
+export const spiesWouldTip = (target: Target, chance: number | null) =>
+  target.merc === null && chance !== null && chance < 0.5;
+
 /** The chance against a target in words: with the attack as set, and set against them if that is better. */
 export function chanceLine(c: E.Castle, def: E.Side | null, estimate: boolean, now: number): string {
   if (!def) return t('castle.target.unscouted');
