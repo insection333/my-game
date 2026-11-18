@@ -13,7 +13,8 @@
 //   that.
 // - Each stronghold standing says what holds it (its strongest troops and its trap) beside its chance, and
 //   all cost alike to besiege (session 136: the easiest cost more than the four harder ones).
-// - A lord a year in sees the castle's next milestone on every tab (session 140).
+// - A lord a year in sees the day's orders and the castle's next milestone on the War (session 140), and the
+//   other tabs' own work starts on a phone's first screen (session 141).
 // - The wounded are healed by as much as the slider picks, at that much's price (session 134): 5% picked
 //   takes 5 points off the wounds, not all of them.
 import type { Page } from 'playwright';
@@ -183,20 +184,35 @@ async function onAWideScreen(served: Served, problems: string[]) {
   }
 }
 
-/** A lord a year in sees the castle's next milestone on every tab, a link to where it is reached (session
- *  140: after 99 the castle is the longest stretch of the game, and nothing said what came next). */
+/** A lord a year in sees the day's orders and the castle's next milestone on the War, a link to where it is
+ *  reached (session 140); every other tab keeps the keep short, so its own work starts on a phone's first
+ *  screen (session 141: with the orders and the next step on every tab, the keep stood 440 px tall and the
+ *  Army's first troop began at 660 px of an 844 px screen). */
 async function aNextStep(served: Served, problems: string[]) {
   const page = await openPage('chromium', '/castle', { viewport: { width: 390, height: 844 } }, 'keeper');
   try {
-    for (const tab of ['/castle', '/castle/army', '/castle/citadel', '/castle/halls', '/castle/reports']) {
+    await page.goto(served.url + '/castle');
+    await ready(page);
+    const next = page.locator('[data-slot="castle.next"]');
+    if (!(await next.isVisible())) problems.push('Castle: a year-old castle shows no next step on the War');
+    else if (!(await next.getByRole('link').count())) problems.push('Castle: the next step on the War is not a link');
+    if (!(await page.locator('[data-slot="castle.orders"]').isVisible()))
+      problems.push("Castle: the War does not show the day's orders");
+    for (const [tab, slot] of [
+      ['/castle/army', 'castle.units'],
+      ['/castle/citadel', 'castle.edict'],
+      ['/castle/halls', 'castle.college'],
+      ['/castle/reports', 'castle.reports'],
+    ]) {
       await page.goto(served.url + tab);
       await ready(page);
-      const next = page.locator('[data-slot="castle.next"]');
-      if (!(await next.isVisible())) problems.push(`Castle: a year-old castle shows no next step on ${tab}`);
-      else if (!(await next.getByRole('link').count())) problems.push(`Castle: the next step on ${tab} is not a link`);
+      // Where the tab's own first panel begins (the Reports' filters stand inside its panel, above its list).
+      const panel = page.locator('section', { has: page.locator(`[data-slot="${slot}"]`) }).first();
+      const top = (await panel.boundingBox())?.y ?? Infinity;
+      if (top > 560) problems.push(`Castle: on a phone ${tab}'s own work starts ${Math.round(top)} px down (over 560)`);
     }
   } catch (err) {
-    problems.push(`Castle: failed showing the next step (${say(err)})`);
+    problems.push(`Castle: failed showing the keep (${say(err)})`);
   } finally {
     await page.close();
   }
