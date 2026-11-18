@@ -45,6 +45,16 @@ export interface View extends ViewSpec {
 export function views(): View[] {
   const map = readPageMap(readFileSync(join(ROOT, 'IA.md'), 'utf8'));
   const sheets = SHEETS;
+  /** The page a path is on, for its spec on the review sheets. */
+  const pageOf = (path: string, otherwise: string) =>
+    map.views.find((v) => v.path === path)?.page ??
+    ([
+      ['/skills/', 'Skill'],
+      ['/hiscores', 'Hiscores'],
+      ['/combat', 'Combat'],
+      ['/castle', 'Castle Clash'],
+    ].find(([p]) => path.startsWith(p))?.[1] ||
+      otherwise);
   // The same pages for a player three weeks in, whose rows carry odds, pills and long names.
   const veteran: ViewSpec[] = [
     ...map.views.filter((v) => !signedOut(v.path)).map((v) => ({ ...v, as: 'veteran' as const })),
@@ -90,23 +100,7 @@ export function views(): View[] {
     // The Reports tab (session 42): every report as a card, and one filter.
     '/castle/reports',
     '/castle/reports?show=spies',
-  ].map((path) => ({
-    page:
-      map.views.find((v) => v.path === path)?.page ??
-      (path.startsWith('/skills/')
-        ? 'Skill'
-        : path.startsWith('/hiscores')
-          ? 'Hiscores'
-          : path.startsWith('/combat')
-            ? 'Combat'
-            : path.startsWith('/castle')
-              ? 'Castle Clash'
-              : 'Hearth'),
-    path,
-    phone: [],
-    desktop: [],
-    as: 'elder' as const,
-  }));
+  ].map((path) => ({ page: pageOf(path, 'Hearth'), path, phone: [], desktop: [], as: 'elder' as const }));
   // A year in: skills at 99, kindled, walking their Paths; the ladder that counts Kindlings; and a castle a
   // year in (session 139): every troop at its fourth evolution, the Halls full.
   const keepers: ViewSpec[] = [
@@ -117,19 +111,7 @@ export function views(): View[] {
     '/castle',
     '/castle/army',
     '/castle/halls',
-  ].map((path) => ({
-    page: path.startsWith('/castle')
-      ? 'Castle Clash'
-      : path.startsWith('/skills/')
-        ? 'Skill'
-        : path.startsWith('/hiscores')
-          ? 'Hiscores'
-          : 'Skills',
-    path,
-    phone: [],
-    desktop: [],
-    as: 'keeper' as const,
-  }));
+  ].map((path) => ({ page: pageOf(path, 'Skills'), path, phone: [], desktop: [], as: 'keeper' as const }));
   // A week in (session 139): a castle raised five days ago, its lords not yet open.
   const squires: ViewSpec[] = ['/castle', '/castle/army', '/castle/citadel'].map((path) => ({
     page: 'Castle Clash',
