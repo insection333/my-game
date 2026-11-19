@@ -121,4 +121,18 @@ describe('a lane out of what it can make itself', () => {
     expect(v.make).toBeUndefined();
     expect(v.fix?.item).toBe('copper-bar');
   });
+
+  // Session 149: a lane out of an ingredient another lane is making now starts again by itself as it comes
+  // in, so it says it waits, where "Out of copper ore" read as stopped for good.
+  it('says a lane out of an ingredient waits for it while another lane makes it', () => {
+    let s: State = { ...newState(1, T0), items: { 'copper-ore': 1 } };
+    s = run(s, { type: 'start', lane: 'artisan', action: { feature: 'smithing', id: 'copper-bar' } });
+    s = engine.advance(s, T0 + 60_000, seeded(1)).state;
+    s = run(s, { type: 'start', lane: 'gathering', action: { feature: 'mining', id: 'copper-vein' } });
+    const at = s.lanes.gathering.current!.startedAt + 1;
+    expect(laneViews(s, at, FEATURES).find((v) => v.id === 'artisan')).toMatchObject({
+      halted: true,
+      note: 'Out of copper ore, waiting for more',
+    });
+  });
 });

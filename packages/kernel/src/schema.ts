@@ -44,6 +44,9 @@ export const Running = z
     endsAt: time,
     /** A number fixed for this repetition, for rules that decide its course at the start (a fight). */
     seed: z.number().int().min(0).max(0xffffffff).optional(),
+    /** Started again by itself when what it ran out of came in from another lane (session 149), so running
+     *  dry again is a quiet wait, not a second stop said. */
+    waited: z.literal(true).optional(),
   })
   .strict()
   .refine((r) => r.endsAt > r.startedAt, 'an action must end after it starts');

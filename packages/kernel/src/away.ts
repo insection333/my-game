@@ -35,7 +35,14 @@ export function summarizeAway(before: State, after: State, events: readonly Game
     if (d > 0) xp[skill] = Math.floor(d);
   }
   const plain = (e: GameEvent) => e.type === 'find' && e.rarity === 'uncommon' && !e.first;
-  const kept = events.filter((e) => (isNotable(e) || e.type === 'laneStopped') && !plain(e));
+  // A lane that ran dry and woke as its ingredient came in kept working: its stop is not news, whether it is
+  // running now or waiting quietly for the next to come (it stopped again later than it was said).
+  const woke = (e: GameEvent) => {
+    if (e.type !== 'laneStopped' || e.reason.code !== 'outOfInputs') return false;
+    const l = after.lanes[e.lane];
+    return !!l.current?.waited || (!!l.stopped && l.stopped.at > e.at);
+  };
+  const kept = events.filter((e) => (isNotable(e) || e.type === 'laneStopped') && !plain(e) && !woke(e));
   const uncommonItems: Record<string, number> = {};
   for (const e of events) if (plain(e) && e.type === 'find') uncommonItems[e.item] = (uncommonItems[e.item] ?? 0) + 1;
   return { from: before.lastSeen, to, events: kept, uncommon: events.filter(plain).length, uncommonItems, items, xp };

@@ -25,7 +25,7 @@ The three pillars decide everything below:
 ```
 
 - **Gathering** (Woodcutting, Mining, Fishing, Runecraft) turns time into logs, ores, fish and runes.
-- **Artisan** (Smithing, Cooking, Fletching) turns ores into bars and bars and logs into gear, fish and logs into food, and bars and logs into arrows. It stops, with the reason shown, when an ingredient runs out.
+- **Artisan** (Smithing, Cooking, Fletching) turns ores into bars and bars and logs into gear, fish and logs into food, and bars and logs into arrows. It stops, with the reason shown, when an ingredient runs out, and starts again by itself as another lane brings that ingredient in (a forge waits on the mine; session 149).
 - **Combat** (Melee, Archery, Magic, with Hitpoints rising from every fight) turns gear and food into XP, gold and drops.
 - **Gold** comes from selling to the vendor and from foes. It buys food (or a fighter cooks their own) and Storehouse space. Gear is always made, never bought.
 
