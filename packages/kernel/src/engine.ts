@@ -240,7 +240,17 @@ export function createEngine(registry: ActionRegistry, config: KernelConfig = DE
     const at = Math.max(now, state.clock);
     const out = advance(state, at, rng);
     touch(out.state, at);
+    relight(out.state, at, rng, out.events);
     return out;
+  }
+
+  /** The fire lit again, its lane takes up what it ran when the fire went out (session 153: a player back to
+   *  stoke found it stopped "Fire went out" on every return, though the fire promises a second Gathering
+   *  lane). Never a lane the player stopped, nor one with a Next queued. */
+  function relight(s: State, at: number, rng: Rng, events: GameEvent[]) {
+    const l = s.lanes.gathering2;
+    if (l.current || l.next || l.stopped?.reason.code !== 'fireOut' || !l.stopped.action) return;
+    begin(s, 'gathering2', l.stopped.action, at, rng, events);
   }
 
   function command(state: State, now: number, cmd: Command, rng: Rng): Commanded {
