@@ -182,3 +182,11 @@ export function recapLines(a: AwaySummary, notices: readonly GameEvent[] = []): 
  *  player and are always shown. */
 export const goodThings = (lines: readonly RecapLine[]) =>
   lines.filter((l) => l.kind !== 'stopped' && l.kind !== 'defence');
+
+/** Lanes rest once they have worked a day while the player is away: said when the player was away longer,
+ *  where "Away for 30 h" stood over a day's work with no word of why (session 151). */
+export function restedFor(a: AwaySummary, cap: number): string | null {
+  const rested = a.to - a.from - cap;
+  if (rested < 60_000) return null;
+  return t('recap.rested', { cap: fmt.duration(cap), rested: fmt.duration(rested) });
+}

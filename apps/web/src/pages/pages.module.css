@@ -458,6 +458,19 @@ a.line:hover {
   font-size: var(--t-small);
 }
 
+/* Lanes rest after a day away (session 151): said under the recap's lines, above Collect. */
+.rested {
+  margin: 0;
+  padding: var(--s-3) var(--s-4) 0;
+  border-top: 1px solid var(--line);
+  font-size: var(--t-small);
+  color: var(--ink-2);
+}
+
+.rested + .collect {
+  border-top: 0;
+}
+
 .collect {
   display: flex;
   align-items: center;
