@@ -147,6 +147,20 @@ describe('advance', () => {
     });
   });
 
+  // Session 153: a player back to stoke the fire found its lane still stopped "Fire went out", on every
+  // return, though the tour promises the fire a second Gathering lane; lit again, the lane takes up its work.
+  it('starts the fire lane again on what it ran when the fire is lit again', () => {
+    let s = run(fresh(), T0, { type: 'start', lane: 'gathering', action: A.pine });
+    s = run(s, T0, { type: 'start', lane: 'gathering2', action: A.copper });
+    s = run(s, T0 + 20 * MINUTE, { type: 'stoke' });
+    expect(s.lanes.gathering2.current).toMatchObject({ action: A.copper, startedAt: T0 + 20 * MINUTE });
+    // A lane the player stopped stays stopped.
+    let t = run(fresh(), T0, { type: 'start', lane: 'gathering2', action: A.copper });
+    t = run(t, T0 + MINUTE, { type: 'stop', lane: 'gathering2' });
+    t = run(t, T0 + 20 * MINUTE, { type: 'stoke' });
+    expect(t.lanes.gathering2.current).toBeNull();
+  });
+
   it('gives fire XP only while the fire burns', () => {
     const s = run(fresh(), T0, { type: 'start', lane: 'gathering', action: A.pine });
     const { state } = engine.advance(s, T0 + 10 * MINUTE, rng);
