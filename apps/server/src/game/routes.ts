@@ -15,10 +15,13 @@ import {
   handle,
   RECAP_AFTER_MS,
   seeded,
+  joinAway,
   summarizeAway,
+  type AwaySummary,
   type Command,
   type GameEvent,
   type SaveDoc,
+  type State,
 } from '@idle-clash/kernel';
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { ipOf, limit, type Ctx } from '../context.ts';
@@ -43,11 +46,26 @@ export function gameRoutes(app: FastifyInstance, ctx: Ctx, features: readonly Fe
     noteVisit(ctx, playerId, t);
     const before = withCastle(ctx, playerId, saved.doc.state, t);
     const out = ctx.engine.advance(before, t, seeded(before.seed));
-    const away =
-      recap && t - before.lastSeen >= RECAP_AFTER_MS ? summarizeAway(before, out.state, out.events, t) : null;
+    const away = recap && t - before.lastSeen >= RECAP_AFTER_MS ? told(playerId, before, out, t) : null;
     // The hiscores hear of progress whenever the page reads it, not only when the save is written.
     ctx.hiscores.update(playerId, out.state, t);
     return { state: out.state, now: t, away };
+  };
+
+  /** The recap of each player's absence so far, kept until they are back (session 155): the page records
+   *  deeds and goals by itself, writing the save advanced to now while the player stays unseen, so a later
+   *  read (a reload, another device) would otherwise tell only the minutes since that write. */
+  const absences = new Map<string, { prior: AwaySummary | null; base: number; last: AwaySummary }>();
+  const told = (playerId: string, before: State, out: { state: State; events: GameEvent[] }, t: number) => {
+    const fresh = summarizeAway(before, out.state, out.events, t);
+    const kept = absences.get(playerId);
+    // The same absence on a save written since (its clock moved on): all told so far comes first, then what
+    // the fresh read adds. On the same save, the fresh read holds all since that save.
+    const same = kept && kept.last.from === fresh.from;
+    const prior = !same ? null : before.clock > kept.base ? kept.last : kept.prior;
+    const away = prior ? joinAway(prior, fresh) : fresh;
+    absences.set(playerId, { prior, base: before.clock, last: away });
+    return away;
   };
 
   /** What a change answers with: the save it just wrote, already advanced to now (session 37: it was

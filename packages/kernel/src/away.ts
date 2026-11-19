@@ -47,3 +47,22 @@ export function summarizeAway(before: State, after: State, events: readonly Game
   for (const e of events) if (plain(e) && e.type === 'find') uncommonItems[e.item] = (uncommonItems[e.item] ?? 0) + 1;
   return { from: before.lastSeen, to, events: kept, uncommon: events.filter(plain).length, uncommonItems, items, xp };
 }
+
+/** One absence told across two reads: what the first said, and what came after it (session 155: a save
+ *  written meanwhile by a route the page sends by itself left a later read only the minutes since). */
+export function joinAway(first: AwaySummary, then: AwaySummary): AwaySummary {
+  const add = (a: Record<string, number>, b: Record<string, number>) => {
+    const out = { ...a };
+    for (const [k, v] of Object.entries(b)) out[k] = (out[k] ?? 0) + v;
+    return Object.fromEntries(Object.entries(out).filter(([, v]) => v !== 0));
+  };
+  return {
+    from: first.from,
+    to: then.to,
+    events: [...first.events, ...then.events.filter((e) => e.at > first.to)],
+    uncommon: first.uncommon + then.uncommon,
+    uncommonItems: add(first.uncommonItems ?? {}, then.uncommonItems ?? {}),
+    items: add(first.items, then.items),
+    xp: add(first.xp, then.xp),
+  };
+}
