@@ -94,4 +94,24 @@ describe('deeds done together', () => {
     expect(line.deeds).toHaveLength(3);
     expect(line.medal).toEqual({ tier: 'master', mark: '99' });
   });
+
+  // Session 150: a newcomer back from eight hours found twenty deeds done at once as one line of twenty
+  // names on Today and in the tray, a wall of words over their goals on a phone. Past four, the line leads
+  // with the best deed, names two more in the order done, and counts the rest.
+  it('names the best and two more of many deeds done together, and counts the rest', () => {
+    const deed = (at: number, name: string, tier = 'easy'): GameEvent => ({
+      type: 'deedDone',
+      at,
+      deed: name,
+      name,
+      icon: null,
+      tier,
+      points: 5,
+    });
+    const names = Array.from({ length: 19 }, (_, i) => `Deed ${i + 1}`);
+    const notices = [...names.map((n, i) => deed(T + i, n)), deed(T + 19, 'Hollow rat slayer III', 'elite')];
+    const [line] = noticesOf({ notices, events: [] });
+    expect(line.text).toBe('Deeds done: Hollow rat slayer III, Deed 1, Deed 2 and 17 more');
+    expect(line.deeds).toHaveLength(20);
+  });
 });
