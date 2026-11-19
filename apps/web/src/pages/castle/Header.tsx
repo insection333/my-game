@@ -153,8 +153,8 @@ function Orders() {
  *  ("Sunforged Phalanx at vanguard level 14: 3 more levels, 5.2M gold"), so the link keeps one line as the
  *  orders' links do. */
 function Next() {
-  const { castle, now } = useSyncedCastle();
-  const next = castle && E.nextForCastle(castle, now);
+  const { castle, now, purse } = useSyncedCastle();
+  const next = castle && E.nextForCastle(castle, now, purse);
   if (!next) return null;
   const name = next.kind === 'evolution' ? evolutionName(next.evolution) : relicName(next.relic);
   const rest =
