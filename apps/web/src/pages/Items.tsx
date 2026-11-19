@@ -3,14 +3,15 @@
 // every feature.
 import { fmt, t } from '@idle-clash/content';
 import {
-  actionsFor,
   findOf,
   gearDoes,
   healsFor,
   items,
   laneUsing,
   RARE_FIND_COMPLETIONS,
+  findUses,
   type CapacityView,
+  type FindUse,
 } from '@idle-clash/features';
 import { countOf, type State } from '@idle-clash/kernel';
 import { useRef, useState } from 'react';
@@ -245,27 +246,41 @@ function ItemActions({ item, value, gear }: { item: string; value: number; gear:
   );
 }
 
-/** A Rare find held: spend it on one action of its skill for 500 mastery completions, most used first. */
+/** A Rare find held: spend it on one action of its skill for 500 mastery completions, most used first, leaving
+ *  out an action at full mastery and offering the finds that bring its next step at once (session 154). */
 function UseFind({ item }: { item: string }) {
   const { state } = useGame();
   if (findOf(item)?.rarity !== 'rare' || countOf(state, item) < 1) return null;
-  const done = (a: { feature: string; id: string }) => state.mastery[`${a.feature}:${a.id}`] ?? 0;
-  const list = actionsFor(state, item)
-    .sort((a, b) => done(b) - done(a))
-    .slice(0, 6);
+  const held = countOf(state, item);
+  const rows = findUses(state, item).slice(0, 6);
+  const use = (a: FindUse['action'], count: number) =>
+    game.act('storehouse', 'useFind', count > 1 ? { item, action: a, count } : { item, action: a });
   return (
     <section className={s.sources}>
       <h3>{t('item.panel.use', { count: fmt.int(RARE_FIND_COMPLETIONS) })}</h3>
+      {rows.length === 0 && <p className={s.muted}>{t('item.panel.allMastered')}</p>}
       <div className={s.useList}>
-        {list.map((a) => (
+        {rows.map(({ action: a, completions, next }) => (
           <ActionRow
             key={`${a.feature}:${a.id}`}
             name={t(`action.${a.feature}.${a.id}`)}
-            facts={[t('item.panel.completions', { count: fmt.int(done(a)) })]}
+            facts={[
+              t('item.panel.completions', { count: fmt.int(completions) }),
+              next.count === 1
+                ? t('item.panel.nextStepOne', { step: fmt.int(next.step) })
+                : t('item.panel.nextStep', { count: fmt.int(next.count), step: fmt.int(next.step) }),
+            ]}
             actions={
-              <Button variant="secondary" onClick={() => game.act('storehouse', 'useFind', { item, action: a })}>
-                {t('item.panel.useButton')}
-              </Button>
+              <>
+                <Button variant="secondary" onClick={() => use(a, 1)}>
+                  {t('item.panel.useButton')}
+                </Button>
+                {next.count > 1 && next.count <= held && (
+                  <Button variant="secondary" onClick={() => use(a, next.count)}>
+                    {t('item.panel.useMany', { count: fmt.int(next.count) })}
+                  </Button>
+                )}
+              </>
             }
           />
         ))}

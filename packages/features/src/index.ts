@@ -23,7 +23,7 @@ export type { FoeRow, GearChoice, LoadoutSlot, LoadoutView, SupplyView, Triangle
 export { yourOdds } from './combat/slots.ts';
 export type { CapacityView, FoodView } from './storehouse/index.ts';
 export * as storehouseData from './shared/storehouse.ts';
-export { actionsFor, RARE_FIND_COMPLETIONS } from './storehouse/finds.ts';
+export { actionsFor, RARE_FIND_COMPLETIONS, findUses, type FindUse } from './storehouse/finds.ts';
 export { findOf } from './shared/catalog.ts';
 export { laneUsing } from './shared/in-use.ts';
 export * as recap from './shared/recap.ts';
