@@ -68,4 +68,21 @@ export const progress: Record<string, string> = {
   'rank.ashlord': 'Lord of the Ashen Peaks',
   'rank.dawnbringer': 'Dawnbringer',
   'rank.legend': 'Legend of the Realm',
+
+  // The away recap (moved from en.ts in session 148)
+  'recap.title': 'While you were away',
+  'recap.away': 'Away for {time}',
+  'recap.collect': 'Collect',
+  'recap.level': '{skill} reached level {level}',
+  'recap.newFind': 'First find: {item} ({rarity})',
+  'recap.newFinds': 'First {rarity} finds: {items}',
+  'recap.uncommon': '{count} Uncommon finds',
+  'recap.uncommonOne': 'An Uncommon find',
+  'recap.uncommonNamed': '{count}: {items}',
+  'recap.times': '{what} ×{count}',
+  'recap.more': 'And {count} more',
+  'recap.gold': '+{count} gold',
+  'recap.item': '+{count} {item}',
+  'recap.xp': '+{xp} XP across {skills} skills',
+  'recap.xpOne': '+{xp} {skill} XP',
 };
