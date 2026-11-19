@@ -5,6 +5,7 @@ import { remedyFor, type Feature } from '@idle-clash/features';
 import { LANE_IDS, type ActionRef, type LaneId, type State } from '@idle-clash/kernel';
 import { Button, hasIcon, ItemIcon, LaneCard } from '@idle-clash/ui';
 import { game } from '../game/store.ts';
+import { betterFor, type Better } from './better.ts';
 import { navigate, withPanel } from '../router.ts';
 import s from './shell.module.css';
 
@@ -29,6 +30,8 @@ export interface LaneView {
   fix?: { label: string; item?: string; path?: string };
   /** Put right (the engine would take it now): the stopped action, offered to start again (session 89). */
   again?: { label: string; action: ActionRef };
+  /** A running lane's better action, open and startable now, paying a fifth more XP or better (session 152). */
+  better?: Better;
   /** Out of what the lane can make itself (session 147): the action that makes it, which the engine would start. */
   make?: { label: string; action: ActionRef };
 }
@@ -142,6 +145,10 @@ export function laneViews(
       fix: !run && !l.next && l.stopped && !((again || make) && fix?.item) ? fix : undefined,
       again,
       make,
+      better:
+        run && !l.next && canStart && id !== 'combat'
+          ? betterFor(state, now, features, id, run.action, canStart)
+          : undefined,
     };
   });
 }
@@ -162,7 +169,7 @@ export function LaneList({ lanes }: { lanes: LaneView[] }) {
           progress={l.progress}
           run={l.run}
           icon={l.icon && <ItemIcon name={l.icon} size={32} />}
-          note={l.note}
+          note={l.note ?? l.better?.note}
           actions={
             l.idle ? (
               <>
@@ -189,9 +196,19 @@ export function LaneList({ lanes }: { lanes: LaneView[] }) {
                 )}
               </>
             ) : (
-              <Button variant="secondary" onClick={() => game.command({ type: 'stop', lane: l.id })}>
-                {t('lane.stop')}
-              </Button>
+              <>
+                {l.better && (
+                  <Button
+                    variant="secondary"
+                    onClick={() => game.command({ type: 'start', lane: l.id, action: l.better!.action })}
+                  >
+                    {l.better.label}
+                  </Button>
+                )}
+                <Button variant="secondary" onClick={() => game.command({ type: 'stop', lane: l.id })}>
+                  {t('lane.stop')}
+                </Button>
+              </>
             )
           }
         />

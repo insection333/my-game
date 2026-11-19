@@ -203,6 +203,8 @@ export function skillSlots(def: SkillDef): Record<string, SlotFill> {
           opensAt: level < a.level ? t('action.opensAt', { level: fmt.int(a.level) }) : null,
           time: fmt.seconds(Math.round(seconds * 100) / 100),
           xpPerHour: t('action.xpPerHour', { xp: fmt.int((a.xp * gain * 3600) / seconds) }),
+          /** The same, as a number: the lanes compare it to say when a better action is open (session 152). */
+          xpRate: Math.round((a.xp * gain * 3600) / seconds),
           // What a repetition pays on average where it is more than the base (session 70).
           gives: a.gives
             .map((g) =>

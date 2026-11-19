@@ -17,6 +17,8 @@ export const lanes = {
   'lane.fix.item': 'Where to get {item}',
   'lane.make': 'Make {item}',
   'lane.waiting': '{why}, waiting for more',
+  'lane.better': '{action} pays {pct}% more XP an hour',
+  'lane.betterStart': 'Start {action}',
   'lane.fix.food': 'Buy food',
   'lane.fix.weapon': 'Wear a weapon',
   'lane.fix.space': 'Make room',
