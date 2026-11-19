@@ -209,9 +209,20 @@ function foeRow(state: State, foe: Foe, now: number): FoeRow {
           }),
           t('combat.foodPerHour', { food: fmt.int(o.foodPerHour) }),
           t('combat.goldPerHour', { gold: fmt.int(goldNow(state, o, now)) }),
+          ...foodLasts(state, o.foodPerHour),
         ]
       : [],
   };
+}
+
+/** How long the food carried lasts against a foe, said when it would not see out the hours a player is most
+ *  often away (session 146: a lane fighting at 8 food an hour on one bread stopped within minutes, and the
+ *  row said nothing of it). Nothing when no food is carried: the loadout says "No food". */
+const FOOD_WARN_HOURS = 8;
+function foodLasts(state: State, perHour: number): string[] {
+  const carried = mealsOf(state).reduce((n, m) => n + m.count, 0);
+  if (!carried || perHour <= 0 || carried / perHour >= FOOD_WARN_HOURS) return [];
+  return [t('combat.foodLasts', { time: fmt.duration((carried / perHour) * 3_600_000) })];
 }
 
 export const SLOTS_FILLED: Record<string, SlotFill> = {

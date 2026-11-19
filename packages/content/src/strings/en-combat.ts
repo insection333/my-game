@@ -5,6 +5,7 @@ export const combat: Record<string, string> = {
   'combat.noFood': 'No food',
   'combat.opensAt': 'Opens at Hitpoints {level}',
   'combat.foodPerHour': '{food} food an hour',
+  'combat.foodLasts': 'Your food lasts about {time} here',
   'combat.goldPerHour': '{gold} gold an hour',
   'combat.beats': '{style} beats {foe}',
   'combat.strongAgainst': 'Beats {style}',
