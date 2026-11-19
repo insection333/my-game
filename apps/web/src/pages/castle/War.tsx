@@ -15,7 +15,17 @@ import { LatestReports } from './ReportsTab.tsx';
 import { castleRun, fight, loadTargets } from './store.ts';
 import { affords, hasAp, useSyncedCastle } from './synced.ts';
 import { TargetSheet } from './TargetSheet.tsx';
-import { defenceOf, outOfReach, paysLine, pct, sheetOf, spiesWouldTip, standingOf, type Target } from './targets.ts';
+import {
+  defenceOf,
+  heldByWounds,
+  outOfReach,
+  paysLine,
+  pct,
+  sheetOf,
+  spiesWouldTip,
+  standingOf,
+  type Target,
+} from './targets.ts';
 import s from './castle.module.css';
 
 function useTargets(): { lords: Target[]; strongholds: Target[]; reach: number } {
@@ -63,6 +73,9 @@ export function War() {
   );
 }
 
+/** A foe beyond reach while the lord's troops are wounded, and healing would bring it back (session 145). */
+const woundedWords = (castle: E.Castle) => t('castle.target.beyondWounded', { pct: fmt.int(castle.infirmaryPct) });
+
 /** The fortress at a castle's tier: the formation set against it, its chance, and whether any roll takes
  *  it (session 139: one beyond every roll offered Assault beside "0% to win"). */
 export function fortressOdds(castle: E.Castle, now: number) {
@@ -95,7 +108,11 @@ function Fortress() {
             icon={<ItemIcon name="crest" crest={fortress.id} size={32} />}
             name={fortressName(fortress.id)}
             facts={[
-              beyond ? t('castle.incursion.beyond') : t('castle.target.chance', { pct: pct(chance) }),
+              beyond
+                ? heldByWounds(castle, E.fortressSide(tier), now)
+                  ? woundedWords(castle)
+                  : t('castle.incursion.beyond')
+                : t('castle.target.chance', { pct: pct(chance) }),
               t('castle.incursion.rewards', { marks: fmt.int(marks) }),
             ]}
             progress={<Fought battle="incursion" />}
@@ -231,7 +248,9 @@ function TargetRow({ target }: { target: Target }) {
               chance === null
                 ? t('castle.target.unscouted')
                 : beyond
-                  ? t('castle.target.beyond')
+                  ? def && heldByWounds(castle, def, now)
+                    ? woundedWords(castle)
+                    : t('castle.target.beyond')
                   : target.merc
                     ? t('castle.target.chance', { pct: pct(chance) })
                     : t('castle.target.chanceAbout', { pct: pct(chance) }),
