@@ -135,4 +135,24 @@ describe('a lane out of what it can make itself', () => {
       note: 'Out of copper ore, waiting for more',
     });
   });
+
+  // Session 152: a newcomer six days in chopped pine at Woodcutting 27, where oak paid 41% more XP an hour,
+  // and smelted copper at Smithing 25: the goals follow the lane, and nothing said a better tree had opened.
+  it('says when an open action the lane could start pays well more, and offers it', () => {
+    let s: State = { ...newState(1, T0), skills: { woodcutting: { xp: XP_TABLE[27] } } };
+    s = run(s, { type: 'start', lane: 'gathering', action: { feature: 'woodcutting', id: 'pine-tree' } });
+    const can = ((lane: 'gathering', action: { feature: string; id: string }) =>
+      engine.command(s, T0 + 1000, { type: 'start', lane, action }, seeded(1)).result.ok) as never;
+    expect(laneViews(s, T0 + 1000, FEATURES, can).find((v) => v.id === 'gathering')).toMatchObject({
+      better: {
+        label: 'Start Oak tree',
+        note: 'Oak tree pays 77% more XP an hour',
+        action: { feature: 'woodcutting', id: 'oak-tree' },
+      },
+    });
+    // At level 1 nothing better is open.
+    let fresh: State = newState(1, T0);
+    fresh = run(fresh, { type: 'start', lane: 'gathering', action: { feature: 'woodcutting', id: 'pine-tree' } });
+    expect(laneViews(fresh, T0 + 1000, FEATURES, can).find((v) => v.id === 'gathering')?.better).toBeUndefined();
+  });
 });
