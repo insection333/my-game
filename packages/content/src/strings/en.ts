@@ -48,6 +48,8 @@ export const en: Record<string, string> = {
   'hearth.title': 'Hearth',
   'hearth.welcome.title': 'Welcome to the march',
   'hearth.welcome.body': 'Levels, finds and goals you reach today show here, newest first. Start with a first step.',
+  'hearth.quiet.title': 'Today',
+  'hearth.quiet.body': 'Nothing yet today: your levels, finds and goals will show here as they come.',
   'hearth.next.title': 'Next up',
   'hearth.today.title': 'Today',
   'tray.today': 'Today',

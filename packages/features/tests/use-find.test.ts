@@ -94,4 +94,13 @@ describe('using several Rare finds', () => {
     // Among the unused, the latest opened first.
     expect(rows[1].action.id).toBe('old-pine');
   });
+
+  // Session 156's stress test: the page leaves out an action at full mastery, but a request could still
+  // spend finds on it, every one of them for nothing.
+  it('refuses an action already at full mastery', () => {
+    const s: State = { ...player, items: { 'carved-acorn': 5 }, mastery: { 'woodcutting:pine-tree': 60_000 } };
+    const r = use(s, 'carved-acorn', { feature: 'woodcutting', id: 'pine-tree' });
+    expect(r.result).toEqual({ ok: false, reason: { code: 'masteryFull' } });
+    expect(r.state.items['carved-acorn']).toBe(5);
+  });
 });

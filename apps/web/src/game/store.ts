@@ -168,6 +168,10 @@ async function send<T>(go: () => Promise<T>): Promise<T | null> {
 }
 
 /** The answers canStart gave for one save. */
+/** A second press of the same thing within this long is a double tap, not a second press. */
+const DOUBLE_TAP_MS = 450;
+let lastPress = { key: '', at: 0 };
+
 let tried: { state: unknown; answers: Map<string, boolean> } = { state: null, answers: new Map() };
 
 export const game = {
@@ -217,6 +221,11 @@ export const game = {
     const def = features.find((f) => f.id === feature)?.routes[route];
     if (!view || !def) return null;
     const now = clock();
+    // The same press again within a double tap is one press (session 156: Buy 10 tapped twice bought
+    // twenty, Use spent two Rare finds); the page's own refreshes are never pressed.
+    const key = JSON.stringify([feature, route, input]);
+    if (!def.passive && lastPress.key === key && Date.now() - lastPress.at < DOUBLE_TAP_MS) return null;
+    if (!def.passive) lastPress = { key, at: Date.now() };
     // As the server runs it: a route the page sends by itself does not light the fire (session 147).
     const arrived = def.passive
       ? engine.advance(view.state, Math.max(now, view.state.clock), seeded(view.state.seed))

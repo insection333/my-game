@@ -47,6 +47,8 @@ export function gameRoutes(app: FastifyInstance, ctx: Ctx, features: readonly Fe
     const before = withCastle(ctx, playerId, saved.doc.state, t);
     const out = ctx.engine.advance(before, t, seeded(before.seed));
     const away = recap && t - before.lastSeen >= RECAP_AFTER_MS ? told(playerId, before, out, t) : null;
+    // Back (or never away): nothing of an absence is kept for them (session 156's stress test).
+    if (recap && !away) absences.delete(playerId);
     // The hiscores hear of progress whenever the page reads it, not only when the save is written.
     ctx.hiscores.update(playerId, out.state, t);
     return { state: out.state, now: t, away };

@@ -1,5 +1,6 @@
 // advance(state, now, rng) → { state, events }: lanes run in time order, one completion at a time,
 // so advancing a to b to c gives exactly what a to c gives. The input state is never changed.
+import { logFire } from './fire-log.ts';
 import type { Command } from './commands.ts';
 import { isNotable, type GameEvent } from './events.ts';
 import type { Rng } from './rng.ts';
@@ -7,7 +8,6 @@ import type { ActionContext, ActionRegistry } from './rules.ts';
 import { actionKey, LANE_IDS, laneKind, type ActionRef, type LaneId, type State, type StopReason } from './schema.ts';
 import { noteMoment } from './state.ts';
 import { DEFAULT_CONFIG, type KernelConfig } from './time.ts';
-
 export interface Advanced {
   state: State;
   events: GameEvent[];
@@ -198,6 +198,7 @@ export function createEngine(registry: ActionRegistry, config: KernelConfig = DE
         }
       }
     }
+    logFire(s, now);
     s.lastSeen = now;
     // Lit from cold, the fire starts its heat again; kept burning, it keeps it.
     if (!(now < s.fireUntil)) s.fireSince = now;

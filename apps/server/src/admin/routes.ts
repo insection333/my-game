@@ -19,6 +19,7 @@ import type { Ctx } from '../context.ts';
 import { players } from '../db/schema.ts';
 import { contractRoute, fail } from '../http.ts';
 import { totalLevelOf } from '../game/standing.ts';
+import { fireBusiestDay } from '@idle-clash/kernel';
 import { settleReports } from '../moderation.ts';
 
 const view = (ctx: Ctx, p: typeof players.$inferSelect): AdminPlayerView => ({
@@ -27,7 +28,14 @@ const view = (ctx: Ctx, p: typeof players.$inferSelect): AdminPlayerView => ({
   createdAt: p.createdAt,
   bannedAt: p.bannedAt,
   totalLevel: totalLevelOf(ctx, p.id),
+  fireHours: fireHoursOf(ctx, p.id),
 });
+
+/** The most the player's fire burned in a day, in hours to a tenth (from their save's fire log). */
+const fireHoursOf = (ctx: Ctx, id: string): number => {
+  const saved = ctx.store.read(id, ctx.config.now());
+  return saved ? Math.round(fireBusiestDay(saved.doc.state) / 360_000) / 10 : 0;
+};
 
 const playerOf = (ctx: Ctx, id: string) => {
   const row = ctx.db.select().from(players).where(eq(players.id, id)).get();

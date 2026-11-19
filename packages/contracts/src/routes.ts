@@ -218,6 +218,8 @@ export interface MeResponse {
   /** Whether this player may open the admin page. */
   admin: boolean;
 }
+/** A fire burning this many hours in a day is flagged on the admin page: people sleep (session 156). */
+export const FIRE_WATCH_HOURS = 20;
 /** A player as the admin page lists them. */
 export interface AdminPlayerView {
   id: string;
@@ -225,6 +227,9 @@ export interface AdminPlayerView {
   createdAt: number;
   bannedAt: number | null;
   totalLevel: number;
+  /** The most hours the fire burned in any 24 of the last 48 (session 156): a person's play shows as
+   *  minutes or a few hours, a script keeping it lit round the clock as nearly 24. */
+  fireHours: number;
 }
 export interface AdminPlayersResponse {
   players: AdminPlayerView[];

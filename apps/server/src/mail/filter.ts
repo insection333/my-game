@@ -62,6 +62,10 @@ const LOOKALIKE: Record<string, string> = {
 const ANYWHERE = [
   'fuck',
   'fck',
+  // A letter swapped for one that sounds or looks the same (session 156).
+  'fvck',
+  'phuck',
+  'phuk',
   'shit',
   'nigg',
   'fagg',
@@ -98,7 +102,11 @@ function wordsOf(text: string): string[] {
     .normalize('NFKD')
     .replace(MARKS, '')
     .replace(/[0-9!|@$+]/g, (c) => LOOKALIKE[c] ?? c);
-  const raw = plain.split(/[^a-z]+/).filter(Boolean);
+  // A masked letter ("c*nt") stays in its word, standing for any letter.
+  const raw = plain
+    .split(/[^a-z*]+/)
+    .map((w) => w.replace(/^\*+|\*+$/g, ''))
+    .filter(Boolean);
   const words: string[] = [];
   let run = '';
   for (const w of raw) {
@@ -111,22 +119,49 @@ function wordsOf(text: string): string[] {
   }
   if (run) words.push(run);
   // A letter split off a word ("f uck", "fuc k") is read with it too.
+  // So is a word broken in two short halves ("fu ck", "sh it"; session 156).
   for (let i = 0; i + 1 < raw.length; i++)
-    if (raw[i].length === 1 || raw[i + 1].length === 1) words.push(raw[i] + raw[i + 1]);
+    if (raw[i].length === 1 || raw[i + 1].length === 1 || (raw[i].length <= 2 && raw[i + 1].length <= 2))
+      words.push(raw[i] + raw[i + 1]);
   return words;
 }
 
 /** A word with its held letters let go ("fuuuck" → "fuck", "shiiit" → "shit"). */
 const unheld = (w: string) => w.replace(/(.)\1+/g, '$1');
 
+/** Whether `part` of a word, its masked letters standing for any letter, reads as `bad`. */
+const reads = (part: string, bad: string) =>
+  part.length === bad.length && [...part].every((c, i) => c === '*' || c === bad[i]);
+/** Whether a word holds `bad` somewhere, masked letters and all. */
+const holds = (w: string, bad: string) => {
+  for (let i = 0; i + bad.length <= w.length; i++) if (reads(w.slice(i, i + bad.length), bad)) return true;
+  return false;
+};
+
 function refused(word: string): boolean {
   for (const w of new Set([word, unheld(word)])) {
-    if (ANYWHERE.some((bad) => w.includes(bad))) return true;
-    if (WORD_START.some((bad) => w.startsWith(bad))) return true;
-    if (WHOLE.some((bad) => ENDINGS.some((end) => w === bad + end))) return true;
+    if (ANYWHERE.some((bad) => holds(w, bad))) return true;
+    if (WORD_START.some((bad) => reads(w.slice(0, bad.length), bad))) return true;
+    if (WHOLE.some((bad) => ENDINGS.some((end) => reads(w, bad + end)))) return true;
   }
   return false;
 }
 
+/** Words that together tell a player to harm themselves, in any spacing (session 156: only "kys" was
+ *  refused, where "kill yourself" went). */
+const HARM = [
+  'killyourself',
+  'killurself',
+  'killyourselves',
+  'killyoself',
+  'neckyourself',
+  'hangyourself',
+  'unaliveyourself',
+];
+
 /** Whether a message may be sent. */
-export const messageAllowed = (text: string): boolean => !wordsOf(text).some(refused);
+export const messageAllowed = (text: string): boolean => {
+  const letters = text.toLowerCase().replace(/[^a-z]/g, '');
+  if (HARM.some((h) => letters.includes(h))) return false;
+  return !wordsOf(text).some(refused);
+};
