@@ -102,10 +102,12 @@ describe('advance', () => {
   });
 
   it('feeds one lane from another, in time order', () => {
-    // Mining gives an ore every 7.5 s; smelting (5 s) uses ore faster, so it runs dry at 12.5 s.
+    // Mining gives an ore every 7.5 s; smelting (5 s) uses ore faster, so it runs dry at 12.5 s, and then
+    // waits for each ore the mine brings (session 149: it stood stopped while the ore piled up behind it).
     let s = run(fresh(), T0, { type: 'start', lane: 'gathering', action: A.copper });
     s = run(s, T0 + 7.5 * SECOND, { type: 'start', lane: 'artisan', action: A.bar });
     const { state, events } = engine.advance(s, T0 + 10 * MINUTE, rng);
+    // Said once, when it first ran dry; its waits after that are quiet.
     expect(events).toEqual([
       {
         type: 'laneStopped',
@@ -115,8 +117,19 @@ describe('advance', () => {
         reason: { code: 'outOfInputs', detail: { item: 'copper-ore' } },
       },
     ]);
-    expect(state.items['copper-bar']).toBe(1);
-    expect(state.items['copper-ore']).toBe(79);
+    expect(state.items['copper-bar']).toBe(79);
+    expect(state.items['copper-ore']).toBe(1);
+    expect(state.lanes.artisan.current).toMatchObject({ action: A.bar, startedAt: T0 + 10 * MINUTE });
+  });
+
+  it('wakes a lane out of an ingredient only for what it ran, never one the player stopped', () => {
+    let s = run(fresh(), T0, { type: 'start', lane: 'gathering', action: A.copper });
+    s.items['copper-ore'] = 1;
+    s = run(s, T0, { type: 'start', lane: 'artisan', action: A.bar });
+    s = run(s, T0 + SECOND, { type: 'stop', lane: 'artisan' });
+    const { state } = engine.advance(s, T0 + 10 * MINUTE, rng);
+    expect(state.lanes.artisan.current).toBeNull();
+    expect(state.items['copper-bar'] ?? 0).toBe(0);
   });
 
   it('runs the second Gathering lane only while the fire burns', () => {

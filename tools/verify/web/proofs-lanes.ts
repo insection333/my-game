@@ -6,6 +6,7 @@
 // - A chip keeps its words whole (session 86): beside a fight, the resting Gathering chip read "Gatherin / g"
 //   on a phone, its word split where the working chip took twice the room; and an expedition set out
 //   (session 103) read "Expeditio / n into th…" in four lanes on a phone.
+import { XP_TABLE } from '@idle-clash/content';
 import { HOUR, seeded, type Command, type State } from '@idle-clash/kernel';
 import type { Page } from 'playwright';
 import { newcomer, openPage, type Served } from './session.ts';
@@ -153,6 +154,9 @@ async function stoppedChipKeepsWords(served: Served, problems: string[]) {
       {
         ...s,
         fireUntil: now + 5 * 60_000,
+        // A goblin slinger, which drops pine logs: a rat's copper ore would start the smelting again
+        // (session 149), and the chip would not stay stopped to be measured.
+        skills: { ...s.skills, hitpoints: { xp: XP_TABLE[2] } },
         items: { 'copper-sword': 1, bread: 50, 'copper-ore': 2 },
         features: {
           ...s.features,
@@ -163,7 +167,7 @@ async function stoppedChipKeepsWords(served: Served, problems: string[]) {
       [
         { type: 'start', lane: 'gathering', action: { feature: 'woodcutting', id: 'pine-tree' } },
         { type: 'start', lane: 'artisan', action: bar },
-        { type: 'start', lane: 'combat', action: { feature: 'combat', id: 'hollow-rat' } },
+        { type: 'start', lane: 'combat', action: { feature: 'combat', id: 'goblin-slinger' } },
       ],
     ),
   );

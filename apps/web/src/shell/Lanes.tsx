@@ -79,6 +79,21 @@ function makeOf(
   return undefined;
 }
 
+/** Whether a lane out of an ingredient will have it brought in: another lane is making it now, and the
+ *  engine starts the waiting lane again as it comes (session 149). */
+function comingIn(
+  state: State,
+  features: readonly Feature[],
+  reason: { code: string; detail?: Record<string, string | number> },
+): boolean {
+  const item = reason.code === 'outOfInputs' ? reason.detail?.item : undefined;
+  return LANE_IDS.some((id) => {
+    const a = state.lanes[id].current?.action;
+    const made = a && features.find((f) => f.id === a.feature)?.content.actions?.find((x) => x.id === a.id);
+    return !!item && !!made?.gives?.some((g) => g.item === item);
+  });
+}
+
 /** An action's icon: a foe's own, or what an action makes, when drawn. */
 export function iconOf(features: readonly Feature[], a: ActionRef, lane: LaneId): string | undefined {
   // A fight shows its foe, a boss too (its drop is incidental); any other action what it makes.
@@ -104,7 +119,9 @@ export function laneViews(
     const note = l.next
       ? t('lane.next', { action: actionName(l.next) })
       : !run && l.stopped
-        ? formatStop(l.stopped.reason)
+        ? comingIn(state, features, l.stopped.reason)
+          ? t('lane.waiting', { why: formatStop(l.stopped.reason) })
+          : formatStop(l.stopped.reason)
         : undefined;
     // A lane stopped by itself names what it was doing, with its picture, and says why below (session 122:
     // "Storehouse full" under Combat said nothing of the run waiting). Older saves keep no action.

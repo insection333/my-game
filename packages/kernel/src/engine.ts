@@ -110,9 +110,11 @@ export function createEngine(registry: ActionRegistry, config: KernelConfig = DE
     events: GameEvent[],
   ) {
     const l = s.lanes[lane];
+    // A lane that waited for an ingredient and runs dry again waits quietly: it was said once.
+    const quiet = !!l.current?.waited && why.code === 'outOfInputs';
     l.current = null;
     l.stopped = action ? { reason: why, at, action } : { reason: why, at };
-    events.push({ type: 'laneStopped', at, lane, action, reason: why });
+    if (!quiet) events.push({ type: 'laneStopped', at, lane, action, reason: why });
     const next = l.next;
     if (!next) return;
     l.next = null;
@@ -135,6 +137,18 @@ export function createEngine(registry: ActionRegistry, config: KernelConfig = DE
       if (at <= limit && (!due || at < due.at)) due = { at, lane, fireOut };
     }
     return due;
+  }
+
+  /** A lane that ran out of an ingredient waits for it: when another lane brings it in, the lane starts
+   *  again by itself (session 149: smelting stood stopped ten minutes into eight hours away while the ore
+   *  it wanted piled up behind it). Only a lane the engine stopped for want of an ingredient, with nothing
+   *  queued behind it; never one the player stopped. */
+  function wake(s: State, at: number, rng: Rng, events: GameEvent[]) {
+    for (const lane of LANE_IDS) {
+      const l = s.lanes[lane];
+      if (l.current || l.next || l.stopped?.reason.code !== 'outOfInputs' || !l.stopped.action) continue;
+      if (!begin(s, lane, l.stopped.action, at, rng, events)) l.current!.waited = true;
+    }
   }
 
   function advance(state: State, now: number, rng: Rng): Advanced {
@@ -162,7 +176,11 @@ export function createEngine(registry: ActionRegistry, config: KernelConfig = DE
       if (made) s.mastery[key] = (Object.hasOwn(s.mastery, key) ? s.mastery[key] : 0) + 1;
       s.lanes[lane].current = null;
       const why = begin(s, lane, run.action, at, rng, events);
-      if (why) halt(s, lane, run.action, why, at, rng, events);
+      if (why) {
+        s.lanes[lane].current = run; // so halt knows whether it had waited
+        halt(s, lane, run.action, why, at, rng, events);
+      } else if (run.waited) s.lanes[lane].current!.waited = true;
+      wake(s, at, rng, events);
     }
     s.clock = now;
     return { state: s, events };
