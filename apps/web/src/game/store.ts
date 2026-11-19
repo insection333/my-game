@@ -217,7 +217,10 @@ export const game = {
     const def = features.find((f) => f.id === feature)?.routes[route];
     if (!view || !def) return null;
     const now = clock();
-    const arrived = engine.input(view.state, now, seeded(view.state.seed));
+    // As the server runs it: a route the page sends by itself does not light the fire (session 147).
+    const arrived = def.passive
+      ? engine.advance(view.state, Math.max(now, view.state.clock), seeded(view.state.seed))
+      : engine.input(view.state, now, seeded(view.state.seed));
     const ran = def.run(arrived.state, input, now);
     const events = [...view.events, ...arrived.events, ...(ran.events ?? [])].slice(-50);
     publish({ ...view, state: ran.state, now, events });

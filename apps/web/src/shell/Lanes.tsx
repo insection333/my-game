@@ -1,6 +1,6 @@
 // The lanes as the shell shows them: full cards in the desktop panel and on the phone's Hearth,
 // chips in the phone's strip. Each lane says what it is doing, how far along, and why it stopped.
-import { formatStop, hasString, isQuietStop, t } from '@idle-clash/content';
+import { formatStop, hasString, isQuietStop, midSentence, t } from '@idle-clash/content';
 import { remedyFor, type Feature } from '@idle-clash/features';
 import { LANE_IDS, type ActionRef, type LaneId, type State } from '@idle-clash/kernel';
 import { Button, hasIcon, ItemIcon, LaneCard } from '@idle-clash/ui';
@@ -29,6 +29,8 @@ export interface LaneView {
   fix?: { label: string; item?: string; path?: string };
   /** Put right (the engine would take it now): the stopped action, offered to start again (session 89). */
   again?: { label: string; action: ActionRef };
+  /** Out of what the lane can make itself (session 147): the action that makes it, which the engine would start. */
+  make?: { label: string; action: ActionRef };
 }
 
 /** Whether the engine would start this action on this lane now (the page's own engine, tried on a copy). */
@@ -57,6 +59,26 @@ function againOf(lane: LaneId, stopped: State['lanes'][LaneId]['stopped'], canSt
   return { label: t(lane === 'combat' ? 'lane.againFight' : 'lane.again'), action: stopped.action };
 }
 
+/** A lane out of an ingredient it can make itself, now: the copper bar a sword wanted, the ore held to smelt
+ *  it (session 147: a newcomer was sent to the bar's panel, then Smithing, then its row). */
+function makeOf(
+  features: readonly Feature[],
+  lane: LaneId,
+  stopped: State['lanes'][LaneId]['stopped'],
+  canStart?: CanStart,
+): LaneView['make'] {
+  const item = stopped?.reason.code === 'outOfInputs' ? stopped.reason.detail?.item : undefined;
+  if (typeof item !== 'string' || !canStart) return undefined;
+  for (const f of features) {
+    const made = f.content.actions?.find((a) => a.gives?.[0]?.item === item);
+    const action = made && { feature: f.id, id: made.id };
+    if (action && canStart(lane, action)) {
+      return { label: t('lane.make', { item: midSentence(t(`item.${item}`)) }), action };
+    }
+  }
+  return undefined;
+}
+
 /** An action's icon: a foe's own, or what an action makes, when drawn. */
 export function iconOf(features: readonly Feature[], a: ActionRef, lane: LaneId): string | undefined {
   // A fight shows its foe, a boss too (its drop is incidental); any other action what it makes.
@@ -78,6 +100,7 @@ export function laneViews(
     // points to where to get it (food is another matter: a fight starts without it, so Buy food stays).
     const again = !run && !l.next ? againOf(id, l.stopped, canStart) : undefined;
     const fix = l.stopped ? fixFor(l.stopped.reason) : undefined;
+    const make = !run && !l.next && !again && l.stopped ? makeOf(features, id, l.stopped, canStart) : undefined;
     const note = l.next
       ? t('lane.next', { action: actionName(l.next) })
       : !run && l.stopped
@@ -99,8 +122,9 @@ export function laneViews(
       short: !run && l.stopped ? formatStop(l.stopped.reason, 'short') : undefined,
       chip: run ? chipDoing(run.action) : undefined,
       halted,
-      fix: !run && !l.next && l.stopped && !(again && fix?.item) ? fix : undefined,
+      fix: !run && !l.next && l.stopped && !((again || make) && fix?.item) ? fix : undefined,
       again,
+      make,
     };
   });
 }
@@ -128,6 +152,14 @@ export function LaneList({ lanes }: { lanes: LaneView[] }) {
                 {l.halted && l.fix && (
                   <Button variant="secondary" onClick={() => fix(l.fix!)}>
                     {l.fix.label}
+                  </Button>
+                )}
+                {l.make && (
+                  <Button
+                    variant="primary"
+                    onClick={() => game.command({ type: 'start', lane: l.id, action: l.make!.action })}
+                  >
+                    {l.make.label}
                   </Button>
                 )}
                 {l.again && (

@@ -22,6 +22,7 @@ export const deeds = defineFeature({
   rules: {},
   routes: {
     refresh: defineRoute({
+      passive: true,
       input: z.object({}).strict(),
       example: {},
       run: (state, _input, now) => refresh(state, now),

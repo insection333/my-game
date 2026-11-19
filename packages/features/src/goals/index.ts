@@ -26,6 +26,7 @@ export const goals = defineFeature({
       run: (state, input, now) => claim(state, input.goal, now),
     }),
     refresh: defineRoute({
+      passive: true,
       input: z.object({}).strict(),
       example: {},
       run: (state, _input, now) => refresh(state, now),

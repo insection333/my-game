@@ -53,7 +53,10 @@ export const workingIn = (state: State, action: ActionRef): LaneId | undefined =
     return run && actionKey(run.action) === actionKey(action);
   });
 
-export const inLane = (lane: LaneId) => t('goals.inLane', { lane: t(LANE_NAMES[lane]) });
+/** The lane a goal is worked in; the fire's by its own words, where its name in brackets read "your
+ *  Gathering (the fire) lane" (session 147). */
+export const inLane = (lane: LaneId) =>
+  lane === 'gathering2' ? t('goals.inLane.fire') : t('goals.inLane', { lane: t(LANE_NAMES[lane]) });
 
 /** The command that starts an action in the lane the kernel would choose for it. */
 export const startCommand = (state: State, now: number, action: ActionRef, kind: LaneKind): Command => ({

@@ -26,6 +26,7 @@ export const progress: Record<string, string> = {
   'goals.claim': 'Claim {reward}',
   'goals.claimed': 'Done',
   'goals.inLane': 'Working in your {lane} lane',
+  'goals.inLane.fire': "Working in the fire's Gathering lane",
   'goal.chop-a-pine': 'Chop a pine',
   'goal.chop-a-pine.start': 'Start chopping',
   'goal.mine-copper-ore': 'Mine copper ore',
