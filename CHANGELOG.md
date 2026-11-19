@@ -283,3 +283,4 @@
 - Session 143: the deep foundations say what they give ("Depth 1: your edict and AP flow +2%") and what the next dig adds, in place of "the edict and AP ×1.02".
 - Session 144: Next for your castle names the step nearest to hand, one the lord can pay for now before one millions away, where a lord a week in with a relic ready to forge was pointed at an evolution 2.9M off.
 - Session 145: a stronghold or fortress held beyond reach by the lord's own wounded says so ("Beyond you while 14% of your troops are wounded: heal them on the Army"), where after two sieges lost on a first day every stronghold read "no roll takes it".
+- Session 146: a foe's row on Combat says how long the food carried lasts against it ("Your food lasts about 7 min here") when it would not see out eight hours, where a lane fighting on one bread stopped within minutes with no word beforehand.
