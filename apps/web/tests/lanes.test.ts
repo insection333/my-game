@@ -81,3 +81,44 @@ describe('laneViews', () => {
     });
   });
 });
+
+// Session 147: a newcomer's Artisan lane, forging the first steps' sword, ran out of copper bars two
+// minutes in, and offered only "Where to get copper bar" (its panel, then Smithing, then the row) while
+// they held the ore to smelt more. It now offers to make the bar in the lane, when the engine would.
+describe('a lane out of what it can make itself', () => {
+  const smithing = FEATURES.find((f) => f.id === 'smithing')!;
+  const sword = smithing.content.actions!.find((a) => a.gives?.[0]?.item === 'copper-sword')!;
+  const at = T0 + 3_600_000;
+  const view = (st: State) =>
+    laneViews(
+      st,
+      at,
+      FEATURES,
+      ((lane: 'artisan', action: { feature: string; id: string }) =>
+        engine.command(st, at, { type: 'start', lane, action }, seeded(1)).result.ok) as never,
+    ).find((v) => v.id === 'artisan')!;
+  const forged = (ore: number) => {
+    let s: State = {
+      ...newState(1, T0),
+      skills: { smithing: { xp: XP_TABLE[5] } },
+      items: { 'copper-bar': 4 },
+    };
+    s = run(s, { type: 'start', lane: 'artisan', action: { feature: 'smithing', id: sword.id } });
+    s = engine.advance(s, at, seeded(1)).state;
+    return { ...s, items: { ...s.items, 'copper-ore': ore } };
+  };
+
+  it('offers to make it when the engine would, in place of where to get it', () => {
+    expect(view(forged(3))).toMatchObject({
+      halted: true,
+      make: { label: 'Make copper bar', action: { feature: 'smithing', id: 'copper-bar' } },
+      fix: undefined,
+    });
+  });
+
+  it('points to where to get it while it cannot be made', () => {
+    const v = view(forged(0));
+    expect(v.make).toBeUndefined();
+    expect(v.fix?.item).toBe('copper-bar');
+  });
+});

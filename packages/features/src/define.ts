@@ -25,6 +25,9 @@ export interface RouteDef<I = unknown> {
   /** A valid input: the manifest check parses it, and the hostile-input suite builds its attacks from it. */
   example: I;
   run: (state: State, input: I, now: number) => { state: State; result: Json; events?: GameEvent[] };
+  /** Sent by the page itself, never pressed (a deed recorded, a goal made): not the player's input, so it
+   *  neither lights the fire nor counts as them being seen (session 147). */
+  passive?: true;
 }
 
 /** Types a route's `run` by its own input schema; the server only calls `run` with parsed input. */

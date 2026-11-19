@@ -157,7 +157,10 @@ export function gameRoutes(app: FastifyInstance, ctx: Ctx, features: readonly Fe
           let next: SaveDoc | null = null;
           const out = await handle(ctx.queue, ctx.store, player, input.requestId, t, (doc) => {
             const state = withCastle(ctx, player, doc.state, t);
-            const arrived = ctx.engine.input(state, t, seeded(state.seed));
+            // A route the page sends by itself is time passing, not the player's input (session 147).
+            const arrived = route.passive
+              ? ctx.engine.advance(state, Math.max(t, state.clock), seeded(state.seed))
+              : ctx.engine.input(state, t, seeded(state.seed));
             const ran = route.run(arrived.state, parsed.data, t);
             events = [...arrived.events, ...(ran.events ?? [])];
             next = { ...doc, state: ran.state };

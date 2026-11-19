@@ -82,6 +82,22 @@ describe('the game over HTTP', () => {
     expect(r.state.fireUntil).toBe(s.clock.now + 5 * 60_000);
   });
 
+  // Session 147: a newcomer's tab left open relit its fire minutes after they last pressed anything, as
+  // each deed done and goal made sent the page's own refresh, which the server took for the player's input.
+  it('takes the routes the page sends by itself as no input: the fire stays out and the player unseen', async () => {
+    s = await server();
+    const cookie = await signUp(s);
+    const before = await state(cookie);
+    s.clock.now += 60 * 60_000;
+    for (const [i, route] of ['/api/f/deeds/refresh', '/api/f/goals/refresh'].entries()) {
+      const r = JSON.parse((await post(s, route, { requestId: `req-auto-${i}`, input: {} }, cookie)).body) as {
+        state: State;
+      };
+      expect(r.state.fireUntil).toBe(before.fireUntil);
+      expect(r.state.lastSeen).toBe(before.lastSeen);
+    }
+  });
+
   it('limits commands to thirty in ten seconds', async () => {
     s = await server();
     const cookie = await signUp(s);
