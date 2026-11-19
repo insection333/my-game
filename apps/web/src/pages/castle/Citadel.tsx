@@ -151,6 +151,7 @@ function Foundations() {
   const { castle, now, purse, busy } = useSyncedCastle();
   if (!castle) return null;
   const cost = E.excavationCost(castle, now);
+  const gain = E.excavationGain(castle);
   return (
     <section data-section>
       <Panel flush>
@@ -158,10 +159,12 @@ function Foundations() {
           <ActionRow
             name={t('castle.dig.title')}
             facts={[
+              // What digging buys, in percent and gold (session 143: "the edict and AP ×1.02" said neither).
               t('castle.dig.depth', {
                 depth: fmt.int(castle.excavationDepth),
-                mult: fmt.num(Math.round(E.idleMultiplier(castle) * 1000) / 1000),
+                now: fmt.num(Math.round(gain.now * 10) / 10),
               }),
+              t('castle.dig.next', { next: fmt.num(Math.round(gain.next * 10) / 10), vault: fmt.short(gain.vault) }),
             ]}
             actions={
               <Button

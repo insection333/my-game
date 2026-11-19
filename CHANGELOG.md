@@ -280,3 +280,4 @@
 - Session 140: Castle Clash's keep says what is next for the castle on every tab (a troop's next evolution and the gold to reach it, then a relic's next level, then the next temper and its chance), a link to where it is reached.
 - Session 141: Castle Clash's keep shows the day's orders and the next step on the War alone, so on a phone every other tab's own work starts on the first screen (506 px down, where it began at 711 px).
 - Session 142: a scouted lord under even odds says their walls hold and points to poisoning their wells from Plan (two poisonings take an even siege near certain), and a fortress out of reach says the troops need more levels to take it.
+- Session 143: the deep foundations say what they give ("Depth 1: your edict and AP flow +2%") and what the next dig adds, in place of "the edict and AP ×1.02".

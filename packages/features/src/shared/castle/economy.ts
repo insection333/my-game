@@ -42,6 +42,17 @@ export function requiredTreasury(c: Castle, totalLevel: number): number {
 /** Excavation's idle multiplier, 1 + 0.02 × √depth: it lifts the edict and idle AP (DESIGN.md 7). */
 export const idleMultiplier = (c: Castle): number => 1 + SINKS.EXCAVATION_MULT_SLOPE * Math.sqrt(c.excavationDepth);
 
+/** What the deep foundations give, for the page (session 143): the lift to the edict and the flow of AP
+ *  now and what the next dig adds, in percent, and the gold the vault keeps for each dig. */
+export function excavationGain(c: Castle): { now: number; next: number; vault: number } {
+  const deeper = { ...c, excavationDepth: c.excavationDepth + 1 };
+  return {
+    now: (idleMultiplier(c) - 1) * 100,
+    next: (idleMultiplier(deeper) - idleMultiplier(c)) * 100,
+    vault: ECONOMY.VAULT_FLAT_PER_DEPTH,
+  };
+}
+
 /** The edict's bonus now, in percent, or 0 when none is chosen or the treasury is short of the requirement. */
 export function edictBonusPct(c: Castle, totalLevel: number): number {
   const req = requiredTreasury(c, totalLevel);
