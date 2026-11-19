@@ -7,7 +7,14 @@ import type { GameView } from '../game/store.ts';
 
 /** A notice, and the lord it names where it names one (a siege or a spy against you), whose profile card
  *  it offers (session 46). */
-export type Notice = recap.RecapLine & { at: number; who?: string; deed?: string; deeds?: string[] };
+export type Notice = recap.RecapLine & {
+  at: number;
+  who?: string;
+  deed?: string;
+  /** Deeds done together, newest first, with each one's tier beside it. */
+  deeds?: string[];
+  tiers?: string[];
+};
 
 /** Deeds done within the same minute, one after another, read as one line ("Deeds done: Castle 10, War
  *  marks: 100 and Tempered +3") rather than a column of "Deed done:" (session 46). */
@@ -28,6 +35,20 @@ const keyOf = (e: GameEvent): string =>
 const TIERS = ['easy', 'hard', 'elite', 'master'];
 const better = (a: Notice['medal'], b: Notice['medal']): Notice['medal'] =>
   !a ? b : !b ? a : TIERS.indexOf(b.tier) > TIERS.indexOf(a.tier) ? b : a;
+
+/** Past this many deeds together, the line names the best and two more and counts the rest (session 150:
+ *  twenty names stood as a wall of words over a newcomer's goals). */
+const NAMED = 4;
+
+/** The words for deeds done together, given newest first: in the order done, or the best first. */
+function deedsText(names: string[], tiers: string[]): string {
+  const done = [...names].reverse();
+  if (done.length <= NAMED) return t('moment.deedsDone', { deeds: fmt.list(done) });
+  const order = [...tiers].reverse();
+  const best = order.reduce((b, tier, i) => (TIERS.indexOf(tier) > TIERS.indexOf(order[b]) ? i : b), 0);
+  const shown = [done[best], ...done.filter((_, i) => i !== best).slice(0, 2)];
+  return t('moment.deedsDoneMore', { deeds: shown.join(', '), count: fmt.int(done.length - shown.length) });
+}
 
 // Asked on every draw (the bell is always there): worked out again only when the lists change.
 let last: { notices: GameEvent[]; events: GameEvent[]; length: number; out: Notice[] } | null = null;
@@ -58,13 +79,15 @@ function list(view: Pick<GameView, 'notices' | 'events'>): Notice[] {
     const prev = out.at(-1);
     if (e.type === 'deedDone' && prev?.deed !== undefined && prev.at - e.at <= TOGETHER_MS) {
       const names = [...(prev.deeds ?? [prev.deed]), e.name];
+      const tiers = [...(prev.tiers ?? [prev.medal?.tier ?? 'easy']), e.tier];
       out[out.length - 1] = {
         ...prev,
         medal: better(prev.medal, line.medal),
         deeds: names,
-        text: t('moment.deedsDone', { deeds: fmt.list([...names].reverse()) }),
+        tiers,
+        text: deedsText(names, tiers),
       };
-    } else if (e.type === 'deedDone') out.push({ ...line, deed: e.name });
+    } else if (e.type === 'deedDone') out.push({ ...line, deed: e.name, tiers: [e.tier] });
     else out.push(e.type === 'castleBesieged' || e.type === 'castleSpyCaught' ? { ...line, who: e.foe } : line);
   }
   return out;
