@@ -48,6 +48,7 @@ export const castleWar = {
   'castle.target.spies':
     'Their walls hold: poison their wells from Plan first (their troops −8% for 4 hours, twice at most)',
   'castle.incursion.beyond': 'Beyond you for now: your troops need more levels to take it',
+  'castle.target.beyondWounded': 'Beyond you while {pct}% of your troops are wounded: heal them on the Army',
   'castle.target.chanceAbout.set': 'About {pct} to win, {best} set against them',
   'castle.target.pays': 'Pays {marks} war marks and a bounty of {gold} gold',
   'castle.target.paysMarks': 'Pays {marks} war marks',

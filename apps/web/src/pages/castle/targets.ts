@@ -82,6 +82,13 @@ export function standingOf(c: E.Castle, target: Target, now: number): Standing |
  *  wounds, so its button is closed. A lord's chance is an estimate, and stays open. */
 export const outOfReach = (target: Target, chance: number | null) => target.merc !== null && chance === 0;
 
+/** A foe held beyond reach by the lord's own wounded alone (session 145): no roll takes it now, yet some
+ *  would with the troops healed, so the row names the wounds rather than the foe. */
+export function heldByWounds(castle: E.Castle, def: E.Side, now: number): boolean {
+  if (castle.infirmaryPct <= 0 || E.winChance(E.bestOffense(castle, def, now).r) > 0) return false;
+  return E.winChance(E.bestOffense({ ...castle, infirmaryPct: 0 }, def, now).r) > 0;
+}
+
 /** A scouted lord under even odds (session 142): their walls hold an even siege, and the spies can tip it
  *  (two poisonings take an even siege near certain), so the row says so until they have. */
 export const spiesWouldTip = (target: Target, chance: number | null) =>
