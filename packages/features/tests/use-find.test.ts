@@ -3,7 +3,7 @@
 import { XP_TABLE } from '@idle-clash/content';
 import { newState, type State } from '@idle-clash/kernel';
 import { describe, expect, it } from 'vitest';
-import { actionsFor, FEATURES } from '../src/index.ts';
+import { actionsFor, FEATURES, findUses } from '../src/index.ts';
 
 const T0 = Date.UTC(2026, 9, 21, 9);
 const store = FEATURES.find((f) => f.id === 'storehouse')!;
@@ -53,5 +53,45 @@ describe('using a Rare find', () => {
     ).toMatchObject({
       reason: { code: 'notOwned' },
     });
+  });
+});
+
+// Session 154: a newcomer six days in held 200 carved acorns, one press each to use, and the list put
+// first the pine their mastery had already filled, where a find adds nothing. A use may now spend several
+// at once, and the list leaves out an action at full mastery and says how many bring the next step.
+describe('using several Rare finds', () => {
+  it('spends as many as asked on one action, and no more than are held', () => {
+    const r = store.routes.useFind.run(
+      { ...player, items: { 'carved-acorn': 5 } },
+      { item: 'carved-acorn', action: { feature: 'woodcutting', id: 'ash-tree' }, count: 3 },
+      T0,
+    ) as unknown as {
+      state: State;
+      result: { ok: boolean };
+      events: { type: string; completions?: number; count?: number }[];
+    };
+    expect(r.result).toEqual({ ok: true });
+    expect(r.state.mastery['woodcutting:ash-tree']).toBe(1600);
+    expect(r.state.items['carved-acorn']).toBe(2);
+    expect(r.events[0]).toMatchObject({ type: 'findUsed', completions: 1500, count: 3 });
+    const over = store.routes.useFind.run(
+      { ...player, items: { 'carved-acorn': 2 } },
+      { item: 'carved-acorn', action: { feature: 'woodcutting', id: 'ash-tree' }, count: 3 },
+      T0,
+    ) as unknown as { result: { ok: boolean; reason?: { code: string } } };
+    expect(over.result).toEqual({ ok: false, reason: { code: 'notOwned' } });
+  });
+
+  it('offers only actions a find still helps, with how many bring the next step', () => {
+    const s: State = {
+      ...player,
+      items: { 'carved-acorn': 200 },
+      mastery: { 'woodcutting:pine-tree': 60_000, 'woodcutting:ash-tree': 100 },
+    };
+    const rows = findUses(s, 'carved-acorn');
+    expect(rows.map((r) => r.action.id)).not.toContain('pine-tree');
+    expect(rows[0]).toMatchObject({ action: { id: 'ash-tree' }, completions: 100, next: { count: 1, step: 4 } });
+    // Among the unused, the latest opened first.
+    expect(rows[1].action.id).toBe('old-pine');
   });
 });

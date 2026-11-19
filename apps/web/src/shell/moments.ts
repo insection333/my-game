@@ -117,7 +117,10 @@ function describe(
     case 'findUsed':
       return {
         title: t('moment.findUsed', {
-          item: t(`item.${e.item}`),
+          // Several spent at once say how many (session 154).
+          item: e.count
+            ? t('recap.times', { what: t(`item.${e.item}`), count: fmt.int(e.count) })
+            : t(`item.${e.item}`),
           action: t(`action.${e.action.feature}.${e.action.id}`),
         }),
         body: t('moment.findUsed.body', { count: fmt.int(e.completions) }),

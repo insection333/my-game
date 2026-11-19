@@ -102,9 +102,15 @@ export const storehouse = defineFeature({
       run: (state, input) => buy(state, input.item, input.count),
     }),
     useFind: defineRoute({
-      input: z.object({ item: Id, action: z.object({ feature: Id, id: Id }).strict() }).strict(),
+      input: z
+        .object({
+          item: Id,
+          action: z.object({ feature: Id, id: Id }).strict(),
+          count: z.number().int().min(1).max(1000).optional(),
+        })
+        .strict(),
       example: { item: 'carved-acorn', action: { feature: 'woodcutting', id: 'pine-tree' } },
-      run: (state, input, now) => useFind(state, input.item, input.action, now),
+      run: (state, input, now) => useFind(state, input.item, input.action, now, input.count ?? 1),
     }),
     enlarge: defineRoute({
       input: z.object({}).strict(),

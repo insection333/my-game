@@ -38,7 +38,8 @@ export interface EventMap {
   kindled: { skill: string; count: number };
   /** A Rare find used by the player's press (session 93): on what action, and the mastery completions it
    *  added (its mastery steps, if any, follow as their own events). */
-  findUsed: { item: string; action: ActionRef; completions: number };
+  /** `count` where more than one was spent at once (session 154). */
+  findUsed: { item: string; action: ActionRef; completions: number; count?: number };
   /** An expedition relic raised a rank by the player's press (session 98). */
   relicRaised: { relic: string; rank: number };
   /** A steading work raised a stage by the player's press (session 76); its building is also a deed. */
