@@ -40,17 +40,29 @@ function fromNotices(a: AwaySummary, notices: readonly GameEvent[]): RecapLine[]
 export function recapLines(a: AwaySummary, notices: readonly GameEvent[] = []): RecapLine[] {
   const lines: RecapLine[] = fromNotices(a, notices);
   const finds = a.events.filter((e) => e.type === 'find');
-  for (const e of finds) {
-    const text = t('moment.find', { rarity: t(`rarity.${e.rarity}`), item: t(`item.${e.item}`) });
-    if (e.rarity === 'legendary') lines.push({ kind: 'legendary', text, icon: e.item, href: '/storehouse/log' });
-    // New to the log: said so, since a first Uncommon find comes before a Rare one seen before.
-    else if (e.first)
+  for (const e of finds)
+    if (e.rarity === 'legendary')
       lines.push({
-        kind: 'newFind',
-        text: t('recap.newFind', { item: t(`item.${e.item}`), rarity: t(`rarity.${e.rarity}`) }),
+        kind: 'legendary',
+        text: t('moment.find', { rarity: t('rarity.legendary'), item: t(`item.${e.item}`) }),
         icon: e.item,
         href: '/storehouse/log',
       });
+  // New to the log: said so, since a first Uncommon find comes before a Rare one seen before; one line a
+  // rarity, the Rare first (session 148: five lines of first finds hid a newcomer's levels).
+  for (const rarity of ['rare', 'uncommon'] as const) {
+    const firsts = [...new Set(finds.filter((e) => e.first && e.rarity === rarity).map((e) => e.item))];
+    if (!firsts.length) continue;
+    const name = (item: string) => t(`item.${item}`);
+    lines.push({
+      kind: 'newFind',
+      text:
+        firsts.length === 1
+          ? t('recap.newFind', { item: name(firsts[0]), rarity: t(`rarity.${rarity}`) })
+          : t('recap.newFinds', { rarity: t(`rarity.${rarity}`), items: firsts.map(name).join(', ') }),
+      icon: firsts[0],
+      href: '/storehouse/log',
+    });
   }
   // Rare finds the log already holds, one line an item: "Rare find: Torn banner ×4".
   const rares = new Map<string, number>();
@@ -67,7 +79,8 @@ export function recapLines(a: AwaySummary, notices: readonly GameEvent[] = []): 
   // Levels, one line a skill: "Mining reached level 14".
   const levels = new Map<string, number>();
   for (const e of a.events) if (e.type === 'levelUp') levels.set(e.skill, Math.max(levels.get(e.skill) ?? 0, e.level));
-  for (const [skill, level] of levels)
+  // The highest first (session 148: Mining 5 stood above Melee 14, and Woodcutting 15 out of sight).
+  for (const [skill, level] of [...levels].sort(([, x], [, y]) => y - x))
     lines.push({
       kind: 'level',
       text: t('recap.level', { skill: t(`skill.${skill}`), level: fmt.int(level) }),

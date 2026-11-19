@@ -281,6 +281,7 @@ export const en: Record<string, string> = {
   'recap.collect': 'Collect',
   'recap.level': '{skill} reached level {level}',
   'recap.newFind': 'First find: {item} ({rarity})',
+  'recap.newFinds': 'First {rarity} finds: {items}',
   'recap.uncommon': '{count} Uncommon finds',
   'recap.uncommonOne': 'An Uncommon find',
   'recap.uncommonNamed': '{count}: {items}',
