@@ -9,6 +9,7 @@ export const moderation = {
   'admin.none': 'No player by that name.',
   'admin.joined': 'Joined {date}',
   'admin.totalLevel': 'Total level {level}',
+  'admin.fireWatch': 'Fire lit {hours} h in a day',
   'admin.banned': 'Banned',
   'admin.open': 'Open',
   'admin.newName': 'Name',

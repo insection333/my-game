@@ -12,7 +12,7 @@ import { perksAt, skillLevel } from '../shared/skill.ts';
 export { RARE_FIND_COMPLETIONS };
 
 export type UseFindResult =
-  { ok: true } | { ok: false; reason: { code: 'notARareFind' | 'notOwned' | 'notItsAction' } };
+  { ok: true } | { ok: false; reason: { code: 'notARareFind' | 'notOwned' | 'notItsAction' | 'masteryFull' } };
 
 /** The actions a find may be used on: its skill's actions the player has open. */
 export function actionsFor(state: State, item: string): ActionRef[] {
@@ -42,7 +42,7 @@ export function useFind(
   count = 1,
 ): { state: State; result: UseFindResult; events: GameEvent[] } {
   const f = findOf(item);
-  const refuse = (code: 'notARareFind' | 'notOwned' | 'notItsAction') => ({
+  const refuse = (code: 'notARareFind' | 'notOwned' | 'notItsAction' | 'masteryFull') => ({
     state,
     result: { ok: false as const, reason: { code } },
     events: [],
@@ -51,10 +51,13 @@ export function useFind(
   if (countOf(state, item) < count) return refuse('notOwned');
   if (!actionsFor(state, item).some((a) => a.feature === action.feature && a.id === action.id))
     return refuse('notItsAction');
+  const key = `${action.feature}:${action.id}`;
+  const before = Object.hasOwn(state.mastery, key) ? state.mastery[key] : 0;
+  // A find on an action at full mastery adds nothing: refused, as the page never offers it (session 156).
+  if (masteryStep(before, perksAt(f.ladder, skillLevel(state, f.skill)).masteryGain) >= MASTERY_STEPS.length)
+    return refuse('masteryFull');
   const next = structuredClone(state);
   take(next, item, count);
-  const key = `${action.feature}:${action.id}`;
-  const before = Object.hasOwn(next.mastery, key) ? next.mastery[key] : 0;
   const completions = count * RARE_FIND_COMPLETIONS;
   next.mastery[key] = before + completions;
   const gain = perksAt(f.ladder, skillLevel(state, f.skill)).masteryGain;

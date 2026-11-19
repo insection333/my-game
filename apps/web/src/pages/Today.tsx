@@ -10,6 +10,7 @@ import { navigate } from '../router.ts';
 import { Slot } from '../slots.tsx';
 import { LineMark } from './LineMark.tsx';
 import { noticesOf } from './notices.ts';
+import { quietDay } from './today-words.ts';
 import s from './pages.module.css';
 
 type Line = recap.RecapLine & { at?: number };
@@ -89,12 +90,13 @@ export function Today() {
         </Panel>
       </Slot>
     );
+  const quiet = quietDay(view.state);
   return (
     <Slot id="hearth.today">
       <Panel>
         <div className={s.welcome}>
-          <h2>{t('hearth.welcome.title')}</h2>
-          <p>{t('hearth.welcome.body')}</p>
+          <h2>{quiet.title}</h2>
+          <p>{quiet.body}</p>
         </div>
       </Panel>
     </Slot>

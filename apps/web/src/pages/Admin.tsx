@@ -3,7 +3,7 @@
 // between lords to look into (AdminModeration.tsx, session 39); the mail monitor (AdminMail.tsx, session 45); and the closed
 // test's panel (AdminTest.tsx). Only players on the
 // server's admin list reach it; everyone else gets the page that does not exist.
-import type { AdminPlayerView, AdminSaveResponse } from '@idle-clash/contracts';
+import { FIRE_WATCH_HOURS, type AdminPlayerView, type AdminSaveResponse } from '@idle-clash/contracts';
 import { fmt, t } from '@idle-clash/content';
 import { dayOf } from './days.ts';
 import { ActionRow, Button, Field, Panel, Pill } from '@idle-clash/ui';
@@ -103,7 +103,14 @@ export function Admin() {
                       t('admin.joined', { date: dayOf(p.createdAt) }),
                       t('admin.totalLevel', { level: fmt.int(p.totalLevel) }),
                     ]}
-                    status={p.bannedAt ? <Pill tone="ember">{t('admin.banned')}</Pill> : undefined}
+                    status={
+                      p.bannedAt ? (
+                        <Pill tone="ember">{t('admin.banned')}</Pill>
+                      ) : p.fireHours >= FIRE_WATCH_HOURS ? (
+                        // A fire that never sleeps is a script's (session 156).
+                        <Pill tone="ember">{t('admin.fireWatch', { hours: fmt.num(p.fireHours) })}</Pill>
+                      ) : undefined
+                    }
                     actions={
                       <Button variant="secondary" onClick={() => open(p.id)}>
                         {t('admin.open')}

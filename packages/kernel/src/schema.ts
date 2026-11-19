@@ -86,6 +86,9 @@ export const State = z
     fireUntil: time,
     /** When the fire was last lit from cold: it has burned without going out since (its heat). */
     fireSince: time.optional(),
+    /** How long the fire burned in each hour ("2026-11-20T02"), the last two days of hours (session 156);
+     *  older saves have none. */
+    fireLog: z.record(z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}$/), count).optional(),
     lanes: z.object(Object.fromEntries(LANE_IDS.map((l) => [l, Lane])) as Record<LaneId, typeof Lane>).strict(),
     items: z.record(name, count),
     /** XP by skill. `part` carries thousandths of an XP, so bonuses like +15% are exact over time. */

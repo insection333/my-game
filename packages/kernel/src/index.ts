@@ -8,6 +8,7 @@ export * from './state.ts';
 export * from './rules.ts';
 export * from './commands.ts';
 export * from './engine.ts';
+export * from './fire-log.ts';
 export * from './mend.ts';
 export * from './versions.ts';
 export * from './requests.ts';

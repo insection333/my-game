@@ -3,8 +3,43 @@
 // The list is kept short on purpose: it catches common English profanity, written plainly or with
 // digits and symbols for letters, without refusing ordinary names that merely contain the letters.
 
-/** Names that would read as the game speaking. */
-const RESERVED = ['admin', 'administrator', 'moderator', 'mod', 'idleclash', 'system', 'support', 'staff'];
+/** Names that would read as the game speaking, whole. */
+const RESERVED = [
+  'admin',
+  'administrator',
+  'moderator',
+  'mod',
+  'idleclash',
+  'system',
+  'support',
+  'staff',
+  'gamemaster',
+  'realm',
+  'therealm',
+];
+/** Words that make any name read as the game's people: "Admin Team", "Dev Team", "Support Desk"
+ *  (session 156: a bad actor could write to players as "Realm Keepers" or "Game Master"). */
+const RESERVED_WORDS = [
+  'admin',
+  'admins',
+  'administrator',
+  'moderator',
+  'moderators',
+  'mod',
+  'mods',
+  'staff',
+  'support',
+  'system',
+  'official',
+  'gm',
+  'dev',
+  'devs',
+  'developer',
+  'developers',
+  'idleclash',
+];
+/** Roots that read as the game's people at the start of a name run together ("AdminTeam"). */
+const RESERVED_START = ['admin', 'moderator', 'gamemaster', 'idleclash'];
 
 /** Roots refused anywhere in a name: they hide inside no ordinary word. */
 const ANYWHERE = ['fuck', 'shit', 'nigg', 'fagg', 'whore', 'rapist', 'nazi', 'hitler', 'retard', 'wank', 'bollock'];
@@ -40,6 +75,10 @@ export function nameAllowed(name: string): boolean {
   const plain = squash(name);
   const joined = plain.replace(/ /g, '');
   if (RESERVED.includes(joined)) return false;
+  if (plain.split(' ').some((w) => RESERVED_WORDS.includes(w))) return false;
+  if (RESERVED_START.some((r) => joined.startsWith(r))) return false;
+  // The game's own letters come from the keepers of the realm.
+  if (joined.includes('realm') && joined.includes('keeper')) return false;
   if (ANYWHERE.some((w) => joined.includes(w))) return false;
   // Single letters spelled out with spaces ("f u c k") are read as one word.
   const words = [...plain.split(' ').filter(Boolean), joined];

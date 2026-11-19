@@ -138,6 +138,14 @@ export function mend(raw: unknown, now: number): Mended {
     lastSeen: Math.min(time('lastSeen', clock), clock),
     fireUntil: time('fireUntil', clock),
     ...fireSinceOf(st.fireSince, clock, repairs),
+    // The fire's log keeps the days that read; it is only a record, so a damaged day is dropped.
+    ...(isObject(st.fireLog)
+      ? {
+          fireLog: Object.fromEntries(
+            Object.entries(st.fireLog).filter(([k, v]) => /^\d{4}-\d{2}-\d{2}T\d{2}$/.test(k) && isTime(v)),
+          ) as Record<string, number>,
+        }
+      : {}),
     lanes: Object.fromEntries(
       LANE_IDS.map((l) => [l, mendLane(l, isObject(st.lanes) ? st.lanes[l] : undefined, clock, repairs)]),
     ) as Record<LaneId, Lane>,
