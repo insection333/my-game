@@ -281,3 +281,4 @@
 - Session 141: Castle Clash's keep shows the day's orders and the next step on the War alone, so on a phone every other tab's own work starts on the first screen (506 px down, where it began at 711 px).
 - Session 142: a scouted lord under even odds says their walls hold and points to poisoning their wells from Plan (two poisonings take an even siege near certain), and a fortress out of reach says the troops need more levels to take it.
 - Session 143: the deep foundations say what they give ("Depth 1: your edict and AP flow +2%") and what the next dig adds, in place of "the edict and AP ×1.02".
+- Session 144: Next for your castle names the step nearest to hand, one the lord can pay for now before one millions away, where a lord a week in with a relic ready to forge was pointed at an evolution 2.9M off.

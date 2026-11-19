@@ -303,6 +303,7 @@ The owner asked for a review of Castle Clash early, middle and late, and gave th
     - while a troop has an evolution ahead, the troop nearest its next one by the gold to get there ("Ironclad Halberdiers at vanguard level 6: 2 more levels, 1.2M gold");
     - then the relics, in the Reliquary's order, to their last level;
     - then the next temper of the worn relic with the best chance. Tempering never ends, so there is always a next step.
+    - Session 144: the one nearest to hand is named, not always the evolution first. A step the lord can pay for now (gold and war marks) comes before one millions away, the evolution first among those; then the least gold still to find. A lord a week in with a relic ready to forge had been pointed at an evolution 2.9M off.
 ## 12. Phases
 
 | Phase | Session | Delivers |
