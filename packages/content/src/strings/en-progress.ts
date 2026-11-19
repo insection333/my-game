@@ -72,6 +72,7 @@ export const progress: Record<string, string> = {
   // The away recap (moved from en.ts in session 148)
   'recap.title': 'While you were away',
   'recap.away': 'Away for {time}',
+  'recap.rested': 'Lanes work up to {cap} while you are away: yours rested the last {rested}.',
   'recap.collect': 'Collect',
   'recap.level': '{skill} reached level {level}',
   'recap.newFind': 'First find: {item} ({rarity})',

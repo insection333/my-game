@@ -2,6 +2,7 @@
 // then Collect; otherwise today's notable moments as a short timeline; a newcomer's welcome before any.
 import { fmt, t } from '@idle-clash/content';
 import { recap } from '@idle-clash/features';
+import { DEFAULT_CONFIG } from '@idle-clash/kernel';
 import { Button, Panel } from '@idle-clash/ui';
 import { useGame } from '../game/hooks.ts';
 import { game } from '../game/store.ts';
@@ -56,6 +57,7 @@ export function Today() {
     const defences = all.filter((l) => l.kind === 'defence');
     const lines = [...good.slice(0, 5), ...defences.slice(0, 3), ...all.filter((l) => l.kind === 'stopped')];
     const more = Math.max(0, good.length - 5) + Math.max(0, defences.length - 3);
+    const rested = recap.restedFor(view.away, DEFAULT_CONFIG.awayCap);
     return (
       <Slot id="hearth.today">
         <Panel
@@ -65,6 +67,7 @@ export function Today() {
         >
           <div data-recap>
             <Lines lines={lines} />
+            {rested && <p className={s.rested}>{rested}</p>}
             <div className={s.collect}>
               {more > 0 && <span className={s.muted}>{t('recap.more', { count: fmt.int(more) })}</span>}
               <Button variant="primary" onClick={() => game.collect()}>
