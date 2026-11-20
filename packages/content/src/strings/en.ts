@@ -69,6 +69,7 @@ export const en: Record<string, string> = {
   'store.empty': 'Logs and ores you gather land here.',
   'store.empty.go': 'Start in Woodcutting',
   'store.capacity': '{used} of {total} slots',
+  'store.capacityOver': '{used} of {total} slots: finds are kept even when full',
   'store.enlarge': 'Add {slots} slots for {gold} gold',
   'store.sellOne': 'Sell 1',
   'store.sellTen': 'Sell 10',

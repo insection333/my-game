@@ -50,7 +50,8 @@ function capacityView(state: State): CapacityView {
   return {
     used,
     total,
-    text: t('store.capacity', { used: fmt.int(used), total: fmt.int(total) }),
+    // A find is kept even when every space is taken, so the count can pass the spaces; it says why (session 162).
+    text: t(used > total ? 'store.capacityOver' : 'store.capacity', { used: fmt.int(used), total: fmt.int(total) }),
     enlarge:
       cost === undefined
         ? null

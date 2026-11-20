@@ -483,7 +483,7 @@ A run's fights pay a quarter more XP and gold than the lane's, since its foes ar
 | The Drowned Warden | The Sunken Fen | archery | 70 | 68 | 8,800 | 468 | 12,000 | 10 | 7,200 |
 | The Ember Wyrm | The Ashen Peaks | magic | 100 | 98 | 16,200 | 945 | 30,000 | 15 | 12,000 |
 
-Each win: a Rare boss find 1 in 12, a Legendary 1 in 80. Relic ranks cost 10, 25, 50, 90, 150 marks.
+Each win: a Rare boss find 1 in 12, a Legendary 1 in 80, made likelier as any fight's finds are (the four-leaf charm, the Path of Fortune, an Edict of Fortune) and by the twists. Its gold is lifted as any fight's is (the spoils perks, the Path of Bounty, an Edict of Harvest). Relic ranks cost 10, 25, 50, 90, 150 marks.
 
 | Twist | Changes |
 | --- | --- |
