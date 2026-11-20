@@ -3,7 +3,7 @@
 // a win, gold, the foe's drop and maybe a find. An expedition's fights also count towards each foe's
 // mastery, as the lane's do (the kernel counts the lane's).
 import { masteryStep } from '@idle-clash/content';
-import { addXp, give, xpOf, type ActionContext } from '@idle-clash/kernel';
+import { addXp, give, xpOf, type ActionContext, type State } from '@idle-clash/kernel';
 import { rollFind, xpBonusPct } from '../complete.ts';
 import { edictPct } from '../castle/mirror.ts';
 import { announceKindling, pathBonus } from '../kindling.ts';
@@ -32,6 +32,18 @@ export function fightXp(ctx: ActionContext, p: Fighter, foe: Foe, dealt: number,
   gainXp(ctx, HITPOINTS, base * HITPOINTS_XP_SHARE);
 }
 
+/** What lifts a won fight's gold, multiplied as it always has been: the style's spoils perks, its Path of
+ *  Bounty, and a Sovereign Edict of Harvest. A boss's gold too (session 160: a boss paid its gold bare). */
+export function goldLift(state: State, at: number, p: Fighter): number {
+  const bounty = pathBonus(state, p.style, 'items');
+  return (1 + p.perks.spoils / 100) * (1 + bounty / 100) * (1 + edictPct(state, at, 'fightGold') / 100);
+}
+
+/** What makes a fight's Rare and Legendary finds likelier, in percent: the style's perks, its Path of
+ *  Fortune and a Sovereign Edict of Fortune. A boss's finds too (session 160). */
+export const fightFindPct = (state: State, at: number, p: Fighter): number =>
+  p.perks.findChance + pathBonus(state, p.style, 'finds') + edictPct(state, at, 'finds');
+
 /** A win's spoils: gold (times `gold`), the drop (times `drops`) and a chance of a find (times `finds`). */
 export function spoils(
   ctx: ActionContext,
@@ -42,13 +54,7 @@ export function spoils(
   // A style on the Path of Bounty brings home more gold and drops; on Fortune, more finds (past 99).
   const bounty = pathBonus(ctx.state, p.style, 'items');
   const extra = p.perks.spoils + MASTERY_DROPS_PER_STEP * p.mastery + bounty;
-  // A Sovereign Edict of Harvest lifts fight gold (Castle Clash).
-  const harvest = 1 + edictPct(ctx.state, ctx.at, 'fightGold') / 100;
-  give(
-    ctx.state,
-    'gold',
-    Math.round(foe.gold * (1 + p.perks.spoils / 100) * (1 + bounty / 100) * (more.gold ?? 1) * harvest),
-  );
+  give(ctx.state, 'gold', Math.round(foe.gold * goldLift(ctx.state, ctx.at, p) * (more.gold ?? 1)));
   // More drops (an expedition's twist) count as more extra yield: ×1.5 is +50%.
   const drops = extra + ((more.drops ?? 1) - 1) * 100;
   give(
@@ -62,7 +68,7 @@ export function spoils(
     ctx,
     style,
     { id: foe.id, tier: foe.tier, xp: 0, gives: [], findMultiple },
-    p.perks.findChance + pathBonus(ctx.state, p.style, 'finds') + edictPct(ctx.state, ctx.at, 'finds'),
+    fightFindPct(ctx.state, ctx.at, p),
   );
 }
 

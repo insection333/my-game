@@ -120,10 +120,13 @@ export function fight(
     health = Math.min(most, health + regen);
     const meal = pantry.find((m) => m.count > 0);
     if (health < most * EAT_BELOW && meal) {
-      health += meal.heals * heal;
+      // Up to full health and no further (session 160: late food, raised by perks, the hearthstone and the
+      // Smokehouse, healed a fighter of 4,220 to 6,646 until the next swing, and soaked a hit unseen).
+      const healed = Math.min(meal.heals * heal, most - health);
+      health += healed;
       meal.count--;
       eaten[meal.item] = (eaten[meal.item] ?? 0) + 1;
-      log?.({ t, by: 'meal', item: meal.item, heals: meal.heals * heal, health, foeHp });
+      log?.({ t, by: 'meal', item: meal.item, heals: healed, health, foeHp });
     }
     if (health < most * retreatAt)
       return {

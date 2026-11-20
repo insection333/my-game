@@ -3,7 +3,7 @@
 export const kindling = {
   'help.kindling.title': 'Kindling',
   'help.kindling.body':
-    'At level 99 a skill takes a Path: Bounty (more of what it makes), Lore (more XP) or Fortune (more finds), changed whenever you like and free. Its XP keeps counting past 99, and each long stretch more (its page shows how far) is a Kindling: a flame on its seal, and for the first five, a stronger Path. Nothing is reset or taken away.',
+    'At level 99 a skill takes a Path: Bounty (more of what it makes), Lore (more XP) or Fortune (likelier Rare and Legendary finds), changed whenever you like and free. Its XP keeps counting past 99, and each long stretch more (its page shows how far) is a Kindling: a flame on its seal, and for the first five, a stronger Path. Nothing is reset or taken away.',
 
   'kindling.title': 'Kindling',
   'kindling.countOne': 'Kindled once',
@@ -21,7 +21,7 @@ export const kindling = {
   'kindling.path.fortune': 'Fortune',
   'kindling.raises.items': '{pct} more of what it makes',
   'kindling.raises.xp': '{pct} more XP',
-  'kindling.raises.finds': '{pct} more finds',
+  'kindling.raises.finds': 'Rare and Legendary finds {pct} likelier',
   'kindling.take': 'Take this Path',
   'kindling.walking': 'Your Path',
   'kindling.leave': 'Leave the Path',

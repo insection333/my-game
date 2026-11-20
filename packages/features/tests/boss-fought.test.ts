@@ -21,7 +21,7 @@ describe('a boss fought in the lane', () => {
     expect(fought[0]).toMatchObject({
       boss: 'troll-chief',
       won: true,
-      gold: troll.gold,
+      gold: out.state.items.gold - (s.items.gold ?? 0),
       drop: troll.drop,
       marks: expeditionsOf(out.state).marks,
       first: true,

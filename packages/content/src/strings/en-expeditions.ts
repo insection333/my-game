@@ -130,6 +130,6 @@ export const expeditions = {
   'relic.now': 'Now: {gives}',
   'relic.effect.xp': '+{pct} {skill} XP',
   'relic.effect.foodHeal': 'Food heals {pct} more',
-  'relic.effect.finds': 'Finds {pct} more likely',
+  'relic.effect.finds': 'Rare and Legendary finds {pct} likelier',
   'relic.effect.slots': '+{slots} Storehouse spaces',
 };

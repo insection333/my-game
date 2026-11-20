@@ -126,7 +126,7 @@ function bossRules(boss: Boss): ActionRules {
         at: ctx.at,
         boss: boss.id,
         won: fought.won,
-        gold: fought.won ? boss.gold : 0,
+        gold: fought.gold,
         drop: fought.won ? boss.drop : null,
         marks: fought.marks,
         first: fought.won && !Object.hasOwn(before, boss.id),
