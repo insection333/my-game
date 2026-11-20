@@ -210,6 +210,7 @@ function foeRow(state: State, foe: Foe, now: number): FoeRow {
           t('combat.foodPerHour', { food: fmt.int(o.foodPerHour) }),
           t('combat.goldPerHour', { gold: fmt.int(goldNow(state, o, now)) }),
           ...foodLasts(state, o.foodPerHour),
+          ...(style ? supplyLasts(state, style, o.secondsPerFight) : []),
         ]
       : [],
   };
@@ -223,6 +224,17 @@ function foodLasts(state: State, perHour: number): string[] {
   const carried = mealsOf(state).reduce((n, m) => n + m.count, 0);
   if (!carried || perHour <= 0 || carried / perHour >= FOOD_WARN_HOURS) return [];
   return [t('combat.foodLasts', { time: fmt.duration((carried / perHour) * 3_600_000) })];
+}
+
+/** How long the supply carried lasts against a foe, one a fight, said as the food's is (session 161): its
+ *  damage is in the odds and the rates for every fight of the hour, and a handful was gone within minutes. */
+function supplyLasts(state: State, style: Style, secondsPerFight: number): string[] {
+  const s = supplyOf(state, style);
+  if (!s || secondsPerFight <= 0) return [];
+  const hours = (countOf(state, s.item) * secondsPerFight) / 3600;
+  if (hours >= FOOD_WARN_HOURS) return [];
+  const supply = midSentence(t(`item.${s.item}`));
+  return [t('combat.supplyLasts', { supply, time: fmt.duration(hours * 3_600_000) })];
 }
 
 export const SLOTS_FILLED: Record<string, SlotFill> = {
