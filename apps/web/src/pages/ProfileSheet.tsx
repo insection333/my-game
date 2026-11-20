@@ -10,6 +10,7 @@ import { useEffect, useState, type CSSProperties } from 'react';
 import { api } from '../api.ts';
 import { navigate, trayHref } from '../router.ts';
 import { badgeName, bannerStyle } from './honours-style.ts';
+import { cardRefusal } from './missing.ts';
 import { ReportPlayer } from './ReportPlayer.tsx';
 import s from './profile.module.css';
 
@@ -154,25 +155,32 @@ function Card({ p }: { p: Profile }) {
 
 export function ProfileSheet({ onClose }: { onClose: () => void }) {
   const name = new URLSearchParams(location.search).get('name') ?? '';
-  const [card, setCard] = useState<{ name: string; p: Profile | null } | null>(null);
+  const [card, setCard] = useState<{ name: string; p: Profile | null; why: string } | null>(null);
   useEffect(() => {
     let live = true;
     if (name)
       api.profile(name).then(
-        (p) => live && setCard({ name, p }),
-        () => live && setCard({ name, p: null }),
+        (p) => live && setCard({ name, p, why: '' }),
+        (err: unknown) => live && setCard({ name, p: null, why: cardRefusal(err) }),
       );
     return () => {
       live = false;
     };
   }, [name]);
-  const p = card && card.name === name ? card.p : undefined;
+  // No name at all is no player (session 159: it read "Reading their card…" for ever).
+  const p = !name ? null : card && card.name === name ? card.p : undefined;
+  const why = !name ? t('profile.none') : (card?.why ?? '');
   return (
-    <Sheet title={p?.name ?? name} closeLabel={t('shell.close')} onClose={onClose} slot="player.profile">
+    <Sheet
+      title={p?.name ?? (name || t('hiscores.title'))}
+      closeLabel={t('shell.close')}
+      onClose={onClose}
+      slot="player.profile"
+    >
       {p === undefined ? (
         <p className={`${s.card} ${s.note}`}>{t('profile.reading')}</p>
       ) : p === null ? (
-        <p className={`${s.card} ${s.note}`}>{t('profile.none')}</p>
+        <p className={`${s.card} ${s.note}`}>{why}</p>
       ) : (
         <Card p={p} />
       )}

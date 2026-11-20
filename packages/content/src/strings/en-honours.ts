@@ -62,6 +62,7 @@ export const honours: Record<string, string> = {
   'account.profile': 'Your profile',
   'profile.reading': 'Reading their card…',
   'profile.none': 'There is no player of that name.',
+  'deeds.missing': 'There is no such deed.',
   'profile.noTitle': 'No title shown',
   'profile.since': 'Playing for {days} days',
   'profile.sinceOne': 'Playing for 1 day',
