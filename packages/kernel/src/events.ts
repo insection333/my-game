@@ -80,6 +80,9 @@ export interface EventMap {
    *  time; `skill` is the ladder ('total' for the total level), `place` the place reached, `band` the
    *  band entered (1, 3, 10, 50 or 100). Said by the server, which keeps the ladders. */
   rankUp: { skill: string; place: number; band: number };
+  /** A season seen for the first time (session 166): its number, its twist, and the goals done in the season
+   *  before it (0 when none). Said once, on the player's first visit in it. */
+  seasonOpened: { number: number; twist: string; last: number };
   /** A lane stopped; the reason says why, so the page can say what to do. */
   laneStopped: { lane: LaneId; action: ActionRef | null; reason: StopReason };
   /** A command was refused: what was asked, and why not, so the page can say so. */
@@ -115,5 +118,6 @@ export const NOTABLE_EVENTS: readonly (keyof EventMap)[] = [
   'castleTempered',
   'castleOrders',
   'rankUp',
+  'seasonOpened',
 ];
 export const isNotable = (e: GameEvent): boolean => NOTABLE_EVENTS.includes(e.type);

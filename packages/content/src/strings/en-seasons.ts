@@ -23,6 +23,12 @@ export const seasons = {
   'season.daysLeft': '{days} days left',
   'season.daysLeftOne': 'Its last day',
   'season.next': 'Next: {name}',
+  'season.goals': '{count} goals done this season',
+  'season.goalsOne': '1 goal done this season',
+  'season.openedBodyFirst': '{gives} for eight weeks.',
+  'season.openedBody': '{gives} for eight weeks. {last}',
+  'season.last': 'Last season you did {count} goals.',
+  'season.lastOne': 'Last season you did 1 goal.',
   'hiscores.season': 'Season',
   'hiscores.seasonGoals': 'Goals',
   'hiscores.seasonNote':

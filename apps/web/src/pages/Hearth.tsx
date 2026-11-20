@@ -34,7 +34,7 @@ export function Hearth() {
   const [plaque] = fills<PlaqueView>(features, 'hearth.plaque', state, now);
   const [steading] = fills<SteadingView>(features, 'hearth.steading', state, now);
   const call = castleEngine.callAwaits(state, now);
-  const season = seasonView(now);
+  const season = seasonView(now, state);
   // The ladder lacks a goal (a short goal was claimed, or a new day began): the server makes it.
   const wants = goals?.data.refresh ?? false;
   useEffect(() => {
@@ -129,6 +129,7 @@ export function Hearth() {
                       <span className={s.muted}>{season.left}</span>
                     </span>
                     <span className={s.rowText}>{season.gives}</span>
+                    {season.done && <span className={s.muted}>{season.done}</span>}
                     {season.next && <span className={s.muted}>{season.next}</span>}
                   </a>
                 )}

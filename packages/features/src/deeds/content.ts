@@ -131,6 +131,15 @@ export const STORE: Steps = [
   [15, 'elite'],
   [ENLARGE_COSTS.length, 'master'],
 ];
+/** Seasons (session 166): the goals in one season a twist's deed asks, the goals that count a season
+ *  played, and the seasons played each step asks. */
+export const SEASON_GOALS = 60;
+export const SEASON_PLAYED = 20;
+export const SEASONS: Steps = [
+  [1, 'easy'],
+  [3, 'hard'],
+  [6, 'elite'],
+];
 /** The hidden deeds' numbers. */
 export const HIDDEN = { jack: 25, even: 10, hoard: 10_000 };
 

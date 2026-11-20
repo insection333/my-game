@@ -19,7 +19,8 @@ import { flagsFrom } from '../../../apps/server/src/config.ts';
 import type { Ctx } from '../../../apps/server/src/context.ts';
 import type { State } from '@idle-clash/kernel';
 import { exec, ROOT } from '../exec.ts';
-import { goalsOf, seasonAt, totalLevel } from '@idle-clash/features';
+import { seasonAt, totalLevel } from '@idle-clash/features';
+import { BEFORE, withGoals } from './season-goals.ts';
 import { castles, wrongdoing } from './castles.ts';
 import { elder, keeper } from './elder.ts';
 import { withHonours } from './honours.ts';
@@ -185,14 +186,6 @@ export async function newcomer(url: string, name: string): Promise<{ name: strin
   return { name: cookieName, value };
 }
 
-/** A save with `opened` goals done (supply caches opened), for the season's ladder (session 165). */
-const withGoals = (state: State, opened: number): State => ({
-  ...state,
-  features: { ...state.features, goals: { ...goalsOf(state), opened } },
-});
-/** Goals done before this season by a player of long standing. */
-const BEFORE = 600;
-
 async function start(): Promise<Served> {
   const port = await freePort();
   const url = `http://127.0.0.1:${port}`;
@@ -229,8 +222,8 @@ async function start(): Promise<Served> {
     ids.set(name, me.player.id);
     const saved = ctx.store.read(me.player.id, now)!;
     // Deeds done by the time the page opens are recorded, and the best honours shown (honours.ts).
-    const made = withHonours(ctx, make(saved.doc.state), now);
-    const state = withGoals(made, (fresh ? 0 : BEFORE) + goals);
+    const made = make(saved.doc.state);
+    const state = withHonours(ctx, withGoals(made, (fresh ? 0 : BEFORE) + goals, goals, now), now);
     ctx.store.write(me.player.id, { ...saved.doc, state }, saved.rev, now);
     // A player of long standing had done their goals before this season opened, so the season's ladder
     // counts only this season's (session 165); one new this season counts them all.

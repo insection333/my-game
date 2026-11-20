@@ -1,5 +1,6 @@
 // The season said (session 164): the Hearth names it, what it lifts and the days left, and the season to come
 // in its last week; a skill's page and Combat carry a pill only where the twist lifts something there.
+import { newState } from '@idle-clash/kernel';
 import { describe, expect, it } from 'vitest';
 import { seasonPill, seasonView } from '../src/index.ts';
 import { SEASON_DAYS, SEASON_EPOCH, TWISTS } from '../src/shared/season.ts';
@@ -42,5 +43,13 @@ describe('the season said', () => {
       expect(v.title).toMatch(/^Season \d+: The /);
       expect(v.gives).toMatch(/\d+%/);
     }
+  });
+
+  it('says the goals done this season (session 166), and nothing before the first', () => {
+    const at = inSeason('greenwood', 3);
+    const with_ = (goals: Record<string, number>) => ({ ...newState(1, at), features: { seasons: { goals } } });
+    expect(seasonView(at, with_({}))!.done).toBe('');
+    expect(seasonView(at, with_({ '1': 1 }))!.done).toBe('1 goal done this season');
+    expect(seasonView(at, with_({ '1': 14, '0': 3 }))!.done).toBe('14 goals done this season');
   });
 });

@@ -30,7 +30,7 @@ export * as recap from './shared/recap.ts';
 export { rankUpWords } from './shared/rank-up.ts';
 export { allSkills, totalLevel } from './shared/standing.ts';
 export { remedyFor, type Remedy } from './shared/remedy.ts';
-export { seasonPill, seasonView, type SeasonView } from './shared/season-view.ts';
+export { seasonOpenedWords, seasonPill, seasonView, type SeasonView } from './shared/season-view.ts';
 export { seasonAt, TWISTS } from './shared/season.ts';
 export { paces, bestIn, type Pace } from './goals/pace.ts';
 export { goalsOf } from './goals/state.ts';
