@@ -9,19 +9,20 @@ import { fighterAt, T0 } from './helpers/expedition.ts';
 
 const engine = createEngine(actionRegistry(FEATURES, () => true));
 const withCharm = (s: State, rank: number): State => {
+  if (!rank) return s;
   const out = structuredClone(s);
   setExpeditions(out, { ...expeditionsOf(out), relics: { 'four-leaf-charm': rank } });
   return out;
 };
 
-/** Finds in a day of one action, coming back every half hour. */
+/** Rare and Legendary finds (all the charm lifts) in a day of one action, coming back every half hour. */
 function findsIn(start: State, action: { feature: string; id: string }, lane: 'gathering' | 'combat'): number {
   let s = engine.command(start, T0, { type: 'start', lane, action }, seeded(start.seed)).state;
   let found = 0;
   for (let at = T0 + HOUR / 2; at <= T0 + 24 * HOUR; at += HOUR / 2) {
     const out = engine.advance({ ...s, lastSeen: at }, at, seeded(start.seed));
     s = out.state;
-    found += out.events.filter((e: GameEvent) => e.type === 'find').length;
+    found += out.events.filter((e: GameEvent) => e.type === 'find' && e.rarity !== 'uncommon').length;
   }
   return found;
 }
@@ -29,8 +30,14 @@ function findsIn(start: State, action: { feature: string; id: string }, lane: 'g
 describe('the Four-leaf charm', () => {
   it('brings more finds in fights', () => {
     const foe = FOES.filter((f) => regionOf(f.tier) === 'march').at(-1)!;
-    const plain = findsIn(fighterAt('march', 7), { feature: 'combat', id: foe.id }, 'combat');
-    const charmed = findsIn(withCharm(fighterAt('march', 7), 5), { feature: 'combat', id: foe.id }, 'combat');
+    // Four days' fights, so the Rare finds are many enough to tell apart.
+    const days = (charm: number) =>
+      [7, 8, 9, 10].reduce(
+        (n, seed) =>
+          n + findsIn(withCharm(fighterAt('march', seed), charm), { feature: 'combat', id: foe.id }, 'combat'),
+        0,
+      );
+    const [plain, charmed] = [days(0), days(5)];
     expect(plain).toBeGreaterThan(5);
     expect(charmed).toBeGreaterThan(plain);
   });

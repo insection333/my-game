@@ -44,6 +44,14 @@ export function goldLift(state: State, at: number, p: Fighter): number {
 export const fightFindPct = (state: State, at: number, p: Fighter): number =>
   p.perks.findChance + pathBonus(state, p.style, 'finds') + edictPct(state, at, 'finds');
 
+/** Gold in whole coins, the part of a coin paid by chance, so a lift is paid on average however small the
+ *  purse (session 161: rounded, a goblin slinger's 4 gold at +12% was 4, and at +23% 5). A whole sum draws
+ *  no roll. */
+export function coins(gold: number, roll: () => number): number {
+  const whole = Math.floor(gold);
+  return gold > whole && roll() < gold - whole ? whole + 1 : whole;
+}
+
 /** A win's spoils: gold (times `gold`), the drop (times `drops`) and a chance of a find (times `finds`). */
 export function spoils(
   ctx: ActionContext,
@@ -54,7 +62,11 @@ export function spoils(
   // A style on the Path of Bounty brings home more gold and drops; on Fortune, more finds (past 99).
   const bounty = pathBonus(ctx.state, p.style, 'items');
   const extra = p.perks.spoils + MASTERY_DROPS_PER_STEP * p.mastery + bounty;
-  give(ctx.state, 'gold', Math.round(foe.gold * goldLift(ctx.state, ctx.at, p) * (more.gold ?? 1)));
+  give(
+    ctx.state,
+    'gold',
+    coins(foe.gold * goldLift(ctx.state, ctx.at, p) * (more.gold ?? 1), () => ctx.roll()),
+  );
   // More drops (an expedition's twist) count as more extra yield: ×1.5 is +50%.
   const drops = extra + ((more.drops ?? 1) - 1) * 100;
   give(
