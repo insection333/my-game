@@ -166,7 +166,7 @@ const BOSS_TABLE = [
       `| ${b.name} | ${['The march', 'The Sunken Fen', 'The Ashen Peaks'][i]} | ${b.style} | ${b.level} | ${b.hitpoints} | ${n(b.hp)} | ${b.maxHit} | ${n(b.gold)} | ${b.marks} | ${n(CACHE_GOLD[i])} |`,
   ),
   '',
-  `Each win: a Rare boss find 1 in ${Math.round(1 / BOSS_FINDS.rare)}, a Legendary 1 in ${Math.round(1 / BOSS_FINDS.legendary)}. Relic ranks cost ${RELIC_COSTS.join(', ')} marks.`,
+  `Each win: a Rare boss find 1 in ${Math.round(1 / BOSS_FINDS.rare)}, a Legendary 1 in ${Math.round(1 / BOSS_FINDS.legendary)}, made likelier as any fight's finds are (the four-leaf charm, the Path of Fortune, an Edict of Fortune) and by the twists. Its gold is lifted as any fight's is (the spoils perks, the Path of Bounty, an Edict of Harvest). Relic ranks cost ${RELIC_COSTS.join(', ')} marks.`,
 ].join('\n');
 const WORDS: Record<string, (x: number) => string> = {
   hit: (x) => `hits land ${pct(x)} as often`,
