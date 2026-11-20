@@ -26,6 +26,7 @@ import {
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { ipOf, limit, type Ctx } from '../context.ts';
 import { castlesLadder } from './castles-ladder.ts';
+import { SEASON, seasonLadderAt } from './season-ladder.ts';
 import { TOTAL } from './hiscores.ts';
 import { hear } from './watching.ts';
 import { contractRoute, fail } from '../http.ts';
@@ -115,12 +116,17 @@ export function gameRoutes(app: FastifyInstance, ctx: Ctx, features: readonly Fe
     async ({ req, reply }) => {
       reading(reply, req.playerId!);
       // Your own entry as of now, even if the save was last written a while ago.
-      await ctx.queue.run(req.playerId!, () => hear(ctx, req.playerId!, now()));
+      const at = now();
+      await ctx.queue.run(req.playerId!, () => hear(ctx, req.playerId!, at));
+      const season = seasonLadderAt(at);
       return {
         online: ctx.live.online,
         listed: ctx.hiscores.isListed(req.playerId!),
         ladders: [
-          ...[TOTAL, ...allSkills()].map((skill) => ctx.hiscores.ladder(skill, req.playerId!)),
+          ctx.hiscores.ladder(TOTAL, req.playerId!),
+          // This season's ladder (session 165), named for what it is, whichever season it is.
+          ...(season ? [{ ...ctx.hiscores.ladder(season, req.playerId!), skill: SEASON }] : []),
+          ...allSkills().map((skill) => ctx.hiscores.ladder(skill, req.playerId!)),
           castlesLadder(ctx.db, req.playerId!),
         ],
       } satisfies HiscoresResponse;

@@ -11,6 +11,7 @@ import { hiscores, players } from '../db/schema.ts';
 import { lookOf, readLook } from './look.ts';
 import { climb } from './rank-ups.ts';
 import { Ranks } from './ranks.ts';
+import { isQuiet, isSeasonRow, seasonEntries } from './season-ladder.ts';
 
 export const TOTAL = 'total';
 export const LADDER_ROWS = 25;
@@ -111,11 +112,14 @@ export class Hiscores {
       );
       this.rows.set(playerId, had);
     }
+    // The season's ladder: the goals done since it opened (session 165).
+    entries.push(...seasonEntries(at, state, had));
     const climbs: GameEvent[] = [];
     for (const e of entries) {
       const old = had.get(e.skill);
       if (old && old.xp === e.xp && old.milestones === e.milestones) continue;
-      if (!old && e.xp === 0) continue;
+      // What a season counts from is written even at nothing: a player new this season counts from 0.
+      if (!old && e.xp === 0 && !isQuiet(e.skill)) continue;
       const reachedAt = old?.xp === e.xp ? old.reachedAt : at;
       this.db
         .insert(hiscores)
@@ -132,6 +136,7 @@ export class Hiscores {
         bestBand: old?.bestBand ?? null,
       };
       had.set(e.skill, row);
+      if (isQuiet(e.skill)) continue;
       this.standings.set(e.skill, { playerId, level: e.level, xp: e.xp, reachedAt: row.reachedAt });
       if (this.isListed(playerId)) this.placed(playerId, e.skill, e.level, row, at, climbs);
       const top = this.tops.get(e.skill);
@@ -195,7 +200,7 @@ export class Hiscores {
     if (!this.isListed(playerId)) return [];
     const rows = this.db.select().from(hiscores).where(eq(hiscores.playerId, playerId)).all();
     const places = rows
-      .filter((r) => r.xp > 0)
+      .filter((r) => r.xp > 0 && !isSeasonRow(r.skill))
       .map((r) => ({ skill: r.skill, place: this.standings.rank(r.skill, r), xp: r.xp }));
     const total = places.filter((p) => p.skill === 'total');
     const skills = places.filter((p) => p.skill !== 'total').sort((a, b) => a.place - b.place || b.xp - a.xp);

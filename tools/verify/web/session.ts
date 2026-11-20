@@ -19,7 +19,7 @@ import { flagsFrom } from '../../../apps/server/src/config.ts';
 import type { Ctx } from '../../../apps/server/src/context.ts';
 import type { State } from '@idle-clash/kernel';
 import { exec, ROOT } from '../exec.ts';
-import { totalLevel } from '@idle-clash/features';
+import { goalsOf, seasonAt, totalLevel } from '@idle-clash/features';
 import { castles, wrongdoing } from './castles.ts';
 import { elder, keeper } from './elder.ts';
 import { withHonours } from './honours.ts';
@@ -79,6 +79,8 @@ export function views(): View[] {
     '/storehouse',
     // The Castles ladder, with the elder's castle and the keeper's on it.
     '/hiscores?skill=castle',
+    // This season's ladder (session 165): goals done since it opened, a squire new this season beside veterans.
+    '/hiscores?skill=season',
     // A player's sheet, with Report this player.
     '/hiscores?panel=player&name=Keeper',
     // Messages behind the bell: letters read and unread, Reply, Delete and Block, and a player blocked.
@@ -183,6 +185,14 @@ export async function newcomer(url: string, name: string): Promise<{ name: strin
   return { name: cookieName, value };
 }
 
+/** A save with `opened` goals done (supply caches opened), for the season's ladder (session 165). */
+const withGoals = (state: State, opened: number): State => ({
+  ...state,
+  features: { ...state.features, goals: { ...goalsOf(state), opened } },
+});
+/** Goals done before this season by a player of long standing. */
+const BEFORE = 600;
+
 async function start(): Promise<Served> {
   const port = await freePort();
   const url = `http://127.0.0.1:${port}`;
@@ -210,7 +220,8 @@ async function start(): Promise<Served> {
   const now = Date.now();
   const ids = new Map<string, string>();
   /** Signs a player up and gives their save a history (written as the admin page can). */
-  const settle = async (name: string, make: (s: State) => State) => {
+  /** `goals`: the goals they have done this season; `fresh`: new this season, with none before it. */
+  const settle = async (name: string, make: (s: State) => State, goals: number, fresh = false) => {
     const c = await newcomer(url, name);
     const me = (await (await fetch(`${url}/api/me`, { headers: { cookie: `${c.name}=${c.value}` } })).json()) as {
       player: { id: string };
@@ -218,8 +229,13 @@ async function start(): Promise<Served> {
     ids.set(name, me.player.id);
     const saved = ctx.store.read(me.player.id, now)!;
     // Deeds done by the time the page opens are recorded, and the best honours shown (honours.ts).
-    const state = withHonours(ctx, make(saved.doc.state), now);
+    const made = withHonours(ctx, make(saved.doc.state), now);
+    const state = withGoals(made, (fresh ? 0 : BEFORE) + goals);
     ctx.store.write(me.player.id, { ...saved.doc, state }, saved.rev, now);
+    // A player of long standing had done their goals before this season opened, so the season's ladder
+    // counts only this season's (session 165); one new this season counts them all.
+    const season = seasonAt(now);
+    if (season && !fresh) ctx.hiscores.update(me.player.id, withGoals(made, BEFORE), season.start - 1);
     ctx.hiscores.update(me.player.id, state, now);
     // A player with a history has played a while, so the hiscores list them (the newcomer is not yet).
     ctx.store.sqlite
@@ -227,20 +243,25 @@ async function start(): Promise<Served> {
       .run(now, now, me.player.id);
     return c;
   };
-  const vet = await settle('Veteran', (s) => veteran(ctx, s, now));
-  const eld = await settle('Elder', (s) => elder(ctx, s, now));
-  const kpr = await settle('Keeper', (s) => keeper(ctx, s, now));
+  const vet = await settle('Veteran', (s) => veteran(ctx, s, now), 74);
+  const eld = await settle('Elder', (s) => elder(ctx, s, now), 131);
+  const kpr = await settle('Keeper', (s) => keeper(ctx, s, now), 118);
   // A player a week in, whose castle was raised five days ago (session 139).
-  const sqr = await settle('Squire', (s) => {
-    const c = crowd(s, 0);
-    return { ...c, items: { ...c.items, gold: 1_400_000 } };
-  });
+  const sqr = await settle(
+    'Squire',
+    (s) => {
+      const c = crowd(s, 0);
+      return { ...c, items: { ...c.items, gold: 1_400_000 } };
+    },
+    139,
+    true,
+  );
   const elderId = ids.get('Elder')!;
   // The veteran keeps the game's admin page, so it is screenshot with players on it. Named on the list
   // once signed up, as the owner is: a name already on it cannot be signed up for.
   ctx.config.adminNames.push('Veteran');
   // Others on the hiscores, so the ladders read as they will with players on them.
-  for (const [i, name] of CROWD.entries()) await settle(name, (s) => crowd(s, i));
+  for (const [i, name] of CROWD.entries()) await settle(name, (s) => crowd(s, i), (i * 37) % 160);
   // Castle Clash at three stages (session 139): the squire's a week in, the elder's two months in beside a
   // rival near its rating (one of the crowd), and the keeper's a year in.
   const lord = (name: string) => ({

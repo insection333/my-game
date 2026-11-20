@@ -1,12 +1,13 @@
 // Hiscores (IA.md): its Ladders tab, with how many are playing now and a ladder for Total, each skill and
-// Castles (session 38: castles by rating) with your own entry pinned, each player's title and banner beside their name; the Deeds tab is
+// Castles (session 38: castles by rating), and this season's (session 165: goals done since it opened) with your own entry pinned, each player's title and banner beside their name; the Deeds tab is
 // Deeds.tsx. The ladders come from the server; the page asks again each minute while it is open.
 import type { HiscoreRow, HiscoresResponse } from '@idle-clash/contracts';
 import { fmt, hasString, t } from '@idle-clash/content';
-import { kindlingData } from '@idle-clash/features';
+import { kindlingData, seasonView } from '@idle-clash/features';
 import { FireSeal, hasIcon, ItemIcon, Panel, Picture, Pill, Tabs } from '@idle-clash/ui';
 import { useEffect, useState, type ReactNode } from 'react';
 import { api } from '../api.ts';
+import { useGame } from '../game/hooks.ts';
 import { handled } from '../game/session.ts';
 import { untilLoaded } from '../Ready.tsx';
 import { navigate } from '../router.ts';
@@ -54,9 +55,19 @@ export function Hiscores() {
   }, []);
   const asked = new URLSearchParams(location.search).get('skill') ?? 'total';
   const ladder = data?.ladders.find((l) => l.skill === asked) ?? data?.ladders[0];
+  const { now } = useGame();
+  const season = seasonView(now);
   const name = (skill: string) =>
-    skill === 'total' ? t('hiscores.total') : skill === 'castle' ? t('hiscores.castles') : t(`skill.${skill}`);
+    skill === 'total'
+      ? t('hiscores.total')
+      : skill === 'castle'
+        ? t('hiscores.castles')
+        : skill === 'season'
+          ? t('hiscores.season')
+          : t(`skill.${skill}`);
   const castles = ladder?.skill === 'castle';
+  // This season's ladder ranks by goals done alone: it has no level column (session 165).
+  const seasonal = ladder?.skill === 'season';
   const you = ladder?.you ?? null;
   const shown = ladder?.rows ?? [];
   // A player not yet listed is in no one's rows, their own included: their place is pinned beneath,
@@ -81,7 +92,7 @@ export function Hiscores() {
               href: l.skill === 'total' ? '/hiscores' : `/hiscores?skill=${l.skill}`,
               label: name(l.skill),
               current: l.skill === ladder?.skill,
-              icon: <LadderIcon skill={l.skill} />,
+              icon: <LadderIcon skill={l.skill} picture={season?.picture} />,
             }))}
           />
         </div>
@@ -91,16 +102,18 @@ export function Hiscores() {
               {ladder && ladder.rows.length === 0 && !you && <p className={s.note}>{t('hiscores.empty')}</p>}
               {ladder && (ladder.rows.length > 0 || you) && (
                 <table className={s.table}>
-                  <caption className={s.caption}>{name(ladder.skill)}</caption>
+                  <caption className={s.caption}>{seasonal && season ? season.title : name(ladder.skill)}</caption>
                   <thead>
                     <tr>
                       <th scope="col">{t('hiscores.rank')}</th>
                       <th scope="col">{t('hiscores.name')}</th>
+                      {!seasonal && (
+                        <th scope="col" data-num>
+                          {castles ? t('hiscores.castleLevel') : t('hiscores.level')}
+                        </th>
+                      )}
                       <th scope="col" data-num>
-                        {castles ? t('hiscores.castleLevel') : t('hiscores.level')}
-                      </th>
-                      <th scope="col" data-num>
-                        {castles ? t('hiscores.rating') : t('hiscores.xp')}
+                        {castles ? t('hiscores.rating') : seasonal ? t('hiscores.seasonGoals') : t('hiscores.xp')}
                       </th>
                     </tr>
                   </thead>
@@ -117,6 +130,7 @@ export function Hiscores() {
                 </table>
               )}
               {data && !you && <p className={s.note}>{unrankedNote(ladder?.skill ?? 'total')}</p>}
+              {seasonal && season && <p className={s.note}>{t('hiscores.seasonNote', { left: season.left })}</p>}
             </Slot>
           </Panel>
         </section>
@@ -125,9 +139,11 @@ export function Hiscores() {
   );
 }
 
-/** A ladder's icon: the skill's seal, Castle Clash's glyph for Castles, or the game's own mark for Total. */
-function LadderIcon({ skill }: { skill: string }) {
+/** A ladder's icon: the skill's seal, Castle Clash's glyph for Castles, the season's picture for its own, or
+ *  the game's own mark for Total. */
+function LadderIcon({ skill, picture }: { skill: string; picture?: string }) {
   if (hasIcon(skill)) return <ItemIcon name={skill} size={24} />;
+  if (skill === 'season' && picture) return <ItemIcon name={picture} size={24} />;
   if (skill === 'castle') return <MenuGlyph name="castle" />;
   return (
     <svg width={24} height={24} viewBox="0 0 48 48" aria-hidden="true">
@@ -159,7 +175,7 @@ function Row({ row, you, ladder }: { row: HiscoreRow; you: boolean; ladder: stri
         : t('hiscores.milestones', { count: fmt.int(row.milestones) })
       : null;
   // On a skill's ladder, its Kindlings past 99 (worked out from the XP, as the game does).
-  const kindled = total || ladder === 'castle' ? 0 : kindlingData.kindlingsIn(row.xp);
+  const kindled = total || ladder === 'castle' || ladder === 'season' ? 0 : kindlingData.kindlingsIn(row.xp);
   const kindling = kindled > 0 ? t('hiscores.kindled', { count: fmt.int(kindled) }) : null;
   return (
     <tr data-you={you || undefined} style={bannerStyle(row.banner)}>
@@ -195,7 +211,7 @@ function Row({ row, you, ladder }: { row: HiscoreRow; you: boolean; ladder: stri
           </span>
         )}
       </td>
-      <td data-num>{fmt.int(row.level)}</td>
+      {ladder !== 'season' && <td data-num>{fmt.int(row.level)}</td>}
       <td data-num>
         {/* Shortened on a narrow ladder ("673.6M"), so a long name keeps its line (session 113). */}
         <span className={s.full}>{fmt.int(row.xp)}</span>
