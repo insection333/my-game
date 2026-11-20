@@ -20,7 +20,7 @@ import { onConnection, setConnected } from './connection.ts';
 import { announceGains } from './gains.ts';
 import { openLive } from './live.ts';
 import { refreshMail, setUnreadMail } from './mail.ts';
-import { handled, sessionStore, signedOut } from './session.ts';
+import { bounceOf, handled, sessionStore, signedOut } from './session.ts';
 
 export interface GameView {
   state: State;
@@ -134,7 +134,7 @@ export async function start(flags: Record<string, boolean>): Promise<void> {
       });
     },
     mail: setUnreadMail,
-    signedOut,
+    signedOut: (why) => signedOut(why ?? bounceOf('notSignedIn', sessionStore.get().phase)),
     reopened: () => {
       void resync();
       void refreshMail();

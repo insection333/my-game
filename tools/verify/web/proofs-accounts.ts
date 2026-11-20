@@ -10,6 +10,9 @@
 // - The longest name keeps a sheet's cross in view (session 112): sixteen W's, one unbroken word, as the
 //   title of the player's own profile card on a phone ran past the sheet's edge and over its cross; and
 //   scrolled to its foot (session 114), the card's picture was drawn over its header and the name.
+// - A session ended under a player (session 157) sends them to Sign in and says so: their sessions are
+//   ended on the server (as changing the password on another device ends them), and their next press
+//   lands on the welcome page's Sign in, told they were signed out, where it opened on Create account.
 import { recap } from '@idle-clash/features';
 import type { Page } from 'playwright';
 import { playerWith, say } from './proofs-lanes.ts';
@@ -187,11 +190,34 @@ async function longNameKeepsTheCross(served: Served, problems: string[]) {
   }
 }
 
+async function endedSaysSignIn(served: Served, problems: string[]) {
+  const page = await playerWith(served, 'Signed Elsewhere', '/skills/woodcutting', (st) => st);
+  try {
+    const start = page.getByRole('button', { name: 'Start' }).first();
+    await start.waitFor({ timeout: 15_000 });
+    const me = await page.evaluate(
+      async () => ((await (await fetch('/api/me')).json()) as { player: { id: string } }).player.id,
+    );
+    served.ctx.sessions.endAll(me);
+    await start.click();
+    await page.waitForURL((u) => u.pathname.startsWith('/welcome'), { timeout: 10_000 });
+    if (!page.url().includes('/welcome/sign-in'))
+      problems.push(`A session ended mid-play lands on ${new URL(page.url()).pathname}, not Sign in`);
+    if (!(await page.getByText('You were signed out.').count()))
+      problems.push('A session ended mid-play does not say the player was signed out');
+  } catch (err) {
+    problems.push(`A session ended mid-play did not reach the welcome page (${say(err)})`);
+  } finally {
+    await page.close();
+  }
+}
+
 export async function runAccountProofs(served: Served): Promise<string[]> {
   const problems: string[] = [];
   await recapBestFirst(served, problems);
   await deleteLeavesNothing(served, problems);
   await adminResetsPassword(served, problems);
   await longNameKeepsTheCross(served, problems);
+  await endedSaysSignIn(served, problems);
   return problems;
 }

@@ -30,7 +30,7 @@ export function Welcome({ path, next }: { path: string; next: string }) {
   const [age, setAge] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
   const [working, setWorking] = useState(false);
-  // Sent here by a ban (session 95): said at once, until the player tries again.
+  // Sent here by a ban (session 95), or a session ended mid-play (157): said at once, until the player tries again.
   const ended = useSession().bounced;
   const bounced = errors.form ? null : ended;
   const keep = next !== '/' ? `?next=${encodeURIComponent(next)}` : '';
@@ -71,6 +71,11 @@ export function Welcome({ path, next }: { path: string; next: string }) {
         {bounced === 'banned' && (
           <p className={s.error} role="alert" data-part="bounced">
             {t('error.banned')}
+          </p>
+        )}
+        {bounced === 'ended' && (
+          <p className={s.done} role="status" data-part="bounced">
+            {t('welcome.ended')}
           </p>
         )}
         {bounced === 'deleted' && (

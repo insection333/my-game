@@ -49,24 +49,32 @@ export function recapLines(a: AwaySummary, notices: readonly GameEvent[] = []): 
         href: '/storehouse/log',
       });
   // New to the log: said so, since a first Uncommon find comes before a Rare one seen before; one line a
-  // rarity, the Rare first (session 148: five lines of first finds hid a newcomer's levels).
+  // rarity, the Rare first (session 148: five lines of first finds hid a newcomer's levels). One found again
+  // in the same absence carries its count here and nowhere else (session 157: "First Rare finds: Warlord's
+  // seal" stood two lines above "Rare find: Warlord's seal").
+  const firstSeen = new Set(finds.filter((e) => e.first).map((e) => e.item));
+  const times = (item: string) => {
+    const n = finds.filter((e) => e.item === item).length + (a.uncommonItems?.[item] ?? 0);
+    const said = t(`item.${item}`);
+    return n > 1 ? t('action.gives', { item: said, count: fmt.int(n) }) : said;
+  };
   for (const rarity of ['rare', 'uncommon'] as const) {
     const firsts = [...new Set(finds.filter((e) => e.first && e.rarity === rarity).map((e) => e.item))];
     if (!firsts.length) continue;
-    const name = (item: string) => t(`item.${item}`);
     lines.push({
       kind: 'newFind',
       text:
         firsts.length === 1
-          ? t('recap.newFind', { item: name(firsts[0]), rarity: t(`rarity.${rarity}`) })
-          : t('recap.newFinds', { rarity: t(`rarity.${rarity}`), items: firsts.map(name).join(', ') }),
+          ? t('recap.newFind', { item: times(firsts[0]), rarity: t(`rarity.${rarity}`) })
+          : t('recap.newFinds', { rarity: t(`rarity.${rarity}`), items: firsts.map(times).join(', ') }),
       icon: firsts[0],
       href: '/storehouse/log',
     });
   }
-  // Rare finds the log already holds, one line an item: "Rare find: Torn banner ×4".
+  // Rare finds the log already held, one line an item: "Rare find: Torn banner ×4".
   const rares = new Map<string, number>();
-  for (const e of finds) if (e.rarity === 'rare' && !e.first) rares.set(e.item, (rares.get(e.item) ?? 0) + 1);
+  for (const e of finds)
+    if (e.rarity === 'rare' && !e.first && !firstSeen.has(e.item)) rares.set(e.item, (rares.get(e.item) ?? 0) + 1);
   for (const [item, count] of rares) {
     const text = t('moment.find', { rarity: t('rarity.rare'), item: t(`item.${item}`) });
     lines.push({
@@ -119,19 +127,25 @@ export function recapLines(a: AwaySummary, notices: readonly GameEvent[] = []): 
       icon: actionIcon(e.action),
       href: skillHref(e.action.feature),
     });
-  // Uncommon finds the log already holds, counted, then named by the three found most (session 107: the line
-  // stood on a bare dot and named none).
-  if (a.uncommon) {
-    const most = Object.entries(a.uncommonItems ?? {})
-      .sort((x, y) => y[1] - x[1])
-      .slice(0, 3);
-    const count = a.uncommon === 1 ? t('recap.uncommonOne') : t('recap.uncommon', { count: fmt.int(a.uncommon) });
+  // Uncommon finds the log already held, counted, then named by the three found most (session 107: the line
+  // stood on a bare dot and named none); one first found this absence is counted on its first-find line.
+  const held = Object.entries(a.uncommonItems ?? {}).filter(([id]) => !firstSeen.has(id));
+  const uncommon =
+    (a.uncommon ?? 0) -
+    Object.entries(a.uncommonItems ?? {}).reduce((n, [id, k]) => n + (firstSeen.has(id) ? k : 0), 0);
+  if (uncommon > 0) {
+    const most = held.sort((x, y) => y[1] - x[1]).slice(0, 3);
+    const count = uncommon === 1 ? t('recap.uncommonOne') : t('recap.uncommon', { count: fmt.int(uncommon) });
     lines.push({
       kind: 'uncommon',
       text: most.length
         ? t('recap.uncommonNamed', {
             count,
-            items: most.map(([id, n]) => t('action.gives', { item: t(`item.${id}`), count: fmt.int(n) })).join(', '),
+            items: most
+              .map(([id, n]) =>
+                n > 1 ? t('action.gives', { item: t(`item.${id}`), count: fmt.int(n) }) : t(`item.${id}`),
+              )
+              .join(', '),
           })
         : count,
       icon: most[0]?.[0] ?? null,

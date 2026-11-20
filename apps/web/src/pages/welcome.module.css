@@ -107,6 +107,24 @@
   gap: var(--s-2);
 }
 
+/* The narrowest phones (a fold's 280 px cover screen): the loop's pictures shrink to keep it on the
+   screen, where at 48 px it ran 23 px past the edge and the whole page scrolled sideways (session 157). */
+@media (max-width: 319px) {
+  .loop,
+  .loop li {
+    gap: var(--s-1);
+  }
+
+  .loop {
+    padding-inline: var(--s-2);
+  }
+
+  .loop svg {
+    width: 40px;
+    height: 40px;
+  }
+}
+
 .loop li + li::before {
   content: '';
   width: 7px;

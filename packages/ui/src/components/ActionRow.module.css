@@ -124,6 +124,20 @@
     min-width: 4.5rem;
   }
 
+  /* A button wider than the row itself (a 280 px phone's "Rank up +1 for 405K and 20 war marks") wraps its
+     words inside the row rather than running past it (session 157). */
+  .actions {
+    max-width: 100%;
+  }
+
+  .actions > * {
+    max-width: 100%;
+    white-space: normal;
+    text-wrap: balance;
+    line-height: 1.25;
+    padding-block: var(--s-1);
+  }
+
   .foot {
     flex: 1 1 100%;
   }

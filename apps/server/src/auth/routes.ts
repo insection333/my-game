@@ -56,7 +56,13 @@ export const requirePlayer = (ctx: Ctx) => {
 };
 
 function startSession(ctx: Ctx, reply: FastifyReply, playerId: string) {
-  const token = ctx.sessions.create(playerId, ctx.config.now());
+  keepCookie(ctx, reply, ctx.sessions.create(playerId, ctx.config.now()));
+}
+
+/** Gives the browser the session's cookie for another SESSION_DAYS. Sent at sign-in and again whenever the
+ *  game is opened (session 157): the server renews a session as it is used, but a cookie given its days
+ *  only at sign-in was dropped by the browser on day 30 however often the player came back. */
+export function keepCookie(ctx: Ctx, reply: FastifyReply, token: string) {
   reply.setCookie(SESSION_COOKIE, token, {
     httpOnly: true,
     sameSite: 'lax',
@@ -147,8 +153,9 @@ export function authRoutes(app: FastifyInstance, ctx: Ctx): void {
   contractRoute(
     app,
     ROUTES.me,
-    ({ req }) => {
+    ({ req, reply }) => {
       const row = req.playerId ? ctx.db.select().from(players).where(eq(players.id, req.playerId)).get() : undefined;
+      if (row) keepCookie(ctx, reply, req.cookies[SESSION_COOKIE]!);
       return {
         player: row ? view(row) : null,
         flags: ctx.config.flags,

@@ -29,7 +29,8 @@ import { castlesLadder } from './castles-ladder.ts';
 import { TOTAL } from './hiscores.ts';
 import { hear } from './watching.ts';
 import { contractRoute, fail } from '../http.ts';
-import { identify, requirePlayer } from '../auth/routes.ts';
+import { identify, keepCookie, requirePlayer } from '../auth/routes.ts';
+import { SESSION_COOKIE } from '../auth/sessions.ts';
 import { noteVisit } from '../feedback.ts';
 import { announce as announceChange } from './announce.ts';
 import { withCastle } from '../castle/mirror.ts';
@@ -91,6 +92,8 @@ export function gameRoutes(app: FastifyInstance, ctx: Ctx, features: readonly Fe
     ROUTES.game,
     async ({ req, reply }) => {
       reading(reply, req.playerId!);
+      // A page open for weeks reads the game again as it reconnects: its cookie is kept too (session 157).
+      keepCookie(ctx, reply, req.cookies[SESSION_COOKIE]!);
       return ctx.queue.run(req.playerId!, () => current(req.playerId!, true));
     },
     requirePlayer(ctx),

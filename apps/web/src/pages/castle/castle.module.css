@@ -305,6 +305,12 @@
 .edictPill {
   display: inline-flex;
   justify-self: start;
+  max-width: 100%;
+}
+
+/* On the narrowest screens (280 px) the edict's words wrap inside the pill rather than run past the page (session 157). */
+.edictPill > * {
+  white-space: normal;
 }
 
 /* A troop's drill buttons, under its facts. */
