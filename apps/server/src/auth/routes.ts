@@ -10,7 +10,7 @@ import { players } from '../db/schema.ts';
 import { contractRoute, fail } from '../http.ts';
 import { nameAllowed } from './names.ts';
 import { checkPassword, dummyHash, hashPassword } from './passwords.ts';
-import { SESSION_COOKIE, SESSION_DAYS } from './sessions.ts';
+import { SESSION_COOKIE, SESSION_DAYS, tokenHash } from './sessions.ts';
 
 const MIN = 60_000;
 const HOUR = 60 * MIN;
@@ -144,6 +144,8 @@ export function authRoutes(app: FastifyInstance, ctx: Ctx): void {
     async ({ req, reply }) => {
       const token = req.cookies[SESSION_COOKIE];
       if (token) ctx.sessions.end(token);
+      // Its other tabs stop hearing the player's news too (session 158).
+      if (token) ctx.live.closeSessions(req.playerId!, { session: tokenHash(token) });
       reply.clearCookie(SESSION_COOKIE, { path: '/' });
       return reply.code(204).send();
     },

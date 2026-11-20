@@ -30,7 +30,7 @@ import { TOTAL } from './hiscores.ts';
 import { hear } from './watching.ts';
 import { contractRoute, fail } from '../http.ts';
 import { identify, keepCookie, requirePlayer } from '../auth/routes.ts';
-import { SESSION_COOKIE } from '../auth/sessions.ts';
+import { SESSION_COOKIE, tokenHash } from '../auth/sessions.ts';
 import { noteVisit } from '../feedback.ts';
 import { announce as announceChange } from './announce.ts';
 import { withCastle } from '../castle/mirror.ts';
@@ -220,7 +220,7 @@ export function gameRoutes(app: FastifyInstance, ctx: Ctx, features: readonly Fe
     }
     const player = req.playerId;
     if (!player) return socket.close(4401, 'not signed in');
-    ctx.live.add(player, socket);
+    ctx.live.add(player, socket, tokenHash(req.cookies[SESSION_COOKIE] ?? ''));
     socket.on('close', () => ctx.live.remove(player, socket));
     socket.on('message', () => undefined);
   });

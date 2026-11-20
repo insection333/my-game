@@ -110,7 +110,7 @@ export const castle = {
   'castle.move.noneTreasury': 'The treasury is empty.',
   'castle.move.tooMuchPurse': 'More than your purse holds.',
   'castle.move.tooMuchTreasury': 'More than the treasury holds.',
-  'castle.move.wholeGold': 'Type whole gold, such as 25,000.',
+  'castle.move.wholeGold': 'Type whole gold, such as 25,000 or 25K.',
   'castle.treasury.amount': 'Gold',
   'castle.withdraw.hint': 'A fifth of what you withdraw is lost on the way.',
   'castle.withdraw.locked': 'Withdrawals are barred for {time}: you were scouted.',
