@@ -29,6 +29,7 @@ import { relicFindPct, relicXpPct } from './expeditions/relics.ts';
 import { steadingSavePct, steadingXpPct, steadingYieldPct } from './steading.ts';
 import { edictPct } from './castle/mirror.ts';
 import { announceKindling, pathBonus } from './kindling.ts';
+import { seasonFindPct, seasonXpPct, seasonYieldPct } from './season.ts';
 import { actionModifiers, perksAt, skillLevel, yieldOf } from './skill.ts';
 
 export interface SkillDefinition {
@@ -66,7 +67,8 @@ export function xpBonusPct(
     relicXpPct(state, skill) +
     steadingXpPct(state) +
     edictPct(state, at, 'xp') +
-    pathBonus(state, skill, 'xp')
+    pathBonus(state, skill, 'xp') +
+    seasonXpPct(skill, at)
   );
 }
 
@@ -124,13 +126,18 @@ export function completeSkillAction(ctx: ActionContext, def: SkillDefinition, ac
   const artisan = !!act.takes?.length;
   if (artisan && !takeInputs(ctx, act.takes!, m.saveInput + steadingSavePct(state))) return false;
   // A skill on the Path of Fortune finds more; on Bounty, makes more (past 99, see kindling.ts).
-  rollFind(ctx, def, act, m.findChance + pathBonus(state, def.skill, 'finds') + edictPct(state, ctx.at, 'finds'));
+  rollFind(
+    ctx,
+    def,
+    act,
+    m.findChance + pathBonus(state, def.skill, 'finds') + edictPct(state, ctx.at, 'finds') + seasonFindPct(ctx.at),
+  );
 
   for (const g of act.gives)
     give(
       state,
       g.item,
-      yieldOf(g.count, extraYieldPct(state, def.skill, m.extraYield, artisan, g.count), () => ctx.roll()),
+      yieldOf(g.count, extraYieldPct(state, def.skill, m.extraYield, artisan, g.count, ctx.at), () => ctx.roll()),
     );
 
   const before = skillLevel(state, def.skill);
@@ -152,8 +159,16 @@ export function completeSkillAction(ctx: ActionContext, def: SkillDefinition, ac
 }
 
 /** The chance, in percent, of more of an item than an action's base count (past 100, whole extra items):
- *  the perks', the Woodyard's for gathering, and the Path of Bounty's, whose percent is of the whole stack
+ *  the perks', the Woodyard's and the season's for gathering, and the Path of Bounty's, whose percent is of the whole stack
  *  (two logs a chop come to 2.3 on +15%). The engine pays by it and the rows say it (session 70). */
-export function extraYieldPct(state: State, skill: string, perks: number, artisan: boolean, count: number): number {
-  return perks + (artisan ? 0 : steadingYieldPct(state)) + pathBonus(state, skill, 'items') * count;
+export function extraYieldPct(
+  state: State,
+  skill: string,
+  perks: number,
+  artisan: boolean,
+  count: number,
+  at: number,
+): number {
+  const gathered = artisan ? 0 : steadingYieldPct(state) + seasonYieldPct(skill, at);
+  return perks + gathered + pathBonus(state, skill, 'items') * count;
 }

@@ -13,6 +13,7 @@ import { noRoom } from '../shared/storehouse.ts';
 import { dayOf, fightBoss, playBoss, restedToday } from './boss.ts';
 import { cacheAt, modsAt, playStage, stageCount } from './stage.ts';
 import { steadingMarksPct } from '../shared/steading.ts';
+import { seasonMarksPct } from '../shared/season.ts';
 
 /** Why a fighter cannot take on a foe now: no weapon, or hurt with nothing to eat. */
 function unfit(ctx: ActionContext, foe: Foe, gives: string[]): StopReason | null {
@@ -29,13 +30,13 @@ const runOf = (ctx: ActionContext, region: Region): Run | null => {
 };
 
 /** Brings a run home: its story as an event, a completed run counted by length when the boss fell, and
- *  the Watchtower's share of the run's marks on top (counted once, on the whole run, so no stage's
+ *  the Watchtower's and the season's share of the run's marks on top (counted once, on the whole run, so no stage's
  *  few marks round it away). */
 function home(ctx: ActionContext, run: Run, outcome: 'won' | 'lost' | 'retreated', finds: string[]) {
   const e = expeditionsOf(ctx.state);
   const key = String(run.hours);
   const runs = outcome === 'won' ? { ...e.runs, [key]: (Object.hasOwn(e.runs, key) ? e.runs[key] : 0) + 1 } : e.runs;
-  const watch = Math.round((run.marks * steadingMarksPct(ctx.state)) / 100);
+  const extra = Math.round((run.marks * (steadingMarksPct(ctx.state) + seasonMarksPct(ctx.at))) / 100);
   // Kept as said (session 74): the tab tells the last run until the next sets out.
   const last: Last = {
     at: ctx.at,
@@ -46,10 +47,10 @@ function home(ctx: ActionContext, run: Run, outcome: 'won' | 'lost' | 'retreated
     outcome,
     cleared: run.cleared,
     stages: stageCount(run),
-    marks: run.marks + watch,
+    marks: run.marks + extra,
     finds: [...finds],
   };
-  setExpeditions(ctx.state, { ...e, marks: e.marks + watch, run: null, runs, last });
+  setExpeditions(ctx.state, { ...e, marks: e.marks + extra, run: null, runs, last });
   ctx.emit({ type: 'expeditionDone', ...last });
 }
 

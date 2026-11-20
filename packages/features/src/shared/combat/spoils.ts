@@ -7,6 +7,7 @@ import { addXp, give, xpOf, type ActionContext, type State } from '@idle-clash/k
 import { rollFind, xpBonusPct } from '../complete.ts';
 import { edictPct } from '../castle/mirror.ts';
 import { announceKindling, pathBonus } from '../kindling.ts';
+import { seasonFindPct } from '../season.ts';
 import { skillLevel, yieldOf } from '../skill.ts';
 import { HITPOINTS, HITPOINTS_XP_SHARE, LADDERS, MASTERY_DROPS_PER_STEP, STYLE_FINDS, type Foe } from './data.ts';
 import { styleXp, type Fighter } from './fight.ts';
@@ -42,7 +43,7 @@ export function goldLift(state: State, at: number, p: Fighter): number {
 /** What makes a fight's Rare and Legendary finds likelier, in percent: the style's perks, its Path of
  *  Fortune and a Sovereign Edict of Fortune. A boss's finds too (session 160). */
 export const fightFindPct = (state: State, at: number, p: Fighter): number =>
-  p.perks.findChance + pathBonus(state, p.style, 'finds') + edictPct(state, at, 'finds');
+  p.perks.findChance + pathBonus(state, p.style, 'finds') + edictPct(state, at, 'finds') + seasonFindPct(at);
 
 /** Gold in whole coins, the part of a coin paid by chance, so a lift is paid on average however small the
  *  purse (session 161: rounded, a goblin slinger's 4 gold at +12% was 4, and at +23% 5). A whole sum draws

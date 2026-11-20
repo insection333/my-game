@@ -82,6 +82,7 @@ Plain, warm and brief, with an old-world flavour in names rather than in instruc
 | Rout | Castle Clash: all five of a day's mercenary strongholds taken, worth war marks of its own |
 | Retreat | Leaving a fight at low health with no food; nothing is lost and the lane stops |
 | Scene | The view behind your profile: the march by day, by night, or your castle |
+| Season | Eight weeks with a twist that lifts one part of the game (XP in some skills, finds, marks or items), the six twists in turn |
 | Short goals | Three rolling goals of 10 to 15 minutes |
 | Siege | Castle Clash: an attack on another lord's castle for the treasury gold their vault cannot hide |
 | Slot | A space in the Storehouse for one kind of item, in any amount |

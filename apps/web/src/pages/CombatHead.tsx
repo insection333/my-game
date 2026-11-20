@@ -2,6 +2,7 @@
 // regions on Fight) sits under them.
 import { t } from '@idle-clash/content';
 import { EdictPill } from './castle/EdictPill.tsx';
+import { SeasonPill } from './SeasonPill.tsx';
 import { Tabs } from '@idle-clash/ui';
 import type { ReactNode } from 'react';
 import { navigate } from '../router.ts';
@@ -16,6 +17,7 @@ export function CombatHead({ expeditions, children }: { expeditions?: boolean; c
     <PageHead title={t('combat.title')}>
       <Tabs tabs={tabs} label={t('combat.title')} onNavigate={navigate} />
       <EdictPill fights />
+      <SeasonPill />
       {children}
     </PageHead>
   );
