@@ -211,7 +211,7 @@ export function skillSlots(def: SkillDef): Record<string, SlotFill> {
               givesText(
                 t(`item.${g.item}`),
                 g.count,
-                extraYieldPct(state, skill, m.extraYield, !!a.takes?.length, g.count),
+                extraYieldPct(state, skill, m.extraYield, !!a.takes?.length, g.count, now),
               ),
             )
             .join(', '),

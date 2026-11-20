@@ -3,6 +3,7 @@ import { t } from '@idle-clash/content';
 import { useEffect } from 'react';
 import {
   castleEngine,
+  seasonView,
   type GoalRow,
   type GoalsView,
   type NextUpRow,
@@ -33,6 +34,7 @@ export function Hearth() {
   const [plaque] = fills<PlaqueView>(features, 'hearth.plaque', state, now);
   const [steading] = fills<SteadingView>(features, 'hearth.steading', state, now);
   const call = castleEngine.callAwaits(state, now);
+  const season = seasonView(now);
   // The ladder lacks a goal (a short goal was claimed, or a new day began): the server makes it.
   const wants = goals?.data.refresh ?? false;
   useEffect(() => {
@@ -89,7 +91,7 @@ export function Hearth() {
             </Panel>
           </section>
         )}
-        {(next.length > 0 || call) && (
+        {(next.length > 0 || call || season) && (
           <section data-section className={s.nextArea}>
             <Panel title={t('hearth.next.title')} flush>
               <Slot id="hearth.nextUp" className={s.rows}>
@@ -108,6 +110,26 @@ export function Hearth() {
                       </span>
                     </span>
                     <span className={s.rowText}>{t('castle.nudge')}</span>
+                  </a>
+                )}
+                {/* The season and what it lifts, until it turns (session 164). */}
+                {season && (
+                  <a
+                    href={season.href}
+                    data-ui="RowLink"
+                    data-season
+                    className={s.row}
+                    onClick={(e) => (e.preventDefault(), navigate(season.href))}
+                  >
+                    <span className={s.rowHead}>
+                      <span className={s.rowName}>
+                        <ItemIcon name={season.picture} size={24} />
+                        {season.title}
+                      </span>
+                      <span className={s.muted}>{season.left}</span>
+                    </span>
+                    <span className={s.rowText}>{season.gives}</span>
+                    {season.next && <span className={s.muted}>{season.next}</span>}
                   </a>
                 )}
                 {next.map(({ feature, data }) => (

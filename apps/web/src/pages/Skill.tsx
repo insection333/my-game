@@ -4,6 +4,7 @@ import type { Feature, FindEntry, KindlingView, LadderRow, SkillActionRow, Skill
 import { actionKey, laneFor, laneKind, LANE_IDS, xpOf, type LaneId, type State } from '@idle-clash/kernel';
 import { ActionRow, Button, hasIcon, ItemIcon, Panel, Pill, ProgressBar, Tabs } from '@idle-clash/ui';
 import { EdictPill } from './castle/EdictPill.tsx';
+import { SeasonPill } from './SeasonPill.tsx';
 import { memo, useEffect, useRef } from 'react';
 import { useGame } from '../game/hooks.ts';
 import { game } from '../game/store.ts';
@@ -76,6 +77,7 @@ function SkillPage({ feature }: { feature: Feature }) {
             <h1>{head.name}</h1>
             <Pill tone="moss">{head.level}</Pill>
             <EdictPill />
+            <SeasonPill skill={id} />
           </div>
           <div className={s.skillBar}>
             <ProgressBar value={head.progress} label={head.toNext} />

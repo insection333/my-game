@@ -298,11 +298,13 @@ Every level 1 to 99 of every skill unlocks something: an action, a recipe, a tie
 | 1 | More world: regions, tiers, Fishing, Cooking, Fletching, Runecraft | New skills join the Skills page; new regions become tabs on Combat; ammunition joins the Storehouse |
 | 2 | Social: guilds, player market, letters | Guild and seasons on the Realm page (today's Hiscores); the market is a tab of the Storehouse; letters arrive in the notices tray |
 | 3 | Expeditions | A tab of Combat |
-| 4 | Seasons | A tab of the Realm page, with its own ladder |
+| 4 | Seasons (brought forward on 20 November 2026; the twist built in session 164) | The Hearth's Next up and a pill on the pages a twist lifts; its own ladder a tab of Hiscores |
 | 5 | Kindling (in place of Rekindling) | Each skill's own page, from level 99; flames on its seal wherever it is shown |
 | 6 | The 48-hour upgrade; cosmetic donations | Settings (account) |
 
 Each must still pass the three tests: it serves a pillar, a newcomer understands it in one sentence, and it fits the page map without a new menu entry.
+
+**Seasons.** Every eight weeks from Monday 2 November 2026 a season opens with a twist that lifts one part of the game for its eight weeks, the six in turn: the Greenwood (Gathering skills +20% XP), the Forgefire (Artisan skills +20% XP), the Muster (Melee, Archery, Magic and Hitpoints +20% XP), the Omens (Rare and Legendary finds 30% likelier), the Open Road (expeditions' marks +25%) and the Plenty (+10% chance of an extra item when gathering). A twist changes what is best to do for a while rather than how far a player goes: each skill's XP is lifted about one season in six, about 3% across a year. A season is reckoned from the clock alone, and its lift is paid and counted by the same functions as every other lift.
 
 ## 14. Decisions settled in session 0
 

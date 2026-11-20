@@ -76,6 +76,8 @@ Not in version 1: PvP, guilds, a player market, raids, dungeons, seasons, any re
 
 **The expansion before launch (owner, 26 October 2026).** Before launch the game grows to a year of play: level 99 over eight tiers, two more regions with bosses, Fishing and Cooking, Fletching and Runecraft, and three endgame systems: Expeditions, Kindling (which replaced Rekindling on 28 October 2026: nothing is reset), and Deeds and titles. The plan, its targets and its order of work are in `docs/EXPANSION.md` (sessions 11 to 18). Guilds, the market, letters and seasons still wait for real players.
 
+**Seasons before launch (20 November 2026).** Asked to improve how enjoyable the game stays over the long run, with the decision left to the lead, seasons come forward from the long arc in three steps: first the twist (session 164: every eight weeks from 2 November 2026 a season lifts one part of the game, its six twists in turn), then a season's own ladder on Hiscores, then honours for a season played. The twist needs no crowd, so it need not wait for real players; a season's ladder gives a friend who joins late a ladder they can top.
+
 ## Targets
 
 Every pillar has numbers the simulation and real players are measured against; a result outside 25% of a target is a design bug.
