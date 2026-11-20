@@ -111,7 +111,7 @@ export const TERMS: [term: string, meaning: string][] = [
   ],
   [
     'Path',
-    "A level-99 skill's way of working: Bounty (more of what it makes), Lore (more XP) or Fortune (more finds); free to change",
+    "A level-99 skill's way of working: Bounty (more of what it makes), Lore (more XP) or Fortune (likelier Rare and Legendary finds); free to change",
   ],
   ['Perk', 'A lasting bonus unlocked at a level'],
   [

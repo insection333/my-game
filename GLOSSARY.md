@@ -72,7 +72,7 @@ Plain, warm and brief, with an old-world flavour in names rather than in instruc
 | Next action | The action queued behind a lane's current one; it starts when the current one stops |
 | Notices | The tray of things that happened and need you |
 | Orders of the day | Castle Clash: three small aims each day, the day's strongholds always among them; each pays war marks when done, and all three pay more |
-| Path | A level-99 skill's way of working: Bounty (more of what it makes), Lore (more XP) or Fortune (more finds); free to change |
+| Path | A level-99 skill's way of working: Bounty (more of what it makes), Lore (more XP) or Fortune (likelier Rare and Legendary finds); free to change |
 | Perk | A lasting bonus unlocked at a level |
 | Picture | The face you show others: thirty, twelve yours from the start, the rest opened by foes overcome and bosses beaten |
 | Rank | Your standing, from Wanderer to Legend of the Realm, rising with your total level |
