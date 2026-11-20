@@ -15,7 +15,7 @@ import { eraseFeedback } from '../feedback.ts';
 import { eraseModeration } from '../moderation.ts';
 import { checkPassword, hashPassword } from './passwords.ts';
 import { requirePlayer } from './routes.ts';
-import { SESSION_COOKIE } from './sessions.ts';
+import { SESSION_COOKIE, tokenHash } from './sessions.ts';
 
 const HOUR = 3_600_000;
 
@@ -86,6 +86,7 @@ export function accountRoutes(app: FastifyInstance, ctx: Ctx): void {
       const passwordHash = await hashPassword(input.password);
       ctx.db.update(players).set({ passwordHash }).where(eq(players.id, id)).run();
       ctx.sessions.endOthers(id, req.cookies[SESSION_COOKIE] ?? '');
+      ctx.live.closeSessions(id, { keep: tokenHash(req.cookies[SESSION_COOKIE] ?? '') });
       ctx.telemetry.record('passwordChanged', id);
       return reply.code(204).send();
     },

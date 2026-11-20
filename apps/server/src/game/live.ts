@@ -13,9 +13,12 @@ export const PAGES_PER_PLAYER = 6;
 
 export class LiveHub {
   private sockets = new Map<string, Set<Socket>>();
+  /** The session each page was opened under (its token's hash), so ending a session closes its pages. */
+  private sessionOf = new WeakMap<Socket, string>();
 
   /** Holds a page open; past the limit, the player's oldest page is closed (a Set keeps its order). */
-  add(playerId: string, socket: Socket): void {
+  add(playerId: string, socket: Socket, session = ''): void {
+    this.sessionOf.set(socket, session);
     const set = this.sockets.get(playerId) ?? new Set();
     set.add(socket);
     this.sockets.set(playerId, set);
@@ -52,6 +55,20 @@ export class LiveHub {
   closePlayer(playerId: string, banned = false): void {
     for (const s of this.sockets.get(playerId) ?? []) s.close(banned ? 4403 : 4401, banned ? 'banned' : 'signed out');
     this.sockets.delete(playerId);
+  }
+
+  /** Closes the pages of sessions that have ended (session 158): those opened under `session`, or with
+   *  `keep`, all but those opened under it (the password changed on another device ends every other). */
+  closeSessions(playerId: string, which: { session: string } | { keep: string }): void {
+    const set = this.sockets.get(playerId);
+    if (!set) return;
+    for (const s of [...set]) {
+      const of = this.sessionOf.get(s) ?? '';
+      if ('session' in which ? of !== which.session : of === which.keep) continue;
+      set.delete(s);
+      s.close(4401, 'signed out');
+    }
+    if (!set.size) this.sockets.delete(playerId);
   }
 
   closeAll(): void {

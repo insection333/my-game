@@ -11,6 +11,7 @@ import { useId, useState } from 'react';
 import { decreeDoes } from './labels.ts';
 import { castleAct } from './store.ts';
 import { useSyncedCastle } from './synced.ts';
+import { goldTyped } from './amount.ts';
 import s from './castle.module.css';
 
 /** The treasury the Top up button fills to: half again what the edict needs; offered once the treasury
@@ -94,12 +95,12 @@ function MoveGold() {
   if (!castle) return null;
   const locked = castle.withdrawLockdownUntil !== null && castle.withdrawLockdownUntil > now;
   const from = way === 'deposit' ? Math.floor(purse) : Math.floor(castle.treasury);
-  // Whole gold, with any spaces or thousands commas a player types; anything else is not an amount.
+  // Whole gold, grouped as the player groups it or in the game's own short forms ("250K"; amount.ts).
   const all = amount === ALL;
-  const digits = all ? String(from) : amount.replace(/[\s,_]/g, '');
-  const typed = digits !== '';
-  const whole = /^\d{1,15}$/.test(digits);
-  const gold = whole ? Number(digits) : 0;
+  const read = all ? from : goldTyped(amount);
+  const typed = all || amount.trim() !== '';
+  const whole = read !== null;
+  const gold = read ?? 0;
   const share = from > 0 ? Math.min(1, gold / from) : 0;
   const lost = way === 'withdraw' ? Math.ceil(gold * ECONOMY.WITHDRAW_TAX) : 0;
   const shut = way === 'withdraw' && locked;

@@ -4,14 +4,16 @@
 // own letters (an admin's warning) come from the keepers of the realm under the game's mark, and are
 // neither answered nor blocked.
 import type { Letter } from '@idle-clash/contracts';
-import { fmt, t } from '@idle-clash/content';
+import { t } from '@idle-clash/content';
 import { Button, GameMark, Picture, Pill } from '@idle-clash/ui';
 import { useState } from 'react';
+import { whenOf } from './days.ts';
 import { NameLink } from './ProfileSheet.tsx';
 import s from './mail.module.css';
 
-/** When a letter came: the time today, the day and time before that (the year only from another). */
-const when = (at: number): string => fmt.when(at, Date.now());
+/** When a letter came: the time today, the day and time before that (the year only from another), by the
+ *  server's clock (session 158). */
+const when = (at: number): string => whenOf(at);
 
 export function LetterRow({
   letter: l,
