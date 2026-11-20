@@ -4,6 +4,7 @@ import { fmt, t } from '@idle-clash/content';
 import { recap } from '@idle-clash/features';
 import type { GameEvent } from '@idle-clash/kernel';
 import type { GameView } from '../game/store.ts';
+import { superseded } from './deed-ladder.ts';
 
 /** A notice, and the lord it names where it names one (a siege or a spy against you), whose profile card
  *  it offers (session 46). */
@@ -14,6 +15,8 @@ export type Notice = recap.RecapLine & {
   /** Deeds done together, newest first, with each one's tier beside it. */
   deeds?: string[];
   tiers?: string[];
+  /** The deeds' ids, beside their names: a lower step of a ladder done with a higher is left unsaid. */
+  ids?: string[];
 };
 
 /** Deeds done within the same minute, one after another, read as one line ("Deeds done: Castle 10, War
@@ -78,16 +81,23 @@ function list(view: Pick<GameView, 'notices' | 'events'>): Notice[] {
     if (!line) continue;
     const prev = out.at(-1);
     if (e.type === 'deedDone' && prev?.deed !== undefined && prev.at - e.at <= TOGETHER_MS) {
+      const ids = [...(prev.ids ?? []), e.deed];
       const names = [...(prev.deeds ?? [prev.deed]), e.name];
       const tiers = [...(prev.tiers ?? [prev.medal?.tier ?? 'easy']), e.tier];
+      // A lower step of a ladder done with a higher is left unsaid (session 163).
+      const kept = ids.map((id, i) => i).filter((i) => !superseded(ids[i], ids));
       out[out.length - 1] = {
         ...prev,
         medal: better(prev.medal, line.medal),
         deeds: names,
         tiers,
-        text: deedsText(names, tiers),
+        ids,
+        text: deedsText(
+          kept.map((i) => names[i]),
+          kept.map((i) => tiers[i]),
+        ),
       };
-    } else if (e.type === 'deedDone') out.push({ ...line, deed: e.name, tiers: [e.tier] });
+    } else if (e.type === 'deedDone') out.push({ ...line, deed: e.name, tiers: [e.tier], ids: [e.deed] });
     else out.push(e.type === 'castleBesieged' || e.type === 'castleSpyCaught' ? { ...line, who: e.foe } : line);
   }
   return out;

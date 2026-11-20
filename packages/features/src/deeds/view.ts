@@ -5,7 +5,7 @@ import { fmt, hasString, t } from '@idle-clash/content';
 import { newState, type State } from '@idle-clash/kernel';
 import { POINTS, wordsOf, type Deed, type DeedTier } from './content.ts';
 import { HONOURS, honourName } from './honours.ts';
-import { CATEGORIES, deedList } from './list.ts';
+import { CATEGORIES, deedById, deedList } from './list.ts';
 import { Reader } from './reader.ts';
 import { deedsOf } from './state.ts';
 
@@ -138,13 +138,22 @@ export function deedsView(state: State, now: number): DeedsView {
     const start = d.measure(fresh);
     return d.target > start ? (d.measure(r) - start) / (d.target - start) : 0;
   };
-  const nearest = deedList()
-    .filter((d) => !Object.hasOwn(done, d.id) && !steps.get(d.id)!.secret)
+  const open = deedList().filter((d) => !Object.hasOwn(done, d.id) && !steps.get(d.id)!.secret);
+  const begun = open
     .map((d) => ({ step: steps.get(d.id)!, made: made(d) }))
     .filter((x) => x.made > 0 && x.made < 1)
     .sort((a, b) => b.made - a.made)
     .slice(0, NEAREST)
     .map((x) => x.step);
+  // Then easy deeds to begin with, one a family (session 163: a newcomer, with nothing begun, read "Deeds you
+  // do appear here." under Next).
+  const families = new Set(begun.map((x) => deedById(x.id)?.family));
+  const toBegin = open.filter((d) => {
+    if (d.tier !== 'easy' || families.has(d.family) || made(d) > 0) return false;
+    families.add(d.family);
+    return true;
+  });
+  const nearest = [...begun, ...toBegin.map((d) => steps.get(d.id)!)].slice(0, NEAREST);
   const recent = Object.entries(done)
     .sort((a, b) => b[1] - a[1])
     .flatMap(([id]) => steps.get(id) ?? [])
