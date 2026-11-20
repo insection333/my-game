@@ -92,6 +92,7 @@ export const honours: Record<string, string> = {
   // A climb on the hiscores (session 49), as a moment and in the notices.
   'moment.rankUp': '{place} on the {ladder} hiscores',
   'moment.rankUpTotal': '{place} on the hiscores by total level',
+  'moment.rankUpSeason': '{place} on the Season {number} ladder',
   'rankUp.first': 'No one stands above you.',
   'rankUp.top3': 'Into the top three.',
   'rankUp.top10': 'Into the top ten.',

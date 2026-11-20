@@ -23,4 +23,9 @@ export const seasons = {
   'season.daysLeft': '{days} days left',
   'season.daysLeftOne': 'Its last day',
   'season.next': 'Next: {name}',
+  'hiscores.season': 'Season',
+  'hiscores.seasonGoals': 'Goals',
+  'hiscores.seasonNote':
+    "Goals done since this season opened: each short goal and each day's goal counts one, and each is set by your own pace. {left}.",
+  'hiscores.unrankedSeason': "You join this season's ladder with your first goal done in it.",
 };

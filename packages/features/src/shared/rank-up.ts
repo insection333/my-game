@@ -21,6 +21,15 @@ export function rankUpWords(e: Extract<GameEvent, { type: 'rankUp' }>): {
   const place = fmt.ordinal(e.place);
   const total = e.skill === 'total';
   const band = BAND[e.band] as string | undefined;
+  // A season's ladder (session 165), kept as `season:N`: named by its number, as notices outlive it.
+  const season = /^season:(\d+)$/.exec(e.skill);
+  if (season)
+    return {
+      title: t('moment.rankUpSeason', { place, number: fmt.int(Number(season[1])) }),
+      body: band ? t(band) : null,
+      skill: null,
+      href: '/hiscores?skill=season',
+    };
   return {
     title: total ? t('moment.rankUpTotal', { place }) : t('moment.rankUp', { place, ladder: t(`skill.${e.skill}`) }),
     body: band ? t(band) : null,

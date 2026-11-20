@@ -9,5 +9,6 @@ describe('an unranked player', () => {
     expect(unrankedNote('castle')).toBe('Your castle is ranked once it is raised.');
     expect(unrankedNote('total')).toBe('Your rank appears after your first level.');
     expect(unrankedNote('mining')).toBe('Your rank appears after your first level.');
+    expect(unrankedNote('season')).toBe("You join this season's ladder with your first goal done in it.");
   });
 });
