@@ -38,8 +38,10 @@ function everything(): State {
   const best = (slot: string) => items.find((i) => i.gear?.tier === 8 && i.gear.slot === slot)!.id;
   const worn = { helm: best('helm'), body: best('body'), legs: best('legs'), weapon: best('weapon') };
   // Every boss beaten a hundred times, runs of every length home (250 in all), every twist met,
-  // every relic at its last rank, and every work of the steading fully raised.
+  // every relic at its last rank, and every work of the steading fully raised; six seasons played hard,
+  // one of each twist (session 166).
   s.features = {
+    seasons: { goals: { '1': 60, '2': 60, '3': 60, '4': 60, '5': 60, '6': 60 }, seen: 6 },
     steading: { stages: Object.fromEntries(WORKS.map((w) => [w.id, STAGES])) },
     combat: { worn, health: null, healthAt: 0, retreated: null },
     storehouse: { enlargements: ENLARGE_COSTS.length },

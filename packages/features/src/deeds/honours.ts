@@ -69,6 +69,14 @@ export const PICTURE_FOES = [
 ] as const;
 export const PICTURE_BOSSES = ['troll-chief', 'drowned-warden', 'ember-wyrm'] as const;
 
+const SEASON_TITLES: Record<string, string> = {
+  greenwood: 'greenwarden',
+  forgefire: 'firewright',
+  muster: 'banneret',
+  omens: 'omen-reader',
+  road: 'roadwise',
+  plenty: 'harvester',
+};
 const title = (id: string, unlock: Unlock): Honour => ({ id, kind: 'title', unlock });
 const at = (points: number) => ({ points });
 const by = (deed: string) => ({ deed });
@@ -97,6 +105,9 @@ export const HONOURS: readonly Honour[] = [
   title('trailblazer', by('runs-250')),
   title('kindled', { anyOf: firstKindlings, text: 'honour.unlock.anyKindled' }),
   title('everflame', by('kindlings-10')),
+  // A title for each season's twist played hard, and one for six seasons played (session 166).
+  ...Object.entries(SEASON_TITLES).map(([twist, id]) => title(id, by(`season-${twist}`))),
+  title('seasoned', by('seasons-6')),
   // Banners: the woad everyone flies, and a colour for each region cleared and more.
   { id: 'woad', kind: 'banner', unlock: null },
   { id: 'moss', kind: 'banner', unlock: by('region-march') },

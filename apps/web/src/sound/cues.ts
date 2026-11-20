@@ -38,6 +38,8 @@ export function cueFor(e: GameEvent): Cue | null {
     case 'deedDone':
       // An elite or master deed rings like a Rare find; the rest, the goal's small chime.
       return e.tier === 'elite' || e.tier === 'master' ? 'rare' : 'goal';
+    case 'seasonOpened':
+      return 'goal';
     case 'rankUp':
       // First on a ladder rings like a Rare find; any other climb, the goal's small chime.
       return e.band === 1 ? 'rare' : 'goal';

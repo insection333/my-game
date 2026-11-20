@@ -7,6 +7,7 @@ import { castleIcon, castleMoment, isCastleEvent } from './castle/words.ts';
 import { storyOf } from './expeditions/story.ts';
 import { bossFoughtWords } from './expeditions/boss-words.ts';
 import { rankUpWords } from './rank-up.ts';
+import { seasonOpenedWords } from './season-view.ts';
 import { remedyFor } from './remedy.ts';
 
 export type RecapKind =
@@ -178,6 +179,10 @@ export function noticeLine(e: GameEvent): (RecapLine & { at: number }) | null {
     case 'rankUp': {
       const w = rankUpWords(e);
       return { kind: 'rank', text: w.body ? `${w.title}. ${w.body}` : w.title, icon: w.skill, href: w.href, at: e.at };
+    }
+    case 'seasonOpened': {
+      const w = seasonOpenedWords(e);
+      return { kind: 'goal', text: `${w.title}. ${w.body}`, icon: w.icon, href: '/', at: e.at };
     }
     case 'laneStopped':
       if (isQuietStop(e.reason.code)) return null;

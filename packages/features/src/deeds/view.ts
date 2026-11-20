@@ -8,6 +8,7 @@ import { HONOURS, honourName } from './honours.ts';
 import { CATEGORIES, deedById, deedList } from './list.ts';
 import { Reader } from './reader.ts';
 import { deedsOf } from './state.ts';
+import { SEASON_PICTURE, seasonName } from '../shared/season-view.ts';
 
 export interface DeedStep {
   id: string;
@@ -92,13 +93,14 @@ export function stepOf(d: Deed, r: Reader, doneAt: number | undefined): DeedStep
   };
 }
 
-/** A row's label and icon: a skill, a foe, or the family's only row. */
+/** A row's label and icon: a skill, a foe, a season's twist, or the family's only row. */
 function rowHead(d: Deed): { label: string | null; icon: string | null } {
   if (!d.row) return { label: null, icon: null };
   if (hasString(`skill.${d.row}`)) return { label: t(`skill.${d.row}`), icon: d.row };
   if (d.row === 'combat') return { label: t('deeds.row.combat'), icon: null };
   if (hasString(`boss.${d.row}`)) return { label: t(`boss.${d.row}`), icon: d.row };
   if (hasString(`work.${d.row}`)) return { label: t(`work.${d.row}`), icon: null };
+  if (d.family === 'season') return { label: seasonName(d.row), icon: SEASON_PICTURE[d.row] ?? null };
   return { label: t(`action.combat.${d.row}`), icon: d.row };
 }
 

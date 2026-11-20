@@ -9,6 +9,7 @@ import { firstStepsDone, isDone, payFirst } from './first-steps.ts';
 import { currentDaily, dailyProgress, makeDaily, makeShort, milestoneProgress, shortProgress } from './ladder.ts';
 import { dailyName, milestoneName, shortName } from './ladder-view.ts';
 import { dayOf, goalsOf, setGoals, type GoalsState, type ShortGoal } from './state.ts';
+import { noteSeasonGoal, openSeason, seasonUnseen } from '../shared/season-state.ts';
 
 export type ClaimResult = { ok: true } | { ok: false; reason: 'unknown' | 'notDone' };
 type Answer<R> = { state: State; result: R; events: GameEvent[] };
@@ -59,7 +60,8 @@ export function needsRefresh(state: State, now: number): boolean {
   const g = goalsOf(state);
   return (
     firstStepsDone(state) &&
-    (g.short.length < 3 ||
+    (seasonUnseen(state, now) ||
+      g.short.length < 3 ||
       !currentDaily(state, g.daily, now) ||
       (g.daily?.claimed === true && g.daily.day !== dayOf(now)) ||
       g.short.some((s) => s.at === undefined || stale(state, s, now)))
@@ -69,10 +71,12 @@ export function needsRefresh(state: State, now: number): boolean {
 export function refresh(state: State, now: number): Answer<{ ok: true }> {
   const g = goalsOf(state);
   const next = filled(state, g, now);
-  if (next === g) return { state, result: { ok: true }, events: [] };
+  if (next === g && !seasonUnseen(state, now)) return { state, result: { ok: true }, events: [] };
   const out = structuredClone(state);
   setGoals(out, next);
-  return { state: out, result: { ok: true }, events: [] };
+  // A new season is said on the first visit in it, as its first day's goal is made (session 166).
+  const season = openSeason(out, now);
+  return { state: out, result: { ok: true }, events: season ? [season] : [] };
 }
 
 /** Claims a finished goal: its reward, a moment, and the goal marked done. Claiming twice does nothing. */
@@ -113,6 +117,8 @@ export function claim(state: State, goal: string, now: number): Answer<ClaimResu
     next = { ...g, milestones: [...g.milestones, milestone.id] };
   } else return refused(state, 'unknown');
   setGoals(out, filled(out, next, now));
+  // A short goal or a day's goal counts towards the season's deeds (session 166).
+  if (cache) noteSeasonGoal(out, now);
   noteMoment(out, now);
   return {
     state: out,

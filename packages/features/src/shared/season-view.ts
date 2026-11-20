@@ -2,7 +2,9 @@
 // and the short pill on the pages it touches (a skill's page, Combat), so a lift is seen where it is earned,
 // as the castle's edict is.
 import { fmt, t } from '@idle-clash/content';
-import { SEASON_DAYS, seasonAt, type Twist } from './season.ts';
+import type { EventOf, State } from '@idle-clash/kernel';
+import { SEASON_DAYS, seasonAt, TWISTS, type Twist } from './season.ts';
+import { seasonsOf } from './season-state.ts';
 
 const DAY = 86_400_000;
 
@@ -23,10 +25,12 @@ const GIVES: Record<string, string> = {
   road: 'season.gives.road',
   plenty: 'season.gives.plenty',
 };
-const nameOf = (twist: Twist) => t(NAME[twist.id]);
+/** A twist's name ("The Greenwood"). */
+export const seasonName = (twist: string) => t(NAME[twist]);
+const nameOf = (twist: Twist) => seasonName(twist.id);
 
 /** A picture for each twist, from the game's own icons. */
-const PICTURE: Record<string, string> = {
+export const SEASON_PICTURE: Record<string, string> = {
   greenwood: 'woodcutting',
   forgefire: 'smithing',
   muster: 'melee',
@@ -51,11 +55,13 @@ export interface SeasonView {
   left: string;
   /** The season to come, in this one's last week; empty before. */
   next: string;
+  /** The goals done in it so far (session 166), with the state; empty before the first. */
+  done: string;
   picture: string;
   href: string;
 }
 
-export function seasonView(now: number): SeasonView | null {
+export function seasonView(now: number, state?: State): SeasonView | null {
   const season = seasonAt(now);
   if (!season) return null;
   const { twist } = season;
@@ -68,9 +74,18 @@ export function seasonView(now: number): SeasonView | null {
     left: days <= 1 ? t('season.daysLeftOne') : t('season.daysLeft', { days: fmt.int(Math.min(days, SEASON_DAYS)) }),
     // The season to come, in the last week of this one: a reason to look ahead.
     next: following && days <= 7 ? t('season.next', { name: nameOf(following.twist) }) : '',
-    picture: PICTURE[twist.id] ?? 'woodcutting',
+    done: doneIn(state, season.number),
+    picture: SEASON_PICTURE[twist.id] ?? 'woodcutting',
     href: placeOf(twist),
   };
+}
+
+/** The goals done in a season, in words; empty before the first. */
+function doneIn(state: State | undefined, n: number): string {
+  const goals = state ? seasonsOf(state).goals : {};
+  const count = Object.hasOwn(goals, String(n)) ? goals[String(n)] : 0;
+  if (count === 0) return '';
+  return count === 1 ? t('season.goalsOne') : t('season.goals', { count: fmt.int(count) });
 }
 
 /** The season's pill on a skill's page (`skill`) or on Combat (`combat`), or null where it lifts nothing. */
@@ -89,4 +104,17 @@ export function seasonPill(now: number, where: { skill: string } | { combat: tru
             ? t('season.short.marks', { pct: fmt.pct(twist.marks) })
             : null;
   return gives && t('season.pill', { name: nameOf(twist), gives });
+}
+
+/** A season opened, as its moment and the tray say it (session 166): "Season 2: The Forgefire", what it
+ *  lifts, and the goals done in the season before. */
+export function seasonOpenedWords(e: EventOf<'seasonOpened'>): { title: string; body: string; icon: string } {
+  const twist = TWISTS.find((x) => x.id === e.twist) ?? TWISTS[0];
+  const gives = t(GIVES[twist.id], { pct: fmt.pct(pctOf(twist)) });
+  const last = e.last === 0 ? null : e.last === 1 ? t('season.lastOne') : t('season.last', { count: fmt.int(e.last) });
+  return {
+    title: t('season.title', { number: fmt.int(e.number), name: nameOf(twist) }),
+    body: last ? t('season.openedBody', { gives, last }) : t('season.openedBodyFirst', { gives }),
+    icon: SEASON_PICTURE[twist.id] ?? 'woodcutting',
+  };
 }

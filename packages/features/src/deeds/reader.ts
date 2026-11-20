@@ -15,6 +15,8 @@ import { expeditionsOf } from '../shared/expeditions/state.ts';
 import { kindlings } from '../shared/kindling.ts';
 import { STAGES, stageOf, WORKS } from '../shared/steading.ts';
 import { castleStanding, type CastleStanding } from '../shared/castle/mirror.ts';
+import { bestInTwist, seasonsPlayed } from '../shared/season-state.ts';
+import { SEASON_PLAYED } from './content.ts';
 
 const GEAR = ['helm', 'body', 'legs', 'weapon'] as const;
 
@@ -124,4 +126,8 @@ export class Reader {
   /** Ranks bought across every relic, and how many relics are at their last rank. */
   relicRanks = () => relics().reduce((n, r) => n + rankOf(this.state, r.id), 0);
   relicsFull = () => relics().filter((r) => rankOf(this.state, r.id) >= r.ranks).length;
+
+  // Seasons (session 166): the most goals in one season of a twist, and the seasons played.
+  seasonBest = (twist: string) => this.once(`season:${twist}`, () => bestInTwist(this.state, twist));
+  seasonsPlayed = () => this.once('seasons', () => seasonsPlayed(this.state, SEASON_PLAYED));
 }

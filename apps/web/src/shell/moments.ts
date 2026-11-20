@@ -12,6 +12,7 @@ import {
   expeditionStory as storyOf,
   kindlingData,
   rankUpWords,
+  seasonOpenedWords,
   skill as skillKit,
   type Feature,
 } from '@idle-clash/features';
@@ -51,6 +52,8 @@ function rank(e: GameEvent): number {
   if (e.type === 'kindled') return 1;
   // First on a ladder ranks with a master deed; the top three or ten with an elite one.
   if (e.type === 'rankUp') return e.band === 1 ? 1 : e.band <= 10 ? 5 : 8;
+  // A new season (session 166) ranks with an elite deed.
+  if (e.type === 'seasonOpened') return 5;
   // What the player has just done in the castle leads what it brought ("Breached …. Also: Deed done:
   // War marks: 200"), as a level leads its deeds; news from others ranks by how loud it is.
   if (byYou(e)) return 2;
@@ -84,6 +87,7 @@ function sizeOf(e: GameEvent): MomentSize {
   if (e.type === 'relicRaised') return relicRaisedWords(e.relic, e.rank)?.top ? 'banner' : 'toast';
   if (e.type === 'masteryStep' || (e.type === 'find' && e.rarity === 'rare')) return 'banner';
   if (e.type === 'rankUp') return e.band === 1 ? 'centre' : e.band <= 10 ? 'banner' : 'toast';
+  if (e.type === 'seasonOpened') return 'banner';
   if (castleEngine.isCastleEvent(e)) return castleEngine.castleMoment(e).size;
   return 'toast';
 }
@@ -180,6 +184,10 @@ function describe(
     case 'rankUp': {
       const w = rankUpWords(e);
       return { title: w.title, body: w.body, icon: w.skill && hasIcon(w.skill) ? w.skill : null };
+    }
+    case 'seasonOpened': {
+      const w = seasonOpenedWords(e);
+      return { title: w.title, body: w.body, icon: hasIcon(w.icon) ? w.icon : null };
     }
     default: {
       // Every castle event, the day's orders among them (session 63: an order done had no words at all,
