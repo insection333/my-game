@@ -5,10 +5,11 @@ import type { PlayerView } from '@idle-clash/contracts';
 import { useSyncExternalStore } from 'react';
 import { api, ApiError } from '../api.ts';
 import { replace } from '../router.ts';
+import { notePlayed } from '../welcome-path.ts';
 import type * as Store from './store.ts';
 
 export type Phase = 'loading' | 'signedOut' | 'playing' | 'offline';
-export type Bounced = 'banned' | 'deleted';
+export type Bounced = 'banned' | 'deleted' | 'ended';
 export interface Session {
   phase: Phase;
   player: PlayerView | null;
@@ -50,10 +51,15 @@ export function signedOut(why: Bounced | null = null) {
   setSession({ phase: 'signedOut', player: null, admin: false, bounced: why });
 }
 
+/** Why the welcome page is shown: a ban; or a session that ended in the middle of play (session 157: the
+ *  password changed on another device, or the session lapsed), said so the player knows to sign in again. */
+export const bounceOf = (code: string, phase: Phase): Bounced | null =>
+  code === 'banned' ? 'banned' : phase === 'playing' ? 'ended' : null;
+
 /** What every failed request does first: a lost session sends the player back to the welcome page. */
 export function handled(err: unknown): err is ApiError {
   if (err instanceof ApiError && (err.code === 'notSignedIn' || err.code === 'banned')) {
-    signedOut(err.code === 'banned' ? 'banned' : null);
+    signedOut(bounceOf(err.code, session.phase));
     return true;
   }
   return false;
@@ -62,6 +68,7 @@ export function handled(err: unknown): err is ApiError {
 async function enter(player: PlayerView) {
   const m = await loadGame();
   await m.start(session.flags);
+  notePlayed(true);
   setSession({ phase: 'playing', player, bounced: null });
 }
 
@@ -90,6 +97,7 @@ export const account = {
   /** Deletes the account and everything with it, then opens the welcome page. */
   deleteAccount: async (password: string) => {
     await api.deleteAccount(password);
+    notePlayed(false);
     replace('/welcome');
     signedOut('deleted');
   },

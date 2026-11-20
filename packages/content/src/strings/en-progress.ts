@@ -14,6 +14,7 @@ export const progress: Record<string, string> = {
   'goal.short.try': 'Try {skill}: {action} ×{count}',
   'goal.short.mastery': 'Reach mastery {step} on {action}',
   'goal.daily': 'Earn {xp} {skill} XP today',
+  'goal.dailyPast': 'Earned {xp} {skill} XP on an earlier day',
   'goal.milestone.total': 'Reach total level {level}',
   'goal.milestone.forged': 'Forge your first {metal} item',
   'goal.milestone.log': 'Find {count} things for your collection log',

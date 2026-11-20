@@ -6,7 +6,7 @@ import { combatOf } from '../shared/combat/state.ts';
 import type { Milestone } from './content.ts';
 import { currentDaily, dailyProgress, milestoneProgress, nextMilestone, shortProgress } from './ladder.ts';
 import { bestIn, paces } from './pace.ts';
-import { goalsOf, type DailyGoal, type ShortGoal } from './state.ts';
+import { dayOf, goalsOf, type DailyGoal, type ShortGoal } from './state.ts';
 import { inLane, startCommand, workingIn, type GoalRow } from './view.ts';
 
 const gold = (n: number) => t('goals.reward.gold', { amount: fmt.int(n) });
@@ -47,7 +47,10 @@ export const shortName = (s: ShortGoal) =>
       })
     : t('goal.short.mastery', { action: actionName(s.action), step: fmt.int(s.target) });
 
-export const dailyName = (d: DailyGoal) => t('goal.daily', { xp: fmt.int(d.target), skill: t(`skill.${d.skill}`) });
+/** A daily goal's words: "today" on its day; one done and kept unclaimed past it says it was an earlier
+ *  day's (session 157: a month later it still said "today"). */
+export const dailyName = (d: DailyGoal, now: number) =>
+  t(d.day === dayOf(now) ? 'goal.daily' : 'goal.dailyPast', { xp: fmt.int(d.target), skill: t(`skill.${d.skill}`) });
 
 function shortRow(state: State, now: number, s: ShortGoal): GoalRow {
   return row(s.id, shortName(s), s.reward, shortProgress(state, s), () => {
@@ -64,7 +67,7 @@ function shortRow(state: State, now: number, s: ShortGoal): GoalRow {
 }
 
 function dailyRow(state: State, now: number, d: DailyGoal): GoalRow {
-  const name = dailyName(d);
+  const name = dailyName(d, now);
   if (d.claimed)
     return {
       id: 'daily',

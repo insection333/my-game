@@ -103,7 +103,7 @@ export function claim(state: State, goal: string, now: number): Answer<ClaimResu
     if (p.now < p.of) return refused(state, 'notDone');
     cache = cacheFor(state, g.daily.reward, g.opened);
     openCache(out, cache);
-    name = dailyName(g.daily);
+    name = dailyName(g.daily, now);
     next = { ...g, daily: { ...g.daily, claimed: true }, opened: g.opened + 1 };
   } else if (milestone && !g.milestones.includes(milestone.id)) {
     const p = milestoneProgress(state, milestone);

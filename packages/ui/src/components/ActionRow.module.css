@@ -47,6 +47,10 @@
 
 .name {
   font: 500 var(--t-lead) / 1.25 var(--font-book);
+  /* The longest name, one unbroken word, breaks inside its row rather than running past it (session 157:
+     sixteen W's ran 6 px off a 280 px phone on the admin page). */
+  min-width: 0;
+  max-width: 100%;
 }
 
 .facts {
@@ -122,6 +126,22 @@
 
   .actions > * {
     min-width: 4.5rem;
+  }
+
+  /* A button wider than the row itself (a 280 px phone's "Rank up +1 for 405K and 20 war marks") wraps its
+     words inside the row rather than running past it (session 157); a little less room at its sides keeps
+     it to one line, one height with the rest, down to a 320 px phone. */
+  .actions {
+    max-width: 100%;
+  }
+
+  .actions > * {
+    max-width: 100%;
+    padding-inline: var(--s-3);
+    white-space: normal;
+    text-wrap: balance;
+    line-height: 1.25;
+    padding-block: var(--s-1);
   }
 
   .foot {

@@ -4,6 +4,7 @@ import { Legal, legalPage } from './pages/Legal.tsx';
 import { Offline, Welcome } from './pages/Welcome.tsx';
 import { Ready } from './Ready.tsx';
 import { replace, useLocation } from './router.ts';
+import { playedHere, welcomeFor } from './welcome-path.ts';
 
 const Game = lazy(() => import('./Game.tsx'));
 
@@ -17,7 +18,7 @@ export function App() {
   // Signed in: the welcome page leads on to where the player was going.
   const redirect =
     phase === 'signedOut' && !isWelcome(path) && !legalPage(path)
-      ? `/welcome${path === '/' ? '' : `?next=${encodeURIComponent(location.pathname + location.search)}`}`
+      ? welcomeFor(location.pathname, location.search, playedHere())
       : phase === 'playing' && isWelcome(path)
         ? next
         : null;
