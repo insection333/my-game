@@ -9,6 +9,7 @@ import { useGame } from '../game/hooks.ts';
 import { game } from '../game/store.ts';
 import { fills } from '../slots.tsx';
 import { DeedMedal } from './Deeds.tsx';
+import { missingWords } from './missing.ts';
 import { bannerStyle, frameStyle } from './honours-style.ts';
 import s from './deeds.module.css';
 
@@ -39,6 +40,11 @@ export function DeedSheet({ onClose }: { onClose: () => void }) {
           {step.unlocks.length > 0 && (
             <p className={s.unlocks}>{t('deeds.unlocks', { honours: step.unlocks.join(', ') })}</p>
           )}
+        </div>
+      )}
+      {view && !step && (
+        <div className={s.sheet}>
+          <p className={s.text}>{missingWords('deed')}</p>
         </div>
       )}
     </Sheet>

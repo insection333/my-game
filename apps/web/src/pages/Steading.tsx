@@ -8,6 +8,7 @@ import { useGame } from '../game/hooks.ts';
 import { game } from '../game/store.ts';
 import { navigate } from '../router.ts';
 import { fills, Slot } from '../slots.tsx';
+import { missingWords } from './missing.ts';
 import s from './steading.module.css';
 
 const sheetOf = (id: string) => `${location.pathname}?panel=work&work=${id}`;
@@ -48,6 +49,11 @@ export function WorkSheet({ onClose }: { onClose: () => void }) {
   return (
     <Sheet title={row?.name ?? t('steading.title')} closeLabel={t('shell.close')} onClose={onClose} slot="hearth.work">
       {row && <Work row={row} />}
+      {view && !row && (
+        <div className={s.sheet}>
+          <p>{missingWords('work')}</p>
+        </div>
+      )}
     </Sheet>
   );
 }
