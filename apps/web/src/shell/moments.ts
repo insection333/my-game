@@ -2,6 +2,7 @@
 // other show together, led by the best. Levels, Legendary finds and elite or master deeds take the
 // centre of the screen; Rare finds, mastery steps and hard deeds a banner; Uncommon finds, goals and
 // easy deeds a small toast.
+import { superseded } from '../pages/deed-ladder.ts';
 import { fmt, formatEffect, formatStop, isQuietStop, masteryEffects, t } from '@idle-clash/content';
 import {
   bossFoughtWords,
@@ -212,7 +213,10 @@ export function momentsFrom(events: readonly GameEvent[], since: number, feature
     if (last && e.at - last[0].at <= GROUP_MS && !byYou(e)) last.push(e);
     else groups.push([e]);
   }
-  const moments = groups.map((group): MomentView => {
+  const moments = groups.map((all): MomentView => {
+    // Two steps of one ladder of deeds at once are said as the higher (session 163).
+    const ids = all.flatMap((e) => (e.type === 'deedDone' ? [e.deed] : []));
+    const group = all.filter((e) => e.type !== 'deedDone' || !superseded(e.deed, ids));
     const ordered = [...group].sort((a, b) => rank(a) - rank(b));
     const best = describe(ordered[0], features);
     const size = group.map(sizeOf).reduce((a, b) => (SIZE_RANK.indexOf(b) > SIZE_RANK.indexOf(a) ? b : a));

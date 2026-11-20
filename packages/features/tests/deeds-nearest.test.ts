@@ -11,8 +11,11 @@ import { deedsView } from '../src/deeds/view.ts';
 const T0 = Date.UTC(2026, 10, 11, 9);
 
 describe('the deeds nearest to done', () => {
-  it('are none for a newcomer who has done nothing', () => {
-    expect(deedsView(newState(1, T0), T0).nearest).toEqual([]);
+  it('are none begun for a newcomer who has done nothing, and no Builder I among the deeds to begin', () => {
+    const names = deedsView(newState(1, T0), T0).nearest.map((d) => d.name);
+    // None begun: easy deeds to begin with, one a family (session 163), and never Builder I's spaces.
+    expect(names[0]).toBe('Woodcutting 10');
+    expect(names).not.toContain('Builder I');
   });
 
   it('are what the player has moved, led by the most done of it', () => {

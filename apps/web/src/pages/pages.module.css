@@ -537,6 +537,14 @@ a.line:hover {
   margin: 0;
 }
 
+/* Send feedback, Change password and Delete account stand at the left as the sheet's other links do, where
+   each stretched across the sheet with its words in the middle (session 163). */
+.feedback > [data-ui='Button'],
+.danger > [data-ui='Button'] {
+  justify-self: start;
+  margin-left: calc(-1 * var(--s-2));
+}
+
 .dangerActions {
   display: flex;
   flex-wrap: wrap;

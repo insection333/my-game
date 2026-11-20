@@ -84,6 +84,14 @@
   color-scheme: light;
 }
 
+/* A mouse on a wide screen needs no finger's room: buttons and rows stand 36 px tall there, where 44 px made
+   every press on a desktop chunky (session 163). A touch screen keeps 44 px at any width. */
+@media (min-width: 1024px) and (pointer: fine) {
+  :root {
+    --tap: 36px;
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
     --bg: #121b1f;
