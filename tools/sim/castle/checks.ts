@@ -1,5 +1,5 @@
-// Castle Clash's checks on simulated play (session 33): a realm of 24 lords (steady raiders, light lords
-// who keep to themselves, lapsed lords who come back one day in four) for 26 weeks on the pure engine
+// Castle Clash's checks on simulated play (session 33): a realm of 32 lords (steady raiders, warlords who
+// go for the rout, light lords who keep to themselves, lapsed lords who come back one day in four) for 26 weeks on the pure engine
 // (realm.ts), realms of 6 and 12 (session 137), and the odds a lord meets at each castle level. The year's own checks (year/checks.ts) hold
 // the rest of the game to its targets with an edict running.
 import { SPOILS, TEMPER } from '@idle-clash/content';
@@ -8,6 +8,9 @@ import { DAY, goldOf, KINDS, playRealm, T0 } from './realm.ts';
 
 type Check = (ok: boolean, what: string) => void;
 const WEEKS = 26;
+/** Routs a week, for a lord who heals, spies and saves for it, past the first month (session 178: 0.73 to
+ *  1.06 at seeds 33 to 36): about one a week. */
+const ROUTS_A_WEEK = [0.5, 1.5] as const;
 const M = (n: number) => `${(n / 1e6).toFixed(1)}M`;
 const pct = (n: number) => `${(n * 100).toFixed(0)}%`;
 
@@ -90,6 +93,22 @@ export function castleChecks(check: Check, lines: string[]): void {
     routs < warDays * 0.25,
     `A rout is a feat, not a daily chore (${routs} in ${warDays} days at war, under a quarter)`,
   );
+  // The rout within reach (session 178): a lord who heals between sieges, sends spies and saves for it routs
+  // about once a week past the first month; a lord who does neither seldom does.
+  const spying = realm.lords.filter((l) => l.kind.spies);
+  const lateWeeks = (WEEKS - 4) * spying.length;
+  const lateRouts = realm.mercs.filter((m) => m.rout && m.day >= 28 && spying.some((l) => l.id === m.lord)).length;
+  check(
+    lateRouts / lateWeeks >= ROUTS_A_WEEK[0] && lateRouts / lateWeeks <= ROUTS_A_WEEK[1],
+    `A lord who heals, spies and saves for it routs about weekly past the first month (${(lateRouts / lateWeeks).toFixed(2)} a week, ${ROUTS_A_WEEK.join(' to ')}; ${realm.spies.through} of ${realm.spies.sent} spies got through)`,
+  );
+  const others = realm.lords.filter((l) => !l.kind.spies && l.kind.raids);
+  const careful =
+    realm.mercs.filter((m) => m.rout && others.some((l) => l.id === m.lord)).length / (WEEKS * others.length);
+  check(
+    careful <= (lateRouts / lateWeeks) * 0.2,
+    `A lord who neither heals nor spies routs a fifth as often or less (${careful.toFixed(2)} a week)`,
+  );
 
   // Luck: fortresses' spoils as often as their odds say, and tempering a long chase with no end.
   const taken = realm.incursions.filter((x) => x.won);
@@ -111,7 +130,9 @@ export function castleChecks(check: Check, lines: string[]): void {
   );
   // The end game's sink in use (session 139): lords at war spend their war marks on relics and tempering, not
   // a hoard with nothing to buy.
-  for (const kind of KINDS.filter((k) => k.raids)) {
+  // A warlord (session 178) spends its gold on routs as well, so its war marks wait on gold: it is held to
+  // forging relics with them.
+  for (const kind of KINDS.filter((k) => k.raids && !k.spies)) {
     const lords = realm.lords.filter((l) => l.kind === kind);
     const tries = lords.map((l) => Object.values(l.castle.tempers).reduce((a, b) => a + b, 0));
     const held = lords.reduce((n, l) => n + l.castle.warMarks, 0) / lords.length;
@@ -124,6 +145,17 @@ export function castleChecks(check: Check, lines: string[]): void {
       `${kind.name} lords spend their war marks (${held.toFixed(0)} held of ${earned.toFixed(0)} earned, at most a quarter)`,
     );
   }
+  const warlords = realm.lords.filter((l) => l.kind.spies);
+  const forged = warlords.map((l) => Object.keys(l.castle.relics).length);
+  const wHeld = warlords.reduce((n, l) => n + l.castle.warMarks, 0) / warlords.length;
+  const wEarned = warlords.reduce((n, l) => n + l.castle.warMarksEarned, 0) / warlords.length;
+  lines.push(
+    `warlords' relics forged: ${forged.join(', ')}; war marks held ${wHeld.toFixed(0)} of ${wEarned.toFixed(0)} earned`,
+  );
+  check(
+    forged.every((n) => n > 0),
+    `Every warlord forges relics with its war marks (relics: ${forged.join(', ')})`,
+  );
   const steadyTempers = realm.lords
     .filter((l) => l.kind.name === 'steady')
     .map((l) => Object.keys(l.castle.tempers).length);

@@ -1,6 +1,6 @@
 // What a realm of castles records as it plays (realm.ts), for the checks (checks.ts).
 import type { castleEngine as E } from '@idle-clash/features';
-import type { LordKind } from './realm.ts';
+import type { LordKind } from './kinds.ts';
 
 export interface SiegeRecord {
   day: number;
@@ -37,6 +37,10 @@ export interface Lord {
   marks: number[];
   levels: number[];
   raidedOn: number[];
+  /** Gold set aside for a rout (session 178), part of the purse. */
+  saved: number;
+  /** The day a rout was last begun. */
+  routOn: number;
 }
 export interface Realm {
   lords: Lord[];
@@ -45,6 +49,8 @@ export interface Realm {
   incursions: { day: number; r: number; won: boolean; tier: number; spoils: string | null }[];
   /** Tempering across the realm: tries, tempers taken, masterstrokes. */
   tempers: { tries: number; taken: number; masterstrokes: number };
+  /** Spies sent at the day's strongholds, and those that got through (session 178). */
+  spies: { sent: number; through: number };
   chest: number;
   destroyed: number;
   /** Gold burned, by what burned it. */
