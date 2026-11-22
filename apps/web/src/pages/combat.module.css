@@ -1,11 +1,11 @@
-/* The Combat page. Phones: loadout, foes, food. Wide: the loadout and food in a column, the foes beside
-   them. */
+/* The Combat page. Phones: loadout, foes, food, bounties. Wide: the loadout, food and bounties in a
+   column, the foes beside them. */
 .layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--s-4);
   align-items: start;
-  grid-template-areas: 'loadout' 'foes' 'bounty' 'food';
+  grid-template-areas: 'loadout' 'foes' 'food' 'bounty';
 }
 
 .loadoutArea {
@@ -19,17 +19,22 @@
 .foodArea {
   grid-area: food;
 }
-/* The bounty board (session 175): under the foes on a phone, under the loadout where there is room. */
+/* The bounty board (session 175): last, under the food, so the food a newcomer needs stays on the first
+   screen and a page with no bounties leaves no gap. */
 .bountyArea {
   grid-area: bounty;
+}
+
+.bountyArea:empty {
+  display: none;
 }
 
 @container main (min-width: 720px) {
   .layout {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
     grid-template-rows: auto auto 1fr;
-    /* Each column stacks by itself: the bounties and the food start under the loadout. */
-    grid-template-areas: 'loadout foes' 'bounty foes' 'food foes';
+    /* Each column stacks by itself: the food and the bounties start under the loadout. */
+    grid-template-areas: 'loadout foes' 'food foes' 'bounty foes';
   }
 }
 

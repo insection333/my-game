@@ -164,11 +164,11 @@ function CombatPage({ combat }: { combat: Feature }) {
             </Slot>
           </Panel>
         </section>
-        <section data-section className={s.bountyArea}>
-          <BountyBoard combat={combat} now={now} />
-        </section>
         <section data-section className={s.foodArea}>
           <CombatFood />
+        </section>
+        <section data-section className={s.bountyArea}>
+          <BountyBoard combat={combat} now={now} />
         </section>
       </div>
       {open && (
