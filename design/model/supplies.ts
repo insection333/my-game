@@ -14,10 +14,10 @@ export const SUPPLY_BATCH = 25;
 const xpOf = (i: number, seconds: number) => Math.round((TIER_XP_PER_HOUR[i] * seconds) / 3600);
 
 /** Fletching: each tier's arrows, from one of its bars and one of its logs. */
-export const FLETCHING: Recipe[] = TIERS.map((t) => {
+export const FLETCHING: Recipe[] = TIERS.flatMap((t) => {
   const i = t.tier - 1;
   const seconds = TIER_SECONDS[i] * 2;
-  return {
+  const arrows: Recipe = {
     id: `fletching.arrows${t.tier}`,
     name: `${t.metal} arrows`,
     level: t.level,
@@ -29,6 +29,20 @@ export const FLETCHING: Recipe[] = TIERS.map((t) => {
     value: Math.round((VALUE.bar[i] + VALUE.log[i]) / SUPPLY_BATCH),
     makes: SUPPLY_BATCH,
   };
+  // From tier 5 (session 176), the same arrows fletched by hand seven levels in: slower, finds twice as
+  // likely an hour, so no gap between new recipes passes ten levels.
+  if (t.tier < 5) return [arrows];
+  return [
+    arrows,
+    {
+      ...arrows,
+      id: `fletching.hand${t.tier}`,
+      kind: 'hand',
+      name: `Hand-fletched ${t.metal.toLowerCase()} arrows`,
+      level: t.level + 7,
+      seconds: seconds * 1.25,
+    },
+  ];
 });
 
 /** Smithing's part: each tier's whetstones, and from tier 2 its key, opening with the tier's bar (so the

@@ -145,7 +145,7 @@ Fishing is built the same way: each tier's shallows, and its deep pool four leve
 
 Runecraft is built the same way too: each tier's standing stone, and its ancient stone four levels later ("Spark stone", "Ancient spark stone"). A draw gives eight of the tier's runes (sixteen at an ancient stone), each worth an eighth of the tier's ore, so Runecraft pays as Mining does. Every stone past the first needs that tier's key, which Smithing binds from two bars and which is kept, never used up.
 
-Rich actions ("Old pine", "Deep copper seam") are slower and give two items each: the choice between XP and materials. Smithing needs more ore than one fresh vein supplies, so rich seams, mastery and the fire's second lane are how a smith keeps the forge fed.
+Rich actions ("Old pine", "Deep copper seam") are slower and give two items each: the choice between XP and materials. From tier 5 (session 176) each gathering skill has a third choice ten levels into the tier, a lucky action ("Maple grove", "Moonsilver geode", "Moon carp spawning run", "Moon ley stone"): a quarter slower, one item each, its Rare and Legendary finds rolled at 2.5 times per action (twice as likely an hour), so the choice in a late tier is XP, materials or luck, and no gap between new actions passes ten levels. Fletching has the same from tier 5: hand-fletched arrows seven levels in, a quarter slower for finds twice as likely an hour. Smithing needs more ore than one fresh vein supplies, so rich seams, mastery and the fire's second lane are how a smith keeps the forge fed.
 
 *Generated:*
 
@@ -161,12 +161,16 @@ Rich actions ("Old pine", "Deep copper seam") are slower and give two items each
 | Old yew | Woodcutting | 34 | 39 | 113 | Yew logs ×2 | 35 each |
 | Maple tree | Woodcutting | 40 | 30 | 142 | Maple logs ×1 | 70 each |
 | Old maple | Woodcutting | 44 | 45 | 185 | Maple logs ×2 | 70 each |
+| Maple grove | Woodcutting | 50 | 37.5 | 142 | Maple logs ×1 | 70 each |
 | Silverbark tree | Woodcutting | 55 | 34 | 208 | Silverbark logs ×1 | 115 each |
 | Old silverbark | Woodcutting | 59 | 51 | 270 | Silverbark logs ×2 | 115 each |
+| Silverbark grove | Woodcutting | 65 | 42.5 | 208 | Silverbark logs ×1 | 115 each |
 | Elderwood tree | Woodcutting | 70 | 38 | 296 | Elderwood logs ×1 | 180 each |
 | Old elderwood | Woodcutting | 74 | 57 | 385 | Elderwood logs ×2 | 180 each |
+| Elderwood grove | Woodcutting | 80 | 47.5 | 296 | Elderwood logs ×1 | 180 each |
 | Ancient tree | Woodcutting | 85 | 42 | 408 | Ancient logs ×1 | 270 each |
 | Old ancient | Woodcutting | 89 | 63 | 530 | Ancient logs ×2 | 270 each |
+| Ancient grove | Woodcutting | 95 | 52.5 | 408 | Ancient logs ×1 | 270 each |
 | Copper vein | Mining | 1 | 7.5 | 11 | Copper ore ×1 | 1 each |
 | Deep copper seam | Mining | 5 | 11.25 | 14 | Copper ore ×2 | 1 each |
 | Tin vein | Mining | 10 | 12.5 | 25 | Tin ore ×1 | 4 each |
@@ -177,12 +181,16 @@ Rich actions ("Old pine", "Deep copper seam") are slower and give two items each
 | Deep coal seam | Mining | 34 | 39 | 113 | Coal ×2 | 30 each |
 | Moonsilver vein | Mining | 40 | 30 | 142 | Moonsilver ore ×1 | 60 each |
 | Deep moonsilver seam | Mining | 44 | 45 | 185 | Moonsilver ore ×2 | 60 each |
+| Moonsilver geode | Mining | 50 | 37.5 | 142 | Moonsilver ore ×1 | 60 each |
 | Star-iron vein | Mining | 55 | 34 | 208 | Star-iron ore ×1 | 100 each |
 | Deep star-iron seam | Mining | 59 | 51 | 270 | Star-iron ore ×2 | 100 each |
+| Star-iron geode | Mining | 65 | 42.5 | 208 | Star-iron ore ×1 | 100 each |
 | Ember vein | Mining | 70 | 38 | 296 | Ember ore ×1 | 160 each |
 | Deep ember seam | Mining | 74 | 57 | 385 | Ember ore ×2 | 160 each |
+| Ember geode | Mining | 80 | 47.5 | 296 | Ember ore ×1 | 160 each |
 | Dawnstone vein | Mining | 85 | 42 | 408 | Dawnstone ×1 | 240 each |
 | Deep dawnstone seam | Mining | 89 | 63 | 530 | Dawnstone ×2 | 240 each |
+| Dawnstone geode | Mining | 95 | 52.5 | 408 | Dawnstone ×1 | 240 each |
 | Perch shallows | Fishing | 1 | 7.5 | 11 | Perch ×1 | 1 each |
 | Deep perch pool | Fishing | 5 | 11.25 | 14 | Perch ×2 | 1 each |
 | Trout shallows | Fishing | 10 | 12.5 | 25 | Trout ×1 | 2 each |
@@ -193,12 +201,16 @@ Rich actions ("Old pine", "Deep copper seam") are slower and give two items each
 | Deep salmon pool | Fishing | 34 | 39 | 113 | Salmon ×2 | 14 each |
 | Moon carp shallows | Fishing | 40 | 30 | 142 | Moon carp ×1 | 28 each |
 | Deep moon carp pool | Fishing | 44 | 45 | 185 | Moon carp ×2 | 28 each |
+| Moon carp spawning run | Fishing | 50 | 37.5 | 142 | Moon carp ×1 | 28 each |
 | Silver eel shallows | Fishing | 55 | 34 | 208 | Silver eel ×1 | 46 each |
 | Deep silver eel pool | Fishing | 59 | 51 | 270 | Silver eel ×2 | 46 each |
+| Silver eel spawning run | Fishing | 65 | 42.5 | 208 | Silver eel ×1 | 46 each |
 | Ember char shallows | Fishing | 70 | 38 | 296 | Ember char ×1 | 72 each |
 | Deep ember char pool | Fishing | 74 | 57 | 385 | Ember char ×2 | 72 each |
+| Ember char spawning run | Fishing | 80 | 47.5 | 296 | Ember char ×1 | 72 each |
 | Dawn sturgeon shallows | Fishing | 85 | 42 | 408 | Dawn sturgeon ×1 | 108 each |
 | Deep dawn sturgeon pool | Fishing | 89 | 63 | 530 | Dawn sturgeon ×2 | 108 each |
+| Dawn sturgeon spawning run | Fishing | 95 | 52.5 | 408 | Dawn sturgeon ×1 | 108 each |
 | Spark stone | Runecraft | 1 | 7.5 | 11 | Spark rune ×8 | 0 each |
 | Ancient spark stone | Runecraft | 5 | 11.25 | 14 | Spark rune ×16 | 0 each |
 | Gale stone | Runecraft | 10 | 12.5 | 25 | Gale rune ×8 | 0 each |
@@ -209,12 +221,16 @@ Rich actions ("Old pine", "Deep copper seam") are slower and give two items each
 | Ancient earth stone | Runecraft | 34 | 39 | 113 | Earth rune ×16 | 4 each |
 | Moon stone | Runecraft | 40 | 30 | 142 | Moon rune ×8 | 8 each |
 | Ancient moon stone | Runecraft | 44 | 45 | 185 | Moon rune ×16 | 8 each |
+| Moon ley stone | Runecraft | 50 | 37.5 | 142 | Moon rune ×8 | 8 each |
 | Star stone | Runecraft | 55 | 34 | 208 | Star rune ×8 | 13 each |
 | Ancient star stone | Runecraft | 59 | 51 | 270 | Star rune ×16 | 13 each |
+| Star ley stone | Runecraft | 65 | 42.5 | 208 | Star rune ×8 | 13 each |
 | Ember stone | Runecraft | 70 | 38 | 296 | Ember rune ×8 | 20 each |
 | Ancient ember stone | Runecraft | 74 | 57 | 385 | Ember rune ×16 | 20 each |
+| Ember ley stone | Runecraft | 80 | 47.5 | 296 | Ember rune ×8 | 20 each |
 | Dawn stone | Runecraft | 85 | 42 | 408 | Dawn rune ×8 | 30 each |
 | Ancient dawn stone | Runecraft | 89 | 63 | 530 | Dawn rune ×16 | 30 each |
+| Dawn ley stone | Runecraft | 95 | 52.5 | 408 | Dawn rune ×8 | 30 each |
 
 ## 6. Smithing
 
@@ -319,9 +335,9 @@ Each style has a supply: Melee takes whetstones (Smithing, from a bar), Archery 
 | 3 | +9% | Iron whetstones (1 each) | Iron arrows (2 each) | Tide rune (2 each) | Iron key |
 | 4 | +11% | Steel whetstones (4 each) | Steel arrows (5 each) | Earth rune (4 each) | Steel key |
 | 5 | +13% | Moonsilver whetstones (5 each) | Moonsilver arrows (7 each) | Moon rune (8 each) | Moonsilver key |
-| 6 | +15% | Star-iron whetstones (8 each) | Star-iron arrows (13 each) | Star rune (13 each) | Star-iron key |
-| 7 | +17% | Embersteel whetstones (11 each) | Embersteel arrows (19 each) | Ember rune (20 each) | Embersteel key |
-| 8 | +20% | Dawnsteel whetstones (19 each) | Dawnsteel arrows (30 each) | Dawn rune (30 each) | Dawnsteel key |
+| 6 | +15% | Star-iron whetstones (8 each) | Star-iron arrows (7 each) | Star rune (13 each) | Star-iron key |
+| 7 | +17% | Embersteel whetstones (11 each) | Embersteel arrows (13 each) | Ember rune (20 each) | Embersteel key |
+| 8 | +20% | Dawnsteel whetstones (19 each) | Dawnsteel arrows (13 each) | Dawn rune (30 each) | Dawnsteel key |
 
 | Recipe | Skill | Level | Takes | Makes | Seconds | XP | Sells for (each) |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -345,9 +361,13 @@ Each style has a supply: Melee takes whetstones (Smithing, from a bar), Archery 
 | Iron arrows | Fletching | 20 | Iron bar ×1, Oak logs ×1 | 25 | 40 | 103 | 2 |
 | Steel arrows | Fletching | 30 | Steel bar ×1, Yew logs ×1 | 25 | 52 | 173 | 5 |
 | Moonsilver arrows | Fletching | 40 | Moonsilver bar ×1, Maple logs ×1 | 25 | 60 | 283 | 7 |
+| Hand-fletched moonsilver arrows | Fletching | 47 | Moonsilver bar ×1, Maple logs ×1 | 25 | 75 | 283 | 7 |
 | Star-iron arrows | Fletching | 55 | Star-iron bar ×1, Silverbark logs ×1 | 25 | 68 | 416 | 13 |
+| Hand-fletched star-iron arrows | Fletching | 62 | Star-iron bar ×1, Silverbark logs ×1 | 25 | 85 | 416 | 13 |
 | Embersteel arrows | Fletching | 70 | Embersteel bar ×1, Elderwood logs ×1 | 25 | 76 | 591 | 19 |
+| Hand-fletched embersteel arrows | Fletching | 77 | Embersteel bar ×1, Elderwood logs ×1 | 25 | 95 | 591 | 19 |
 | Dawnsteel arrows | Fletching | 85 | Dawnsteel bar ×1, Ancient logs ×1 | 25 | 84 | 817 | 30 |
+| Hand-fletched dawnsteel arrows | Fletching | 92 | Dawnsteel bar ×1, Ancient logs ×1 | 25 | 105 | 817 | 30 |
 
 ## 7. Mastery
 
@@ -566,7 +586,7 @@ Every level 1 to 99 of every skill unlocks something: an action, a recipe, a tie
 | **2** Quick swing (2.5% faster) | **27** Quick swing (15% faster in all) | **52** Plenty (+28.5% chance of an extra item in all) | **77** Woodsman's eye (Rare and Legendary finds 96% likelier in all) |
 | **3** Plenty (+3% chance of an extra item) | **28** Plenty (+18% chance of an extra item in all) | **53** Woodsman's eye (Rare and Legendary finds 76% likelier in all) | **78** Practised hands (mastery 69% faster in all) |
 | **4** Woodsman's eye (Rare and Legendary finds 8% likelier) | **29** Woodsman's eye (Rare and Legendary finds 48% likelier in all) | **54** Practised hands (mastery 54% faster in all) | **79** Quick swing (31.25% faster in all) |
-| **5** Old pine | **30** Yew tree | **55** Silverbark tree | **80** Plenty (+37.5% chance of an extra item in all) |
+| **5** Old pine | **30** Yew tree | **55** Silverbark tree | **80** Plenty (+37.5% chance of an extra item in all); Elderwood grove |
 | **6** Practised hands (mastery 6% faster) | **31** Practised hands (mastery 36% faster in all) | **56** Quick swing (25% faster in all) | **81** Woodsman's eye (Rare and Legendary finds 100% likelier in all) |
 | **7** Quick swing (5% faster in all) | **32** Quick swing (17.5% faster in all) | **57** Plenty (+30% chance of an extra item in all) | **82** Practised hands (mastery 72% faster in all) |
 | **8** Plenty (+6% chance of an extra item in all) | **33** Plenty (+21% chance of an extra item in all) | **58** Woodsman's eye (Rare and Legendary finds 80% likelier in all) | **83** Quick swing (32.5% faster in all) |
@@ -576,17 +596,17 @@ Every level 1 to 99 of every skill unlocks something: an action, a recipe, a tie
 | **12** Quick swing (7.5% faster in all) | **37** Quick swing (20% faster in all) | **62** Plenty (+31.5% chance of an extra item in all) | **87** Practised hands (mastery 75% faster in all) |
 | **13** Plenty (+9% chance of an extra item in all) | **38** Plenty (+24% chance of an extra item in all) | **63** Woodsman's eye (Rare and Legendary finds 84% likelier in all) | **88** Quick swing (33.75% faster in all) |
 | **14** Old ash | **39** Woodsman's eye (Rare and Legendary finds 64% likelier in all) | **64** Practised hands (mastery 60% faster in all) | **89** Old ancient |
-| **15** Woodsman's eye (Rare and Legendary finds 24% likelier in all) | **40** Maple tree; Master woodcutter (+10% chance of an extra item) | **65** Quick swing (27.5% faster in all) | **90** Plenty (+40.5% chance of an extra item in all) |
+| **15** Woodsman's eye (Rare and Legendary finds 24% likelier in all) | **40** Maple tree; Master woodcutter (+10% chance of an extra item) | **65** Quick swing (27.5% faster in all); Silverbark grove | **90** Plenty (+40.5% chance of an extra item in all) |
 | **16** Practised hands (mastery 18% faster in all) | **41** Practised hands (mastery 45% faster in all) | **66** Plenty (+33% chance of an extra item in all) | **91** Woodsman's eye (Rare and Legendary finds 108% likelier in all) |
 | **17** Quick swing (10% faster in all) | **42** Quick swing (21.25% faster in all) | **67** Woodsman's eye (Rare and Legendary finds 88% likelier in all) | **92** Practised hands (mastery 78% faster in all) |
 | **18** Plenty (+12% chance of an extra item in all) | **43** Plenty (+25.5% chance of an extra item in all) | **68** Practised hands (mastery 63% faster in all) | **93** Quick swing (35% faster in all) |
 | **19** Woodsman's eye (Rare and Legendary finds 32% likelier in all) | **44** Old maple | **69** Quick swing (28.75% faster in all) | **94** Plenty (+42% chance of an extra item in all) |
-| **20** Oak tree | **45** Woodsman's eye (Rare and Legendary finds 68% likelier in all) | **70** Elderwood tree | **95** Woodsman's eye (Rare and Legendary finds 112% likelier in all) |
+| **20** Oak tree | **45** Woodsman's eye (Rare and Legendary finds 68% likelier in all) | **70** Elderwood tree | **95** Woodsman's eye (Rare and Legendary finds 112% likelier in all); Ancient grove |
 | **21** Practised hands (mastery 24% faster in all) | **46** Practised hands (mastery 48% faster in all) | **71** Plenty (+34.5% chance of an extra item in all) | **96** Practised hands (mastery 81% faster in all) |
 | **22** Quick swing (12.5% faster in all) | **47** Quick swing (22.5% faster in all) | **72** Woodsman's eye (Rare and Legendary finds 92% likelier in all) | **97** Quick swing (36.25% faster in all) |
 | **23** Plenty (+15% chance of an extra item in all) | **48** Plenty (+27% chance of an extra item in all) | **73** Practised hands (mastery 66% faster in all) | **98** Plenty (+43.5% chance of an extra item in all) |
 | **24** Old oak | **49** Woodsman's eye (Rare and Legendary finds 72% likelier in all) | **74** Old elderwood | **99** Grandmaster woodcutter (+15% chance of an extra item) |
-| **25** Woodsman's eye (Rare and Legendary finds 40% likelier in all) | **50** Practised hands (mastery 51% faster in all) | **75** Quick swing (30% faster in all) |  |
+| **25** Woodsman's eye (Rare and Legendary finds 40% likelier in all) | **50** Practised hands (mastery 51% faster in all); Maple grove | **75** Quick swing (30% faster in all) |  |
 
 ### Mining
 
@@ -596,7 +616,7 @@ Every level 1 to 99 of every skill unlocks something: an action, a recipe, a tie
 | **2** Quick strike (2.5% faster) | **27** Quick strike (15% faster in all) | **52** Plenty (+28.5% chance of an extra item in all) | **77** Prospector's eye (Rare and Legendary finds 96% likelier in all) |
 | **3** Plenty (+3% chance of an extra item) | **28** Plenty (+18% chance of an extra item in all) | **53** Prospector's eye (Rare and Legendary finds 76% likelier in all) | **78** Practised hands (mastery 69% faster in all) |
 | **4** Prospector's eye (Rare and Legendary finds 8% likelier) | **29** Prospector's eye (Rare and Legendary finds 48% likelier in all) | **54** Practised hands (mastery 54% faster in all) | **79** Quick strike (31.25% faster in all) |
-| **5** Deep copper seam | **30** Coal vein | **55** Star-iron vein | **80** Plenty (+37.5% chance of an extra item in all) |
+| **5** Deep copper seam | **30** Coal vein | **55** Star-iron vein | **80** Plenty (+37.5% chance of an extra item in all); Ember geode |
 | **6** Practised hands (mastery 6% faster) | **31** Practised hands (mastery 36% faster in all) | **56** Quick strike (25% faster in all) | **81** Prospector's eye (Rare and Legendary finds 100% likelier in all) |
 | **7** Quick strike (5% faster in all) | **32** Quick strike (17.5% faster in all) | **57** Plenty (+30% chance of an extra item in all) | **82** Practised hands (mastery 72% faster in all) |
 | **8** Plenty (+6% chance of an extra item in all) | **33** Plenty (+21% chance of an extra item in all) | **58** Prospector's eye (Rare and Legendary finds 80% likelier in all) | **83** Quick strike (32.5% faster in all) |
@@ -606,17 +626,17 @@ Every level 1 to 99 of every skill unlocks something: an action, a recipe, a tie
 | **12** Quick strike (7.5% faster in all) | **37** Quick strike (20% faster in all) | **62** Plenty (+31.5% chance of an extra item in all) | **87** Practised hands (mastery 75% faster in all) |
 | **13** Plenty (+9% chance of an extra item in all) | **38** Plenty (+24% chance of an extra item in all) | **63** Prospector's eye (Rare and Legendary finds 84% likelier in all) | **88** Quick strike (33.75% faster in all) |
 | **14** Deep tin seam | **39** Prospector's eye (Rare and Legendary finds 64% likelier in all) | **64** Practised hands (mastery 60% faster in all) | **89** Deep dawnstone seam |
-| **15** Prospector's eye (Rare and Legendary finds 24% likelier in all) | **40** Moonsilver vein; Master miner (+10% chance of an extra item) | **65** Quick strike (27.5% faster in all) | **90** Plenty (+40.5% chance of an extra item in all) |
+| **15** Prospector's eye (Rare and Legendary finds 24% likelier in all) | **40** Moonsilver vein; Master miner (+10% chance of an extra item) | **65** Quick strike (27.5% faster in all); Star-iron geode | **90** Plenty (+40.5% chance of an extra item in all) |
 | **16** Practised hands (mastery 18% faster in all) | **41** Practised hands (mastery 45% faster in all) | **66** Plenty (+33% chance of an extra item in all) | **91** Prospector's eye (Rare and Legendary finds 108% likelier in all) |
 | **17** Quick strike (10% faster in all) | **42** Quick strike (21.25% faster in all) | **67** Prospector's eye (Rare and Legendary finds 88% likelier in all) | **92** Practised hands (mastery 78% faster in all) |
 | **18** Plenty (+12% chance of an extra item in all) | **43** Plenty (+25.5% chance of an extra item in all) | **68** Practised hands (mastery 63% faster in all) | **93** Quick strike (35% faster in all) |
 | **19** Prospector's eye (Rare and Legendary finds 32% likelier in all) | **44** Deep moonsilver seam | **69** Quick strike (28.75% faster in all) | **94** Plenty (+42% chance of an extra item in all) |
-| **20** Iron vein | **45** Prospector's eye (Rare and Legendary finds 68% likelier in all) | **70** Ember vein | **95** Prospector's eye (Rare and Legendary finds 112% likelier in all) |
+| **20** Iron vein | **45** Prospector's eye (Rare and Legendary finds 68% likelier in all) | **70** Ember vein | **95** Prospector's eye (Rare and Legendary finds 112% likelier in all); Dawnstone geode |
 | **21** Practised hands (mastery 24% faster in all) | **46** Practised hands (mastery 48% faster in all) | **71** Plenty (+34.5% chance of an extra item in all) | **96** Practised hands (mastery 81% faster in all) |
 | **22** Quick strike (12.5% faster in all) | **47** Quick strike (22.5% faster in all) | **72** Prospector's eye (Rare and Legendary finds 92% likelier in all) | **97** Quick strike (36.25% faster in all) |
 | **23** Plenty (+15% chance of an extra item in all) | **48** Plenty (+27% chance of an extra item in all) | **73** Practised hands (mastery 66% faster in all) | **98** Plenty (+43.5% chance of an extra item in all) |
 | **24** Deep iron seam | **49** Prospector's eye (Rare and Legendary finds 72% likelier in all) | **74** Deep ember seam | **99** Grandmaster miner (+15% chance of an extra item) |
-| **25** Prospector's eye (Rare and Legendary finds 40% likelier in all) | **50** Practised hands (mastery 51% faster in all) | **75** Quick strike (30% faster in all) |  |
+| **25** Prospector's eye (Rare and Legendary finds 40% likelier in all) | **50** Practised hands (mastery 51% faster in all); Moonsilver geode | **75** Quick strike (30% faster in all) |  |
 
 ### Fishing
 
@@ -626,7 +646,7 @@ Every level 1 to 99 of every skill unlocks something: an action, a recipe, a tie
 | **2** Quick cast (2.5% faster) | **27** Quick cast (15% faster in all) | **52** Plenty (+28.5% chance of an extra item in all) | **77** Angler's eye (Rare and Legendary finds 96% likelier in all) |
 | **3** Plenty (+3% chance of an extra item) | **28** Plenty (+18% chance of an extra item in all) | **53** Angler's eye (Rare and Legendary finds 76% likelier in all) | **78** Practised hands (mastery 69% faster in all) |
 | **4** Angler's eye (Rare and Legendary finds 8% likelier) | **29** Angler's eye (Rare and Legendary finds 48% likelier in all) | **54** Practised hands (mastery 54% faster in all) | **79** Quick cast (31.25% faster in all) |
-| **5** Deep perch pool | **30** Salmon shallows | **55** Silver eel shallows | **80** Plenty (+37.5% chance of an extra item in all) |
+| **5** Deep perch pool | **30** Salmon shallows | **55** Silver eel shallows | **80** Plenty (+37.5% chance of an extra item in all); Ember char spawning run |
 | **6** Practised hands (mastery 6% faster) | **31** Practised hands (mastery 36% faster in all) | **56** Quick cast (25% faster in all) | **81** Angler's eye (Rare and Legendary finds 100% likelier in all) |
 | **7** Quick cast (5% faster in all) | **32** Quick cast (17.5% faster in all) | **57** Plenty (+30% chance of an extra item in all) | **82** Practised hands (mastery 72% faster in all) |
 | **8** Plenty (+6% chance of an extra item in all) | **33** Plenty (+21% chance of an extra item in all) | **58** Angler's eye (Rare and Legendary finds 80% likelier in all) | **83** Quick cast (32.5% faster in all) |
@@ -636,17 +656,17 @@ Every level 1 to 99 of every skill unlocks something: an action, a recipe, a tie
 | **12** Quick cast (7.5% faster in all) | **37** Quick cast (20% faster in all) | **62** Plenty (+31.5% chance of an extra item in all) | **87** Practised hands (mastery 75% faster in all) |
 | **13** Plenty (+9% chance of an extra item in all) | **38** Plenty (+24% chance of an extra item in all) | **63** Angler's eye (Rare and Legendary finds 84% likelier in all) | **88** Quick cast (33.75% faster in all) |
 | **14** Deep trout pool | **39** Angler's eye (Rare and Legendary finds 64% likelier in all) | **64** Practised hands (mastery 60% faster in all) | **89** Deep dawn sturgeon pool |
-| **15** Angler's eye (Rare and Legendary finds 24% likelier in all) | **40** Moon carp shallows; Master angler (+10% chance of an extra item) | **65** Quick cast (27.5% faster in all) | **90** Plenty (+40.5% chance of an extra item in all) |
+| **15** Angler's eye (Rare and Legendary finds 24% likelier in all) | **40** Moon carp shallows; Master angler (+10% chance of an extra item) | **65** Quick cast (27.5% faster in all); Silver eel spawning run | **90** Plenty (+40.5% chance of an extra item in all) |
 | **16** Practised hands (mastery 18% faster in all) | **41** Practised hands (mastery 45% faster in all) | **66** Plenty (+33% chance of an extra item in all) | **91** Angler's eye (Rare and Legendary finds 108% likelier in all) |
 | **17** Quick cast (10% faster in all) | **42** Quick cast (21.25% faster in all) | **67** Angler's eye (Rare and Legendary finds 88% likelier in all) | **92** Practised hands (mastery 78% faster in all) |
 | **18** Plenty (+12% chance of an extra item in all) | **43** Plenty (+25.5% chance of an extra item in all) | **68** Practised hands (mastery 63% faster in all) | **93** Quick cast (35% faster in all) |
 | **19** Angler's eye (Rare and Legendary finds 32% likelier in all) | **44** Deep moon carp pool | **69** Quick cast (28.75% faster in all) | **94** Plenty (+42% chance of an extra item in all) |
-| **20** Pike shallows | **45** Angler's eye (Rare and Legendary finds 68% likelier in all) | **70** Ember char shallows | **95** Angler's eye (Rare and Legendary finds 112% likelier in all) |
+| **20** Pike shallows | **45** Angler's eye (Rare and Legendary finds 68% likelier in all) | **70** Ember char shallows | **95** Angler's eye (Rare and Legendary finds 112% likelier in all); Dawn sturgeon spawning run |
 | **21** Practised hands (mastery 24% faster in all) | **46** Practised hands (mastery 48% faster in all) | **71** Plenty (+34.5% chance of an extra item in all) | **96** Practised hands (mastery 81% faster in all) |
 | **22** Quick cast (12.5% faster in all) | **47** Quick cast (22.5% faster in all) | **72** Angler's eye (Rare and Legendary finds 92% likelier in all) | **97** Quick cast (36.25% faster in all) |
 | **23** Plenty (+15% chance of an extra item in all) | **48** Plenty (+27% chance of an extra item in all) | **73** Practised hands (mastery 66% faster in all) | **98** Plenty (+43.5% chance of an extra item in all) |
 | **24** Deep pike pool | **49** Angler's eye (Rare and Legendary finds 72% likelier in all) | **74** Deep ember char pool | **99** Grandmaster angler (+15% chance of an extra item) |
-| **25** Angler's eye (Rare and Legendary finds 40% likelier in all) | **50** Practised hands (mastery 51% faster in all) | **75** Quick cast (30% faster in all) |  |
+| **25** Angler's eye (Rare and Legendary finds 40% likelier in all) | **50** Practised hands (mastery 51% faster in all); Moon carp spawning run | **75** Quick cast (30% faster in all) |  |
 
 ### Runecraft
 
@@ -656,7 +676,7 @@ Every level 1 to 99 of every skill unlocks something: an action, a recipe, a tie
 | **2** Quick draw (2.5% faster) | **27** Quick draw (15% faster in all) | **52** Plenty (+28.5% chance of an extra item in all) | **77** Seer's eye (Rare and Legendary finds 96% likelier in all) |
 | **3** Plenty (+3% chance of an extra item) | **28** Plenty (+18% chance of an extra item in all) | **53** Seer's eye (Rare and Legendary finds 76% likelier in all) | **78** Practised hands (mastery 69% faster in all) |
 | **4** Seer's eye (Rare and Legendary finds 8% likelier) | **29** Seer's eye (Rare and Legendary finds 48% likelier in all) | **54** Practised hands (mastery 54% faster in all) | **79** Quick draw (31.25% faster in all) |
-| **5** Ancient spark stone | **30** Earth stone | **55** Star stone | **80** Plenty (+37.5% chance of an extra item in all) |
+| **5** Ancient spark stone | **30** Earth stone | **55** Star stone | **80** Plenty (+37.5% chance of an extra item in all); Ember ley stone |
 | **6** Practised hands (mastery 6% faster) | **31** Practised hands (mastery 36% faster in all) | **56** Quick draw (25% faster in all) | **81** Seer's eye (Rare and Legendary finds 100% likelier in all) |
 | **7** Quick draw (5% faster in all) | **32** Quick draw (17.5% faster in all) | **57** Plenty (+30% chance of an extra item in all) | **82** Practised hands (mastery 72% faster in all) |
 | **8** Plenty (+6% chance of an extra item in all) | **33** Plenty (+21% chance of an extra item in all) | **58** Seer's eye (Rare and Legendary finds 80% likelier in all) | **83** Quick draw (32.5% faster in all) |
@@ -666,17 +686,17 @@ Every level 1 to 99 of every skill unlocks something: an action, a recipe, a tie
 | **12** Quick draw (7.5% faster in all) | **37** Quick draw (20% faster in all) | **62** Plenty (+31.5% chance of an extra item in all) | **87** Practised hands (mastery 75% faster in all) |
 | **13** Plenty (+9% chance of an extra item in all) | **38** Plenty (+24% chance of an extra item in all) | **63** Seer's eye (Rare and Legendary finds 84% likelier in all) | **88** Quick draw (33.75% faster in all) |
 | **14** Ancient gale stone | **39** Seer's eye (Rare and Legendary finds 64% likelier in all) | **64** Practised hands (mastery 60% faster in all) | **89** Ancient dawn stone |
-| **15** Seer's eye (Rare and Legendary finds 24% likelier in all) | **40** Moon stone; Master runecrafter (+10% chance of an extra item) | **65** Quick draw (27.5% faster in all) | **90** Plenty (+40.5% chance of an extra item in all) |
+| **15** Seer's eye (Rare and Legendary finds 24% likelier in all) | **40** Moon stone; Master runecrafter (+10% chance of an extra item) | **65** Quick draw (27.5% faster in all); Star ley stone | **90** Plenty (+40.5% chance of an extra item in all) |
 | **16** Practised hands (mastery 18% faster in all) | **41** Practised hands (mastery 45% faster in all) | **66** Plenty (+33% chance of an extra item in all) | **91** Seer's eye (Rare and Legendary finds 108% likelier in all) |
 | **17** Quick draw (10% faster in all) | **42** Quick draw (21.25% faster in all) | **67** Seer's eye (Rare and Legendary finds 88% likelier in all) | **92** Practised hands (mastery 78% faster in all) |
 | **18** Plenty (+12% chance of an extra item in all) | **43** Plenty (+25.5% chance of an extra item in all) | **68** Practised hands (mastery 63% faster in all) | **93** Quick draw (35% faster in all) |
 | **19** Seer's eye (Rare and Legendary finds 32% likelier in all) | **44** Ancient moon stone | **69** Quick draw (28.75% faster in all) | **94** Plenty (+42% chance of an extra item in all) |
-| **20** Tide stone | **45** Seer's eye (Rare and Legendary finds 68% likelier in all) | **70** Ember stone | **95** Seer's eye (Rare and Legendary finds 112% likelier in all) |
+| **20** Tide stone | **45** Seer's eye (Rare and Legendary finds 68% likelier in all) | **70** Ember stone | **95** Seer's eye (Rare and Legendary finds 112% likelier in all); Dawn ley stone |
 | **21** Practised hands (mastery 24% faster in all) | **46** Practised hands (mastery 48% faster in all) | **71** Plenty (+34.5% chance of an extra item in all) | **96** Practised hands (mastery 81% faster in all) |
 | **22** Quick draw (12.5% faster in all) | **47** Quick draw (22.5% faster in all) | **72** Seer's eye (Rare and Legendary finds 92% likelier in all) | **97** Quick draw (36.25% faster in all) |
 | **23** Plenty (+15% chance of an extra item in all) | **48** Plenty (+27% chance of an extra item in all) | **73** Practised hands (mastery 66% faster in all) | **98** Plenty (+43.5% chance of an extra item in all) |
 | **24** Ancient tide stone | **49** Seer's eye (Rare and Legendary finds 72% likelier in all) | **74** Ancient ember stone | **99** Grandmaster runecrafter (+15% chance of an extra item) |
-| **25** Seer's eye (Rare and Legendary finds 40% likelier in all) | **50** Practised hands (mastery 51% faster in all) | **75** Quick draw (30% faster in all) |  |
+| **25** Seer's eye (Rare and Legendary finds 40% likelier in all) | **50** Practised hands (mastery 51% faster in all); Moon ley stone | **75** Quick draw (30% faster in all) |  |
 
 ### Smithing
 
@@ -743,7 +763,7 @@ Every level 1 to 99 of every skill unlocks something: an action, a recipe, a tie
 | Levels 1–25 | Levels 26–50 | Levels 51–75 | Levels 76–99 |
 | --- | --- | --- | --- |
 | **1** Copper arrows | **26** Fletcher's eye (Rare and Legendary finds 48% likelier in all) | **51** Thrifty (42% chance to save an ingredient in all) | **76** Fine fletching (+40.5% chance of an extra item in all) |
-| **2** Fine fletching (+3% chance of an extra item) | **27** Practised hands (mastery 48% faster in all) | **52** Fletcher's eye (Rare and Legendary finds 84% likelier in all) | **77** Thrifty (54% chance to save an ingredient in all) |
+| **2** Fine fletching (+3% chance of an extra item) | **27** Practised hands (mastery 48% faster in all) | **52** Fletcher's eye (Rare and Legendary finds 84% likelier in all) | **77** Thrifty (54% chance to save an ingredient in all); Hand-fletched embersteel arrows |
 | **3** Thrifty (4% chance to save an ingredient) | **28** Fine fletching (+21% chance of an extra item in all) | **53** Practised hands (mastery 80% faster in all) | **78** Fletcher's eye (Rare and Legendary finds 108% likelier in all) |
 | **4** Fletcher's eye (Rare and Legendary finds 8% likelier) | **29** Thrifty (28% chance to save an ingredient in all) | **54** Fine fletching (+33% chance of an extra item in all) | **79** Practised hands (mastery 104% faster in all) |
 | **5** Practised hands (mastery 8% faster) | **30** Steel arrows | **55** Star-iron arrows | **80** Fine fletching (+42% chance of an extra item in all) |
@@ -753,17 +773,17 @@ Every level 1 to 99 of every skill unlocks something: an action, a recipe, a tie
 | **9** Practised hands (mastery 16% faster in all) | **34** Thrifty (32% chance to save an ingredient in all) | **59** Fine fletching (+34.5% chance of an extra item in all) | **84** Fine fletching (+43.5% chance of an extra item in all) |
 | **10** Bronze arrows | **35** Fletcher's eye (Rare and Legendary finds 64% likelier in all) | **60** Thrifty (46% chance to save an ingredient in all) | **85** Dawnsteel arrows |
 | **11** Fine fletching (+9% chance of an extra item in all) | **36** Practised hands (mastery 64% faster in all) | **61** Fletcher's eye (Rare and Legendary finds 92% likelier in all) | **86** Thrifty (58% chance to save an ingredient in all) |
-| **12** Thrifty (12% chance to save an ingredient in all) | **37** Fine fletching (+27% chance of an extra item in all) | **62** Practised hands (mastery 88% faster in all) | **87** Fletcher's eye (Rare and Legendary finds 116% likelier in all) |
+| **12** Thrifty (12% chance to save an ingredient in all) | **37** Fine fletching (+27% chance of an extra item in all) | **62** Practised hands (mastery 88% faster in all); Hand-fletched star-iron arrows | **87** Fletcher's eye (Rare and Legendary finds 116% likelier in all) |
 | **13** Fletcher's eye (Rare and Legendary finds 24% likelier in all) | **38** Thrifty (36% chance to save an ingredient in all) | **63** Fine fletching (+36% chance of an extra item in all) | **88** Practised hands (mastery 112% faster in all) |
 | **14** Practised hands (mastery 24% faster in all) | **39** Fletcher's eye (Rare and Legendary finds 72% likelier in all) | **64** Thrifty (48% chance to save an ingredient in all) | **89** Fine fletching (+45% chance of an extra item in all) |
 | **15** Fine fletching (+12% chance of an extra item in all) | **40** Moonsilver arrows; Master fletcher (8% chance to save an ingredient) | **65** Fletcher's eye (Rare and Legendary finds 96% likelier in all) | **90** Thrifty (60% chance to save an ingredient in all) |
 | **16** Thrifty (16% chance to save an ingredient in all) | **41** Practised hands (mastery 68% faster in all) | **66** Practised hands (mastery 92% faster in all) | **91** Fletcher's eye (Rare and Legendary finds 120% likelier in all) |
-| **17** Fletcher's eye (Rare and Legendary finds 32% likelier in all) | **42** Fine fletching (+28.5% chance of an extra item in all) | **67** Fine fletching (+37.5% chance of an extra item in all) | **92** Practised hands (mastery 116% faster in all) |
+| **17** Fletcher's eye (Rare and Legendary finds 32% likelier in all) | **42** Fine fletching (+28.5% chance of an extra item in all) | **67** Fine fletching (+37.5% chance of an extra item in all) | **92** Practised hands (mastery 116% faster in all); Hand-fletched dawnsteel arrows |
 | **18** Practised hands (mastery 32% faster in all) | **43** Thrifty (38% chance to save an ingredient in all) | **68** Thrifty (50% chance to save an ingredient in all) | **93** Fine fletching (+46.5% chance of an extra item in all) |
 | **19** Fine fletching (+15% chance of an extra item in all) | **44** Fletcher's eye (Rare and Legendary finds 76% likelier in all) | **69** Fletcher's eye (Rare and Legendary finds 100% likelier in all) | **94** Thrifty (62% chance to save an ingredient in all) |
 | **20** Iron arrows | **45** Practised hands (mastery 72% faster in all) | **70** Embersteel arrows | **95** Fletcher's eye (Rare and Legendary finds 124% likelier in all) |
 | **21** Thrifty (20% chance to save an ingredient in all) | **46** Fine fletching (+30% chance of an extra item in all) | **71** Practised hands (mastery 96% faster in all) | **96** Practised hands (mastery 120% faster in all) |
-| **22** Fletcher's eye (Rare and Legendary finds 40% likelier in all) | **47** Thrifty (40% chance to save an ingredient in all) | **72** Fine fletching (+39% chance of an extra item in all) | **97** Fine fletching (+48% chance of an extra item in all) |
+| **22** Fletcher's eye (Rare and Legendary finds 40% likelier in all) | **47** Thrifty (40% chance to save an ingredient in all); Hand-fletched moonsilver arrows | **72** Fine fletching (+39% chance of an extra item in all) | **97** Fine fletching (+48% chance of an extra item in all) |
 | **23** Practised hands (mastery 40% faster in all) | **48** Fletcher's eye (Rare and Legendary finds 80% likelier in all) | **73** Thrifty (52% chance to save an ingredient in all) | **98** Thrifty (64% chance to save an ingredient in all) |
 | **24** Fine fletching (+18% chance of an extra item in all) | **49** Practised hands (mastery 76% faster in all) | **74** Fletcher's eye (Rare and Legendary finds 104% likelier in all) | **99** Grandmaster fletcher (10% chance to save an ingredient) |
 | **25** Thrifty (24% chance to save an ingredient in all) | **50** Fine fletching (+31.5% chance of an extra item in all) | **75** Practised hands (mastery 100% faster in all) |  |
@@ -1072,10 +1092,13 @@ PASS  Mastery pays: at woodcutting 40, Yew tree (mastery 10) earns 88% of the be
 PASS  Mastery pays: at woodcutting 44, Old yew (mastery 6) earns 81% of the best fresh action of its kind
 PASS  Mastery pays: at woodcutting 50, Maple tree (mastery 10) earns 124% of the best fresh action of its kind
 PASS  Mastery pays: at woodcutting 54, Old maple (mastery 6) earns 115% of the best fresh action of its kind
+PASS  Mastery pays: at woodcutting 60, Maple grove (mastery 6) earns 114% of the best fresh action of its kind
 PASS  Mastery pays: at woodcutting 65, Silverbark tree (mastery 10) earns 124% of the best fresh action of its kind
 PASS  Mastery pays: at woodcutting 69, Old silverbark (mastery 5) earns 112% of the best fresh action of its kind
+PASS  Mastery pays: at woodcutting 75, Silverbark grove (mastery 6) earns 114% of the best fresh action of its kind
 PASS  Mastery pays: at woodcutting 80, Elderwood tree (mastery 10) earns 123% of the best fresh action of its kind
 PASS  Mastery pays: at woodcutting 84, Old elderwood (mastery 5) earns 111% of the best fresh action of its kind
+PASS  Mastery pays: at woodcutting 90, Elderwood grove (mastery 6) earns 113% of the best fresh action of its kind
 PASS  Mastery pays: at woodcutting 95, Ancient tree (mastery 10) earns 122% of the best fresh action of its kind
 PASS  Mastery pays: at woodcutting 99, Old ancient (mastery 5) earns 111% of the best fresh action of its kind
 PASS  Mastery pays: at mining 11, Copper vein (mastery 8) earns 90% of the best fresh action of its kind
@@ -1088,10 +1111,13 @@ PASS  Mastery pays: at mining 40, Coal vein (mastery 10) earns 88% of the best f
 PASS  Mastery pays: at mining 44, Deep coal seam (mastery 6) earns 81% of the best fresh action of its kind
 PASS  Mastery pays: at mining 50, Moonsilver vein (mastery 10) earns 124% of the best fresh action of its kind
 PASS  Mastery pays: at mining 54, Deep moonsilver seam (mastery 6) earns 115% of the best fresh action of its kind
+PASS  Mastery pays: at mining 60, Moonsilver geode (mastery 6) earns 114% of the best fresh action of its kind
 PASS  Mastery pays: at mining 65, Star-iron vein (mastery 10) earns 124% of the best fresh action of its kind
 PASS  Mastery pays: at mining 69, Deep star-iron seam (mastery 5) earns 112% of the best fresh action of its kind
+PASS  Mastery pays: at mining 75, Star-iron geode (mastery 6) earns 114% of the best fresh action of its kind
 PASS  Mastery pays: at mining 80, Ember vein (mastery 10) earns 123% of the best fresh action of its kind
 PASS  Mastery pays: at mining 84, Deep ember seam (mastery 5) earns 111% of the best fresh action of its kind
+PASS  Mastery pays: at mining 90, Ember geode (mastery 6) earns 113% of the best fresh action of its kind
 PASS  Mastery pays: at mining 95, Dawnstone vein (mastery 10) earns 122% of the best fresh action of its kind
 PASS  Mastery pays: at mining 99, Deep dawnstone seam (mastery 5) earns 111% of the best fresh action of its kind
 PASS  Mastery pays: at fishing 11, Perch shallows (mastery 8) earns 90% of the best fresh action of its kind
@@ -1104,10 +1130,13 @@ PASS  Mastery pays: at fishing 40, Salmon shallows (mastery 10) earns 88% of the
 PASS  Mastery pays: at fishing 44, Deep salmon pool (mastery 6) earns 81% of the best fresh action of its kind
 PASS  Mastery pays: at fishing 50, Moon carp shallows (mastery 10) earns 124% of the best fresh action of its kind
 PASS  Mastery pays: at fishing 54, Deep moon carp pool (mastery 6) earns 115% of the best fresh action of its kind
+PASS  Mastery pays: at fishing 60, Moon carp spawning run (mastery 6) earns 114% of the best fresh action of its kind
 PASS  Mastery pays: at fishing 65, Silver eel shallows (mastery 10) earns 124% of the best fresh action of its kind
 PASS  Mastery pays: at fishing 69, Deep silver eel pool (mastery 5) earns 112% of the best fresh action of its kind
+PASS  Mastery pays: at fishing 75, Silver eel spawning run (mastery 6) earns 114% of the best fresh action of its kind
 PASS  Mastery pays: at fishing 80, Ember char shallows (mastery 10) earns 123% of the best fresh action of its kind
 PASS  Mastery pays: at fishing 84, Deep ember char pool (mastery 5) earns 111% of the best fresh action of its kind
+PASS  Mastery pays: at fishing 90, Ember char spawning run (mastery 6) earns 113% of the best fresh action of its kind
 PASS  Mastery pays: at fishing 95, Dawn sturgeon shallows (mastery 10) earns 122% of the best fresh action of its kind
 PASS  Mastery pays: at fishing 99, Deep dawn sturgeon pool (mastery 5) earns 111% of the best fresh action of its kind
 PASS  Mastery pays: at runecraft 11, Spark stone (mastery 8) earns 90% of the best fresh action of its kind
@@ -1120,10 +1149,13 @@ PASS  Mastery pays: at runecraft 40, Earth stone (mastery 10) earns 88% of the b
 PASS  Mastery pays: at runecraft 44, Ancient earth stone (mastery 6) earns 81% of the best fresh action of its kind
 PASS  Mastery pays: at runecraft 50, Moon stone (mastery 10) earns 124% of the best fresh action of its kind
 PASS  Mastery pays: at runecraft 54, Ancient moon stone (mastery 6) earns 115% of the best fresh action of its kind
+PASS  Mastery pays: at runecraft 60, Moon ley stone (mastery 6) earns 114% of the best fresh action of its kind
 PASS  Mastery pays: at runecraft 65, Star stone (mastery 10) earns 124% of the best fresh action of its kind
 PASS  Mastery pays: at runecraft 69, Ancient star stone (mastery 5) earns 112% of the best fresh action of its kind
+PASS  Mastery pays: at runecraft 75, Star ley stone (mastery 6) earns 114% of the best fresh action of its kind
 PASS  Mastery pays: at runecraft 80, Ember stone (mastery 10) earns 123% of the best fresh action of its kind
 PASS  Mastery pays: at runecraft 84, Ancient ember stone (mastery 5) earns 111% of the best fresh action of its kind
+PASS  Mastery pays: at runecraft 90, Ember ley stone (mastery 6) earns 113% of the best fresh action of its kind
 PASS  Mastery pays: at runecraft 95, Dawn stone (mastery 10) earns 122% of the best fresh action of its kind
 PASS  Mastery pays: at runecraft 99, Ancient dawn stone (mastery 5) earns 111% of the best fresh action of its kind
 Smithing: every recipe in a tier pays the same XP an hour; bars are quicker to sell, gear is worth 40% more than its bars.
@@ -1384,7 +1416,7 @@ PASS  Fen reaver: with supplies, melee still wins
 Fen reaver (melee, level 61): +8% XP an hour; supplies worth 1092 an hour bring 2452
 PASS  Fen reaver: melee's supply pays for itself
 PASS  Bog witch: with supplies, archery still wins
-Bog witch (archery, level 66): +7% XP an hour; supplies worth 1741 an hour bring 2294
+Bog witch (archery, level 66): +7% XP an hour; supplies worth 937 an hour bring 2294
 PASS  Bog witch: archery's supply pays for itself
 PASS  Ash troll: with supplies, magic still wins
 Ash troll (magic, level 71): +11% XP an hour; supplies worth 2559 an hour bring 4587
@@ -1393,7 +1425,7 @@ PASS  Peak slinger: with supplies, melee still wins
 Peak slinger (melee, level 76): +8% XP an hour; supplies worth 1438 an hour bring 3333
 PASS  Peak slinger: melee's supply pays for itself
 PASS  Ash shaman: with supplies, archery still wins
-Ash shaman (archery, level 81): +8% XP an hour; supplies worth 2466 an hour bring 3725
+Ash shaman (archery, level 81): +8% XP an hour; supplies worth 1687 an hour bring 3725
 PASS  Ash shaman: archery's supply pays for itself
 PASS  Obsidian golem: with supplies, magic still wins
 Obsidian golem (magic, level 86): +11% XP an hour; supplies worth 3691 an hour bring 6412
@@ -1402,7 +1434,7 @@ PASS  Sky reaver: with supplies, melee still wins
 Sky reaver (melee, level 91): +12% XP an hour; supplies worth 2300 an hour bring 6443
 PASS  Sky reaver: melee's supply pays for itself
 PASS  Ember sorcerer: with supplies, archery still wins
-Ember sorcerer (archery, level 96): +10% XP an hour; supplies worth 3654 an hour bring 5632
+Ember sorcerer (archery, level 96): +10% XP an hour; supplies worth 1583 an hour bring 5632
 PASS  Ember sorcerer: archery's supply pays for itself
 PASS  Fletching and Smithing supply recipes within 10% of their tier rate
 PASS  Tier 3: a draw of runes sells for about what a vein's ore does (16 and 14)

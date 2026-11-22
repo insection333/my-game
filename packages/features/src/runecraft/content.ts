@@ -30,6 +30,8 @@ const built = gatheringContent({
     value: VALUE[i],
     standard: `${rune}-stone`,
     rich: `ancient-${rune}-stone`,
+    // From tier 5, a ley stone: luck over XP and yield (session 176).
+    ...(i >= 4 ? { lucky: `${rune}-ley-stone` } : {}),
     per: 8,
     ...(KEYS[i] ? { needs: `${KEYS[i]}-key` } : {}),
   })),

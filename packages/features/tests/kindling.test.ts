@@ -7,13 +7,16 @@ import { describe, expect, it } from 'vitest';
 import { actionRegistry, FEATURES } from '../src/index.ts';
 import { kindling } from '../src/kindling/index.ts';
 import { skillActions } from '../src/shared/catalog.ts';
+import { extraYieldPct } from '../src/shared/complete.ts';
+import { perksAt } from '../src/shared/skill.ts';
+import { LADDER } from '../src/woodcutting/content.ts';
 import { KINDLE_XP, kindlingsIn, pathBonus, PATHS, pathPct } from '../src/shared/kindling.ts';
 
 const T0 = Date.UTC(2026, 9, 28, 9);
 const engine = createEngine(actionRegistry(FEATURES, () => true));
 const best = skillActions()
   .find((s) => s.skill === 'woodcutting')!
-  .actions.at(-1)!;
+  .actions.find((a) => a.id === 'ancient-tree')!;
 const tree = { feature: 'woodcutting', id: best.id };
 const log = best.gives![0].item;
 
@@ -26,10 +29,10 @@ const choose = (s: State, path: string | null, skill = 'woodcutting') =>
   kindling.routes.path.run(s, { skill, path }, T0) as { state: State; result: { ok: boolean } };
 
 /** Two hours of the best tree, from a state: what it brought and what it announced. */
-function chop(s: State, seed = 7) {
+function chop(s: State, seed = 7, hours = 2) {
   const rng = seeded(seed);
   const started = engine.command(s, T0, { type: 'start', lane: 'gathering', action: tree }, rng).state;
-  const out = engine.advance(started, T0 + 2 * HOUR, rng);
+  const out = engine.advance(started, T0 + hours * HOUR, rng);
   return {
     state: out.state,
     xp: out.state.skills.woodcutting.xp - s.skills.woodcutting.xp,
@@ -76,12 +79,18 @@ describe('kindling', () => {
 
   it('pays what each Path says: Lore more XP, Bounty more logs, Fortune more finds', () => {
     const top = XP_TABLE[MAX_LEVEL];
-    const none = chop(at(top));
-    const lore = chop(at(top, 'lore'));
-    const bounty = chop(at(top, 'bounty'));
+    // Twelve hours, so the Path of Bounty's chance shows through the luck of the draw.
+    const none = chop(at(top), 7, 12);
+    const lore = chop(at(top, 'lore'), 7, 12);
+    const bounty = chop(at(top, 'bounty'), 7, 12);
     expect(lore.xp / none.xp).toBeCloseTo(1.15, 1);
     expect(lore.logs).toBe(none.logs);
-    expect(bounty.logs / none.logs).toBeGreaterThan(1.1);
+    // As many more logs as the Path's chance says, on top of the perks' and the season's (within the draw).
+    const perks = perksAt(LADDER, MAX_LEVEL).extraYield;
+    const pct = (s: State) => extraYieldPct(s, 'woodcutting', perks, false, 1, T0);
+    expect(pct(at(top, 'bounty')) - pct(at(top))).toBe(15);
+    const said = (100 + pct(at(top, 'bounty'))) / (100 + pct(at(top)));
+    expect(bounty.logs / none.logs).toBeCloseTo(said, 1);
     expect(bounty.xp).toBe(none.xp);
     expect(pathBonus(at(top, 'fortune'), 'woodcutting', 'finds')).toBe(50);
   });

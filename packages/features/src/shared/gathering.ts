@@ -24,6 +24,9 @@ export interface GatheringTier {
   value: number;
   standard: string;
   rich: string;
+  /** From tier 5 (session 176), a third action ten levels in: the tier's item more slowly, finds twice as
+   *  likely an hour. */
+  lucky?: string;
   /** An item both actions need but keep (a standing stone's key). */
   needs?: string;
   /** Items one action gives (Runecraft draws eight runes at once); one if not said. */
@@ -55,9 +58,14 @@ export interface GatherAction {
   gives: { item: string; count: number }[];
   /** What it needs to have but keeps. */
   needs?: { item: string }[];
-  /** Rare and Legendary finds roll at this multiple per action (the same per hour). */
+  /** Rare and Legendary finds roll at this multiple per action (the same per hour; twice it, lucky). */
   findMultiple: number;
+  /** The third choice of a late tier (session 176): luck over XP and yield. */
+  lucky?: boolean;
 }
+
+/** The lucky actions (session 176): this much slower, finds this many times an action (twice an hour). */
+export const LUCKY = { SLOWER: 1.25, FINDS: 2.5 } as const;
 
 export function gatheringContent(spec: GatheringSpec) {
   const actions: GatherAction[] = spec.tiers.flatMap((t, i) => {
@@ -89,6 +97,22 @@ export function gatheringContent(spec: GatheringSpec) {
         ...needs,
         findMultiple: 1.5,
       },
+      ...(t.lucky
+        ? [
+            {
+              id: t.lucky,
+              level: level + 10,
+              tier: i + 1,
+              rich: false,
+              lucky: true,
+              seconds: seconds * LUCKY.SLOWER,
+              xp,
+              gives: [{ item: t.item, count: per }],
+              ...needs,
+              findMultiple: LUCKY.FINDS,
+            },
+          ]
+        : []),
     ];
   });
   const items: Item[] = [
@@ -99,7 +123,16 @@ export function gatheringContent(spec: GatheringSpec) {
     ),
     ...spec.finds.map((f): Item => ({ id: f.item, kind: 'find', value: spec.findValues[f.item] ?? 0 })),
   ];
-  const ladder = fillPerks(buildLadder(actions, []), spec.perks, spec.capstones);
+  // The lucky actions (session 176) join their levels after the perks are placed, so no perk is lost.
+  const ladder = fillPerks(
+    buildLadder(
+      actions.filter((a) => !a.lucky),
+      [],
+    ),
+    spec.perks,
+    spec.capstones,
+  );
+  for (const a of actions.filter((x) => x.lucky)) ladder[a.level - 1].push({ type: 'action', action: a.id });
   return { actions, items, ladder };
 }
 

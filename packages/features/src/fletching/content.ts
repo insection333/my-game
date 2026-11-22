@@ -32,9 +32,9 @@ const LOG_VALUE = [1, 4, 14, 35, 70, 115, 180, 270];
 /** How many arrows one fletching makes. */
 export const BATCH = 25;
 
-export const RECIPES: Fletch[] = METALS.map((metal, i) => {
+export const RECIPES: Fletch[] = METALS.flatMap((metal, i) => {
   const seconds = TIER_SECONDS[i] * 2;
-  return {
+  const arrows: Fletch = {
     id: `${metal}-arrows`,
     level: TIER_LEVELS[i],
     tier: i + 1,
@@ -47,6 +47,19 @@ export const RECIPES: Fletch[] = METALS.map((metal, i) => {
     xp: Math.round((TIER_XP_PER_HOUR[i] * seconds) / 3600),
     findMultiple: 1,
   };
+  // From tier 5 (session 176), the same arrows fletched by hand seven levels in: slower, finds twice as
+  // likely an hour, so no gap between new recipes passes ten levels.
+  if (i < 4) return [arrows];
+  return [
+    arrows,
+    {
+      ...arrows,
+      id: `hand-fletched-${metal}-arrows`,
+      level: arrows.level + 7,
+      seconds: seconds * 1.25,
+      findMultiple: 2.5,
+    },
+  ];
 });
 
 export const FINDS: Find[] = [
@@ -75,8 +88,13 @@ export const ITEMS: Item[] = [
   ...FINDS.map((f): Item => ({ id: f.item, kind: 'find', value: FIND_VALUE[f.item] ?? 0 })),
 ];
 
+const isHand = (r: Fletch) => r.id.startsWith('hand-fletched-');
 export const LADDER = fillPerks(
-  buildLadder(RECIPES, []),
+  // Hand-fletched arrows (session 176) join their levels after the perks are placed, so no perk is lost.
+  buildLadder(
+    RECIPES.filter((r) => !isHand(r)),
+    [],
+  ),
   [
     // More arrows, not faster XP: with one recipe a tier, a speed perk would fill most of the ladder.
     { perk: 'fine-fletching', effect: { kind: 'extraYield', pct: 3 } },
@@ -89,3 +107,4 @@ export const LADDER = fillPerks(
     99: { perk: 'grandmaster-fletcher', effect: { kind: 'saveInput', pct: 10 } },
   },
 );
+for (const r of RECIPES.filter(isHand)) LADDER[r.level - 1].push({ type: 'action', action: r.id });

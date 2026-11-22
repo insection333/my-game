@@ -127,6 +127,7 @@ function SkillPage({ feature }: { feature: Feature }) {
                           a.xpPerHour,
                           a.gives,
                           ...(a.heals ? [a.heals] : []),
+                          ...(a.luck ? [a.luck] : []),
                           ...(a.takes ? [a.takes] : []),
                           ...(a.needs ? [a.needs] : []),
                         ]

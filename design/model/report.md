@@ -146,10 +146,13 @@ PASS  Mastery pays: at woodcutting 40, Yew tree (mastery 10) earns 88% of the be
 PASS  Mastery pays: at woodcutting 44, Old yew (mastery 6) earns 81% of the best fresh action of its kind
 PASS  Mastery pays: at woodcutting 50, Maple tree (mastery 10) earns 124% of the best fresh action of its kind
 PASS  Mastery pays: at woodcutting 54, Old maple (mastery 6) earns 115% of the best fresh action of its kind
+PASS  Mastery pays: at woodcutting 60, Maple grove (mastery 6) earns 114% of the best fresh action of its kind
 PASS  Mastery pays: at woodcutting 65, Silverbark tree (mastery 10) earns 124% of the best fresh action of its kind
 PASS  Mastery pays: at woodcutting 69, Old silverbark (mastery 5) earns 112% of the best fresh action of its kind
+PASS  Mastery pays: at woodcutting 75, Silverbark grove (mastery 6) earns 114% of the best fresh action of its kind
 PASS  Mastery pays: at woodcutting 80, Elderwood tree (mastery 10) earns 123% of the best fresh action of its kind
 PASS  Mastery pays: at woodcutting 84, Old elderwood (mastery 5) earns 111% of the best fresh action of its kind
+PASS  Mastery pays: at woodcutting 90, Elderwood grove (mastery 6) earns 113% of the best fresh action of its kind
 PASS  Mastery pays: at woodcutting 95, Ancient tree (mastery 10) earns 122% of the best fresh action of its kind
 PASS  Mastery pays: at woodcutting 99, Old ancient (mastery 5) earns 111% of the best fresh action of its kind
 PASS  Mastery pays: at mining 11, Copper vein (mastery 8) earns 90% of the best fresh action of its kind
@@ -162,10 +165,13 @@ PASS  Mastery pays: at mining 40, Coal vein (mastery 10) earns 88% of the best f
 PASS  Mastery pays: at mining 44, Deep coal seam (mastery 6) earns 81% of the best fresh action of its kind
 PASS  Mastery pays: at mining 50, Moonsilver vein (mastery 10) earns 124% of the best fresh action of its kind
 PASS  Mastery pays: at mining 54, Deep moonsilver seam (mastery 6) earns 115% of the best fresh action of its kind
+PASS  Mastery pays: at mining 60, Moonsilver geode (mastery 6) earns 114% of the best fresh action of its kind
 PASS  Mastery pays: at mining 65, Star-iron vein (mastery 10) earns 124% of the best fresh action of its kind
 PASS  Mastery pays: at mining 69, Deep star-iron seam (mastery 5) earns 112% of the best fresh action of its kind
+PASS  Mastery pays: at mining 75, Star-iron geode (mastery 6) earns 114% of the best fresh action of its kind
 PASS  Mastery pays: at mining 80, Ember vein (mastery 10) earns 123% of the best fresh action of its kind
 PASS  Mastery pays: at mining 84, Deep ember seam (mastery 5) earns 111% of the best fresh action of its kind
+PASS  Mastery pays: at mining 90, Ember geode (mastery 6) earns 113% of the best fresh action of its kind
 PASS  Mastery pays: at mining 95, Dawnstone vein (mastery 10) earns 122% of the best fresh action of its kind
 PASS  Mastery pays: at mining 99, Deep dawnstone seam (mastery 5) earns 111% of the best fresh action of its kind
 PASS  Mastery pays: at fishing 11, Perch shallows (mastery 8) earns 90% of the best fresh action of its kind
@@ -178,10 +184,13 @@ PASS  Mastery pays: at fishing 40, Salmon shallows (mastery 10) earns 88% of the
 PASS  Mastery pays: at fishing 44, Deep salmon pool (mastery 6) earns 81% of the best fresh action of its kind
 PASS  Mastery pays: at fishing 50, Moon carp shallows (mastery 10) earns 124% of the best fresh action of its kind
 PASS  Mastery pays: at fishing 54, Deep moon carp pool (mastery 6) earns 115% of the best fresh action of its kind
+PASS  Mastery pays: at fishing 60, Moon carp spawning run (mastery 6) earns 114% of the best fresh action of its kind
 PASS  Mastery pays: at fishing 65, Silver eel shallows (mastery 10) earns 124% of the best fresh action of its kind
 PASS  Mastery pays: at fishing 69, Deep silver eel pool (mastery 5) earns 112% of the best fresh action of its kind
+PASS  Mastery pays: at fishing 75, Silver eel spawning run (mastery 6) earns 114% of the best fresh action of its kind
 PASS  Mastery pays: at fishing 80, Ember char shallows (mastery 10) earns 123% of the best fresh action of its kind
 PASS  Mastery pays: at fishing 84, Deep ember char pool (mastery 5) earns 111% of the best fresh action of its kind
+PASS  Mastery pays: at fishing 90, Ember char spawning run (mastery 6) earns 113% of the best fresh action of its kind
 PASS  Mastery pays: at fishing 95, Dawn sturgeon shallows (mastery 10) earns 122% of the best fresh action of its kind
 PASS  Mastery pays: at fishing 99, Deep dawn sturgeon pool (mastery 5) earns 111% of the best fresh action of its kind
 PASS  Mastery pays: at runecraft 11, Spark stone (mastery 8) earns 90% of the best fresh action of its kind
@@ -194,10 +203,13 @@ PASS  Mastery pays: at runecraft 40, Earth stone (mastery 10) earns 88% of the b
 PASS  Mastery pays: at runecraft 44, Ancient earth stone (mastery 6) earns 81% of the best fresh action of its kind
 PASS  Mastery pays: at runecraft 50, Moon stone (mastery 10) earns 124% of the best fresh action of its kind
 PASS  Mastery pays: at runecraft 54, Ancient moon stone (mastery 6) earns 115% of the best fresh action of its kind
+PASS  Mastery pays: at runecraft 60, Moon ley stone (mastery 6) earns 114% of the best fresh action of its kind
 PASS  Mastery pays: at runecraft 65, Star stone (mastery 10) earns 124% of the best fresh action of its kind
 PASS  Mastery pays: at runecraft 69, Ancient star stone (mastery 5) earns 112% of the best fresh action of its kind
+PASS  Mastery pays: at runecraft 75, Star ley stone (mastery 6) earns 114% of the best fresh action of its kind
 PASS  Mastery pays: at runecraft 80, Ember stone (mastery 10) earns 123% of the best fresh action of its kind
 PASS  Mastery pays: at runecraft 84, Ancient ember stone (mastery 5) earns 111% of the best fresh action of its kind
+PASS  Mastery pays: at runecraft 90, Ember ley stone (mastery 6) earns 113% of the best fresh action of its kind
 PASS  Mastery pays: at runecraft 95, Dawn stone (mastery 10) earns 122% of the best fresh action of its kind
 PASS  Mastery pays: at runecraft 99, Ancient dawn stone (mastery 5) earns 111% of the best fresh action of its kind
 Smithing: every recipe in a tier pays the same XP an hour; bars are quicker to sell, gear is worth 40% more than its bars.
@@ -458,7 +470,7 @@ PASS  Fen reaver: with supplies, melee still wins
 Fen reaver (melee, level 61): +8% XP an hour; supplies worth 1092 an hour bring 2452
 PASS  Fen reaver: melee's supply pays for itself
 PASS  Bog witch: with supplies, archery still wins
-Bog witch (archery, level 66): +7% XP an hour; supplies worth 1741 an hour bring 2294
+Bog witch (archery, level 66): +7% XP an hour; supplies worth 937 an hour bring 2294
 PASS  Bog witch: archery's supply pays for itself
 PASS  Ash troll: with supplies, magic still wins
 Ash troll (magic, level 71): +11% XP an hour; supplies worth 2559 an hour bring 4587
@@ -467,7 +479,7 @@ PASS  Peak slinger: with supplies, melee still wins
 Peak slinger (melee, level 76): +8% XP an hour; supplies worth 1438 an hour bring 3333
 PASS  Peak slinger: melee's supply pays for itself
 PASS  Ash shaman: with supplies, archery still wins
-Ash shaman (archery, level 81): +8% XP an hour; supplies worth 2466 an hour bring 3725
+Ash shaman (archery, level 81): +8% XP an hour; supplies worth 1687 an hour bring 3725
 PASS  Ash shaman: archery's supply pays for itself
 PASS  Obsidian golem: with supplies, magic still wins
 Obsidian golem (magic, level 86): +11% XP an hour; supplies worth 3691 an hour bring 6412
@@ -476,7 +488,7 @@ PASS  Sky reaver: with supplies, melee still wins
 Sky reaver (melee, level 91): +12% XP an hour; supplies worth 2300 an hour bring 6443
 PASS  Sky reaver: melee's supply pays for itself
 PASS  Ember sorcerer: with supplies, archery still wins
-Ember sorcerer (archery, level 96): +10% XP an hour; supplies worth 3654 an hour bring 5632
+Ember sorcerer (archery, level 96): +10% XP an hour; supplies worth 1583 an hour bring 5632
 PASS  Ember sorcerer: archery's supply pays for itself
 PASS  Fletching and Smithing supply recipes within 10% of their tier rate
 PASS  Tier 3: a draw of runes sells for about what a vein's ore does (16 and 14)

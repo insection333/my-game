@@ -36,6 +36,8 @@ const built = gatheringContent({
     value: VALUE[i],
     standard: `${fish}-shallows`,
     rich: `deep-${fish}-pool`,
+    // From tier 5, a spawning run: luck over XP and yield (session 176).
+    ...(i >= 4 ? { lucky: `${fish}-spawning-run` } : {}),
   })),
   perks: [
     { perk: 'quick-cast', effect: { kind: 'speed', pct: 2.5 } },

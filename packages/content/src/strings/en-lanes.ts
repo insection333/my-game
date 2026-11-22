@@ -10,6 +10,8 @@ export const lanes = {
   'lane.next': 'Next: {action}',
   // A row queued in a lane (session 124), beside a running row's 'action.working'.
   'action.queued': 'Next in your lane',
+  // A lucky action (session 176): slower, its finds twice as likely an hour.
+  'action.luck': 'Rare and Legendary finds twice as likely an hour',
   // Ingredients short of one go, said on the row (session 125).
   'action.takesShort': 'Takes {items}; short of {missing}',
   'list.and': '{first} and {last}',

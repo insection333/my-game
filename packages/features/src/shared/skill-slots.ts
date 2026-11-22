@@ -31,6 +31,8 @@ export interface SkillAction {
   takes?: { item: string; count: number }[];
   /** What it needs to have but keeps (a standing stone's key). */
   needs?: { item: string }[];
+  /** Rare and Legendary finds roll at this multiple an action (session 176: the lucky actions). */
+  findMultiple?: number;
 }
 
 /** What the skill slots give the shell, so the page can type what it draws. */
@@ -63,6 +65,8 @@ export interface SkillActionRow {
   needs: string | null;
   /** What the food it makes heals in your fights ("Each heals 161"), or null when it makes no food. */
   heals: string | null;
+  /** A lucky action's finds, twice as likely an hour (session 176), or null. */
+  luck: string | null;
   mastery: string;
   /** The mastery step reached, 0 to 10. */
   masteryStep: number;
@@ -222,6 +226,7 @@ export function skillSlots(def: SkillDef): Record<string, SlotFill> {
               })
             : null,
           heals: food === undefined ? null : t('action.heals', { health: fmt.int(healsFor(state, food)) }),
+          luck: (a.findMultiple ?? 1) >= 2 ? t('action.luck') : null,
           mastery: t('mastery.step', { step: fmt.int(step) }),
           masteryStep: step,
           masteryProgress: to ? Math.min(1, (done - from) / (to - from)) : 1,

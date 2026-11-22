@@ -111,7 +111,7 @@ Fishing is built the same way: each tier's shallows, and its deep pool four leve
 
 Runecraft is built the same way too: each tier's standing stone, and its ancient stone four levels later ("Spark stone", "Ancient spark stone"). A draw gives eight of the tier's runes (sixteen at an ancient stone), each worth an eighth of the tier's ore, so Runecraft pays as Mining does. Every stone past the first needs that tier's key, which Smithing binds from two bars and which is kept, never used up.
 
-Rich actions ("Old pine", "Deep copper seam") are slower and give two items each: the choice between XP and materials. Smithing needs more ore than one fresh vein supplies, so rich seams, mastery and the fire's second lane are how a smith keeps the forge fed.
+Rich actions ("Old pine", "Deep copper seam") are slower and give two items each: the choice between XP and materials. From tier 5 (session 176) each gathering skill has a third choice ten levels into the tier, a lucky action ("Maple grove", "Moonsilver geode", "Moon carp spawning run", "Moon ley stone"): a quarter slower, one item each, its Rare and Legendary finds rolled at 2.5 times per action (twice as likely an hour), so the choice in a late tier is XP, materials or luck, and no gap between new actions passes ten levels. Fletching has the same from tier 5: hand-fletched arrows seven levels in, a quarter slower for finds twice as likely an hour. Smithing needs more ore than one fresh vein supplies, so rich seams, mastery and the fire's second lane are how a smith keeps the forge fed.
 
 *Generated:*
 
