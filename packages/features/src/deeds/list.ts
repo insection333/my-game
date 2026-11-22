@@ -21,7 +21,10 @@ export const CATEGORIES: readonly { id: string; families: readonly string[] }[] 
     families: ['foe', 'region', 'defeats', 'gear', 'castle', 'fortresses', 'routs', 'warMarks', 'halls'],
   },
   { id: 'finds', families: ['legendary', 'log', 'collector'] },
-  { id: 'runs', families: ['bossFirst', 'boss', 'trophy', 'trophies', 'runLength', 'runs', 'twists', 'relic'] },
+  {
+    id: 'runs',
+    families: ['bossFirst', 'boss', 'trophy', 'trophies', 'runLength', 'runs', 'twists', 'relic', 'realm'],
+  },
   { id: 'home', families: ['fire', 'gold', 'store', 'works', 'steading', 'season', 'seasons', 'weeks', 'hidden'] },
 ];
 

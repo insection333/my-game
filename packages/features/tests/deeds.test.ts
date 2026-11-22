@@ -55,6 +55,8 @@ function everything(): State {
       wins: Object.fromEntries(BOSSES.map((b) => [b.id, 100])),
       runs: { '1': 100, '2': 80, '4': 50, '8': 20 },
       twists: TWISTS.map((x) => x.id),
+      // Half a year of the realm's boss falling with their strike (session 174).
+      realm: { day: null, claimed: null, fallen: 26 },
     },
     // A castle at level 25, fifty fortresses taken, every relic forged and every study made.
     castle: {

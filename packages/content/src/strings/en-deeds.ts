@@ -121,6 +121,10 @@ export const deeds = {
   'deed.relic-full.text': 'Raise a relic to its last rank.',
   'deed.relic-all.name': 'Reliquary',
   'deed.relic-all.text': 'Raise all {count} relics to their last rank.',
+  'deed.realmFirst.name': "The realm's champion",
+  'deed.realmFirst.text': "Strike the realm's boss in a week it falls, and take your share.",
+  'deed.realm.name': "The realm's boss: {count} falls",
+  'deed.realm.text': "Strike the realm's boss in {count} weeks it falls, and take your share each time.",
 
   // The Deeds tab.
   'deeds.title': 'Deeds',
@@ -177,6 +181,7 @@ export const deeds = {
   'deeds.family.runs': 'Pathfinding',
   'deeds.family.twists': 'Twists',
   'deeds.family.relic': 'Relics',
+  'deeds.family.realm': "The realm's boss",
   'deeds.family.fire': 'The fire',
   'deeds.family.gold': 'Gold',
   'deeds.family.store': 'The Storehouse',

@@ -18,6 +18,6 @@ export function mirrored(state: State, castle: castleEngine.Castle | null, now: 
   return { ...state, features: { ...state.features, castle: m } };
 }
 
-/** The save with its castle mirror as of now. */
+/** The save with its castle mirror as of now, and the realm's week as it stands (session 174). */
 export const withCastle = (ctx: Ctx, playerId: string, state: State, now: number): State =>
-  mirrored(state, new CastleStore(ctx).read(playerId), now);
+  ctx.realm.mirror(playerId, mirrored(state, new CastleStore(ctx).read(playerId), now), now);

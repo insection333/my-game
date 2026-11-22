@@ -1,0 +1,35 @@
+// The realm's boss's events in words (session 174), as the moments and the notices tray say them.
+import { fmt, t } from '@idle-clash/content';
+import type { GameEvent } from '@idle-clash/kernel';
+
+type RealmEvent = Extract<GameEvent, { type: 'realmFought' | 'realmFell' | 'realmShare' }>;
+
+const nameOf = (boss: string) => t('realm.name', { boss: t(`boss.${boss}`) });
+
+export function realmWords(e: RealmEvent): { title: string; body: string | null } {
+  switch (e.type) {
+    case 'realmFought':
+      return e.won
+        ? {
+            title: t('realm.struck', { name: nameOf(e.boss) }),
+            body:
+              e.marks === 1
+                ? t('realm.struckPaysOne', { gold: fmt.int(e.gold) })
+                : t('realm.struckPays', { gold: fmt.int(e.gold), marks: fmt.int(e.marks) }),
+          }
+        : { title: t('realm.held', { name: nameOf(e.boss) }), body: t('realm.heldBody') };
+    case 'realmFell':
+      return {
+        title: t('realm.fallen', { name: nameOf(e.boss) }),
+        body: t('realm.fallenBody', { strikes: fmt.int(e.strikes) }),
+      };
+    case 'realmShare':
+      return {
+        title: t('realm.share', { name: nameOf(e.boss) }),
+        body:
+          e.marks === 1
+            ? t('realm.sharePaysOne', { gold: fmt.int(e.gold) })
+            : t('realm.sharePays', { gold: fmt.int(e.gold), marks: fmt.int(e.marks) }),
+      };
+  }
+}

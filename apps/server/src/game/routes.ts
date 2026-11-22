@@ -128,6 +128,8 @@ export function gameRoutes(app: FastifyInstance, ctx: Ctx, features: readonly Fe
           ...(season ? [{ ...ctx.hiscores.ladder(season, req.playerId!), skill: SEASON }] : []),
           ...allSkills().map((skill) => ctx.hiscores.ladder(skill, req.playerId!)),
           castlesLadder(ctx.db, req.playerId!),
+          // The week's strikes on the realm's boss (session 174).
+          ctx.realm.ladder(req.playerId!, at),
         ],
       } satisfies HiscoresResponse;
     },

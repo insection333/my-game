@@ -148,6 +148,13 @@ export const WEEKS: Steps = [
   [26, 'elite'],
   [52, 'master'],
 ];
+/** The realm's boss (session 174): weeks it fell with this player's strike. */
+export const REALM_FALLS: Steps = [
+  [1, 'easy'],
+  [5, 'hard'],
+  [13, 'elite'],
+  [26, 'master'],
+];
 /** The hidden deeds' numbers. */
 export const HIDDEN = { jack: 25, even: 10, hoard: 10_000 };
 

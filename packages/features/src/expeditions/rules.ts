@@ -14,6 +14,7 @@ import { dayOf, fightBoss, playBoss, restedToday } from './boss.ts';
 import { cacheAt, modsAt, playStage, stageCount } from './stage.ts';
 import { steadingMarksPct } from '../shared/steading.ts';
 import { seasonMarksPct } from '../shared/season.ts';
+import { REALM_RULES } from './realm.ts';
 
 /** Why a fighter cannot take on a foe now: no weapon, or hurt with nothing to eat. */
 function unfit(ctx: ActionContext, foe: Foe, gives: string[]): StopReason | null {
@@ -139,4 +140,5 @@ function bossRules(boss: Boss): ActionRules {
 export const RULES: Record<string, ActionRules> = {
   ...Object.fromEntries(REGIONS.map((r) => [r, runRules(r)])),
   ...Object.fromEntries(BOSSES.map((b) => [b.id, bossRules(b)])),
+  realm: REALM_RULES,
 };

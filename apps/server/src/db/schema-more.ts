@@ -1,0 +1,70 @@
+// The server's tables from session 171 onward, re-exported by schema.ts (which drizzle-kit reads): notices
+// while away and the realm's boss of the week.
+import { index, integer, primaryKey, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+
+/** The server's own settings, made once and kept (session 171: the keys that sign its notices). */
+export const serverSettings = sqliteTable('server_settings', {
+  key: text('key').primaryKey(),
+  value: text('value').notNull(),
+});
+
+/** Where a player's notices while away go (session 171): one row for each browser they switched them on
+ *  in, with the time zone it was in, so a notice never comes at night. */
+export const pushSubs = sqliteTable(
+  'push_subs',
+  {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    playerId: text('player_id').notNull(),
+    endpoint: text('endpoint').notNull().unique(),
+    p256dh: text('p256dh').notNull(),
+    auth: text('auth').notNull(),
+    tz: text('tz').notNull(),
+    createdAt: integer('created_at').notNull(),
+  },
+  (t) => [index('push_subs_player').on(t.playerId)],
+);
+
+/** Notices waiting to be sent to a player who is away (session 171): a lane foreseen to stop, the lanes
+ *  about to rest, a siege. Dropped when the player comes back; sent by the sweep once due. */
+export const pushDue = sqliteTable(
+  'push_due',
+  {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    playerId: text('player_id').notNull(),
+    kind: text('kind').notNull(),
+    at: integer('at').notNull(),
+    data: text('data').notNull(),
+  },
+  (t) => [index('push_due_at').on(t.at), index('push_due_player').on(t.playerId)],
+);
+
+/** How many notices a player was sent on a day of their own clock (session 171): three at most. */
+export const pushSent = sqliteTable(
+  'push_sent',
+  {
+    playerId: text('player_id').notNull(),
+    day: text('day').notNull(),
+    count: integer('count').notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.playerId, t.day] })],
+);
+
+/** The realm's boss of the week (session 174): how many strikes it needs and when it fell. */
+export const realmWeeks = sqliteTable('realm_weeks', {
+  week: text('week').primaryKey(),
+  needed: integer('needed').notNull(),
+  fellAt: integer('fell_at'),
+});
+
+/** Each player's strikes on the realm's boss in a week, and when their first came (ties on the week's
+ *  ladder go to whoever struck first). */
+export const realmStrikes = sqliteTable(
+  'realm_strikes',
+  {
+    week: text('week').notNull(),
+    playerId: text('player_id').notNull(),
+    strikes: integer('strikes').notNull(),
+    firstAt: integer('first_at').notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.week, t.playerId] }), index('realm_strikes_week').on(t.week, t.strikes)],
+);

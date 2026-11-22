@@ -7,4 +7,6 @@ export const unrankedNote = (skill: string): string =>
     ? t('hiscores.unrankedCastle')
     : skill === 'season'
       ? t('hiscores.unrankedSeason')
-      : t('hiscores.unranked');
+      : skill === 'realm'
+        ? t('hiscores.unrankedRealm')
+        : t('hiscores.unranked');

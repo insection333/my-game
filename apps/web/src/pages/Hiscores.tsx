@@ -3,7 +3,7 @@
 // Deeds.tsx. The ladders come from the server; the page asks again each minute while it is open.
 import type { HiscoreRow, HiscoresResponse } from '@idle-clash/contracts';
 import { fmt, hasString, t } from '@idle-clash/content';
-import { kindlingData, seasonView } from '@idle-clash/features';
+import { kindlingData, realmBossIn, seasonView, weekOf } from '@idle-clash/features';
 import { FireSeal, hasIcon, ItemIcon, Panel, Picture, Pill, Tabs } from '@idle-clash/ui';
 import { useEffect, useState, type ReactNode } from 'react';
 import { api } from '../api.ts';
@@ -65,10 +65,15 @@ export function Hiscores() {
         ? t('hiscores.castles')
         : skill === 'season'
           ? t('hiscores.season')
-          : t(`skill.${skill}`);
+          : skill === 'realm'
+            ? t('hiscores.realm')
+            : t(`skill.${skill}`);
   const castles = ladder?.skill === 'castle';
   // This season's ladder ranks by goals done alone: it has no level column (session 165).
   const seasonal = ladder?.skill === 'season';
+  // The week's strikes on the realm's boss (session 174): strikes alone, no level column.
+  const realm = ladder?.skill === 'realm';
+  const boss = realmBossIn(weekOf(now)).id;
   const you = ladder?.you ?? null;
   const shown = ladder?.rows ?? [];
   // A player not yet listed is in no one's rows, their own included: their place is pinned beneath,
@@ -93,7 +98,7 @@ export function Hiscores() {
               href: l.skill === 'total' ? '/hiscores' : `/hiscores?skill=${l.skill}`,
               label: name(l.skill),
               current: l.skill === ladder?.skill,
-              icon: <LadderIcon skill={l.skill} picture={season?.picture} />,
+              icon: <LadderIcon skill={l.skill === 'realm' ? boss : l.skill} picture={season?.picture} />,
             }))}
           />
         </div>
@@ -104,18 +109,30 @@ export function Hiscores() {
               {ladder && ladder.rows.length === 0 && !you && <p className={s.note}>{t('hiscores.empty')}</p>}
               {ladder && (ladder.rows.length > 0 || you) && (
                 <table className={s.table}>
-                  <caption className={s.caption}>{seasonal && season ? season.title : name(ladder.skill)}</caption>
+                  <caption className={s.caption}>
+                    {seasonal && season
+                      ? season.title
+                      : realm
+                        ? t('realm.name', { boss: t(`boss.${boss}`) })
+                        : name(ladder.skill)}
+                  </caption>
                   <thead>
                     <tr>
                       <th scope="col">{t('hiscores.rank')}</th>
                       <th scope="col">{t('hiscores.name')}</th>
-                      {!seasonal && (
+                      {!seasonal && !realm && (
                         <th scope="col" data-num>
                           {castles ? t('hiscores.castleLevel') : t('hiscores.level')}
                         </th>
                       )}
                       <th scope="col" data-num>
-                        {castles ? t('hiscores.rating') : seasonal ? t('hiscores.seasonGoals') : t('hiscores.xp')}
+                        {castles
+                          ? t('hiscores.rating')
+                          : seasonal
+                            ? t('hiscores.seasonGoals')
+                            : realm
+                              ? t('hiscores.realmStrikes')
+                              : t('hiscores.xp')}
                       </th>
                     </tr>
                   </thead>
@@ -177,7 +194,8 @@ function Row({ row, you, ladder }: { row: HiscoreRow; you: boolean; ladder: stri
         : t('hiscores.milestones', { count: fmt.int(row.milestones) })
       : null;
   // On a skill's ladder, its Kindlings past 99 (worked out from the XP, as the game does).
-  const kindled = total || ladder === 'castle' || ladder === 'season' ? 0 : kindlingData.kindlingsIn(row.xp);
+  const kindled =
+    total || ladder === 'castle' || ladder === 'season' || ladder === 'realm' ? 0 : kindlingData.kindlingsIn(row.xp);
   const kindling = kindled > 0 ? t('hiscores.kindled', { count: fmt.int(kindled) }) : null;
   return (
     <tr data-you={you || undefined} style={bannerStyle(row.banner)}>
@@ -213,7 +231,7 @@ function Row({ row, you, ladder }: { row: HiscoreRow; you: boolean; ladder: stri
           </span>
         )}
       </td>
-      {ladder !== 'season' && <td data-num>{fmt.int(row.level)}</td>}
+      {ladder !== 'season' && ladder !== 'realm' && <td data-num>{fmt.int(row.level)}</td>}
       <td data-num>
         {/* Shortened on a narrow ladder ("673.6M"), so a long name keeps its line (session 113). */}
         <span className={s.full}>{fmt.int(row.xp)}</span>
