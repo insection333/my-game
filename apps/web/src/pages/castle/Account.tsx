@@ -128,7 +128,8 @@ export function ReportSheet() {
           ))}
         {findings.length > 0 && (
           <div className={s.sheetSection}>
-            <h3>{t('castle.account.found')}</h3>
+            {/* A scouting finds; any other mission leaves something on them (session 169). */}
+            <h3>{card.mission === 'scout' ? t('castle.account.found') : t('castle.account.did')}</h3>
             {findings.map((f) => (
               <p key={f}>{f}</p>
             ))}

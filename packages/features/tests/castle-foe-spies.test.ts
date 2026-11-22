@@ -28,8 +28,11 @@ const HOUR = 3_600_000;
 const fresh = (): Castle => ({ ...syncCastle(newCastle('a', T0), T0).castle, activeAp: 200 });
 
 describe('spies at the day’s foes', () => {
+  // Session 169: a looser watch than a lord's (48 a level, not 80): a guild of the foe's level gets past it
+  // about 58% of the time, where 40% caught three agents in five.
   it("weigh the Spy Guild against the foe's watch", () => {
-    expect(foeSpyChance(fresh(), fortressKey(1), 1, T0)).toBeCloseTo(0.5 + 0.35 * Math.log(60 / 80), 5);
+    expect(foeSpyChance(fresh(), fortressKey(1), 1, T0)).toBeCloseTo(0.5 + 0.35 * Math.log(60 / 48), 5);
+    expect(foeSpyChance(fresh(), fortressKey(1), 1, T0)).toBeGreaterThan(0.57);
   });
 
   it('poison a stronghold’s wells, and the odds and the battle count it', () => {

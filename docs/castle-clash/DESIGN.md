@@ -317,7 +317,15 @@ The owner asked for a review of Castle Clash early, middle and late, and gave th
     - the bribe is a siege's on a lord of your own rating, at a young castle's share; three missions a foe a day; nothing to scout, as a foe's garrison and trap are known;
     - the orders of the day may ask for a spy from the first day.
     The year's lord, once every skill is at 99, poisons the fortress's wells when that is what stands between the troops and the next tier and a bribe is a tenth of the purse or less (late in the year it seldom is: a bribe is a siege's fee, and the strongholds and the building take the gold).
-38. **The end game's firsts, measured truly** (session 167). The year's check held the wait for a first after 99 to 3 days, and it held at the one seed verify plays by luck: main itself waited 3, 5 and 3 days at seeds 11 to 13, as the castle's firsts come as its gold allows. The wait is now held to 5 days, and at least half the days after 99 must bring a first (session 36's war still carries them: a first on most days, Kindlings and the war between).
+38. **The end game's firsts, measured truly** (session 167). The year's check held the wait for a first after 99 to 3 days, and it held at the one seed verify plays by luck: main itself waited 3, 5 and 3 days at seeds 11 to 13, as the castle's firsts come as its gold allows. The wait is now held to under a week (6 days; 5 in session 167, until session 169's changes to the castle moved one dry spell by a day), and at least half the days after 99 must bring a first, the cadence the end game keeps whatever the seed (17 of 23 days).
+
+39. **A second look at sessions 167 and 168** (session 169, the owner: improvements, then a sweep for bugs and oversights). Found and fixed:
+    - **Spies at the day's foes were a toll.** The foe's watch stood as a lord's watchtower at its level (80 a level), so a guild of the foe's level got past it 40% of the time and a squire's 18%: three agents in five were caught. A mercenary's watch is looser (`ESPIONAGE.FOE_WATCH_BASE`, 48 a level): about 58% at the foe's level, the Spy Guild's level still telling.
+    - **An order that could not be kept.** With lords open three days in, a lord alone in a small realm was ordered to "Besiege a lord" with none in reach, and so never had the three together. A new day's orders are now drawn knowing whether a lord stands in reach (`ordersOf`'s `lordsWithin`, from the server's `lordsWithin`).
+    - **A lord's spies said a siege's limit.** A fourth mission against a lord read "Twice against them today is enough."; it now says three missions (`spyLimit`).
+    - **A spy's account said nothing of what it did.** Wells poisoned read "Nothing changed hands"; its report now says what the mission left on them, under "What your spies did".
+    - **The season's titles stood as the highest.** Listed after Everflame, they were taken as the best title (verify's crowd all wore Greenwarden); they now stand among the plainer titles.
+    - **The page before a castle led with the edict and ended on being raided.** It now leads with the war of the first day and its spies.
 
 ## 12. Phases
 

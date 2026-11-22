@@ -2,7 +2,7 @@
 // The cards (ReportCards.tsx) and the account (Account.tsx, session 42) draw them.
 import { fmt, t } from '@idle-clash/content';
 import type { castleEngine } from '@idle-clash/features';
-import { fortressName, mercName, missionName, outcomeName, trapName } from './labels.ts';
+import { foeMissionDoes, fortressName, mercName, missionDoes, missionName, outcomeName, trapName } from './labels.ts';
 import { reportSheet, when } from './report-model.ts';
 
 export { reportSheet, when };
@@ -23,6 +23,9 @@ export function garrisonLine(report: Record<string, unknown>): string {
     gold: fmt.short(num(report.raidable)),
   });
 }
+
+/** What a mission does, for one of the day's foes or a lord. */
+const missionLeft = (mission: string, foe: boolean) => (foe ? foeMissionDoes(mission) : missionDoes(mission));
 
 /** A report's line and the facts beside it. */
 export function readReport(r: Report): { line: string; facts: string[] } {
@@ -59,6 +62,11 @@ export function readReport(r: Report): { line: string; facts: string[] } {
         facts: [
           d.success === true ? t('castle.report.success') : t('castle.report.caught'),
           ...(report ? [garrisonLine(report)] : []),
+          // What a mission that got through left on them (session 169: its account said "Nothing changed
+          // hands" of wells poisoned).
+          ...(d.success === true && str(d.mission) !== 'scout'
+            ? [missionLeft(str(d.mission), m !== null || typeof d.fortress === 'string')]
+            : []),
         ],
       };
     }

@@ -80,4 +80,10 @@ describe('an incursion asked for', () => {
     const near = Array.from({ length: 60 }, (_, i) => ordersOf(castle(10, `near-${i}`), T0).list).flat();
     expect(near.some((o) => o.kind === 'incursion')).toBe(true);
   });
+
+  // Session 169: a castle open to lords with none in reach (a small realm) was ordered to besiege one.
+  it('never asks for a lord when none stands in reach', () => {
+    for (let i = 0; i < 60; i++)
+      expect(ordersOf(castle(10, `alone-${i}`), T0, false).list.some((o) => o.kind === 'lord')).toBe(false);
+  });
 });

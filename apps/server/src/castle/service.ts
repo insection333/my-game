@@ -9,6 +9,7 @@ import type { Ctx } from '../context.ts';
 import { fail } from '../http.ts';
 import { mirrored } from './mirror.ts';
 import { CastleStore } from './store.ts';
+import { lordsWithin } from './reach.ts';
 import { siege, spy } from './war.ts';
 
 type Castle = E.Castle;
@@ -43,7 +44,9 @@ export function setPurse(io: Io, gold: number): void {
  *  into the war chest) that the treasury still holds. */
 export function loadSynced(io: Io, id: string, castle: Castle | null = io.castles.read(id)): Castle | null {
   if (!castle) return null;
-  const { castle: synced, burned } = E.syncCastle(castle, io.now);
+  // A lord's own castle draws a new day's orders knowing whether a lord stands in reach (session 169).
+  const within = id === io.playerId ? lordsWithin(io.castles, id, castle, io.now) : undefined;
+  const { castle: synced, burned } = E.syncCastle(castle, io.now, within);
   if (burned > 0) {
     io.castles.burn(burned);
     io.castles.write(synced);

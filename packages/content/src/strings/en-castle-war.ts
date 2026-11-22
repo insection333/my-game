@@ -116,6 +116,7 @@ export const castleWar = {
   'castle.account.attack': 'Attack {n}',
   'castle.account.defence': 'Defence {n}',
   'castle.account.found': 'What your spies found',
+  'castle.account.did': 'What your spies did',
   'castle.account.fortune': "The day's fortune: {pct} to the attack",
   'castle.account.ratio': 'Attack over defence: {r}. A breach from {breach}, decisive from {decisive}.',
   'castle.account.youCame': 'You went in:',

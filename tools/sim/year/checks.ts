@@ -33,8 +33,10 @@ const EMPTY_DAYS = 7;
 /** Past 99, the most days running without a first. */
 /** After every skill is at 99: the longest wait for a first, and the share of days with one. 3 days held at
  *  one seed by luck (session 167: main itself waited 3, 5 and 3 days at seeds 11 to 13, as the castle's
- *  firsts come as its gold allows); the wait is held to 5, and most days to bring a first. */
-const ENDGAME_WAIT = 5;
+ *  firsts come as its gold allows, and any change to the castle moves them by a day or two either way;
+ *  session 169 saw 6). The wait is held to under a week, and most days to bring a first, which is the
+ *  cadence the end game keeps whatever the seed. */
+const ENDGAME_WAIT = 6;
 const ENDGAME_DAYS_WITH_A_FIRST = 0.5;
 
 const lastOf = (y: Year, skills: readonly string[]) => Math.max(...skills.map((s) => y.at99[s] ?? Infinity));

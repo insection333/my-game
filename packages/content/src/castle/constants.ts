@@ -110,6 +110,11 @@ export const ESPIONAGE = {
   /** A sabotage's immunity, granted only when a genuine siege consumes it. */
   IMMUNITY_MS: 4 * HOUR,
   /** chance = clamp(0.5 + 0.35 × ln(stealth ÷ detection), 0.10, 0.90) (DESIGN.md section 5.8). */
+  /** The watch at one of the day's foes (session 169): 48 a level, where a lord's watchtower stands at 80,
+   *  so a Spy Guild of the foe's level gets past it about 58% of the time, not 40% (a mercenary garrison
+   *  keeps a looser watch than a lord's own; at 40% three agents in five were caught, and the spies felt
+   *  like a toll). */
+  FOE_WATCH_BASE: 48,
   CHANCE_BASE: 0.5,
   CHANCE_SLOPE: 0.35,
   CHANCE_MIN: 0.1,

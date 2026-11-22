@@ -36,7 +36,9 @@ export interface Synced {
   burned: number;
 }
 
-export function syncCastle(c: Castle, now: number): Synced {
+/** `lordsWithin`: whether any lord stands in reach to besiege today, for a day's orders drawn now (the server
+ *  knows; session 169: a castle open to lords with none in reach was ordered to besiege one). */
+export function syncCastle(c: Castle, now: number, lordsWithin?: boolean): Synced {
   const ap = syncAp(c, now);
   const { castle: kept, burned } = syncUpkeep(ap, now);
   const mended = syncRecovery(kept, now);
@@ -57,7 +59,7 @@ export function syncCastle(c: Castle, now: number): Synced {
     withdrawLockdownUntil:
       mended.withdrawLockdownUntil !== null && mended.withdrawLockdownUntil > now ? mended.withdrawLockdownUntil : null,
     updatedAt: Math.max(mended.updatedAt, now),
-    orders: ordersOf(mended, now),
+    orders: ordersOf(mended, now, lordsWithin),
   };
   return { castle: { ...castle, rating: Math.max(castle.rating, bastionRating(castle)) }, burned };
 }

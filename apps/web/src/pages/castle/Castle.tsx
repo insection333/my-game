@@ -50,6 +50,10 @@ const LABEL: Record<Tab, string> = {
   reports: 'castle.tab.reports',
 };
 
+/** That lords may besiege you, and from how many days on (a count, with its one-form). */
+const lordsLine = (days: number) =>
+  days === 1 ? t('castle.brings.lordsOne') : t('castle.brings.lords', { days: fmt.int(days) });
+
 export function Castle({ path }: { path: string }) {
   const tab = castleTab(path) ?? 'war';
   const { panel } = useLocation();
@@ -76,9 +80,12 @@ export function Castle({ path }: { path: string }) {
                 </div>
               )}
               <ul className={s.brings}>
-                <li>{t('castle.brings.edict')}</li>
-                <li>{t('castle.brings.ap')}</li>
+                {/* The war of the first day first (session 169: the page led with the edict and ended on being
+                    raided, though since session 167 a castle has the day's foes and its spies at once). */}
                 <li>{t('castle.brings.war')}</li>
+                <li>{t('castle.brings.ap')}</li>
+                <li>{t('castle.brings.edict')}</li>
+                <li>{lordsLine(UNLOCKS.LORDS_AFTER_DAYS)}</li>
               </ul>
               {view.open && (
                 <Button variant="primary" onClick={() => void castleAct('open')}>
