@@ -29,6 +29,8 @@ export { laneUsing } from './shared/in-use.ts';
 export * as recap from './shared/recap.ts';
 export { rankUpWords } from './shared/rank-up.ts';
 export { realmWords } from './shared/realm-words.ts';
+export { bountyWords } from './shared/bounty-words.ts';
+export type { BountyView, BountyLine } from './combat/bounty.ts';
 export { RealmMirror, realmBossIn, weekOf, REALM_PER_PLAYER, REALM_LEAST } from './shared/realm.ts';
 export { allSkills, totalLevel } from './shared/standing.ts';
 export { remedyFor, type Remedy } from './shared/remedy.ts';

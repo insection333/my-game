@@ -8,12 +8,14 @@ import { fight, maxHealth, retreatShare, type Fought } from '../shared/combat/fi
 import { countWin, fightXp, spoils } from '../shared/combat/spoils.ts';
 import { combatOf, fighterOf, healthAt, mealsOf, setCombat } from '../shared/combat/state.ts';
 import { skillLevel } from '../shared/skill.ts';
+import { asFought, eliteHeld, ELITE } from '../shared/bounty.ts';
 import { noRoom } from '../shared/storehouse.ts';
 
 export const FEATURE = 'combat';
 
 /** The fight this repetition plays: the same in `duration` (from its start) and `complete`. */
-function play(ctx: ActionContext, foe: Foe): Fought | null {
+function play(ctx: ActionContext, base: Foe): Fought | null {
+  const foe = asFought(ctx.state, base, ctx.startedAt);
   const p = fighterOf(ctx.state, foe);
   if (!p) return null;
   const r = seeded(ctx.seed ?? 0);
@@ -52,9 +54,11 @@ function battle(foe: Foe): ActionRules {
         healthAt: ctx.at,
         retreated: f.retreated ? { foe: foe.id, at: ctx.at } : null,
       });
-      fightXp(ctx, p, foe, f.dealt);
+      // An elite foe (session 175): its finds twice as likely.
+      const elite = eliteHeld(ctx.state, foe.id, ctx.startedAt);
+      fightXp(ctx, p, asFought(ctx.state, foe, ctx.startedAt), f.dealt);
       if (f.retreated) return false;
-      spoils(ctx, p, foe);
+      spoils(ctx, p, foe, elite ? { finds: ELITE.FINDS } : {});
       countWin(ctx, foe.id, true);
     },
   };

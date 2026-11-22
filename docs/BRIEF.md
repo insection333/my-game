@@ -98,6 +98,7 @@ Every pillar has numbers the simulation and real players are measured against; a
 | Pull | Something to finish every day, every week and every season: the day's goal, the week's contract (four tasks of about eight hours of the player's own pace each), the season's ladder (session 172) | The simulation |
 | Competition | Every listed player sees a rival just above and below on each ladder, the gap in their own terms, and hears once a day when a friend passes them on a ladder they climb (session 173) | Server and web tests |
 | Competition | One thing the whole realm does each week: the realm's boss, fought by each player once a day at their own measure, needing four strikes for each player who played the week before, so a realm that plays brings it down (session 174) | Server and features tests |
+| Longevity | Combat has a choice every day and a target after 99: three bounties a day on foes the player fares well against, elite foes past 99 in a style (session 175) | Features tests |
 | All | All five test players return on days 2 and 3, and each can say what they are aiming for next | The five-player test |
 
 ## The long arc

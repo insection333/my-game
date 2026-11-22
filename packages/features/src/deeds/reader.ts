@@ -17,6 +17,7 @@ import { STAGES, stageOf, WORKS } from '../shared/steading.ts';
 import { castleStanding, type CastleStanding } from '../shared/castle/mirror.ts';
 import { bestInTwist, seasonsPlayed } from '../shared/season-state.ts';
 import { weeksKept } from '../shared/weeks.ts';
+import { bountyOf } from '../shared/bounty.ts';
 import { SEASON_PLAYED } from './content.ts';
 
 const GEAR = ['helm', 'body', 'legs', 'weapon'] as const;
@@ -114,6 +115,9 @@ export class Reader {
 
   // Expeditions and bosses.
   private exp = () => expeditionsOf(this.state);
+  /** Bounties done, and elite ones (session 175). */
+  bounties = () => bountyOf(this.state).done;
+  eliteBounties = () => bountyOf(this.state).elites;
   /** Weeks the realm's boss fell with this player's strike, the share taken (session 174). */
   realmFallen = () => this.exp().realm?.fallen ?? 0;
   bossWins = (boss: string) => (Object.hasOwn(this.exp().wins, boss) ? this.exp().wins[boss] : 0);

@@ -4,7 +4,7 @@
 import { fmt, t } from '@idle-clash/content';
 import { BOSSES, LENGTHS, TWISTS } from '../shared/expeditions/data.ts';
 import { relics } from '../shared/expeditions/relics.ts';
-import { deed, REALM_FALLS, lower, type Deed, type DeedTier, type Steps } from './content.ts';
+import { deed, BOUNTIES, ELITE_BOUNTIES, REALM_FALLS, lower, type Deed, type DeedTier, type Steps } from './content.ts';
 import type { Reader } from './reader.ts';
 
 const BOSS_WINS: Steps = [
@@ -144,5 +144,23 @@ export function runs(): Deed[] {
       measure: (r) => r.realmFallen(),
     }),
   );
-  return [...first, ...wins, ...trophies, ...lengths, ...total, twists, ...relicDeeds, ...realm];
+  // The bounty board (session 175): bounties done, and elite ones.
+  const bounties = [
+    ...BOUNTIES.map(([count, tier]) => ['bounties', count, tier, (r: Reader) => r.bounties()] as const),
+    ...ELITE_BOUNTIES.map(([count, tier]) => ['elites', count, tier, (r: Reader) => r.eliteBounties()] as const),
+  ].map(([family, count, tier, measure]) =>
+    deed({
+      id: `${family}-${count}`,
+      family,
+      key: count === 1 ? `deed.${family}First` : `deed.${family}`,
+      brief: true,
+      shows: count === 1 ? 'none' : 'count',
+      tier,
+      target: count,
+      words: { count: fmt.int(count) },
+      mark: fmt.int(count),
+      measure,
+    }),
+  );
+  return [...first, ...wins, ...trophies, ...lengths, ...total, twists, ...relicDeeds, ...realm, ...bounties];
 }

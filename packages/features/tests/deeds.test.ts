@@ -42,6 +42,7 @@ function everything(): State {
   // one of each twist (session 166); a year of weeks' contracts kept (session 172).
   s.features = {
     goals: { claimed: [], weeks: 52 },
+    bounty: { taken: null, day: null, took: [], done: 200, elites: 25 },
     seasons: { goals: { '1': 60, '2': 60, '3': 60, '4': 60, '5': 60, '6': 60 }, seen: 6 },
     steading: { stages: Object.fromEntries(WORKS.map((w) => [w.id, STAGES])) },
     combat: { worn, health: null, healthAt: 0, retreated: null },

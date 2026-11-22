@@ -1,11 +1,11 @@
-/* The Combat page. Phones: loadout, foes, food. Wide: the loadout and food in a column, the foes beside
-   them. */
+/* The Combat page. Phones: loadout, foes, food, bounties. Wide: the loadout, food and bounties in a
+   column, the foes beside them. */
 .layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--s-4);
   align-items: start;
-  grid-template-areas: 'loadout' 'foes' 'food';
+  grid-template-areas: 'loadout' 'foes' 'food' 'bounty';
 }
 
 .loadoutArea {
@@ -19,13 +19,22 @@
 .foodArea {
   grid-area: food;
 }
+/* The bounty board (session 175): last, under the food, so the food a newcomer needs stays on the first
+   screen and a page with no bounties leaves no gap. */
+.bountyArea {
+  grid-area: bounty;
+}
+
+.bountyArea:empty {
+  display: none;
+}
 
 @container main (min-width: 720px) {
   .layout {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
-    grid-template-rows: auto 1fr;
-    /* Each column stacks by itself: the food starts under the loadout. */
-    grid-template-areas: 'loadout foes' 'food foes';
+    grid-template-rows: auto auto 1fr;
+    /* Each column stacks by itself: the food and the bounties start under the loadout. */
+    grid-template-areas: 'loadout foes' 'food foes' 'bounty foes';
   }
 }
 
@@ -251,5 +260,14 @@
   padding: var(--s-2) var(--s-4);
   border-bottom: 1px solid var(--line);
   background: var(--surface-2);
+  font-size: var(--t-small);
+}
+
+/* A bounty's line: its foe, count, pay, and its presses. */
+.bountyNote {
+  margin: 0;
+  max-width: none;
+  padding: var(--s-2) var(--s-4) var(--s-3);
+  color: var(--ink-2);
   font-size: var(--t-small);
 }

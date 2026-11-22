@@ -8,6 +8,7 @@ import { storyOf } from './expeditions/story.ts';
 import { bossFoughtWords } from './expeditions/boss-words.ts';
 import { rankUpWords } from './rank-up.ts';
 import { realmWords } from './realm-words.ts';
+import { bountyWords } from './bounty-words.ts';
 import { seasonOpenedWords } from './season-view.ts';
 import { remedyFor } from './remedy.ts';
 
@@ -193,6 +194,10 @@ export function noticeLine(e: GameEvent): (RecapLine & { at: number }) | null {
         href: '/combat/expeditions',
         at: e.at,
       };
+    }
+    case 'bountyDone': {
+      const w = bountyWords(e);
+      return { kind: 'goal', text: `${w.title}. ${w.body}`, icon: e.foe, href: '/combat', at: e.at };
     }
     case 'passedBy': {
       // Rivals (session 173): who passed you, where, and where you stand now.

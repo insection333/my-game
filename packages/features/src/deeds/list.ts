@@ -18,7 +18,19 @@ export const CATEGORIES: readonly { id: string; families: readonly string[] }[] 
   { id: 'craft', families: ['work', 'mastery', 'masters'] },
   {
     id: 'combat',
-    families: ['foe', 'region', 'defeats', 'gear', 'castle', 'fortresses', 'routs', 'warMarks', 'halls'],
+    families: [
+      'foe',
+      'region',
+      'defeats',
+      'gear',
+      'castle',
+      'fortresses',
+      'routs',
+      'warMarks',
+      'halls',
+      'bounties',
+      'elites',
+    ],
   },
   { id: 'finds', families: ['legendary', 'log', 'collector'] },
   {

@@ -86,6 +86,8 @@ export interface EventMap {
   realmFell: { boss: string; week: string; strikes: number };
   /** This player's share of a fallen realm's boss, taken. */
   realmShare: { boss: string; gold: number; marks: number };
+  /** A bounty done and claimed (session 175): its foe, whether elite, what it paid. */
+  bountyDone: { foe: string; elite: boolean; gold: number; marks: number };
   /** Rivals (session 173): a listed player passed you on a ladder you climb; `foe` is their name as it was
    *  then (emptied if their account goes), `place` yours now. */
   passedBy: { skill: string; foe: string; place: number };
@@ -131,5 +133,6 @@ export const NOTABLE_EVENTS: readonly (keyof EventMap)[] = [
   'realmFought',
   'realmFell',
   'realmShare',
+  'bountyDone',
 ];
 export const isNotable = (e: GameEvent): boolean => NOTABLE_EVENTS.includes(e.type);

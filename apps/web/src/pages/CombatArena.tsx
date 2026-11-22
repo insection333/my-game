@@ -29,10 +29,17 @@ export function useFightClock(): number {
   return at;
 }
 
+/** The boss a realm's foe stands for ("realm:troll-chief:orc-raider"), or null for any other foe. */
+const realmOfFoe = (id: string): string | null => (id.startsWith('realm:') ? id.split(':')[1] : null);
+
 /** The foe's name, and how a sentence names it in its middle and at its start: a foe is a common noun
  *  ("the hollow rat", "The hollow rat misses"), a boss its own name ("the Drowned Warden"). */
 export function foeWords(a: Arena): { name: string; mid: string; start: string } {
-  const name = t(a.boss ? `boss.${a.foe.id}` : `action.combat.${a.foe.id}`);
+  // The realm's boss of the week (session 174) is named for the boss it is, at the player's measure.
+  const realm = realmOfFoe(a.foe.id);
+  const name = realm
+    ? t('realm.name', { boss: t(`boss.${realm}`) })
+    : t(a.boss ? `boss.${a.foe.id}` : `action.combat.${a.foe.id}`);
   const mid = a.boss ? midSentence(name) : t('arena.theFoe', { foe: midSentence(name) });
   return { name, mid, start: mid.charAt(0).toUpperCase() + mid.slice(1) };
 }
@@ -162,7 +169,14 @@ function Arena({ arena, now }: { arena: Arena; now: number }) {
         <span className={s.versus} aria-hidden="true">
           {t('arena.versus')}
         </span>
-        <Side icon={arena.foe.id} name={foeName} hp={at.foeHp} most={arena.foe.hp} fresh={onFoe} slain={at.slain} />
+        <Side
+          icon={realmOfFoe(arena.foe.id) ?? arena.foe.id}
+          name={foeName}
+          hp={at.foeHp}
+          most={arena.foe.hp}
+          fresh={onFoe}
+          slain={at.slain}
+        />
       </div>
       <p className={s.said} data-crit={(latest?.by === 'you' && latest.crit) || undefined}>
         {at.slain
