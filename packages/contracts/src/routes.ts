@@ -285,6 +285,9 @@ export interface Ladder {
   rows: HiscoreRow[];
   /** The asking player's own entry, wherever it is; null before their first XP. */
   you: HiscoreRow | null;
+  /** Rivals (session 173): who stands just above and just below the asking player, wherever they are;
+   *  absent where the player is not listed, or alone. */
+  near?: { above: HiscoreRow | null; below: HiscoreRow | null };
 }
 export interface HiscoresResponse {
   /** Pages open now. */

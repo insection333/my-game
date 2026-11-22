@@ -18,7 +18,9 @@ export const isNotice = (e: GameEvent) =>
     e.type !== 'workRaised' &&
     e.type !== 'findUsed' &&
     e.type !== 'relicRaised') ||
-  (e.type === 'laneStopped' && !isQuietStop(e.reason.code));
+  (e.type === 'laneStopped' && !isQuietStop(e.reason.code)) ||
+  // A rival passing you (session 173): the tray's alone, never a moment.
+  e.type === 'passedBy';
 
 export class Notices {
   private db: BetterSQLite3Database;

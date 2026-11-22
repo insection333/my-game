@@ -243,3 +243,46 @@
 .medal[data-place='3'] {
   background: #d9a774;
 }
+
+/* Rivals (session 173): who stands just above and below you, over the ladder. */
+.rivals {
+  display: grid;
+  margin: 0;
+  padding: var(--s-1) 0;
+  list-style: none;
+  border-bottom: 1px solid var(--line);
+  font-size: var(--t-small);
+}
+
+.rival {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-height: var(--tap);
+  padding: 0 var(--s-4);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.rival:hover {
+  background: var(--surface-2);
+}
+
+.rivalMark {
+  flex: none;
+  width: 1rem;
+  font-size: 0.75rem;
+  text-align: center;
+}
+
+.rivals [data-side='above'] .rivalMark {
+  color: var(--woad);
+}
+
+.rivals [data-side='below'] .rivalMark {
+  color: var(--ink-2);
+}
+
+.rivalText {
+  min-width: 0;
+}

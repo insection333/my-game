@@ -18,6 +18,10 @@ export const LADDER_ROWS = 25;
 /** A player joins the hiscores once one of their actions comes this long after their first: someone
  *  who looks for ten minutes and leaves is never listed. */
 export const LISTED_AFTER_MS = 30 * 60_000;
+/** Rivals (session 173): a player passed hears of it on a ladder they gained on within this time. */
+export const CLIMBING_MS = 7 * 86_400_000;
+/** The most players one write says it passed (the nearest). */
+export const PASSED_AT_ONCE = 3;
 
 interface Top {
   playerId: string;
@@ -45,6 +49,10 @@ interface Row {
 export class Hiscores {
   /** Hears of a climb into a better band of places (session 49), to say it to the player. */
   onRankUp: (playerId: string, events: GameEvent[]) => void = () => undefined;
+  /** Hears of a player passing a rival (session 173), to say it to the one passed. */
+  onPassed: (playerId: string, events: GameEvent[]) => void = () => undefined;
+  /** Each passing said, so one pair on one ladder is said once a day (session 173). */
+  private said = new Map<string, number>();
   private db: BetterSQLite3Database;
   /** When each player's levels were last recorded (since the server started). */
   private heard = new Map<string, number>();
@@ -137,7 +145,10 @@ export class Hiscores {
       };
       had.set(e.skill, row);
       if (isQuiet(e.skill)) continue;
-      this.standings.set(e.skill, { playerId, level: e.level, xp: e.xp, reachedAt: row.reachedAt });
+      const standing = { playerId, level: e.level, xp: e.xp, reachedAt: row.reachedAt };
+      const passed = this.isListed(playerId) ? this.standings.passes(e.skill, standing) : [];
+      this.standings.set(e.skill, standing);
+      if (passed.length) this.passing(playerId, e.skill, passed, at);
       if (this.isListed(playerId)) this.placed(playerId, e.skill, e.level, row, at, climbs);
       const top = this.tops.get(e.skill);
       if (
@@ -147,6 +158,52 @@ export class Hiscores {
         this.tops.delete(e.skill);
     }
     if (climbs.length) this.onRankUp(playerId, climbs);
+  }
+
+  /** Rivals (session 173): each player passed hears of it, on a ladder they climb (they gained on it in the
+   *  last week), once a day for each who passes them there, three at most at once (a leap past many is
+   *  said to the nearest three). */
+  private passing(playerId: string, skill: string, passed: readonly string[], at: number): void {
+    const name = this.db.select({ name: players.name }).from(players).where(eq(players.id, playerId)).get()?.name;
+    if (!name) return;
+    const day = new Date(at).toISOString().slice(0, 10);
+    for (const other of passed.slice(-PASSED_AT_ONCE)) {
+      const key = `${other}|${playerId}|${skill}|${day}`;
+      if (this.said.has(key)) continue;
+      const theirs = this.db
+        .select({ reachedAt: hiscores.reachedAt, level: hiscores.level, xp: hiscores.xp })
+        .from(hiscores)
+        .where(and(eq(hiscores.playerId, other), eq(hiscores.skill, skill)))
+        .get();
+      if (!theirs || at - theirs.reachedAt > CLIMBING_MS) continue;
+      this.said.set(key, at);
+      const place = this.standings.rank(skill, theirs);
+      this.onPassed(other, [{ type: 'passedBy', at, skill, foe: name, place }]);
+    }
+    // The day's record of what was said is let go as days pass.
+    if (this.said.size > 10_000) for (const [k, t] of this.said) if (at - t > 86_400_000) this.said.delete(k);
+  }
+
+  /** Who stands either side of a listed player on a ladder (session 173). */
+  near(skill: string, playerId: string): { above: HiscoreRow | null; below: HiscoreRow | null } | undefined {
+    if (!this.isListed(playerId)) return undefined;
+    const ids = this.standings.near(skill, playerId);
+    const rowOf = (id: string | null): HiscoreRow | null => {
+      if (!id) return null;
+      const r = this.entries(skill, id).get();
+      if (!r) return null;
+      return {
+        rank: this.standings.rank(skill, r),
+        name: r.name,
+        level: r.level,
+        xp: r.xp,
+        milestones: r.milestones,
+        title: r.title,
+        banner: r.banner,
+        look: readLook(r.look),
+      };
+    };
+    return { above: rowOf(ids.above), below: rowOf(ids.below) };
   }
 
   /** A listed player's row written: their place on that ladder, and a climb into a better band said. */
@@ -263,9 +320,10 @@ export class Hiscores {
     const rows = top.map((r, i) => row(r, i + 1));
     const mine = this.entries(skill, playerId).get();
     if (!mine) return { skill, rows, you: null };
+    const near = this.near(skill, playerId);
     const shown = top.findIndex((r) => r.playerId === playerId);
-    if (shown >= 0) return { skill, rows, you: row(mine, shown + 1) };
-    return { skill, rows, you: row(mine, this.standings.rank(skill, mine)) };
+    const you = row(mine, shown >= 0 ? shown + 1 : this.standings.rank(skill, mine));
+    return { skill, rows, you, ...(near ? { near } : {}) };
   }
 
   remove(playerId: string): void {
