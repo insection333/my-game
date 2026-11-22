@@ -5,6 +5,7 @@ import { SINKS, fmt, t } from '@idle-clash/content';
 import { castleEngine as E } from '@idle-clash/features';
 import { Button, ItemIcon, Pill, Sheet } from '@idle-clash/ui';
 import { FoeMissions } from './FoeSpies.tsx';
+import { fieldFor } from './hosts.ts';
 import { fortressNow, fortressOdds } from './Fortress.tsx';
 import { garrisonWords } from './labels.ts';
 import { AttackPlan } from './Plan.tsx';
@@ -37,14 +38,18 @@ export function FortressSheet({ target, onClose }: { target: Target; onClose: ()
         <div className={s.sheetSection}>
           <h3>{t('castle.incursion.title')}</h3>
           <p>{garrisonWords(fortress.garrison, fortress.trap)}</p>
-          <AttackPlan def={fortressNow(castle, now)} />
+          <AttackPlan def={fortressNow(castle, now)} foe={{ level: tier, crest: fortress.id }} />
           <div className={s.save}>
             <Button
               variant="primary"
               disabled={busy || beyond || !hasAp(castle, SINKS.INCURSION_AP)}
               onClick={() => {
                 onClose();
-                void fight('incursion', { type: 'incursion', shares: [...best.shares] });
+                void fight(
+                  'incursion',
+                  { type: 'incursion', shares: [...best.shares] },
+                  fieldFor(castle, best.shares, fortressNow(castle, now), tier, fortress.id),
+                );
               }}
             >
               {t('castle.incursion.assault', { ap: fmt.int(SINKS.INCURSION_AP) })}

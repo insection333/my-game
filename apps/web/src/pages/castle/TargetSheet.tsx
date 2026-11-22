@@ -10,6 +10,7 @@ import { ReportPlayer } from '../ReportPlayer.tsx';
 import { missionDoes, missionName, refusal, trapName } from './labels.ts';
 import { AttackPlan } from './Plan.tsx';
 import { FoeMissions } from './FoeSpies.tsx';
+import { fieldFor, targetLevel } from './hosts.ts';
 import { FortressSheet } from './FortressSheet.tsx';
 import { navigate } from '../../router.ts';
 import { profileHref } from '../ProfileSheet.tsx';
@@ -62,6 +63,8 @@ export function TargetSheet({ target, onClose }: { target: Target; onClose: () =
             {refused}
           </p>
         )}
+        {/* A stronghold's spies first: send agents, then storm (session 168). */}
+        {target.merc && <FoeMissions foe={target.id} level={target.merc.level} />}
         <div className={s.sheetSection}>
           <h3>{t('castle.siege.title')}</h3>
           {target.merc && (
@@ -80,7 +83,7 @@ export function TargetSheet({ target, onClose }: { target: Target; onClose: () =
             </p>
           )}
           {def ? (
-            <AttackPlan def={def} estimate={!target.merc} />
+            <AttackPlan def={def} estimate={!target.merc} foe={{ level: targetLevel(target), crest: target.id }} />
           ) : (
             <p className={s.muted}>{t('castle.siege.unscouted')}</p>
           )}
@@ -97,11 +100,15 @@ export function TargetSheet({ target, onClose }: { target: Target; onClose: () =
                 // The sheet closes, and the battle's result lands on the target's row.
                 const best = def ? E.bestOffense(castle, def, now) : null;
                 onClose();
-                void fight(target.id, {
-                  type: 'siege',
-                  target: target.id,
-                  ...(best ? { shares: [...best.shares] as [number, number, number] } : {}),
-                });
+                void fight(
+                  target.id,
+                  {
+                    type: 'siege',
+                    target: target.id,
+                    ...(best ? { shares: [...best.shares] as [number, number, number] } : {}),
+                  },
+                  fieldFor(castle, best ? best.shares : castle.offense, def, targetLevel(target), target.id),
+                );
               }}
             >
               {t('castle.siege', { gold: fmt.short(costs.gold), ap: fmt.int(costs.ap) })}
@@ -109,7 +116,7 @@ export function TargetSheet({ target, onClose }: { target: Target; onClose: () =
             {blocked && blocked !== 'ap' && <span className={s.muted}>{refusal(blocked)}</span>}
           </div>
         </div>
-        {target.merc ? <FoeMissions foe={target.id} level={target.merc.level} /> : <Missions target={target} />}
+        {!target.merc && <Missions target={target} />}
         {about.length > 0 && (
           <div className={s.sheetSection}>
             <h3>{t('castle.reports.title')}</h3>
@@ -151,6 +158,8 @@ function Missions({ target }: { target: Target }) {
           return (
             <ActionRow
               key={m.id}
+              iconYields
+              icon={<ItemIcon name={`spy-${m.id}`} size={32} />}
               name={missionName(m.id)}
               facts={[
                 missionDoes(m.id),

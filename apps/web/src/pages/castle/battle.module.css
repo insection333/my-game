@@ -1,0 +1,160 @@
+/* A battle played out (session 168): two hosts of figures facing each other across a strip of ground, your
+   banner and theirs at its ends. They march in, meet in a burst, and the beaten one falls back, faded. */
+.field {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) 20px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--s-1);
+  padding: var(--s-2);
+  border-radius: 8px;
+  background: linear-gradient(to bottom, transparent 55%, var(--moss-soft) 55%), var(--surface-2);
+  overflow: hidden;
+}
+
+.host {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--s-1);
+  min-width: 0;
+}
+
+.host[data-side='you'] {
+  justify-content: flex-end;
+}
+
+.host[data-side='foe'] {
+  justify-content: flex-start;
+}
+
+/* A rank: its figures in columns of three, overlapping a little, as a body of troops. */
+.rank {
+  --step: 15px;
+  --figure: 24px;
+  display: grid;
+  grid-template-rows: repeat(3, var(--step));
+  grid-auto-flow: column;
+  grid-auto-columns: var(--step);
+  padding-top: calc(var(--figure) - var(--step));
+}
+
+.host[data-size='32'] .rank {
+  --step: 20px;
+  --figure: 32px;
+}
+
+.figure {
+  display: block;
+  width: var(--figure);
+  height: var(--figure);
+  margin-top: calc(var(--step) - var(--figure));
+}
+
+/* Theirs face you. */
+.host[data-side='foe'] .figure {
+  transform: scaleX(-1);
+}
+
+.burst {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--burst-ray) 0 30%, var(--burst-core) 31% 60%, transparent 61%);
+  opacity: 0;
+}
+
+/* The beaten host, as the battle left it. */
+.field[data-won='true'] .host[data-side='foe'],
+.field[data-won='false'] .host[data-side='you'] {
+  opacity: 0.4;
+  filter: grayscale(0.7);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .field[data-won] .host[data-side='you'] {
+    animation: march-you 700ms ease-out both;
+  }
+
+  .field[data-won] .host[data-side='foe'] {
+    animation: march-foe 700ms ease-out both;
+  }
+
+  .field[data-won] .burst {
+    animation: burst 600ms 600ms ease-out both;
+  }
+
+  .field[data-won='true'] .host[data-side='foe'] {
+    animation:
+      march-foe 700ms ease-out both,
+      fall-foe 600ms 1100ms ease-in both;
+  }
+
+  .field[data-won='false'] .host[data-side='you'] {
+    animation:
+      march-you 700ms ease-out both,
+      fall-you 600ms 1100ms ease-in both;
+  }
+}
+
+@keyframes march-you {
+  from {
+    transform: translateX(-16px);
+    opacity: 0.2;
+  }
+}
+
+@keyframes march-foe {
+  from {
+    transform: translateX(16px);
+    opacity: 0.2;
+  }
+}
+
+@keyframes burst {
+  0% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1.4);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.8);
+  }
+}
+
+@keyframes fall-foe {
+  from {
+    opacity: 1;
+    filter: none;
+    transform: none;
+  }
+  to {
+    opacity: 0.4;
+    filter: grayscale(0.7);
+    transform: translateX(8px);
+  }
+}
+
+@keyframes fall-you {
+  from {
+    opacity: 1;
+    filter: none;
+    transform: none;
+  }
+  to {
+    opacity: 0.4;
+    filter: grayscale(0.7);
+    transform: translateX(-8px);
+  }
+}
+
+/* One host drawn up on the Army (session 168), on its strip of ground. */
+.line {
+  display: flex;
+  justify-content: center;
+  padding: var(--s-2);
+  border-radius: 8px;
+  background: linear-gradient(to bottom, transparent 55%, var(--moss-soft) 55%), var(--surface-2);
+}
