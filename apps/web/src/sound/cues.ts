@@ -41,6 +41,7 @@ export function cueFor(e: GameEvent): Cue | null {
     case 'realmFell':
       return 'rare';
     case 'realmShare':
+    case 'bountyDone':
       return 'goal';
     case 'deedDone':
       // An elite or master deed rings like a Rare find; the rest, the goal's small chime.

@@ -12,6 +12,7 @@ import { navigate, useLocation, withPanel } from '../router.ts';
 import { fillFor, Slot } from '../slots.tsx';
 import { CombatArena, useFightClock } from './CombatArena.tsx';
 import { CombatFood } from './CombatFood.tsx';
+import { BountyBoard } from './BountyBoard.tsx';
 import { Loadout } from './Loadout.tsx';
 import { CombatHead } from './CombatHead.tsx';
 import { NotFound } from './Simple.tsx';
@@ -162,6 +163,9 @@ function CombatPage({ combat }: { combat: Feature }) {
               ))}
             </Slot>
           </Panel>
+        </section>
+        <section data-section className={s.bountyArea}>
+          <BountyBoard combat={combat} now={now} />
         </section>
         <section data-section className={s.foodArea}>
           <CombatFood />

@@ -5,7 +5,7 @@
   grid-template-columns: minmax(0, 1fr);
   gap: var(--s-4);
   align-items: start;
-  grid-template-areas: 'loadout' 'foes' 'food';
+  grid-template-areas: 'loadout' 'foes' 'bounty' 'food';
 }
 
 .loadoutArea {
@@ -19,13 +19,17 @@
 .foodArea {
   grid-area: food;
 }
+/* The bounty board (session 175): under the foes on a phone, under the loadout where there is room. */
+.bountyArea {
+  grid-area: bounty;
+}
 
 @container main (min-width: 720px) {
   .layout {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
-    grid-template-rows: auto 1fr;
-    /* Each column stacks by itself: the food starts under the loadout. */
-    grid-template-areas: 'loadout foes' 'food foes';
+    grid-template-rows: auto auto 1fr;
+    /* Each column stacks by itself: the bounties and the food start under the loadout. */
+    grid-template-areas: 'loadout foes' 'bounty foes' 'food foes';
   }
 }
 
@@ -251,5 +255,14 @@
   padding: var(--s-2) var(--s-4);
   border-bottom: 1px solid var(--line);
   background: var(--surface-2);
+  font-size: var(--t-small);
+}
+
+/* A bounty's line: its foe, count, pay, and its presses. */
+.bountyNote {
+  margin: 0;
+  max-width: none;
+  padding: var(--s-2) var(--s-4) var(--s-3);
+  color: var(--ink-2);
   font-size: var(--t-small);
 }

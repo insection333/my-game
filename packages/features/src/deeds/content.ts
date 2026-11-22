@@ -155,6 +155,17 @@ export const REALM_FALLS: Steps = [
   [13, 'elite'],
   [26, 'master'],
 ];
+/** The bounty board (session 175): bounties done, and elite ones. */
+export const BOUNTIES: Steps = [
+  [1, 'easy'],
+  [10, 'easy'],
+  [50, 'hard'],
+  [200, 'elite'],
+];
+export const ELITE_BOUNTIES: Steps = [
+  [1, 'hard'],
+  [25, 'master'],
+];
 /** The hidden deeds' numbers. */
 export const HIDDEN = { jack: 25, even: 10, hoard: 10_000 };
 

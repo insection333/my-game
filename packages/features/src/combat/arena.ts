@@ -13,6 +13,8 @@
 import { seeded, type State } from '@idle-clash/kernel';
 import { foeById, SWING_S, type Foe } from '../shared/combat/data.ts';
 import { BOSSES } from '../shared/expeditions/data.ts';
+import { asFought } from '../shared/bounty.ts';
+import { realmFoe } from '../shared/realm.ts';
 import { fight, maxHealth, type Fought, type Swing } from '../shared/combat/fight.ts';
 import { fighterOf, healthAt, mealsOf } from '../shared/combat/state.ts';
 
@@ -57,10 +59,15 @@ let cached: { key: string; arena: Arena | null } | null = null;
 export function arenaOf(state: State): Arena | null {
   const run = state.lanes.combat.current;
   if (!run || run.seed === undefined) return null;
-  const boss = run.action.feature === 'expeditions' ? BOSSES.find((b) => b.id === run.action.id) : undefined;
+  // The realm's boss of the week (session 174) is played out as a boss is, at the player's measure.
+  const realm =
+    run.action.feature === 'expeditions' && run.action.id === 'realm' ? realmFoe(state, run.startedAt) : null;
+  const boss = realm ?? (run.action.feature === 'expeditions' ? BOSSES.find((b) => b.id === run.action.id) : undefined);
   if (run.action.feature !== 'combat' && !boss) return null;
-  const foe = boss ?? foeById(run.action.id);
-  if (!foe) return null;
+  const base = boss ?? foeById(run.action.id);
+  if (!base) return null;
+  // An elite foe while its bounty is held (session 175), as the lane fights it.
+  const foe = boss ? base : asFought(state, base, run.startedAt);
   // The engine settles the fight with the gear and food held when it ends (session 48): changed mid-fight,
   // the arena plays it again as it will be settled.
   const key = JSON.stringify([
@@ -68,15 +75,37 @@ export function arenaOf(state: State): Arena | null {
     run.action,
     run.startedAt,
     run.seed,
+    foe.hp,
+    foe.maxHit,
     healthAt(state, run.startedAt),
     fighterOf(state, foe),
     mealsOf(state),
   ]);
-  if (cached?.key !== key) cached = { key, arena: playOut(state, foe, !!boss, run.startedAt, run.endsAt, run.seed) };
+  if (cached?.key !== key)
+    cached = {
+      key,
+      arena: playOut(
+        state,
+        foe,
+        !!boss,
+        run.startedAt,
+        run.endsAt,
+        run.seed,
+        realm ? 'realm' : boss ? 'boss' : 'fight',
+      ),
+    };
   return cached.arena;
 }
 
-function playOut(state: State, foe: Foe, boss: boolean, startedAt: number, endsAt: number, seed: number) {
+function playOut(
+  state: State,
+  foe: Foe,
+  boss: boolean,
+  startedAt: number,
+  endsAt: number,
+  seed: number,
+  draw: 'boss' | 'fight' | 'realm',
+) {
   const p = fighterOf(state, foe);
   if (!p) return null;
   // As the rules play it: the same seed, the same draws in the same order, the health it began with (a
@@ -86,7 +115,6 @@ function playOut(state: State, foe: Foe, boss: boolean, startedAt: number, endsA
   const health = healthAt(state, startedAt);
   const swings: Shown[] = [];
   const lead = (SWING_S / 2) * 1000;
-  const draw = boss ? 'boss' : 'fight';
   const log: Swing[] = [];
   const fought = fight(
     p,

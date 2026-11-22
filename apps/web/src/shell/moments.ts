@@ -13,6 +13,7 @@ import {
   kindlingData,
   rankUpWords,
   realmWords,
+  bountyWords,
   seasonOpenedWords,
   skill as skillKit,
   type Feature,
@@ -53,6 +54,7 @@ function rank(e: GameEvent): number {
   // The realm's boss (session 174): its fall ranks with an elite deed; a day's strike with a goal.
   if (e.type === 'realmFell' || e.type === 'realmShare') return 5;
   if (e.type === 'realmFought') return 8;
+  if (e.type === 'bountyDone') return e.elite ? 5 : 8;
   if (e.type === 'kindled') return 1;
   // First on a ladder ranks with a master deed; the top three or ten with an elite one.
   if (e.type === 'rankUp') return e.band === 1 ? 1 : e.band <= 10 ? 5 : 8;
@@ -86,6 +88,7 @@ function sizeOf(e: GameEvent): MomentSize {
   if (e.type === 'expeditionDone') return e.outcome === 'won' ? 'centre' : 'banner';
   if (e.type === 'bossFought') return bossFoughtWords(e).size;
   if (e.type === 'realmFell' || e.type === 'realmShare') return 'banner';
+  if (e.type === 'bountyDone') return e.elite ? 'banner' : 'toast';
   // A work raised: a press answered; fully raised, a banner (session 76).
   if (e.type === 'workRaised') return e.stage >= 5 ? 'banner' : 'toast';
   // A relic raised, as a work is (session 98).
@@ -175,6 +178,10 @@ function describe(
     case 'bossFought': {
       const w = bossFoughtWords(e);
       return { title: w.title, body: w.body, icon: hasIcon(e.boss) ? e.boss : null };
+    }
+    case 'bountyDone': {
+      const w = bountyWords(e);
+      return { title: w.title, body: w.body, icon: hasIcon(e.foe) ? e.foe : null };
     }
     case 'realmFought':
     case 'realmFell':
