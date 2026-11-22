@@ -199,7 +199,7 @@ Health and damage are on a ×10 scale so hits read as satisfying numbers.
 
 - **Style XP** is earned per point of damage dealt (overkill counts for nothing): 0.30, 0.32, 0.34 and 0.35 a point against tier 1 to 4 foes, then 0.34, 0.31, 0.30 and 0.28 against tiers 5 to 8.
 - **Easy foes teach less:** for each level a foe stands more than five below your style, 4% less XP, down to 40%. An outlevelled foe is never the best target for long.
-- **Hitpoints XP** equals the style XP from every fight, whatever the style (40% until session 12; past 40 the levels would otherwise leave Hitpoints, and the armour and foes it opens, far behind a player who keeps to one style).
+- **Hitpoints XP** equals the style XP from a fight whose style stands at or above Hitpoints, and a third of it from a style standing below (session 177), so Hitpoints keeps pace with the player's best style. A player who keeps to one style earns Hitpoints XP equal to their style's (40% until session 12; past 40 the levels would otherwise leave Hitpoints, and the armour and foes it opens, far behind them); a player of three styles no longer has Hitpoints at 99 four months before any style.
 
 ### Foes and Your odds
 
