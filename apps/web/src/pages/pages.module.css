@@ -116,6 +116,11 @@
   display: flex;
 }
 
+/* Room for the companion, so it never sits over the plaque's words. */
+.plaquePicture:has(.plaqueCompanion) {
+  margin-right: 16px;
+}
+
 @container main (max-width: 719px) {
   .plaquePicture > span:first-child,
   .plaquePicture > span:first-child svg {
@@ -123,9 +128,17 @@
     height: 36px !important;
   }
 
+  .plaqueCompanion {
+    right: -12px;
+  }
+
   .plaqueCompanion svg {
     width: 24px;
     height: 24px;
+  }
+
+  .plaquePicture:has(.plaqueCompanion) {
+    margin-right: 12px;
   }
 }
 
