@@ -180,9 +180,12 @@ export const SIEGE = {
   ] as readonly (readonly [number, number])[],
   LORDS_WANTED: 3,
   /** Today's strongholds, by your rating. Walls favour a defender, so a stronghold of your own rating holds
-   *  (R about 0.87 with an even formation): from 0.75 to 1.15, two fall to any attack, one is even, and two
-   *  need a formation set against them (DESIGN.md 11.7; the plan's 0.85 to 1.2 left four of five out of reach). */
-  MERCENARY_SCALES: [0.75, 0.85, 0.95, 1.05, 1.15] as readonly number[],
+   *  (R about 0.87 with an even formation): from 0.75 to 1.07, two fall to any attack, one is even, and two
+   *  need a formation set against them (DESIGN.md 11.7; the plan's 0.85 to 1.2 left four of five out of reach).
+   *  The last two at 1.03 and 1.07 (session 178; 1.05 and 1.15 before): a lord who heals between sieges,
+   *  sends spies and saves for it routs about weekly past the first month, where at 1.15 none did after it; a
+   *  lord who does neither seldom takes the fifth (DESIGN.md 11, item 41). */
+  MERCENARY_SCALES: [0.75, 0.85, 0.95, 1.03, 1.07] as readonly number[],
   /** A mercenary bounty: min(GOLD_SCALE × 0.3 × your rating, 5% of the war chest), always under the fee
    *  (DESIGN.md 11.4: 60% of it, as the fee was halved). */
   MERCENARY_BOUNTY_PER_RATING: 0.3 * GOLD_SCALE,

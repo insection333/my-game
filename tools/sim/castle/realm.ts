@@ -1,5 +1,6 @@
-// A realm of castles on the pure engine (Castle Clash, session 33): lords of three kinds raise their
-// castles on the same day and play for weeks, each as a careful lord would. Every visit they answer the
+// A realm of castles on the pure engine (Castle Clash, session 33): lords of four kinds raise their
+// castles on the same day and play for weeks, each as a careful lord would (and the warlords, session 178,
+// as one who goes for the rout: spies, heals and gold set aside for it). Every visit they answer the
 // Call to arms, keep their edict powered, build with a share of their gold, then spend AP on war:
 // - a lord in reach is scouted, and besieged when the odds are fair;
 // - otherwise one of today's strongholds is attacked;
@@ -8,49 +9,25 @@
 // (checks.ts): every siege and its odds, raids, bounties, tiers, marks, and the realm's gold to the coin.
 import { BUILDINGS, RELICS, SIEGE, SINKS, TECH_IDS, UNIT_IDS, UNITS } from '@idle-clash/content';
 import { castleEngine as E } from '@idle-clash/features';
+import { generator, KINDS } from './kinds.ts';
 import type { Lord, Realm } from './records.ts';
+import { chanceAgainst, FAIR, routInReach, spyStronghold } from './spies.ts';
 
 export type { Lord, MercRecord, Realm, SiegeRecord } from './records.ts';
+export { KINDS, type LordKind } from './kinds.ts';
 
 const HOUR = 3_600_000;
 export const DAY = 24 * HOUR;
 /** The share of a lord's purse that relics and tempering may draw on each visit, and the war marks under
  *  which a lord presses past fatigue for more (session 139). */
 const MARKS_SHARE = 0.5;
+/** The share of each day's gold a lord who spies sets aside for a rout (session 178). */
+const ROUT_SAVING = 0.2;
+/** The most it keeps aside, in days of gold: about what the dearest rout costs beyond a careful day. */
+const ROUT_SAVED_MOST = 2.5;
 const MARKS_WANTED = 300;
 /** The realm opens on a Monday at midnight, UTC. */
 export const T0 = Date.UTC(2026, 10, 2);
-
-export interface LordKind {
-  name: string;
-  /** Visits a day (hours after midnight); a lapsed lord skips days after its first week. */
-  visits: number[];
-  /** Gold earned a day, and the total level the lord holds (for the treasury it needs). */
-  income: number;
-  totalLevel: number;
-  /** Days of each four, from its second week, it plays at all. */
-  playsOf4: number;
-  /** The treasury it keeps, in times what its edict needs: more for a stronger edict, and more to raid. */
-  treasury: number;
-  /** Whether it goes to war, against other lords and today's strongholds. */
-  raids: boolean;
-}
-
-export const KINDS: LordKind[] = [
-  { name: 'steady', visits: [8], income: 1_500_000, totalLevel: 420, playsOf4: 4, raids: true, treasury: 2.5 },
-  { name: 'light', visits: [8, 20], income: 500_000, totalLevel: 300, playsOf4: 4, raids: false, treasury: 1.5 },
-  { name: 'lapsed', visits: [8], income: 400_000, totalLevel: 250, playsOf4: 1, raids: true, treasury: 2 },
-];
-
-function generator(seed: number) {
-  let s = seed;
-  return () => {
-    s = (s + 0x6d2b79f5) | 0;
-    let r = Math.imul(s ^ (s >>> 15), 1 | s);
-    r = (r + Math.imul(r ^ (r >>> 7), 61 | r)) ^ r;
-    return ((r ^ (r >>> 14)) >>> 0) / 4_294_967_296;
-  };
-}
 
 /** Plays `days` days of a realm of `perKind` lords of each kind. */
 export function playRealm(perKind: number, days: number, seed: number): Realm {
@@ -69,6 +46,8 @@ export function playRealm(perKind: number, days: number, seed: number): Realm {
         marks: [],
         levels: [],
         raidedOn: [],
+        saved: 0,
+        routOn: -1,
       });
     }
   const realm: Realm = {
@@ -77,6 +56,7 @@ export function playRealm(perKind: number, days: number, seed: number): Realm {
     mercs: [],
     incursions: [],
     tempers: { tries: 0, taken: 0, masterstrokes: 0 },
+    spies: { sent: 0, through: 0 },
     chest: 0,
     destroyed: 0,
     burned: {},
@@ -101,6 +81,9 @@ export function playRealm(perKind: number, days: number, seed: number): Realm {
     for (const l of lords) {
       l.purse += l.kind.income;
       realm.income += l.kind.income;
+      // A lord who spies keeps a share of each day's gold for a rout (session 178).
+      if (l.kind.spies)
+        l.saved = Math.min(l.purse, l.kind.income * ROUT_SAVED_MOST, l.saved + l.kind.income * ROUT_SAVING);
     }
     const visits = lords.flatMap((l) =>
       d >= 7 && d % 4 >= l.kind.playsOf4 ? [] : l.kind.visits.map((h) => ({ l, t: T0 + d * DAY + h * HOUR })),
@@ -139,7 +122,8 @@ export function playRealm(perKind: number, days: number, seed: number): Realm {
     const short = Math.round(l.kind.treasury * required) - l.castle.treasury;
     if (short > 0 && l.purse > 0) done(E.deposit(w(), Math.floor(Math.min(short, l.purse))), 'deposit');
     if (l.castle.treasury < required) return;
-    let budget = l.purse * 0.3;
+    const free = Math.max(0, l.purse - l.saved);
+    let budget = free * 0.3;
     for (const tech of TECH_IDS) {
       const cost = E.techCost(l.castle, tech, t);
       if (cost && cost.gold <= budget && l.castle.warMarks >= cost.marks && done(E.research(w(), tech, t)))
@@ -148,7 +132,7 @@ export function playRealm(perKind: number, days: number, seed: number): Realm {
     // War marks are spent as a lord holding them would (session 139: the realm's raiders ended 26 weeks with
     // 5,000 unspent and a relic at level 4, their gold gone on fees): relics and tempering draw on half the
     // purse, beside the share for building.
-    let marksBudget = l.purse * MARKS_SHARE;
+    let marksBudget = free * MARKS_SHARE;
     // Relics one at a time to their last level (the first three are worn), then the next.
     // (Saving up for the relic in hand rather than starting another.)
     const forging = RELICS.find((r) => E.relicCost(l.castle, r.id));
@@ -194,6 +178,17 @@ export function playRealm(perKind: number, days: number, seed: number): Realm {
       // A careful lord goes to war at most three times a day (past that, fatigue raises every cost) and
       // never stakes more than a quarter of their purse on one fee.
       const war = l.castle.siegesToday < SIEGE.FATIGUE_FREE;
+      // A lord who spies goes for the rout when it is within reach and the gold set aside bears it (session
+      // 178): the strongholds in turn, spies sent where their work would bring a fair chance, past fatigue.
+      // Once begun, the day's rout is seen through while the strongholds stand and the AP lasts.
+      if (l.kind.spies && l.kind.raids && l.routOn !== day) {
+        const cost = routInReach(l.castle, l.purse, Math.min(l.saved, l.purse), t);
+        if (cost !== null) {
+          l.routOn = day;
+          l.saved = Math.max(0, l.saved - cost);
+        }
+      }
+      if (l.routOn === day && l.castle.activeAp >= SIEGE.AP && mercenary(l, t, day, true)) continue;
       if (war && l.kind.raids && E.lordsOpen(l.castle, t) && siegeALord(l, t, day)) continue;
       if (war && l.kind.raids && mercenary(l, t, day)) continue;
       // A raider with AP and gold to spare (a week's earnings in hand, the edict paid for) presses on past
@@ -285,12 +280,33 @@ export function playRealm(perKind: number, days: number, seed: number): Realm {
 
   /** A stronghold, as a player would choose one: the formation set against each, the first standing one
    *  with a fair chance (60% or better), its fee no more than a quarter of the purse. */
-  function mercenary(l: Lord, t: number, day: number): boolean {
+  function mercenary(l: Lord, t: number, day: number, rout = false): boolean {
     const today = E.mercenaries(l.castle, t, SIEGE.TARGETS);
     for (const m of today) {
-      const side = E.mercenarySide(m);
+      // On the way to a rout (session 178) the wounds are healed before each siege, as the Army offers, and
+      // spies sent where their work would bring a fair chance, as its row says to; their bribes are dear
+      // beside a fee, so a lord spends them for the rout alone.
+      if (rout && l.castle.infirmaryPct > 0 && E.siegeRefusal(l.castle, m.id, false, 0, t) !== 'fallen') {
+        const d = E.mendNow({ castle: l.castle, purse: l.purse }, 'wounds', t);
+        if (d.ok) {
+          l.castle = d.castle;
+          l.purse = d.purse;
+          burn(d.burned, 'healing');
+        }
+      }
+      if (rout && chanceAgainst(l.castle, m, E.foeOps(l.castle, m.id, t), t) < FAIR) {
+        const run = spyStronghold(l.castle, l.purse, m, t, roll);
+        if (run.sent) {
+          burn(run.bribes, 'spy bribes');
+          l.castle = run.castle;
+          l.purse = run.purse;
+          realm.spies.sent += run.sent;
+          realm.spies.through += run.through;
+        }
+      }
+      const side = E.mercenarySide(m, E.foeOps(l.castle, m.id, t));
       const best = E.bestOffense(l.castle, side, t);
-      if (E.winChance(best.r) < 0.6) continue;
+      if (E.winChance(best.r) < FAIR) continue;
       const set = { ...l.castle, offense: best.shares };
       const costs = E.mercenaryCosts(set, m, t);
       if (E.siegeRefusal(set, m.id, false, costs.ap, t)) continue;
