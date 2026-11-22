@@ -47,3 +47,14 @@
   color: var(--ink-2);
   font-variant-numeric: tabular-nums;
 }
+
+.foot {
+  display: grid;
+  justify-items: start;
+  width: 100%;
+}
+
+.turns {
+  padding-top: var(--s-1);
+  color: var(--ink-2);
+}

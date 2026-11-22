@@ -24,21 +24,25 @@ export function Rivals({
   return (
     <ul className={s.rivals} data-slot="hiscores.rivals" aria-label={t('rival.title')}>
       {lines.map((l) => (
-        <li key={l.side} data-side={l.side}>
-          <a
-            href={profileHref(l.row.name)}
-            data-ui="RowLink"
-            className={s.rival}
-            onClick={(e) => (e.preventDefault(), navigate(profileHref(l.row.name)))}
-          >
-            <span className={s.rivalMark} aria-hidden="true">
-              {l.side === 'above' ? '▲' : '▼'}
-            </span>
-            {l.row.look && (
-              <Picture picture={l.row.look.picture} frame={l.row.look.frame} glow={l.row.look.glow} size={24} />
-            )}
-            <span className={s.rivalText}>{l.text}</span>
-          </a>
+        <li key={l.side} data-side={l.side} className={s.rival}>
+          <span className={s.rivalMark} aria-hidden="true">
+            {l.side === 'above' ? '▲' : '▼'}
+          </span>
+          {l.row.look && (
+            <Picture picture={l.row.look.picture} frame={l.row.look.frame} glow={l.row.look.glow} size={24} />
+          )}
+          {/* The name opens their card, as it does in the ladder; the rest says where they stand. */}
+          <span className={s.rivalText}>
+            <a
+              href={profileHref(l.row.name)}
+              data-ui="RowLink"
+              className={s.nameLink}
+              onClick={(e) => (e.preventDefault(), navigate(profileHref(l.row.name)))}
+            >
+              {l.row.name}
+            </a>
+            {l.text.slice(l.row.name.length)}
+          </span>
         </li>
       ))}
     </ul>
