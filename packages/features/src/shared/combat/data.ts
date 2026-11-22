@@ -41,8 +41,13 @@ export const ARMOUR_GUARD_PER_TIER = 2.5;
 export const EAT_BELOW = 0.5;
 /** Style XP per point of damage dealt, by foe tier; Hitpoints gets this share of it. */
 export const XP_PER_DAMAGE = [0.3, 0.32, 0.34, 0.35, 0.34, 0.31, 0.3, 0.28];
-/** Hitpoints XP equals the style XP (0.4 before the climb to 99, which left Hitpoints far behind). */
+/** Hitpoints XP equals the style XP while the style stands at or above Hitpoints (0.4 before the climb to
+ *  99, which left Hitpoints far behind)... */
 export const HITPOINTS_XP_SHARE = 1;
+/** ...and a third of it while the style stands below (session 177: at the full share from every style, a
+ *  player of three styles had Hitpoints at 99 on day 111, four months before any style), so Hitpoints keeps
+ *  pace with the player's best style. */
+export const HITPOINTS_XP_BEHIND = 1 / 3;
 /** Foes more than five levels below you teach less: 4% less a level, down to 40%. */
 export const easyFoeXp = (you: number, foe: number) => Math.min(1, Math.max(0.4, 1 - 0.04 * (you - foe - 5)));
 /** Damage a supply adds, by its tier (GAME_DESIGN.md section 6): one is used for each foe fought. */

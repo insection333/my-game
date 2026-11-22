@@ -9,7 +9,15 @@ import { edictPct } from '../castle/mirror.ts';
 import { announceKindling, pathBonus } from '../kindling.ts';
 import { seasonFindPct } from '../season.ts';
 import { skillLevel, yieldOf } from '../skill.ts';
-import { HITPOINTS, HITPOINTS_XP_SHARE, LADDERS, MASTERY_DROPS_PER_STEP, STYLE_FINDS, type Foe } from './data.ts';
+import {
+  HITPOINTS,
+  HITPOINTS_XP_BEHIND,
+  HITPOINTS_XP_SHARE,
+  LADDERS,
+  MASTERY_DROPS_PER_STEP,
+  STYLE_FINDS,
+  type Foe,
+} from './data.ts';
 import { styleXp, type Fighter } from './fight.ts';
 
 /** The finds whose Legendary marks raise a fighting skill's XP (Hitpoints has none). */
@@ -26,11 +34,17 @@ function gainXp(ctx: ActionContext, skill: string, base: number) {
   for (let level = before + 1; level <= after; level++) ctx.emit({ type: 'levelUp', at: ctx.at, skill, level });
 }
 
+/** Hitpoints' share of a fight's style XP: whole while the style stands at or above Hitpoints, a third while
+ *  it stands below (session 177), so Hitpoints keeps pace with the player's best style. */
+export const hitpointsShare = (state: State, style: string): number =>
+  skillLevel(state, style) >= skillLevel(state, HITPOINTS) ? HITPOINTS_XP_SHARE : HITPOINTS_XP_BEHIND;
+
 /** Style and Hitpoints XP for the damage dealt in a fight (times `xp`, a twist's). */
 export function fightXp(ctx: ActionContext, p: Fighter, foe: Foe, dealt: number, xp = 1) {
   const base = styleXp(p, foe, dealt) * xp;
+  const share = hitpointsShare(ctx.state, p.style);
   gainXp(ctx, p.style, base);
-  gainXp(ctx, HITPOINTS, base * HITPOINTS_XP_SHARE);
+  gainXp(ctx, HITPOINTS, base * share);
 }
 
 /** What lifts a won fight's gold, multiplied as it always has been: the style's spoils perks, its Path of
