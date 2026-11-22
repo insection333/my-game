@@ -11,7 +11,14 @@
 .list {
   container: foes / inline-size;
   display: grid;
-  max-height: min(48rem, 70dvh);
+  /* On a phone the ladder, its title and its notes keep within the page area (it scrolls inside). */
+  max-height: min(48rem, 50dvh);
+}
+
+@media (min-width: 1024px) {
+  .list {
+    max-height: min(48rem, 70dvh);
+  }
 }
 
 .foe {
