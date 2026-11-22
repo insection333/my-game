@@ -180,6 +180,19 @@ export function noticeLine(e: GameEvent): (RecapLine & { at: number }) | null {
       const w = rankUpWords(e);
       return { kind: 'rank', text: w.body ? `${w.title}. ${w.body}` : w.title, icon: w.skill, href: w.href, at: e.at };
     }
+    case 'passedBy': {
+      // Rivals (session 173): who passed you, where, and where you stand now.
+      const name = e.foe || t('rival.someone');
+      const place = fmt.ordinal(e.place);
+      const season = /^season:(\d+)$/.exec(e.skill);
+      const text = season
+        ? t('rival.passedSeason', { name, number: fmt.int(Number(season[1])), place })
+        : e.skill === 'total'
+          ? t('rival.passedTotal', { name, place })
+          : t('rival.passed', { name, ladder: t(`skill.${e.skill}`), place });
+      const href = season ? '/hiscores?skill=season' : e.skill === 'total' ? '/hiscores' : `/hiscores?skill=${e.skill}`;
+      return { kind: 'rank', text, icon: season || e.skill === 'total' ? null : e.skill, href, at: e.at };
+    }
     case 'seasonOpened': {
       const w = seasonOpenedWords(e);
       return { kind: 'goal', text: `${w.title}. ${w.body}`, icon: w.icon, href: '/', at: e.at };

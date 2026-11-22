@@ -105,6 +105,30 @@ export class Ranks {
     h.by.set(s.playerId, s);
   }
 
+  /** The players a row about to be written passes (session 173): those who stood above the player's entry
+   *  and stand below the new one. Nothing for a player not on the ladder before. */
+  passes(skill: string, s: Standing): string[] {
+    if (s.xp <= 0 || !this.member(s.playerId)) return [];
+    const h = this.held(skill);
+    const old = h.by.get(s.playerId);
+    if (!old) return [];
+    const from = place(h.list, (x) => order(x, old) < 0);
+    const to = place(h.list, (x) => order(x, s) < 0);
+    return h.list
+      .slice(to, from)
+      .filter((x) => x.playerId !== s.playerId)
+      .map((x) => x.playerId);
+  }
+
+  /** Who stands just above and just below a player on a ladder (session 173), by id. */
+  near(skill: string, playerId: string): { above: string | null; below: string | null } {
+    const h = this.held(skill);
+    const mine = h.by.get(playerId);
+    if (!mine) return { above: null, below: null };
+    const i = place(h.list, (x) => order(x, mine) < 0);
+    return { above: h.list[i - 1]?.playerId ?? null, below: h.list[i + 1]?.playerId ?? null };
+  }
+
   /** A player was listed: their rows join the ladders held. */
   joined(playerId: string): void {
     this.members.set(playerId, true);

@@ -92,6 +92,11 @@ export async function buildApp(
     ctx.live.publish(playerId, { type: 'events', events });
     ctx.notices.add(playerId, events);
   };
+  // A rival passed them (session 173): their tray hears of it, and an open page at once. Never a push.
+  ctx.hiscores.onPassed = (playerId, events) => {
+    ctx.live.publish(playerId, { type: 'events', events });
+    ctx.notices.add(playerId, events);
+  };
   app.decorateRequest('playerId', null);
   harden(app, config.origins);
   await app.register(cookie);

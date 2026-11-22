@@ -187,10 +187,11 @@
 /* Phones show the first ten; wide screens all twenty-five. At any width the rows scroll inside the ladder's
    box under its headings, your own place kept at its foot (session 139: twenty-five rows ran 1,450 px tall,
    past a 1,440 × 900 screen's page area, once the realm had as many players as the ladder holds; session
-   166: on a 320 px phone ten rows that each carried a title ran 767 px tall in a 687 px page area). */
+   166: on a 320 px phone ten rows that each carried a title ran 767 px tall in a 687 px page area; session
+   173: the rivals' lines above it took 90 px more). */
 /* The headings and your own place stand at the box's edges, so rows slide under them, unfaded. */
 .ladder[data-scrollbox] {
-  max-height: min(44rem, 72dvh);
+  max-height: min(44rem, 62dvh);
   -webkit-mask-image: none;
   mask-image: none;
 }
@@ -242,4 +243,41 @@
 
 .medal[data-place='3'] {
   background: #d9a774;
+}
+
+/* Rivals (session 173): who stands just above and below you, over the ladder. */
+.rivals {
+  display: grid;
+  margin: 0;
+  padding: var(--s-1) 0;
+  list-style: none;
+  border-bottom: 1px solid var(--line);
+}
+
+.rival {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-height: 2.25rem;
+  padding: 0 var(--s-4);
+  color: var(--ink);
+}
+
+.rivalMark {
+  flex: none;
+  width: 1rem;
+  font-size: 0.75rem;
+  text-align: center;
+}
+
+.rivals [data-side='above'] .rivalMark {
+  color: var(--woad);
+}
+
+.rivals [data-side='below'] .rivalMark {
+  color: var(--ink-2);
+}
+
+.rivalText {
+  min-width: 0;
 }

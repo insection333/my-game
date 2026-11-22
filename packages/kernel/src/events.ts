@@ -80,6 +80,9 @@ export interface EventMap {
    *  time; `skill` is the ladder ('total' for the total level), `place` the place reached, `band` the
    *  band entered (1, 3, 10, 50 or 100). Said by the server, which keeps the ladders. */
   rankUp: { skill: string; place: number; band: number };
+  /** Rivals (session 173): a listed player passed you on a ladder you climb; `foe` is their name as it was
+   *  then (emptied if their account goes), `place` yours now. */
+  passedBy: { skill: string; foe: string; place: number };
   /** A season seen for the first time (session 166): its number, its twist, and the goals done in the season
    *  before it (0 when none). Said once, on the player's first visit in it. */
   seasonOpened: { number: number; twist: string; last: number };

@@ -17,6 +17,7 @@ import { MenuGlyph } from '../shell/glyphs.tsx';
 import { PageHead } from './PageHead.tsx';
 import { profileHref } from './ProfileSheet.tsx';
 import { unrankedNote } from './hiscores-words.ts';
+import { Rivals } from './Rivals.tsx';
 import s from './hiscores.module.css';
 
 const PHONE_ROWS = 10;
@@ -98,6 +99,7 @@ export function Hiscores() {
         </div>
         <section data-section>
           <Panel flush>
+            {ladder && !castles && <Rivals ladder={ladder.skill} you={you} near={ladder.near} />}
             <Slot id="hiscores.ladder" className={s.ladder} scrolls>
               {ladder && ladder.rows.length === 0 && !you && <p className={s.note}>{t('hiscores.empty')}</p>}
               {ladder && (ladder.rows.length > 0 || you) && (
