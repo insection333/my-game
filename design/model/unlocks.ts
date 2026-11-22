@@ -86,7 +86,8 @@ export function unlockTable(skill: SkillId): Map<number, Unlock[]> {
   const t = empty();
   if (skill === 'woodcutting' || skill === 'mining' || skill === 'fishing' || skill === 'runecraft') {
     const actions = { woodcutting: WOODCUTTING, mining: MINING, fishing: FISHING, runecraft: RUNECRAFT }[skill];
-    for (const a of actions) t.get(a.level)!.push({ type: 'action', name: a.name });
+    // The lucky actions (session 176) join their levels after the perks are placed, so no perk is lost.
+    for (const a of actions.filter((x) => x.kind !== 'lucky')) t.get(a.level)!.push({ type: 'action', name: a.name });
     const [verb, eye, who] = {
       woodcutting: ['swing', "Woodsman's eye", 'woodcutter'],
       mining: ['strike', "Prospector's eye", 'miner'],
@@ -97,6 +98,7 @@ export function unlockTable(skill: SkillId): Map<number, Unlock[]> {
       40: { type: 'perk', name: `Master ${who}`, effect: { kind: 'extraYield', pct: 10 } },
       99: { type: 'perk', name: `Grandmaster ${who}`, effect: { kind: 'extraYield', pct: 15 } },
     });
+    for (const a of actions.filter((x) => x.kind === 'lucky')) t.get(a.level)!.push({ type: 'action', name: a.name });
   } else if (skill === 'smithing') {
     for (const r of [...SMITHING, ...SMITHING_SUPPLIES].sort((a, b) => a.level - b.level))
       t.get(r.level)!.push({ type: 'recipe', name: r.name });
@@ -114,7 +116,8 @@ export function unlockTable(skill: SkillId): Map<number, Unlock[]> {
       },
     );
   } else if (skill === 'fletching') {
-    for (const r of FLETCHING) t.get(r.level)!.push({ type: 'recipe', name: r.name });
+    // Hand-fletched arrows (session 176) join their levels after the perks are placed.
+    for (const r of FLETCHING.filter((x) => x.kind !== 'hand')) t.get(r.level)!.push({ type: 'recipe', name: r.name });
     fillPerks(
       t,
       [
@@ -128,6 +131,7 @@ export function unlockTable(skill: SkillId): Map<number, Unlock[]> {
         99: { type: 'perk', name: 'Grandmaster fletcher', effect: { kind: 'saveInput', pct: 10 } },
       },
     );
+    for (const r of FLETCHING.filter((x) => x.kind === 'hand')) t.get(r.level)!.push({ type: 'recipe', name: r.name });
   } else if (skill === 'cooking') {
     for (const r of COOKING) t.get(r.level)!.push({ type: 'recipe', name: r.name });
     fillPerks(

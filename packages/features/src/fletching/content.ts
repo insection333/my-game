@@ -88,8 +88,13 @@ export const ITEMS: Item[] = [
   ...FINDS.map((f): Item => ({ id: f.item, kind: 'find', value: FIND_VALUE[f.item] ?? 0 })),
 ];
 
+const isHand = (r: Fletch) => r.id.startsWith('hand-fletched-');
 export const LADDER = fillPerks(
-  buildLadder(RECIPES, []),
+  // Hand-fletched arrows (session 176) join their levels after the perks are placed, so no perk is lost.
+  buildLadder(
+    RECIPES.filter((r) => !isHand(r)),
+    [],
+  ),
   [
     // More arrows, not faster XP: with one recipe a tier, a speed perk would fill most of the ladder.
     { perk: 'fine-fletching', effect: { kind: 'extraYield', pct: 3 } },
@@ -102,3 +107,4 @@ export const LADDER = fillPerks(
     99: { perk: 'grandmaster-fletcher', effect: { kind: 'saveInput', pct: 10 } },
   },
 );
+for (const r of RECIPES.filter(isHand)) LADDER[r.level - 1].push({ type: 'action', action: r.id });

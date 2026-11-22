@@ -2,7 +2,7 @@
 1: 0 · 2: 50 · 3: 150 · 4: 310 · 5: 520 · 6: 890 · 7: 1,490 · 8: 2,500 · 9: 4,170 · 10: 6,790 · 11: 10,400 · 12: 15,900 · 13: 23,800 · 14: 34,000 · 15: 46,800 · 16: 62,100 · 17: 79,900 · 18: 101,000 · 19: 126,000 · 20: 155,000 · 21: 202,000 · 22: 265,000 · 23: 340,000 · 24: 428,000 · 25: 531,000 · 26: 650,000 · 27: 790,000 · 28: 951,000 · 29: 1,140,000 · 30: 1,360,000 · 31: 1,650,000 · 32: 2,000,000 · 33: 2,430,000 · 34: 2,920,000 · 35: 3,500,000 · 36: 4,170,000 · 37: 4,950,000 · 38: 5,850,000 · 39: 6,900,000 · 40: 8,100,000 · 41: 9,302,000 · 42: 10,507,000 · 43: 11,714,000 · 44: 12,924,000 · 45: 14,136,000 · 46: 15,350,000 · 47: 16,567,000 · 48: 17,786,000 · 49: 19,008,000 · 50: 20,232,000 · 51: 21,459,000 · 52: 22,688,000 · 53: 23,920,000 · 54: 25,154,000 · 55: 26,391,000 · 56: 27,630,000 · 57: 28,871,000 · 58: 30,115,000 · 59: 31,361,000 · 60: 32,610,000 · 61: 33,861,000 · 62: 35,115,000 · 63: 36,371,000 · 64: 37,630,000 · 65: 38,891,000 · 66: 40,155,000 · 67: 41,422,000 · 68: 42,691,000 · 69: 43,963,000 · 70: 45,237,000 · 71: 46,514,000 · 72: 47,793,000 · 73: 49,075,000 · 74: 50,359,000 · 75: 51,646,000 · 76: 52,935,000 · 77: 54,227,000 · 78: 55,522,000 · 79: 56,819,000 · 80: 58,119,000 · 81: 59,421,000 · 82: 60,726,000 · 83: 62,034,000 · 84: 63,344,000 · 85: 64,657,000 · 86: 65,973,000 · 87: 67,291,000 · 88: 68,612,000 · 89: 69,935,000 · 90: 71,261,000 · 91: 72,590,000 · 92: 73,921,000 · 93: 75,255,000 · 94: 76,592,000 · 95: 77,931,000 · 96: 79,273,000 · 97: 80,618,000 · 98: 81,965,000 · 99: 83,315,000
 
 ## Pacing for a skill kept in a lane (one active hour with the fire each day)
-Woodcutting  L10 1.0 h (+0%)  L20 22.6 h (-6%)  L30 4.9 days (-3%)  L40 20.8 days (-1%)  L55 50.4 days (0%)  L70 73.6 days (+0%)  L85 92.0 days (+0%)  L99 105.8 days (+0%)
+Woodcutting  L10 1.0 h (+0%)  L20 22.6 h (-6%)  L30 4.9 days (-3%)  L40 20.8 days (-1%)  L55 50.3 days (0%)  L70 73.5 days (0%)  L85 91.8 days (+0%)  L99 105.6 days (0%)
 PASS  Woodcutting level 10 within 25% of target
 PASS  Woodcutting level 20 within 25% of target
 PASS  Woodcutting level 30 within 25% of target
@@ -11,7 +11,7 @@ PASS  Woodcutting level 55 within 25% of target
 PASS  Woodcutting level 70 within 25% of target
 PASS  Woodcutting level 85 within 25% of target
 PASS  Woodcutting level 99 within 25% of target
-Mining       L10 1.0 h (+0%)  L20 22.6 h (-6%)  L30 4.9 days (-3%)  L40 20.8 days (-1%)  L55 50.4 days (0%)  L70 73.6 days (+0%)  L85 92.0 days (+0%)  L99 105.8 days (+0%)
+Mining       L10 1.0 h (+0%)  L20 22.6 h (-6%)  L30 4.9 days (-3%)  L40 20.8 days (-1%)  L55 50.3 days (0%)  L70 73.5 days (0%)  L85 91.8 days (+0%)  L99 105.6 days (0%)
 PASS  Mining level 10 within 25% of target
 PASS  Mining level 20 within 25% of target
 PASS  Mining level 30 within 25% of target
@@ -152,7 +152,7 @@ PASS  Mastery pays: at woodcutting 69, Old silverbark (mastery 5) earns 112% of 
 PASS  Mastery pays: at woodcutting 75, Silverbark grove (mastery 6) earns 114% of the best fresh action of its kind
 PASS  Mastery pays: at woodcutting 80, Elderwood tree (mastery 10) earns 123% of the best fresh action of its kind
 PASS  Mastery pays: at woodcutting 84, Old elderwood (mastery 5) earns 111% of the best fresh action of its kind
-PASS  Mastery pays: at woodcutting 90, Elderwood grove (mastery 6) earns 114% of the best fresh action of its kind
+PASS  Mastery pays: at woodcutting 90, Elderwood grove (mastery 6) earns 113% of the best fresh action of its kind
 PASS  Mastery pays: at woodcutting 95, Ancient tree (mastery 10) earns 122% of the best fresh action of its kind
 PASS  Mastery pays: at woodcutting 99, Old ancient (mastery 5) earns 111% of the best fresh action of its kind
 PASS  Mastery pays: at mining 11, Copper vein (mastery 8) earns 90% of the best fresh action of its kind
@@ -171,7 +171,7 @@ PASS  Mastery pays: at mining 69, Deep star-iron seam (mastery 5) earns 112% of 
 PASS  Mastery pays: at mining 75, Star-iron geode (mastery 6) earns 114% of the best fresh action of its kind
 PASS  Mastery pays: at mining 80, Ember vein (mastery 10) earns 123% of the best fresh action of its kind
 PASS  Mastery pays: at mining 84, Deep ember seam (mastery 5) earns 111% of the best fresh action of its kind
-PASS  Mastery pays: at mining 90, Ember geode (mastery 6) earns 114% of the best fresh action of its kind
+PASS  Mastery pays: at mining 90, Ember geode (mastery 6) earns 113% of the best fresh action of its kind
 PASS  Mastery pays: at mining 95, Dawnstone vein (mastery 10) earns 122% of the best fresh action of its kind
 PASS  Mastery pays: at mining 99, Deep dawnstone seam (mastery 5) earns 111% of the best fresh action of its kind
 PASS  Mastery pays: at fishing 11, Perch shallows (mastery 8) earns 90% of the best fresh action of its kind
@@ -190,7 +190,7 @@ PASS  Mastery pays: at fishing 69, Deep silver eel pool (mastery 5) earns 112% o
 PASS  Mastery pays: at fishing 75, Silver eel spawning run (mastery 6) earns 114% of the best fresh action of its kind
 PASS  Mastery pays: at fishing 80, Ember char shallows (mastery 10) earns 123% of the best fresh action of its kind
 PASS  Mastery pays: at fishing 84, Deep ember char pool (mastery 5) earns 111% of the best fresh action of its kind
-PASS  Mastery pays: at fishing 90, Ember char spawning run (mastery 6) earns 114% of the best fresh action of its kind
+PASS  Mastery pays: at fishing 90, Ember char spawning run (mastery 6) earns 113% of the best fresh action of its kind
 PASS  Mastery pays: at fishing 95, Dawn sturgeon shallows (mastery 10) earns 122% of the best fresh action of its kind
 PASS  Mastery pays: at fishing 99, Deep dawn sturgeon pool (mastery 5) earns 111% of the best fresh action of its kind
 PASS  Mastery pays: at runecraft 11, Spark stone (mastery 8) earns 90% of the best fresh action of its kind
@@ -209,7 +209,7 @@ PASS  Mastery pays: at runecraft 69, Ancient star stone (mastery 5) earns 112% o
 PASS  Mastery pays: at runecraft 75, Star ley stone (mastery 6) earns 114% of the best fresh action of its kind
 PASS  Mastery pays: at runecraft 80, Ember stone (mastery 10) earns 123% of the best fresh action of its kind
 PASS  Mastery pays: at runecraft 84, Ancient ember stone (mastery 5) earns 111% of the best fresh action of its kind
-PASS  Mastery pays: at runecraft 90, Ember ley stone (mastery 6) earns 114% of the best fresh action of its kind
+PASS  Mastery pays: at runecraft 90, Ember ley stone (mastery 6) earns 113% of the best fresh action of its kind
 PASS  Mastery pays: at runecraft 95, Dawn stone (mastery 10) earns 122% of the best fresh action of its kind
 PASS  Mastery pays: at runecraft 99, Ancient dawn stone (mastery 5) earns 111% of the best fresh action of its kind
 Smithing: every recipe in a tier pays the same XP an hour; bars are quicker to sell, gear is worth 40% more than its bars.
@@ -298,8 +298,8 @@ Day 60      levels W60 M60 S56 magic60 HP60: one moment every 2.2 min on average
             per hour: uncommon 12.3, rare 1.5, goal 14.2
 PASS  Day 60: a notable moment about every 2 minutes
 PASS  Day 60: never more than 5 minutes without one
-Day 100     levels W91 M91 S82 magic87 HP87: one moment every 2.3 min on average; longest gap 4.2 min (worst of 60 runs 4.4)
-            per hour: uncommon 11.2, rare 1.4, goal 14.2
+Day 100     levels W92 M92 S82 magic87 HP87: one moment every 2.3 min on average; longest gap 4.2 min (worst of 60 runs 4.4)
+            per hour: uncommon 11.3, rare 1.3, goal 14.2
 PASS  Day 100: a notable moment about every 2 minutes
 PASS  Day 100: never more than 5 minutes without one
 
@@ -309,7 +309,7 @@ PASS  Day 5: the recap holds at least 8 good things (target 3)
 PASS  Day 14: the recap holds at least 6 good things (target 3)
 PASS  Day 21: the recap holds at least 4 good things (target 3)
 PASS  Day 60: the recap holds at least 3 good things (target 3)
-PASS  Day 100: the recap holds at least 4 good things (target 3)
+PASS  Day 100: the recap holds at least 3 good things (target 3)
 
 ## The fire
 PASS  An hour with the fire earns 1.54x the XP of an hour away (target 1.5x; +15% XP and a second Gathering lane)
@@ -378,7 +378,7 @@ Tier 4: smelting without pause needs mining 53% of the time on a fresh vein, 33%
 Tier 5: smelting without pause needs mining 47% of the time on a fresh vein, 30% on a mastered deep seam
 Tier 6: smelting without pause needs mining 45% of the time on a fresh vein, 28% on a mastered deep seam
 Tier 7: smelting without pause needs mining 42% of the time on a fresh vein, 27% on a mastered deep seam
-Tier 8: smelting without pause needs mining 40% of the time on a fresh vein, 26% on a mastered deep seam
+Tier 8: smelting without pause needs mining 39% of the time on a fresh vein, 25% on a mastered deep seam
 
 ## The food loop (session 13)
 Tier 1: Cooked perch heals 150 for 2 gold of worth (75.0 a gold); Bread 140 for 20 (7.0)
@@ -423,9 +423,9 @@ Tier 5: an hour of Woodcutting sells for 17853; an hour of Fishing, cooked and e
 PASS  Tier 5: Fishing pays at least 80% of Woodcutting
 Tier 6: an hour of Woodcutting sells for 27358; an hour of Fishing, cooked and eaten, saves 41917 at the vendor
 PASS  Tier 6: Fishing pays at least 80% of Woodcutting
-Tier 7: an hour of Woodcutting sells for 40443; an hour of Fishing, cooked and eaten, saves 48531 at the vendor
+Tier 7: an hour of Woodcutting sells for 40802; an hour of Fishing, cooked and eaten, saves 48962 at the vendor
 PASS  Tier 7: Fishing pays at least 80% of Woodcutting
-Tier 8: an hour of Woodcutting sells for 57854; an hour of Fishing, cooked and eaten, saves 52907 at the vendor
+Tier 8: an hour of Woodcutting sells for 58860; an hour of Fishing, cooked and eaten, saves 53827 at the vendor
 PASS  Tier 8: Fishing pays at least 80% of Woodcutting
 Supply: cooking without pause takes two fish and one log every three of the tier's units, so one Gathering lane fishing and the fire's second lane chopping half the time keep the Artisan lane cooking.
 
@@ -570,7 +570,7 @@ Relics: 4310 marks for every rank of every relic; 78 marks a day at the top; 55 
 PASS  Every relic at full rank takes two to four months of daily runs at the top
 
 ## Kindling (step 17)
-Woodcutting: 99 on day 105.8; a quarter of that again earns 36,880,705 XP; a Kindling is 37,000,000 (100% of it)
+Woodcutting: 99 on day 105.6; a quarter of that again earns 37,086,344 XP; a Kindling is 37,000,000 (100% of it)
 PASS  Woodcutting: a Kindling takes about a quarter of the first climb's time (within 25%)
 Smithing: 99 on day 118.5; a quarter of that again earns 37,084,910 XP; a Kindling is 37,000,000 (100% of it)
 PASS  Smithing: a Kindling takes about a quarter of the first climb's time (within 25%)

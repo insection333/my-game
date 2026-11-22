@@ -123,7 +123,16 @@ export function gatheringContent(spec: GatheringSpec) {
     ),
     ...spec.finds.map((f): Item => ({ id: f.item, kind: 'find', value: spec.findValues[f.item] ?? 0 })),
   ];
-  const ladder = fillPerks(buildLadder(actions, []), spec.perks, spec.capstones);
+  // The lucky actions (session 176) join their levels after the perks are placed, so no perk is lost.
+  const ladder = fillPerks(
+    buildLadder(
+      actions.filter((a) => !a.lucky),
+      [],
+    ),
+    spec.perks,
+    spec.capstones,
+  );
+  for (const a of actions.filter((x) => x.lucky)) ladder[a.level - 1].push({ type: 'action', action: a.id });
   return { actions, items, ladder };
 }
 
