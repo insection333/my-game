@@ -10,6 +10,7 @@ import type { LiveHub } from './game/live.ts';
 import type { Hiscores } from './game/hiscores.ts';
 import type { Notices } from './game/notices.ts';
 import type { Push } from './push/push.ts';
+import type { Realm } from './game/realm.ts';
 import { fail } from './http.ts';
 import type { RateLimiter } from './security.ts';
 import type { Telemetry } from './telemetry.ts';
@@ -29,6 +30,8 @@ export interface Ctx {
   hiscores: Hiscores;
   /** Notices while away (session 171). */
   push: Push;
+  /** The realm's boss of the week (session 174). */
+  realm: Realm;
 }
 
 declare module 'fastify' {

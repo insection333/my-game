@@ -114,6 +114,8 @@ export class Reader {
 
   // Expeditions and bosses.
   private exp = () => expeditionsOf(this.state);
+  /** Weeks the realm's boss fell with this player's strike, the share taken (session 174). */
+  realmFallen = () => this.exp().realm?.fallen ?? 0;
   bossWins = (boss: string) => (Object.hasOwn(this.exp().wins, boss) ? this.exp().wins[boss] : 0);
   /** Runs of a length brought home with the boss beaten. */
   runsOf = (hours: number) => {

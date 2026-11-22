@@ -35,6 +35,13 @@ export function cueFor(e: GameEvent): Cue | null {
       return 'goal';
     case 'bossFought':
       return !e.won ? null : e.first ? 'rare' : 'goal';
+    // The realm's boss (session 174): a strike the goal's chime, its fall like a Rare find.
+    case 'realmFought':
+      return e.won ? 'goal' : null;
+    case 'realmFell':
+      return 'rare';
+    case 'realmShare':
+      return 'goal';
     case 'deedDone':
       // An elite or master deed rings like a Rare find; the rest, the goal's small chime.
       return e.tier === 'elite' || e.tier === 'master' ? 'rare' : 'goal';

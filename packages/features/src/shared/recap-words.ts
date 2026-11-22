@@ -7,6 +7,7 @@ import { castleIcon, castleMoment, isCastleEvent } from './castle/words.ts';
 import { storyOf } from './expeditions/story.ts';
 import { bossFoughtWords } from './expeditions/boss-words.ts';
 import { rankUpWords } from './rank-up.ts';
+import { realmWords } from './realm-words.ts';
 import { seasonOpenedWords } from './season-view.ts';
 import { remedyFor } from './remedy.ts';
 
@@ -179,6 +180,19 @@ export function noticeLine(e: GameEvent): (RecapLine & { at: number }) | null {
     case 'rankUp': {
       const w = rankUpWords(e);
       return { kind: 'rank', text: w.body ? `${w.title}. ${w.body}` : w.title, icon: w.skill, href: w.href, at: e.at };
+    }
+    case 'realmFought':
+    case 'realmFell':
+    case 'realmShare': {
+      // The realm's boss (session 174): a day's fight, its fall, a share taken.
+      const w = realmWords(e);
+      return {
+        kind: 'expedition',
+        text: w.body ? `${w.title}. ${w.body}` : w.title,
+        icon: e.boss,
+        href: '/combat/expeditions',
+        at: e.at,
+      };
     }
     case 'passedBy': {
       // Rivals (session 173): who passed you, where, and where you stand now.

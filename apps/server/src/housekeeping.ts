@@ -6,7 +6,7 @@
 // tables that keep a player's newest rows (notices, feedback, sessions) trim themselves as they grow.
 import { inArray, like, lt } from 'drizzle-orm';
 import type { Ctx } from './context.ts';
-import { hiscores, pushDue, pushSent, telemetry } from './db/schema.ts';
+import { hiscores, pushDue, pushSent, realmStrikes, realmWeeks, telemetry } from './db/schema.ts';
 import { oldSeasonRows } from './game/season-ladder.ts';
 import { sweepMail } from './mail/mail.ts';
 import { sweepModeration } from './moderation.ts';
@@ -43,4 +43,8 @@ export function keepHouse(ctx: Ctx): void {
     .delete(pushDue)
     .where(lt(pushDue.at, now - 2 * DAY))
     .run();
+  // The realm's boss (session 174): weeks long gone (a share is owed a week at most).
+  const longGone = new Date(now - 35 * DAY).toISOString().slice(0, 10);
+  ctx.db.delete(realmStrikes).where(lt(realmStrikes.week, longGone)).run();
+  ctx.db.delete(realmWeeks).where(lt(realmWeeks.week, longGone)).run();
 }

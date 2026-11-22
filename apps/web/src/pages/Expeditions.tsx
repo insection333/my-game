@@ -5,6 +5,7 @@ import { t } from '@idle-clash/content';
 import {
   routeView,
   type BossRow,
+  type RealmView,
   type ExpeditionView,
   type RelicsView,
   type RouteView,
@@ -32,6 +33,7 @@ export function Expeditions() {
   useLocation();
   const [view] = fills<ExpeditionView>(features, 'combat.expedition', state, now);
   const [bosses] = fills<BossRow[]>(features, 'combat.bosses', state, now);
+  const [realm] = fills<RealmView>(features, 'combat.realm', state, now);
   const [relics] = fills<RelicsView>(features, 'combat.relics', state, now);
   return (
     <>
@@ -47,7 +49,7 @@ export function Expeditions() {
         <div className={s.side}>
           {bosses && (
             <section data-section>
-              <Bosses bosses={bosses.data} />
+              <Bosses bosses={bosses.data} realm={realm?.data ?? null} />
             </section>
           )}
           {relics && (

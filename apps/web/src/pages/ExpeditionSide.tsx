@@ -1,7 +1,7 @@
 // The Expeditions tab's side: each boss, fought alone once a day, and the relics marks buy (fourteen
 // rows, scrolling inside their own box).
 import { t } from '@idle-clash/content';
-import type { BossRow, RelicsView } from '@idle-clash/features';
+import type { BossRow, RealmView, RelicsView } from '@idle-clash/features';
 import { actionKey, LANE_IDS } from '@idle-clash/kernel';
 import { ActionRow, Button, hasIcon, ItemIcon, Panel, Pill } from '@idle-clash/ui';
 import { useGame } from '../game/hooks.ts';
@@ -9,17 +9,20 @@ import { game } from '../game/store.ts';
 import { Slot } from '../slots.tsx';
 import { bossCommands } from './boss-start.ts';
 import { CombatArena, useFightClock } from './CombatArena.tsx';
+import { RealmRow } from './RealmRow.tsx';
 import s from './expeditions.module.css';
 
 const VERDICT_TONE = { easy: 'moss', fair: 'woad', costly: 'gold', tooStrong: 'neutral' } as const;
 
-export function Bosses({ bosses }: { bosses: BossRow[] }) {
+export function Bosses({ bosses, realm }: { bosses: BossRow[]; realm: RealmView | null }) {
   const now = useFightClock();
   return (
     <Panel title={t('expeditions.title')} flush>
       <Slot id="combat.bosses">
         {/* A boss fought in the lane, played out over the bosses (session 46). */}
         <CombatArena now={now} place="bosses" />
+        {/* The realm's boss of the week leads the bosses (session 174). */}
+        {realm && <RealmRow realm={realm} />}
         {bosses.map((b) => (
           <Boss key={b.id} boss={b} />
         ))}

@@ -33,6 +33,7 @@ import { webRoutes } from './web.ts';
 import { backupsHealth } from './ops/status.ts';
 import { HOUSEKEEPING_EVERY_MS, keepHouse } from './housekeeping.ts';
 import { Push } from './push/push.ts';
+import { Realm } from './game/realm.ts';
 import { pushRoutes } from './push/routes.ts';
 import { keysOf, webPushSender } from './push/send.ts';
 import { withCastle } from './castle/mirror.ts';
@@ -73,6 +74,7 @@ export async function buildApp(
     notices: new Notices(db),
     hiscores: new Hiscores(db),
     push: null as unknown as Push,
+    realm: new Realm(db),
   };
   ctx.push = new Push(
     {
@@ -89,6 +91,11 @@ export async function buildApp(
   );
   // A climb on a ladder is said to the player at once, and kept with their notices (session 49).
   ctx.hiscores.onRankUp = (playerId, events) => {
+    ctx.live.publish(playerId, { type: 'events', events });
+    ctx.notices.add(playerId, events);
+  };
+  // The realm's boss fell (session 174): each who struck it hears at once, and their tray keeps it.
+  ctx.realm.onFell = (playerId, events) => {
     ctx.live.publish(playerId, { type: 'events', events });
     ctx.notices.add(playerId, events);
   };

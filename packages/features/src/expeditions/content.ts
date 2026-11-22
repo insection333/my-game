@@ -24,6 +24,8 @@ export const CONTENT: FeatureContent = {
   actions: [
     ...REGIONS.map((r) => ({ id: r, level: opensAt(r) })),
     ...BOSSES.map((b) => ({ id: b.id, level: b.hitpoints, gives: [{ item: b.drop, count: 1 }] })),
+    // The realm's boss of the week (session 174), fought at each player's own measure.
+    { id: 'realm', level: 1 },
   ],
   finds: FINDS,
 };

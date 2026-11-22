@@ -4,7 +4,7 @@
 import { fmt, t } from '@idle-clash/content';
 import { BOSSES, LENGTHS, TWISTS } from '../shared/expeditions/data.ts';
 import { relics } from '../shared/expeditions/relics.ts';
-import { deed, lower, type Deed, type DeedTier, type Steps } from './content.ts';
+import { deed, REALM_FALLS, lower, type Deed, type DeedTier, type Steps } from './content.ts';
 import type { Reader } from './reader.ts';
 
 const BOSS_WINS: Steps = [
@@ -129,5 +129,20 @@ export function runs(): Deed[] {
       measure: (r) => Math.min(measure(r), target),
     }),
   );
-  return [...first, ...wins, ...trophies, ...lengths, ...total, twists, ...relicDeeds];
+  // The realm's boss of the week (session 174): weeks it fell with this player's strike, its share taken.
+  const realm = REALM_FALLS.map(([count, tier]) =>
+    deed({
+      id: `realm-${count}`,
+      family: 'realm',
+      key: count === 1 ? 'deed.realmFirst' : 'deed.realm',
+      brief: true,
+      shows: count === 1 ? 'none' : 'count',
+      tier,
+      target: count,
+      words: { count: fmt.int(count) },
+      mark: fmt.int(count),
+      measure: (r) => r.realmFallen(),
+    }),
+  );
+  return [...first, ...wins, ...trophies, ...lengths, ...total, twists, ...relicDeeds, ...realm];
 }

@@ -69,6 +69,19 @@ export const ExpeditionState = z
     twists: z.array(Key).max(20),
     /** Saves from before session 74 have none. */
     last: Last.nullable().optional(),
+    /** The realm's boss (session 174): the day it was last fought, the week whose share was last taken, and
+     *  the weeks it fell with this player's strike. Saves from before have none. */
+    realm: z
+      .object({
+        day: Day.nullable(),
+        claimed: z
+          .string()
+          .regex(/^\d{4}-\d{2}-\d{2}$/)
+          .nullable(),
+        fallen: Count,
+      })
+      .strict()
+      .optional(),
   })
   .strict();
 export type ExpeditionState = z.infer<typeof ExpeditionState>;

@@ -80,6 +80,12 @@ export interface EventMap {
    *  time; `skill` is the ladder ('total' for the total level), `place` the place reached, `band` the
    *  band entered (1, 3, 10, 50 or 100). Said by the server, which keeps the ladders. */
   rankUp: { skill: string; place: number; band: number };
+  /** The realm's boss (session 174): this player's daily fight against it, as it ended. */
+  realmFought: { boss: string; won: boolean; gold: number; marks: number };
+  /** The realm's boss fell this week, with this player's strike among the realm's (told by the server). */
+  realmFell: { boss: string; week: string; strikes: number };
+  /** This player's share of a fallen realm's boss, taken. */
+  realmShare: { boss: string; gold: number; marks: number };
   /** Rivals (session 173): a listed player passed you on a ladder you climb; `foe` is their name as it was
    *  then (emptied if their account goes), `place` yours now. */
   passedBy: { skill: string; foe: string; place: number };
@@ -122,5 +128,8 @@ export const NOTABLE_EVENTS: readonly (keyof EventMap)[] = [
   'castleOrders',
   'rankUp',
   'seasonOpened',
+  'realmFought',
+  'realmFell',
+  'realmShare',
 ];
 export const isNotable = (e: GameEvent): boolean => NOTABLE_EVENTS.includes(e.type);

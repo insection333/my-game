@@ -9,9 +9,11 @@ import { abandon, buyRelic, setOut } from './routes.ts';
 import { RULES } from './rules.ts';
 import { CONTENT } from './content.ts';
 import { bossRows, expeditionView } from './views.ts';
+import { realmView, takeShare } from './realm.ts';
 
 export type { BossRow, ExpeditionView, RegionTab, RouteView, RunView, StageChip, TwistView } from './views.ts';
 export type { RelicRow, RelicsView } from './relics-view.ts';
+export type { RealmView } from './realm.ts';
 export { routeView } from './views.ts';
 
 export const expeditions = defineFeature({
@@ -19,7 +21,7 @@ export const expeditions = defineFeature({
   flag: { on: true, note: 'Expeditions, bosses and relics since session 16' },
   content: CONTENT,
   effects: [],
-  stops: ['expeditionHome', 'bossRested', 'noWeapon', 'tooHurt', 'hitpointsTooLow', 'storehouseFull'],
+  stops: ['expeditionHome', 'bossRested', 'realmRested', 'noWeapon', 'tooHurt', 'hitpointsTooLow', 'storehouseFull'],
   rules: RULES,
   routes: {
     setOut: defineRoute({
@@ -38,6 +40,11 @@ export const expeditions = defineFeature({
       example: {},
       run: (state) => abandon(state),
     }),
+    share: defineRoute({
+      input: z.object({}).strict(),
+      example: {},
+      run: (state, _input, now) => takeShare(state, now),
+    }),
     relic: defineRoute({
       input: z.object({ relic: z.string().regex(/^[a-z][a-z-]{0,63}$/) }).strict(),
       example: { relic: 'hearthstone' },
@@ -47,6 +54,7 @@ export const expeditions = defineFeature({
   slots: {
     'combat.expedition': ({ state, now }) => expeditionView(state, now) as unknown as Json,
     'combat.bosses': ({ state, now }) => bossRows(state, now) as unknown as Json,
+    'combat.realm': ({ state, now }) => realmView(state, now) as unknown as Json,
     'combat.relics': ({ state }) => relicsView(state) as unknown as Json,
     'collection.log': ({ state, now }) => bossLog(state, now) as unknown as Json,
   },
