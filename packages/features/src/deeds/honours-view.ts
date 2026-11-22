@@ -14,6 +14,7 @@ import {
   type HonourKind,
   type Shown,
 } from './honours.ts';
+import { companionById } from '../shared/companions.ts';
 import { deedById, deedList, pointsOf } from './list.ts';
 import { Reader } from './reader.ts';
 import { countText } from './view.ts';
@@ -56,6 +57,11 @@ export function plaqueView(state: State): PlaqueView {
 /** How far a locked honour is: the deed points so far for one opened by points (session 97), the count of
  *  the deed that opens it, or null for one opened otherwise (a hidden deed says nothing). */
 function progressOf(h: Honour, reader: Reader, points: number): string | null {
+  // A companion says where it joins you (session 179): its point is luck, so there is no count to show.
+  if (h.kind === 'companion') {
+    const c = companionById(h.id);
+    return c ? (c.boss ? t(`boss.${c.boss}`) : t(`skill.${c.skill}`)) : null;
+  }
   if (h.unlock && 'points' in h.unlock)
     return t('honour.pointsSoFar', {
       done: fmt.int(Math.min(points, h.unlock.points)),
@@ -67,7 +73,7 @@ function progressOf(h: Honour, reader: Reader, points: number): string | null {
 }
 
 /** The kinds a player may also show none of; a banner, a picture and a scene always show one. */
-const NONE: ReadonlySet<HonourKind> = new Set(['title', 'frame', 'glow', 'badge']);
+const NONE: ReadonlySet<HonourKind> = new Set(['title', 'companion', 'frame', 'glow', 'badge']);
 
 export function honoursView(state: State, now: number): HonoursView {
   const reader = new Reader(state, now);

@@ -17,6 +17,8 @@ export const DeedsState = z
     glow: Key.nullable().default(null),
     badge: Key.nullable().default(null),
     scene: Key.nullable().default(null),
+    // Session 179: the companion beside the picture.
+    companion: Key.nullable().default(null),
   })
   .strict()
   .refine((d) => Object.keys(d.done).length <= 2000, 'too many deeds');
@@ -31,6 +33,7 @@ const EMPTY: DeedsState = Object.freeze({
   glow: null,
   badge: null,
   scene: null,
+  companion: null,
 });
 const checked = new WeakMap<object, DeedsState>();
 

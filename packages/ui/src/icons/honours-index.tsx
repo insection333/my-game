@@ -1,5 +1,6 @@
 // A player's look (session 43), registered beside the rest (index.tsx): the thirty display pictures
-// (`portrait-<id>`, their rim the frame shown: PictureRim) and the six title badges (`badge-<id>`).
+// (`portrait-<id>`, their rim the frame shown: PictureRim) and the six title badges (`badge-<id>`); the
+// companions are drawn in the game alone (late.ts).
 import type { IconDef } from './index.tsx';
 import { BadgeCrown, BadgeFlame, BadgeSkull, BadgeStar, BadgeTower, BadgeWyrm } from './badges.tsx';
 import { PICTURES } from './portraits.tsx';

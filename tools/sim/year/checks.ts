@@ -5,6 +5,7 @@ import { HOUR, MINUTE } from '@idle-clash/kernel';
 import { FEATURES } from '@idle-clash/features';
 import { HONOURS } from '../../../packages/features/src/deeds/honours.ts';
 import { pointsOf } from '../../../packages/features/src/deeds/list.ts';
+import { companionChecks } from './companions.ts';
 import { stageOf, WORKS } from '../../../packages/features/src/shared/steading.ts';
 import { fighter } from '../combat.ts';
 import { DAY, focusedPlayer, gaps, T0 } from '../player.ts';
@@ -101,6 +102,7 @@ export function yearChecks(check: Check, lines: string[]): { steady: Year; light
   // Castle Clash in the year (session 33): raised at total level 100 and kept as a careful lord would,
   // its Edict of Vigor lifting every skill's XP; the targets above all hold with it.
   for (const y of [steady, light]) castleYear(y, check, lines);
+  companionChecks(steady, check, lines);
 
   // A moment about every two minutes of active play at every stage of the year, never five without one.
   lines.push(`\n## Moments in the steady player's active hour`);

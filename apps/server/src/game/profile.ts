@@ -52,7 +52,14 @@ export function profileOf(ctx: Ctx, name: string, now: number): (Omit<Profile, '
     since: Math.max(0, Math.floor((now - p.createdAt) / DAY)),
     title: shown.title,
     banner: shown.banner,
-    look: { picture: shown.picture, frame: shown.frame, glow: shown.glow, badge: shown.badge, scene: shown.scene },
+    look: {
+      picture: shown.picture,
+      frame: shown.frame,
+      glow: shown.glow,
+      badge: shown.badge,
+      scene: shown.scene,
+      companion: shown.companion,
+    },
     career,
     places: ctx.hiscores.placesOf(p.id),
     castle:

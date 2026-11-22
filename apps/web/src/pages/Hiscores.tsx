@@ -12,7 +12,7 @@ import { handled } from '../game/session.ts';
 import { untilLoaded } from '../Ready.tsx';
 import { navigate } from '../router.ts';
 import { Slot } from '../slots.tsx';
-import { badgeName, bannerStyle } from './honours-style.ts';
+import { badgeName, bannerStyle, companionName } from './honours-style.ts';
 import { MenuGlyph } from '../shell/glyphs.tsx';
 import { PageHead } from './PageHead.tsx';
 import { profileHref } from './ProfileSheet.tsx';
@@ -220,8 +220,11 @@ function Row({ row, you, ladder }: { row: HiscoreRow; you: boolean; ladder: stri
             {row.name}
           </a>
         </span>
-        {(title || milestones || kindling) && (
+        {(title || milestones || kindling || row.look?.companion) && (
           <span className={s.honours}>
+            {row.look?.companion && (
+              <ItemIcon name={`companion-${row.look.companion}`} size={24} label={companionName(row.look.companion)} />
+            )}
             {row.look?.badge && (
               <ItemIcon name={`badge-${row.look.badge}`} size={24} label={badgeName(row.look.badge)} />
             )}

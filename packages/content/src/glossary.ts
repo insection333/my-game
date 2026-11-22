@@ -42,6 +42,10 @@ export const TERMS: [term: string, meaning: string][] = [
   ['Collect', 'Close the away recap: everything in it is already in your Storehouse'],
   ['Collection log', 'The record of every find you have made, by skill'],
   ['Combat lane', "The lane that fights; trains your weapon's style and Hitpoints"],
+  [
+    'Companion',
+    'A small creature shown beside your picture, one for each skill and boss, that joins you by chance as you train it or beat it; it gives nothing but company',
+  ],
   ['Comes from', 'On an item: every action that produces it'],
   ['Cooked food', "Food Cooking makes from fish and logs; it heals more for its worth than the vendor's"],
   ['Daily goal', 'One larger goal a day'],

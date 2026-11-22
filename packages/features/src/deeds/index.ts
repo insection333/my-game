@@ -29,7 +29,10 @@ export const deeds = defineFeature({
     }),
     choose: defineRoute({
       input: z
-        .object({ kind: z.enum(['title', 'banner', 'frame', 'picture', 'glow', 'badge', 'scene']), id: Id.nullable() })
+        .object({
+          kind: z.enum(['title', 'banner', 'frame', 'picture', 'companion', 'glow', 'badge', 'scene']),
+          id: Id.nullable(),
+        })
         .strict(),
       example: { kind: 'banner', id: 'woad' },
       run: (state, input, _now) => choose(state, input.kind, input.id),

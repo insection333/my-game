@@ -1,4 +1,5 @@
-// How a player looks to others (session 43): the picture, frame, glow, badge and scene they show, kept on
+// How a player looks to others (session 43): the picture, frame, glow, badge and scene they show (and since
+// session 179 the companion beside the picture), kept on
 // their player row as JSON beside their title and banner so the ladders and their sheet read it without
 // opening their save. A row that cannot be read shows nothing rather than failing the ladder.
 import type { Look } from '@idle-clash/contracts';
@@ -7,12 +8,27 @@ import { z } from 'zod';
 
 const Key = z.string().regex(/^[a-z0-9][a-z0-9-]{0,63}$/);
 const LookSchema = z
-  .object({ picture: Key, frame: Key.nullable(), glow: Key.nullable(), badge: Key.nullable(), scene: Key })
+  .object({
+    picture: Key,
+    frame: Key.nullable(),
+    glow: Key.nullable(),
+    badge: Key.nullable(),
+    scene: Key,
+    // Session 179: a look kept before it has none.
+    companion: Key.nullable().optional(),
+  })
   .strict();
 
 /** The look to keep, from the honours a save shows. */
 export const lookOf = (h: ReturnType<typeof shownHonours>): string =>
-  JSON.stringify({ picture: h.picture, frame: h.frame, glow: h.glow, badge: h.badge, scene: h.scene });
+  JSON.stringify({
+    picture: h.picture,
+    frame: h.frame,
+    glow: h.glow,
+    badge: h.badge,
+    scene: h.scene,
+    companion: h.companion,
+  });
 
 export function readLook(raw: string | null): Look | null {
   if (!raw) return null;

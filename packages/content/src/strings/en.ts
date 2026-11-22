@@ -6,6 +6,7 @@
 import { combat } from './en-combat.ts';
 import { deeds } from './en-deeds.ts';
 import { honours } from './en-honours.ts';
+import { companions } from './en-companions.ts';
 import { expeditions } from './en-expeditions.ts';
 import { food } from './en-food.ts';
 import { kindling } from './en-kindling.ts';
@@ -307,6 +308,7 @@ export const en: Record<string, string> = {
   ...progress,
   ...deeds,
   ...honours,
+  ...companions,
   ...expeditions,
   ...kindling,
   ...seasons,

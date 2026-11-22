@@ -16,7 +16,7 @@ import { game } from '../game/store.ts';
 import { navigate } from '../router.ts';
 import { LaneList, laneViews } from '../shell/Lanes.tsx';
 import { fills, Slot } from '../slots.tsx';
-import { badgeName, honourStyle } from './honours-style.ts';
+import { badgeName, companionName, honourStyle } from './honours-style.ts';
 import s from './pages.module.css';
 import { Tour } from '../shell/Tour.tsx';
 import { Today } from './Today.tsx';
@@ -58,6 +58,15 @@ export function Hearth() {
             {plaque && (
               <span className={s.plaquePicture}>
                 <Picture picture={plaque.data.picture} frame={plaque.data.frame} glow={plaque.data.glow} size={48} />
+                {plaque.data.companion && (
+                  <span className={s.plaqueCompanion}>
+                    <ItemIcon
+                      name={`companion-${plaque.data.companion}`}
+                      size={32}
+                      label={companionName(plaque.data.companion)}
+                    />
+                  </span>
+                )}
               </span>
             )}
             <span className={s.plaqueText}>

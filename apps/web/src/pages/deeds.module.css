@@ -295,6 +295,14 @@
   overflow-wrap: anywhere;
 }
 
+/* No companion (session 179): an empty ring the size of a companion. */
+.noneTile {
+  width: 48px;
+  height: 48px;
+  border: 2px dashed var(--line-strong);
+  border-radius: 50%;
+}
+
 /* How near a locked picture is (session 77): the count its deed has reached, quiet under the name. */
 .pictureCount {
   color: var(--ink-2);

@@ -140,6 +140,12 @@ export const SEASONS: Steps = [
   [3, 'hard'],
   [6, 'elite'],
 ];
+/** Companions gathered (session 179): three, seven, and all fourteen. */
+export const COMPANIONS_GATHERED: Steps = [
+  [3, 'hard'],
+  [7, 'elite'],
+  [14, 'master'],
+];
 /** The weeks' contracts kept (session 172): the steps, the 26th opening the Steadfast in the year's middle. */
 export const WEEKS: Steps = [
   [1, 'easy'],

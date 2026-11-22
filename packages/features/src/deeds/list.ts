@@ -8,6 +8,7 @@ import { finds, home } from './families-home.ts';
 import { kindlingDeeds } from './families-kindling.ts';
 import { runs } from './families-runs.ts';
 import { seasonDeeds, weekDeeds } from './families-seasons.ts';
+import { companionDeeds } from './families-companions.ts';
 import { steadingDeeds } from './families-steading.ts';
 import { Reader } from './reader.ts';
 import { deedsOf } from './state.ts';
@@ -32,7 +33,7 @@ export const CATEGORIES: readonly { id: string; families: readonly string[] }[] 
       'elites',
     ],
   },
-  { id: 'finds', families: ['legendary', 'log', 'collector'] },
+  { id: 'finds', families: ['legendary', 'log', 'collector', 'companion', 'companions'] },
   {
     id: 'runs',
     families: ['bossFirst', 'boss', 'trophy', 'trophies', 'runLength', 'runs', 'twists', 'relic', 'realm'],
@@ -55,6 +56,7 @@ function make() {
       ...castleDeeds(),
       ...seasonDeeds(),
       ...weekDeeds(),
+      ...companionDeeds(),
     ];
     made = { list, byId: new Map(list.map((d) => [d.id, d])) };
   }

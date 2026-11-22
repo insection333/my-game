@@ -9,7 +9,7 @@ import { Button, CastleScene, ItemIcon, MarchScene, Picture, Sheet, TextLink, ty
 import { useEffect, useState, type CSSProperties } from 'react';
 import { api } from '../api.ts';
 import { navigate, trayHref } from '../router.ts';
-import { badgeName, bannerStyle } from './honours-style.ts';
+import { badgeName, bannerStyle, companionName } from './honours-style.ts';
 import { cardRefusal } from './missing.ts';
 import { ReportPlayer } from './ReportPlayer.tsx';
 import s from './profile.module.css';
@@ -75,6 +75,11 @@ function Card({ p }: { p: Profile }) {
         )}
         <span className={s.picture}>
           <Picture picture={p.look.picture} frame={p.look.frame} glow={p.look.glow} size={96} />
+          {p.look.companion && (
+            <span className={s.companion}>
+              <ItemIcon name={`companion-${p.look.companion}`} size={32} label={companionName(p.look.companion)} />
+            </span>
+          )}
         </span>
       </div>
       <div className={s.who}>
