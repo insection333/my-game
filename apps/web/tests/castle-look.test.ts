@@ -1,6 +1,7 @@
 // Castle Clash's look (session 41): the banner draws the castle as it stands (look.ts, CastleScene),
 // every lord and stronghold bears arms of its own that keep the heralds' rule, and every building,
 // study, edict, troop at each evolution and war relic the page shows has its drawing.
+import '../src/late-icons.ts';
 import { EDICTS, RELICS, TECH_IDS, UNITS } from '@idle-clash/content';
 import { castleEngine as E } from '@idle-clash/features';
 import { describe, expect, it } from 'vitest';

@@ -4,6 +4,7 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
+    "./late-icons": "./src/icons/late.ts",
     "./tokens.css": "./src/tokens.css",
     "./base.css": "./src/base.css"
   },

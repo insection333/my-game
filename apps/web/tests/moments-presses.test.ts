@@ -1,5 +1,6 @@
 // Moments for what the player's own presses and rewards bring (sessions 92 and 93): a milestone's gold
 // drawn, and a Rare find used answered.
+import '../src/late-icons.ts';
 import { FEATURES, recap } from '@idle-clash/features';
 import type { GameEvent } from '@idle-clash/kernel';
 import { hasIcon } from '@idle-clash/ui';
