@@ -9,6 +9,7 @@ import { rankOf, RELIC_COSTS, relics } from '../../../packages/features/src/shar
 import { STAGES, stageCost, stageOf, WORKS } from '../../../packages/features/src/shared/steading.ts';
 import { ACTS, ALL_SKILLS, ARTISAN, have, level } from './world.ts';
 import { behind } from './plan.ts';
+import { bounties } from './bounties.ts';
 
 const feature = (id: string) => FEATURES.find((f) => f.id === id)!;
 const route = (state: State, f: string, r: string, input: unknown, now: number) =>
@@ -196,6 +197,9 @@ export function goalsAndDeeds(state: State, now: number, deeds: boolean): { stat
     events.push(...(r.events ?? []));
   }
   if (deeds) {
+    const b = bounties(s, now);
+    s = b.state;
+    events.push(...b.events);
     const r = route(s, 'deeds', 'refresh', {}, now);
     s = r.state;
     events.push(...(r.events ?? []));

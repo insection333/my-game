@@ -232,6 +232,7 @@ export const deeds = {
   'honour.title.wayfarer': 'Wayfarer',
   'honour.title.stalwart': 'Stalwart',
   'honour.title.renowned': 'the Renowned',
+  'honour.title.honoured': 'the Honoured',
   'honour.title.illustrious': 'the Illustrious',
   'honour.title.exalted': 'the Exalted',
   'honour.title.mythic': 'the Mythic',

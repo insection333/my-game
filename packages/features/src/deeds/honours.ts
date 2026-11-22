@@ -94,11 +94,13 @@ const ninetyNines = () => allSkills().map((s) => `level-${s}-99`);
 const firstKindlings = () => allSkills().map((s) => `kindled-${s}-1`);
 
 export const HONOURS: readonly Honour[] = [
-  // Titles: by points first (spaced over the year, as the year's simulation measures: about day 2, 5,
-  // 30, 120, 265 and 345), then by deed.
+  // Titles: by points first (spaced over the year, as the year's simulation measures: about day 2, 7, 50,
+  // 90, 145, 230 and 295), then by deed. The Honoured (session 180) fills the spring, where two months
+  // passed without a title of any kind.
   title('wayfarer', at(100)),
   title('stalwart', at(1_000)),
   title('renowned', at(2_500)),
+  title('honoured', at(3_500)),
   title('illustrious', at(4_500)),
   title('exalted', at(7_000)),
   title('mythic', at(10_000)),
