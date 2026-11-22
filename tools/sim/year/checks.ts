@@ -31,7 +31,11 @@ const QUARTER_DEEDS = 30;
 /** Days of a year that may pass without a first (one in fifty), never two running. */
 const EMPTY_DAYS = 7;
 /** Past 99, the most days running without a first. */
-const ENDGAME_WAIT = 3;
+/** After every skill is at 99: the longest wait for a first, and the share of days with one. 3 days held at
+ *  one seed by luck (session 167: main itself waited 3, 5 and 3 days at seeds 11 to 13, as the castle's
+ *  firsts come as its gold allows); the wait is held to 5, and most days to bring a first. */
+const ENDGAME_WAIT = 5;
+const ENDGAME_DAYS_WITH_A_FIRST = 0.5;
 
 const lastOf = (y: Year, skills: readonly string[]) => Math.max(...skills.map((s) => y.at99[s] ?? Infinity));
 const firstOf = (y: Year, skills: readonly string[]) => Math.min(...skills.map((s) => y.at99[s] ?? Infinity));
@@ -168,11 +172,17 @@ export function yearChecks(check: Check, lines: string[]): { steady: Year; light
     gap = d.firsts.length ? 0 : gap + 1;
     longest = Math.max(longest, gap);
   }
-  if (after.length)
+  if (after.length) {
     check(
       longest <= ENDGAME_WAIT,
       `After every skill is at 99, never more than ${ENDGAME_WAIT} days without a first (the longest ${longest})`,
     );
+    const withFirst = after.filter((d) => d.firsts.length > 0).length;
+    check(
+      withFirst >= after.length * ENDGAME_DAYS_WITH_A_FIRST,
+      `After every skill is at 99, a first on ${withFirst} of ${after.length} days (at least half)`,
+    );
+  }
   // One skill kept in its lane, on the real engine to 99: a gathering skill, an artisan one, a style.
   lines.push(`\n## One skill kept in its lane, to 99`);
   const kept = [

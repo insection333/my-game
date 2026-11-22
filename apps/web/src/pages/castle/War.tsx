@@ -2,30 +2,21 @@
 // fortress at your tier, the day's five strongholds and the lords to challenge, each row with its chance,
 // what it pays and its button; an attack goes in the formation set against the foe where the foe is known
 // (no setting it first), and its result lands on its own row, with the battle's account a tap away. Your
-// reports under the lords (session 133). A lord's Plan opens their sheet: spies, the full plan, Report this player.
-import { dayTurns, SINKS, SPY_MISSIONS, UNLOCKS, fmt, t } from '@idle-clash/content';
+// reports under the lords (session 133). A lord's Plan opens their sheet: spies, the full plan, Report this player; a stronghold's
+// and the fortress's Send spies, theirs (session 167).
+import { UNLOCKS, fmt, t } from '@idle-clash/content';
 import { castleEngine as E } from '@idle-clash/features';
-import { ActionRow, Button, ItemIcon, Panel, Pill } from '@idle-clash/ui';
+import { Panel, Pill } from '@idle-clash/ui';
 import { useEffect } from 'react';
 import { navigate, useLocation, withPanel } from '../../router.ts';
-import { Fought } from './Fought.tsx';
-import { fortressName, garrisonWords, mercName } from './labels.ts';
-import { when } from './Reports.tsx';
+import { Fortress } from './Fortress.tsx';
+import { fortressName, mercName } from './labels.ts';
 import { LatestReports } from './ReportsTab.tsx';
-import { castleRun, fight, loadTargets } from './store.ts';
-import { affords, hasAp, useSyncedCastle } from './synced.ts';
+import { loadTargets } from './store.ts';
+import { useSyncedCastle } from './synced.ts';
+import { TargetRow } from './TargetRow.tsx';
 import { TargetSheet } from './TargetSheet.tsx';
-import {
-  defenceOf,
-  heldByWounds,
-  outOfReach,
-  paysLine,
-  pct,
-  sheetOf,
-  spiesWouldTip,
-  standingOf,
-  type Target,
-} from './targets.ts';
+import type { Target } from './targets.ts';
 import s from './castle.module.css';
 
 function useTargets(): { lords: Target[]; strongholds: Target[]; reach: number } {
@@ -38,7 +29,7 @@ function useTargets(): { lords: Target[]; strongholds: Target[]; reach: number }
   if (!targets) return { lords: [], strongholds: [], reach: 0 };
   return {
     reach: targets.reach ?? 0,
-    lords: targets.lords.map((l) => ({ ...l, merc: null })),
+    lords: targets.lords.map((l) => ({ ...l, merc: null, fortress: null })),
     strongholds: targets.mercenaries.map((m) => ({
       id: m.id,
       name: mercName(m.first, m.second),
@@ -47,15 +38,36 @@ function useTargets(): { lords: Target[]; strongholds: Target[]; reach: number }
       struck: null,
       shieldedUntil: null,
       merc: m,
+      fortress: null,
     })),
   };
 }
 
+/** The fortress at your tier as a target, for its sheet: its spies, its plan and Assault (session 167). */
+function fortressTarget(castle: E.Castle | null): Target[] {
+  if (!castle) return [];
+  const tier = castle.incursionTier;
+  const name = fortressName(E.fortressAt(tier).id);
+  return [
+    {
+      id: E.fortressKey(tier),
+      name,
+      rating: 0,
+      spyChance: null,
+      struck: null,
+      shieldedUntil: null,
+      merc: null,
+      fortress: tier,
+    },
+  ];
+}
+
 export function War() {
   const { panel } = useLocation();
+  const { castle } = useSyncedCastle();
   const { lords, strongholds, reach } = useTargets();
   const id = panel === 'target' ? new URLSearchParams(location.search).get('target') : null;
-  const open = id ? [...lords, ...strongholds].find((x) => x.id === id) : undefined;
+  const open = id ? [...lords, ...strongholds, ...fortressTarget(castle)].find((x) => x.id === id) : undefined;
   return (
     <div className={s.grid}>
       {/* The day's foes on one side, the lords and what came of the war on the other (session 133), so
@@ -70,65 +82,6 @@ export function War() {
       </div>
       {open && <TargetSheet target={open} onClose={() => navigate(withPanel(null).replace(/[?&]target=[^&]*/, ''))} />}
     </div>
-  );
-}
-
-/** A foe beyond reach while the lord's troops are wounded, and healing would bring it back (session 145). */
-const woundedWords = (castle: E.Castle) => t('castle.target.beyondWounded', { pct: fmt.int(castle.infirmaryPct) });
-
-/** The fortress at a castle's tier: the formation set against it, its chance, and whether any roll takes
- *  it (session 139: one beyond every roll offered Assault beside "0% to win"). */
-export function fortressOdds(castle: E.Castle, now: number) {
-  const best = E.bestOffense(castle, E.fortressSide(castle.incursionTier), now);
-  const chance = E.winChance(best.r);
-  return { best, chance, beyond: chance === 0 };
-}
-
-/** The fortress at your tier: its garrison and trap, the chance in the formation set against it (or that it
- *  is beyond you for now), what taking it gives, and Assault. */
-function Fortress() {
-  const { castle, now, busy } = useSyncedCastle();
-  if (!castle) return null;
-  const tier = castle.incursionTier;
-  const fortress = E.fortressAt(tier);
-  const { best, chance, beyond } = fortressOdds(castle, now);
-  const marks = Math.round(
-    (SINKS.INCURSION_MARKS_BASE + Math.floor(tier / 2)) * E.lift(E.modifiers(castle, now).marks),
-  );
-  return (
-    <section data-section>
-      <Panel
-        title={t('castle.incursion.title')}
-        aside={<Pill tone="woad">{t('castle.incursion.tier', { tier: fmt.int(tier) })}</Pill>}
-        flush
-      >
-        <div data-slot="castle.incursion">
-          <ActionRow
-            iconYields
-            icon={<ItemIcon name="crest" crest={fortress.id} size={32} />}
-            name={fortressName(fortress.id)}
-            facts={[
-              beyond
-                ? heldByWounds(castle, E.fortressSide(tier), now)
-                  ? woundedWords(castle)
-                  : t('castle.incursion.beyond')
-                : t('castle.target.chance', { pct: pct(chance) }),
-              t('castle.incursion.rewards', { marks: fmt.int(marks) }),
-            ]}
-            progress={<Fought battle="incursion" />}
-            actions={
-              <Button
-                variant="primary"
-                disabled={busy || beyond || !hasAp(castle, SINKS.INCURSION_AP)}
-                onClick={() => void fight('incursion', { type: 'incursion', shares: [...best.shares] })}
-              >
-                {t('castle.incursion.assault', { ap: fmt.int(SINKS.INCURSION_AP) })}
-              </Button>
-            }
-          />
-        </div>
-      </Panel>
-    </section>
   );
 }
 
@@ -201,97 +154,5 @@ function Lords({ lords, reach }: { lords: Target[]; reach: number }) {
         {open && reach > 0 && lords.length > 0 && <p className={s.note}>{t('castle.targets.wider')}</p>}
       </Panel>
     </section>
-  );
-}
-
-/** One target: a stronghold or a lord, with its chance (in the formation set against it, where it is
- *  known), what it pays, how it stands today, and its button; a lord not yet scouted offers Scout. */
-function TargetRow({ target }: { target: Target }) {
-  const { castle, view, now, purse, busy } = useSyncedCastle();
-  if (!castle) return null;
-  const logs = view?.logs ?? [];
-  const standing = standingOf(castle, target, now);
-  const done = standing && standing.kind !== 'once';
-  const def = defenceOf(castle, target, logs, now);
-  const best = def ? E.bestOffense(castle, def, now) : null;
-  const chance = best ? E.winChance(best.r) : null;
-  const beyond = outOfReach(target, chance);
-  const costs = target.merc
-    ? E.mercenaryCosts(castle, target.merc, now)
-    : E.siegeCosts(castle, E.brRatio(castle, { rating: target.rating }), now);
-  const scout = SPY_MISSIONS.find((m) => m.id === 'scout')!;
-  const scoutCost = E.spyCosts(castle, { ...castle, userId: target.id, rating: target.rating }, scout, now);
-  const shares = best ? ([...best.shares] as [number, number, number]) : undefined;
-  const attack = () => void fight(target.id, { type: 'siege', target: target.id, ...(shares ? { shares } : {}) });
-  const taken = Math.max(0, ...E.pairOf(castle, target.id, now).sieges);
-  return (
-    <ActionRow
-      iconYields
-      wide={!target.merc}
-      icon={<ItemIcon name="crest" crest={target.id} size={32} />}
-      name={target.name}
-      status={
-        <>
-          <Pill tone={target.merc ? undefined : 'woad'}>
-            {t('castle.target.rating', { rating: fmt.int(target.rating) })}
-          </Pill>
-          {target.struck !== null && (
-            <Pill tone="ember">{t('castle.target.struckAt', { when: when(target.struck, now) })}</Pill>
-          )}
-          {done && <Pill tone={standing.kind === 'fallen' ? 'moss' : undefined}>{standing.text}</Pill>}
-        </>
-      }
-      facts={
-        standing?.kind === 'fallen'
-          ? [t('castle.target.fellAt', { when: when(taken, now), back: dayTurns(now) })]
-          : [
-              chance === null
-                ? t('castle.target.unscouted')
-                : beyond
-                  ? def && heldByWounds(castle, def, now)
-                    ? woundedWords(castle)
-                    : t('castle.target.beyond')
-                  : target.merc
-                    ? t('castle.target.chance', { pct: pct(chance) })
-                    : t('castle.target.chanceAbout', { pct: pct(chance) }),
-              ...(target.merc ? [garrisonWords(target.merc.garrison, target.merc.trap)] : []),
-              ...(spiesWouldTip(target, chance) ? [t('castle.target.spies')] : []),
-              paysLine(castle, target, view?.warChest ?? 0, logs, now),
-              ...(standing?.kind === 'once' ? [standing.text] : []),
-            ]
-      }
-      progress={<Fought battle={target.id} />}
-      foot={
-        done || target.merc ? undefined : (
-          <Button variant="quiet" onClick={() => navigate(sheetOf(target.id))}>
-            {t('castle.target.open')}
-          </Button>
-        )
-      }
-      actions={
-        done ? undefined : (
-          <>
-            {!target.merc && chance === null ? (
-              <Button
-                disabled={busy || !hasAp(castle, scoutCost.ap) || !affords(castle, purse, scoutCost.gold)}
-                onClick={() => void castleRun({ type: 'spy', target: target.id, mission: 'scout' })}
-              >
-                {t('castle.scoutFor', { gold: fmt.short(scoutCost.gold), ap: fmt.int(scoutCost.ap) })}
-              </Button>
-            ) : (
-              <Button
-                disabled={busy || beyond || !hasAp(castle, costs.ap) || !affords(castle, purse, costs.gold)}
-                onClick={attack}
-              >
-                {t(target.struck !== null ? 'castle.strikeBackFor' : 'castle.siege', {
-                  gold: fmt.short(costs.gold),
-                  ap: fmt.int(costs.ap),
-                })}
-              </Button>
-            )}
-          </>
-        )
-      }
-    />
   );
 }

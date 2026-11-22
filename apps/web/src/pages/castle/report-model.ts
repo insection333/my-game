@@ -152,15 +152,22 @@ export function cardOf(r: Report, me: string): ReportCard | null {
     }
     case 'spyOut': {
       const done = d.success === true;
+      // Spies at one of the day's foes (session 167): a stronghold or the fortress, named as itself.
+      const m = d.merc && typeof d.merc === 'object' ? (d.merc as Record<string, unknown>) : null;
+      const foeSide: Side = m
+        ? { seed: str(m.id), name: mercName(num(m.first), num(m.second)), lord: false }
+        : typeof d.fortress === 'string'
+          ? { seed: d.fortress, name: fortressName(d.fortress), lord: false }
+          : lord;
       return {
         ...base,
         kind: 'spy',
         mission: str(d.mission) || null,
         word: done ? t('castle.report.success') : t('castle.report.caught'),
         good: done,
-        title: t('castle.reports.spyOut', { mission: missionName(str(d.mission)), foe }),
+        title: t('castle.reports.spyOut', { mission: missionName(str(d.mission)), foe: foeSide.name }),
         left: you,
-        right: lord,
+        right: foeSide,
         spoils: marks,
       };
     }

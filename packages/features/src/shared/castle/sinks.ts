@@ -7,6 +7,7 @@ import { castleSide, combatRatio, type Side } from './combat.ts';
 import { lift, modifiers, noModifiers } from './effects.ts';
 import { excavationCost } from './economy.ts';
 import { pay, type Done, type Wallet } from './manage.ts';
+import { foeOps, fortressKey, NO_OPS, withOps, type FoeOps } from './foe-spies.ts';
 
 /** Drills a unit: 10 AP for 250 drill XP, `times` over. */
 export function drill(w: Wallet, unit: UnitId, times: number): Done {
@@ -49,21 +50,25 @@ export function excavate(w: Wallet, now: number): Done {
 export const fortressAt = (tier: number) => FORTRESSES[(Math.max(1, tier) - 1) % FORTRESSES.length];
 
 /** A fortress as a defending side: each unit 80 × tier^1.05 strong, behind whole walls of its tier. */
-export function fortressSide(tier: number): Side {
+/** The fortress at a tier as a defending side, with the attacker's spies' work on it (session 167). */
+export function fortressSide(tier: number, ops: FoeOps = NO_OPS): Side {
   const f = fortressAt(tier);
   const power = SINKS.INCURSION_POWER_BASE * Math.max(1, tier) ** SINKS.INCURSION_POWER_EXP;
   const total = f.garrison[0] + f.garrison[1] + f.garrison[2];
-  return {
-    base: [power, power, power],
-    shares: f.garrison.map((g) => g / total) as [number, number, number],
-    mods: noModifiers(),
-    wounded: 0,
-    walls: { level: tier, integrity: 100 },
-    trap: f.trap,
-    vigilance: 0,
-    morale: 1,
-    poison: 0,
-  };
+  return withOps(
+    {
+      base: [power, power, power],
+      shares: f.garrison.map((g) => g / total) as [number, number, number],
+      mods: noModifiers(),
+      wounded: 0,
+      walls: { level: tier, integrity: 100 },
+      trap: f.trap,
+      vigilance: 0,
+      morale: 1,
+      poison: 0,
+    },
+    ops,
+  );
 }
 
 export interface IncursionResult {
@@ -91,7 +96,7 @@ export function launchIncursion(c: Castle, now: number, roll: number, luck = 1):
   if (c.activeAp + 1e-9 < SINKS.INCURSION_AP) return 'ap';
   const tier = c.incursionTier;
   const att = castleSide(c, now, 'attack');
-  const { attack, defense, r } = combatRatio(att, fortressSide(tier), roll);
+  const { attack, defense, r } = combatRatio(att, fortressSide(tier, foeOps(c, fortressKey(tier), now)), roll);
   const mods = modifiers(c, now);
   const spent = { ...c, activeAp: c.activeAp - SINKS.INCURSION_AP };
   const none = { vanguard: 0, outriders: 0, siege: 0 };

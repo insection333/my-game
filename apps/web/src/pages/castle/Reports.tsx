@@ -47,8 +47,15 @@ export function readReport(r: Report): { line: string; facts: string[] } {
     }
     case 'spyOut': {
       const report = d.report && typeof d.report === 'object' ? (d.report as Record<string, unknown>) : null;
+      // Spies at one of the day's foes (session 167), named as itself.
+      const m = d.merc && typeof d.merc === 'object' ? (d.merc as Record<string, unknown>) : null;
+      const at = m
+        ? mercName(num(m.first), num(m.second))
+        : typeof d.fortress === 'string'
+          ? fortressName(d.fortress)
+          : foe;
       return {
-        line: t('castle.report.spyOut', { mission: missionName(str(d.mission)), foe }),
+        line: t('castle.report.spyOut', { mission: missionName(str(d.mission)), foe: at }),
         facts: [
           d.success === true ? t('castle.report.success') : t('castle.report.caught'),
           ...(report ? [garrisonLine(report)] : []),

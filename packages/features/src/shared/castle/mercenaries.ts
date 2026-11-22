@@ -7,9 +7,10 @@ import { MERCENARY_NAMES, RECOVERY, SIEGE, TRAPS } from '@idle-clash/content';
 import { formatUtcDate, type Castle } from './castle.ts';
 import { combatRatio, castleSide, outcomeOf, type Outcome, type Side } from './combat.ts';
 import { lift, modifiers, noModifiers } from './effects.ts';
-import { statPower } from './economy.ts';
+import { statPower, youth } from './economy.ts';
 import { pairOf, withPair } from './pairs.ts';
 import { siegeCosts } from './siege.ts';
+import { foeOps, NO_OPS, withOps, type FoeOps } from './foe-spies.ts';
 
 /** A 32-bit FNV-1a hash: a stable number from a string. */
 export function hash(s: string): number {
@@ -68,20 +69,24 @@ export function mercenaries(c: Castle, now: number, count: number): Mercenary[] 
   });
 }
 
-/** A stronghold as a defending side: every unit at its level, behind whole walls of that level. */
-export function mercenarySide(m: Mercenary): Side {
+/** A stronghold as a defending side: every unit at its level, behind whole walls of that level, with the
+ *  attacker's spies' work on it (session 167). */
+export function mercenarySide(m: Mercenary, ops: FoeOps = NO_OPS): Side {
   const power = statPower(100, m.level);
-  return {
-    base: [power, power, power],
-    shares: m.garrison.map((g) => g / 100) as [number, number, number],
-    mods: noModifiers(),
-    wounded: 0,
-    walls: { level: Math.round(m.level), integrity: 100 },
-    trap: m.trap,
-    vigilance: 0,
-    morale: 1,
-    poison: 0,
-  };
+  return withOps(
+    {
+      base: [power, power, power],
+      shares: m.garrison.map((g) => g / 100) as [number, number, number],
+      mods: noModifiers(),
+      wounded: 0,
+      walls: { level: Math.round(m.level), integrity: 100 },
+      trap: m.trap,
+      vigilance: 0,
+      morale: 1,
+      poison: 0,
+    },
+    ops,
+  );
 }
 
 /** What a stronghold pays by its place among the day's five. */
@@ -95,7 +100,8 @@ export const mercenaryBounty = (attackerRating: number, chest: number, pay = 1):
     0,
     Math.floor(
       Math.min(
-        SIEGE.MERCENARY_BOUNTY_PER_RATING * Math.max(1, attackerRating) * pay,
+        // Scaled as the young castle's fee is, so it stays under it (session 167).
+        SIEGE.MERCENARY_BOUNTY_PER_RATING * Math.max(1, attackerRating) * youth(attackerRating) * pay,
         chest * SIEGE.MERCENARY_CHEST_SHARE,
       ),
     ),
@@ -129,7 +135,8 @@ export interface MercenaryResult {
 /** A siege on a stronghold (the attacker launched and paid already): war marks and a bounty on a breach,
  *  more for the harder ones; a breached stronghold falls for the day, and the fifth to fall is a rout. */
 export function resolveMercenary(att: Castle, m: Mercenary, now: number, roll: number, chest: number): MercenaryResult {
-  const { attack, defense, r } = combatRatio(castleSide(att, now, 'attack'), mercenarySide(m), roll);
+  const ops = foeOps(att, m.id, now);
+  const { attack, defense, r } = combatRatio(castleSide(att, now, 'attack'), mercenarySide(m, ops), roll);
   const outcome = outcomeOf(r);
   const mods = modifiers(att, now);
   const breach = outcome !== 'repelled';

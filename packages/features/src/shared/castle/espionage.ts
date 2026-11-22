@@ -5,7 +5,7 @@
 import { COMBAT, ESPIONAGE, SPY_MISSIONS, type SpyMission } from '@idle-clash/content';
 import type { Castle, DebuffKind } from './castle.ts';
 import { lift, modifiers } from './effects.ts';
-import { raidableGold, statPower } from './economy.ts';
+import { raidableGold, statPower, youth } from './economy.ts';
 import { pairOf, withPair } from './pairs.ts';
 
 export const missionOf = (id: string): SpyMission | undefined => SPY_MISSIONS.find((m) => m.id === id);
@@ -35,6 +35,7 @@ export function spyCosts(att: Castle, def: Castle, mission: SpyMission, now: num
     ESPIONAGE.BRIBE_PER_RATING *
     Math.max(att.rating, def.rating, 1) *
     mission.bribe *
+    youth(att.rating) *
     lift(modifiers(att, now).costs.bribes);
   return { ap: mission.ap, gold: Math.round(gold) };
 }

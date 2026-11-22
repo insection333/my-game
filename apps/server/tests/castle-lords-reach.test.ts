@@ -53,8 +53,8 @@ describe('the lords on offer', () => {
     raise(near, 4);
     raise(far, 6);
     raise(further, 7);
-    // Raised today, averaging under level 3, its shield down: in reach, but not yet open to lords.
-    const levels = { walls: 3, deepVault: 3, watchtower: 3, spyGuild: 3, vanguard: 3, outriders: 3, siege: 2 };
+    // Raised today, averaging under level 2 (session 167), its shield down: in reach, but not yet open to lords.
+    const levels = { walls: 3, deepVault: 1, watchtower: 1, spyGuild: 1, vanguard: 3, outriders: 3, siege: 1 };
     raise(young, 3, { createdAt: s.clock.now, levels });
     const t = await targets(me);
     expect(t.reach).toBe(2);

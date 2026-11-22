@@ -269,12 +269,25 @@ export const DECREE_WEEK_SECONDS = 604_800;
 /** When Castle Clash and its tabs open (DESIGN.md section 6; session 40: the war from the first day; session
  *  137: lords at an average castle level of 3 or two weeks in). */
 export const UNLOCKS = {
-  TOTAL_LEVEL: 100,
+  /** Session 167: 30, where 100 held a newcomer out for about two days of play (they reach 30 about twenty
+   *  minutes in, with the first steps done). */
+  TOTAL_LEVEL: 30,
   /** Lords open at this average castle level or LORDS_AFTER_DAYS after the castle is raised, whichever is
-   *  first (session 137: at 5 alone they opened about day 50, past any test among friends). */
-  LORDS_AVG_LEVEL: 3,
-  LORDS_AFTER_DAYS: 14,
+   *  first (session 137: at 5 alone they opened about day 50, past any test among friends; session 167: 2
+   *  or three days, from 3 or two weeks, the novice shield's 48 hours still standing first). */
+  LORDS_AVG_LEVEL: 2,
+  LORDS_AFTER_DAYS: 3,
   RELIQUARY_MARKS_EARNED: 1,
+} as const;
+
+/** A young castle's war, priced for a young purse (session 167): a siege's fee, a spy's bribe and a
+ *  stronghold's bounty scale by the castle's rating up to RATING (about level 4), so a level-1 castle (540)
+ *  pays 0.225 of them (a stronghold about 6,000 gold, not 27,000) and its bounty stays under its fee; and a
+ *  building's or troop's level costs (level ÷ FULL_PRICE_LEVEL)² of its price below that level (the first
+ *  about 30,000, where it was 354,000 to 590,000 against a newcomer's 5,000 gold an hour). */
+export const YOUNG = {
+  RATING: 2400,
+  FULL_PRICE_LEVEL: 4,
 } as const;
 
 /** The orders of the day (session 40): three small aims drawn each UTC day, each paying war marks when

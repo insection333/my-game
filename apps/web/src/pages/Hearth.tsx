@@ -2,7 +2,6 @@
 import { t } from '@idle-clash/content';
 import { useEffect } from 'react';
 import {
-  castleEngine,
   seasonView,
   type GoalRow,
   type GoalsView,
@@ -22,6 +21,7 @@ import s from './pages.module.css';
 import { Tour } from '../shell/Tour.tsx';
 import { Today } from './Today.tsx';
 import { Steading } from './Steading.tsx';
+import { CastleRow, castleNote } from './HearthCastle.tsx';
 
 export function Hearth() {
   const { state, now, features } = useGame();
@@ -33,7 +33,7 @@ export function Hearth() {
   const [standing] = fills<StandingView>(features, 'hearth.standing', state, now);
   const [plaque] = fills<PlaqueView>(features, 'hearth.plaque', state, now);
   const [steading] = fills<SteadingView>(features, 'hearth.steading', state, now);
-  const call = castleEngine.callAwaits(state, now);
+  const castle = castleNote(state, now);
   const season = seasonView(now, state);
   // The ladder lacks a goal (a short goal was claimed, or a new day began): the server makes it.
   const wants = goals?.data.refresh ?? false;
@@ -91,27 +91,12 @@ export function Hearth() {
             </Panel>
           </section>
         )}
-        {(next.length > 0 || call || season) && (
+        {(next.length > 0 || castle || season) && (
           <section data-section className={s.nextArea}>
             <Panel title={t('hearth.next.title')} flush>
               <Slot id="hearth.nextUp" className={s.rows}>
-                {/* The day's Call to arms, until it is answered (Castle Clash). */}
-                {call && (
-                  <a
-                    href="/castle"
-                    data-ui="RowLink"
-                    className={s.row}
-                    onClick={(e) => (e.preventDefault(), navigate('/castle'))}
-                  >
-                    <span className={s.rowHead}>
-                      <span className={s.rowName}>
-                        <ItemIcon name="castle-walls" size={24} />
-                        {t('menu.castle')}
-                      </span>
-                    </span>
-                    <span className={s.rowText}>{t('castle.nudge')}</span>
-                  </a>
-                )}
+                {/* The day's Call to arms, until it is answered, or a castle ready to raise (Castle Clash). */}
+                {castle?.first && <CastleRow text={castle.text} />}
                 {/* The season and what it lifts, until it turns (session 164). */}
                 {season && (
                   <a
@@ -151,6 +136,8 @@ export function Hearth() {
                     <span className={s.rowText}>{data.text}</span>
                   </a>
                 ))}
+                {/* Before Castle Clash opens: how far off it is (session 167). */}
+                {castle && !castle.first && <CastleRow text={castle.text} />}
               </Slot>
             </Panel>
           </section>

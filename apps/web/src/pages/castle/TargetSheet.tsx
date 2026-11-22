@@ -1,13 +1,16 @@
 // A target's sheet in the War room (`?panel=target&target=<id>`, IA.md): what is known of it, the attack
 // planned against it, what a win brings, the siege with its fee (sent in the formation set against them,
 // the sheet closing so its result lands on their row), a lord's four spy missions, and the last reports
-// about it.
+// about it. A stronghold's sheet sends spies against it (session 167), and the fortress has a sheet of its
+// own (FortressSheet.tsx).
 import { SPY_MISSIONS, fmt, t } from '@idle-clash/content';
 import { castleEngine as E } from '@idle-clash/features';
 import { ActionRow, Button, ItemIcon, Pill, Sheet, TextLink } from '@idle-clash/ui';
 import { ReportPlayer } from '../ReportPlayer.tsx';
 import { missionDoes, missionName, refusal, trapName } from './labels.ts';
 import { AttackPlan } from './Plan.tsx';
+import { FoeMissions } from './FoeSpies.tsx';
+import { FortressSheet } from './FortressSheet.tsx';
 import { navigate } from '../../router.ts';
 import { profileHref } from '../ProfileSheet.tsx';
 import { cardOf } from './report-model.ts';
@@ -22,6 +25,7 @@ import r from './reports.module.css';
 export function TargetSheet({ target, onClose }: { target: Target; onClose: () => void }) {
   const { castle, view, now, purse, busy, refused } = useSyncedCastle();
   if (!castle) return null;
+  if (target.fortress) return <FortressSheet target={target} onClose={onClose} />;
   const logs = view?.logs ?? [];
   const about = logs.filter((l) => (target.merc ? sameMerc(l.data.merc, target.merc) : l.data.foe === target.id));
   const scouted = target.merc ? null : scoutingOf(logs, target.id);
@@ -105,7 +109,7 @@ export function TargetSheet({ target, onClose }: { target: Target; onClose: () =
             {blocked && blocked !== 'ap' && <span className={s.muted}>{refusal(blocked)}</span>}
           </div>
         </div>
-        {!target.merc && <Missions target={target} />}
+        {target.merc ? <FoeMissions foe={target.id} level={target.merc.level} /> : <Missions target={target} />}
         {about.length > 0 && (
           <div className={s.sheetSection}>
             <h3>{t('castle.reports.title')}</h3>

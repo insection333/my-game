@@ -113,6 +113,12 @@ export const missionDoes = read({
   sabotage: 'castle.mission.sabotage.does',
   forge: 'castle.mission.forge.does',
 });
+/** What a mission does to one of the day's foes (session 167): a sabotage lasts its time, not one siege. */
+export const foeMissionDoes = read({
+  poison: 'castle.mission.poison.does',
+  sabotage: 'castle.mission.sabotage.foeDoes',
+  forge: 'castle.mission.forge.does',
+});
 export const relicGives = read({
   attack: 'castle.relic.gives.attack',
   defense: 'castle.relic.gives.defense',
@@ -139,6 +145,7 @@ export const refusal = read({
   self: 'castle.refused.self',
   shielded: 'castle.refused.shielded',
   pairLimit: 'castle.refused.pairLimit',
+  spyLimit: 'castle.refused.spyLimit',
   fallen: 'castle.refused.fallen',
   immune: 'castle.refused.immune',
   full: 'castle.refused.full',

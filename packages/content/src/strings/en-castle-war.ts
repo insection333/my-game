@@ -48,6 +48,7 @@ export const castleWar = {
   'castle.target.spies':
     'Their walls hold: poison their wells from Plan first (their troops −8% for 4 hours, twice at most)',
   'castle.incursion.beyond': 'Beyond you for now: your troops need more levels to take it',
+  'castle.incursion.spies': 'Beyond you as it stands: send spies to poison its wells and sabotage its gate first',
   'castle.target.beyondWounded': 'Beyond you while {pct}% of your troops are wounded: heal them on the Army',
   'castle.target.chanceAbout.set': 'About {pct} to win, {best} set against them',
   'castle.target.pays': 'Pays {marks} war marks and a bounty of {gold} gold',
@@ -72,6 +73,12 @@ export const castleWar = {
   'castle.siege.weaken':
     'The odds are against you as they stand. Poison their wells, sabotage their gatehouse or forge their orders below: the chance above counts what your spies have done.',
   'castle.spy.title': 'Spies',
+  'castle.spy.foeLead':
+    'Your agents get past their watch {pct} of the time. A caught agent costs the bribe and puts their watch on guard for 12 hours.',
+  'castle.ops.poison': 'Wells poisoned: their troops −{pct} until {until}',
+  'castle.ops.sabotage': 'Gatehouse sabotaged: their trap fails until {until}',
+  'castle.ops.forge': 'Orders forged: their garrison evened out until {until}',
+  'castle.target.spies.open': 'Send spies',
   'castle.mission.scout': 'Scout the castle',
   'castle.mission.poison': 'Poison the wells',
   'castle.mission.sabotage': 'Sabotage the gatehouse',
@@ -79,6 +86,7 @@ export const castleWar = {
   'castle.mission.scout.does': 'See their garrison, trap, castellan and raidable gold',
   'castle.mission.poison.does': 'Their troops −8% for 4 hours (twice at most)',
   'castle.mission.sabotage.does': 'Their trap fails in the next fair siege within 2 hours',
+  'castle.mission.sabotage.foeDoes': 'Their trap fails for 2 hours',
   'castle.mission.forge.does': 'Their garrison drawn towards an even third each, for 2 hours',
   'castle.mission.send': 'Send for {gold} and {ap} AP',
   'castle.mission.chance': '{pct} chance',
@@ -159,6 +167,9 @@ export const castleWar = {
   // The Reliquary.
   'castle.reliquary.title': 'The Reliquary',
   'castle.nudge': 'The Call to arms awaits your castle',
+  'castle.raiseNudge': 'Your castle is ready to raise',
+  'castle.opensNudge': 'Opens at total level {level}: {away} levels away',
+  'castle.opensNudgeOne': 'Opens at total level {level}: 1 level away',
   'castle.reliquary.sockets': 'Worn {worn} of {sockets}',
   'castle.relic.banner-of-the-first-king': 'Banner of the First King',
   'castle.relic.aegis-shard': 'Aegis Shard',
@@ -209,6 +220,7 @@ export const castleWar = {
   'castle.refused.self': 'You cannot attack yourself.',
   'castle.refused.shielded': 'They are shielded.',
   'castle.refused.pairLimit': 'Twice against them today is enough.',
+  'castle.refused.spyLimit': 'Three missions against them today is enough.',
   'castle.refused.fallen': 'That stronghold has already fallen today.',
   'castle.refused.immune': 'They are immune to that for now.',
   'castle.refused.full': 'That cannot be made worse for now.',
