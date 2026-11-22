@@ -140,6 +140,14 @@ export const SEASONS: Steps = [
   [3, 'hard'],
   [6, 'elite'],
 ];
+/** The weeks' contracts kept (session 172): the steps, the 26th opening the Steadfast in the year's middle. */
+export const WEEKS: Steps = [
+  [1, 'easy'],
+  [4, 'easy'],
+  [13, 'hard'],
+  [26, 'elite'],
+  [52, 'master'],
+];
 /** The hidden deeds' numbers. */
 export const HIDDEN = { jack: 25, even: 10, hoard: 10_000 };
 

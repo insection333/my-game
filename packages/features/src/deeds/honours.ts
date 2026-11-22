@@ -110,6 +110,8 @@ export const HONOURS: readonly Honour[] = [
   title('everflame', by('kindlings-10')),
   // Six seasons played (session 166): a year's play.
   title('seasoned', by('seasons-6')),
+  // Half a year's weeks kept (session 172): a title in the year's middle.
+  title('steadfast', by('weeks-26')),
   // Banners: the woad everyone flies, and a colour for each region cleared and more.
   { id: 'woad', kind: 'banner', unlock: null },
   { id: 'moss', kind: 'banner', unlock: by('region-march') },

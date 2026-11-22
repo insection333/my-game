@@ -1,0 +1,49 @@
+/* The week's contract's tasks (session 172): one line each, ticked when done, its count at the right. */
+.tasks {
+  display: grid;
+  gap: 2px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--t-small);
+}
+
+.task {
+  display: grid;
+  grid-template-columns: 1.25rem minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: var(--s-2);
+  min-height: 2rem;
+}
+
+.mark {
+  display: grid;
+  place-items: center;
+  width: 1.125rem;
+  height: 1.125rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  color: var(--moss);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.task[data-done] .mark {
+  border-color: var(--moss);
+  background: var(--moss-soft);
+}
+
+.text {
+  min-width: 0;
+  color: var(--ink);
+}
+
+.task[data-done] .text {
+  color: var(--ink-2);
+}
+
+.count {
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+}

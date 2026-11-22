@@ -4,7 +4,7 @@
 import { fmt } from '@idle-clash/content';
 import { TWISTS } from '../shared/season.ts';
 import { SEASON_PICTURE, seasonName } from '../shared/season-view.ts';
-import { deed, lower, SEASON_GOALS, SEASON_PLAYED, SEASONS, type Deed } from './content.ts';
+import { deed, lower, SEASON_GOALS, SEASON_PLAYED, SEASONS, WEEKS, type Deed } from './content.ts';
 
 export function seasonDeeds(): Deed[] {
   const each = TWISTS.map((tw) => {
@@ -37,4 +37,22 @@ export function seasonDeeds(): Deed[] {
     }),
   );
   return [...each, ...played];
+}
+
+/** The weeks' contracts kept (session 172): counted, never taken away. */
+export function weekDeeds(): Deed[] {
+  return WEEKS.map(([count, tier]) =>
+    deed({
+      id: `weeks-${count}`,
+      family: 'weeks',
+      key: count === 1 ? 'deed.weekFirst' : 'deed.weeks',
+      brief: true,
+      shows: count === 1 ? 'none' : 'count',
+      tier,
+      target: count,
+      words: { count: fmt.int(count) },
+      mark: fmt.int(count),
+      measure: (r) => r.weeksKept(),
+    }),
+  );
 }

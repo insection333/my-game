@@ -8,6 +8,8 @@ import { currentDaily, dailyProgress, milestoneProgress, nextMilestone, shortPro
 import { bestIn, paces } from './pace.ts';
 import { dayOf, goalsOf, type DailyGoal, type ShortGoal } from './state.ts';
 import { inLane, startCommand, workingIn, type GoalRow } from './view.ts';
+import { currentWeek } from './week.ts';
+import { weekRow } from './week-view.ts';
 
 const gold = (n: number) => t('goals.reward.gold', { amount: fmt.int(n) });
 /** Short goals and the daily goal pay in a supply cache worth about their gold; milestones in gold. */
@@ -108,6 +110,8 @@ export function ladderRows(state: State, now: number): GoalRow[] {
   const rows = g.short.map((s) => shortRow(state, now, s));
   const daily = currentDaily(state, g.daily, now);
   if (daily) rows.push(dailyRow(state, now, daily));
+  const week = currentWeek(state, g.week, now);
+  if (week) rows.push(weekRow(state, now, week));
   const m = nextMilestone(state, g);
   if (m)
     rows.push(

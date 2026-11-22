@@ -28,6 +28,13 @@ export interface GoalRow {
     | { label: string; route: { feature: string; route: string; input: Json } }
     | null;
   note: string | null;
+  /** The week's contract's tasks (session 172), each with its count and, once a week, Swap. */
+  parts?: {
+    text: string;
+    count: string;
+    done: boolean;
+    swap: { feature: string; route: string; input: Json } | null;
+  }[];
 }
 
 export interface GoalsView {

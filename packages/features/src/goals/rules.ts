@@ -10,6 +10,8 @@ import { currentDaily, dailyProgress, makeDaily, makeShort, milestoneProgress, s
 import { dailyName, milestoneName, shortName } from './ladder-view.ts';
 import { dayOf, goalsOf, setGoals, type GoalsState, type ShortGoal } from './state.ts';
 import { noteSeasonGoal, openSeason, seasonUnseen } from '../shared/season-state.ts';
+import { currentWeek, makeWeek, swapTask, weekDone, weekOf } from './week.ts';
+import { weekName } from './week-view.ts';
 
 export type ClaimResult = { ok: true } | { ok: false; reason: 'unknown' | 'notDone' };
 type Answer<R> = { state: State; result: R; events: GameEvent[] };
@@ -31,6 +33,11 @@ function filled(state: State, g: GoalsState, now: number): GoalsState {
   if (!currentDaily(state, next.daily, now) || (next.daily?.claimed && next.daily.day !== dayOf(now))) {
     const daily = makeDaily(state, now);
     if (daily) next = { ...next, daily };
+  }
+  // The week's contract (session 172): made once the day's goal can be, kept until claimed or its week ends.
+  if (!currentWeek(state, next.week, now) || (next.week?.claimed && next.week.week !== weekOf(now))) {
+    const week = makeWeek(state, now);
+    if (week) next = { ...next, week };
   }
   return next;
 }
@@ -64,6 +71,8 @@ export function needsRefresh(state: State, now: number): boolean {
       g.short.length < 3 ||
       !currentDaily(state, g.daily, now) ||
       (g.daily?.claimed === true && g.daily.day !== dayOf(now)) ||
+      (!currentWeek(state, g.week, now) && makeWeek(state, now) !== null) ||
+      (g.week?.claimed === true && g.week.week !== weekOf(now)) ||
       g.short.some((s) => s.at === undefined || stale(state, s, now)))
   );
 }
@@ -109,6 +118,13 @@ export function claim(state: State, goal: string, now: number): Answer<ClaimResu
     openCache(out, cache);
     name = dailyName(g.daily, now);
     next = { ...g, daily: { ...g.daily, claimed: true }, opened: g.opened + 1 };
+  } else if (goal === 'week' && g.week && currentWeek(state, g.week, now)) {
+    if (g.week.claimed) return { state, result: { ok: true }, events: [] };
+    if (!weekDone(state, g.week)) return refused(state, 'notDone');
+    cache = cacheFor(state, g.week.reward, g.opened);
+    openCache(out, cache);
+    name = weekName(g.weeks + 1);
+    next = { ...g, week: { ...g.week, claimed: true }, opened: g.opened + 1, weeks: g.weeks + 1 };
   } else if (milestone && !g.milestones.includes(milestone.id)) {
     const p = milestoneProgress(state, milestone);
     if (p.now < p.of) return refused(state, 'notDone');
@@ -117,7 +133,7 @@ export function claim(state: State, goal: string, now: number): Answer<ClaimResu
     next = { ...g, milestones: [...g.milestones, milestone.id] };
   } else return refused(state, 'unknown');
   setGoals(out, filled(out, next, now));
-  // A short goal or a day's goal counts towards the season's deeds (session 166).
+  // A short goal, a day's goal or a week's counts towards the season's deeds (session 166).
   if (cache) noteSeasonGoal(out, now);
   noteMoment(out, now);
   return {
@@ -125,4 +141,15 @@ export function claim(state: State, goal: string, now: number): Answer<ClaimResu
     result: { ok: true },
     events: [{ type: 'goalDone', at: now, goal, ...(name ? { name } : {}), ...(cache ? { cache } : {}) }],
   };
+}
+
+/** Swaps one of the week's tasks for another, once a week (session 172). */
+export function swap(state: State, index: number, now: number): Answer<{ ok: boolean }> {
+  const g = goalsOf(state);
+  const w = currentWeek(state, g.week, now);
+  const next = w && w.week === weekOf(now) ? swapTask(state, w, index, now) : null;
+  if (!next) return { state, result: { ok: false }, events: [] };
+  const out = structuredClone(state);
+  setGoals(out, { ...g, week: next });
+  return { state: out, result: { ok: true }, events: [] };
 }

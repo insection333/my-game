@@ -95,6 +95,7 @@ Every pillar has numbers the simulation and real players are measured against; a
 | Fun | After 8 hours away, the recap holds at least three good things, the best one first | The simulation |
 | Fun | The first rare find within the first hour | A fresh simulated player |
 | Pull | A player who switched notices on hears of a lane that stopped, or a siege that breached their walls, within a few minutes of it while away; never while a page is open, never from 22:00 to 08:00 in their clock, three a day at most (session 171) | Server tests |
+| Pull | Something to finish every day, every week and every season: the day's goal, the week's contract (four tasks of about eight hours of the player's own pace each), the season's ladder (session 172) | The simulation |
 | All | All five test players return on days 2 and 3, and each can say what they are aiming for next | The five-player test |
 
 ## The long arc
