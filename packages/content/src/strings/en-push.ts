@@ -14,7 +14,5 @@ export const push = {
   'settings.push.install':
     'On an iPhone or iPad, add Idle Clash to your Home Screen first (Share, then Add to Home Screen).',
   'settings.push.unsupported': 'This browser cannot show notices.',
-  'push.offer': 'Hear of it next time while you are away?',
-  'push.offer.yes': 'Turn on notices',
-  'push.offer.no': 'No thanks',
+  'push.offer.yes': 'Tell me next time',
 };
