@@ -1,13 +1,15 @@
 // A battle just fought, on the row it was fought from (session 40): the two sides' arms at either end of
 // one bar, your attack pushing in from the left against their defence from the right until they meet
 // where the battle stood (session 41); then won or lost in a word and what it brought, and the battle's
-// account a tap away. It stays until the next battle is fought. A battle refused, or one that never reached
+// account a tap away; since session 168 the battle played out above it, the two hosts as they met. It stays
+// until the next battle is fought. A battle refused, or one that never reached
 // the server, is said here in its place for a while (session 119), where the header said it a screen above.
 import { fmt, t } from '@idle-clash/content';
 import { castleEngine as E } from '@idle-clash/features';
 import { ItemIcon, TextLink } from '@idle-clash/ui';
 import type { CSSProperties } from 'react';
 import { navigate } from '../../router.ts';
+import { Battlefield } from './Battlefield.tsx';
 import { outcomeName } from './labels.ts';
 import { reportSheet } from './Reports.tsx';
 import { useSyncedCastle } from './synced.ts';
@@ -40,19 +42,23 @@ export function Fought({ battle }: { battle: string }) {
   ];
   return (
     <div className={s.fought} data-slot="castle.fought" data-won={won || undefined} role="status">
+      {/* The battle played out (session 168): the two hosts as they met, the beaten falling back. */}
+      {last.field && <Battlefield key={last.report ?? battle} you={last.field.you} foe={last.field.foe} won={won} />}
       {attack > 0 && defense > 0 && (
         // Your arms, the line where attack met defence, their arms: the clash at a glance.
         <div className={s.clash} aria-hidden="true">
-          {castle && <ItemIcon name="crest" crest={castle.userId} size={24} />}
+          {!last.field && castle && <ItemIcon name="crest" crest={castle.userId} size={24} />}
           <div className={s.tug} style={{ '--attack': `${(attack / (attack + defense)) * 100}%` } as CSSProperties}>
             <span className={s.tugAttack} />
             <span className={s.tugDefence} />
           </div>
-          <ItemIcon
-            name="crest"
-            crest={battle !== 'incursion' ? battle : typeof r.fortress === 'string' ? r.fortress : ''}
-            size={24}
-          />
+          {!last.field && (
+            <ItemIcon
+              name="crest"
+              crest={battle !== 'incursion' ? battle : typeof r.fortress === 'string' ? r.fortress : ''}
+              size={24}
+            />
+          )}
         </div>
       )}
       <div className={s.foughtHead}>

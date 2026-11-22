@@ -10,6 +10,7 @@ import { handled, sessionStore } from '../../game/session.ts';
 import { untilLoaded } from '../../Ready.tsx';
 import { refused as refusedWords } from '../../refused.ts';
 import { refusal } from './labels.ts';
+import type { Field } from './hosts.ts';
 
 export interface CastleSnapshot {
   view: castleEngine.CastleView | null;
@@ -31,6 +32,8 @@ export interface Battle {
   key: string;
   result: castleEngine.CastleActResponse['result'];
   report: number | null;
+  /** The two hosts as they met (session 168), for the battle played out on the row; null if unknown. */
+  field: Field | null;
 }
 
 let snapshot: CastleSnapshot = {
@@ -111,11 +114,12 @@ export async function castleRun(
   }
 }
 
-/** Fights a battle from the War tab: the siege or assault, then its result kept for the row it came from. */
-export async function fight(key: string, action: CastleAction): Promise<void> {
+/** Fights a battle from the War tab: the siege or assault, then its result kept for the row it came from,
+ *  with the two hosts as they met (`field`, session 168). */
+export async function fight(key: string, action: CastleAction, field: Field | null = null): Promise<void> {
   const result = await castleRun(action, key);
   if (!result?.ok) return;
-  set({ battle: { key, result, report: snapshot.view?.logs[0]?.id ?? null } });
+  set({ battle: { key, result, report: snapshot.view?.logs[0]?.id ?? null, field } });
 }
 
 /** Sends one action: whether it was done. */

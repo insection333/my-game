@@ -8,6 +8,7 @@ import { ActionRow, Button, ItemIcon, Pill } from '@idle-clash/ui';
 import { navigate } from '../../router.ts';
 import { Fought } from './Fought.tsx';
 import { opsLines } from './FoeSpies.tsx';
+import { fieldFor, targetLevel } from './hosts.ts';
 import { woundedWords } from './Fortress.tsx';
 import { garrisonWords } from './labels.ts';
 import { when } from './Reports.tsx';
@@ -43,7 +44,9 @@ export function TargetRow({ target }: { target: Target }) {
   const scout = SPY_MISSIONS.find((m) => m.id === 'scout')!;
   const scoutCost = E.spyCosts(castle, { ...castle, userId: target.id, rating: target.rating }, scout, now);
   const shares = best ? ([...best.shares] as [number, number, number]) : undefined;
-  const attack = () => void fight(target.id, { type: 'siege', target: target.id, ...(shares ? { shares } : {}) });
+  const field = fieldFor(castle, shares ?? castle.offense, def, targetLevel(target), target.id);
+  const attack = () =>
+    void fight(target.id, { type: 'siege', target: target.id, ...(shares ? { shares } : {}) }, field);
   const taken = Math.max(0, ...E.pairOf(castle, target.id, now).sieges);
   return (
     <ActionRow

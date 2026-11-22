@@ -3,7 +3,7 @@
 // missions, each with its chance against the foe's watchtower and its price, from the first day.
 import { POISON_PCT, fmt, t } from '@idle-clash/content';
 import { castleEngine as E } from '@idle-clash/features';
-import { ActionRow, Button } from '@idle-clash/ui';
+import { ActionRow, Button, ItemIcon } from '@idle-clash/ui';
 import { foeMissionDoes, missionName, refusal } from './labels.ts';
 import { castleRun } from './store.ts';
 import { affords, hasAp, useSyncedCastle } from './synced.ts';
@@ -50,6 +50,8 @@ export function FoeMissions({ foe, level }: { foe: string; level: number }) {
           return (
             <ActionRow
               key={m.id}
+              iconYields
+              icon={<ItemIcon name={`spy-${m.id}`} size={32} />}
               name={missionName(m.id)}
               facts={[foeMissionDoes(m.id), ...(blocked && blocked !== 'ap' ? [refusal(blocked)] : [])]}
               actions={

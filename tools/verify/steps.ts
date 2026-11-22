@@ -20,6 +20,7 @@ import { runAccountProofs } from './web/proofs-accounts.ts';
 import { runFeelProofs } from './web/proofs-feel.ts';
 import { runCombatProofs } from './web/proofs-combat.ts';
 import { runCastleProofs } from './web/proofs-castle.ts';
+import { runCommandProofs } from './web/proofs-command.ts';
 import { runLaneProofs } from './web/proofs-lanes.ts';
 import { NARROW, runNarrowProofs } from './web/proofs-narrow.ts';
 import { runProofs } from './web/proofs.ts';
@@ -181,6 +182,7 @@ async function screenshots(): Promise<StepResult> {
   const accounts = await runAccountProofs(served);
   const feel = await runFeelProofs(served);
   const castle = await runCastleProofs(served);
+  const command = await runCommandProofs(served);
   const narrow = await runNarrowProofs(served);
   const views = webViews().length;
   const problems = [
@@ -192,13 +194,14 @@ async function screenshots(): Promise<StepResult> {
     ...accounts,
     ...feel,
     ...castle,
+    ...command,
     ...narrow,
   ];
   if (problems.length)
     return fail(`${problems.length} layout or flow problem${problems.length > 1 ? 's' : ''}`, problems.join('\n'));
   const awaiting = r.awaiting.size ? `; ${r.awaiting.size} slots await their features` : '';
   return pass(
-    `${views} views x 3 widths x 3 engines (${r.shots} shots): no overflow, taps 24px+, one design system, specs met; account flows (${flows.steps} checks) work; a newcomer is chopping after ${proofs.newcomerSeconds.toFixed(0)} s at a person's pace; a Rare find has its moment; a stopped lane says why and offers what puts it right; a queued action ran while away; gear is worn from the page and a retreat costs nothing; the recap leads with the best thing; a deleted account leaves nothing; an admin resets a password; work is seen landing; the keyboard holds in a sheet; a lost connection is said and recovered; a big sale asks first and says what it brought in; a goal's cache opens in a moment; Castle Clash's tabs stay at hand; every view holds on a ${NARROW} px phone${awaiting}`,
+    `${views} views x 3 widths x 3 engines (${r.shots} shots): no overflow, taps 24px+, one design system, specs met; account flows (${flows.steps} checks) work; a newcomer is chopping after ${proofs.newcomerSeconds.toFixed(0)} s at a person's pace; a Rare find has its moment; a stopped lane says why and offers what puts it right; a queued action ran while away; gear is worn from the page and a retreat costs nothing; the recap leads with the best thing; a deleted account leaves nothing; an admin resets a password; work is seen landing; the keyboard holds in a sheet; a lost connection is said and recovered; a big sale asks first and says what it brought in; a goal's cache opens in a moment; Castle Clash's tabs stay at hand; a siege is played out and spies go at the day's foes; every view holds on a ${NARROW} px phone${awaiting}`,
   );
 }
 

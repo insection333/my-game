@@ -1,11 +1,14 @@
 // The Garrison tab's right column: the attack formation (free to change) and the garrison (1% of the
-// required treasury, then two hours' rest, pinned after a scouting), each unit's share stepped by five with
-// the flank warning past 60%; then the trap and the castellan, which share the garrison's rest.
+// required treasury, then two hours' rest, pinned after a scouting), each drawn up as a host of figures
+// over its shares (session 168), each unit's share stepped by five with the flank warning past 60%; then
+// the trap and the castellan, which share the garrison's rest.
 import { COMBAT, DOCTRINES, TRAPS, UNIT_IDS, fmt, t } from '@idle-clash/content';
 import { castleEngine as E } from '@idle-clash/features';
 import { ActionRow, Button, Panel, Pill } from '@idle-clash/ui';
 import { useState } from 'react';
 import { castellanDoes, castellanName, presetName, trapName, unitName } from './labels.ts';
+import { BattleLine } from './Battlefield.tsx';
+import { hostOf } from './hosts.ts';
 import { castleAct } from './store.ts';
 import { step, type Three } from './shares.ts';
 import { affords, useSyncedCastle } from './synced.ts';
@@ -40,6 +43,7 @@ export function Formations() {
           <Formation
             key={castle.offense.join()}
             slot="castle.offense"
+            levels={castle.levels}
             saved={castle.offense}
             label={t('castle.formation.save')}
             disabled={busy}
@@ -53,6 +57,7 @@ export function Formations() {
           <Formation
             key={castle.defense.join()}
             slot="castle.defense"
+            levels={castle.levels}
             saved={castle.defense}
             label={t('castle.formation.saveFor', { gold: fmt.short(cost) })}
             disabled={busy || wait !== null || !affords(castle, purse, cost)}
@@ -67,6 +72,8 @@ export function Formations() {
 
 function Formation(props: {
   slot: string;
+  /** The troops' levels, for the host drawn up (session 168). */
+  levels: E.Castle['levels'];
   saved: readonly number[];
   label: string;
   disabled: boolean;
@@ -77,6 +84,8 @@ function Formation(props: {
   const changed = draft.some((x, i) => x !== props.saved[i]);
   return (
     <div data-slot={props.slot} className={s.formation}>
+      {/* The host as these shares put it in the field, each troop at its evolution (session 168). */}
+      <BattleLine ranks={hostOf(draft, props.levels)} />
       <div className={s.presets}>
         {PRESETS.map(([key, shares]) => (
           <Button

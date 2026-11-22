@@ -7,6 +7,7 @@ import { ActionRow, Button, ItemIcon, Panel, Pill } from '@idle-clash/ui';
 import { navigate } from '../../router.ts';
 import { Fought } from './Fought.tsx';
 import { opsLines, spiesWouldTake } from './FoeSpies.tsx';
+import { fieldFor } from './hosts.ts';
 import { fortressName } from './labels.ts';
 import { fight } from './store.ts';
 import { hasAp, useSyncedCastle } from './synced.ts';
@@ -73,7 +74,13 @@ export function Fortress() {
               <Button
                 variant="primary"
                 disabled={busy || beyond || !hasAp(castle, SINKS.INCURSION_AP)}
-                onClick={() => void fight('incursion', { type: 'incursion', shares: [...best.shares] })}
+                onClick={() =>
+                  void fight(
+                    'incursion',
+                    { type: 'incursion', shares: [...best.shares] },
+                    fieldFor(castle, best.shares, fortressNow(castle, now), tier, fortress.id),
+                  )
+                }
               >
                 {t('castle.incursion.assault', { ap: fmt.int(SINKS.INCURSION_AP) })}
               </Button>
