@@ -251,21 +251,15 @@
   padding: var(--s-1) 0;
   list-style: none;
   border-bottom: 1px solid var(--line);
-  font-size: var(--t-small);
 }
 
 .rival {
   display: flex;
   align-items: center;
   gap: var(--s-2);
-  min-height: var(--tap);
+  min-height: 2.25rem;
   padding: 0 var(--s-4);
   color: var(--ink);
-  text-decoration: none;
-}
-
-.rival:hover {
-  background: var(--surface-2);
 }
 
 .rivalMark {
