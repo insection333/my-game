@@ -10,6 +10,7 @@ import { navigate } from '../router.ts';
 import { Slot } from '../slots.tsx';
 import { LineMark } from './LineMark.tsx';
 import { noticesOf } from './notices.ts';
+import { PushOffer } from './PushOffer.tsx';
 import { quietDay } from './today-words.ts';
 import s from './pages.module.css';
 
@@ -69,6 +70,7 @@ export function Today() {
           <div data-recap>
             <Lines lines={lines} />
             {rested && <p className={s.rested}>{rested}</p>}
+            <PushOffer worth={lines.some((l) => l.kind === 'stopped' || l.kind === 'defence')} />
             <div className={s.collect}>
               {more > 0 && <span className={s.muted}>{t('recap.more', { count: fmt.int(more) })}</span>}
               <Button variant="primary" onClick={() => game.collect()}>

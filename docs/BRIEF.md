@@ -94,6 +94,7 @@ Every pillar has numbers the simulation and real players are measured against; a
 | Fun | A notable event (level, unlock, rare find, goal, mastery step) about every 2 minutes of active play, and never more than 5 minutes without one | Telemetry and the simulation |
 | Fun | After 8 hours away, the recap holds at least three good things, the best one first | The simulation |
 | Fun | The first rare find within the first hour | A fresh simulated player |
+| Pull | A player who switched notices on hears of a lane that stopped, or a siege that breached their walls, within a few minutes of it while away; never while a page is open, never from 22:00 to 08:00 in their clock, three a day at most (session 171) | Server tests |
 | All | All five test players return on days 2 and 3, and each can say what they are aiming for next | The five-player test |
 
 ## The long arc
@@ -252,6 +253,7 @@ These are settled by the owner and are not reopened without asking.
 | Contact address | admin@idleclash.com, shown on the welcome page, the privacy page and the terms (session 10) |
 | The scene's motion | Approved, "slightly more animated": smoke, drifting clouds, birds now and then (session 10) |
 | The expansion | Before launch, as above: level 99 over eight tiers; Fishing, Cooking, Fletching, Runecraft; Expeditions, Kindling (in place of Rekindling), Deeds and titles first; built first, then one closed test with a handful of players before public launch; the server waits (26 October 2026) |
+| The plan of 23 November | Asked to review the game and improve it, with the lead deciding (the owner, 23 November 2026): ten sessions, 171 to 180, criticised and refined before they are built (the project docs *Game review and plan, 23 November* and *Plan critique, 23 November*): notices while away, the week's contract, rivals, the realm's boss of the week, the bounty board, late unlocks, Hitpoints in step, the rout within reach, companions, and the year measured again. Notices while away are off until each player switches them on (as sound is), never at night in their own clock, three a day at most, and no email |
 
 ## Lessons from the first attempt
 

@@ -329,6 +329,14 @@ a.row:hover {
   cursor: pointer;
 }
 
+/* A line under a group's heading: what it does, or why this browser cannot (session 171). */
+.choiceNote {
+  clear: both;
+  margin: 0 0 var(--s-1);
+  color: var(--ink-2);
+  font-size: var(--t-small);
+}
+
 .choice input {
   width: 24px;
   height: 24px;
@@ -469,6 +477,30 @@ a.line:hover {
 }
 
 .rested + .collect {
+  border-top: 0;
+}
+
+/* The offer of notices while away, once, on a return they would have helped (session 171). */
+.offer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-2) var(--s-3);
+  padding: var(--s-3) var(--s-4) 0;
+  border-top: 1px solid var(--line);
+  font-size: var(--t-small);
+}
+
+.offerActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin-left: auto;
+}
+
+.offer + .collect,
+.rested + .offer {
   border-top: 0;
 }
 

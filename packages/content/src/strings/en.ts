@@ -2,7 +2,7 @@
 // (see numbers.ts). The content check fails on a missing key, an unused key, or a term GLOSSARY.md
 // says to avoid. Keep sections in order; within a feature's section, keys follow its content. The gathering
 // and artisan skills' words are in en-skills.ts, Combat's in en-combat.ts, the privacy page's and the
-// terms' in en-legal.ts, Fishing's and Cooking's in en-food.ts, Fletching's, Runecraft's and the supplies' in en-supplies.ts, the goals ladder's, its rewards' and your standing's in en-progress.ts, Kindling's in en-kindling.ts, the seasons' in en-seasons.ts, the lanes' in en-lanes.ts, the steading's in en-steading.ts, the closed test's in en-test.ts, the admin page's and reporting's in en-moderation.ts.
+// terms' in en-legal.ts, Fishing's and Cooking's in en-food.ts, Fletching's, Runecraft's and the supplies' in en-supplies.ts, the goals ladder's, its rewards' and your standing's in en-progress.ts, Kindling's in en-kindling.ts, the seasons' in en-seasons.ts, notices while away in en-push.ts, the lanes' in en-lanes.ts, the steading's in en-steading.ts, the closed test's in en-test.ts, the admin page's and reporting's in en-moderation.ts.
 import { combat } from './en-combat.ts';
 import { deeds } from './en-deeds.ts';
 import { honours } from './en-honours.ts';
@@ -10,6 +10,7 @@ import { expeditions } from './en-expeditions.ts';
 import { food } from './en-food.ts';
 import { kindling } from './en-kindling.ts';
 import { seasons } from './en-seasons.ts';
+import { push } from './en-push.ts';
 import { lanes } from './en-lanes.ts';
 import { castle } from './en-castle.ts';
 import { castleWar } from './en-castle-war.ts';
@@ -309,6 +310,7 @@ export const en: Record<string, string> = {
   ...expeditions,
   ...kindling,
   ...seasons,
+  ...push,
   ...lanes,
   ...steading,
   ...closedTest,

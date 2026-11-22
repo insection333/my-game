@@ -6,7 +6,7 @@
 // tables that keep a player's newest rows (notices, feedback, sessions) trim themselves as they grow.
 import { inArray, like, lt } from 'drizzle-orm';
 import type { Ctx } from './context.ts';
-import { hiscores, telemetry } from './db/schema.ts';
+import { hiscores, pushDue, pushSent, telemetry } from './db/schema.ts';
 import { oldSeasonRows } from './game/season-ladder.ts';
 import { sweepMail } from './mail/mail.ts';
 import { sweepModeration } from './moderation.ts';
@@ -34,4 +34,13 @@ export function keepHouse(ctx: Ctx): void {
     .map((r) => r.skill)
     .filter(old);
   if (gone.length) ctx.db.delete(hiscores).where(inArray(hiscores.skill, gone)).run();
+  // Notices while away (session 171): a count of a day long past, and anything left waiting for days.
+  ctx.db
+    .delete(pushSent)
+    .where(lt(pushSent.day, new Date(now - 3 * DAY).toISOString().slice(0, 10)))
+    .run();
+  ctx.db
+    .delete(pushDue)
+    .where(lt(pushDue.at, now - 2 * DAY))
+    .run();
 }

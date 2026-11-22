@@ -47,6 +47,7 @@ export function erase(ctx: Ctx, playerId: string): void {
       .where(sql`instr(${playerBastions.pairLimits}, ${playerId}) > 0`)
       .run();
     ctx.notices.remove(playerId);
+    ctx.push.remove(playerId);
     const name = ctx.db.select({ name: players.name }).from(players).where(eq(players.id, playerId)).get()?.name;
     if (name) ctx.notices.forgetFoe(name);
     ctx.hiscores.remove(playerId);
