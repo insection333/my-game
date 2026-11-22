@@ -28,6 +28,8 @@ export const progress: Record<string, string> = {
   'goals.week.turns': 'A new contract comes {when}',
   'goals.week.claimed': 'Done; the next comes {when}',
   'goals.week.swap': 'Swap',
+  'goals.week.show': 'Its four tasks',
+  'goals.week.hide': 'Hide its tasks',
   'goal.milestone.total': 'Reach total level {level}',
   'goal.milestone.forged': 'Forge your first {metal} item',
   'goal.milestone.log': 'Find {count} things for your collection log',

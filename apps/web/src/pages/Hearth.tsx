@@ -84,7 +84,7 @@ export function Hearth() {
         {goals && (
           <section data-section className={s.goalsArea}>
             <Panel title={goals.data.title} aside={goals.data.progress ?? undefined} flush>
-              <Slot id="hearth.goals">
+              <Slot id="hearth.goals" className={s.goalRows} scrolls>
                 {goals.data.rows.map((row) =>
                   row.parts ? (
                     <WeekGoal key={row.id} row={{ ...row, parts: row.parts }} />
