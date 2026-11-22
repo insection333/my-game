@@ -6,6 +6,7 @@ import { FEATURES } from '@idle-clash/features';
 import { HONOURS } from '../../../packages/features/src/deeds/honours.ts';
 import { pointsOf } from '../../../packages/features/src/deeds/list.ts';
 import { companionChecks } from './companions.ts';
+import { titleChecks } from './titles.ts';
 import { stageOf, WORKS } from '../../../packages/features/src/shared/steading.ts';
 import { fighter } from '../combat.ts';
 import { DAY, focusedPlayer, gaps, T0 } from '../player.ts';
@@ -19,7 +20,8 @@ const [EARLY, LATE] = [Math.round(YEAR * 0.75), Math.round(YEAR * 1.25)];
 /** The steady player plays on to eighteen months, for the castle's long arc (session 138). */
 const MONTHS_18 = 548;
 const STAGES = [1, 7, 30, 90, 180, 365];
-const SEED = 11;
+/** The seed verify plays; another may be given to measure a check before it is trusted (session 180). */
+const SEED = Number(process.env.YEAR_SEED ?? 11);
 /** A skill kept in its lane: days to each level (docs/EXPANSION.md section 2). */
 const CLIMB: [number, number][] = [
   [55, 49],
@@ -143,6 +145,7 @@ export function yearChecks(check: Check, lines: string[]): { steady: Year; light
     last > 0 && last <= YEAR && last >= EARLY,
     `The last title by points comes on day ${last} (in the year's last quarter)`,
   );
+  titleChecks(steady, points, check, lines);
 
   // Something new to aim for every day: today's daily goal (drawn from the day's work) set and done
   // every day, and a first on all but about one day in fifty, never two days running without one.
