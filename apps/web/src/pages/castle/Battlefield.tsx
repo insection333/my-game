@@ -50,6 +50,15 @@ function HostFigures({ ranks, side, size = 24 }: { ranks: Rank[]; side: 'you' | 
   );
 }
 
+/** A foe's host on the War (session 170): their garrison as figures on a strip of ground, facing you. */
+export function Garrison({ ranks }: { ranks: Rank[] }) {
+  return (
+    <div className={b.garrison} data-slot="castle.garrison" aria-hidden="true">
+      <HostFigures ranks={ranks} side="foe" />
+    </div>
+  );
+}
+
 /** One host as it is drawn up (session 168: the Army's formations), the front rank to the right, facing the
  *  foe: what a formation's shares put in the field. */
 export function BattleLine({ ranks }: { ranks: Rank[] }) {

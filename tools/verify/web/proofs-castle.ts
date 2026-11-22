@@ -18,6 +18,7 @@
 // - The wounded are healed by as much as the slider picks, at that much's price (session 134): 5% picked
 //   takes 5 points off the wounds, not all of them.
 import type { Page } from 'playwright';
+import { runWarProofs } from './proofs-war.ts';
 import { openPage, type Served } from './session.ts';
 
 const say = (err: unknown) => (err instanceof Error ? err.message.split('\n')[0] : String(err));
@@ -158,7 +159,7 @@ async function onAWideScreen(served: Served, problems: string[]) {
     step = 'each stronghold standing says what holds it, and all cost alike';
     // The strongholds come with the day's targets, after the castle: wait for one standing (on GitHub's
     // slower machines they were read before they arrived).
-    const strongholds = page.locator('[data-slot="castle.strongholds"] [data-ui="ActionRow"]');
+    const strongholds = page.locator('[data-slot="castle.strongholds"] [data-foe]');
     await strongholds
       .filter({ hasText: /to win|Beyond you/ })
       .first()
@@ -171,7 +172,7 @@ async function onAWideScreen(served: Served, problems: string[]) {
     if (fees.size !== 1)
       problems.push(`Castle: the day's strongholds cost differently to besiege (${[...fees].join(', ')})`);
     step = "a lord's Plan shares its Siege's line";
-    const lord = page.locator('[data-slot="castle.targets"] [data-ui="ActionRow"]').first();
+    const lord = page.locator('[data-slot="castle.targets"] [data-foe]').first();
     await lord.waitFor({ timeout: 10_000 });
     const plan = await lord.getByRole('button', { name: 'Plan' }).boundingBox();
     const siege = await lord.getByRole('button', { name: /^(Siege|Strike back|Scout)/ }).boundingBox();
@@ -223,5 +224,6 @@ export async function runCastleProofs(served: Served): Promise<string[]> {
   await onAPhone(served, problems);
   await onAWideScreen(served, problems);
   await aNextStep(served, problems);
+  await runWarProofs(served, problems);
   return problems;
 }

@@ -110,8 +110,9 @@ export function LatestReports() {
   return (
     <section data-section>
       <Panel title={t('castle.reports.latest')} flush>
-        <div data-slot="castle.latest">
-          <ul className={s.cards}>
+        {/* Side by side where the War is wide (session 170), one under another on a phone. */}
+        <div data-slot="castle.latest" className={s.latestWrap}>
+          <ul className={`${s.cards} ${s.latest}`}>
             {latest.map((c) => (
               <ReportCardLink key={c.id} card={c} now={now} />
             ))}

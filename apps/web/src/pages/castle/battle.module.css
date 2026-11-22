@@ -158,3 +158,12 @@
   border-radius: 8px;
   background: linear-gradient(to bottom, transparent 55%, var(--moss-soft) 55%), var(--surface-2);
 }
+
+/* A foe's host on the War (session 170): their garrison on a strip of ground, beside the odds. */
+.garrison {
+  display: flex;
+  flex: none;
+  padding: 2px var(--s-2);
+  border-radius: 6px;
+  background: linear-gradient(to bottom, transparent 60%, var(--moss-soft) 60%), var(--surface-2);
+}

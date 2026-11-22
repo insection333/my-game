@@ -12,6 +12,7 @@
 
 /* The way from the War tab's latest three to the rest. */
 .more {
+  max-width: none;
   margin: 0;
   padding: var(--s-2) var(--s-4) var(--s-3);
   border-top: 1px solid var(--line);
@@ -294,4 +295,21 @@
 
 .formationKey > span:nth-child(3)::before {
   background: var(--gold);
+}
+
+/* The War's latest reports (session 170): side by side where the War is wide, one under another on a phone. */
+.latestWrap {
+  container: latest / inline-size;
+}
+
+@container latest (min-width: 640px) {
+  .latest {
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+  }
+
+  .latest > li + li {
+    border-top: 0;
+    border-left: 1px solid var(--line);
+  }
 }
