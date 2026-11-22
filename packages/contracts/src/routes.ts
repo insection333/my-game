@@ -278,6 +278,8 @@ export interface Look {
   glow: string | null;
   badge: string | null;
   scene: string;
+  /** The companion beside the picture (session 179); absent from a look kept before it. */
+  companion?: string | null;
 }
 export interface Ladder {
   /** A skill's id, or 'total'. */

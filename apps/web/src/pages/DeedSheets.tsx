@@ -77,39 +77,44 @@ function Preview({ kind, id }: { kind: HonourChoice['kind']; id: string }) {
 }
 
 /** The thirty pictures as a grid: those open to choose, the rest shown in grey with how they open beneath,
- *  a foe's with how many of it are slain ("47 of 100": session 77). */
-function Pictures({ choice }: { choice: HonourChoice }) {
+ *  a foe's with how many of it are slain ("47 of 100": session 77). The companions likewise (session 179),
+ *  each locked one in grey with where it joins you, and None among them. */
+function Grid({ choice }: { choice: HonourChoice }) {
+  const kind = choice.kind as 'picture' | 'companion';
+  const prefix = kind === 'picture' ? 'portrait' : 'companion';
   return (
     <section className={s.choice} aria-label={choice.name}>
       <h3 className={s.choiceTitle}>{choice.name}</h3>
       <ul className={s.pictures}>
-        {choice.options.map((o) =>
-          o.id === null ? null : (
-            <li key={o.id}>
-              <button
-                type="button"
-                data-ui="ItemTile"
-                className={s.pictureTile}
-                aria-pressed={o.current}
-                disabled={!o.open}
-                title={o.unlock ?? o.name}
-                onClick={() => game.act('deeds', 'choose', { kind: 'picture', id: o.id })}
-              >
-                <ItemIcon name={`portrait-${o.id}`} size={48} silhouette={!o.open} />
-                <span className={s.pictureName}>{o.name}</span>
-                {o.progress && <span className={s.pictureCount}>{o.progress}</span>}
-              </button>
-            </li>
-          ),
-        )}
+        {choice.options.map((o) => (
+          <li key={o.id ?? 'none'}>
+            <button
+              type="button"
+              data-ui="ItemTile"
+              className={s.pictureTile}
+              aria-pressed={o.current}
+              disabled={!o.open}
+              title={o.unlock ?? o.name}
+              onClick={() => game.act('deeds', 'choose', { kind, id: o.id })}
+            >
+              {o.id === null ? (
+                <span className={s.noneTile} aria-hidden="true" />
+              ) : (
+                <ItemIcon name={`${prefix}-${o.id}`} size={48} silhouette={!o.open} />
+              )}
+              <span className={s.pictureName}>{o.name}</span>
+              {o.progress && <span className={s.pictureCount}>{o.progress}</span>}
+            </button>
+          </li>
+        ))}
       </ul>
-      <p className={s.pictureNote}>{t('honour.picture.note')}</p>
+      <p className={s.pictureNote}>{t(kind === 'picture' ? 'honour.picture.note' : 'honour.companion.note')}</p>
     </section>
   );
 }
 
 function Choice({ choice }: { choice: HonourChoice }) {
-  if (choice.kind === 'picture') return <Pictures choice={choice} />;
+  if (choice.kind === 'picture' || choice.kind === 'companion') return <Grid choice={choice} />;
   return (
     <section className={s.choice} aria-label={choice.name}>
       <h3 className={s.choiceTitle}>{choice.name}</h3>

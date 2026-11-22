@@ -18,6 +18,7 @@ import { castleStanding, type CastleStanding } from '../shared/castle/mirror.ts'
 import { bestInTwist, seasonsPlayed } from '../shared/season-state.ts';
 import { weeksKept } from '../shared/weeks.ts';
 import { bountyOf } from '../shared/bounty.ts';
+import { companionById, companionFound, COMPANIONS } from '../shared/companions.ts';
 import { SEASON_PLAYED } from './content.ts';
 
 const GEAR = ['helm', 'body', 'legs', 'weapon'] as const;
@@ -43,6 +44,13 @@ export class Reader {
   private done = (key: string) => (Object.hasOwn(this.state.mastery, key) ? this.state.mastery[key] : 0);
 
   level = (skill: string) => this.once(`level:${skill}`, () => skillLevel(this.state, skill));
+  /** A companion joined (1) or not (0), and how many have (session 179). */
+  companion = (id: string) =>
+    this.once(`companion:${id}`, () => {
+      const c = companionById(id);
+      return c && companionFound(this.state, c) ? 1 : 0;
+    });
+  companions = () => this.once('companions', () => COMPANIONS.reduce((n, c) => n + this.companion(c.id), 0));
   /** Kindlings past 99 in a skill, and across every skill. */
   kindlings = (skill: string) => this.once(`kindlings:${skill}`, () => kindlings(this.state, skill));
   allKindlings = () => this.once('kindlings', () => allSkills().reduce((n, s) => n + this.kindlings(s), 0));

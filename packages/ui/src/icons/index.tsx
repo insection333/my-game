@@ -123,7 +123,8 @@ export type IconFamily =
   | 'castle'
   | 'crest'
   | 'picture'
-  | 'badge';
+  | 'badge'
+  | 'companion';
 
 export interface IconDef {
   draw: ComponentType;

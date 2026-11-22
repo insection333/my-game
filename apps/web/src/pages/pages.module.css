@@ -102,16 +102,30 @@
   color: var(--ink);
 }
 
-/* The player's picture beside what the plaque says (session 43): smaller on a phone's short banner. */
+/* The player's picture beside what the plaque says (session 43): smaller on a phone's short banner. Their
+   companion sits at its foot, to its right (session 179). */
 .plaquePicture {
+  position: relative;
   display: grid;
 }
 
+.plaqueCompanion {
+  position: absolute;
+  right: -16px;
+  bottom: -6px;
+  display: flex;
+}
+
 @container main (max-width: 719px) {
-  .plaquePicture > span,
-  .plaquePicture svg {
+  .plaquePicture > span:first-child,
+  .plaquePicture > span:first-child svg {
     width: 36px !important;
     height: 36px !important;
+  }
+
+  .plaqueCompanion svg {
+    width: 24px;
+    height: 24px;
   }
 }
 

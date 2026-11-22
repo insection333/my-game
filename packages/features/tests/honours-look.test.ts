@@ -18,6 +18,7 @@ const withDeeds = (done: string[], chosen: Record<string, string | null> = {}): 
     banner: null,
     frame: null,
     picture: null,
+    companion: null,
     glow: null,
     badge: null,
     scene: null,

@@ -101,6 +101,7 @@ function rowHead(d: Deed): { label: string | null; icon: string | null } {
   if (hasString(`boss.${d.row}`)) return { label: t(`boss.${d.row}`), icon: d.row };
   if (hasString(`work.${d.row}`)) return { label: t(`work.${d.row}`), icon: null };
   if (d.family === 'season') return { label: seasonName(d.row), icon: SEASON_PICTURE[d.row] ?? null };
+  if (d.family === 'companion') return { label: t(`honour.companion.${d.row}`), icon: `companion-${d.row}` };
   return { label: t(`action.combat.${d.row}`), icon: d.row };
 }
 

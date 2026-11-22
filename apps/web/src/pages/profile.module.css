@@ -27,6 +27,14 @@
   background: var(--surface);
 }
 
+/* Their companion at the picture's foot, to its right (session 179). */
+.companion {
+  position: absolute;
+  right: -10px;
+  bottom: -2px;
+  display: flex;
+}
+
 /* Who they are sits beside the picture, under the scene, where the picture hangs below it. */
 .who {
   display: grid;

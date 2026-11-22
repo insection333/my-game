@@ -24,3 +24,7 @@ export const honourStyle = (banner: string | null, frame: string | null): CSSPro
 
 /** A badge's name, for the screen reader (the badge itself is drawn). */
 export const badgeName = (id: string): string => (hasString(`honour.badge.${id}`) ? t(`honour.badge.${id}`) : id);
+
+/** A companion's name, for the screen reader (the companion itself is drawn; session 179). */
+export const companionName = (id: string): string =>
+  hasString(`honour.companion.${id}`) ? t(`honour.companion.${id}`) : id;

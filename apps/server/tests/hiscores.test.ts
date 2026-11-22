@@ -112,7 +112,14 @@ describe('hiscores', () => {
     const a = await signUp(s, 'Alder');
     await record(a, (st) => ({ ...st, skills: { woodcutting: { xp: XP_TABLE[60] } } }), 1);
     const row = async () => (await ladders(a)).ladders.find((l) => l.skill === 'woodcutting')!.rows[0];
-    expect((await row()).look).toEqual({ picture: 'forester', frame: null, glow: null, badge: null, scene: 'march' });
+    expect((await row()).look).toEqual({
+      picture: 'forester',
+      frame: null,
+      glow: null,
+      badge: null,
+      scene: 'march',
+      companion: null,
+    });
     await post(s, '/api/f/deeds/choose', { requestId: 'req-look-1', input: { kind: 'picture', id: 'owl' } }, a);
     expect((await row()).look).toMatchObject({ picture: 'owl', glow: null });
     // A glow not yet opened is refused, and the look stays as it was.

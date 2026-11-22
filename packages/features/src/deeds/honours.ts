@@ -4,14 +4,24 @@
 // log, the Ashen Peaks cleared).
 import { fmt, t } from '@idle-clash/content';
 import type { State } from '@idle-clash/kernel';
+import { COMPANIONS } from '../shared/companions.ts';
 import { allSkills } from '../shared/standing.ts';
 import { wordsOf } from './content.ts';
 import { deedById, pointsOf } from './list.ts';
 import { deedsOf } from './state.ts';
 
-export type HonourKind = 'title' | 'banner' | 'frame' | 'picture' | 'glow' | 'badge' | 'scene';
+export type HonourKind = 'title' | 'banner' | 'frame' | 'picture' | 'companion' | 'glow' | 'badge' | 'scene';
 /** Every kind, as a player chooses them (the honours sheet's order). */
-export const HONOUR_KINDS: readonly HonourKind[] = ['picture', 'title', 'badge', 'frame', 'glow', 'banner', 'scene'];
+export const HONOUR_KINDS: readonly HonourKind[] = [
+  'picture',
+  'companion',
+  'title',
+  'badge',
+  'frame',
+  'glow',
+  'banner',
+  'scene',
+];
 export type Unlock = { points: number } | { deed: string } | { anyOf: () => string[]; text: string };
 export interface Honour {
   id: string;
@@ -132,6 +142,8 @@ export const HONOURS: readonly Honour[] = [
   ...PICTURES_OPEN.map((id): Honour => ({ id, kind: 'picture', unlock: null })),
   ...PICTURE_FOES.map((id): Honour => ({ id, kind: 'picture', unlock: by(`foe-${id}-100`) })),
   ...PICTURE_BOSSES.map((id): Honour => ({ id, kind: 'picture', unlock: by(`boss-${id}`) })),
+  // Companions beside the picture (session 179): each once it has joined you.
+  ...COMPANIONS.map((c): Honour => ({ id: c.id, kind: 'companion', unlock: by(`companion-${c.id}`) })),
   // Glows round the picture, slow and animated: a veteran's, each for a mid- to end-game milestone.
   { id: 'verdant', kind: 'glow', unlock: by('rank-knight') },
   { id: 'ember', kind: 'glow', unlock: by('routs-10') },
@@ -188,6 +200,8 @@ export interface Shown {
   glow: string | null;
   badge: string | null;
   scene: string;
+  /** The companion beside the picture (session 179). */
+  companion: string | null;
 }
 
 export function shownHonours(state: State): Shown {
@@ -205,5 +219,6 @@ export function shownHonours(state: State): Shown {
     glow: ok('glow', d.glow),
     badge: ok('badge', d.badge),
     scene: ok('scene', d.scene) ?? DEFAULT_SCENE,
+    companion: ok('companion', d.companion),
   };
 }
