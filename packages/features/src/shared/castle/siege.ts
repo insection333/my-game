@@ -5,7 +5,7 @@ import { ESPIONAGE, RECOVERY, SIEGE } from '@idle-clash/content';
 import { formatUtcDate, type Castle, type DebuffKind } from './castle.ts';
 import { castleSide, combatRatio, debuffStacks, lootFactor, outcomeOf, type Outcome } from './combat.ts';
 import { lift, modifiers } from './effects.ts';
-import { raidableGold, requiredTreasury, splitBurn } from './economy.ts';
+import { raidableGold, requiredTreasury, splitBurn, youth } from './economy.ts';
 import { pairOf, withPair } from './pairs.ts';
 
 /** The defender's rating over the attacker's (the plan's brRatio). */
@@ -22,7 +22,10 @@ export function siegeCosts(c: Castle, ratio: number, now: number): { ap: number;
     ratio < SIEGE.OVEREXTENSION_RATIO ? (SIEGE.OVEREXTENSION_RATIO / ratio) ** SIEGE.OVEREXTENSION_COST_EXP : 1;
   return {
     ap: SIEGE.AP * (1 + SIEGE.FATIGUE_AP * extra),
-    gold: Math.round(SIEGE.MOBILIZE_PER_RATING * Math.max(1, c.rating) * over * (1 + SIEGE.FATIGUE_GOLD * extra)),
+    // A young castle pays its share of the fee (session 167).
+    gold: Math.round(
+      SIEGE.MOBILIZE_PER_RATING * Math.max(1, c.rating) * youth(c.rating) * over * (1 + SIEGE.FATIGUE_GOLD * extra),
+    ),
   };
 }
 

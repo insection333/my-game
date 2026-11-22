@@ -1,6 +1,6 @@
-// The orders of the day (session 40): three a day, the day's strongholds always first, spies and lords
-// only once lords are open; each order pays as it is done and the three together pay more, once; a new
-// day brings new orders.
+// The orders of the day (session 40): three a day, the day's strongholds always first, spies from the first
+// day (session 167) and lords only once lords are open; each order pays as it is done and the three
+// together pay more, once; a new day brings new orders.
 import { ORDERS } from '@idle-clash/content';
 import { describe, expect, it } from 'vitest';
 import { bastionRating, newCastle, ordersOf, recordOrder, type Castle } from '../src/shared/castle/index.ts';
@@ -17,7 +17,8 @@ function castle(level: number, id = 'lord', days = 30): Castle {
 }
 
 describe('the orders of the day', () => {
-  it('are three, the strongholds first, spies and lords only once lords are open', () => {
+  // Spies from the first day, on the day's foes (session 167); lords only once lords are open.
+  it('are three, the strongholds first, lords only once lords are open', () => {
     for (let i = 0; i < 40; i++) {
       const young = ordersOf(castle(1, `young-${i}`, 1), T0);
       expect(young.list).toHaveLength(3);
@@ -26,8 +27,12 @@ describe('the orders of the day', () => {
       expect(young.list[0].target).toBe(ORDERS.YOUNG_STRONGHOLDS);
       expect(ORDERS.STRONGHOLDS).toContain(ordersOf(castle(10, `young-${i}`), T0).list[0].target);
       expect(new Set(young.list.map((o) => o.kind)).size).toBe(3);
-      expect(young.list.some((o) => o.kind === 'spy' || o.kind === 'lord')).toBe(false);
+      expect(young.list.some((o) => o.kind === 'lord')).toBe(false);
     }
+    const youngKinds = new Set(
+      Array.from({ length: 60 }, (_, i) => ordersOf(castle(1, `y-${i}`, 1), T0).list.map((o) => o.kind)).flat(),
+    );
+    expect(youngKinds.has('spy')).toBe(true);
     const kinds = new Set(
       Array.from({ length: 60 }, (_, i) => ordersOf(castle(10, `old-${i}`), T0).list.map((o) => o.kind)).flat(),
     );

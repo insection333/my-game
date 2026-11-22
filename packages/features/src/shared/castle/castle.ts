@@ -23,6 +23,9 @@ export interface PairEntry {
   cnUntil: number;
   /** A stronghold breached in the window (session 38): it has fallen for the day. */
   fell?: boolean;
+  /** Spies' work on one of the day's foes, a stronghold or the fortress (session 167), kept on the
+   *  attacker's row as a lord's is kept on theirs. */
+  ops?: Debuff[];
 }
 
 export interface Castle {

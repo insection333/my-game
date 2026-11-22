@@ -26,6 +26,7 @@ const Pairs = z
       cn: z.number().int().min(0).max(3),
       cnUntil: z.number(),
       fell: z.boolean().optional(),
+      ops: Debuffs.optional(),
     }),
   )
   .max(20);

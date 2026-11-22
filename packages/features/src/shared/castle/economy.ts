@@ -12,6 +12,7 @@ import {
   SINKS,
   TECH,
   UNIT_IDS,
+  YOUNG,
   type TechId,
 } from '@idle-clash/content';
 import type { Castle } from './castle.ts';
@@ -20,6 +21,13 @@ import { lift, modifiers } from './effects.ts';
 const WEEK = DECREE_WEEK_SECONDS * 1000;
 
 export const upgradeGoldCost = (base: number, level: number): number => Math.round(base * ECONOMY.COST_GROWTH ** level);
+
+/** A young castle's share of a siege's fee, a spy's bribe and a stronghold's bounty, by its rating
+ *  (session 167): rating ÷ 2,400, up to whole. */
+export const youth = (rating: number): number => Math.min(1, Math.max(1, rating) / YOUNG.RATING);
+
+/** A level's share of its price below level 4 (session 167): (level ÷ 4)², up to whole. */
+export const earlyLevel = (level: number): number => Math.min(1, (Math.max(0, level) / YOUNG.FULL_PRICE_LEVEL) ** 2);
 export const statPower = (base: number, level: number): number => base * Math.max(0, level) ** ECONOMY.STAT_EXPONENT;
 
 /** A burn: 95% destroyed, 5% to the war chest, in whole gold. */
@@ -102,7 +110,7 @@ export function raidableGold(c: Castle, now: number, totalLevel?: number): numbe
 
 /** What raising a building or unit one level costs, with this castle's cost effects. */
 export function levelCost(c: Castle, base: number, level: number, now: number): number {
-  return Math.round(upgradeGoldCost(base, level) * lift(modifiers(c, now).costs.upgrades));
+  return Math.round(upgradeGoldCost(base, level) * earlyLevel(level) * lift(modifiers(c, now).costs.upgrades));
 }
 
 /** A War College rank's gold and war marks, or null at the last rank. */

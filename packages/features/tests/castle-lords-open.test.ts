@@ -1,4 +1,5 @@
-// The war between lords, sooner and in a small realm (session 137, the castle review's second stage).
+// The war between lords, sooner and in a small realm (session 137, the castle review's second stage; sooner
+// again in session 167: an average level of 2 or three days).
 // Lords opened at an average castle level of 5, which a steady player reaches about day 50: a test among
 // friends of a few weeks never met another lord. They now open at level 3 or two weeks after the castle
 // is raised, whichever comes first. And lords were matched only from 0.75 to 1.35 of your rating, so in a
@@ -16,16 +17,17 @@ const at = (level: number, raised = T0): Castle => {
 };
 
 describe('when lords open', () => {
-  it('opens at an average level of 3', () => {
-    expect(UNLOCKS.LORDS_AVG_LEVEL).toBe(3);
-    expect(lordsOpen(at(2), T0)).toBe(false);
-    expect(lordsOpen(at(3), T0)).toBe(true);
+  // Session 167: an average level of 2 or three days, from 3 or two weeks.
+  it('opens at an average level of 2', () => {
+    expect(UNLOCKS.LORDS_AVG_LEVEL).toBe(2);
+    expect(lordsOpen(at(1), T0)).toBe(false);
+    expect(lordsOpen(at(2), T0)).toBe(true);
   });
 
-  it('opens two weeks after the castle is raised, at any level', () => {
-    expect(lordsOpen(at(1), T0 + 14 * DAY - 1)).toBe(false);
-    expect(lordsOpen(at(1), T0 + 14 * DAY)).toBe(true);
-    expect(lordsOpenAt(at(1))).toBe(T0 + 14 * DAY);
+  it('opens three days after the castle is raised, at any level', () => {
+    expect(lordsOpen(at(1), T0 + 3 * DAY - 1)).toBe(false);
+    expect(lordsOpen(at(1), T0 + 3 * DAY)).toBe(true);
+    expect(lordsOpenAt(at(1))).toBe(T0 + 3 * DAY);
   });
 });
 

@@ -2,7 +2,7 @@
 // certain loss, as the strongholds did before session 75. The review sheets' castle a week in found it.
 import { castleEngine as E } from '@idle-clash/features';
 import { describe, expect, it } from 'vitest';
-import { fortressOdds } from '../src/pages/castle/War.tsx';
+import { fortressOdds } from '../src/pages/castle/Fortress.tsx';
 
 const T0 = Date.UTC(2026, 10, 18, 9);
 const castle = (level: number, tier: number): E.Castle => {

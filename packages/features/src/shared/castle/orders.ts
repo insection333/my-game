@@ -1,6 +1,6 @@
 // The orders of the day (session 40): three small aims each UTC day, so a visit to the castle has a shape
 // and an end. The first is always the day's strongholds; the other two are drawn from your id and the day,
-// among what your castle can do (spies and lords only once lords are open). Each order done pays war
+// among what your castle can do (lords only once lords are open). Each order done pays war
 // marks at once, and the three together pay more: nothing to claim. Pure.
 import { ORDERS } from '@idle-clash/content';
 import { formatUtcDate, type Castle } from './castle.ts';
@@ -37,12 +37,11 @@ function targetOf(kind: OrderKind, h: number, young: boolean): number {
 export function ordersOf(c: Castle, now: number): Orders {
   const day = formatUtcDate(now);
   if (c.orders && c.orders.day === day) return c.orders;
-  // Spies and lords once lords are open; an incursion while some roll takes the fortress at the castle's
-  // tier (session 139: a castle a week in was asked to win one it could not).
+  // Lords once lords are open (spies from the first day, on the day's foes: session 167); an incursion
+  // while some roll takes the fortress at the castle's tier (session 139: a castle a week in was asked to
+  // win one it could not).
   const reach = winChance(bestOffense(c, fortressSide(c.incursionTier), now).r) > 0;
-  const open = OTHERS.filter(
-    (k) => (lordsOpen(c, now) || (k !== 'spy' && k !== 'lord')) && (k !== 'incursion' || reach),
-  );
+  const open = OTHERS.filter((k) => (lordsOpen(c, now) || k !== 'lord') && (k !== 'incursion' || reach));
   const drawn = open
     .map((kind) => ({ kind, k: hash(`${c.userId}:${day}:${kind}`) }))
     .sort((a, b) => a.k - b.k)

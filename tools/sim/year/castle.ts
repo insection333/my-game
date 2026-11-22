@@ -46,6 +46,8 @@ const ALL_AT_99 = 99 * 11;
 /** Past 99: sieges of strongholds a day (as many as come before fatigue), and tempering tries a visit. */
 const STRONGHOLDS_A_DAY = SIEGE.FATIGUE_FREE;
 const TEMPERS_A_VISIT = 3;
+/** A bribe at the fortress is paid only while it is at most this share of the purse (session 167). */
+const SPY_SHARE = 0.1;
 /** The treasury kept: this many times what the edict needs. */
 const TREASURY_TIMES = 1.5;
 
@@ -96,6 +98,23 @@ export class Lordship {
     const required = E.requiredTreasury(c, level);
     const short = Math.max(0, Math.round(TREASURY_TIMES * required) - c.treasury);
     if (short > 0 && purse > 0) apply(E.deposit(wallet(), Math.min(short, Math.floor(purse))));
+    // Spies at the fortress once every skill is at 99, part of the lord's chase (session 167): its wells
+    // poisoned when that is what stands between the troops and the next tier, and the bribe is a tenth of
+    // the purse or less, before the building takes the rest, as a player told so on its row would.
+    const key = E.fortressKey(c.incursionTier);
+    const poison = E.FOE_MISSIONS.find((m) => m.id === 'poison')!;
+    const fortressOdds = (ops: E.FoeOps) =>
+      E.combatRatio(E.castleSide(c, t, 'attack'), E.fortressSide(c.incursionTier, ops), 0.5).r;
+    for (let n = 0; level >= ALL_AT_99 && n < 3; n++) {
+      const ops = E.foeOps(c, key, t);
+      if (fortressOdds(ops) >= 1.05 || fortressOdds({ ...ops, poison: 2 }) < 1.05) break;
+      const cost = E.foeSpyCosts(c, poison, t);
+      if (E.foeSpyRefusal(c, key, 'poison', t) || cost.gold > purse * SPY_SHARE) break;
+      const paid = E.pay(wallet(), cost.gold);
+      if (!paid) break;
+      purse = paid.purse;
+      c = E.spyOnFoe(paid.castle, key, c.incursionTier, 'poison', t, this.roll()).castle;
+    }
     // Building, once the treasury is whole: the cheapest level first, then the War College with marks.
     if (c.treasury >= required) {
       let budget = Math.floor(purse * share);
@@ -124,7 +143,12 @@ export class Lordship {
     for (let guard = 0; guard < 40; guard++) {
       if (c.activeAp < SINKS.DRILL_AP) break;
       if (c.activeAp >= SINKS.INCURSION_AP) {
-        const odds = E.combatRatio(E.castleSide(c, t, 'attack'), E.fortressSide(c.incursionTier), 0.5).r;
+        const tier = c.incursionTier;
+        const odds = E.combatRatio(
+          E.castleSide(c, t, 'attack'),
+          E.fortressSide(tier, E.foeOps(c, E.fortressKey(tier), t)),
+          0.5,
+        ).r;
         if (odds >= 1.05) {
           const r = E.launchIncursion(c, t, this.roll(), this.roll());
           if (r !== 'ap') {

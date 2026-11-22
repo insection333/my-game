@@ -12,6 +12,7 @@ export function pairOf(c: Pick<Castle, 'pairs'>, defender: string, now: number):
   const p = c.pairs.find((x) => x.d === defender) ?? blank(defender);
   const since = now - ESPIONAGE.PAIR_WINDOW_MS;
   const sieges = p.sieges.filter((t) => t > since);
+  const ops = (p.ops ?? []).filter((o) => o.until > now);
   return {
     d: p.d,
     sieges,
@@ -19,6 +20,7 @@ export function pairOf(c: Pick<Castle, 'pairs'>, defender: string, now: number):
     cn: p.cnUntil > now ? p.cn : 0,
     cnUntil: p.cnUntil > now ? p.cnUntil : 0,
     ...(p.fell && sieges.length ? { fell: true } : {}),
+    ...(ops.length ? { ops } : {}),
   };
 }
 

@@ -89,11 +89,11 @@ Every player-facing name comes from the strings file in Phase 4; ids below are t
 
 ## 6. Unlocks
 
-- **Castle Clash opens at total level 100** (late on a steady player's first day). Before that the page shows what it is and when it opens. Newcomers are never raided: they have no castle yet, then a 48-hour novice shield from the moment they open it (the plan's `created_at + 48h`, counted from the castle, not the account).
+- **Castle Clash opens at total level 30** (about twenty minutes into a newcomer's first visit; 100 until session 167, about two days of play). Before that the page shows what it is and when it opens. Newcomers are never raided: they have no castle yet, then a 48-hour novice shield from the moment they open it (the plan's `created_at + 48h`, counted from the castle, not the account).
 - **Progressive tabs** (the plan's "progressive unlock gates"):
   - Citadel and Garrison are open from the start.
   - Incursions opens once any unit reaches level 3.
-  - Lords open at an average castle level of 3, or two weeks after the castle is raised, whichever comes first (session 137; at 5 alone, about day 50).
+  - Lords open at an average castle level of 2, or three days after the castle is raised, whichever comes first (session 167; 3 or two weeks in session 137; at 5 alone, about day 50).
   - The Reliquary opens with the first war mark earned.
 
 ## 7. How Castle Clash touches the rest of the game
@@ -170,7 +170,7 @@ The owner allowed the plan to be amended wherever it does not account for the re
 
 ### Phase 6: what simulated play found (session 33)
 
-The year's simulation now keeps a castle for both of its players (`tools/sim/year/castle.ts`). It raises the castle at total level 100 (day 2), answers the Call to arms, keeps the Edict of Vigor powered at 1.5 times its requirement, and spends a fifth of the purse on levels and studies (half once every skill is at 99). AP goes on incursions, a dig a day and drill. A realm of 24 lords plays twelve weeks on the pure engine (`tools/sim/castle/`): eight steady raiders, eight light lords and eight lapsed ones. Both report in verify's fifth step (`.verify/year.md`, `.verify/castle.md`). Every year target holds with the edict running: every skill at 99 on day 349, against 368 without. What the runs found, each changed by a constant:
+The year's simulation now keeps a castle for both of its players (`tools/sim/year/castle.ts`). It raises the castle at total level 30 (100, day 2, until session 167), answers the Call to arms, keeps the Edict of Vigor powered at 1.5 times its requirement, and spends a fifth of the purse on levels and studies (half once every skill is at 99). AP goes on incursions, a dig a day and drill. A realm of 24 lords plays twelve weeks on the pure engine (`tools/sim/castle/`): eight steady raiders, eight light lords and eight lapsed ones. Both report in verify's fifth step (`.verify/year.md`, `.verify/castle.md`). Every year target holds with the edict running: every skill at 99 on day 349, against 368 without. What the runs found, each changed by a constant:
 
 6. **The treasury's floor by total level is ÷ 25, not ÷ 22.** At ÷ 22, a top lord needed 27 million and spent most of a day's earnings on upkeep for a 6% edict.
 7. **Today's strongholds stand at 0.75 to 1.15 of your rating (the plan's 0.85 to 1.2).** Walls favour a defender, so a stronghold of your own rating holds against an even formation (R about 0.87). At the plan's scales, four of the five were out of reach. Now two fall to any attack, one is even, and two need a formation set against them.
@@ -304,6 +304,21 @@ The owner asked for a review of Castle Clash early, middle and late, and gave th
     - then the relics, in the Reliquary's order, to their last level;
     - then the next temper of the worn relic with the best chance. Tempering never ends, so there is always a next step.
     - Session 144: the one nearest to hand is named, not always the evolution first. A step the lord can pay for now (gold and war marks) comes before one millions away, the evolution first among those; then the least gold still to find. A lord a week in with a relic ready to forge had been pointed at an evolution 2.9M off.
+36. **Castle Clash sooner, priced for a young purse** (session 167, the owner: it should not be locked long for a new player). The page opened at total level 100, about two days of nonstop play for a newcomer (who reaches 67 in six hours), and once open a level-1 castle (rating 540) met a 27,000-gold stronghold, a spy's bribe of 27,000 to 40,500 and a first level-up of 354,000 to 590,000, against about 5,000 gold an hour on the first day. Now:
+    - it opens at total level 30, about twenty minutes in;
+    - a young castle's siege fee, spy's bribe and stronghold bounty scale by its rating up to 2,400 (`YOUNG.RATING`, about level 4; `youth`), so a level-1 castle's stronghold costs 6,075, and the bounty, scaled alike, stays under the fee;
+    - a building's or troop's level costs (level ÷ 4)² of its price below level 4 (`earlyLevel`): the first about 30,000, the second about 140,000;
+    - lords open at an average castle level of 2 or three days after raising, the novice shield's 48 hours first;
+    - the Hearth's Next up says how far off it opens, then that the castle is ready to raise.
+
+37. **Spies at the day's foes** (session 167, the owner: make the player feel they are running spies). Spies went only against lords, so the Spy Guild stood idle until lords opened. Poisoned wells, a sabotaged gatehouse and forged orders now work on one of the day's strongholds or the fortress at the lord's tier, from the first day (`foe-spies.ts`):
+    - the work is kept on the lord's own castle with that foe's pair (`ops`), lasts as on a lord (poison 4 hours, twice at most; sabotage and forgery 2 hours), and counts in the battle (`resolveMercenary`, `launchIncursion`) and the odds alike;
+    - the chance is the Spy Guild's stealth against a watchtower of the foe's level, so a stronger guild sends surer agents; a caught agent compromises that pair's network for 12 hours, and no one earns war marks for it;
+    - the bribe is a siege's on a lord of your own rating, at a young castle's share; three missions a foe a day; nothing to scout, as a foe's garrison and trap are known;
+    - the orders of the day may ask for a spy from the first day.
+    The year's lord, once every skill is at 99, poisons the fortress's wells when that is what stands between the troops and the next tier and a bribe is a tenth of the purse or less (late in the year it seldom is: a bribe is a siege's fee, and the strongholds and the building take the gold).
+38. **The end game's firsts, measured truly** (session 167). The year's check held the wait for a first after 99 to 3 days, and it held at the one seed verify plays by luck: main itself waited 3, 5 and 3 days at seeds 11 to 13, as the castle's firsts come as its gold allows. The wait is now held to 5 days, and at least half the days after 99 must bring a first (session 36's war still carries them: a first on most days, Kindlings and the war between).
+
 ## 12. Phases
 
 | Phase | Session | Delivers |

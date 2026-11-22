@@ -1,4 +1,4 @@
-// Castle Clash over HTTP (docs/castle-clash/): a castle opens at total level 100; every change acts once
+// Castle Clash over HTTP (docs/castle-clash/): a castle opens at total level 30 (session 167; 100 before); every change acts once
 // per request id, in one transaction with the save; a siege moves gold between two lords and the war
 // chest and never makes any; a treasury that runs short switches the lord's edict off in their save;
 // both lords read the siege in their reports.
@@ -58,9 +58,9 @@ function raise(l: Lord, level: number, extra: Partial<E.Castle> = {}) {
 }
 
 describe('Castle Clash over HTTP', () => {
-  it('opens a castle at total level 100 (not before), once, behind a 48-hour novice shield', async () => {
+  it('opens a castle at total level 30 (not before), once, behind a 48-hour novice shield', async () => {
     s = await server();
-    const low = await lord('Lowly', 5, 0);
+    const low = await lord('Lowly', 2, 0);
     expect(answer(await open(low)).result).toEqual({ ok: false, reason: 'closed' });
     expect((await view(low)).open).toBe(false);
     const high = await lord('Highborn', 10, 0);

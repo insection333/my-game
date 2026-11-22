@@ -11,6 +11,8 @@ export interface Target {
   struck: number | null;
   shieldedUntil: number | null;
   merc: E.Mercenary | null;
+  /** The fortress's tier, for the fortress's sheet (session 167); null for a lord or a stronghold. */
+  fortress?: number | null;
 }
 
 export const pct = (p: number) => fmt.chance(p);
@@ -26,7 +28,7 @@ export function scoutingOf(logs: readonly E.CastleReport[], id: string) {
 
 /** The side a target defends with: a stronghold as it is, a lord as their last scouting saw them. */
 export function defenceOf(c: E.Castle, target: Target, logs: readonly E.CastleReport[], now: number): E.Side | null {
-  if (target.merc) return E.mercenarySide(target.merc);
+  if (target.merc) return E.mercenarySide(target.merc, E.foeOps(c, target.merc.id, now));
   const seen = scoutingOf(logs, target.id);
   if (!seen) return null;
   const r = seen.report;

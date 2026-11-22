@@ -6,6 +6,7 @@ import { castleEngine as E } from '@idle-clash/features';
 import { totalLevelOf } from '../game/standing.ts';
 import { noteSiege } from '../moderation.ts';
 import { loadSynced, purseOf, roll, setPurse, store, tell, type Io, type Outcome } from './service.ts';
+import { spyFoe } from './foe-spies.ts';
 
 type Castle = E.Castle;
 
@@ -129,7 +130,8 @@ function mercenarySiege(io: Io, att: Castle, target: string): Outcome {
 }
 
 export function spy(io: Io, att: Castle, target: string, missionId: string): Outcome {
-  if (target.startsWith('merc:')) return { ok: false, reason: 'unknown' };
+  // One of the day's foes, from the first day (session 167).
+  if (target.startsWith('merc:') || target.startsWith('fortress:')) return spyFoe(io, att, target, missionId);
   if (!E.lordsOpen(att, io.now)) return { ok: false, reason: 'locked' };
   const def = opponent(io, att, target);
   if (typeof def === 'string') return { ok: false, reason: def };

@@ -12,6 +12,7 @@ export * from './espionage.ts';
 export * from './manage.ts';
 export * from './sinks.ts';
 export * from './mercenaries.ts';
+export * from './foe-spies.ts';
 export * from './sync.ts';
 export * from './unlocks.ts';
 export * from './mirror.ts';
