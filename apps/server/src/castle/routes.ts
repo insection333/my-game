@@ -10,6 +10,7 @@ import { limit, type Ctx } from '../context.ts';
 import { announce } from '../game/announce.ts';
 import { contractRoute, fail } from '../http.ts';
 import { actAndOrder, castleRequest, openCastle, type Handled } from './service.ts';
+import { lordsInReachOf, lordsWithin } from './reach.ts';
 import { CastleStore } from './store.ts';
 
 export type CastleView = E.CastleView;
@@ -25,7 +26,7 @@ export function castleView(ctx: Ctx, playerId: string, now: number): CastleView 
   const names = castles.names(logs.map((l) => (typeof l.data.foe === 'string' ? l.data.foe : '')));
   return {
     open: E.castleOpen(level),
-    castle: row ? E.syncCastle(row, now).castle : null,
+    castle: row ? E.syncCastle(row, now, lordsWithin(castles, playerId, row, now)).castle : null,
     now,
     totalLevel: level,
     warChest: castles.chest(),
@@ -50,15 +51,7 @@ export function targetsView(ctx: Ctx, playerId: string, now: number): TargetsVie
   for (const l of castles.logs(playerId))
     if (l.kind === 'siegeIn' && l.at > now - DAY && typeof l.data.foe === 'string' && !struck.has(l.data.foe))
       struck.set(l.data.foe, l.at);
-  // Lords open to lords, from half to twice your rating, nearest first; then those in reach (session 137):
-  // the near bracket while three stand there, shielded or not, else a step further; of those, the
-  // unshielded. A castle not yet open to lords is never offered (its Siege was refused as "shielded").
-  const widest = SIEGE.BRACKET_STEPS[SIEGE.BRACKET_STEPS.length - 1];
-  const open = castles.lordsNear(playerId, c.rating, { low: widest[0], high: widest[1] }).flatMap((l) => {
-    const theirs = castles.read(l.id);
-    return theirs && E.lordsOpen(theirs, now) ? [{ ...l, shielded: E.isShielded(theirs, now) }] : [];
-  });
-  const { lords: inReach, reach } = E.lordsInReach(c.rating, open, (l) => !l.shielded);
+  const { lords: inReach, reach } = lordsInReachOf(castles, playerId, c, now);
   const near = inReach
     .map((l) => ({ l, k: E.hash(`${playerId}:${day}:${l.id}`) }))
     .sort((a, b) => a.k - b.k)

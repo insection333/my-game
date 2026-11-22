@@ -92,6 +92,9 @@ export const HONOURS: readonly Honour[] = [
   title('illustrious', at(4_500)),
   title('exalted', at(7_000)),
   title('mythic', at(10_000)),
+  // A title for each season's twist played hard (session 166), among the plainer titles: sixty goals in
+  // eight weeks (session 169: listed last, they stood as the highest, and were taken as such).
+  ...Object.entries(SEASON_TITLES).map(([twist, id]) => title(id, by(`season-${twist}`))),
   ...Object.entries(SKILL_TITLES).map(([skill, id]) => title(id, by(`level-${skill}-99`))),
   title('grandmaster', by('masters-40')),
   title('warlord', by('defeats-1000000')),
@@ -105,8 +108,7 @@ export const HONOURS: readonly Honour[] = [
   title('trailblazer', by('runs-250')),
   title('kindled', { anyOf: firstKindlings, text: 'honour.unlock.anyKindled' }),
   title('everflame', by('kindlings-10')),
-  // A title for each season's twist played hard, and one for six seasons played (session 166).
-  ...Object.entries(SEASON_TITLES).map(([twist, id]) => title(id, by(`season-${twist}`))),
+  // Six seasons played (session 166): a year's play.
   title('seasoned', by('seasons-6')),
   // Banners: the woad everyone flies, and a colour for each region cleared and more.
   { id: 'woad', kind: 'banner', unlock: null },

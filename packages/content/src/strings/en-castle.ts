@@ -11,7 +11,12 @@ export const castle = {
   'castle.raise': 'Raise your castle',
   'castle.brings.edict': 'An edict lifts your XP, fight gold or finds while your treasury can power it.',
   'castle.brings.ap': 'Answer the Call to arms each day for the AP that trains troops, sends spies and lays sieges.',
-  'castle.brings.war': 'Lords near your strength may besiege you for the treasury gold your vault cannot hide.',
+  'castle.brings.war':
+    "From the first day, storm the day's strongholds and the fortress for war marks, sending spies to poison their wells first.",
+  'castle.brings.lords':
+    'From {days} days on, lords near your strength may besiege you for the treasury gold your vault cannot hide.',
+  'castle.brings.lordsOne':
+    'From 1 day on, lords near your strength may besiege you for the treasury gold your vault cannot hide.',
 
   // The header.
   'castle.ap': '{ap} of {cap} AP',

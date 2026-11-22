@@ -44,10 +44,10 @@ export function withOps(side: Side, ops: FoeOps): Side {
   };
 }
 
-/** A mission's chance against a foe of this level: the Spy Guild's stealth against a watchtower of the
- *  foe's level, as against a lord's (DESIGN.md 5.8). */
+/** A mission's chance against a foe of this level: the Spy Guild's stealth against the foe's watch at its
+ *  level, looser than a lord's watchtower (session 169), as against a lord's otherwise (DESIGN.md 5.8). */
 export function foeSpyChance(c: Castle, foe: string, level: number, now: number): number {
-  const ratio = stealth(c, foe, now) / Math.max(1e-9, statPower(80, Math.max(1, level)));
+  const ratio = stealth(c, foe, now) / Math.max(1e-9, statPower(ESPIONAGE.FOE_WATCH_BASE, Math.max(1, level)));
   const p = ESPIONAGE.CHANCE_BASE + ESPIONAGE.CHANCE_SLOPE * Math.log(ratio);
   return Math.min(ESPIONAGE.CHANCE_MAX, Math.max(ESPIONAGE.CHANCE_MIN, p));
 }

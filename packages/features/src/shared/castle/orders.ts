@@ -33,15 +33,19 @@ function targetOf(kind: OrderKind, h: number, young: boolean): number {
   return 1;
 }
 
-/** Today's orders: those already kept on the castle, or a fresh three. */
-export function ordersOf(c: Castle, now: number): Orders {
+/** Today's orders: those already kept on the castle, or a fresh three. `lordsWithin` says whether a lord
+ *  stands in reach today (session 169: a castle open to lords with none in reach was ordered to besiege
+ *  one, an order it could not keep); left out, lords open is taken as some in reach. */
+export function ordersOf(c: Castle, now: number, lordsWithin = lordsOpen(c, now)): Orders {
   const day = formatUtcDate(now);
   if (c.orders && c.orders.day === day) return c.orders;
   // Lords once lords are open (spies from the first day, on the day's foes: session 167); an incursion
   // while some roll takes the fortress at the castle's tier (session 139: a castle a week in was asked to
   // win one it could not).
   const reach = winChance(bestOffense(c, fortressSide(c.incursionTier), now).r) > 0;
-  const open = OTHERS.filter((k) => (lordsOpen(c, now) || k !== 'lord') && (k !== 'incursion' || reach));
+  const open = OTHERS.filter(
+    (k) => ((lordsOpen(c, now) && lordsWithin) || k !== 'lord') && (k !== 'incursion' || reach),
+  );
   const drawn = open
     .map((kind) => ({ kind, k: hash(`${c.userId}:${day}:${kind}`) }))
     .sort((a, b) => a.k - b.k)

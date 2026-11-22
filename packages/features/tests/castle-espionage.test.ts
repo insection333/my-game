@@ -68,7 +68,7 @@ describe('Castle Clash espionage', () => {
     let att = lord('a', 10);
     const def = lord('d', 10);
     for (let i = 0; i < 3; i++) att = runMission(att, def, 'scout', T0 + i, SPIED).attacker;
-    expect(spyRefusal(att, def, 'scout', T0 + 5)).toBe('pairLimit');
+    expect(spyRefusal(att, def, 'scout', T0 + 5)).toBe('spyLimit');
     expect(spyRefusal(att, lord('e', 10), 'scout', T0 + 5)).toBeNull();
     expect(spyRefusal(att, def, 'scout', T0 + 25 * H)).toBeNull();
   });

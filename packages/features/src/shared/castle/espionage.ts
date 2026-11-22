@@ -40,7 +40,7 @@ export function spyCosts(att: Castle, def: Castle, mission: SpyMission, now: num
   return { ap: mission.ap, gold: Math.round(gold) };
 }
 
-export type SpyRefusal = 'self' | 'shielded' | 'pairLimit' | 'immune' | 'full' | 'ap' | 'unknown';
+export type SpyRefusal = 'self' | 'shielded' | 'spyLimit' | 'immune' | 'full' | 'ap' | 'unknown';
 
 /** Why a mission may not go, or null: refused before anything is spent (DESIGN.md 5.8). */
 export function spyRefusal(att: Castle, def: Castle, missionId: string, now: number): SpyRefusal | null {
@@ -48,7 +48,8 @@ export function spyRefusal(att: Castle, def: Castle, missionId: string, now: num
   if (!mission) return 'unknown';
   if (att.userId === def.userId) return 'self';
   if (def.shieldUntil > now) return 'shielded';
-  if (pairOf(att, def.userId, now).spies.length >= ESPIONAGE.PAIR_SPIES) return 'pairLimit';
+  // Three missions a lord a day: said as such (session 169), where a siege's "Twice … is enough" was said.
+  if (pairOf(att, def.userId, now).spies.length >= ESPIONAGE.PAIR_SPIES) return 'spyLimit';
   if (mission.debuff) {
     const kind = mission.id as DebuffKind;
     const until = def.immunities[kind];
