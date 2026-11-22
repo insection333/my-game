@@ -3,6 +3,7 @@
 // this page.
 import '@idle-clash/ui/tokens.css';
 import '@idle-clash/ui/base.css';
+import '../src/late-icons.ts';
 import { ICONS, ItemIcon, REFERENCE_SET } from '@idle-clash/ui';
 
 const ALL = [...REFERENCE_SET, ...Object.keys(ICONS).filter((n) => !REFERENCE_SET.includes(n))];

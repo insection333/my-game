@@ -1,5 +1,6 @@
 // The game's part of the page: the shell and its pages. Loaded as its own file once a player is
 // signed in, so the welcome page stays small.
+import './late-icons.ts';
 import { Fault } from './Fault.tsx';
 import { Ready } from './Ready.tsx';
 import { Hearth } from './pages/Hearth.tsx';
