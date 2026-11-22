@@ -60,9 +60,10 @@ export function supplyChecks(out: Say, ok: Ok) {
     ok(gain > 0, `${f.name}: ${adv}'s supply pays for itself`);
   }
   ok(
-    [...FLETCHING, ...SMITHING_SUPPLIES].every(
-      (r) => Math.abs(((r.xp / r.seconds) * 3600) / TIER_XP_PER_HOUR[r.tier - 1] - 1) < 0.1,
-    ),
+    // Hand-fletched arrows (session 176) trade a fifth of the XP for finds twice as likely: left out.
+    [...FLETCHING, ...SMITHING_SUPPLIES]
+      .filter((r) => r.kind !== 'hand')
+      .every((r) => Math.abs(((r.xp / r.seconds) * 3600) / TIER_XP_PER_HOUR[r.tier - 1] - 1) < 0.1),
     'Fletching and Smithing supply recipes within 10% of their tier rate',
   );
   // From tier 3, where a rune's worth is not lost to rounding to whole gold.

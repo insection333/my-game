@@ -67,7 +67,7 @@ export interface GatherAction {
   name: string;
   level: number;
   tier: number;
-  kind: 'standard' | 'rich';
+  kind: 'standard' | 'rich' | 'lucky';
   seconds: number;
   xp: number;
   item: string;
@@ -81,11 +81,11 @@ function gatherActions(skill: GatherSkill): GatherAction[] {
     const i = t.tier - 1;
     // The ore's own word: "Copper ore" mines from a copper vein, Dawnstone from a dawnstone vein.
     const rock = t.ore.replace(' ore', '');
-    const [res, base, rich] = {
-      woodcutting: [`${t.log} logs`, `${t.log} tree`, `Old ${t.log.toLowerCase()}`],
-      mining: [t.ore, `${rock} vein`, `Deep ${rock.toLowerCase()} seam`],
-      fishing: [t.fish, `${t.fish} shallows`, `Deep ${t.fish.toLowerCase()} pool`],
-      runecraft: [`${t.rune} rune`, `${t.rune} stone`, `Ancient ${t.rune.toLowerCase()} stone`],
+    const [res, base, rich, lucky] = {
+      woodcutting: [`${t.log} logs`, `${t.log} tree`, `Old ${t.log.toLowerCase()}`, `${t.log} grove`],
+      mining: [t.ore, `${rock} vein`, `Deep ${rock.toLowerCase()} seam`, `${rock} geode`],
+      fishing: [t.fish, `${t.fish} shallows`, `Deep ${t.fish.toLowerCase()} pool`, `${t.fish} spawning run`],
+      runecraft: [`${t.rune} rune`, `${t.rune} stone`, `Ancient ${t.rune.toLowerCase()} stone`, `${t.rune} ley stone`],
     }[skill];
     const per = skill === 'runecraft' ? 8 : 1;
     const s = TIER_SECONDS[i];
@@ -116,9 +116,29 @@ function gatherActions(skill: GatherSkill): GatherAction[] {
       qty: 2 * per,
       findMult: 1.5,
     });
+    // From tier 5 (session 176), a third choice ten levels in: the tier's own item more slowly, finds
+    // twice as likely an hour (XP, yield or luck), so no gap between new actions passes ten levels.
+    if (t.tier >= LUCKY_FROM)
+      out.push({
+        id: `${skill}.${i + 1}l`,
+        skill,
+        name: lucky,
+        level: t.level + 10,
+        tier: t.tier,
+        kind: 'lucky',
+        seconds: s * LUCKY_SLOWER,
+        xp,
+        item: res,
+        qty: per,
+        findMult: LUCKY_FINDS,
+      });
   }
   return out;
 }
+/** The lucky actions (session 176): from this tier, this much slower, finds this many times an action. */
+export const LUCKY_FROM = 5;
+export const LUCKY_SLOWER = 1.25;
+export const LUCKY_FINDS = 2.5;
 export const WOODCUTTING = gatherActions('woodcutting');
 export const MINING = gatherActions('mining');
 export const FISHING = gatherActions('fishing');
