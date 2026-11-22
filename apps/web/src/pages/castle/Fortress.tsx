@@ -3,15 +3,17 @@
 // Assault, and Send spies.
 import { SINKS, fmt, t } from '@idle-clash/content';
 import { castleEngine as E } from '@idle-clash/features';
-import { ActionRow, Button, ItemIcon, Panel, Pill } from '@idle-clash/ui';
+import { Button, Panel, Pill } from '@idle-clash/ui';
 import { navigate } from '../../router.ts';
 import { Fought } from './Fought.tsx';
 import { opsLines, spiesWouldTake } from './FoeSpies.tsx';
-import { fieldFor } from './hosts.ts';
+import { FoeCard } from './FoeCard.tsx';
+import { allAt, fieldFor, hostOf } from './hosts.ts';
 import { fortressName } from './labels.ts';
 import { fight } from './store.ts';
 import { hasAp, useSyncedCastle } from './synced.ts';
 import { heldByWounds, pct, sheetOf } from './targets.ts';
+import w from './war.module.css';
 
 /** A foe beyond reach while the lord's troops are wounded, and healing would bring it back (session 145). */
 export const woundedWords = (castle: E.Castle) =>
@@ -47,30 +49,32 @@ export function Fortress() {
         aside={<Pill tone="woad">{t('castle.incursion.tier', { tier: fmt.int(tier) })}</Pill>}
         flush
       >
-        <div data-slot="castle.incursion">
-          <ActionRow
-            iconYields
-            icon={<ItemIcon name="crest" crest={fortress.id} size={32} />}
+        <div data-slot="castle.incursion" className={w.list}>
+          <FoeCard
+            crest={fortress.id}
             name={fortressName(fortress.id)}
-            facts={[
+            host={hostOf(fortressNow(castle, now).shares, allAt(tier))}
+            chance={beyond ? null : chance}
+            odds={
               beyond
                 ? heldByWounds(castle, fortressNow(castle, now), now)
                   ? woundedWords(castle)
                   : spiesWouldTake(castle, (ops) => E.fortressSide(tier, ops), now)
                     ? t('castle.incursion.spies')
                     : t('castle.incursion.beyond')
-                : t('castle.target.chance', { pct: pct(chance) }),
+                : t('castle.target.chance', { pct: pct(chance) })
+            }
+            facts={[
               t('castle.incursion.rewards', { marks: fmt.int(marks) }),
               ...opsLines(castle, E.fortressKey(tier), now),
             ]}
-            progress={<Fought battle="incursion" />}
-            foot={
+            fought={<Fought battle="incursion" />}
+            quiet={
               <Button variant="quiet" onClick={() => navigate(sheetOf(E.fortressKey(tier)))}>
                 {t('castle.target.spies.open')}
               </Button>
             }
-            wide
-            actions={
+            attack={
               <Button
                 variant="primary"
                 disabled={busy || beyond || !hasAp(castle, SINKS.INCURSION_AP)}

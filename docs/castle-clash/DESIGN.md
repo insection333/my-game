@@ -327,6 +327,8 @@ The owner asked for a review of Castle Clash early, middle and late, and gave th
     - **The season's titles stood as the highest.** Listed after Everflame, they were taken as the best title (verify's crowd all wore Greenwarden); they now stand among the plainer titles.
     - **The page before a castle led with the edict and ended on being raided.** It now leads with the war of the first day and its spies.
 
+40. **The War as one ladder of foes** (session 170, the owner: the War's two columns left Today's strongholds in the bottom left of a desktop with its right empty, and the castle's pages did not feel like a war). Every foe of the day is now a card in one full-width ladder (`FoeCard.tsx`), the fortress first, then the five strongholds, the lords, and the latest reports side by side: each card the foe's arms, its name and standing, its host drawn as figures where its garrison is known (at the level it fights at), the chance to win as words over a meter coloured by the odds (moss from 75%, gold from 40%, alert below), what holds it and what it pays, and Send spies or Plan beside the attack. A card lays itself out by its ladder's width (a container query): stacked on a phone, the host and the odds at the right where there is room. Lords not yet open, or none in reach, are a line folded under the strongholds rather than a panel of their own. A step-6 proof (`proofs-war.ts`) holds every tab, as a lord five days, two months and a year in, to no section standing beside more than 240 px of empty page on a wide screen.
+
 ## 12. Phases
 
 | Phase | Session | Delivers |

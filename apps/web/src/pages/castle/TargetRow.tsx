@@ -1,14 +1,15 @@
-// One target on the War (session 38; its own file since session 167): a stronghold or a lord, with its
-// chance (in the formation set against it, where it is known, counting the spies' work on it), what it
-// pays, how it stands today, and its button; a lord not yet scouted offers Scout. A stronghold's and a
+// One target on the War (session 38; its own file since session 167, a card since 170): a stronghold or a
+// lord, with its chance (in the formation set against it, where it is known, counting the spies' work on
+// it), what it pays, how it stands today, and its button; a lord not yet scouted offers Scout. A stronghold's and a
 // lord's foot opens their sheet: the spies, and for a lord the full plan.
 import { dayTurns, SPY_MISSIONS, fmt, t } from '@idle-clash/content';
 import { castleEngine as E } from '@idle-clash/features';
-import { ActionRow, Button, ItemIcon, Pill } from '@idle-clash/ui';
+import { Button, Pill } from '@idle-clash/ui';
 import { navigate } from '../../router.ts';
 import { Fought } from './Fought.tsx';
 import { opsLines } from './FoeSpies.tsx';
-import { fieldFor, targetLevel } from './hosts.ts';
+import { FoeCard } from './FoeCard.tsx';
+import { allAt, fieldFor, hostOf, targetLevel } from './hosts.ts';
 import { woundedWords } from './Fortress.tsx';
 import { garrisonWords } from './labels.ts';
 import { when } from './Reports.tsx';
@@ -48,12 +49,23 @@ export function TargetRow({ target }: { target: Target }) {
   const attack = () =>
     void fight(target.id, { type: 'siege', target: target.id, ...(shares ? { shares } : {}) }, field);
   const taken = Math.max(0, ...E.pairOf(castle, target.id, now).sieges);
+  const fallen = standing?.kind === 'fallen';
+  const odds = fallen
+    ? t('castle.target.fellAt', { when: when(taken, now), back: dayTurns(now) })
+    : chance === null
+      ? t('castle.target.unscouted')
+      : beyond
+        ? def && heldByWounds(castle, def, now)
+          ? woundedWords(castle)
+          : t('castle.target.beyond')
+        : target.merc
+          ? t('castle.target.chance', { pct: pct(chance) })
+          : t('castle.target.chanceAbout', { pct: pct(chance) });
   return (
-    <ActionRow
-      iconYields
-      wide
-      icon={<ItemIcon name="crest" crest={target.id} size={32} />}
+    <FoeCard
+      crest={target.id}
       name={target.name}
+      fallen={fallen}
       status={
         <>
           <Pill tone={target.merc ? undefined : 'woad'}>
@@ -62,22 +74,16 @@ export function TargetRow({ target }: { target: Target }) {
           {target.struck !== null && (
             <Pill tone="ember">{t('castle.target.struckAt', { when: when(target.struck, now) })}</Pill>
           )}
-          {done && <Pill tone={standing.kind === 'fallen' ? 'moss' : undefined}>{standing.text}</Pill>}
+          {done && <Pill tone={fallen ? 'moss' : undefined}>{standing.text}</Pill>}
         </>
       }
+      host={def && !fallen ? hostOf(def.shares, allAt(targetLevel(target))) : null}
+      chance={fallen || beyond ? null : chance}
+      odds={odds}
       facts={
-        standing?.kind === 'fallen'
-          ? [t('castle.target.fellAt', { when: when(taken, now), back: dayTurns(now) })]
+        fallen
+          ? []
           : [
-              chance === null
-                ? t('castle.target.unscouted')
-                : beyond
-                  ? def && heldByWounds(castle, def, now)
-                    ? woundedWords(castle)
-                    : t('castle.target.beyond')
-                  : target.merc
-                    ? t('castle.target.chance', { pct: pct(chance) })
-                    : t('castle.target.chanceAbout', { pct: pct(chance) }),
               ...(target.merc ? [garrisonWords(target.merc.garrison, target.merc.trap)] : []),
               // The spies' work on a stronghold, each until when (session 167).
               ...(target.merc ? opsLines(castle, target.id, now) : []),
@@ -86,8 +92,8 @@ export function TargetRow({ target }: { target: Target }) {
               ...(standing?.kind === 'once' ? [standing.text] : []),
             ]
       }
-      progress={<Fought battle={target.id} />}
-      foot={
+      fought={<Fought battle={target.id} />}
+      quiet={
         done ? undefined : (
           <Button variant="quiet" onClick={() => navigate(sheetOf(target.id))}>
             {/* A stronghold's sheet holds its spies (session 167); a lord's, the full plan and spies. */}
@@ -95,28 +101,24 @@ export function TargetRow({ target }: { target: Target }) {
           </Button>
         )
       }
-      actions={
-        done ? undefined : (
-          <>
-            {!target.merc && chance === null ? (
-              <Button
-                disabled={busy || !hasAp(castle, scoutCost.ap) || !affords(castle, purse, scoutCost.gold)}
-                onClick={() => void castleRun({ type: 'spy', target: target.id, mission: 'scout' })}
-              >
-                {t('castle.scoutFor', { gold: fmt.short(scoutCost.gold), ap: fmt.int(scoutCost.ap) })}
-              </Button>
-            ) : (
-              <Button
-                disabled={busy || beyond || !hasAp(castle, costs.ap) || !affords(castle, purse, costs.gold)}
-                onClick={attack}
-              >
-                {t(target.struck !== null ? 'castle.strikeBackFor' : 'castle.siege', {
-                  gold: fmt.short(costs.gold),
-                  ap: fmt.int(costs.ap),
-                })}
-              </Button>
-            )}
-          </>
+      attack={
+        done ? undefined : !target.merc && chance === null ? (
+          <Button
+            disabled={busy || !hasAp(castle, scoutCost.ap) || !affords(castle, purse, scoutCost.gold)}
+            onClick={() => void castleRun({ type: 'spy', target: target.id, mission: 'scout' })}
+          >
+            {t('castle.scoutFor', { gold: fmt.short(scoutCost.gold), ap: fmt.int(scoutCost.ap) })}
+          </Button>
+        ) : (
+          <Button
+            disabled={busy || beyond || !hasAp(castle, costs.ap) || !affords(castle, purse, costs.gold)}
+            onClick={attack}
+          >
+            {t(target.struck !== null ? 'castle.strikeBackFor' : 'castle.siege', {
+              gold: fmt.short(costs.gold),
+              ap: fmt.int(costs.ap),
+            })}
+          </Button>
         )
       }
     />

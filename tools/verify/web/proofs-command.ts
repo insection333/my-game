@@ -34,7 +34,7 @@ export async function runCommandProofs(served: Served): Promise<string[]> {
     await page.goto(served.url + '/castle');
     await ready(page);
     step = "a stronghold's Send spies";
-    const rows = page.locator('[data-slot="castle.strongholds"] [data-ui="ActionRow"]');
+    const rows = page.locator('[data-slot="castle.strongholds"] [data-foe]');
     // The first stronghold standing, held by its name, as its row loses its Siege once it falls.
     const name = await rows
       .filter({ has: page.getByRole('button', { name: /^Siege/ }) })
