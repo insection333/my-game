@@ -8,6 +8,7 @@ import { PASSWORD_MAX } from './limits.ts';
 import { CASTLE_ROUTES } from './castle.ts';
 import { MODERATION_ROUTES } from './moderation.ts';
 import { MAIL_ROUTES } from './mail.ts';
+import { PUSH_ROUTES } from './push.ts';
 import { PROFILE_ROUTES } from './profile.ts';
 import { CLOSED_TEST_ROUTES } from './closed-test.ts';
 import { PATHS } from './paths.ts';
@@ -202,6 +203,7 @@ export const ROUTES = {
   ...MODERATION_ROUTES,
   ...PROFILE_ROUTES,
   ...MAIL_ROUTES,
+  ...PUSH_ROUTES,
 } satisfies Record<string, RouteContract>;
 
 export type RouteId = keyof typeof ROUTES;

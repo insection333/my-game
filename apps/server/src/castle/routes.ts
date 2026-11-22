@@ -94,6 +94,8 @@ export function castleRoutes(app: FastifyInstance, ctx: Ctx): void {
         ctx.live.publish(other, { type: 'events', events });
         ctx.notices.add(other, events);
         ctx.telemetry.events(other, events);
+        // A siege that breached their walls reaches them while away (session 171).
+        for (const e of events) if (e.type === 'castleBesieged' && e.outcome !== 'repelled') ctx.push.now(other, e);
       }
     }
     return { result: out.result, duplicate: out.duplicate, castle: castleView(ctx, player, at) };

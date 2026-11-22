@@ -25,6 +25,7 @@ import {
   type InboxResponse,
   type SendResult,
   type AdminMailResponse,
+  type PushKeyResponse,
 } from '@idle-clash/contracts';
 import type { castleEngine } from '@idle-clash/features';
 import type { Command, CommandResult } from '@idle-clash/kernel';
@@ -106,6 +107,12 @@ export const api = {
     reports: () => post<AdminReportsResponse>(PATHS.adminReports),
     settleReports: (playerId: string) => post<void>(PATHS.adminSettleReports, { playerId }),
     siegeFlows: () => post<AdminSiegeFlowsResponse>(PATHS.adminSiegeFlows),
+  },
+  push: {
+    key: () => get<PushKeyResponse>(PATHS.pushKey),
+    on: (sub: { endpoint: string; keys: { p256dh: string; auth: string } }, tz: string) =>
+      post<void>(PATHS.pushOn, { endpoint: sub.endpoint, keys: sub.keys, tz }),
+    off: (endpoint: string) => post<void>(PATHS.pushOff, { endpoint }),
   },
   game: () => get<GameResponse>(PATHS.game),
   notices: () => get<NoticesResponse>(PATHS.notices),

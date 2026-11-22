@@ -9,6 +9,7 @@ import { Feedback } from './Feedback.tsx';
 import { LineMark } from './LineMark.tsx';
 import { noticesOf } from './notices.ts';
 import { profileHref } from './ProfileSheet.tsx';
+import { PushChoices } from './PushChoices.tsx';
 import { account, useSession } from '../game/session.ts';
 import { refused } from '../refused.ts';
 import { readSound, type SoundChoice } from '../sound/cues.ts';
@@ -213,6 +214,7 @@ export function Settings() {
         ))}
       </fieldset>
       <SoundChoices />
+      <PushChoices />
       <Feedback />
       <ChangePassword />
       <DeleteAccount />

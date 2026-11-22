@@ -40,6 +40,11 @@ export class LiveHub {
     for (const s of this.sockets.get(playerId) ?? []) if (s.readyState === OPEN) s.send(text);
   }
 
+  /** Whether a player has a page open. */
+  has(playerId: string): boolean {
+    return this.sockets.has(playerId);
+  }
+
   /** The players with a page open. */
   players(): string[] {
     return [...this.sockets.keys()];

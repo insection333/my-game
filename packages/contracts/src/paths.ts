@@ -41,6 +41,9 @@ export const PATHS = {
   mailBlock: '/api/mail/block',
   adminMail: '/api/admin/mail',
   adminMailAction: '/api/admin/mail/action',
+  pushKey: '/api/push/key',
+  pushOn: '/api/push/on',
+  pushOff: '/api/push/off',
 } as const;
 
 /** A feature's own route. */

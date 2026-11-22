@@ -32,6 +32,10 @@ import { Telemetry } from './telemetry.ts';
 import { webRoutes } from './web.ts';
 import { backupsHealth } from './ops/status.ts';
 import { HOUSEKEEPING_EVERY_MS, keepHouse } from './housekeeping.ts';
+import { Push } from './push/push.ts';
+import { pushRoutes } from './push/routes.ts';
+import { keysOf, webPushSender } from './push/send.ts';
+import { withCastle } from './castle/mirror.ts';
 
 export interface Built {
   app: FastifyInstance;
@@ -68,7 +72,21 @@ export async function buildApp(
     telemetry: new Telemetry(db, config.now),
     notices: new Notices(db),
     hiscores: new Hiscores(db),
+    push: null as unknown as Push,
   };
+  ctx.push = new Push(
+    {
+      db,
+      engine: ctx.engine,
+      now: config.now,
+      stateOf: (playerId, at) => {
+        const saved = store.read(playerId, at);
+        return saved ? withCastle(ctx, playerId, saved.doc.state, at) : null;
+      },
+      online: (playerId) => ctx.live.has(playerId),
+    },
+    webPushSender(keysOf(db)),
+  );
   // A climb on a ladder is said to the player at once, and kept with their notices (session 49).
   ctx.hiscores.onRankUp = (playerId, events) => {
     ctx.live.publish(playerId, { type: 'events', events });
@@ -104,6 +122,7 @@ export async function buildApp(
   moderationRoutes(app, ctx);
   profileRoutes(app, ctx);
   mailRoutes(app, ctx);
+  pushRoutes(app, ctx);
   if (config.webDist) webRoutes(app, config.webDist);
   const watching = setInterval(
     () => void hearWatching(ctx).catch((err: unknown) => app.log.error({ err }, 'hiscores for watchers')),
@@ -118,6 +137,12 @@ export async function buildApp(
     }
   }, HOUSEKEEPING_EVERY_MS);
   housekeeping.unref();
+  // Notices while away (session 171): absences foreseen, and what is due sent, each minute.
+  const pushing = setInterval(
+    () => void ctx.push.sweep().catch((err: unknown) => app.log.error({ err }, 'notices while away')),
+    60_000,
+  );
+  pushing.unref();
   app.setNotFoundHandler((_req, reply) => reply.code(404).send({ error: { code: 'notFound' } }));
 
   return {
@@ -126,6 +151,7 @@ export async function buildApp(
     close: async () => {
       clearInterval(watching);
       clearInterval(housekeeping);
+      clearInterval(pushing);
       ctx.live.closeAll();
       await app.close();
       closeDb();

@@ -227,7 +227,12 @@ export function gameRoutes(app: FastifyInstance, ctx: Ctx, features: readonly Fe
     const player = req.playerId;
     if (!player) return socket.close(4401, 'not signed in');
     ctx.live.add(player, socket, tokenHash(req.cookies[SESSION_COOKIE] ?? ''));
-    socket.on('close', () => ctx.live.remove(player, socket));
+    // Back: nothing waits for them. Their last page closed: their absence is foreseen (session 171).
+    ctx.push.back(player);
+    socket.on('close', () => {
+      ctx.live.remove(player, socket);
+      if (!ctx.live.has(player)) ctx.push.gone(player);
+    });
     socket.on('message', () => undefined);
   });
 }
