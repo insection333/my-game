@@ -22,6 +22,7 @@ import { Tour } from '../shell/Tour.tsx';
 import { Today } from './Today.tsx';
 import { Steading } from './Steading.tsx';
 import { CastleRow, castleNote } from './HearthCastle.tsx';
+import { WeekGoal } from './WeekGoal.tsx';
 
 export function Hearth() {
   const { state, now, features } = useGame();
@@ -83,10 +84,14 @@ export function Hearth() {
         {goals && (
           <section data-section className={s.goalsArea}>
             <Panel title={goals.data.title} aside={goals.data.progress ?? undefined} flush>
-              <Slot id="hearth.goals">
-                {goals.data.rows.map((row) => (
-                  <Goal key={row.id} row={row} />
-                ))}
+              <Slot id="hearth.goals" className={s.goalRows} scrolls>
+                {goals.data.rows.map((row) =>
+                  row.parts ? (
+                    <WeekGoal key={row.id} row={{ ...row, parts: row.parts }} />
+                  ) : (
+                    <Goal key={row.id} row={row} />
+                  ),
+                )}
               </Slot>
             </Panel>
           </section>

@@ -44,6 +44,32 @@ export const DailyGoal = z
   .strict();
 export type DailyGoal = z.infer<typeof DailyGoal>;
 
+/** The week's contract (session 172, week.ts): four tasks, each with where its count began. */
+export const WeekTask = z
+  .object({
+    kind: z.enum(['xp', 'count', 'boss', 'mastery']),
+    /** The skill an XP task asks for. */
+    skill: Key.optional(),
+    /** The action a count task asks to be done. */
+    action: z.object({ feature: Key, id: Key }).strict().optional(),
+    target: Count,
+    base: z.number().nonnegative(),
+  })
+  .strict();
+export type WeekTask = z.infer<typeof WeekTask>;
+
+export const WeekContract = z
+  .object({
+    /** The Monday the week began, UTC (2026-11-23). */
+    week: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    tasks: z.array(WeekTask).max(4),
+    swapped: z.boolean(),
+    claimed: z.boolean(),
+    reward: Count,
+  })
+  .strict();
+export type WeekContract = z.infer<typeof WeekContract>;
+
 export const GoalsState = z
   .object({
     claimed: z.array(Key).max(200),
@@ -54,6 +80,9 @@ export const GoalsState = z
     milestones: z.array(Key).max(100).default([]),
     /** Supply caches opened so far: each one's draw comes from this count (session 11). */
     opened: Count.default(0),
+    /** The week's contract (session 172), and the weeks kept: counted, never taken away. */
+    week: WeekContract.nullable().default(null),
+    weeks: Count.default(0),
   })
   .strict();
 export type GoalsState = z.infer<typeof GoalsState>;
@@ -65,6 +94,8 @@ export const goalsOf: (state: State) => GoalsState = partReader('goals', GoalsSt
   daily: null,
   milestones: [],
   opened: 0,
+  week: null,
+  weeks: 0,
 });
 
 export const setGoals = (state: State, g: GoalsState): void => {

@@ -6,7 +6,7 @@ import { defineFeature, defineRoute, type Json } from '../define.ts';
 import { firstStepRows, firstStepsDone } from './first-steps.ts';
 import { ladderRows } from './ladder-view.ts';
 import { standingView } from './ranks.ts';
-import { claim, needsRefresh, refresh } from './rules.ts';
+import { claim, needsRefresh, refresh, swap } from './rules.ts';
 import type { GoalsView } from './view.ts';
 
 export type { GoalRow, GoalsView } from './view.ts';
@@ -24,6 +24,11 @@ export const goals = defineFeature({
       input: z.object({ goal: Id }).strict(),
       example: { goal: 'chop-a-pine' },
       run: (state, input, now) => claim(state, input.goal, now),
+    }),
+    swap: defineRoute({
+      input: z.object({ task: z.number().int().min(0).max(3) }).strict(),
+      example: { task: 0 },
+      run: (state, input, now) => swap(state, input.task, now),
     }),
     refresh: defineRoute({
       passive: true,

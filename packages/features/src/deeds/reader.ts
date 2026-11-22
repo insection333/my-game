@@ -16,6 +16,7 @@ import { kindlings } from '../shared/kindling.ts';
 import { STAGES, stageOf, WORKS } from '../shared/steading.ts';
 import { castleStanding, type CastleStanding } from '../shared/castle/mirror.ts';
 import { bestInTwist, seasonsPlayed } from '../shared/season-state.ts';
+import { weeksKept } from '../shared/weeks.ts';
 import { SEASON_PLAYED } from './content.ts';
 
 const GEAR = ['helm', 'body', 'legs', 'weapon'] as const;
@@ -130,4 +131,6 @@ export class Reader {
   // Seasons (session 166): the most goals in one season of a twist, and the seasons played.
   seasonBest = (twist: string) => this.once(`season:${twist}`, () => bestInTwist(this.state, twist));
   seasonsPlayed = () => this.once('seasons', () => seasonsPlayed(this.state, SEASON_PLAYED));
+  // The weeks' contracts kept (session 172).
+  weeksKept = () => weeksKept(this.state);
 }
