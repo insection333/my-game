@@ -29,8 +29,8 @@ const items = FEATURES.flatMap((f) => f.content.items ?? []);
  *  beaten thousands of times, every find, the best gear worn, the Storehouse full and the fire hot. */
 function everything(): State {
   const s = newState(15, T0);
-  // Every skill at 99 and five Kindlings past it.
-  s.skills = Object.fromEntries(allSkills().map((k) => [k, { xp: XP_TABLE[99] + 5 * KINDLE_XP }]));
+  // Every skill at 99 and ten Kindlings past it (session 219: the eighth and tenth are deeds).
+  s.skills = Object.fromEntries(allSkills().map((k) => [k, { xp: XP_TABLE[99] + 10 * KINDLE_XP }]));
   for (const { feature, actions } of skillActions())
     for (const [i, a] of actions.entries()) s.mastery[`${feature}:${a.id}`] = i === 0 ? 300_000 : 28_800;
   for (const [i, f] of FOES.entries()) s.mastery[`combat:${f.id}`] = i === 0 ? 1_000_000 : 5_000;

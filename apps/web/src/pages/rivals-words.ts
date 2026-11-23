@@ -10,6 +10,8 @@ import type { State } from '@idle-clash/kernel';
 export function gapWords(ladder: string, you: HiscoreRow, other: HiscoreRow, state: State): string {
   const diff = Math.abs(other.xp - you.xp);
   if (ladder === 'season') return diff === 1 ? t('rival.goalsOne') : t('rival.goals', { count: fmt.int(diff) });
+  if (ladder === 'kindlings')
+    return diff === 1 ? t('rival.kindlingsOne') : t('rival.kindlings', { count: fmt.int(diff) });
   if (ladder === 'deep') return diff === 1 ? t('rival.depthsOne') : t('rival.depths', { count: fmt.int(diff) });
   if (ladder === 'total') {
     const levels = Math.abs(other.level - you.level);

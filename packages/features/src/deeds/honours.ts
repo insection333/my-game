@@ -99,6 +99,21 @@ const at = (points: number) => ({ points });
 const by = (deed: string) => ({ deed });
 const ninetyNines = () => allSkills().map((s) => `level-${s}-99`);
 const firstKindlings = () => allSkills().map((s) => `kindled-${s}-1`);
+const eighthKindlings = () => allSkills().map((s) => `kindled-${s}-8`);
+/** Each skill's own title at its tenth Kindling (session 219). */
+const KINDLED_TITLES: readonly [string, string][] = [
+  'woodcutting',
+  'mining',
+  'fishing',
+  'runecraft',
+  'smithing',
+  'cooking',
+  'fletching',
+  'melee',
+  'archery',
+  'magic',
+  'hitpoints',
+].map((s) => [s, `kindled-${s}`]);
 
 export const HONOURS: readonly Honour[] = [
   // Titles: by points first (spaced over the year, as the year's simulation measures: about day 2, 7, 50,
@@ -134,6 +149,8 @@ export const HONOURS: readonly Honour[] = [
   title('roadfriend', by('favour-500')),
   title('kindled', { anyOf: firstKindlings, text: 'honour.unlock.anyKindled' }),
   title('everflame', by('kindlings-10')),
+  // A skill's tenth Kindling (session 219): its own title, "Kindled Woodcutter".
+  ...KINDLED_TITLES.map(([skill, id]) => title(id, by(`kindled-${skill}-10`))),
   // Six seasons played (session 166): a year's play.
   title('seasoned', by('seasons-6')),
   // Half a year's weeks kept (session 172): a title in the year's middle.
@@ -155,6 +172,8 @@ export const HONOURS: readonly Honour[] = [
   { id: 'dawn', kind: 'frame', unlock: at(8_000) },
   { id: 'royal', kind: 'frame', unlock: by('castle-level-25') },
   { id: 'obsidian', kind: 'frame', unlock: by('defeats-250000') },
+  // Any skill's eighth Kindling (session 219): a rim aflame.
+  { id: 'kindled', kind: 'frame', unlock: { anyOf: eighthKindlings, text: 'honour.unlock.anyEighth' } },
   // The Deep (session 215): its 25th depth, and its 125th (year two's spring).
   { id: 'delver', kind: 'frame', unlock: by('deep-25') },
   { id: 'abyss', kind: 'frame', unlock: by('deep-125') },

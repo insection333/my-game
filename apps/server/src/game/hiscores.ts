@@ -2,7 +2,7 @@
 // the ladders read from them: rank by level, then XP (the total level leads Total), ties to whoever
 // got there first; banned players left out. Each row carries the player's title and banner (deeds).
 import { levelFor } from '@idle-clash/content';
-import { allSkills, goalsOf, shownHonours, totalLevel } from '@idle-clash/features';
+import { allSkills, goalsOf, kindlingData, shownHonours, totalLevel } from '@idle-clash/features';
 import type { HiscoreRow, Ladder } from '@idle-clash/contracts';
 import { xpOf, type GameEvent, type State } from '@idle-clash/kernel';
 import { and, asc, desc, eq, isNotNull, isNull, sql } from 'drizzle-orm';
@@ -12,7 +12,7 @@ import { lookOf, readLook } from './look.ts';
 import { climb } from './rank-ups.ts';
 import { Ranks } from './ranks.ts';
 import { isQuiet, isSeasonRow, seasonEntries } from './season-ladder.ts';
-import { deepEntries } from './deep-ladder.ts';
+import { deepEntries, kindlingsEntries } from './deep-ladder.ts';
 
 export const TOTAL = 'total';
 export const LADDER_ROWS = 25;
@@ -125,6 +125,8 @@ export class Hiscores {
     entries.push(...seasonEntries(at, state, had));
     // The Deep's ladder of the week (session 214).
     entries.push(...deepEntries(at, state));
+    // Every Kindling across every skill (session 219).
+    entries.push(...kindlingsEntries(skills.reduce((n, s) => n + kindlingData.kindlingsIn(xpOf(state, s)), 0)));
     const climbs: GameEvent[] = [];
     for (const e of entries) {
       const old = had.get(e.skill);

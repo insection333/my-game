@@ -357,3 +357,4 @@
 - Session 216: boss trophies temper gear at Smithing 90 (a step +1% damage or 1% less taken, five a piece, the set held under 10%), on the gear sheet with what the next step takes; trophies kept while wanted.
 - Session 217: the pedlar, wanting three lots a day of what the player has found, gathered or cooked, each handed in at one press for gold and favour; favour deeds, the Pedlar's ribbon and Friend of the Road.
 - Session 218: the realm's work of the season, raised together in five stages from gold and materials of any tier, no one ranked by what they gave; each stage told to every giver, the finished work thanked by name; deeds for works raised.
+- Session 219: Kindling's gifts: an ornament on a seal at its sixth Kindling, the Kindled frame at any eighth, each skill's own title at its tenth, and a Kindlings ladder on Hiscores.

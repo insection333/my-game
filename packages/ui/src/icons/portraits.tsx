@@ -34,6 +34,8 @@ export const RIMS: Record<string, Tone> = {
   // The Deep (session 215): a delver's slate-blue, and the abyss's violet-black with a cold light.
   delver: tone('#a9c4d6', '#4f6e86', '#223646'),
   abyss: tone('#9a8cd8', '#2e2350', '#120c24'),
+  // Any skill's eighth Kindling (session 219): the flames' own colours.
+  kindled: M.flame,
 };
 /** The rim a picture is drawn with: the page sets it to the frame a player shows. */
 export const PictureRim = createContext<Tone>(M.bronze);

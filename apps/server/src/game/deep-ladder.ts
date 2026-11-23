@@ -1,4 +1,4 @@
-// The Deep's ladder of the week (session 214): the deepest each player reached in the Deep this week, as their
+// The Deep's ladder of the week (session 214), and the Kindlings ladder (session 219): the deepest each player reached in the Deep this week, as their
 // save keeps it (`weekDeepest`, of the week it was reached in), ranked by depth, the one who got there first
 // above. Kept in the hiscores table as `deep:<Monday>`, a row no ladder of skills reads; it begins again each
 // Monday 00:00 UTC, and housekeeping lets go of every week's but this one's and the last's.
@@ -32,3 +32,13 @@ export function oldDeepRows(at: number): (skill: string) => boolean {
 /** The week's ladder as Hiscores shows it, named for what it is; none while no one has gone down this week. */
 export const deepLadder = (ladder: Ladder): Ladder[] =>
   ladder.rows.length > 0 || ladder.you ? [{ ...ladder, skill: DEEP }] : [];
+
+/** The Kindlings ladder (session 219): every Kindling across every skill, all told; kept as `kindlings:all`
+ *  (a row no ladder of skills reads, nor a player's card), shown once anyone has kindled a skill. */
+export const KINDLINGS = 'kindlings';
+const KINDLINGS_ROW = `${KINDLINGS}:all`;
+export const kindlingsEntries = (total: number) =>
+  total > 0 ? [{ skill: KINDLINGS_ROW, xp: total, level: 0, milestones: 0 }] : [];
+export const kindlingsLadderKey = KINDLINGS_ROW;
+export const kindlingsLadder = (ladder: Ladder): Ladder[] =>
+  ladder.rows.length > 0 || ladder.you ? [{ ...ladder, skill: KINDLINGS }] : [];

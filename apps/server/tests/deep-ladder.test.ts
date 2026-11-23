@@ -2,7 +2,8 @@
 // the same depth, who got there first), shown once anyone has gone down, begun again each Monday, and the weeks
 // before the last let go.
 import type { HiscoresResponse } from '@idle-clash/contracts';
-import { deepOf } from '@idle-clash/features';
+import { XP_TABLE } from '@idle-clash/content';
+import { deepOf, kindlingData } from '@idle-clash/features';
 import type { State } from '@idle-clash/kernel';
 import { eq } from 'drizzle-orm';
 import { afterEach, describe, expect, it } from 'vitest';
@@ -105,5 +106,37 @@ describe("the Deep's ladder", () => {
     const a = await signUp(s, 'Oakheart');
     await reach(a, 40);
     expect(s.ctx.hiscores.placesOf(await idOf(a)).map((p) => p.skill)).not.toContain('deep:2026-11-23');
+  });
+});
+
+describe('the Kindlings ladder', () => {
+  it('counts every Kindling across every skill, and is shown once anyone has kindled', async () => {
+    s = await server();
+    s.clock.now = MONDAY + DAY;
+    const a = await signUp(s, 'Ashgrove');
+    const b = await signUp(s, 'Birchfall');
+    expect((await ladders(a)).ladders.map((l) => l.skill)).not.toContain('kindlings');
+    const kindle = async (cookie: string, skills: Record<string, number>) => {
+      const id = await idOf(cookie);
+      const saved = s.ctx.store.read(id, s.clock.now)!;
+      const state: State = {
+        ...saved.doc.state,
+        skills: Object.fromEntries(
+          Object.entries(skills).map(([k, n]) => [k, { xp: XP_TABLE[99] + n * kindlingData.KINDLE_XP }]),
+        ),
+      };
+      s.ctx.store.write(id, { ...saved.doc, state }, saved.rev, s.clock.now);
+      s.ctx.hiscores.update(id, state, s.clock.now);
+      s.ctx.db.update(players).set({ firstActAt: 0, listedAt: s.clock.now }).where(eq(players.id, id)).run();
+      s.ctx.hiscores.forget();
+    };
+    await kindle(a, { woodcutting: 3, mining: 2 });
+    await kindle(b, { fishing: 4 });
+    const ladder = (await ladders(b)).ladders.find((l) => l.skill === 'kindlings')!;
+    expect(ladder.rows.map((r) => [r.name, r.xp])).toEqual([
+      ['Ashgrove', 5],
+      ['Birchfall', 4],
+    ]);
+    expect(s.ctx.hiscores.placesOf(await idOf(a)).map((p) => p.skill)).not.toContain('kindlings:all');
   });
 });
