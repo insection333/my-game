@@ -28,6 +28,7 @@ import {
   type PushKeyResponse,
 } from '@idle-clash/contracts';
 import type { castleEngine } from '@idle-clash/features';
+import { heardBuild } from './deploys.ts';
 import type { Command, CommandResult } from '@idle-clash/kernel';
 
 type CastleView = castleEngine.CastleView;
@@ -60,6 +61,7 @@ async function call<T>(method: 'GET' | 'POST', path: string, body?: unknown): Pr
   } catch {
     throw new ApiError(0, null);
   }
+  heardBuild(res.headers.get('x-build'));
   if (res.status === 204) return undefined as T;
   const json = (await res.json().catch(() => null)) as unknown;
   if (!res.ok) throw new ApiError(res.status, json as ErrorResponse | null);

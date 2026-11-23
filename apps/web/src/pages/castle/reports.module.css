@@ -313,3 +313,16 @@
     border-left: 1px solid var(--line);
   }
 }
+
+/* High contrast (session 200): a report's clash keeps the attack in the highlight against the defence. */
+@media (forced-colors: active) {
+  .clash {
+    forced-color-adjust: none;
+    border: 1px solid CanvasText;
+    background: Canvas;
+  }
+
+  .clashAttack {
+    background: Highlight;
+  }
+}

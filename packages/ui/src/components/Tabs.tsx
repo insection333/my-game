@@ -30,7 +30,8 @@ function useFit(ref: React.RefObject<HTMLElement | null>, key: string) {
       el.removeAttribute('data-compact');
       el.removeAttribute('data-wrap');
       el.style.removeProperty('--cols');
-      if (el.scrollWidth <= el.clientWidth + 1) return;
+      // Exactly: a strip one pixel over leaves its last tab cut by a pixel (session 199, at larger text).
+      if (el.scrollWidth <= el.clientWidth) return;
       el.setAttribute('data-compact', '');
       // Still too many for one row at a full tap's width each (twelve ladders on a phone), or a tab
       // squeezed narrower than its own label (five words on a phone): rows.

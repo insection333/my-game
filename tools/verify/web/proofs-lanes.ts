@@ -11,6 +11,13 @@ import { HOUR, seeded, type Command, type State } from '@idle-clash/kernel';
 import type { Page } from 'playwright';
 import { newcomer, openPage, type Served } from './session.ts';
 
+/** Ends the tour for the player signed in on this page, as its cross would (kept for each player, session 204). */
+export const endTour = (page: Page) =>
+  page.evaluate(async () => {
+    const me = (await (await fetch('/api/me')).json()) as { player: { id: string } };
+    localStorage.setItem(`tourDone:${me.player.id}`, '1');
+  });
+
 export const say = (err: unknown) => (err instanceof Error ? err.message.split('\n')[0] : String(err));
 
 /** A new player whose save is then changed by `setUp`, and a page signed in as them. */

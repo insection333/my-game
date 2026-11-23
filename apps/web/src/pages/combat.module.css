@@ -271,3 +271,15 @@
   color: var(--ink-2);
   font-size: var(--t-small);
 }
+
+/* High contrast (session 200): each side's health keeps a drawn track and the system's highlight. */
+@media (forced-colors: active) {
+  .health {
+    border: 1px solid CanvasText;
+  }
+
+  .health span {
+    forced-color-adjust: none;
+    background: Highlight;
+  }
+}

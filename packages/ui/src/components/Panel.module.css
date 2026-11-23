@@ -20,6 +20,8 @@
 .aside {
   color: var(--ink-2);
   font-size: var(--t-small);
+  /* A number and its unit stay together ("2 h", "2,265 marks"; session 199: "Away for 2 / h" in larger text). */
+  white-space: nowrap;
 }
 
 .body {

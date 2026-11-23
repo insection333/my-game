@@ -336,3 +336,9 @@
 - Session 196: the help sheets say the game as it is (Hitpoints' third share, every kind of goal, bounties and the realm's boss, lucky actions, whetstones and keys, Sell finds).
 - Session 197: dates within half a year are said without their year, so the last week of December keeps the hour things turn ("4 Jan, 11:00").
 - Session 198: the realm's boss asks three strikes for each player who struck it last week, four at least, so a realm of one or a realm whose friends drift off can still fell it.
+- Session 199: larger text on a phone no longer pushes the account and bell off the header or cuts lane names short; step 6 checks every view at 150% text.
+- Session 200: in Windows' high contrast the bars keep their fill and the open page and tab are marked; step 6 checks it.
+- Session 201: a notice held over the quiet hours comes at 08:00 by the player's clock on the nights summer time ends and begins, where it came an hour early or late.
+- Session 202: a page left open across a deploy loads the new build when next hidden or moved to another page, where it ran the old one until closed.
+- Session 203: Today and Yesterday in the tray and the castle's reports hold on the days after the clocks change.
+- Session 204: a second player on one browser sees the tour, is offered notices while away and reads the bell afresh; each is kept for the player. Four lanes on a phone with larger text stand two to a row.

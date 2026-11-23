@@ -130,3 +130,13 @@ a {
   -webkit-mask-image: linear-gradient(transparent, #000 var(--fade), #000 calc(100% - var(--fade)), transparent);
   mask-image: linear-gradient(transparent, #000 var(--fade), #000 calc(100% - var(--fade)), transparent);
 }
+
+/* High contrast (session 200): where colour alone marked the page or tab open (the menu, the rail, the
+   castle's bar, a strip of tabs), the system paints every link alike; the open one is underlined. */
+@media (forced-colors: active) {
+  [aria-current='page'][aria-current] {
+    text-decoration-line: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+  }
+}
