@@ -1,5 +1,6 @@
 // A small router: paths for pages, ?panel= for sheets over them.
 import { useSyncExternalStore } from 'react';
+import { staleBuild } from './deploys.ts';
 
 const listeners = new Set<() => void>();
 const subscribe = (fn: () => void) => {
@@ -14,6 +15,8 @@ const snapshot = () => location.pathname + location.search;
 
 export function navigate(href: string) {
   if (href === snapshot()) return;
+  // A page of an older build than the server's goes to the next page as a fresh load of the new one.
+  if (staleBuild()) return location.assign(href);
   history.pushState(null, '', href);
   for (const l of listeners) l();
   window.scrollTo(0, 0);

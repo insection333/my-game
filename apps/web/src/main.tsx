@@ -6,7 +6,7 @@ import '@idle-clash/ui/base.css';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { App } from './App.tsx';
-import { reloadOnStaleFiles } from './deploys.ts';
+import { reloadOnStaleFiles, watchBuild } from './deploys.ts';
 import { watchErrors } from './errors.ts';
 import { boot } from './game/session.ts';
 import { watchScrollboxes } from './scrollbox.ts';
@@ -14,6 +14,7 @@ import { applyTheme, followScheme, readTheme } from './theme.ts';
 
 watchErrors();
 reloadOnStaleFiles();
+watchBuild(new URL(import.meta.url).pathname);
 applyTheme(readTheme());
 followScheme();
 watchScrollboxes();

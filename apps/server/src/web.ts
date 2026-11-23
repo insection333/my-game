@@ -65,3 +65,21 @@ export function webRoutes(app: FastifyInstance, dist: string): void {
     return reply.send(gzip ? file.gz : file.body);
   });
 }
+
+/** The build a page is (session 202): its entry script's address, whose name changes whenever its code does. */
+export function buildOf(dist: string): string | null {
+  const index = join(dist, 'index.html');
+  if (!existsSync(index)) return null;
+  return /<script[^>]*\ssrc="(\/assets\/index-[\w-]+\.js)"/.exec(readFileSync(index, 'utf8'))?.[1] ?? null;
+}
+
+/** Names the page's build on every answer from the API, so a page left open across a deploy knows it is
+ *  of an older one and loads the new (`deploys.ts` in the page). Call before mounting routes. */
+export function tellBuild(app: FastifyInstance, dist: string): void {
+  const build = buildOf(dist);
+  if (!build) return;
+  app.addHook('onSend', async (req, reply, payload) => {
+    if (req.url.startsWith('/api/')) reply.header('x-build', build);
+    return payload;
+  });
+}

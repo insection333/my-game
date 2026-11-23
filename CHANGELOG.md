@@ -339,3 +339,4 @@
 - Session 199: larger text on a phone no longer pushes the account and bell off the header or cuts lane names short; step 6 checks every view at 150% text.
 - Session 200: in Windows' high contrast the bars keep their fill and the open page and tab are marked; step 6 checks it.
 - Session 201: a notice held over the quiet hours comes at 08:00 by the player's clock on the nights summer time ends and begins, where it came an hour early or late.
+- Session 202: a page left open across a deploy loads the new build when next hidden or moved to another page, where it ran the old one until closed.

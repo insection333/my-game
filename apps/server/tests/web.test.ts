@@ -13,7 +13,10 @@ afterEach(() => s?.close());
 function dist() {
   const dir = mkdtempSync(join(tmpdir(), 'ic-dist-'));
   mkdirSync(join(dir, 'assets'));
-  writeFileSync(join(dir, 'index.html'), '<!doctype html><title>Idle Clash</title>');
+  writeFileSync(
+    join(dir, 'index.html'),
+    '<!doctype html><title>Idle Clash</title><script type="module" crossorigin src="/assets/index-abc123.js"></script>',
+  );
   writeFileSync(join(dir, 'assets', 'index-abc123.js'), 'console.log(1)');
   writeFileSync(join(dir, 'robots.txt'), 'User-agent: *\n');
   writeFileSync(join(dir, 'manifest.webmanifest'), '{}');
@@ -42,5 +45,17 @@ describe('the built page', () => {
       expect(r.statusCode).toBe(404);
       expect(r.headers['cache-control'] ?? '').not.toContain('immutable');
     }
+  });
+
+  // Session 202: a page left open across a deploy learns it is of an older build from any answer.
+  it("names the page's build on every answer from the API", async () => {
+    s = await server({ webDist: dist() });
+    expect((await get('/api/me')).headers['x-build']).toBe('/assets/index-abc123.js');
+    expect((await get('/api/nothing-here')).headers['x-build']).toBe('/assets/index-abc123.js');
+  });
+
+  it('names none without a built page', async () => {
+    s = await server();
+    expect((await get('/api/me')).headers['x-build']).toBeUndefined();
   });
 });

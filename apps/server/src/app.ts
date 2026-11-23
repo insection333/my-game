@@ -29,7 +29,7 @@ import { Hiscores } from './game/hiscores.ts';
 import { Notices } from './game/notices.ts';
 import { hearWatching, WATCH_EVERY_MS } from './game/watching.ts';
 import { Telemetry } from './telemetry.ts';
-import { webRoutes } from './web.ts';
+import { tellBuild, webRoutes } from './web.ts';
 import { backupsHealth } from './ops/status.ts';
 import { HOUSEKEEPING_EVERY_MS, keepHouse } from './housekeeping.ts';
 import { Push } from './push/push.ts';
@@ -106,6 +106,7 @@ export async function buildApp(
   };
   app.decorateRequest('playerId', null);
   harden(app, config.origins);
+  if (config.webDist) tellBuild(app, config.webDist);
   await app.register(cookie);
   await app.register(websocket, { options: { maxPayload: 4096 } });
 

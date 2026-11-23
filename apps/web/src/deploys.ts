@@ -15,3 +15,41 @@ export function reloadOnStaleFiles() {
     location.reload();
   });
 }
+
+// A page left open across a deploy (session 202): an idle game's tab stays open for days while main deploys
+// itself, and the page went on running the old build's engine every second over the new server's saves,
+// contracts and words. The server names its build on every answer from the API (its page's entry script);
+// a page of another build loads the new one when it is next hidden, or as it next moves to another page,
+// never while words are being typed in a box.
+let own: string | null = null;
+let stale = false;
+
+/** Called once by the page's entry with its own script's address; a page in development has none. */
+export function watchBuild(entry: string): void {
+  own = entry.startsWith('/assets/') ? entry : null;
+  stale = false;
+  document.addEventListener('visibilitychange', () => {
+    if (stale && document.hidden) reloadIfFree();
+  });
+}
+
+/** Heard on every answer from the API: the build the server serves now. */
+export function heardBuild(build: string | null): void {
+  if (!own || !build || build === own || stale) return;
+  stale = true;
+  if (document.hidden) reloadIfFree();
+}
+
+/** Whether this page is of an older build than the server's: the router then loads the next page afresh. */
+export const staleBuild = (): boolean => stale;
+
+const typing = (): boolean =>
+  Array.from(
+    document.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>(
+      'textarea, input:not([type=radio]):not([type=checkbox]):not([type=range]):not([type=hidden])',
+    ),
+  ).some((el) => el.value !== '');
+
+function reloadIfFree(): void {
+  if (!typing()) location.reload();
+}
