@@ -134,6 +134,13 @@
       "when": 1795463101026,
       "tag": "0018_realm_works",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "6",
+      "when": 1795469840923,
+      "tag": "0019_legend",
+      "breakpoints": true
     }
   ]
 }

@@ -1,6 +1,13 @@
 // The deeds and honours of year two's content (sessions 215 to 219): part of the strings file (en.ts). The
 // Deep's depths, the pedlar's favour and the realm's works, with the titles and banner they open.
 export const yearTwo = {
+  // The legendary siege (session 220).
+  'deed.legendFirst.name': 'A legend taken',
+  'deed.legendFirst.text': "Take all five chambers of a season's legendary siege.",
+  'deed.legends.name': 'Legends taken: {count}',
+  'deed.legends.text': 'Take the legendary siege in {count} seasons.',
+  'deeds.family.legends': 'The legendary siege',
+  'honour.banner.legend': 'Legend',
   // Kindling's gifts (session 219): a rim aflame at any skill's eighth, each skill's title at its tenth.
   'honour.frame.kindled': 'Kindled',
   'hiscores.kindlings': 'Kindlings',

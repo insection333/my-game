@@ -3,7 +3,7 @@
 // now, reads the castle rows it needs in ascending id, works the change out with the pure engine, and
 // writes the rows, the war chest, the reports and the save together. Nothing is half done.
 import type { CastleAction } from '@idle-clash/contracts';
-import { castleEngine as E, totalLevel } from '@idle-clash/features';
+import { castleEngine as E, seasonAt, totalLevel } from '@idle-clash/features';
 import { countOf, REMEMBERED_REQUESTS, seeded, type GameEvent, type SaveDoc, type State } from '@idle-clash/kernel';
 import type { Ctx } from '../context.ts';
 import { fail } from '../http.ts';
@@ -184,6 +184,8 @@ export function act(io: Io, action: CastleAction): Outcome {
       return own(io, E.excavate(w, io.now));
     case 'incursion':
       return incursion(io, withShares(c, action.shares));
+    case 'legend':
+      return legend(io, withShares(c, action.shares));
     case 'spy':
       return spy(io, c, action.target, action.mission);
     case 'siege':
@@ -254,6 +256,41 @@ function incursion(io: Io, c: Castle): Outcome {
     won: r.won,
     marks: r.marks,
     ...(r.spoils ? { spoils: r.spoils } : {}),
+  });
+  return { ok: true, ...data };
+}
+
+/** The season's legendary siege, its next chamber (session 220). */
+function legend(io: Io, c: Castle): Outcome {
+  const season = seasonAt(io.now)?.number;
+  if (!season) return { ok: false, reason: 'locked' };
+  const before = E.legendNow(c, season);
+  const r = E.assaultLegend(c, season, io.now, roll());
+  if (r === 'ap') return { ok: false, reason: 'ap' };
+  if (r === 'none') return { ok: false, reason: 'unknown' };
+  store(io, r.castle);
+  const id = E.legendOf(season);
+  const data = {
+    legend: id,
+    season,
+    chamber: r.chamber,
+    tier: before.base + E.LEGEND.ABOVE + E.LEGEND.STEP * r.chamber,
+    won: r.won,
+    r: r.r,
+    ...E.battleAccount(r.attack, r.defense, r.r),
+    formation: [...c.offense],
+    marks: r.marks,
+    taken: r.taken,
+  };
+  io.castles.log(io.playerId, io.now, 'legend', data);
+  io.events.push({
+    type: 'castleLegend',
+    at: io.now,
+    legend: id,
+    chamber: r.chamber,
+    won: r.won,
+    marks: r.marks,
+    taken: r.taken,
   });
   return { ok: true, ...data };
 }

@@ -131,7 +131,8 @@ function mercenarySiege(io: Io, att: Castle, target: string): Outcome {
 
 export function spy(io: Io, att: Castle, target: string, missionId: string): Outcome {
   // One of the day's foes, from the first day (session 167).
-  if (target.startsWith('merc:') || target.startsWith('fortress:')) return spyFoe(io, att, target, missionId);
+  if (target.startsWith('merc:') || target.startsWith('fortress:') || target.startsWith('legend:'))
+    return spyFoe(io, att, target, missionId);
   if (!E.lordsOpen(att, io.now)) return { ok: false, reason: 'locked' };
   const def = opponent(io, att, target);
   if (typeof def === 'string') return { ok: false, reason: def };

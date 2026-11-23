@@ -1,7 +1,7 @@
 // Castle Clash's reports in words: a report's line and the facts beside it, and what a scouting found.
 // The cards (ReportCards.tsx) and the account (Account.tsx, session 42) draw them.
 import { fmt, t } from '@idle-clash/content';
-import type { castleEngine } from '@idle-clash/features';
+import { castleEngine } from '@idle-clash/features';
 import { foeMissionDoes, fortressName, mercName, missionDoes, missionName, outcomeName, trapName } from './labels.ts';
 import { reportSheet, when } from './report-model.ts';
 
@@ -91,6 +91,14 @@ export function readReport(r: Report): { line: string; facts: string[] } {
               : []),
           ...marks,
         ],
+      };
+    case 'legend':
+      return {
+        line: t('castle.legend.chamberName', {
+          legend: castleEngine.legendName(str(d.legend)),
+          n: fmt.int(num(d.chamber) + 1),
+        }),
+        facts: [d.won === true ? t('castle.report.won') : t('castle.legend.held'), ...marks],
       };
     default:
       return { line: '', facts: [] };

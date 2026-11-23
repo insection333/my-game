@@ -80,6 +80,7 @@ const byYou = (e: GameEvent) =>
   e.type === 'castleSiege' ||
   e.type === 'castleSpied' ||
   e.type === 'castleIncursion' ||
+  e.type === 'castleLegend' ||
   e.type === 'castleTempered' ||
   e.type === 'workRaised' ||
   e.type === 'findUsed' ||

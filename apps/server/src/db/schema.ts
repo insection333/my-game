@@ -200,6 +200,12 @@ export const playerBastions = sqliteTable(
     incursionScoutedTier: integer('incursion_scouted_tier').notNull().default(0),
     /** Days all five of the day's strongholds fell (session 38). */
     routs: integer('routs').notNull().default(0),
+    /** The legendary siege (session 220): the season last assaulted, its chambers taken, the tier its
+     *  strength was fixed at, and the seasons it was taken in. */
+    legendSeason: integer('legend_season').notNull().default(0),
+    legendTaken: integer('legend_taken').notNull().default(0),
+    legendBase: integer('legend_base').notNull().default(0),
+    legends: integer('legends').notNull().default(0),
     /** The orders of the day (session 40), as JSON, or null before the first. */
     orders: text('orders').notNull().default('null'),
     // Bounded collections (JSON, at most 20 entries each).

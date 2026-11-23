@@ -11,6 +11,7 @@ import { Panel, Pill } from '@idle-clash/ui';
 import { useEffect } from 'react';
 import { navigate, useLocation, withPanel } from '../../router.ts';
 import { Fortress } from './Fortress.tsx';
+import { Legend, LegendSheet } from './Legend.tsx';
 import { fortressName, mercName } from './labels.ts';
 import { LatestReports } from './ReportsTab.tsx';
 import { loadTargets } from './store.ts';
@@ -88,9 +89,14 @@ export function War() {
       {/* Every foe of the day in one ladder, full width (session 170): the fortress, the strongholds, the
           lords, then what came of the war, so no column ends early beside another. */}
       <Fortress />
+      {/* The season's legendary siege (session 220). */}
+      <Legend />
       <Strongholds strongholds={strongholds} lordsLine={lordsLine} />
       {lords.length > 0 && <Lords lords={lords} reach={reach} />}
       <LatestReports />
+      {id?.startsWith('legend:') && (
+        <LegendSheet onClose={() => navigate(withPanel(null).replace(/[?&]target=[^&]*/, ''))} />
+      )}
       {open && <TargetSheet target={open} onClose={() => navigate(withPanel(null).replace(/[?&]target=[^&]*/, ''))} />}
     </div>
   );

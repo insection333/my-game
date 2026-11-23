@@ -150,6 +150,21 @@ export function cardOf(r: Report, me: string): ReportCard | null {
         spoils: [...found, ...marks],
       };
     }
+    case 'legend': {
+      // The season's legendary siege, a chamber (session 220).
+      const name = castleEngine.legendName(str(d.legend));
+      const won = d.won === true;
+      return {
+        ...base,
+        kind: 'battle',
+        word: won ? t('castle.report.won') : t('castle.legend.held'),
+        good: won,
+        title: t('castle.legend.chamberName', { legend: name, n: fmt.int(num(d.chamber) + 1) }),
+        left: you,
+        right: { seed: str(d.legend), name, lord: false },
+        spoils: marks,
+      };
+    }
     case 'spyOut': {
       const done = d.success === true;
       // Spies at one of the day's foes (session 167): a stronghold or the fortress, named as itself.

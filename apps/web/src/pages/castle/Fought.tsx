@@ -27,13 +27,14 @@ export function Fought({ battle }: { battle: string }) {
     );
   if (!last || last.key !== battle) return null;
   const r = last.result;
-  const won = battle === 'incursion' ? r.won === true : r.outcome !== 'repelled';
-  const word =
-    battle === 'incursion'
-      ? won
-        ? t('castle.report.won')
-        : t('castle.report.lostIncursion')
-      : outcomeName(typeof r.outcome === 'string' ? r.outcome : '');
+  // A fortress's or a legend's chamber is won or held (session 220), a siege by its outcome.
+  const fortress = battle === 'incursion' || battle === 'legend';
+  const won = fortress ? r.won === true : r.outcome !== 'repelled';
+  const word = fortress
+    ? won
+      ? t('castle.report.won')
+      : t('castle.report.lostIncursion')
+    : outcomeName(typeof r.outcome === 'string' ? r.outcome : '');
   const attack = num(r.attack);
   const defense = num(r.defense);
   const brought = [
@@ -55,7 +56,15 @@ export function Fought({ battle }: { battle: string }) {
           {!last.field && (
             <ItemIcon
               name="crest"
-              crest={battle !== 'incursion' ? battle : typeof r.fortress === 'string' ? r.fortress : ''}
+              crest={
+                battle === 'legend' && typeof r.legend === 'string'
+                  ? r.legend
+                  : battle !== 'incursion'
+                    ? battle
+                    : typeof r.fortress === 'string'
+                      ? r.fortress
+                      : ''
+              }
               size={24}
             />
           )}

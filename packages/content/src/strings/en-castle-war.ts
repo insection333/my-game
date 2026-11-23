@@ -227,4 +227,22 @@ export const castleWar = {
   'castle.refused.full': 'That cannot be made worse for now.',
   'castle.refused.closed': 'Castle Clash is not open to you yet.',
   'castle.refused.noCastle': 'Raise your castle first.',
+  // The legendary siege (session 220).
+  'castle.legend.title': 'The legendary siege',
+  'castle.legend.the-drowned-throne': 'The Drowned Throne',
+  'castle.legend.the-ninefold-gate': 'The Ninefold Gate',
+  'castle.legend.the-ember-crown': 'The Ember Crown',
+  'castle.legend.the-stag-kings-hall': "The Stag King's Hall",
+  'castle.legend.the-hollow-star': 'The Hollow Star',
+  'castle.legend.the-last-bastion': 'The Last Bastion',
+  'castle.legend.of': 'Chamber {n} of {of}',
+  'castle.legend.done': 'Taken',
+  'castle.legend.chamberName': '{legend}: chamber {n}',
+  'castle.legend.chamber': '{legend}: chamber {n}',
+  'castle.legend.taken': '{legend} taken',
+  'castle.legend.held': 'Held',
+  'castle.legend.pays': 'Pays {marks} war marks and training',
+  'castle.legend.takenLine': '{legend} is taken this season. A new legend stands when the season turns.',
+  'castle.legend.note':
+    'Each season a legendary fortress of five chambers, taken in order, once. Every lord meets the same garrisons and traps; its strength is set by your fortress tier at your first assault, and rises two tiers a chamber.',
 };
