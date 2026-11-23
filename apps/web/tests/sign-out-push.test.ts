@@ -7,6 +7,7 @@ const calls: string[] = [];
 vi.mock('../src/push.ts', () => ({ pushOff: () => (calls.push('pushOff'), Promise.resolve('off')) }));
 vi.mock('../src/api.ts', () => ({
   api: { signOut: () => (calls.push('signOut'), Promise.resolve()) },
+  showPlayer: () => undefined,
   ApiError: class extends Error {},
 }));
 vi.mock('../src/router.ts', () => ({ replace: () => undefined }));

@@ -3,7 +3,7 @@
 // as soon as a player is signed in, or while a visitor fills in the welcome form.
 import type { PlayerView } from '@idle-clash/contracts';
 import { useSyncExternalStore } from 'react';
-import { api, ApiError } from '../api.ts';
+import { api, ApiError, showPlayer } from '../api.ts';
 import { keepFor } from '../kept.ts';
 import { pushOff } from '../push.ts';
 import { replace } from '../router.ts';
@@ -51,6 +51,7 @@ export const loadGame = () => (game ??= import('./store.ts'));
 export function signedOut(why: Bounced | null = null) {
   void game?.then((m) => m.stop());
   keepFor(null);
+  showPlayer(null);
   setSession({ phase: 'signedOut', player: null, admin: false, bounced: why });
 }
 
@@ -70,6 +71,7 @@ export function handled(err: unknown): err is ApiError {
 
 async function enter(player: PlayerView) {
   keepFor(player.id);
+  showPlayer(player.id);
   const m = await loadGame();
   await m.start(session.flags);
   notePlayed(true);

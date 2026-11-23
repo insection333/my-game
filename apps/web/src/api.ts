@@ -49,13 +49,23 @@ export class ApiError extends Error {
   }
 }
 
+// The player this page shows (session 208): named on every request, so a page of one player under the
+// session a second tab signed into is refused (otherPlayer) and loads afresh as the session's player,
+// rather than changing the other player's save.
+let shown: string | null = null;
+export const showPlayer = (id: string | null): void => void (shown = id);
+export const shownPlayer = (): string | null => shown;
+
 async function call<T>(method: 'GET' | 'POST', path: string, body?: unknown): Promise<T> {
   let res: Response;
   try {
     res = await fetch(path, {
       method,
       credentials: 'same-origin',
-      headers: body === undefined ? {} : { 'content-type': 'application/json' },
+      headers: {
+        ...(body === undefined ? {} : { 'content-type': 'application/json' }),
+        ...(shown ? { 'x-player': shown } : {}),
+      },
       body: body === undefined ? undefined : JSON.stringify(body),
     });
   } catch {
@@ -64,7 +74,11 @@ async function call<T>(method: 'GET' | 'POST', path: string, body?: unknown): Pr
   heardBuild(res.headers.get('x-build'));
   if (res.status === 204) return undefined as T;
   const json = (await res.json().catch(() => null)) as unknown;
-  if (!res.ok) throw new ApiError(res.status, json as ErrorResponse | null);
+  if (!res.ok) {
+    const err = new ApiError(res.status, json as ErrorResponse | null);
+    if (err.code === 'otherPlayer') location.reload();
+    throw err;
+  }
   return json as T;
 }
 

@@ -345,3 +345,4 @@
 - Session 205: a page the browser translates keeps working, where the whole game broke within seconds.
 - Session 206: nothing stands under a phone's notch, rounded corners or home bar, on its side or upright.
 - Session 207: a browser too old for the game, or with scripts off, is told so where it showed a blank page.
+- Session 208: a tab of one player under another player's session in the same browser loads afresh as that player, where its presses changed the other player's save.
