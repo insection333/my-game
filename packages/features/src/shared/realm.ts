@@ -21,9 +21,11 @@ export const REALM_MARKS = 2;
 /** A share of a fallen boss: marks, and gold as so many strikes'. */
 export const REALM_SHARE_MARKS = 10;
 export const REALM_SHARE_STRIKES = 10;
-/** Strikes the week asks for each player who played last week, and the least it asks. */
-export const REALM_PER_PLAYER = 4;
-export const REALM_LEAST = 8;
+/** Strikes the week asks for each player who struck the realm's boss last week (most of them striking on
+ *  three days of seven fell it, so friends who drift off leave it within the rest's reach), and the least it
+ *  asks, which one player alone gives in four days (session 198). */
+export const REALM_PER_PLAYER = 3;
+export const REALM_LEAST = 4;
 
 export { weekEnds, weekOf };
 
