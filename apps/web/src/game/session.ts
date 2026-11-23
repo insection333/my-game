@@ -4,6 +4,7 @@
 import type { PlayerView } from '@idle-clash/contracts';
 import { useSyncExternalStore } from 'react';
 import { api, ApiError } from '../api.ts';
+import { pushOff } from '../push.ts';
 import { replace } from '../router.ts';
 import { notePlayed } from '../welcome-path.ts';
 import type * as Store from './store.ts';
@@ -103,6 +104,9 @@ export const account = {
   },
   /** Ends the session and opens the sign-in form. */
   signOut: async () => {
+    // This browser's notices while away go first, while the server still knows whose they are (session
+    // 182): left on, a browser signed out went on showing the player's notices.
+    await pushOff().catch(() => undefined);
     await api.signOut().catch(() => undefined);
     replace('/welcome/sign-in');
     signedOut();
