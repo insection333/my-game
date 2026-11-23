@@ -17,7 +17,11 @@ export const STYLE = { march: 'magic', fen: 'melee', peaks: 'archery' } as const
 /** A fighter at the top of a region: its last foe's level in every combat skill, that tier's gear in
  *  their style, and plenty of the best food. */
 export function fighterAt(region: Region, seed = 1, style: 'melee' | 'archery' | 'magic' = STYLE[region]): State {
-  const level = Math.min(99, FOES.filter((f) => regionOf(f.tier) === region).at(-1)!.level + 2);
+  return fighterOfLevel(Math.min(99, FOES.filter((f) => regionOf(f.tier) === region).at(-1)!.level + 2), seed, style);
+}
+
+/** A fighter at a level in its style and Hitpoints, that tier's gear in its style, plenty of the best food. */
+export function fighterOfLevel(level: number, seed: number, style: 'melee' | 'archery' | 'magic'): State {
   const tier = tierOf(level);
   const gear = (slot: string) =>
     items.find((i) => i.gear?.tier === tier && i.gear.slot === slot && (slot !== 'weapon' || i.gear.style === style))!

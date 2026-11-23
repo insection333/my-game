@@ -232,6 +232,8 @@ A run's fights pay a quarter more XP and gold than the lane's, since its foes ar
 
 {{BOSS_TABLE}}
 
+Each boss fights its own way (session 211), played by the fight itself and so counted in Your odds, each answered by preparing for it: the Barrow-king's wights rise at a third of its health, its health growing by a fifth of its whole; the Troll-chief rages below half health, hitting a quarter harder (food and armour answer it); the Mire-mother mends a twentieth of her health each time she lands three hits running, three times a fight at most so no fight stalls (a higher Hitpoints level, which her hits land less often against, answers it); the Drowned Warden takes a full blow only from the style that beats it, any other at 60%; the Storm-roc's plumage turns 30% off every hit unless a supply is carried; the Ember Wyrm takes wing at half its health and fights as an archer, so neither style that meets it holds the advantage throughout. Each still falls, nine fights in ten, to the style that beats it at its own tier's top with food (an engine test; the paper model calibrates the bosses without their ways).
+
 {{TWIST_TABLE}}
 
 ## 10. Gold and the Storehouse

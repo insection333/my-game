@@ -3,13 +3,21 @@
 // fight and queues what it ran to follow. A player fights them one after another from the visit's start, once
 // each a day, while the lane fights a foe, never over an expedition.
 import type { Command, State } from '@idle-clash/kernel';
+import { bossById } from '../../../packages/features/src/shared/expeditions/data.ts';
+import { oddsFor } from '../../../packages/features/src/shared/combat/odds.ts';
 import { bossRows } from '../../../packages/features/src/expeditions/views.ts';
 
-/** The commands that fight the first boss ready today and go back to the foe after, or none. */
-export function dailyBoss(state: State, now: number): Command[] {
+/** The commands that fight the first boss ready today and go back to the foe after, or none. A boss whose
+ *  fight would outlast the visit waits (session 211: the bosses' ways lengthen their fights, and one still
+ *  under way as the player left kept the night's expedition from setting out). */
+export function dailyBoss(state: State, now: number, leaving: number): Command[] {
   const current = state.lanes.combat.current?.action;
   if (current?.feature !== 'combat' || state.lanes.combat.next) return [];
-  const boss = bossRows(state, now).find((b) => b.ready && (b.verdictId === 'easy' || b.verdictId === 'fair'));
+  const boss = bossRows(state, now).find((b) => {
+    if (!b.ready || (b.verdictId !== 'easy' && b.verdictId !== 'fair')) return false;
+    const odds = oddsFor(state, bossById(b.id)!);
+    return odds !== null && now + odds.secondsPerFight * 1000 < leaving;
+  });
   if (!boss) return [];
   return [
     { type: 'start', lane: 'combat', action: { feature: 'expeditions', id: boss.id } },

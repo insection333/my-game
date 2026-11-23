@@ -3,7 +3,7 @@
 // fork whose road is chosen at the start, and the region's boss at the end. Shared, because relics
 // bought with the marks runs pay reach every skill, the fighter and the Storehouse. Verify compares
 // these numbers with the paper model's (design/model/expeditions.ts).
-import { FOES, REGIONS, regionOf, type Foe, type Region } from '../combat/foes.ts';
+import { FOES, REGIONS, regionOf, type Foe, type Region, type Trait } from '../combat/foes.ts';
 
 export const LENGTHS = [1, 2, 4, 8] as const;
 export const STAGE_MINUTES = 10;
@@ -32,6 +32,7 @@ const bossOf = (
   marks: number,
   finds: Boss['finds'],
   rareValue: number,
+  trait: Trait,
 ): Boss => {
   const top = FOES.filter((f) => f.tier === tier && regionOf(f.tier) === region).at(-1)!;
   return {
@@ -47,34 +48,41 @@ const bossOf = (
     marks,
     finds,
     rareValue,
+    trait,
   };
 };
-/** By level, weakest first. */
+const finds = (rare: string, legendary: string) => ({ rare, legendary });
+/** By level, weakest first. Each fights its own way (session 211, `Trait` in combat/foes.ts). */
 export const BOSSES: readonly Boss[] = [
-  bossOf('barrow-king', 'march', 2, 'magic', 800, 3, { rare: 'barrow-ring', legendary: 'wight-kings-sceptre' }, 700),
-  bossOf(
-    'troll-chief',
-    'march',
-    4,
-    'melee',
-    2_500,
-    5,
-    { rare: 'chieftains-torc', legendary: 'crown-of-the-hill' },
-    2_000,
-  ),
-  bossOf('mire-mother', 'fen', 5, 'melee', 6_000, 8, { rare: 'mire-pearl', legendary: 'mire-mothers-egg' }, 4_500),
-  bossOf(
-    'drowned-warden',
-    'fen',
-    6,
-    'archery',
-    12_000,
-    10,
-    { rare: 'sunken-locket', legendary: 'wardens-lantern' },
-    8_000,
-  ),
-  bossOf('storm-roc', 'peaks', 7, 'archery', 20_000, 12, { rare: 'roc-talon', legendary: 'stormfeather' }, 14_000),
-  bossOf('ember-wyrm', 'peaks', 8, 'magic', 30_000, 15, { rare: 'wyrm-scale', legendary: 'heart-of-the-wyrm' }, 20_000),
+  bossOf('barrow-king', 'march', 2, 'magic', 800, 3, finds('barrow-ring', 'wight-kings-sceptre'), 700, {
+    kind: 'rise',
+    at: 1 / 3,
+    grows: 0.2,
+  }),
+  bossOf('troll-chief', 'march', 4, 'melee', 2_500, 5, finds('chieftains-torc', 'crown-of-the-hill'), 2_000, {
+    kind: 'rage',
+    below: 0.5,
+    hit: 1.25,
+  }),
+  bossOf('mire-mother', 'fen', 5, 'melee', 6_000, 8, finds('mire-pearl', 'mire-mothers-egg'), 4_500, {
+    kind: 'mend',
+    streak: 3,
+    heals: 0.05,
+    times: 3,
+  }),
+  bossOf('drowned-warden', 'fen', 6, 'archery', 12_000, 10, finds('sunken-locket', 'wardens-lantern'), 8_000, {
+    kind: 'ward',
+    dealt: 0.6,
+  }),
+  bossOf('storm-roc', 'peaks', 7, 'archery', 20_000, 12, finds('roc-talon', 'stormfeather'), 14_000, {
+    kind: 'plumage',
+    dealt: 0.7,
+  }),
+  bossOf('ember-wyrm', 'peaks', 8, 'magic', 30_000, 15, finds('wyrm-scale', 'heart-of-the-wyrm'), 20_000, {
+    kind: 'shift',
+    at: 0.5,
+    to: 'archery',
+  }),
 ];
 export const bossById = (id: string) => BOSSES.find((b) => b.id === id);
 /** A region's bosses, weakest first. */

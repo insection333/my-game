@@ -34,7 +34,7 @@ function firstHits(p: Fighter, roll: number) {
   );
   const you = hits.find((s) => s.by === 'you')!;
   const them = hits.find((s) => s.by === 'foe')!;
-  return { you: you.by === 'meal' ? 0 : you.damage, them: them.by === 'meal' ? 0 : them.damage };
+  return { you: 'damage' in you ? you.damage : 0, them: 'damage' in them ? them.damage : 0 };
 }
 
 describe('what gear says it does', () => {
