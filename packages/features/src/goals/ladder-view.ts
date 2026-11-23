@@ -5,7 +5,7 @@ import type { State } from '@idle-clash/kernel';
 import { combatOf } from '../shared/combat/state.ts';
 import type { Milestone } from './content.ts';
 import { currentDaily, dailyProgress, milestoneProgress, nextMilestone, shortProgress } from './ladder.ts';
-import { bestIn, paces } from './pace.ts';
+import { bestIn, paces } from '../shared/pace.ts';
 import { dayOf, goalsOf, type DailyGoal, type ShortGoal } from './state.ts';
 import { inLane, startCommand, workingIn, type GoalRow } from './view.ts';
 import { currentWeek } from './week.ts';

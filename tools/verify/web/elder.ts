@@ -8,6 +8,7 @@ import { FEATURES, kindlingData } from '@idle-clash/features';
 const { KINDLE_XP } = kindlingData;
 import { seeded, type Command, type State } from '@idle-clash/kernel';
 import type { Ctx } from '../../../apps/server/src/context.ts';
+import { relics } from '../../../packages/features/src/shared/expeditions/relics.ts';
 
 const LEVELS: Record<string, number> = {
   woodcutting: 71,
@@ -137,7 +138,7 @@ export function elder(ctx: Ctx, base: State, now: number): State {
 
 /** A player a year in: the elder's save with four skills at 99, Woodcutting and Hitpoints kindled past
  *  it and two Paths walked, so the Kindling panel, the seal's flames and the ladders' counts are seen;
- *  and the steading nearly all raised. */
+ *  the steading nearly all raised; every relic raised, marks for the quartermaster. */
 export function keeper(ctx: Ctx, base: State, now: number): State {
   const s = elder(ctx, base, now);
   const top = XP_TABLE[99];
@@ -153,6 +154,13 @@ export function keeper(ctx: Ctx, base: State, now: number): State {
     features: {
       ...s.features,
       kindling: { paths: { woodcutting: 'bounty', melee: 'lore' } },
+      // Every relic fully raised (about day 80 for a steady player) and marks in hand, so the quartermaster
+      // leads the Relics panel (session 191).
+      expeditions: {
+        ...(s.features.expeditions as object),
+        marks: 2_340,
+        relics: Object.fromEntries(relics().map((r) => [r.id, r.ranks])),
+      },
       // A year's gold has raised most of the steading; two works wait on their last raising.
       steading: {
         stages: { woodyard: 5, workshop: 5, 'training-yard': 4, smokehouse: 5, watchtower: 5, shrine: 4 },

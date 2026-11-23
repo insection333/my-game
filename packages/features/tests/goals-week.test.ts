@@ -8,7 +8,7 @@ import { describe, expect, it } from 'vitest';
 import type { GoalsView } from '../src/goals/index.ts';
 import { goals } from '../src/goals/index.ts';
 import { FEATURES } from '../src/index.ts';
-import { bestIn, paces } from '../src/goals/pace.ts';
+import { bestIn, paces } from '../src/shared/pace.ts';
 import { goalsOf } from '../src/goals/state.ts';
 import { measure, weekOf } from '../src/goals/week.ts';
 

@@ -37,7 +37,7 @@ export { allSkills, totalLevel } from './shared/standing.ts';
 export { remedyFor, type Remedy } from './shared/remedy.ts';
 export { seasonOpenedWords, seasonPill, seasonView, type SeasonView } from './shared/season-view.ts';
 export { seasonAt, TWISTS } from './shared/season.ts';
-export { paces, bestIn, type Pace } from './goals/pace.ts';
+export { paces, bestIn, type Pace } from './shared/pace.ts';
 export { goalsOf } from './goals/state.ts';
 export type {
   DeedCategory,
@@ -59,12 +59,13 @@ export type {
   RegionTab,
   RelicRow,
   RelicsView,
+  TradeView,
   RouteView,
   RunView,
   StageChip,
   TwistView,
 } from './expeditions/index.ts';
-export { routeView } from './expeditions/index.ts';
+export { marksText, routeView } from './expeditions/index.ts';
 export * as expeditionData from './shared/expeditions/data.ts';
 export { storyOf as expeditionStory } from './shared/expeditions/story.ts';
 export { bossFoughtWords } from './shared/expeditions/boss-words.ts';

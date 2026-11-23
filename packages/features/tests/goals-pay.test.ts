@@ -7,7 +7,7 @@ import { newState, type State } from '@idle-clash/kernel';
 import { describe, expect, it } from 'vitest';
 import { goals } from '../src/goals/index.ts';
 import { makeDaily, makeShort } from '../src/goals/ladder.ts';
-import { paces } from '../src/goals/pace.ts';
+import { paces } from '../src/shared/pace.ts';
 import { goalsOf } from '../src/goals/state.ts';
 import '../src/index.ts';
 

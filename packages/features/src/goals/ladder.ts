@@ -8,17 +8,11 @@ import { findsIn, skillActions } from '../shared/catalog.ts';
 import { xpBonusPct } from '../shared/complete.ts';
 import { totalLevel } from '../shared/standing.ts';
 import { MILESTONES, type Milestone } from './content.ts';
-import { bestIn, paces, type Pace } from './pace.ts';
+import { bestIn, earning, nice, paces, type Pace } from '../shared/pace.ts';
 import { dayOf, type DailyGoal, type GoalsState, type ShortGoal } from './state.ts';
 
-/** A round number for a target or a reward: 7, 15, 60, 340, 12,300. */
-export function nice(n: number): number {
-  if (n < 20) return Math.max(1, Math.round(n));
-  if (n < 100) return Math.round(n / 5) * 5;
-  if (n < 1000) return Math.round(n / 10) * 10;
-  const unit = 10 ** (Math.floor(Math.log10(n)) - 2);
-  return Math.round(n / unit) * unit;
-}
+/** A round number for a target or a reward (7, 15, 60, 340, 12,300), and the gold a second the player earns. */
+export { earning, nice };
 
 const SHORT_S = 12.5 * 60;
 const SHORT_PAY_S = 10 * 60;
@@ -47,10 +41,6 @@ function atWork(state: State, list: readonly Pace[], allDay = false): Pace[] {
  *  gold from nothing, gathering and fights. Every goal pays by it, so ten minutes are worth the same in
  *  any lane: an artisan's work adds little to its ingredients' worth (Cooking's none), and its goals once
  *  paid next to nothing. */
-export function earning(list: readonly Pace[]): number {
-  const own = list.filter((p) => p.lane !== 'artisan');
-  return Math.max(0, ...(own.length ? own : list).map((p) => p.goldEach / p.secondsEach));
-}
 
 /** Completions a goal asks of a skill the player tries for the first time. */
 export const TRY_COUNT = 5;

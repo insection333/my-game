@@ -105,12 +105,14 @@ export function views(): View[] {
     '/castle/reports?show=spies',
   ].map((path) => ({ page: pageOf(path, 'Hearth'), path, phone: [], desktop: [], as: 'elder' as const }));
   // A year in: skills at 99, kindled, walking their Paths; the ladder that counts Kindlings; and a castle a
-  // year in (session 139): every troop at its fourth evolution, the Halls full.
+  // year in (session 139): every troop at its fourth evolution, the Halls full; and every relic raised, the
+  // quartermaster leading (session 191).
   const keepers: ViewSpec[] = [
     '/skills',
     '/skills/woodcutting',
     '/skills/hitpoints',
     '/hiscores?skill=woodcutting',
+    '/combat/expeditions',
     '/castle',
     '/castle/army',
     '/castle/halls',

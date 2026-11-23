@@ -12,7 +12,7 @@ import { expeditionsOf } from '../shared/expeditions/state.ts';
 import { doneCount } from '../shared/given.ts';
 import { weekEnds, weekOf } from '../shared/week-time.ts';
 import { earning, nice } from './ladder.ts';
-import { bestIn, paces, type Pace } from './pace.ts';
+import { bestIn, paces, type Pace } from '../shared/pace.ts';
 import type { WeekContract, WeekTask } from './state.ts';
 
 const DAY = 86_400_000;

@@ -11,9 +11,12 @@ import { CONTENT } from './content.ts';
 import { bossRows, expeditionView } from './views.ts';
 import { realmView, takeShare } from './realm.ts';
 import { expeditionErrands } from './errands.ts';
+import { trade } from './trade.ts';
 
 export type { BossRow, ExpeditionView, RegionTab, RouteView, RunView, StageChip, TwistView } from './views.ts';
 export type { RelicRow, RelicsView } from './relics-view.ts';
+export type { TradeView } from './trade.ts';
+export { marksText } from './trade.ts';
 export type { RealmView } from './realm.ts';
 export { routeView } from './views.ts';
 
@@ -45,6 +48,12 @@ export const expeditions = defineFeature({
       input: z.object({}).strict(),
       example: {},
       run: (state, _input, now) => takeShare(state, now),
+    }),
+    // The quartermaster (session 191): marks for gold once every relic is raised.
+    trade: defineRoute({
+      input: z.object({ lots: z.number().int().min(1).max(1_000_000) }).strict(),
+      example: { lots: 1 },
+      run: (state, input) => trade(state, input.lots),
     }),
     relic: defineRoute({
       input: z.object({ relic: z.string().regex(/^[a-z][a-z-]{0,63}$/) }).strict(),
