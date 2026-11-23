@@ -188,8 +188,12 @@ export function measurePage(): Measured {
       problems.push(`A full-width section holds only ${lines(sec)} line(s): ${describe(sec)}`);
     const next = sections[i + 1];
     if (next) {
-      const gap = next.getBoundingClientRect().top - r.bottom;
-      if (gap > 40) problems.push(`${gap}px of empty space between sections`);
+      const n = next.getBoundingClientRect();
+      // Only a section under it in the same column (session 218: the Combat page's food, in the left column,
+      // was measured from the foes' foot in the right, a gap no one sees, when the Peaks' foes were few).
+      const sameColumn = n.left < r.right && n.right > r.left;
+      const gap = n.top - r.bottom;
+      if (sameColumn && gap > 40) problems.push(`${gap}px of empty space between sections`);
     }
   });
 

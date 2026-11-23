@@ -31,11 +31,7 @@ export function PedlarSheet({ onClose }: { onClose: () => void }) {
                 status={l.done ? <Pill tone="moss">{t('pedlar.handed')}</Pill> : undefined}
                 actions={
                   !l.done && (
-                    <Button
-                      variant={l.ready ? 'primary' : 'secondary'}
-                      disabled={!l.ready}
-                      onClick={() => game.act('pedlar', 'handIn', { kind: l.kind })}
-                    >
+                    <Button disabled={!l.ready} onClick={() => game.act('pedlar', 'handIn', { kind: l.kind })}>
                       {t('pedlar.handIn')}
                     </Button>
                   )
