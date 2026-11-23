@@ -4,10 +4,11 @@
 // days (read 7, unread 14; refused ones kept 30 for the admin), and the seasons' ladders before the last
 // (session 165). The
 // tables that keep a player's newest rows (notices, feedback, sessions) trim themselves as they grow.
-import { inArray, like, lt } from 'drizzle-orm';
+import { inArray, like, lt, or } from 'drizzle-orm';
 import type { Ctx } from './context.ts';
 import { hiscores, pushDue, pushSent, realmStrikes, realmWeeks, telemetry } from './db/schema.ts';
 import { oldSeasonRows } from './game/season-ladder.ts';
+import { oldDeepRows } from './game/deep-ladder.ts';
 import { sweepMail } from './mail/mail.ts';
 import { sweepModeration } from './moderation.ts';
 
@@ -25,14 +26,15 @@ export function keepHouse(ctx: Ctx): void {
     .run();
   sweepModeration(ctx, now);
   sweepMail(ctx, now);
-  const old = oldSeasonRows(now);
+  const [old, oldDeep] = [oldSeasonRows(now), oldDeepRows(now)];
+  // The seasons' ladders before the last, and the Deep's weeks before the last (session 214).
   const gone = ctx.db
     .selectDistinct({ skill: hiscores.skill })
     .from(hiscores)
-    .where(like(hiscores.skill, 'season%:%'))
+    .where(or(like(hiscores.skill, 'season%:%'), like(hiscores.skill, 'deep:%')))
     .all()
     .map((r) => r.skill)
-    .filter(old);
+    .filter((skill) => old(skill) || oldDeep(skill));
   if (gone.length) ctx.db.delete(hiscores).where(inArray(hiscores.skill, gone)).run();
   // Notices while away (session 171): a count of a day long past, and anything left waiting for days.
   ctx.db

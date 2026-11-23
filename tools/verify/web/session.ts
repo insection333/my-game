@@ -21,6 +21,7 @@ import type { State } from '@idle-clash/kernel';
 import { exec, ROOT } from '../exec.ts';
 import { seasonAt, totalLevel } from '@idle-clash/features';
 import { BEFORE, withGoals } from './season-goals.ts';
+import { crowdDeep, withDeep } from './deep-week.ts';
 import { castles, wrongdoing } from './castles.ts';
 import { elder, keeper } from './elder.ts';
 import { withHonours } from './honours.ts';
@@ -112,6 +113,8 @@ export function views(): View[] {
     '/skills/woodcutting',
     '/skills/hitpoints',
     '/hiscores?skill=woodcutting',
+    // The Deep's ladder of the week (session 214), the keeper among those who went down.
+    '/hiscores?skill=deep',
     '/combat/expeditions',
     '/castle',
     '/castle/army',
@@ -240,7 +243,8 @@ async function start(): Promise<Served> {
   };
   const vet = await settle('Veteran', (s) => veteran(ctx, s, now), 74);
   const eld = await settle('Elder', (s) => elder(ctx, s, now), 131);
-  const kpr = await settle('Keeper', (s) => keeper(ctx, s, now), 118);
+  // The keeper has been into the Deep this week (session 214).
+  const kpr = await settle('Keeper', (s) => withDeep(keeper(ctx, s, now), 23, now), 118);
   // A player a week in, whose castle was raised five days ago (session 139).
   const sqr = await settle(
     'Squire',
@@ -256,7 +260,7 @@ async function start(): Promise<Served> {
   // once signed up, as the owner is: a name already on it cannot be signed up for.
   ctx.config.adminNames.push('Veteran');
   // Others on the hiscores, so the ladders read as they will with players on them.
-  for (const [i, name] of CROWD.entries()) await settle(name, (s) => crowd(s, i), (i * 37) % 160);
+  for (const [i, name] of CROWD.entries()) await settle(name, (s) => crowdDeep(crowd(s, i), i, now), (i * 37) % 160);
   // Castle Clash at three stages (session 139): the squire's a week in, the elder's two months in beside a
   // rival near its rating (one of the crowd), and the keeper's a year in.
   const lord = (name: string) => ({

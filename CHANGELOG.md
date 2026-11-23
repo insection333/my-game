@@ -352,3 +352,4 @@
 - Session 212: the Deep, a descent under the Ashen Peaks at Hitpoints 99, a depth each ten minutes against foes growing with depth and a boss each tenth, the week's omens over it, a pack of 30 meals, waystones.
 - Session 213: the Deep on the Expeditions tab: the deepest reached, the week's omens, the pack, how deep it should go, the next boss, Descend, Carry on and Surface.
 - Session 213: the first page carries only the welcome page's four icons; the rest load with the game (250 KB to 226 KB).
+- Session 214: the Deep's ladder of the week on Hiscores (deepest this week, first there above), rivals in depths, a climb a moment, and the Hearth asking for a first depth each week.

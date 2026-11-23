@@ -216,6 +216,15 @@ export function noticeLine(e: GameEvent): (RecapLine & { at: number }) | null {
       const name = e.foe || t('rival.someone');
       const place = fmt.ordinal(e.place);
       const season = /^season:(\d+)$/.exec(e.skill);
+      // The Deep's ladder of the week (session 214), kept as `deep:<Monday>`.
+      if (e.skill.startsWith('deep:'))
+        return {
+          kind: 'rank',
+          text: t('rival.passedDeep', { name, place }),
+          icon: 'peaks',
+          href: '/hiscores?skill=deep',
+          at: e.at,
+        };
       const text = season
         ? t('rival.passedSeason', { name, number: fmt.int(Number(season[1])), place })
         : e.skill === 'total'

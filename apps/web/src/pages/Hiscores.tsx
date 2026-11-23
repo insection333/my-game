@@ -3,7 +3,7 @@
 // Deeds.tsx. The ladders come from the server; the page asks again each minute while it is open.
 import type { HiscoreRow, HiscoresResponse } from '@idle-clash/contracts';
 import { fmt, hasString, t } from '@idle-clash/content';
-import { kindlingData, realmBossIn, realmName, seasonView, weekOf } from '@idle-clash/features';
+import { kindlingData, realmBossIn, realmName, seasonView, weekEnds, weekOf } from '@idle-clash/features';
 import { FireSeal, hasIcon, ItemIcon, Panel, Picture, Pill, Tabs } from '@idle-clash/ui';
 import { useEffect, useState, type ReactNode } from 'react';
 import { api } from '../api.ts';
@@ -67,12 +67,16 @@ export function Hiscores() {
           ? t('hiscores.season')
           : skill === 'realm'
             ? t('hiscores.realm')
-            : t(`skill.${skill}`);
+            : skill === 'deep'
+              ? t('hiscores.deep')
+              : t(`skill.${skill}`);
   const castles = ladder?.skill === 'castle';
   // This season's ladder ranks by goals done alone: it has no level column (session 165).
   const seasonal = ladder?.skill === 'season';
   // The week's strikes on the realm's boss (session 174): strikes alone, no level column.
   const realm = ladder?.skill === 'realm';
+  // The Deep's deepest this week (session 214): depth alone, no level column.
+  const deep = ladder?.skill === 'deep';
   const boss = realmBossIn(weekOf(now)).id;
   const you = ladder?.you ?? null;
   const shown = ladder?.rows ?? [];
@@ -98,7 +102,12 @@ export function Hiscores() {
               href: l.skill === 'total' ? '/hiscores' : `/hiscores?skill=${l.skill}`,
               label: name(l.skill),
               current: l.skill === ladder?.skill,
-              icon: <LadderIcon skill={l.skill === 'realm' ? boss : l.skill} picture={season?.picture} />,
+              icon: (
+                <LadderIcon
+                  skill={l.skill === 'realm' ? boss : l.skill === 'deep' ? 'peaks' : l.skill}
+                  picture={season?.picture}
+                />
+              ),
             }))}
           />
         </div>
@@ -110,13 +119,19 @@ export function Hiscores() {
               {ladder && (ladder.rows.length > 0 || you) && (
                 <table className={s.table}>
                   <caption className={s.caption}>
-                    {seasonal && season ? season.title : realm ? realmName(boss) : name(ladder.skill)}
+                    {seasonal && season
+                      ? season.title
+                      : realm
+                        ? realmName(boss)
+                        : deep
+                          ? t('hiscores.deepCaption')
+                          : name(ladder.skill)}
                   </caption>
                   <thead>
                     <tr>
                       <th scope="col">{t('hiscores.rank')}</th>
                       <th scope="col">{t('hiscores.name')}</th>
-                      {!seasonal && !realm && (
+                      {!seasonal && !realm && !deep && (
                         <th scope="col" data-num>
                           {castles ? t('hiscores.castleLevel') : t('hiscores.level')}
                         </th>
@@ -128,7 +143,9 @@ export function Hiscores() {
                             ? t('hiscores.seasonGoals')
                             : realm
                               ? t('hiscores.realmStrikes')
-                              : t('hiscores.xp')}
+                              : deep
+                                ? t('hiscores.deepDepth')
+                                : t('hiscores.xp')}
                       </th>
                     </tr>
                   </thead>
@@ -146,6 +163,7 @@ export function Hiscores() {
               )}
               {data && !you && <p className={s.note}>{unrankedNote(ladder?.skill ?? 'total')}</p>}
               {seasonal && season && <p className={s.note}>{t('hiscores.seasonNote', { left: season.left })}</p>}
+              {deep && <p className={s.note}>{t('hiscores.deepNote', { when: fmt.when(weekEnds(now), now) })}</p>}
             </Slot>
           </Panel>
         </section>
@@ -166,6 +184,10 @@ function LadderIcon({ skill, picture }: { skill: string; picture?: string }) {
     </svg>
   );
 }
+
+/** Ladders ranked by one count alone, with no level column: the season's goals, the realm's strikes, the
+ *  Deep's depth. */
+const NO_LEVEL = new Set(['season', 'realm', 'deep']);
 
 /** The first three places wear a medal: gold, silver, bronze. */
 function Place({ rank }: { rank: number }) {
@@ -190,8 +212,7 @@ function Row({ row, you, ladder }: { row: HiscoreRow; you: boolean; ladder: stri
         : t('hiscores.milestones', { count: fmt.int(row.milestones) })
       : null;
   // On a skill's ladder, its Kindlings past 99 (worked out from the XP, as the game does).
-  const kindled =
-    total || ladder === 'castle' || ladder === 'season' || ladder === 'realm' ? 0 : kindlingData.kindlingsIn(row.xp);
+  const kindled = total || NO_LEVEL.has(ladder) || ladder === 'castle' ? 0 : kindlingData.kindlingsIn(row.xp);
   const kindling = kindled > 0 ? t('hiscores.kindled', { count: fmt.int(kindled) }) : null;
   return (
     <tr data-you={you || undefined} style={bannerStyle(row.banner)}>
@@ -230,7 +251,7 @@ function Row({ row, you, ladder }: { row: HiscoreRow; you: boolean; ladder: stri
           </span>
         )}
       </td>
-      {ladder !== 'season' && ladder !== 'realm' && <td data-num>{fmt.int(row.level)}</td>}
+      {!NO_LEVEL.has(ladder) && <td data-num>{fmt.int(row.level)}</td>}
       <td data-num>
         {/* Shortened on a narrow ladder ("673.6M"), so a long name keeps its line (session 113). */}
         <span className={s.full}>{fmt.int(row.xp)}</span>
