@@ -179,4 +179,10 @@ export const skills: Record<string, string> = {
       ]),
     ),
   ),
+  // What lifts a skill's XP, each source by name (session 194).
+  'gains.xp': 'XP +{total}: {parts}',
+  'gains.part': '{name} +{pct}',
+  'gains.fire': 'the fire',
+  'gains.marks': 'Legendary marks',
+  'gains.path': 'Path of {path}',
 };

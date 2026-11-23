@@ -55,6 +55,7 @@ export function Loadout({ loadout, triangle }: { loadout: LoadoutView; triangle:
                 {loadout.supply.name}: {loadout.supply.line}
               </span>
             )}
+            {loadout.gains && <span data-gains>{loadout.gains}</span>}
           </div>
         </div>
       </Slot>

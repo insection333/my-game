@@ -27,9 +27,9 @@ import {
 } from '@idle-clash/kernel';
 import { relicFindPct, relicXpPct } from './expeditions/relics.ts';
 import { steadingSavePct, steadingXpPct, steadingYieldPct } from './steading.ts';
-import { edictPct } from './castle/mirror.ts';
-import { announceKindling, pathBonus } from './kindling.ts';
-import { seasonFindPct, seasonXpPct, seasonYieldPct } from './season.ts';
+import { edictPct, mirrorOf } from './castle/mirror.ts';
+import { announceKindling, pathBonus, pathOf } from './kindling.ts';
+import { seasonAt, seasonFindPct, seasonXpPct, seasonYieldPct } from './season.ts';
 import { actionModifiers, perksAt, skillLevel, yieldOf } from './skill.ts';
 
 export interface SkillDefinition {
@@ -50,9 +50,40 @@ export interface CompletedAction {
   findMultiple: number;
 }
 
-/** Every lasting and passing gain on a skill's XP, as a percentage: the fire's heat while it burns, the
- *  skill's Legendary marks, its relic, the steading, the castle's edict and the skill's Path. The engine
- *  pays by it, and every "XP an hour" a page states counts it too (session 47), so the two agree. */
+/** One source of a skill's XP lift, in percent: where it comes from, and for a relic, an edict, a Path or a
+ *  season, which one (session 194: the skill's page names each). */
+export interface XpPart {
+  source: 'fire' | 'marks' | 'relic' | 'steading' | 'edict' | 'path' | 'season';
+  pct: number;
+  /** The edict, the Path or the season's twist, by id. */
+  id?: string;
+}
+
+/** Every lasting and passing gain on a skill's XP, by its source: the fire's heat while it burns, the
+ *  skill's Legendary marks, its relic, the steading, the castle's edict, the skill's Path and the season.
+ *  Only those that give something. */
+export function xpParts(
+  state: State,
+  skill: string,
+  finds: readonly Pick<Find, 'item' | 'rarity'>[],
+  at: number,
+  minutes = fireMinutes(state, at),
+  burning = fireBurning(state, at),
+): XpPart[] {
+  const parts: XpPart[] = [
+    { source: 'fire', pct: burning ? fireXpPct(minutes) : 0 },
+    { source: 'marks', pct: LEGENDARY_MARK_PCT * marksIn(state, finds) },
+    { source: 'relic', pct: relicXpPct(state, skill) },
+    { source: 'steading', pct: steadingXpPct(state) },
+    { source: 'edict', pct: edictPct(state, at, 'xp'), id: mirrorOf(state).edict ?? undefined },
+    { source: 'path', pct: pathBonus(state, skill, 'xp'), id: pathOf(state, skill)?.id },
+    { source: 'season', pct: seasonXpPct(skill, at), id: seasonAt(at)?.twist.id },
+  ];
+  return parts.filter((p) => p.pct > 0);
+}
+
+/** Every gain on a skill's XP, as one percentage: the sum of its parts. The engine pays by it, and every "XP
+ *  an hour" a page states counts it too (session 47), so the two agree. */
 export function xpBonusPct(
   state: State,
   skill: string,
@@ -61,15 +92,7 @@ export function xpBonusPct(
   minutes = fireMinutes(state, at),
   burning = fireBurning(state, at),
 ): number {
-  return (
-    (burning ? fireXpPct(minutes) : 0) +
-    LEGENDARY_MARK_PCT * marksIn(state, finds) +
-    relicXpPct(state, skill) +
-    steadingXpPct(state) +
-    edictPct(state, at, 'xp') +
-    pathBonus(state, skill, 'xp') +
-    seasonXpPct(skill, at)
-  );
+  return xpParts(state, skill, finds, at, minutes, burning).reduce((n, p) => n + p.pct, 0);
 }
 
 /** Lasting marks in a skill: how many of its Legendary finds have ever been found. */
