@@ -43,9 +43,19 @@ export function foeWords(a: Arena): { name: string; mid: string; start: string }
   return { name, mid, start: mid.charAt(0).toUpperCase() + mid.slice(1) };
 }
 
+/** A boss's turn as the arena says it (session 211); a ward and plumage hold all fight, and say nothing. */
+const TRAIT_SAID = {
+  rage: 'arena.trait.rage',
+  shift: 'arena.trait.shift',
+  rise: 'arena.trait.rise',
+  mend: 'arena.trait.mend',
+} as const;
+
 /** What a swing says in words, under the bars; `foe` names it at a sentence's start. */
 function said(x: Swing, foe: string): string {
   if (x.by === 'meal') return t('arena.ate', { item: t(`item.${x.item}`), heals: fmt.int(Math.round(x.heals)) });
+  // A boss's way of fighting, as it turns (session 211).
+  if (x.by === 'trait') return t(TRAIT_SAID[x.trait], { foe });
   const dmg = fmt.int(Math.max(1, Math.round(x.damage)));
   if (x.by === 'you')
     return !x.hit

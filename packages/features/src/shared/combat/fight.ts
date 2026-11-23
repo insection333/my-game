@@ -19,6 +19,7 @@ import {
   XP_PER_DAMAGE,
   type Foe,
 } from './data.ts';
+import type { Trait } from './foes.ts';
 
 export interface Fighter {
   style: Style;
@@ -74,7 +75,9 @@ export const CRIT_SHARE = 0.9;
  *  sides' health after it. A meal is its own entry. */
 export type Swing =
   | { t: number; by: 'you' | 'foe'; hit: boolean; damage: number; crit: boolean; health: number; foeHp: number }
-  | { t: number; by: 'meal'; item: string; heals: number; health: number; foeHp: number };
+  | { t: number; by: 'meal'; item: string; heals: number; health: number; foeHp: number }
+  /** A boss's way of fighting, as it turns (session 211): it rages, shifts, rises or mends. */
+  | { t: number; by: 'trait'; trait: Exclude<Trait['kind'], 'ward' | 'plumage'>; health: number; foeHp: number };
 
 export function fight(
   p: Fighter,
@@ -86,13 +89,22 @@ export function fight(
   /** Told of each swing as it falls (the arena's replay); the fight goes the same without it. */
   log?: (s: Swing) => void,
 ): Fought {
-  const mu = TRIANGLE[matchup(p.style, foe.style)];
+  const trait = foe.trait;
   const hit = clamp(0.66 + 0.012 * (p.styleLevel - foe.level) + p.perks.accuracy / 100) * (tw.hit ?? 1);
   const maxHit = 10 * (3 + Math.floor(p.styleLevel / 12)) + WEAPON_HIT_PER_TIER * p.weaponTier;
-  const dealtMult =
-    mu.dealt * (1 + (p.perks.damage + (p.supply?.pct ?? 0)) / 100 + (MASTERY_DAMAGE_PER_STEP / 100) * p.mastery);
+  const boosts = 1 + (p.perks.damage + (p.supply?.pct ?? 0)) / 100 + (MASTERY_DAMAGE_PER_STEP / 100) * p.mastery;
   const foeHit = clamp(0.62 + 0.02 * (foe.level - p.hpLevel));
-  const guard = (1 - (ARMOUR_GUARD_PER_TIER / 100) * p.armour) * (1 - p.perks.guard / 100) * mu.taken;
+  const armour = (1 - (ARMOUR_GUARD_PER_TIER / 100) * p.armour) * (1 - p.perks.guard / 100);
+  // What the fighter deals and takes against the foe's style now (a boss may shift it, session 211): the
+  // triangle, a ward that only the style beating it gets through, plumage that only a supply cuts.
+  const against = (style: Style) => {
+    const m = matchup(p.style, style);
+    const ward = trait?.kind === 'ward' && m !== 'advantage' ? trait.dealt : 1;
+    const plumage = trait?.kind === 'plumage' && !p.supply ? trait.dealt : 1;
+    return { dealt: TRIANGLE[m].dealt * boosts * ward * plumage, taken: armour * TRIANGLE[m].taken };
+  };
+  let { dealt: dealtMult, taken: guard } = against(foe.style);
+  let [turned, streak, mended, foeHitMult] = [false, 0, 0, 1];
   const regen = regenPerSecond(p) * SWING_S;
   const heal = (1 + p.hpPerks.foodHeal / 100) * (tw.heal ?? 1);
   const most = maxHealth(p);
@@ -110,13 +122,35 @@ export function fight(
       log?.({ t, by: 'you', hit: true, damage: d, crit: roll > maxHit * CRIT_SHARE, health, foeHp });
     } else log?.({ t, by: 'you', hit: false, damage: 0, crit: false, health, foeHp });
     if (foeHp <= 0) break;
+    // A boss's turn, once, as its health falls past its mark (session 211).
+    if (trait?.kind === 'rage' && !turned && foeHp <= foe.hp * trait.below) {
+      turned = true;
+      foeHitMult = trait.hit;
+      log?.({ t, by: 'trait', trait: 'rage', health, foeHp });
+    }
+    if (trait && !turned && (trait.kind === 'shift' || trait.kind === 'rise') && foeHp <= foe.hp * trait.at) {
+      turned = true;
+      if (trait.kind === 'shift') ({ dealt: dealtMult, taken: guard } = against(trait.to));
+      else foeHp += foe.hp * trait.grows;
+      log?.({ t, by: 'trait', trait: trait.kind, health, foeHp });
+    }
     if (rng() < foeHit) {
       const roll = 1 + Math.floor(rng() * foe.maxHit);
-      const d = roll * guard;
+      const d = roll * guard * foeHitMult;
       health -= d;
       taken += d;
       log?.({ t, by: 'foe', hit: true, damage: d, crit: roll > foe.maxHit * CRIT_SHARE, health, foeHp });
-    } else log?.({ t, by: 'foe', hit: false, damage: 0, crit: false, health, foeHp });
+      // Three hits running, and it mends (session 211).
+      if (trait?.kind === 'mend' && mended < trait.times && ++streak >= trait.streak) {
+        streak = 0;
+        mended++;
+        foeHp = Math.min(foe.hp, foeHp + foe.hp * trait.heals);
+        log?.({ t, by: 'trait', trait: 'mend', health, foeHp });
+      }
+    } else {
+      streak = 0;
+      log?.({ t, by: 'foe', hit: false, damage: 0, crit: false, health, foeHp });
+    }
     health = Math.min(most, health + regen);
     const meal = pantry.find((m) => m.count > 0);
     if (health < most * EAT_BELOW && meal) {

@@ -47,7 +47,7 @@ export interface ArenaNow {
   latest: Shown | null;
   /** The fighter's latest swing, and the foe's latest swing or meal eaten: each side's last number. */
   yours: Shown | null;
-  theirs: Shown | null;
+  theirs: Exclude<Shown, { by: 'trait' }> | null;
   slain: boolean;
   /** When the next swing shows, if one is still to come. */
   next: number | null;
@@ -156,7 +156,8 @@ export function arenaAt(a: Arena, now: number): ArenaNow {
     foeHp: latest ? Math.max(0, latest.foeHp) : a.foe.hp,
     latest,
     yours: shown.findLast((s) => s.by === 'you') ?? null,
-    theirs: shown.findLast((s) => s.by !== 'you') ?? null,
+    // A boss's turn (session 211) is said in words, not a number over either side.
+    theirs: shown.findLast((s): s is Exclude<Shown, { by: 'trait' }> => s.by === 'foe' || s.by === 'meal') ?? null,
     slain: a.slainAt !== null && now >= a.slainAt,
     next: a.swings[count]?.at ?? null,
   };

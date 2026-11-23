@@ -37,7 +37,7 @@ describe('the arena', () => {
     // The same draws, each hit harder by the whetstone's damage.
     const firstHit = (a: typeof before) => {
       const x = a.swings.find((y) => y.by === 'you' && y.hit);
-      return x && x.by !== 'meal' ? x.damage : 0;
+      return x && 'damage' in x ? x.damage : 0;
     };
     expect(firstHit(after)).toBeGreaterThan(firstHit(before));
   });

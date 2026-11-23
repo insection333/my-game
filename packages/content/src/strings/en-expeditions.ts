@@ -3,7 +3,7 @@
 export const expeditions = {
   'help.expeditions.title': 'Expeditions',
   'help.expeditions.body':
-    "Set out into a region for 1, 2, 4 or 8 hours from the Combat page, here or away. A run is six ten-minute fight stages an hour against foes drawn for it, with a cache and a camp each hour, one or two twists, a fork whose road you choose before setting out, and one of the region's two bosses at the end, drawn from those your Hitpoints has opened. Runs pay at least as well as the lane, and they, the bosses and bounties pay marks, which buy relics: lasting boosts in ranks. Once every relic is raised, the quartermaster trades marks for gold.",
+    "Set out into a region for 1, 2, 4 or 8 hours from the Combat page, here or away. A run is six ten-minute fight stages an hour against foes drawn for it, with a cache and a camp each hour, one or two twists, a fork whose road you choose before setting out, and one of the region's two bosses at the end, drawn from those your Hitpoints has opened. Each boss fights its own way, said on its row, and Your odds counts it. Runs pay at least as well as the lane, and they, the bosses and bounties pay marks, which buy relics: lasting boosts in ranks. Once every relic is raised, the quartermaster trades marks for gold.",
 
   'action.expeditions.march': 'Expedition into the march',
   'action.expeditions.fen': 'Expedition into the Sunken Fen',
@@ -33,6 +33,17 @@ export const expeditions = {
   'item.wyrm-scale': 'Wyrm scale',
   'item.heart-of-the-wyrm': 'Heart of the wyrm',
 
+  // Each boss's way of fighting (session 211): on its row, and in the arena as it turns.
+  'boss.trait.rage': 'Rages below half health',
+  'boss.trait.ward': 'Only {style} strikes it fully',
+  'boss.trait.shift': 'Turns to {style} at half health',
+  'boss.trait.rise': 'Its wights rise at a third of its health',
+  'boss.trait.mend': 'Mends after three hits running',
+  'boss.trait.plumage': 'Turns hits aside but for a supply',
+  'arena.trait.rage': '{foe} rages: its blows land harder',
+  'arena.trait.shift': '{foe} takes wing and fights from the air',
+  'arena.trait.rise': '{foe} calls up its barrow-wights',
+  'arena.trait.mend': '{foe} mends its wounds',
   'stop.expeditionHome': 'The expedition is home',
   'stopShort.expeditionHome': 'Home',
   'stop.bossRested': 'Already fought today',

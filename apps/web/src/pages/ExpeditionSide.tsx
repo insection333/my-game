@@ -46,7 +46,7 @@ function Boss({ boss }: { boss: BossRow }) {
       icon={hasIcon(boss.id) ? <ItemIcon name={boss.id} size={32} /> : undefined}
       name={boss.name}
       locked={!boss.ready && !boss.verdict}
-      facts={[boss.region, boss.style, boss.wins]}
+      facts={[boss.region, boss.style, ...(boss.trait ? [boss.trait] : []), boss.wins]}
       status={
         fighting ? (
           <Pill tone="woad">{t('action.working')}</Pill>

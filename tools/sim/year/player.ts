@@ -177,7 +177,7 @@ export function playYear(
         const made = making !== null && (state.items[making] ?? 0) > 0;
         if (m % 10 === 0 || leaving || made) manage(t, leaving, window, m === 0 || leaving || made);
         // The day's bosses, fought one after another from the visit's start as the Hearth names them (session 210).
-        if (m > 0 && !leaving) for (const c of dailyBoss(state, t)) run(t, c, window);
+        if (m > 0 && !leaving) for (const c of dailyBoss(state, t, window[1])) run(t, c, window);
         const g = goalsAndDeeds(state, t, m % 5 === 0);
         state = g.state;
         note(g.events, window);

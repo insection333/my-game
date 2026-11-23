@@ -3,7 +3,8 @@
 // the bosses with Your odds, and the relics with their ranks. Formatted already; the page draws it.
 import { dayTurns, fmt, midSentence, t } from '@idle-clash/content';
 import { actionKey, LANE_IDS, type State } from '@idle-clash/kernel';
-import { FOES, regionOf } from '../shared/combat/data.ts';
+import { BEATS, FOES, regionOf } from '../shared/combat/data.ts';
+import type { Style } from '@idle-clash/content';
 import { oddsFor } from '../shared/combat/odds.ts';
 import { HITPOINTS } from '../shared/combat/data.ts';
 import {
@@ -14,6 +15,7 @@ import {
   openFoes,
   STAGE_MINUTES,
   TWISTS,
+  type Boss,
   type Region,
   type Twist,
 } from '../shared/expeditions/data.ts';
@@ -195,6 +197,20 @@ export interface BossRow {
   status: string | null;
   wins: string;
   ready: boolean;
+  /** Its way of fighting (session 211), so it can be prepared for. */
+  trait: string | null;
+}
+
+/** The style that beats each style. */
+const STYLE_BEATING = Object.fromEntries(Object.entries(BEATS).map(([a, b]) => [b, a])) as Record<Style, Style>;
+
+/** A boss's way of fighting, in words: what to prepare (session 211). */
+export function traitWords(b: Boss): string | null {
+  const tr = b.trait;
+  if (!tr) return null;
+  if (tr.kind === 'ward') return t('boss.trait.ward', { style: t(`skill.${STYLE_BEATING[b.style]}`) });
+  if (tr.kind === 'shift') return t('boss.trait.shift', { style: t(`skill.${tr.to}`) });
+  return t(`boss.trait.${tr.kind}`);
 }
 
 export function bossRows(state: State, now: number): BossRow[] {
@@ -222,6 +238,7 @@ export function bossRows(state: State, now: number): BossRow[] {
             : null,
       wins: wins === 0 ? t('boss.winsNone') : wins === 1 ? t('boss.winsOne') : t('boss.wins', { count: fmt.int(wins) }),
       ready: !locked && !rested && o !== null,
+      trait: traitWords(b),
     };
   });
 }

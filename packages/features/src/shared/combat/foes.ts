@@ -13,7 +13,26 @@ export interface Foe {
   maxHit: number;
   gold: number;
   drop: string;
+  /** A boss's way of fighting (session 211), played by fight() and so counted in Your odds. */
+  trait?: Trait;
 }
+
+/** How a boss fights its own way (session 211), each answered by preparing for it:
+ *  - rage: below half its health it hits a quarter harder (food and armour answer it);
+ *  - ward: only the style that beats it hits it fully, every other style at 60% (the triangle answers it);
+ *  - shift: at half its health it turns to another style (Your odds weighs both halves);
+ *  - rise: at a third of its health its barrow-wights rise, and its health grows by a fifth of its whole;
+ *  - mend: each time it lands three hits running it heals a twentieth of its whole, three times a fight at
+ *    most, so a fight never stalls (Hitpoints answers it, as the foe's hits land less often against a higher
+ *    level);
+ *  - plumage: its feathers turn hits aside, 30% off each, unless the fighter carries a supply. */
+export type Trait =
+  | { kind: 'rage'; below: number; hit: number }
+  | { kind: 'ward'; dealt: number }
+  | { kind: 'shift'; at: number; to: Style }
+  | { kind: 'rise'; at: number; grows: number }
+  | { kind: 'mend'; streak: number; heals: number; times: number }
+  | { kind: 'plumage'; dealt: number };
 
 /** The regions foes are fought in, a tab each on the Combat page: the march (tiers 1 to 4), the Sunken
  *  Fen (5 and 6) and the Ashen Peaks (7 and 8). */

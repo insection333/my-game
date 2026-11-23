@@ -163,7 +163,7 @@ describe('the arena', () => {
         {},
         (x) => swings.push(x),
       );
-    const hits = swings.filter((x): x is Exclude<Swing, { by: 'meal' }> => x.by === 'you' && x.hit);
+    const hits = swings.filter((x): x is Exclude<Swing, { by: 'meal' | 'trait' }> => x.by === 'you' && x.hit);
     const crits = hits.filter((x) => x.crit);
     expect(crits.length).toBeGreaterThan(0);
     // About a tenth of hits, never most of them.
