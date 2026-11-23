@@ -9,7 +9,6 @@ import {
   workRaisedWords,
   relicRaisedWords,
   temperedWords,
-  pedlarPaidWords,
   castleEngine,
   expeditionStory as storyOf,
   kindlingData,
@@ -22,6 +21,7 @@ import {
   type Feature,
 } from '@idle-clash/features';
 import { isNotable, type GameEvent } from '@idle-clash/kernel';
+import { pressSaid } from './moment-presses.ts';
 import { hasIcon } from '@idle-clash/ui';
 
 export type MomentSize = 'centre' | 'banner' | 'toast';
@@ -180,18 +180,10 @@ function describe(
       const w = workRaisedWords(e);
       return { title: w?.title ?? '', body: w?.body ?? null, icon: null };
     }
-    case 'relicRaised': {
-      const w = relicRaisedWords(e.relic, e.rank);
-      return { title: w?.title ?? '', body: w?.body ?? null, icon: hasIcon(e.relic) ? e.relic : null };
-    }
-    case 'pedlarPaid': {
-      const w = pedlarPaidWords(e);
-      return { title: w.title, body: w.body, icon: hasIcon(e.item) ? e.item : null };
-    }
-    case 'gearTempered': {
-      const w = temperedWords(e.item, e.step);
-      return { title: w.title, body: w.body, icon: hasIcon(e.item) ? e.item : null };
-    }
+    case 'relicRaised':
+    case 'pedlarPaid':
+    case 'gearTempered':
+      return pressSaid(e);
     case 'bossFought': {
       const w = bossFoughtWords(e);
       return { title: w.title, body: w.body, icon: hasIcon(e.boss) ? e.boss : null };
