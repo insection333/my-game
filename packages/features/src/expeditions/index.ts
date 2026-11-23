@@ -10,6 +10,7 @@ import { RULES } from './rules.ts';
 import { CONTENT } from './content.ts';
 import { bossRows, expeditionView } from './views.ts';
 import { realmView, takeShare } from './realm.ts';
+import { expeditionErrands } from './errands.ts';
 
 export type { BossRow, ExpeditionView, RegionTab, RouteView, RunView, StageChip, TwistView } from './views.ts';
 export type { RelicRow, RelicsView } from './relics-view.ts';
@@ -56,6 +57,7 @@ export const expeditions = defineFeature({
     'combat.bosses': ({ state, now }) => bossRows(state, now) as unknown as Json,
     'combat.realm': ({ state, now }) => realmView(state, now) as unknown as Json,
     'combat.relics': ({ state }) => relicsView(state) as unknown as Json,
+    'hearth.errands': ({ state, now }) => expeditionErrands(state, now) as unknown as Json,
     'collection.log': ({ state, now }) => bossLog(state, now) as unknown as Json,
   },
   help: { title: 'help.expeditions.title', body: 'help.expeditions.body' },

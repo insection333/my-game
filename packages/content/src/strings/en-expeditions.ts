@@ -161,4 +161,12 @@ export const expeditions = {
   'relic.effect.foodHeal': 'Food heals {pct} more',
   'relic.effect.finds': 'Rare and Legendary finds {pct} likelier',
   'relic.effect.slots': '+{slots} Storehouse spaces',
+  // The day's fights waiting, on the Hearth's Next up (session 188).
+  'errand.share': '{name} fell with your strike: take your share',
+  'errand.realm': 'Strike {name} today',
+  'errand.bossesOne': '{name} can be fought today',
+  'errand.bosses': '{count} bosses can be fought today',
+  'errand.bountyDone': 'Your bounty on the {foe} is done: claim it',
+  'errand.bounties': '{count} bounties on offer',
+  'errand.bountiesOne': 'One bounty on offer',
 };

@@ -14,6 +14,7 @@ export type { GoalRow, GoalsView, StandingView } from './goals/index.ts';
 export { RANKS } from './shared/standing.ts';
 export { CACHE_DRAWS } from './goals/cache.ts';
 export * as items from './shared/items.ts';
+export type { ErrandRow } from './shared/errand.ts';
 export * as combatData from './shared/combat/data.ts';
 export { healsFor } from './shared/combat/state.ts';
 export { gearDoes } from './combat/gear.ts';
