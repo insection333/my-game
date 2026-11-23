@@ -104,7 +104,6 @@
 /* The realm's work (session 218): across the head of the works, set off from the player's own. */
 .realmWork {
   grid-column: 1 / -1;
-  background: var(--surface-2);
 }
 
 .gifts {

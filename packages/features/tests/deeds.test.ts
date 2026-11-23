@@ -47,6 +47,17 @@ function everything(): State {
     steading: { stages: Object.fromEntries(WORKS.map((w) => [w.id, STAGES])) },
     combat: { worn, health: null, healthAt: 0, retreated: null },
     storehouse: { enlargements: ENLARGE_COSTS.length },
+    // Six of the realm's works raised with their part (session 218).
+    'realm-work': {
+      season: 7,
+      work: 'beacon',
+      needed: 40_000_000,
+      given: 0,
+      mine: 0,
+      givers: 0,
+      finished: 6,
+      thanks: null,
+    },
     // Five hundred lots handed to the pedlar (session 217).
     pedlar: { day: null, handed: [], favour: 500 },
     expeditions: {

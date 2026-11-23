@@ -50,7 +50,7 @@ export type RealmWorkMirror = z.infer<typeof RealmWorkMirror>;
 
 /** How the realm's work stands in this save, as the server last wrote it; null without a server. */
 export const realmWorkOf: (state: State) => RealmWorkMirror | null = partReader(
-  'realmWork',
+  'realm-work',
   RealmWorkMirror.nullable(),
   null,
 );

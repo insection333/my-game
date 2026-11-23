@@ -5,7 +5,7 @@
 import { REALM_WORK, realmWorkIn, seasonAt } from '@idle-clash/features';
 import type { GameEvent } from '@idle-clash/kernel';
 import { afterEach, describe, expect, it } from 'vitest';
-import { server, signUp, type TestServer } from './helpers.ts';
+import { post, server, signUp, type TestServer } from './helpers.ts';
 
 let s: TestServer;
 afterEach(() => s?.close());
@@ -46,7 +46,7 @@ describe("the realm's work on the server", () => {
     s.ctx.realmWorks.heard(b, [gift(IN2 + 1000, REALM_WORK.LEAST)]);
     const stages = heard.slice(1).map(([id, [e]]) => `${id === a ? 'A' : 'B'}${(e as { stage: number }).stage}`);
     expect(stages.sort()).toEqual(['A2', 'A3', 'A4', 'A5', 'B2', 'B3', 'B4', 'B5']);
-    expect(s.ctx.realmWorks.standing(b, IN2)).toMatchObject({
+    expect(s.ctx.realmWorks.standing(b, IN2)!).toMatchObject({
       given: REALM_WORK.LEAST,
       mine: REALM_WORK.LEAST,
       givers: 2,
@@ -55,7 +55,7 @@ describe("the realm's work on the server", () => {
     });
     // A gift to a finished work counts for nothing more.
     s.ctx.realmWorks.heard(a, [gift(IN2 + 2000, 999)]);
-    expect(s.ctx.realmWorks.standing(a, IN2).mine).toBe(REALM_WORK.LEAST / 5);
+    expect(s.ctx.realmWorks.standing(a, IN2)!.mine).toBe(REALM_WORK.LEAST / 5);
   });
 
   it('asks a share for each player who gave the season before, and lets a deleted account’s gifts go', async () => {
@@ -73,5 +73,16 @@ describe("the realm's work on the server", () => {
     });
     s.ctx.realmWorks.remove(ids[0]);
     expect(s.ctx.realmWorks.standing(ids[1], IN2)).toMatchObject({ givers: 2, given: 2_000 });
+  });
+
+  it('is written into a save in a season, and the save still writes', async () => {
+    s = await server();
+    s.clock.now = IN2;
+    const cookie = await signUp(s, 'Alder');
+    const start = { type: 'start', lane: 'gathering', action: { feature: 'woodcutting', id: 'pine-tree' } };
+    const r = await post(s, '/api/game/command', { requestId: 'req-0000001', command: start }, cookie);
+    expect(r.statusCode).toBe(200);
+    const state = (JSON.parse(r.body) as { state: { features: Record<string, unknown> } }).state;
+    expect(state.features['realm-work']).toMatchObject({ season: 2, work: 'bridge' });
   });
 });

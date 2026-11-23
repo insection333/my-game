@@ -129,9 +129,11 @@ export class RealmWorks {
 
   /** The save with the season's work as it stands, before the engine runs. */
   mirror(playerId: string, state: State, now: number): State {
-    const realmWork = this.standing(playerId, now);
-    if (JSON.stringify(state.features.realmWork ?? null) === JSON.stringify(realmWork)) return state;
-    return { ...state, features: { ...state.features, realmWork } };
+    const work = this.standing(playerId, now);
+    if (JSON.stringify(state.features['realm-work'] ?? null) === JSON.stringify(work)) return state;
+    // A save's part names are kebab-case; none when there is no season.
+    const { 'realm-work': _old, ...rest } = state.features;
+    return { ...state, features: work ? { ...rest, 'realm-work': work } : rest };
   }
 
   /** An account deleted: its gifts go (a work it helped finish stays finished). */

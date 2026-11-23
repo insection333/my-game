@@ -22,7 +22,7 @@ const mirror = (given: number) => ({
 function rich(given = 0): State {
   const s = newState(3, IN2);
   s.items = { gold: 2_000_000, 'oak-logs': 500, bread: 10 };
-  s.features.realmWork = mirror(given);
+  s.features['realm-work'] = mirror(given);
   return s;
 }
 
