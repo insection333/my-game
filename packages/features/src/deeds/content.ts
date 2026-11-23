@@ -196,3 +196,13 @@ export function wordsOf(d: Pick<Deed, 'key' | 'words'>, part: 'name' | 'text'): 
   const wanted = placeholders(templateOf(key) ?? '');
   return t(key, Object.fromEntries(Object.entries(d.words).filter(([k]) => wanted.includes(k))));
 }
+/** The Deep (session 215): depths reached, the first its first waystone. A steady player reaches the 100th
+ *  about the end of year one, the 125th in year two's spring and the 150th about the end of year two. */
+export const DEPTHS: Steps = [
+  [10, 'easy'],
+  [25, 'hard'],
+  [50, 'hard'],
+  [100, 'elite'],
+  [125, 'elite'],
+  [150, 'master'],
+];

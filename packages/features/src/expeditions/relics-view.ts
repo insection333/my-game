@@ -3,6 +3,10 @@
 import { fmt, t } from '@idle-clash/content';
 import type { State } from '@idle-clash/kernel';
 import { BOSSES } from '../shared/expeditions/data.ts';
+import { deepRelicRows, deepRelicWords, type DeepRelicRow } from './deep-relics.ts';
+import { HITPOINTS } from '../shared/combat/data.ts';
+import { DEEP } from '../shared/expeditions/deep.ts';
+import { skillLevel } from '../shared/skill.ts';
 import { RELIC_COSTS, rankOf, relics, type RelicEffect } from '../shared/expeditions/relics.ts';
 import { expeditionsOf } from '../shared/expeditions/state.ts';
 import type { CollectionGroup } from '../shared/skill-slots.ts';
@@ -25,6 +29,8 @@ export interface RelicsView {
   relics: RelicRow[];
   /** The quartermaster, once every relic is raised (session 191). */
   trade: TradeView | null;
+  /** The Deep's relics, from Hitpoints 99 (session 215). */
+  deep: DeepRelicRow[] | null;
 }
 
 function effectText(e: RelicEffect, n: number): string {
@@ -43,7 +49,8 @@ function effectText(e: RelicEffect, n: number): string {
 /** A relic raised, said for its moment (session 98): the rank reached, or fully raised, and what it now gives. */
 export function relicRaisedWords(relic: string, rank: number): { title: string; body: string; top: boolean } | null {
   const r = relics().find((x) => x.id === relic);
-  if (!r) return null;
+  // The Deep's relics have no last rank (session 215).
+  if (!r) return deepRelicWords(relic, rank);
   const name = t(`relic.${r.id}`);
   const top = rank >= r.ranks;
   return {
@@ -72,6 +79,7 @@ export function relicsView(state: State): RelicsView {
       };
     }),
     trade: tradeView(state),
+    deep: skillLevel(state, HITPOINTS) >= DEEP.OPENS ? deepRelicRows(state) : null,
   };
 }
 

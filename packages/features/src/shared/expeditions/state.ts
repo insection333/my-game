@@ -98,6 +98,8 @@ export const ExpeditionState = z
           .object({ depth: Count, from: Count, was: Count, marks: Count, seq: Count, fed: Count })
           .strict()
           .nullable(),
+        /** The Deep's relics (session 215) by rank. Saves from before have none. */
+        relics: z.record(Key, z.number().int().min(1).max(500)).optional(),
       })
       .strict()
       .optional(),

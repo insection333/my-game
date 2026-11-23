@@ -8,7 +8,7 @@ const tone = (light: string, base: string, shadow: string): Tone => ({ light, ba
 const CORD = M.leather;
 
 /** The cord a relic hangs from: a loop at the top and two strands down to the thing. */
-function Hung({ to = 14, children }: { to?: number; children: ReactNode }) {
+export function Hung({ to = 14, children }: { to?: number; children: ReactNode }) {
   return (
     <g>
       <path

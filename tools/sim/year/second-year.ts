@@ -70,6 +70,7 @@ export function secondYearChecks(y: Year, check: Check, lines: string[]): void {
   lines.push(`Held at days ${at.join(', ')}:`);
   lines.push(`- gold ${at.map((n) => M(y.days[n - 1].gold)).join(', ')}`);
   lines.push(`- expedition marks ${held((d) => d.marks)}`);
+  lines.push(`- the Deep's deepest ${held((d) => d.deepest ?? 0)}`);
   lines.push(`- war marks ${held((d) => d.castle?.held ?? 0)}`);
   const castle = at.map((n) => y.days[n - 1].castle);
   lines.push(

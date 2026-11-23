@@ -58,6 +58,8 @@ function everything(): State {
       twists: TWISTS.map((x) => x.id),
       // Half a year of the realm's boss falling with their strike (session 174).
       realm: { day: null, claimed: null, fallen: 26 },
+      // The Deep's 150th depth reached (session 215).
+      deep: { deepest: 150, week: null, weekDeepest: 0, descents: 400, run: null },
     },
     // A castle at level 25, fifty fortresses taken, every relic forged and every study made.
     castle: {

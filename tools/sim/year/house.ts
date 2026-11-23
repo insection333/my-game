@@ -165,9 +165,10 @@ export function raiseRelics(state: State, now: number): { state: State; bought: 
       bought++;
     }
   }
-  // Every relic raised: the marks go to the quartermaster for gold (session 191), as a player's would.
+  // Every relic raised: the marks go to the quartermaster for gold (session 191), as a player's would, until
+  // the Deep opens at Hitpoints 99 and they are kept for its relics (session 215).
   const lots = Math.floor(marks() / 25);
-  if (lots > 0 && relics().every((r) => rankOf(s, r.id) >= r.ranks)) {
+  if (lots > 0 && level(s, 'hitpoints') < 99 && relics().every((r) => rankOf(s, r.id) >= r.ranks)) {
     const r = route(s, 'expeditions', 'trade', { lots }, now);
     if (r.result.ok) s = r.state;
   }

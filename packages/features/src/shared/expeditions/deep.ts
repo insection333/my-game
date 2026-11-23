@@ -10,8 +10,9 @@ import type { Foe } from '../combat/foes.ts';
 export const DEEP = {
   /** The Hitpoints level that opens it: Hitpoints keeps pace with the best style (session 177). */
   OPENS: 99,
-  /** Each depth makes its foes this much stronger, in health, hits and gold, than the Peaks'. */
-  SCALE: 0.04,
+  /** Each depth makes its foes this much stronger than the one above, in health, hits and gold: compounding,
+   *  so the relics that answer it (each rank on what is left) keep the deepest growing, slowly, for good. */
+  SCALE: 0.03,
   /** A boss every tenth depth, and a waystone. */
   EVERY: 10,
   STAGE_MINUTES: 10,
@@ -21,7 +22,7 @@ export const DEEP = {
 } as const;
 
 /** How much stronger the foes of a depth are than the Peaks' own. */
-export const scaleAt = (depth: number): number => 1 + DEEP.SCALE * depth;
+export const scaleAt = (depth: number): number => (1 + DEEP.SCALE) ** depth;
 
 /** Where a descent starts: the deepest waystone reached. */
 export const waystoneOf = (deepest: number): number => Math.floor(deepest / DEEP.EVERY) * DEEP.EVERY;

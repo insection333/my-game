@@ -33,7 +33,7 @@ describe('the Deep', () => {
 
   it('grows its foes with depth, and sets one of the six bosses, as strong as the Wyrm, at each tenth', () => {
     const golem = FOES.find((f) => f.id === 'obsidian-golem')!;
-    expect(deepFoe(golem, 25).hp).toBe(golem.hp * 2);
+    expect(deepFoe(golem, 25).hp).toBe(Math.round(golem.hp * 1.03 ** 25));
     expect(bossDepth(10) && bossDepth(60) && !bossDepth(15)).toBe(true);
     expect([10, 20, 30, 40, 50, 60].map((d) => deepBoss(d).id)).toEqual([
       'barrow-king',

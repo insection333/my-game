@@ -44,6 +44,12 @@
   --g3: #ffc84a;
 }
 
+.picture[data-glow='lantern'] {
+  --g1: #ffc95a;
+  --g2: #fff3c4;
+  --g3: #3f6e8a;
+}
+
 .picture[data-glow='aurora'] {
   --g1: #6cf0c8;
   --g2: #8a7cff;

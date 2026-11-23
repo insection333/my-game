@@ -9,7 +9,8 @@ import { oddsFor } from '../shared/combat/odds.ts';
 import { bossDepth, deepBoss, deepFoe, DEEP, omensOf, waystoneOf } from '../shared/expeditions/deep.ts';
 import { skillLevel } from '../shared/skill.ts';
 import { weekEnds, weekOf } from '../shared/week-time.ts';
-import { deepOf, foeAt, packOf } from './deep.ts';
+import { deepOf, foeAt, packOf, packSize } from './deep.ts';
+import { inTheDeep } from '../shared/expeditions/deep-relics.ts';
 import { hardened } from './stage.ts';
 import { bossUnder } from './boss.ts';
 import { traitWords, type TwistView } from './views.ts';
@@ -40,7 +41,6 @@ export interface DeepView {
   } | null;
 }
 
-const packLeft = (fed: number) => DEEP.PACK - fed;
 const marks = (n: number) => (n === 1 ? t('expedition.marksOne') : t('expedition.marks', { marks: fmt.int(n) }));
 
 /** An omen's words: only what holds in the Deep (it has no caches, camps or stages to change). */
@@ -54,15 +54,15 @@ const omenView = (tw: ReturnType<typeof omensOf>[number]): TwistView => ({
  *  gone, a depth sends the fighter back, or a boss is likely to hold. At most fifty depths ahead. */
 export function reachOf(state: State, from: number, fed: number, seq: number, at: number) {
   const mods = omensOf(weekOf(at));
-  let left = packLeft(fed);
+  let left = packSize(state) - fed;
   for (let depth = from + 1; depth <= from + 50; depth++) {
     if (bossDepth(depth)) {
-      const o = oddsFor(state, bossUnder(deepBoss(depth), mods));
+      const o = oddsFor(state, bossUnder(inTheDeep(state, deepBoss(depth)), mods));
       if (!o || o.retreatRate > 0.5) return { depth, held: true };
       left -= (o.foodPerHour * o.secondsPerFight) / 3600;
     } else {
       const base = foeAt(state, depth, seq);
-      const o = base && oddsFor(state, hardened(deepFoe(base, depth), mods));
+      const o = base && oddsFor(state, inTheDeep(state, hardened(deepFoe(base, depth), mods)));
       if (!o || o.verdict === 'tooStrong') return { depth: depth - 1, held: false };
       left -= (o.foodPerHour * DEEP.STAGE_MINUTES) / 60;
     }
@@ -116,7 +116,7 @@ export function deepView(state: State, now: number): DeepView | null {
       depth: t('deep.at', { depth: fmt.int(run.depth + 1) }),
       // Towards the next boss and waystone.
       progress: (run.depth % DEEP.EVERY) / DEEP.EVERY,
-      meals: t('deep.mealsLeft', { left: fmt.int(Math.max(0, packLeft(fed))), pack: fmt.int(DEEP.PACK) }),
+      meals: t('deep.mealsLeft', { left: fmt.int(Math.max(0, packSize(state) - fed)), pack: fmt.int(packSize(state)) }),
       marks: run.marks > 0 ? t('deep.marksSoFar', { marks: marks(run.marks) }) : null,
       running,
     },

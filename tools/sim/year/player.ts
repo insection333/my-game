@@ -20,7 +20,9 @@ import { expeditionsOf } from '../../../packages/features/src/shared/expeditions
 import { bestFoe } from '../combat.ts';
 import { DAY, T0 } from '../player.ts';
 import { dailyBoss } from './bosses.ts';
-import { Lordship, type CastleDay } from './castle.ts';
+import { descent, raiseDeepRelics } from './deep.ts';
+import { Lordship } from './castle.ts';
+import type { Kind, Year, YearDay } from './kinds.ts';
 import { equip, feed, goalsAndDeeds, raiseRelics, raiseWorks, styleToTrain, takePaths, tidy } from './house.ts';
 import { artisanPlan, artisanStock, behind, bestGather, gatherFor, scarcest } from './plan.ts';
 import { ACTS, ALL_SKILLS, GATHERING, type Act } from './world.ts';
@@ -28,61 +30,7 @@ import { ACTS, ALL_SKILLS, GATHERING, type Act } from './world.ts';
 const engine = createEngine(actionRegistry(FEATURES, (f) => f.flag.on));
 const LANES: LaneId[] = ['gathering', 'artisan', 'combat'];
 
-export interface Kind {
-  name: string;
-  /** Each visit: the hour of the day it starts, and its minutes. */
-  visits: { hour: number; minutes: number }[];
-  /** From which day it sends its fighter on expeditions overnight. */
-  expeditionsFrom: number;
-  /** Whether it raises a castle at total level 100 and keeps its edict (Castle Clash, session 33). */
-  castle: boolean;
-}
-export const STEADY: Kind = {
-  name: 'The steady player',
-  visits: [{ hour: 0, minutes: 60 }],
-  expeditionsFrom: 14,
-  castle: true,
-};
-export const LIGHT: Kind = {
-  name: 'The light player',
-  visits: [
-    { hour: 0, minutes: 10 },
-    { hour: 12, minutes: 5 },
-  ],
-  expeditionsFrom: 21,
-  castle: true,
-};
-
-export interface YearDay {
-  day: number;
-  /** Notable events during the day's visits, and all the day's notable events. */
-  active: GameEvent[];
-  events: GameEvent[];
-  /** What was new: a level, a tier, a mastery step, a deed, a title, a boss, a relic, a find, a Kindling. */
-  firsts: string[];
-  /** Seconds each lane stood idle while away, and why lanes stopped. */
-  idle: Record<string, number>;
-  stops: Record<string, number>;
-  gold: number;
-  /** Expedition marks held, unspent (session 209). */
-  marks: number;
-  slots: [number, number];
-  /** What each lane was left running (and what was queued). */
-  lanes?: Record<string, string>;
-  /** The castle at the day's last visit, once raised. */
-  castle?: CastleDay;
-}
-export interface Year {
-  kind: Kind;
-  days: YearDay[];
-  /** The day each skill reached 99. */
-  at99: Record<string, number>;
-  final: State;
-  commands: number;
-  refused: number;
-  /** Refusals by command and reason. */
-  why: Record<string, number>;
-}
+export * from './kinds.ts';
 
 const TIER_LEVELS = [10, 20, 30, 40, 55, 70, 85];
 
@@ -121,6 +69,7 @@ export function playYear(
       if (e.type === 'deedDone') day.firsts.push(e.unlocks?.length ? 'title' : 'deed');
       if (e.type === 'find' && e.first) day.firsts.push('find');
       if (e.type === 'kindled') day.firsts.push('kindling');
+      if (e.type === 'deepDone' && e.record) day.firsts.push('deep');
       if (e.type === 'masteryStep') day.firsts.push('mastery');
       if (e.type === 'expeditionDone' && e.outcome === 'won' && !beaten.has(e.boss)) {
         beaten.add(e.boss);
@@ -177,7 +126,15 @@ export function playYear(
         const made = making !== null && (state.items[making] ?? 0) > 0;
         if (m % 10 === 0 || leaving || made) manage(t, leaving, window, m === 0 || leaving || made);
         // The day's bosses, fought one after another from the visit's start as the Hearth names them (session 210).
-        if (m > 0 && !leaving) for (const c of dailyBoss(state, t, window[1])) run(t, c, window);
+        const bosses = m > 0 && !leaving ? dailyBoss(state, t, window[1]) : [];
+        for (const c of bosses) run(t, c, window);
+        // The Deep at 99 (session 215): once the day's bosses are fought, a descent in the first visit, the foe
+        // queued to follow it.
+        if (m > 0 && !leaving && !bosses.length && v === kind.visits[0]) {
+          const down = descent(state, t);
+          state = down.state;
+          for (const c of down.commands) run(t, c, window);
+        }
         const g = goalsAndDeeds(state, t, m % 5 === 0);
         state = g.state;
         note(g.events, window);
@@ -185,7 +142,7 @@ export function playYear(
       left = window[1];
     }
     day.gold = state.items.gold ?? 0;
-    day.marks = expeditionsOf(state).marks;
+    [day.marks, day.deepest] = [expeditionsOf(state).marks, expeditionsOf(state).deep?.deepest ?? 0];
     day.lanes = Object.fromEntries(
       LANES.map((l) => [l, `${state.lanes[l].current?.action.id ?? '-'}>${state.lanes[l].next?.id ?? ''}`]),
     );
@@ -197,7 +154,6 @@ export function playYear(
   out.final = state;
   return out;
 
-  /** Every lane set as the plan says; on leaving, the house kept and the long run set up. */
   /** On arriving and leaving every lane is set as the plan says (`settle`); in between, a lane is only
    *  set when it stands idle, or for a piece of gear, so the work of the visit (and its goals) holds. */
   function manage(t: number, leaving: boolean, window: [number, number], settle: boolean) {
@@ -205,6 +161,7 @@ export function playYear(
     if (leaving || t === window[0]) state = tidy(state, t);
     if (leaving) {
       state = takePaths(state, t);
+      state = raiseDeepRelics(state, t).state;
       const r = raiseRelics(state, t);
       state = r.state;
       if (r.bought) dayFirst('relic');

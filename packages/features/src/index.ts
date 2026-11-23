@@ -58,6 +58,7 @@ export type {
   BossRow,
   RealmView,
   DeepView,
+  DeepRelicRow,
   ExpeditionView,
   RegionTab,
   RelicRow,
