@@ -37,10 +37,10 @@ describe("a player's look", () => {
     });
   });
 
-  it('offers thirty pictures, twelve of them from the first day', () => {
+  it('offers thirty-three pictures (thirty before session 210), twelve of them from the first day', () => {
     const pictures = HONOURS.filter((h) => h.kind === 'picture');
-    expect(pictures).toHaveLength(30);
-    expect(new Set(pictures.map((h) => h.id)).size).toBe(30);
+    expect(pictures).toHaveLength(33);
+    expect(new Set(pictures.map((h) => h.id)).size).toBe(33);
     expect(pictures.filter((h) => unlocked(h, {}, 0))).toHaveLength(12);
   });
 

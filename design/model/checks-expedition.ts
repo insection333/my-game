@@ -5,6 +5,7 @@
 import { beatenBy, FOES, TIER_SECONDS, TIER_XP_PER_HOUR, VALUE, type Foe, type Style } from './content.ts';
 import {
   BOSSES,
+  regionBoss,
   CACHE_GOLD,
   LENGTHS,
   RELIC_COSTS,
@@ -121,7 +122,7 @@ export function playRoute(route: Route, p: Fighter, road: string, r: () => numbe
     if (s.after === 'camp') health = Math.min(most, health + most * product(mods, 'camp'));
   }
   const mods = [...twists, byId(ROADS, road)];
-  const base = BOSSES[route.region - 1];
+  const base = regionBoss(route.region);
   const boss = {
     ...base,
     hp: base.hp * product(mods, 'bossHp'),
@@ -190,10 +191,22 @@ export function expeditionChecks(out: Say, ok: Ok) {
       for (const x of per)
         ok(x.perHour >= lane, `${NAMES[region - 1]}, ${style}, ${x.hours} h: a run pays at least the lane's best`);
     }
-    const boss = BOSSES[region - 1];
+  }
+  // Each boss, against a fighter at its own tier's top (its tier's last foe's level, in that tier's gear).
+  for (const boss of BOSSES) {
+    const at = (style: Style): Fighter => {
+      const level = Math.min(99, boss.level - 1);
+      return {
+        style,
+        styleLevel: level,
+        weaponTier: tierForLevel(level),
+        armourTier: tierForLevel(level),
+        hpLevel: level,
+      };
+    };
     const style = beatenBy[boss.style];
-    const p = fighterAt(region, style);
-    const r = rng(region * 99);
+    const p = at(style);
+    const r = rng(boss.level * 99);
     // With food, the style that beats the boss's wins; the style the boss beats, without food, mostly
     // does not: a boss is a fight to prepare for.
     const play = (q: Fighter, heals: number) => {
@@ -207,17 +220,17 @@ export function expeditionChecks(out: Say, ok: Ok) {
     };
     const fed = play(p, bestFood(p.hpLevel).heals);
     const weak = STYLES.find((s) => beatenBy[s] === boss.style)!;
-    const bare = play(fighterAt(region, weak), 0);
+    const bare = play(at(weak), 0);
     out(
       `${boss.name}: ${style} at ${p.styleLevel} with food wins ${Math.round(fed.won * 100)}% (${fed.eaten.toFixed(1)} meals a fight); ${weak} without food ${Math.round(bare.won * 100)}%`,
     );
-    ok(fed.won >= 0.9, `${boss.name} falls to ${style} at the region's top, nine fights in ten`);
+    ok(fed.won >= 0.9, `${boss.name} falls to ${style} at its tier's top, nine fights in ten`);
     ok(bare.won < 0.5, `${boss.name} beats ${weak} without food more often than not`);
   }
   // Relics: every one at full rank, for a player running the Peaks for 8 hours and its boss daily.
   const all =
     13 * RELIC_COSTS.reduce((a, b) => a + b, 0) + RELIC_COSTS.slice(0, RELICS.storeRanks).reduce((a, b) => a + b, 0);
-  const daily = 8 * STAGES_PER_HOUR * STAGE_MARKS + 2 * BOSSES[2].marks;
+  const daily = 8 * STAGES_PER_HOUR * STAGE_MARKS + 2 * regionBoss(3).marks;
   const days = all / daily;
   out(
     `Relics: ${all} marks for every rank of every relic; ${Math.round(daily)} marks a day at the top; ${Math.round(days)} days`,

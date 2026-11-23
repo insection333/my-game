@@ -37,7 +37,7 @@ function CollectionLog() {
         .filter(({ data }) => data.finds.length > 0)
         .map(({ feature, data }) => (
           <Panel key={feature} title={data.name} aside={data.progress} flush>
-            <FindGrid finds={data.finds} />
+            <FindGrid finds={data.finds} label={data.name} />
           </Panel>
         ))}
     </Slot>

@@ -77,7 +77,14 @@ export const PICTURE_FOES = [
   'obsidian-golem',
   'ember-sorcerer',
 ] as const;
-export const PICTURE_BOSSES = ['troll-chief', 'drowned-warden', 'ember-wyrm'] as const;
+export const PICTURE_BOSSES = [
+  'barrow-king',
+  'troll-chief',
+  'mire-mother',
+  'drowned-warden',
+  'storm-roc',
+  'ember-wyrm',
+] as const;
 
 const SEASON_TITLES: Record<string, string> = {
   greenwood: 'greenwarden',
@@ -117,6 +124,8 @@ export const HONOURS: readonly Honour[] = [
   title('paragon', by('rank-legend')),
   title('equilibrist', by('hidden-even')),
   title('wyrmslayer', by('boss-ember-wyrm')),
+  // Every boss beaten (session 210, six of them).
+  title('bossbane', by('bosses-all')),
   title('trailblazer', by('runs-250')),
   title('kindled', { anyOf: firstKindlings, text: 'honour.unlock.anyKindled' }),
   title('everflame', by('kindlings-10')),
@@ -149,15 +158,15 @@ export const HONOURS: readonly Honour[] = [
   // Glows round the picture, slow and animated: a veteran's, each for a mid- to end-game milestone.
   { id: 'verdant', kind: 'glow', unlock: by('rank-knight') },
   { id: 'ember', kind: 'glow', unlock: by('routs-10') },
-  { id: 'frost', kind: 'glow', unlock: by('boss-drowned-warden-50') },
-  { id: 'wyrmfire', kind: 'glow', unlock: by('boss-ember-wyrm-100') },
+  { id: 'frost', kind: 'glow', unlock: by('boss-drowned-warden-100') },
+  { id: 'wyrmfire', kind: 'glow', unlock: by('boss-ember-wyrm-250') },
   { id: 'aurora', kind: 'glow', unlock: by('rank-legend') },
   // Badges beside the title: rare, each for a feat few reach.
   { id: 'tower', kind: 'badge', unlock: by('castle-level-25') },
   { id: 'skull', kind: 'badge', unlock: by('defeats-500000') },
   { id: 'star', kind: 'badge', unlock: by('collector-all') },
   { id: 'flame', kind: 'badge', unlock: by('kindlings-10') },
-  { id: 'wyrm', kind: 'badge', unlock: by('boss-ember-wyrm-100') },
+  { id: 'wyrm', kind: 'badge', unlock: by('boss-ember-wyrm-250') },
   { id: 'crown', kind: 'badge', unlock: by('rank-legend') },
   // The scene behind a profile: the march by day for everyone, by night, and the lord's own castle.
   { id: 'march', kind: 'scene', unlock: null },

@@ -4,7 +4,7 @@
 // and a realm whose friends drifted off asking more strikes than its players could give); when it has enough, the boss falls and everyone who struck hears at once; their saves are told the
 // share they may take (this week or next), and the week's ladder ranks strikes, ties to whoever struck first.
 import type { GameEvent } from '@idle-clash/kernel';
-import { weekOf } from '@idle-clash/features';
+import { realmBossIn, weekOf } from '@idle-clash/features';
 import { eq } from 'drizzle-orm';
 import { afterEach, describe, expect, it } from 'vitest';
 import { players, visits } from '../src/db/schema.ts';
@@ -66,7 +66,7 @@ describe("the realm's boss on the server", () => {
     s.ctx.realm.heard(ids[2], [strike(ids[2], T0 + 8 * 3_600_000)]);
     expect(fell).toHaveLength(2);
     // Next week, last week's share is still owed to one who has not taken it.
-    expect(s.ctx.realm.standing(ids[1], T0 + 7 * DAY, null).owed).toEqual({ week, boss: 'troll-chief' });
+    expect(s.ctx.realm.standing(ids[1], T0 + 7 * DAY, null).owed).toEqual({ week, boss: realmBossIn(week).id });
     const ladder = s.ctx.realm.ladder(ids[2], T0);
     expect(ladder.rows.map((r) => [r.name, r.xp])).toEqual([
       ['Alder', 5],

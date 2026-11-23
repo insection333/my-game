@@ -4,6 +4,7 @@
 // picture; a glow, when shown, is drawn round it by the page (Picture in components).
 import { createContext, useContext, useId, type ComponentType } from 'react';
 import { TrollChief, DrownedWarden, EmberWyrm } from './bosses.tsx';
+import { BarrowKing, MireMother, StormRoc } from './bosses-second.tsx';
 import { BogLurker, BogWitch, DrownedAcolyte, MireHulk } from './foes-fen.tsx';
 import { AshShaman, AshTroll, EmberSorcerer, ObsidianGolem } from './foes-peaks.tsx';
 import { FellHuntsman, GoblinSlinger, GraveWight, HillTroll, MarshWisp, OrcRaider } from './foes.tsx';
@@ -94,8 +95,11 @@ const FOES: [string, ComponentType][] = [
   ['ember-sorcerer', EmberSorcerer],
 ];
 const BOSSES: [string, ComponentType][] = [
+  ['barrow-king', BarrowKing],
   ['troll-chief', TrollChief],
+  ['mire-mother', MireMother],
   ['drowned-warden', DrownedWarden],
+  ['storm-roc', StormRoc],
   ['ember-wyrm', EmberWyrm],
 ];
 

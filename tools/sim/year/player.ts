@@ -19,6 +19,7 @@ import { nextRoute } from '../../../packages/features/src/expeditions/route.ts';
 import { expeditionsOf } from '../../../packages/features/src/shared/expeditions/state.ts';
 import { bestFoe } from '../combat.ts';
 import { DAY, T0 } from '../player.ts';
+import { dailyBoss } from './bosses.ts';
 import { Lordship, type CastleDay } from './castle.ts';
 import { equip, feed, goalsAndDeeds, raiseRelics, raiseWorks, styleToTrain, takePaths, tidy } from './house.ts';
 import { artisanPlan, artisanStock, behind, bestGather, gatherFor, scarcest } from './plan.ts';
@@ -106,6 +107,10 @@ export function playYear(
     const day = today!;
     for (const e of events) {
       if (e.type === 'laneStopped') day.stops[e.reason.code] = (day.stops[e.reason.code] ?? 0) + 1;
+      if (e.type === 'bossFought' && e.won && !beaten.has(e.boss)) {
+        beaten.add(e.boss);
+        day.firsts.push('boss');
+      }
       if (!isNotable(e)) continue;
       day.events.push(e);
       if (during && e.at >= during[0] && e.at <= during[1]) day.active.push(e);
@@ -171,6 +176,8 @@ export function playYear(
         // A piece of gear being made is taken as soon as it comes, and the lane turned back to training.
         const made = making !== null && (state.items[making] ?? 0) > 0;
         if (m % 10 === 0 || leaving || made) manage(t, leaving, window, m === 0 || leaving || made);
+        // The day's bosses, fought one after another from the visit's start as the Hearth names them (session 210).
+        if (m > 0 && !leaving) for (const c of dailyBoss(state, t)) run(t, c, window);
         const g = goalsAndDeeds(state, t, m % 5 === 0);
         state = g.state;
         note(g.events, window);

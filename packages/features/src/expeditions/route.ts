@@ -8,8 +8,12 @@ import { HITPOINTS } from '../shared/combat/data.ts';
 import { oddsFor } from '../shared/combat/odds.ts';
 import type { Foe } from '../shared/combat/foes.ts';
 import {
+  bossById,
+  bossIn,
   FOE_WEIGHTS,
   openFoes,
+  runBosses,
+  type Boss,
   ROADS,
   SECOND_TWIST,
   STAGES_PER_HOUR,
@@ -44,11 +48,22 @@ export function nextRoute(state: State, region: Region, hours: Hours): Route | n
     region,
     hours,
     foes.map((f) => f.id),
+    runBosses(region, skillLevel(state, HITPOINTS)).map((b) => b.id),
   );
 }
 
+/** The boss at a run's end: the one drawn with its route, or for a run from before session 210 the region's last. */
+export const bossOfRun = (route: Pick<Route, 'region' | 'boss'>): Boss =>
+  (route.boss ? bossById(route.boss) : undefined) ?? bossIn(route.region);
+
 /** A route from a source of random numbers: the same numbers draw the same route. */
-export function drawRoute(roll: () => number, region: Region, hours: Hours, foes: readonly string[]): Route {
+export function drawRoute(
+  roll: () => number,
+  region: Region,
+  hours: Hours,
+  foes: readonly string[],
+  bosses: readonly string[] = [],
+): Route {
   const n = hours * STAGES_PER_HOUR;
   const weights = FOE_WEIGHTS.slice(0, foes.length);
   const total = weights.reduce((a, b) => a + b, 0);
@@ -77,5 +92,7 @@ export function drawRoute(roll: () => number, region: Region, hours: Hours, foes
     twists: twists.map((t) => t.id),
     roads: [road.id, pick(ROADS, road).id],
     fork: n / 2,
+    // Drawn last, so the rest of a route draws as it did before there were two bosses to a region.
+    ...(bosses.length ? { boss: bosses[Math.floor(roll() * bosses.length)] } : {}),
   };
 }

@@ -124,7 +124,7 @@ A Kindling is 37,000,000 XP past level 99; the first 5 strengthen the Path.
 
 ### A year on the real engine (step 18)
 
-The paper model checks each skill alone; the year-long simulation checks the whole game on the real engine, the same rules, content and randomness the server runs, in verify on every change (`.verify/year.md`). Two kinds of player play a year: the steady player, an active hour a day with the fire and away the rest, and the light player, ten minutes in the morning and five in the evening. Each keeps every lane busy as a careful player would: the Gathering lane levels its furthest-behind skill and feeds the Artisan lane whatever it lacks; Smithing trains by smelting, so Fletching has its bars; gear and keys are made while the player is there to take them; the fighter trains its furthest-behind style, eats what Cooking made and buys the rest, and runs an eight-hour expedition each night; the Storehouse is tidied and enlarged; relics are raised and Paths taken; goals are claimed and steered by. It holds the year's targets:
+The paper model checks each skill alone; the year-long simulation checks the whole game on the real engine, the same rules, content and randomness the server runs, in verify on every change (`.verify/year.md`). Two kinds of player play a year: the steady player, an active hour a day with the fire and away the rest, and the light player, ten minutes in the morning and five in the evening. Each keeps every lane busy as a careful player would: the Gathering lane levels its furthest-behind skill and feeds the Artisan lane whatever it lacks; Smithing trains by smelting, so Fletching has its bars; gear and keys are made while the player is there to take them; the fighter trains its furthest-behind style, eats what Cooking made and buys the rest, runs an eight-hour expedition each night and fights the day's bosses as the Hearth names them (session 210); the Storehouse is tidied and enlarged; relics are raised and Paths taken; goals are claimed and steered by. It holds the year's targets:
 
 - Every skill at 99 in about a year (the steady player's last on about day 380, the light player's a week later); each lane's skills reach 99 within a few days of each other (Combat about day 255, Artisan about day 330, Gathering about day 375).
 - One skill kept in its lane reaches 55, 70, 85 and 99 on time (Woodcutting, Smithing and Melee, each within 25%).
@@ -493,14 +493,17 @@ Bought from the vendor, or cooked (section 6): better food is sold as Hitpoints 
 
 ### Expeditions and bosses (step 16)
 
-An expedition is a run into a region for 1, 2, 4 or 8 hours in the Combat lane, played while you are here or away. Each hour holds six fight stages of ten minutes, each against one of the three foes of the region you fare best against (by Your odds), drawn for that stage, the best of them half the time, the next a third, the last a sixth; a cache of the region's best logs, ore or fish after one stage and a camp that heals after another, at drawn places; one or two twists that hold for the whole run (a second twist two runs in five); and a fork halfway, whose two roads are drawn with the route and one chosen before setting out. The region's boss waits at the end. Retreating ends the run where it stands: what was won is kept, the boss is not reached.
+An expedition is a run into a region for 1, 2, 4 or 8 hours in the Combat lane, played while you are here or away. Each hour holds six fight stages of ten minutes, each against one of the three foes of the region you fare best against (by Your odds), drawn for that stage, the best of them half the time, the next a third, the last a sixth; a cache of the region's best logs, ore or fish after one stage and a camp that heals after another, at drawn places; one or two twists that hold for the whole run (a second twist two runs in five); and a fork halfway, whose two roads are drawn with the route and one chosen before setting out. One of the region's two bosses waits at the end, drawn with the route from those the player's Hitpoints has opened (the weaker one until the stronger opens; session 210: each region has a boss at its last tier and one a tier or two below, so the first boss is met in the first week, and a region's runs do not all end alike). Retreating ends the run where it stands: what was won is kept, the boss is not reached.
 
 A run's fights pay a quarter more XP and gold than the lane's, since its foes are drawn rather than chosen, and each fight stage pays a mark; caches and the boss pay on top, so a run of any length pays at least as well as the same time against the region's best foe (section 15), and only runs and bosses give boss finds; marks come from runs, bosses, bounties and the realm's boss. Each boss can also be fought once a day in the Combat lane. Marks buy relics, lasting boosts in ranks: +1% XP in one skill a rank (one relic for each skill), food heals 4% more a rank, finds 4% more likely a rank (five ranks each), and six more Storehouse spaces a rank (three ranks). Once every relic is fully raised (about day 80 for a steady player), the quartermaster takes marks for gold, 25 for an hour of the player's own earning, so marks keep their worth all year. *Generated:*
 
 | Boss | Region | Style | Level | Hitpoints opens | Health | Max hit | Gold | Marks | Cache worth |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| The Barrow-king | The march | magic | 22 | 21 | 1,400 | 117 | 800 | 3 | 4,800 |
 | The Troll-chief of the hill | The march | melee | 40 | 37 | 4,200 | 198 | 2,500 | 5 | 4,800 |
+| The Mire-mother | The Sunken Fen | melee | 54 | 52 | 6,300 | 324 | 6,000 | 8 | 7,200 |
 | The Drowned Warden | The Sunken Fen | archery | 70 | 68 | 8,800 | 468 | 12,000 | 10 | 7,200 |
+| The Storm-roc | The Ashen Peaks | archery | 85 | 83 | 11,900 | 648 | 20,000 | 12 | 12,000 |
 | The Ember Wyrm | The Ashen Peaks | magic | 100 | 98 | 16,200 | 945 | 30,000 | 15 | 12,000 |
 
 Each win: a Rare boss find 1 in 12, a Legendary 1 in 80, made likelier as any fight's finds are (the four-leaf charm, the Path of Fortune, an Edict of Fortune) and by the twists. Its gold is lifted as any fight's is (the spoils perks, the Path of Bounty, an Edict of Harvest). Relic ranks cost 10, 25, 50, 90, 150 marks.
@@ -1473,9 +1476,6 @@ PASS  the march, magic, 1 h: a run pays at least the lane's best
 PASS  the march, magic, 2 h: a run pays at least the lane's best
 PASS  the march, magic, 4 h: a run pays at least the lane's best
 PASS  the march, magic, 8 h: a run pays at least the lane's best
-The Troll-chief of the hill: magic at 39 with food wins 100% (0.9 meals a fight); archery without food 0%
-PASS  The Troll-chief of the hill falls to magic at the region's top, nine fights in ten
-PASS  The Troll-chief of the hill beats archery without food more often than not
 the Sunken Fen, melee at 69: the lane's best 30167 an hour; runs 1 h 52572 (boss 100%), 2 h 48647 (boss 100%), 4 h 47014 (boss 100%), 8 h 45222 (boss 100%)
 PASS  the Sunken Fen, melee, 1 h: a run pays at least the lane's best
 PASS  the Sunken Fen, melee, 2 h: a run pays at least the lane's best
@@ -1491,9 +1491,6 @@ PASS  the Sunken Fen, magic, 1 h: a run pays at least the lane's best
 PASS  the Sunken Fen, magic, 2 h: a run pays at least the lane's best
 PASS  the Sunken Fen, magic, 4 h: a run pays at least the lane's best
 PASS  the Sunken Fen, magic, 8 h: a run pays at least the lane's best
-The Drowned Warden: melee at 69 with food wins 100% (1.1 meals a fight); magic without food 0%
-PASS  The Drowned Warden falls to melee at the region's top, nine fights in ten
-PASS  The Drowned Warden beats magic without food more often than not
 the Ashen Peaks, melee at 99: the lane's best 55187 an hour; runs 1 h 97081 (boss 100%), 2 h 88511 (boss 100%), 4 h 83597 (boss 100%), 8 h 81134 (boss 100%)
 PASS  the Ashen Peaks, melee, 1 h: a run pays at least the lane's best
 PASS  the Ashen Peaks, melee, 2 h: a run pays at least the lane's best
@@ -1509,8 +1506,23 @@ PASS  the Ashen Peaks, magic, 1 h: a run pays at least the lane's best
 PASS  the Ashen Peaks, magic, 2 h: a run pays at least the lane's best
 PASS  the Ashen Peaks, magic, 4 h: a run pays at least the lane's best
 PASS  the Ashen Peaks, magic, 8 h: a run pays at least the lane's best
-The Ember Wyrm: archery at 99 with food wins 100% (1.2 meals a fight); melee without food 0%
-PASS  The Ember Wyrm falls to archery at the region's top, nine fights in ten
+The Barrow-king: archery at 21 with food wins 100% (0.3 meals a fight); melee without food 2%
+PASS  The Barrow-king falls to archery at its tier's top, nine fights in ten
+PASS  The Barrow-king beats melee without food more often than not
+The Troll-chief of the hill: magic at 39 with food wins 100% (0.9 meals a fight); archery without food 0%
+PASS  The Troll-chief of the hill falls to magic at its tier's top, nine fights in ten
+PASS  The Troll-chief of the hill beats archery without food more often than not
+The Mire-mother: magic at 53 with food wins 100% (1.0 meals a fight); archery without food 0%
+PASS  The Mire-mother falls to magic at its tier's top, nine fights in ten
+PASS  The Mire-mother beats archery without food more often than not
+The Drowned Warden: melee at 69 with food wins 100% (1.1 meals a fight); magic without food 0%
+PASS  The Drowned Warden falls to melee at its tier's top, nine fights in ten
+PASS  The Drowned Warden beats magic without food more often than not
+The Storm-roc: melee at 84 with food wins 100% (1.1 meals a fight); magic without food 0%
+PASS  The Storm-roc falls to melee at its tier's top, nine fights in ten
+PASS  The Storm-roc beats magic without food more often than not
+The Ember Wyrm: archery at 99 with food wins 100% (1.3 meals a fight); melee without food 0%
+PASS  The Ember Wyrm falls to archery at its tier's top, nine fights in ten
 PASS  The Ember Wyrm beats melee without food more often than not
 Relics: 4310 marks for every rank of every relic; 78 marks a day at the top; 55 days
 PASS  Every relic at full rank takes two to four months of daily runs at the top

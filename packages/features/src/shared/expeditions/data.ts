@@ -9,8 +9,9 @@ export const LENGTHS = [1, 2, 4, 8] as const;
 export const STAGE_MINUTES = 10;
 export const STAGES_PER_HOUR = 6;
 
-/** A boss: its region's last foe made into a fight of its own, with ten times its health, hitting
- *  80% harder, three levels above it. */
+/** A boss: its tier's last foe made into a fight of its own, with ten times its health, hitting 80% harder,
+ *  three levels above it. Two in each region (session 210): one at the region's last tier, and one a tier or
+ *  two below it, so bosses come from the first week and a region's runs do not all end alike. */
 export interface Boss extends Foe {
   region: Region;
   /** Marks a win pays, before twists and roads. */
@@ -25,13 +26,14 @@ export const BOSS_HIT = 1.8;
 const bossOf = (
   id: string,
   region: Region,
+  tier: number,
   style: Foe['style'],
   gold: number,
   marks: number,
   finds: Boss['finds'],
   rareValue: number,
 ): Boss => {
-  const top = FOES.filter((f) => regionOf(f.tier) === region).at(-1)!;
+  const top = FOES.filter((f) => f.tier === tier && regionOf(f.tier) === region).at(-1)!;
   return {
     ...top,
     id,
@@ -47,21 +49,44 @@ const bossOf = (
     rareValue,
   };
 };
+/** By level, weakest first. */
 export const BOSSES: readonly Boss[] = [
-  bossOf('troll-chief', 'march', 'melee', 2_500, 5, { rare: 'chieftains-torc', legendary: 'crown-of-the-hill' }, 2_000),
+  bossOf('barrow-king', 'march', 2, 'magic', 800, 3, { rare: 'barrow-ring', legendary: 'wight-kings-sceptre' }, 700),
+  bossOf(
+    'troll-chief',
+    'march',
+    4,
+    'melee',
+    2_500,
+    5,
+    { rare: 'chieftains-torc', legendary: 'crown-of-the-hill' },
+    2_000,
+  ),
+  bossOf('mire-mother', 'fen', 5, 'melee', 6_000, 8, { rare: 'mire-pearl', legendary: 'mire-mothers-egg' }, 4_500),
   bossOf(
     'drowned-warden',
     'fen',
+    6,
     'archery',
     12_000,
     10,
     { rare: 'sunken-locket', legendary: 'wardens-lantern' },
     8_000,
   ),
-  bossOf('ember-wyrm', 'peaks', 'magic', 30_000, 15, { rare: 'wyrm-scale', legendary: 'heart-of-the-wyrm' }, 20_000),
+  bossOf('storm-roc', 'peaks', 7, 'archery', 20_000, 12, { rare: 'roc-talon', legendary: 'stormfeather' }, 14_000),
+  bossOf('ember-wyrm', 'peaks', 8, 'magic', 30_000, 15, { rare: 'wyrm-scale', legendary: 'heart-of-the-wyrm' }, 20_000),
 ];
 export const bossById = (id: string) => BOSSES.find((b) => b.id === id);
-export const bossIn = (region: Region) => BOSSES.find((b) => b.region === region)!;
+/** A region's bosses, weakest first. */
+export const bossesIn = (region: Region) => BOSSES.filter((b) => b.region === region);
+/** A region's last boss: the one at its last tier, and the boss every run met before session 210. */
+export const bossIn = (region: Region) => bossesIn(region).at(-1)!;
+/** The bosses a run into a region may meet: those the player's Hitpoints has opened, or the weakest. */
+export const runBosses = (region: Region, hitpoints: number): Boss[] => {
+  const all = bossesIn(region);
+  const open = all.filter((b) => b.hitpoints <= hitpoints);
+  return open.length ? open : all.slice(0, 1);
+};
 /** A boss find's chance a win. A boss's Legendary find makes its wins pay half again as many marks. */
 export const BOSS_FINDS = { rare: 1 / 12, legendary: 1 / 80 };
 export const LEGENDARY_MARKS = 1.5;

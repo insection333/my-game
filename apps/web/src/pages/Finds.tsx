@@ -6,9 +6,19 @@ import s from './finds.module.css';
 
 const TONE = { uncommon: 'moss', rare: 'woad', legendary: 'gold' } as const;
 
-export function FindGrid({ finds }: { finds: FindEntry[] }) {
+/** More finds than this scroll inside their own box (session 210: the bosses' twelve ran their panel of the
+ *  collection log past a phone's page area). */
+const IN_VIEW = 6;
+
+export function FindGrid({ finds, label }: { finds: FindEntry[]; label?: string }) {
+  const scrolls = finds.length > IN_VIEW;
   return (
-    <ul className={s.grid}>
+    <ul
+      className={scrolls ? `${s.grid} ${s.scrolls}` : s.grid}
+      data-scrollbox={scrolls || undefined}
+      tabIndex={scrolls ? 0 : undefined}
+      aria-label={scrolls ? label : undefined}
+    >
       {finds.map((f) => (
         <li key={f.item} className={s.find} data-found={f.found || undefined}>
           <ItemIcon name={f.item} size={48} silhouette={!f.found} />

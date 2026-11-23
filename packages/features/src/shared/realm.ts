@@ -29,7 +29,7 @@ export const REALM_LEAST = 4;
 
 export { weekEnds, weekOf };
 
-/** The boss that is the realm's in a week: the three in turn. */
+/** The boss that is the realm's in a week: the six in turn (three before session 210). */
 export function realmBossIn(week: string): Boss {
   const n = Math.round(Date.parse(`${week}T00:00:00Z`) / (7 * DAY));
   return BOSSES[((n % BOSSES.length) + BOSSES.length) % BOSSES.length];

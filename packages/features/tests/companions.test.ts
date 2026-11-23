@@ -22,7 +22,7 @@ describe('companions', () => {
     const wins = Array.from({ length: 200 }, (_, seed) => companionAt({ seed }, whelp));
     expect(Math.min(...wins)).toBeGreaterThanOrEqual(5);
     expect(Math.max(...wins)).toBeLessThanOrEqual(30);
-    expect(COMPANIONS).toHaveLength(14);
+    expect(COMPANIONS).toHaveLength(17);
   });
 
   it('joins at its point and not before, its deed done and then shown', () => {

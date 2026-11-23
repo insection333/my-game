@@ -8,7 +8,6 @@ import { oddsFor } from '../shared/combat/odds.ts';
 import { HITPOINTS } from '../shared/combat/data.ts';
 import {
   BOSSES,
-  bossIn,
   LENGTHS,
   REGIONS,
   ROADS,
@@ -22,7 +21,7 @@ import { expeditionsOf, type Last, type Route, type Run } from '../shared/expedi
 import { storyOf } from '../shared/expeditions/story.ts';
 import { skillLevel } from '../shared/skill.ts';
 import { restedToday } from './boss.ts';
-import { nextRoute, type Hours } from './route.ts';
+import { bossOfRun, nextRoute, type Hours } from './route.ts';
 import { stageCount } from './stage.ts';
 import { twistText } from './words.ts';
 
@@ -102,7 +101,7 @@ function chips(route: Route | Run, at: number, count: number): StageChip[] {
 export function routeView(state: State, region: Region, hours: Hours): RouteView | null {
   const route = nextRoute(state, region, hours);
   if (!route) return null;
-  const boss = bossIn(region);
+  const boss = bossOfRun(route);
   const count = stageCount(route);
   return {
     region,
@@ -124,7 +123,7 @@ export function routeView(state: State, region: Region, hours: Hours): RouteView
 
 function runView(state: State, run: Run, now: number): RunView {
   const count = stageCount(run);
-  const boss = bossIn(run.region);
+  const boss = bossOfRun(run);
   const running = LANE_IDS.some((l) => {
     const c = state.lanes[l].current;
     return c !== null && actionKey(c.action) === `expeditions:${run.region}`;

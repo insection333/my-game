@@ -24,9 +24,12 @@ export function Bosses({ bosses, realm }: { bosses: BossRow[]; realm: RealmView 
         <CombatArena now={now} place="bosses" />
         {/* The realm's boss of the week leads the bosses (session 174). */}
         {realm && <RealmRow realm={realm} />}
-        {bosses.map((b) => (
-          <Boss key={b.id} boss={b} />
-        ))}
+        {/* Six bosses since session 210: their rows scroll inside their own box, as the relics' do. */}
+        <div className={s.bosses} data-scrollbox tabIndex={0} role="group" aria-label={t('expeditions.title')}>
+          {bosses.map((b) => (
+            <Boss key={b.id} boss={b} />
+          ))}
+        </div>
       </Slot>
     </Panel>
   );

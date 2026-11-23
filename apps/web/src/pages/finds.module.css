@@ -36,3 +36,8 @@
   color: var(--ink-2);
   font-size: var(--t-small);
 }
+
+/* A long grid of finds (the bosses' twelve) keeps to about six in view. */
+.scrolls {
+  max-height: min(30rem, 52dvh);
+}

@@ -1,4 +1,4 @@
-// The deeds of expeditions and bosses (step 16): each boss beaten, then beaten ten and fifty times; each
+// The deeds of expeditions and bosses (step 16): each boss beaten, then beaten 25, 100 and 250 times (session 210), and all six; each
 // boss's Legendary find and all the bosses' finds; a run of each length brought home with its boss
 // beaten, and runs by the ten and the hundred; every twist met; and relics raised.
 import { fmt, t } from '@idle-clash/content';
@@ -7,10 +7,12 @@ import { relics } from '../shared/expeditions/relics.ts';
 import { deed, BOUNTIES, ELITE_BOUNTIES, REALM_FALLS, lower, type Deed, type DeedTier, type Steps } from './content.ts';
 import type { Reader } from './reader.ts';
 
+/** Wins over each boss (session 210: 25, 100 and 250, where 10, 50 and 100 came within months once the day's
+ *  bosses were fought as the Hearth asks, and the steps now run into the second year). */
 const BOSS_WINS: Steps = [
-  [10, 'hard'],
-  [50, 'elite'],
-  [100, 'master'],
+  [25, 'hard'],
+  [100, 'elite'],
+  [250, 'master'],
 ];
 const LENGTH_TIERS: DeedTier[] = ['easy', 'easy', 'hard', 'elite'];
 const RUNS: Steps = [
@@ -50,6 +52,16 @@ export function runs(): Deed[] {
       }),
     ),
   );
+  // Every boss beaten (session 210): six since a second came to each region.
+  const all = deed({
+    id: 'bosses-all',
+    family: 'bossesAll',
+    tier: 'elite',
+    target: BOSSES.length,
+    words: { count: fmt.int(BOSSES.length) },
+    mark: fmt.int(BOSSES.length),
+    measure: (r) => BOSSES.filter((b) => r.bossWins(b.id) > 0).length,
+  });
   const trophies = [
     ...BOSSES.map((b) =>
       deed({
@@ -162,5 +174,5 @@ export function runs(): Deed[] {
       measure,
     }),
   );
-  return [...first, ...wins, ...trophies, ...lengths, ...total, twists, ...relicDeeds, ...realm, ...bounties];
+  return [...first, all, ...wins, ...trophies, ...lengths, ...total, twists, ...relicDeeds, ...realm, ...bounties];
 }
