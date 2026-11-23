@@ -29,6 +29,9 @@
 .header {
   grid-area: header;
   z-index: 10;
+  /* Measured in the player's own text size (session 199): what fits is judged in rem, so a phone set to
+     larger text gives up the name before the bell and the account run off the screen. */
+  container: header / inline-size;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -156,6 +159,20 @@
   }
 }
 
+/* Larger text on a phone (session 199): at 20 px text a 390 px phone's header pushed the account off the
+   screen, at 24 px the bell too. Below 23.5rem of header (376 px at the usual 16 px text) the mark stands for
+   the name; below 20rem the fire shows its flame and time without the word. */
+@container header (max-width: 23.5rem) {
+  .wordmarkName {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
 @keyframes breathe {
   50% {
     transform: scale(1.25);
@@ -216,6 +233,8 @@
 
 .stripArea {
   grid-area: strip;
+  /* Measured in the player's own text size (session 199). */
+  container: strip / inline-size;
   background: var(--bg);
   border-top: 1px solid var(--line);
 }
@@ -246,12 +265,21 @@
 }
 
 /* Four lanes (the fire lit) on a phone: the chips give their icons' room to the words, so "Old
-   silverbark" keeps its end. */
-@media (max-width: 479px) {
+   silverbark" keeps its end; three do too where the text is set larger (session 199: "Old silver-…" at
+   24 px text on a 390 px phone). Judged in rem, so larger text gives up the icons sooner. */
+@container strip (max-width: 19.5rem) {
+  .strip:has(> :nth-child(3)) [data-chip-icon] {
+    display: none;
+  }
+}
+
+@container strip (max-width: 30rem) {
   .strip:has(> :nth-child(4)) [data-chip-icon] {
     display: none;
   }
+}
 
+@media (max-width: 479px) {
   /* ... and a stopped lane, whose words say why, takes the room a working one's name can spare (session
      120: "Out of / coppe…" beside "Oak tree" with room to spare). */
   .strip:has(> :nth-child(4)) > [data-halted] {

@@ -336,3 +336,4 @@
 - Session 196: the help sheets say the game as it is (Hitpoints' third share, every kind of goal, bounties and the realm's boss, lucky actions, whetstones and keys, Sell finds).
 - Session 197: dates within half a year are said without their year, so the last week of December keeps the hour things turn ("4 Jan, 11:00").
 - Session 198: the realm's boss asks three strikes for each player who struck it last week, four at least, so a realm of one or a realm whose friends drift off can still fell it.
+- Session 199: larger text on a phone no longer pushes the account and bell off the header or cuts lane names short; step 6 checks every view at 150% text.
