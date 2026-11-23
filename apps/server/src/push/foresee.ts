@@ -5,10 +5,6 @@
 import { isQuietStop } from '@idle-clash/content';
 import { DEFAULT_CONFIG, LANE_IDS, seeded, type Engine, type GameEvent, type State } from '@idle-clash/kernel';
 
-/** Stops that are no news: the quiet ones, and the fire's lane going out a few minutes after the player
- *  leaves (it always does, and the tour says so). */
-const unworthy = (code: string) => isQuietStop(code) || code === 'fireOut';
-
 export const HOUR = 3_600_000;
 
 type Stopped = Extract<GameEvent, { type: 'laneStopped' }>;
@@ -24,7 +20,7 @@ export function foresee(engine: Engine, state: State, leftAt: number): Foreseen[
   // and starts again by itself (session 149) is not stopped at the end.
   const stops = LANE_IDS.flatMap((lane) => {
     const s = ahead.lanes[lane].stopped;
-    if (!s || ahead.lanes[lane].current || unworthy(s.reason.code) || s.at <= leftAt) return [];
+    if (!s || ahead.lanes[lane].current || isQuietStop(s.reason.code) || s.at <= leftAt) return [];
     const event: Stopped = { type: 'laneStopped', at: s.at, lane, reason: s.reason, action: s.action ?? null };
     return [event];
   }).sort((a, b) => a.at - b.at);

@@ -326,3 +326,4 @@
 - Session 186: the Storehouse finds an item by name once 30 kinds are held.
 - Session 187: the Storehouse sells every find kept to sell (the Uncommon finds, used nowhere) at one press, asking first.
 - Session 188: the Hearth's Next up says the day's fights waiting: a share or a bounty to take, the realm's strike, the bosses that can be fought and the bounties on offer.
+- Session 189: the fire going out is a quiet stop: no red line in the recap or the tray on every return.
