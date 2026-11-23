@@ -8,7 +8,7 @@ import { useGame } from '../game/hooks.ts';
 import { navigate } from '../router.ts';
 import { fills, Slot } from '../slots.tsx';
 import { FindGrid } from './Finds.tsx';
-import { ItemGrid } from './Items.tsx';
+import { ItemGrid } from './ItemGrid.tsx';
 import { PageHead } from './PageHead.tsx';
 import s from './pages.module.css';
 
