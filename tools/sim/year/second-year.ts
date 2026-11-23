@@ -3,6 +3,8 @@
 // kind of first came, the firsts and deeds of each quarter of year two, the longest wait for a first, and
 // what each currency holds with nothing new to buy. Figures for now; each becomes a check as the plan's
 // parts land (session 221). Held already: the lanes keep working and the Storehouse never fills.
+import { seasonAt } from '@idle-clash/features';
+import { DAY, T0 } from '../player.ts';
 import type { Year } from './player.ts';
 
 type Check = (ok: boolean, what: string) => void;
@@ -72,9 +74,31 @@ export function secondYearChecks(y: Year, check: Check, lines: string[]): void {
   lines.push(`- expedition marks ${held((d) => d.marks)}`);
   lines.push(`- the Deep's deepest ${held((d) => d.deepest ?? 0)}`);
   lines.push(`- war marks ${held((d) => d.castle?.held ?? 0)}`);
+  lines.push(`- legends taken ${held((d) => d.castle?.legends ?? 0)}`);
   const castle = at.map((n) => y.days[n - 1].castle);
   lines.push(
     `- the castle: level ${castle.map((c) => c?.level.toFixed(1) ?? '-').join(', ')}; evolution ${castle.map((c) => c?.evolution ?? '-').join(', ')}; incursion tier ${castle.map((c) => c?.tier ?? '-').join(', ')}`,
+  );
+
+  // The season's legend (session 220): each season that ends within the two years taken, within six weeks.
+  const opened = new Map<number, number>();
+  for (const d of y.days) {
+    const s = seasonAt(T0 + (d.day - 1) * DAY + 12 * 3600 * 1000);
+    if (s && !opened.has(s.number) && s.end <= T0 + TWO_YEARS * DAY) opened.set(s.number, d.day);
+  }
+  const takenIn = [...opened].map(([season, from]) => {
+    const before = y.days[from - 2]?.castle?.legends ?? 0;
+    const day = y.days.find((d) => d.day >= from && (d.castle?.legends ?? 0) > before)?.day;
+    return { season, days: day === undefined ? Infinity : day - from + 1 };
+  });
+  lines.push(
+    `The season's legend taken, days into each season: ${takenIn.map((x) => (Number.isFinite(x.days) ? x.days : 'never')).join(', ')}`,
+  );
+  const most = Math.max(...takenIn.map((x) => x.days));
+  const longest = Number.isFinite(most) ? `${most} days` : 'one never taken';
+  check(
+    takenIn.length > 0 && most <= 42,
+    `Every season's legend is taken within six weeks of its opening (the longest ${longest})`,
   );
 
   // Held already in year two, as in year one.

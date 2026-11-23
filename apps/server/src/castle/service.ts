@@ -264,7 +264,6 @@ function incursion(io: Io, c: Castle): Outcome {
 function legend(io: Io, c: Castle): Outcome {
   const season = seasonAt(io.now)?.number;
   if (!season) return { ok: false, reason: 'locked' };
-  const before = E.legendNow(c, season);
   const r = E.assaultLegend(c, season, io.now, roll());
   if (r === 'ap') return { ok: false, reason: 'ap' };
   if (r === 'none') return { ok: false, reason: 'unknown' };
@@ -274,7 +273,7 @@ function legend(io: Io, c: Castle): Outcome {
     legend: id,
     season,
     chamber: r.chamber,
-    tier: before.base + E.LEGEND.ABOVE + E.LEGEND.STEP * r.chamber,
+    level: E.chamberOf(r.castle, season, r.chamber, io.now).level,
     won: r.won,
     r: r.r,
     ...E.battleAccount(r.attack, r.defense, r.r),

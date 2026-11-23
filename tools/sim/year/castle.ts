@@ -18,7 +18,7 @@ import {
   type BuildingId,
   type UnitId,
 } from '@idle-clash/content';
-import { castleEngine as E, totalLevel } from '@idle-clash/features';
+import { castleEngine as E, seasonAt, totalLevel } from '@idle-clash/features';
 import type { State } from '@idle-clash/kernel';
 import { mirrored } from '../../../apps/server/src/castle/mirror.ts';
 
@@ -38,6 +38,8 @@ export interface CastleDay {
   /** The troops' evolution, the least evolved of the three (0 to 3), and their lowest level. */
   evolution: number;
   troops: number;
+  /** Season's legends taken, all five chambers (session 220). */
+  legends: number;
 }
 
 /** A share of the gold left after the treasury is topped up, spent on the castle each visit; nearly all once
@@ -50,6 +52,8 @@ const STRONGHOLDS_A_DAY = SIEGE.FATIGUE_FREE;
 const TEMPERS_A_VISIT = 3;
 /** A bribe at the fortress is paid only while it is at most this share of the purse (session 167). */
 const SPY_SHARE = 0.1;
+/** The bribes at the season's legend a visit, at most this share of the purse: the season's goal. */
+const LEGEND_SPY_SHARE = 0.3;
 /** The treasury kept: this many times what the edict needs. */
 const TREASURY_TIMES = 1.5;
 
@@ -117,6 +121,26 @@ export class Lordship {
       purse = paid.purse;
       c = E.spyOnFoe(paid.castle, key, c.incursionTier, 'poison', t, this.roll()).castle;
     }
+    // Spies at the season's legend (session 220): its next chamber's wells poisoned when that would bring it
+    // within reach and it is not yet, as its row says (session 142), only on a visit whose gold holds the
+    // poisonings it needs and one try more (a single stack lasts four hours, so two are sent together).
+    const season = seasonAt(t)?.number ?? 0;
+    const chamber = season > 0 ? E.nextChamber(c, season, t) : null;
+    if (chamber) {
+      const lkey = E.chamberKey(season, chamber.chamber.n);
+      const at = (o: E.FoeOps) => E.bestOffense(c, E.chamberSide(chamber.chamber, o), t).r;
+      const ops = () => E.foeOps(c, lkey, t);
+      const need = [1, 2].find((k) => at({ ...ops(), poison: Math.min(2, ops().poison + k) }) >= 1.05);
+      const cost = E.foeSpyCosts(c, poison, t);
+      if (at(ops()) < 1.05 && need && cost.gold * (need + 1) <= purse * LEGEND_SPY_SHARE)
+        for (let n = 0; n <= need && at(ops()) < 1.05; n++) {
+          if (E.foeSpyRefusal(c, lkey, 'poison', t)) break;
+          const paid = E.pay(wallet(), cost.gold);
+          if (!paid) break;
+          purse = paid.purse;
+          c = E.spyOnFoe(paid.castle, lkey, chamber.chamber.level, 'poison', t, this.roll()).castle;
+        }
+    }
     // Building, once the treasury is whole: the cheapest level first, then the War College with marks.
     if (c.treasury >= required) {
       let budget = Math.floor(purse * share);
@@ -144,6 +168,18 @@ export class Lordship {
     let dug = false;
     for (let guard = 0; guard < 40; guard++) {
       if (c.activeAp < SINKS.DRILL_AP) break;
+      // The season's legend (session 220): the next chamber while it is likely to fall, as the fortress.
+      const chamber = season > 0 ? E.nextChamber(c, season, t) : null;
+      if (chamber && c.activeAp >= E.LEGEND.AP) {
+        const best = E.bestOffense(c, chamber.side, t);
+        if (best.r >= 1.05) {
+          const r = E.assaultLegend({ ...c, offense: best.shares }, season, t, this.roll());
+          if (r !== 'ap' && r !== 'none') {
+            c = r.castle;
+            continue;
+          }
+        }
+      }
       if (c.activeAp >= SINKS.INCURSION_AP) {
         const tier = c.incursionTier;
         const odds = E.combatRatio(
@@ -217,6 +253,7 @@ export class Lordship {
     if (evolved(c) > evolved(was)) firsts.push('castle:evolve');
     if (sum(c.relics) > sum(was.relics)) firsts.push('castle:relic');
     if (sum(c.tempers) > sum(was.tempers)) firsts.push('castle:temper');
+    if (c.legends > was.legends) firsts.push('castle:legend');
     this.castle = c;
     const next = mirrored({ ...state, items: { ...state.items, gold: Math.max(0, Math.floor(purse)) } }, c, t);
     return {
@@ -231,6 +268,7 @@ export class Lordship {
         tier: c.incursionTier,
         marks: c.warMarksEarned,
         held: c.warMarks,
+        legends: c.legends,
         rating: c.rating,
         evolution: Math.min(...UNIT_IDS.map((u) => E.evolutionOf(c.levels[u]))),
         troops: Math.min(...UNIT_IDS.map((u) => c.levels[u])),

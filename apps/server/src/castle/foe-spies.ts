@@ -16,7 +16,7 @@ function foeOf(att: Castle, target: string, now: number) {
     const next = season ? E.nextChamber(att, season, now) : null;
     if (!season || !next || target !== E.chamberKey(season, next.chamber.n)) return null;
     const legend = E.legendOf(season);
-    return { level: next.chamber.tier, name: E.legendName(legend), data: { legend, chamber: next.chamber.n } };
+    return { level: next.chamber.level, name: E.legendName(legend), data: { legend, chamber: next.chamber.n } };
   }
   if (target.startsWith('fortress:')) {
     const tier = Number(target.slice('fortress:'.length));

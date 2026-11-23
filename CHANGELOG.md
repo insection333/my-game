@@ -358,3 +358,4 @@
 - Session 217: the pedlar, wanting three lots a day of what the player has found, gathered or cooked, each handed in at one press for gold and favour; favour deeds, the Pedlar's ribbon and Friend of the Road.
 - Session 218: the realm's work of the season, raised together in five stages from gold and materials of any tier, no one ranked by what they gave; each stage told to every giver, the finished work thanked by name; deeds for works raised.
 - Session 219: Kindling's gifts: an ornament on a seal at its sixth Kindling, the Kindled frame at any eighth, each skill's own title at its tenth, and a Kindlings ladder on Hiscores.
+- Session 220: the legendary siege: each season a named fortress of five chambers on the War, taken in order once a season, measured against the lord's own might at their first assault; war marks, two deeds and the Legend banner.

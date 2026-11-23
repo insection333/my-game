@@ -39,7 +39,7 @@ const assault = (castle: E.Castle, l: NonNullable<ReturnType<typeof legendNow>>)
   void fight(
     'legend',
     { type: 'legend', shares: [...l.best.shares] },
-    fieldFor(castle, l.best.shares, l.side, l.chamber.tier, E.legendOf(l.season)),
+    fieldFor(castle, l.best.shares, l.side, l.chamber.level, E.legendOf(l.season)),
   );
 
 export function Legend() {
@@ -70,7 +70,7 @@ export function Legend() {
             <FoeCard
               crest={E.legendOf(season)}
               name={t('castle.legend.chamberName', { legend: name, n: fmt.int(l.chamber.n + 1) })}
-              host={hostOf(l.side.shares, allAt(l.chamber.tier))}
+              host={hostOf(l.side.shares, allAt(l.chamber.level))}
               chance={beyond ? null : l.chance}
               odds={
                 beyond
@@ -134,11 +134,11 @@ export function LegendSheet({ onClose }: { onClose: () => void }) {
           </p>
         )}
         <p className={s.muted}>{t('castle.legend.note')}</p>
-        <FoeMissions foe={l.key} level={l.chamber.tier} />
+        <FoeMissions foe={l.key} level={l.chamber.level} />
         <div className={s.sheetSection}>
           <h3>{t('castle.legend.title')}</h3>
           <p>{garrisonWords(l.chamber.garrison, l.chamber.trap)}</p>
-          <AttackPlan def={l.side} foe={{ level: l.chamber.tier, crest: E.legendOf(l.season) }} />
+          <AttackPlan def={l.side} foe={{ level: l.chamber.level, crest: E.legendOf(l.season) }} />
           <div className={s.save}>
             <Button
               variant="primary"

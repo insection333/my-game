@@ -244,5 +244,5 @@ export const castleWar = {
   'castle.legend.pays': 'Pays {marks} war marks and training',
   'castle.legend.takenLine': '{legend} is taken this season. A new legend stands when the season turns.',
   'castle.legend.note':
-    'Each season a legendary fortress of five chambers, taken in order, once. Every lord meets the same garrisons and traps; its strength is set by your fortress tier at your first assault, and rises two tiers a chamber.',
+    'Each season a legendary fortress of five chambers, taken in order, once. Every lord meets the same garrisons and traps. Its strength is measured against your castle at your first assault, each chamber stronger than the last: the first falls to a formation set against it, the last asks for spies and a castle grown in the season.',
 };
