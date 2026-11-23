@@ -93,4 +93,25 @@ describe('the bounty board', () => {
     expect(winsOver(used.state, offer.foe)).toBe(winsOver(s, offer.foe));
     expect(combat.routes.bountyClaim.run(used.state, {}, T0).result).toMatchObject({ ok: false, reason: 'notDone' });
   });
+
+  it("counts only the Combat lane's own fights of its foe, not an expedition's (session 183)", () => {
+    let s = fighterAt('march', 2, 'melee');
+    const offer = openOffers(s, T0)[0];
+    s = combat.routes.bounty.run(s, { foe: offer.foe }, T0).state;
+    // An expedition's stage fights of the foe raise its wins (its mastery), at the foe's usual strength.
+    const key = `combat:${offer.foe}`;
+    const away = { ...s, mastery: { ...s.mastery, [key]: (s.mastery[key] ?? 0) + offer.count } };
+    expect(combat.routes.bountyClaim.run(away, {}, T0).result).toMatchObject({ ok: false, reason: 'notDone' });
+  });
+
+  it("says when new bounties come once the day's three are taken (session 183)", () => {
+    let s = fighterAt('march', 2, 'melee');
+    for (let i = 0; i < 3; i++) {
+      s = combat.routes.bounty.run(s, { foe: openOffers(s, T0)[0].foe }, T0).state;
+      s = combat.routes.bountyLetGo.run(s, {}, T0).state;
+    }
+    const view = combat.slots['combat.bounty']({ state: s, now: T0 }) as unknown as { offers: unknown[]; note: string };
+    expect(view.offers).toHaveLength(0);
+    expect(view.note).toMatch(/new bounties come/);
+  });
 });

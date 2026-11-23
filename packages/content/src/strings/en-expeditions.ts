@@ -39,7 +39,7 @@ export const expeditions = {
   'hiscores.realm': "Realm's boss",
   'hiscores.realmStrikes': 'Strikes',
   'hiscores.unrankedRealm': "You join this week's ladder with your first strike on the realm's boss.",
-  'realm.fell': 'Fallen this week. A new boss comes on Monday.',
+  'realm.fell': 'Fallen this week. A new boss comes {when}.',
   'realm.note':
     'The whole realm fights it this week, each at their own measure, once a day. When the realm has struck enough, it falls, and everyone who struck shares the spoils.',
   'realm.struck': '{name}: struck',

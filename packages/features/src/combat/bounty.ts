@@ -1,12 +1,13 @@
 // The bounty board on the Combat page (session 175): the day's three bounties while none is held; the one
 // held, with its count and what it pays; Take, Claim, and Let go. Pure routes: each takes the state and
 // returns a new one, an answer and the events to announce.
-import { fmt, t } from '@idle-clash/content';
+import { dayTurns, fmt, t } from '@idle-clash/content';
 import { give, type GameEvent, type State } from '@idle-clash/kernel';
 import {
   BOUNTY_GOLD_FIGHTS,
   BOUNTY_MARKS,
   bountyOf,
+  bountyWins,
   dayOf,
   offersFor,
   setBounty,
@@ -50,7 +51,7 @@ export function take(state: State, foe: string, now: number): Answer<TakeResult>
   const day = dayOf(now);
   setBounty(out, {
     ...b,
-    taken: { ...offer, base: winsOver(state, foe), day, at: now },
+    taken: { ...offer, base: winsOver(state, foe), day, at: now, won: 0 },
     day,
     took: [...(b.day === day ? b.took : []), foe],
   });
@@ -60,8 +61,7 @@ export function take(state: State, foe: string, now: number): Answer<TakeResult>
 export const progressOf = (state: State) => {
   const held = bountyOf(state).taken;
   if (!held) return null;
-  // Never below nothing: a count taken before finds were kept apart (session 181) may stand above the wins.
-  return { now: Math.max(0, Math.min(held.count, winsOver(state, held.foe) - held.base)), of: held.count };
+  return { now: Math.min(held.count, bountyWins(state)), of: held.count };
 };
 
 export type ClaimResult = { ok: true } | { ok: false; reason: 'none' | 'notDone' };
@@ -128,7 +128,11 @@ export function bountyView(state: State, now: number): BountyView | null {
   const b = bountyOf(state);
   const p = progressOf(state);
   const offers = b.taken ? [] : openOffers(state, now).map(line);
-  if (!b.taken && !offers.length) return null;
+  // The day's three taken: the board says when the next come (session 183: it went, with no word of when).
+  if (!b.taken && !offers.length)
+    return offersFor(state, now, fair(state)).length
+      ? { held: null, offers: [], note: t('bounty.allTaken', { back: dayTurns(now) }) }
+      : null;
   return {
     held:
       b.taken && p

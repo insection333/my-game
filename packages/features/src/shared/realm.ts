@@ -10,6 +10,7 @@ import { FOES, type Foe } from './combat/data.ts';
 import { oddsFor } from './combat/odds.ts';
 import { BOSSES, type Boss } from './expeditions/data.ts';
 import { skillLevel } from './skill.ts';
+import { weekEnds, weekOf } from './week-time.ts';
 
 const DAY = 86_400_000;
 /** The realm's boss has a boss's health: this many times the foe it is measured from. */
@@ -24,12 +25,7 @@ export const REALM_SHARE_STRIKES = 10;
 export const REALM_PER_PLAYER = 4;
 export const REALM_LEAST = 8;
 
-/** The Monday a moment's week began (UTC), as the week's contract and the realm's boss reckon it. */
-export function weekOf(at: number): string {
-  const d = new Date(at);
-  const back = (d.getUTCDay() + 6) % 7;
-  return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() - back)).toISOString().slice(0, 10);
-}
+export { weekEnds, weekOf };
 
 /** The boss that is the realm's in a week: the three in turn. */
 export function realmBossIn(week: string): Boss {

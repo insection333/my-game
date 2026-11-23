@@ -6,6 +6,7 @@ import { HOUR, seeded, type GameEvent, type State } from '@idle-clash/kernel';
 import { describe, expect, it } from 'vitest';
 import { expeditions } from '../src/expeditions/index.ts';
 import { realmName, realmWords } from '../src/index.ts';
+import { realmView } from '../src/expeditions/realm.ts';
 import { oddsFor } from '../src/shared/combat/odds.ts';
 import { expeditionsOf } from '../src/shared/expeditions/state.ts';
 import { realmBossIn, realmFoe, weekOf, REALM_HP, type RealmMirror } from '../src/shared/realm.ts';
@@ -81,5 +82,11 @@ describe("the realm's boss of the week", () => {
       ok: false,
       reason: 'none',
     });
+  });
+
+  it("says when a fallen boss's successor comes in the player's own clock, not on Monday (session 183)", () => {
+    const view = realmView(told(fighterAt('fen', 3), { fell: true }), T0)!;
+    expect(view.note).not.toMatch(/Monday/);
+    expect(view.note).toMatch(/\d{2}:\d{2}/);
   });
 });

@@ -6,7 +6,9 @@ import { HOUR, mend, newState, SAVE_VERSION, seeded, type Command, type State } 
 import fc from 'fast-check';
 import { describe, expect, it } from 'vitest';
 import { FEATURES } from '../src/index.ts';
+import { FOES } from '../src/shared/combat/data.ts';
 import { relics } from '../src/shared/expeditions/relics.ts';
+import { weekOf } from '../src/shared/week-time.ts';
 import { expeditionsOf, setExpeditions } from '../src/shared/expeditions/state.ts';
 import { allSkills } from '../src/shared/standing.ts';
 import { engine, T0 } from './helpers/expedition.ts';
@@ -29,8 +31,11 @@ const POOL: Record<string, fc.Arbitrary<unknown>> = {
   relic: fc.constantFrom(...relics().map((r) => r.id), 'no-such-relic'),
   skill: fc.constantFrom(...SKILLS, 'no-such-skill'),
   path: fc.constantFrom('bounty', 'lore', 'fortune', null),
-  kind: fc.constantFrom('title', 'banner', 'frame'),
-  id: fc.constantFrom('woad', 'the-kindled', 'no-such-honour', null),
+  kind: fc.constantFrom('title', 'banner', 'frame', 'picture', 'companion', 'glow', 'badge', 'scene'),
+  id: fc.constantFrom('woad', 'the-kindled', 'squirrel', 'no-such-honour', null),
+  // Sessions 172 to 179: a bounty's foe, the week's task to swap.
+  foe: fc.constantFrom(...FOES.map((f) => f.id), 'no-such-foe'),
+  task: fc.constantFrom(0, 1, 3, 4, -1),
   action: fc.constantFrom(...ACTIONS),
 };
 
@@ -78,6 +83,15 @@ function veteran(seed: number): State {
     items: { ...Object.fromEntries(ITEMS.map((i) => [i, 500])), gold: 50_000_000 },
   };
   setExpeditions(state, { ...expeditionsOf(state), marks: 2_000 });
+  // The realm's week as the server tells it (session 174): fallen with this player's strike, a share owed.
+  state.features.realm = {
+    week: weekOf(T0),
+    needed: 8,
+    strikes: 9,
+    mine: 2,
+    fell: true,
+    owed: { week: weekOf(T0), boss: 'troll-chief' },
+  };
   return state;
 }
 
@@ -131,14 +145,14 @@ describe('the routes and commands, in any order', () => {
   it('leave a newcomer’s save sound, and a refusal changes nothing', () => {
     fc.assert(
       fc.property(fc.integer({ min: 1, max: 1e6 }), steps, (seed, plan) => play(newState(seed, T0), plan)),
-      { numRuns: 60 },
+      { numRuns: Number(process.env.RUNS ?? 60) },
     );
   });
 
   it('leave a veteran’s save sound, and a refusal changes nothing', () => {
     fc.assert(
       fc.property(fc.integer({ min: 1, max: 1e6 }), steps, (seed, plan) => play(veteran(seed), plan)),
-      { numRuns: 60 },
+      { numRuns: Number(process.env.RUNS ?? 60) },
     );
   });
 });
