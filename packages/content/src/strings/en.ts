@@ -87,6 +87,10 @@ export const en: Record<string, string> = {
   'fault.title': 'Something broke here',
   'fault.lead': 'It has been reported. Your lanes keep working; reload to carry on.',
   'fault.reload': 'Reload',
+  // A browser too old for the game, or with its scripts off (session 207), said before the game loads.
+  'browser.tooOld':
+    'This browser is too old for Idle Clash. Update it, or open the game in a newer one: Safari, Chrome, Firefox or Edge from 2022 on.',
+  'browser.noScript': 'Idle Clash needs JavaScript. Switch it on for this site to play.',
   'tour.title': 'Getting started',
   'tour.goals': 'Start here: each first step has a button that starts it, and pays when it is done.',
   'tour.lanes': 'Your lanes do the work, and keep at it for up to a day while you are away.',
