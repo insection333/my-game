@@ -16,6 +16,7 @@ import {
   type State,
 } from '@idle-clash/kernel';
 import { nextRoute } from '../../../packages/features/src/expeditions/route.ts';
+import { expeditionsOf } from '../../../packages/features/src/shared/expeditions/state.ts';
 import { bestFoe } from '../combat.ts';
 import { DAY, T0 } from '../player.ts';
 import { Lordship, type CastleDay } from './castle.ts';
@@ -62,6 +63,8 @@ export interface YearDay {
   idle: Record<string, number>;
   stops: Record<string, number>;
   gold: number;
+  /** Expedition marks held, unspent (session 209). */
+  marks: number;
   slots: [number, number];
   /** What each lane was left running (and what was queued). */
   lanes?: Record<string, string>;
@@ -142,6 +145,7 @@ export function playYear(
       idle: {},
       stops: {},
       gold: 0,
+      marks: 0,
       slots: [0, 0],
     };
     today = day;
@@ -174,6 +178,7 @@ export function playYear(
       left = window[1];
     }
     day.gold = state.items.gold ?? 0;
+    day.marks = expeditionsOf(state).marks;
     day.lanes = Object.fromEntries(
       LANES.map((l) => [l, `${state.lanes[l].current?.action.id ?? '-'}>${state.lanes[l].next?.id ?? ''}`]),
     );
