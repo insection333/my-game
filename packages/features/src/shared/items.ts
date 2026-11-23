@@ -2,6 +2,7 @@
 // it comes from (actions that give it, finds, the vendor's shelf), and what uses it (actions that take
 // it, and what a fighter eats, wears and carries, by the item's own kind). A feature that arrives later
 // answers by declaring its content.
+import { TROPHY_STYLE } from './temper.ts';
 import { fmt, t, type Item } from '@idle-clash/content';
 import type { Feature } from '../define.ts';
 import { findOf, RARE_FIND_COMPLETIONS } from './catalog.ts';
@@ -80,8 +81,22 @@ function kept(def: Item | null): ItemSource[] {
   if (def.kind === 'find' && def.value === 0)
     return [{ ...COMBAT, feature: 'storehouse', label: t('item.panel.inLog'), href: '/storehouse/log' }];
   const rare = findOf(def.id);
-  if (rare?.rarity === 'rare') return [mastery(rare)];
-  return [];
+  // A boss's Rare find is also a trophy, tempering gear at the forge (session 216).
+  const style = Object.hasOwn(TROPHY_STYLE, def.id) ? TROPHY_STYLE[def.id] : null;
+  const trophy: ItemSource[] = style
+    ? [
+        {
+          feature: 'smithing',
+          skill: 'smithing',
+          action: null,
+          rarity: null,
+          count: 0,
+          label: t('item.panel.tempers', { style: t(`skill.${style}`) }),
+        },
+      ]
+    : [];
+  if (rare?.rarity === 'rare') return [mastery(rare), ...trophy];
+  return trophy;
 }
 
 /** A Rare find, used (session 53): its mastery completions on one of its skill's actions, a style's on

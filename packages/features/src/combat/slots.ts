@@ -18,6 +18,7 @@ import { healthShown } from './arena.ts';
 import { gearDoes, wearNeeds } from './gear.ts';
 import { FEATURE } from './rules.ts';
 import { xpGainsWords } from '../shared/xp-gains.ts';
+import { temperLine, type TemperLine } from '../shared/temper-view.ts';
 
 export interface GearChoice {
   item: string;
@@ -27,6 +28,8 @@ export interface GearChoice {
   does: string;
   /** "Needs Melee level 10" when it cannot be worn yet. */
   needs: string | null;
+  /** The worn piece's tempering (session 216), from Smithing 90 or once tempered. */
+  temper: TemperLine | null;
 }
 export interface LoadoutSlot {
   slot: GearSlot;
@@ -111,6 +114,7 @@ function loadout(state: State, now: number): LoadoutView {
           worn: id === item,
           does: gearDoes(id) ?? '',
           needs: short ? t('gear.needs', { skill: t(`skill.${needs.skill}`), level: fmt.int(needs.level) }) : null,
+          temper: id === item ? temperLine(state, id) : null,
         };
       });
     return {

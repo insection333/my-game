@@ -21,6 +21,7 @@ import { bestFoe } from '../combat.ts';
 import { DAY, T0 } from '../player.ts';
 import { dailyBoss } from './bosses.ts';
 import { descent, raiseDeepRelics } from './deep.ts';
+import { temperGear } from './temper.ts';
 import { Lordship } from './castle.ts';
 import type { Kind, Year, YearDay } from './kinds.ts';
 import { equip, feed, goalsAndDeeds, raiseRelics, raiseWorks, styleToTrain, takePaths, tidy } from './house.ts';
@@ -162,6 +163,10 @@ export function playYear(
     if (leaving) {
       state = takePaths(state, t);
       state = raiseDeepRelics(state, t).state;
+      // Gear tempered with boss trophies from Smithing 90 (session 216), a first each step.
+      const tempered = temperGear(state, t);
+      state = tempered.state;
+      if (tempered.steps) dayFirst('temper');
       const r = raiseRelics(state, t);
       state = r.state;
       if (r.bought) dayFirst('relic');

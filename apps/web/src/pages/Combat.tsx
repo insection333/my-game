@@ -182,20 +182,37 @@ function CombatPage({ combat }: { combat: Feature }) {
 
 function GearChoices({ gear }: { gear: LoadoutSlot }) {
   if (!gear.choices.length) return <p className={s.note}>{t('gear.nothingToWear')}</p>;
+  const tempering = gear.choices.some((c) => c.temper?.next);
   return (
     <div>
+      {tempering && <p className={s.note}>{t('temper.note')}</p>}
       {gear.choices.map((c) => (
         <ActionRow
           key={c.item}
           icon={<ItemIcon name={c.item} size={32} />}
           name={c.name}
-          facts={[c.does, ...(c.needs ? [c.needs] : [])]}
+          facts={[
+            c.does,
+            ...(c.needs ? [c.needs] : []),
+            // The worn piece's tempering (session 216): its steps, its next step's price and what is short.
+            ...(c.temper ? [c.temper.steps, c.temper.next, c.temper.short].filter((x): x is string => !!x) : []),
+          ]}
           status={c.worn ? <Pill tone="moss">{t('gear.worn')}</Pill> : undefined}
           actions={
             c.worn ? (
-              <Button variant="secondary" onClick={() => game.act('combat', 'remove', { slot: gear.slot })}>
-                {t('gear.remove')}
-              </Button>
+              <>
+                {c.temper?.next && (
+                  <Button
+                    disabled={!c.temper.ready}
+                    onClick={() => game.act('smithing', 'temper', { slot: gear.slot })}
+                  >
+                    {t('temper.press')}
+                  </Button>
+                )}
+                <Button variant="secondary" onClick={() => game.act('combat', 'remove', { slot: gear.slot })}>
+                  {t('gear.remove')}
+                </Button>
+              </>
             ) : (
               <Button
                 variant="primary"
