@@ -7,7 +7,7 @@ export const push = {
   'push.moreOne': '{line} And 1 more.',
   'settings.push': 'Notices while away',
   'settings.push.about':
-    'A lane that stops, your lanes about to rest, a siege that breached your walls. Never while the game is open, never from 22:00 to 08:00, three a day at most.',
+    'A lane that stops, your lanes about to rest, a siege that breached your walls. Never while the game is open, never from 22:00 to 08:00, three a day at most. Signing out switches them off here.',
   'settings.push.on': 'On',
   'settings.push.off': 'Off',
   'settings.push.blocked': "Notices are blocked for this site in your browser's settings.",
