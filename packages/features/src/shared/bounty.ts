@@ -6,6 +6,7 @@
 import { seeded, type State } from '@idle-clash/kernel';
 import { z } from 'zod';
 import { FOES, foeById, HITPOINTS, type Foe } from './combat/data.ts';
+import { doneCount } from './given.ts';
 import { partReader } from './part.ts';
 import { skillLevel } from './skill.ts';
 
@@ -51,11 +52,9 @@ export const BOUNTY_OFFERS = 3;
 
 export const dayOf = (at: number): string => new Date(at).toISOString().slice(0, 10);
 
-/** Wins against a foe so far (its mastery counts them). */
-export const winsOver = (state: State, foe: string): number => {
-  const key = `combat:${foe}`;
-  return Object.hasOwn(state.mastery, key) ? state.mastery[key] : 0;
-};
+/** Wins against a foe so far: its mastery count, less what Rare finds gave it (session 181: one find made
+ *  500 wins and finished any bounty at once). */
+export const winsOver = (state: State, foe: string): number => doneCount(state, `combat:${foe}`);
 
 /** The elite bounty held on this foe, if any, not yet done; for a fight begun at `startedAt`, one taken
  *  before it began (a fight under way when the bounty is taken is fought as it began). */

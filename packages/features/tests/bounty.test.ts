@@ -12,6 +12,10 @@ import { foeById } from '../src/shared/combat/data.ts';
 import { oddsFor } from '../src/shared/combat/odds.ts';
 import { expeditionsOf } from '../src/shared/expeditions/state.ts';
 import { engine, fighterAt, T0 } from './helpers/expedition.ts';
+import type { State } from '@idle-clash/kernel';
+import { FEATURES } from '../src/index.ts';
+
+const store = FEATURES.find((f) => f.id === 'storehouse')!;
 
 describe('the bounty board', () => {
   it('offers three bounties on foes fared well against, each about an hour of fights', () => {
@@ -70,5 +74,23 @@ describe('the bounty board', () => {
     expect(asFought(s, foe).hp).toBe(Math.round(foe.hp * ELITE.HP));
     expect(asFought(s, foe, at - 1)).toBe(foe);
     expect(oddsFor(s, foe)!.secondsPerFight).toBeGreaterThan(oddsFor(s0, foe)!.secondsPerFight);
+  });
+
+  it('is not done by a Rare find spent on its foe: a find gives mastery, not wins (session 181)', () => {
+    let s = fighterAt('march', 2, 'melee');
+    const offer = openOffers(s, T0)[0];
+    s = combat.routes.bounty.run(s, { foe: offer.foe }, T0).state;
+    s = { ...s, items: { ...s.items, 'torn-banner': 3 } };
+    const used = store.routes.useFind.run(
+      s,
+      { item: 'torn-banner', action: { feature: 'combat', id: offer.foe }, count: 3 },
+      T0,
+    ) as {
+      state: State;
+      result: { ok: boolean };
+    };
+    expect(used.result.ok).toBe(true);
+    expect(winsOver(used.state, offer.foe)).toBe(winsOver(s, offer.foe));
+    expect(combat.routes.bountyClaim.run(used.state, {}, T0).result).toMatchObject({ ok: false, reason: 'notDone' });
   });
 });

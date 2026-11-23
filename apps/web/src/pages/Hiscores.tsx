@@ -3,7 +3,7 @@
 // Deeds.tsx. The ladders come from the server; the page asks again each minute while it is open.
 import type { HiscoreRow, HiscoresResponse } from '@idle-clash/contracts';
 import { fmt, hasString, t } from '@idle-clash/content';
-import { kindlingData, realmBossIn, seasonView, weekOf } from '@idle-clash/features';
+import { kindlingData, realmBossIn, realmName, seasonView, weekOf } from '@idle-clash/features';
 import { FireSeal, hasIcon, ItemIcon, Panel, Picture, Pill, Tabs } from '@idle-clash/ui';
 import { useEffect, useState, type ReactNode } from 'react';
 import { api } from '../api.ts';
@@ -110,11 +110,7 @@ export function Hiscores() {
               {ladder && (ladder.rows.length > 0 || you) && (
                 <table className={s.table}>
                   <caption className={s.caption}>
-                    {seasonal && season
-                      ? season.title
-                      : realm
-                        ? t('realm.name', { boss: t(`boss.${boss}`) })
-                        : name(ladder.skill)}
+                    {seasonal && season ? season.title : realm ? realmName(boss) : name(ladder.skill)}
                   </caption>
                   <thead>
                     <tr>

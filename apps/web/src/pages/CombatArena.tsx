@@ -5,7 +5,7 @@
 // very fight the engine settles (features' arenaOf), kept in time with the lane's bar (session 46), so
 // what it shows is what happens, when it happens.
 import { fmt, midSentence, t } from '@idle-clash/content';
-import { arenaAt, arenaOf, combatData, type Arena, type Swing } from '@idle-clash/features';
+import { arenaAt, arenaOf, combatData, realmName, type Arena, type Swing } from '@idle-clash/features';
 import { hasIcon, ItemIcon, TextLink } from '@idle-clash/ui';
 import { useEffect, useReducer } from 'react';
 import { useGame } from '../game/hooks.ts';
@@ -37,10 +37,9 @@ const realmOfFoe = (id: string): string | null => (id.startsWith('realm:') ? id.
 export function foeWords(a: Arena): { name: string; mid: string; start: string } {
   // The realm's boss of the week (session 174) is named for the boss it is, at the player's measure.
   const realm = realmOfFoe(a.foe.id);
-  const name = realm
-    ? t('realm.name', { boss: t(`boss.${realm}`) })
-    : t(a.boss ? `boss.${a.foe.id}` : `action.combat.${a.foe.id}`);
-  const mid = a.boss ? midSentence(name) : t('arena.theFoe', { foe: midSentence(name) });
+  const name = realm ? realmName(realm) : t(a.boss ? `boss.${a.foe.id}` : `action.combat.${a.foe.id}`);
+  // A boss, and the realm's, are named as themselves ("the realm's Ember Wyrm"), not as "the" a foe.
+  const mid = a.boss || realm ? midSentence(name) : t('arena.theFoe', { foe: midSentence(name) });
   return { name, mid, start: mid.charAt(0).toUpperCase() + mid.slice(1) };
 }
 

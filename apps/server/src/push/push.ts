@@ -6,7 +6,7 @@
 import { fmt, t } from '@idle-clash/content';
 import { recap } from '@idle-clash/features';
 import type { Engine, GameEvent, State } from '@idle-clash/kernel';
-import { and, asc, eq, lte } from 'drizzle-orm';
+import { and, asc, eq, inArray, lte } from 'drizzle-orm';
 import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
 import { pushDue, pushSent, pushSubs } from '../db/schema.ts';
 import { isQuiet, localDay, localTime, quietEnds } from './clock.ts';
@@ -103,7 +103,11 @@ export class Push {
       if (this.deps.online(playerId)) continue;
       const state = this.deps.stateOf(playerId, at);
       if (!state) continue;
-      this.deps.db.delete(pushDue).where(eq(pushDue.playerId, playerId)).run();
+      // What was foreseen before goes; a siege heard meanwhile stays (session 181).
+      this.deps.db
+        .delete(pushDue)
+        .where(and(eq(pushDue.playerId, playerId), inArray(pushDue.kind, ['stop', 'rest'])))
+        .run();
       this.queue(
         playerId,
         foresee(this.deps.engine, state, leftAt).map((f) =>

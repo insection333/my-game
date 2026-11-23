@@ -9,7 +9,7 @@ import s from './week.module.css';
 
 export function WeekGoal({ row }: { row: GoalRow & { parts: NonNullable<GoalRow['parts']> } }) {
   const b = row.button;
-  // Its four tasks open under it on a press, so the goals stay on a phone's first screen.
+  // Its tasks open under it on a press, so the goals stay on a phone's first screen.
   const [open, setOpen] = useState(false);
   return (
     <ActionRow

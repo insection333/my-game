@@ -9,6 +9,7 @@ import { seeded, xpOf, type State } from '@idle-clash/kernel';
 import { findsIn } from '../shared/catalog.ts';
 import { xpBonusPct } from '../shared/complete.ts';
 import { expeditionsOf } from '../shared/expeditions/state.ts';
+import { doneCount } from '../shared/given.ts';
 import { earning, nice } from './ladder.ts';
 import { bestIn, paces, type Pace } from './pace.ts';
 import type { WeekContract, WeekTask } from './state.ts';
@@ -40,10 +41,9 @@ export function measure(state: State, task: Pick<WeekTask, 'kind' | 'skill' | 'a
   switch (task.kind) {
     case 'xp':
       return xpOf(state, task.skill!);
-    case 'count': {
-      const key = `${task.action!.feature}:${task.action!.id}`;
-      return Object.hasOwn(state.mastery, key) ? state.mastery[key] : 0;
-    }
+    case 'count':
+      // The work itself, not the completions a Rare find gave it (session 181).
+      return doneCount(state, `${task.action!.feature}:${task.action!.id}`);
     case 'boss':
       return bossWins(state);
     case 'mastery':
@@ -52,7 +52,7 @@ export function measure(state: State, task: Pick<WeekTask, 'kind' | 'skill' | 'a
 }
 
 export const taskProgress = (state: State, task: WeekTask) => ({
-  now: Math.min(task.target, Math.floor(measure(state, task) - task.base)),
+  now: Math.max(0, Math.min(task.target, Math.floor(measure(state, task) - task.base))),
   of: task.target,
 });
 

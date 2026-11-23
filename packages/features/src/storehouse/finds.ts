@@ -8,6 +8,7 @@ import { findOf, RARE_FIND_COMPLETIONS, skillActions } from '../shared/catalog.t
 import { FOES, HITPOINTS, regionOf, STYLE_SKILLS } from '../shared/combat/data.ts';
 import { BOSSES } from '../shared/expeditions/data.ts';
 import { perksAt, skillLevel } from '../shared/skill.ts';
+import { addGiven } from '../shared/given.ts';
 
 export { RARE_FIND_COMPLETIONS };
 
@@ -60,6 +61,7 @@ export function useFind(
   take(next, item, count);
   const completions = count * RARE_FIND_COMPLETIONS;
   next.mastery[key] = before + completions;
+  addGiven(next, key, completions);
   const gain = perksAt(f.ladder, skillLevel(state, f.skill)).masteryGain;
   const [was, now_] = [masteryStep(before, gain), masteryStep(before + completions, gain)];
   // The press answered first (session 93), then any mastery steps it brought.

@@ -13,6 +13,10 @@ export function BountyBoard({ combat, now }: { combat: Feature; now: number }) {
   const view = fillFor<BountyView>(combat, 'combat.bounty', state, now);
   if (!view) return null;
   const held = view.held;
+  // The held bounty's foe, fought from its row (session 181: the row said to fight it, but the foe stood in
+  // its region's tab, a screen away on a phone).
+  const running = state.lanes.combat?.current?.action;
+  const fighting = !!held && running?.feature === 'combat' && running.id === held.foe;
   return (
     <Panel title={t('bounty.title')} flush>
       <Slot id="combat.bounty">
@@ -21,7 +25,12 @@ export function BountyBoard({ combat, now }: { combat: Feature; now: number }) {
             icon={hasIcon(held.foe) ? <ItemIcon name={held.foe} size={32} /> : undefined}
             name={held.text}
             facts={[held.pays]}
-            status={held.elite ? <Pill tone="gold">{t('bounty.elite')}</Pill> : <Pill>{held.count}</Pill>}
+            status={
+              <>
+                {held.elite && <Pill tone="gold">{t('bounty.elite')}</Pill>}
+                <Pill>{held.count}</Pill>
+              </>
+            }
             progress={<ProgressBar value={held.progress} label={held.text} />}
             actions={
               held.done ? (
@@ -29,9 +38,23 @@ export function BountyBoard({ combat, now }: { combat: Feature; now: number }) {
                   {t('bounty.claim')}
                 </Button>
               ) : (
-                <Button variant="quiet" onClick={() => game.act('combat', 'bountyLetGo', {})}>
-                  {t('bounty.letGo')}
-                </Button>
+                <>
+                  {fighting ? (
+                    <Pill tone="woad">{t('action.working')}</Pill>
+                  ) : (
+                    <Button
+                      variant="primary"
+                      onClick={() =>
+                        game.command({ type: 'start', lane: 'combat', action: { feature: 'combat', id: held.foe } })
+                      }
+                    >
+                      {t('combat.fight')}
+                    </Button>
+                  )}
+                  <Button variant="quiet" onClick={() => game.act('combat', 'bountyLetGo', {})}>
+                    {t('bounty.letGo')}
+                  </Button>
+                </>
               )
             }
           />

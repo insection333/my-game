@@ -60,7 +60,8 @@ export function take(state: State, foe: string, now: number): Answer<TakeResult>
 export const progressOf = (state: State) => {
   const held = bountyOf(state).taken;
   if (!held) return null;
-  return { now: Math.min(held.count, winsOver(state, held.foe) - held.base), of: held.count };
+  // Never below nothing: a count taken before finds were kept apart (session 181) may stand above the wins.
+  return { now: Math.max(0, Math.min(held.count, winsOver(state, held.foe) - held.base)), of: held.count };
 };
 
 export type ClaimResult = { ok: true } | { ok: false; reason: 'none' | 'notDone' };

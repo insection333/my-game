@@ -5,7 +5,8 @@
 import { HOUR, seeded, type GameEvent, type State } from '@idle-clash/kernel';
 import { describe, expect, it } from 'vitest';
 import { expeditions } from '../src/expeditions/index.ts';
-import { realmWords } from '../src/index.ts';
+import { realmName, realmWords } from '../src/index.ts';
+import { oddsFor } from '../src/shared/combat/odds.ts';
 import { expeditionsOf } from '../src/shared/expeditions/state.ts';
 import { realmBossIn, realmFoe, weekOf, REALM_HP, type RealmMirror } from '../src/shared/realm.ts';
 import { FOES } from '../src/shared/combat/data.ts';
@@ -34,6 +35,21 @@ describe("the realm's boss of the week", () => {
     expect(foe.hp).toBe(base.hp * REALM_HP);
     expect(base.tier).toBeGreaterThanOrEqual(5);
     expect(foe.id.startsWith(`realm:${realmBossIn(weekOf(T0)).id}:`)).toBe(true);
+  });
+
+  it('is one the player fares well against at every stage, and named once (session 181)', () => {
+    for (const region of ['march', 'fen', 'peaks'] as const)
+      for (const style of ['melee', 'archery', 'magic'] as const)
+        for (const bare of [false, true]) {
+          // Geared, and with no armour on (a fighter behind their level, as a player three weeks in met it).
+          const s = fighterAt(region, 1, style);
+          const c = s.features.combat as { worn: Record<string, string> };
+          const worn = bare ? { weapon: c.worn.weapon } : c.worn;
+          const st = { ...s, features: { ...s.features, combat: { ...c, worn } } };
+          const verdict = oddsFor(st, realmFoe(st, T0)!)!.verdict;
+          expect(['easy', 'fair'], `${region} ${style} ${bare ? 'bare' : 'geared'}`).toContain(verdict);
+        }
+    for (const boss of ['troll-chief', 'drowned-warden', 'ember-wyrm']) expect(realmName(boss)).not.toMatch(/'s The /);
   });
 
   it('is fought once a day, a win paid and said as a strike', () => {
