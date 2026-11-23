@@ -631,3 +631,22 @@ a.line:hover {
   justify-self: start;
   align-self: flex-start;
 }
+
+/* The day's fights waiting (session 188): rows of Next up in its grid, each an icon and a line. */
+.errands {
+  display: contents;
+}
+
+.errands > .row:first-child {
+  border-top: 1px solid var(--line);
+}
+
+.rows > .errands:first-child > .row:first-child {
+  border-top: 0;
+}
+
+.errand {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+}

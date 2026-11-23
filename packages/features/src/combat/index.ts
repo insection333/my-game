@@ -9,6 +9,7 @@ import { remove, wear } from './gear.ts';
 import { RULES } from './rules.ts';
 import { SLOTS_FILLED } from './slots.ts';
 import { bountyView, claim, letGo, take } from './bounty.ts';
+import { bountyErrands } from './errands.ts';
 import type { Json } from '../define.ts';
 
 /** Food: sold by the vendor (session 9) for its price; it sells back for half. */
@@ -56,6 +57,7 @@ export const combat = defineFeature({
   slots: {
     ...SLOTS_FILLED,
     'combat.bounty': ({ state, now }) => bountyView(state, now) as unknown as Json,
+    'hearth.errands': ({ state, now }) => bountyErrands(state, now) as unknown as Json,
   },
   help: { title: 'help.combat.title', body: 'help.combat.body' },
 });
