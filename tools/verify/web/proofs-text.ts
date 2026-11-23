@@ -3,10 +3,15 @@
 // to what matters most: it never scrolls sideways, nothing it draws stands past the screen's edge, and no
 // words are cut short with "…". At 125% the header pushed the account off the screen, at 150% the bell too,
 // and three lanes' chips cut "Old silverbark" to "Old silver-…".
+import type { Page } from 'playwright';
 import { measurePage } from './measure.ts';
 import { openPage, views, type Served } from './session.ts';
 
 export const LARGE_TEXT = '150%';
+const ready = (page: Page) =>
+  page
+    .waitForFunction(() => document.documentElement.dataset.ready === 'true', undefined, { timeout: 15_000 })
+    .then(() => page.waitForTimeout(300));
 const WIDTH = 390;
 
 export async function runLargeTextProofs(served: Served): Promise<string[]> {
@@ -22,7 +27,8 @@ export async function runLargeTextProofs(served: Served): Promise<string[]> {
     }, LARGE_TEXT);
     try {
       await page.goto(`${served.url}${v.path}`);
-      await page.waitForTimeout(600);
+      // Measured once the page is ready, its fonts in: a fallback face is wider, and cut the lanes' names.
+      await ready(page);
       // The step's own measure, held to what larger text can break: sideways scroll, things past the edge
       // or cut off by their box, words cut short.
       const m = await page.evaluate(measurePage);
@@ -54,7 +60,7 @@ export async function runForcedColorProofs(served: Served): Promise<string[]> {
     );
     try {
       await page.goto(`${served.url}${path}`);
-      await page.waitForTimeout(800);
+      await ready(page);
       const found = await page.evaluate(() => {
         const out: string[] = [];
         const paint = (el: Element) => getComputedStyle(el).backgroundColor;

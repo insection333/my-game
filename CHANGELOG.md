@@ -341,3 +341,4 @@
 - Session 201: a notice held over the quiet hours comes at 08:00 by the player's clock on the nights summer time ends and begins, where it came an hour early or late.
 - Session 202: a page left open across a deploy loads the new build when next hidden or moved to another page, where it ran the old one until closed.
 - Session 203: Today and Yesterday in the tray and the castle's reports hold on the days after the clocks change.
+- Session 204: a second player on one browser sees the tour, is offered notices while away and reads the bell afresh; each is kept for the player. Four lanes on a phone with larger text stand two to a row.

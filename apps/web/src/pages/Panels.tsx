@@ -8,6 +8,7 @@ import { ChangePassword } from './ChangePassword.tsx';
 import { Feedback } from './Feedback.tsx';
 import { LineMark } from './LineMark.tsx';
 import { noticesOf } from './notices.ts';
+import { noteTrayRead } from './tray-read.ts';
 import { profileHref } from './ProfileSheet.tsx';
 import { PushChoices } from './PushChoices.tsx';
 import { account, useSession } from '../game/session.ts';
@@ -17,28 +18,11 @@ import { play, unlockAudio } from '../sound/synth.ts';
 import { applyTheme, readTheme, THEMES, type Theme } from '../theme.ts';
 import s from './pages.module.css';
 
-/** When the tray was last opened on this device: notices after it count as new on the bell. */
-const READ_KEY = 'trayRead';
-export function trayReadAt(): number {
-  try {
-    return Number(localStorage.getItem(READ_KEY) ?? 0);
-  } catch {
-    return 0;
-  }
-}
-
 /** The notices tray: newest first, grouped by day, each saying what happened and where to act. */
 export function Tray() {
   const view = useGame();
   const list = noticesOf(view);
-  useEffect(() => {
-    try {
-      localStorage.setItem(READ_KEY, String(view.now));
-    } catch {
-      /* The count simply stays until the next visit. */
-    }
-    window.dispatchEvent(new Event('tray-read'));
-  }, [view.now]);
+  useEffect(() => noteTrayRead(view.now), [view.now]);
   if (!list.length) return <p className={s.note}>{t('tray.empty')}</p>;
   const label = (at: number) => {
     const d = daysBefore(at, view.now);

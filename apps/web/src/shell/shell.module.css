@@ -279,6 +279,18 @@
   }
 }
 
+/* Four lanes where even chips without icons cannot keep a name's longest word whole (a phone with its text
+   set to 150%: "Old silverbark" ran to a third line and was cut, session 204) stand two to a row. */
+@container strip (max-width: 18rem) {
+  .strip:has(> :nth-child(4)) {
+    flex-wrap: wrap;
+  }
+
+  .strip:has(> :nth-child(4)) > * {
+    flex: 1 1 calc(50% - var(--s-2));
+  }
+}
+
 @media (max-width: 479px) {
   /* ... and a stopped lane, whose words say why, takes the room a working one's name can spare (session
      120: "Out of / coppe…" beside "Oak tree" with room to spare). */

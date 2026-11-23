@@ -20,7 +20,7 @@
 //   held in gold leaf on the rail; a phone keeps its own header, with neither; a phone on its side (844 by
 //   390) reaches every place on its rail (session 132).
 import type { Page } from 'playwright';
-import { playerWith, say } from './proofs-lanes.ts';
+import { endTour, playerWith, say } from './proofs-lanes.ts';
 import type { Served } from './session.ts';
 
 async function workLands(page: Page, problems: string[]) {
@@ -213,7 +213,7 @@ async function sellingAsks(served: Served, problems: string[]) {
         () => false,
       );
   try {
-    await page.evaluate(() => localStorage.setItem('tourDone', '1'));
+    await endTour(page);
     await page.reload();
     const sheet = page.locator('[data-ui="Sheet"]');
     step = '"Sell all but 1" asks first, with what the sale comes to';
@@ -273,7 +273,7 @@ async function cacheOpens(served: Served, problems: string[]) {
     },
   }));
   try {
-    await page.evaluate(() => localStorage.setItem('tourDone', '1'));
+    await endTour(page);
     await page.reload();
     step = 'the goal offers its cache';
     await page
@@ -296,7 +296,7 @@ async function cacheOpens(served: Served, problems: string[]) {
 export async function runFeelProofs(served: Served): Promise<string[]> {
   const problems: string[] = [];
   const page = await playerWith(served, 'Feels Right', '/', (s) => s);
-  await page.evaluate(() => localStorage.setItem('tourDone', '1'));
+  await endTour(page);
   try {
     await workLands(page, problems);
     await keyboardHolds(page, problems);

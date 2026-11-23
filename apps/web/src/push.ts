@@ -2,6 +2,7 @@
 // are on here, and switching them on (the browser asks the player first) or off. Off until the player
 // switches them on; never asked for on a first visit.
 import { api } from './api.ts';
+import { keep, kept } from './kept.ts';
 
 export type PushState = 'on' | 'off' | 'blocked' | 'install' | 'unsupported';
 
@@ -62,19 +63,11 @@ export async function pushOff(): Promise<PushState> {
   return pushState();
 }
 
-/** The offer on a return (session 171) is made once in a browser, whatever the answer. */
+/** The offer on a return (session 171) is made once in a browser for each player (session 204), whatever
+ *  the answer; where this browser keeps nothing, it is not made at all. */
 const OFFERED = 'pushOffered';
-export function pushOffered(): boolean {
-  try {
-    return localStorage.getItem(OFFERED) === '1';
-  } catch {
-    return true;
-  }
-}
-export function notePushOffered(): void {
-  try {
-    localStorage.setItem(OFFERED, '1');
-  } catch {
-    /* Not offered again this visit. */
-  }
-}
+export const pushOffered = (): boolean => {
+  const v = kept(OFFERED);
+  return v === undefined || v === '1';
+};
+export const notePushOffered = (): void => void keep(OFFERED, '1');

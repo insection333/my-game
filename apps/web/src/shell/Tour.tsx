@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { useGame } from '../game/hooks.ts';
 import { useLocation } from '../router.ts';
 import { floorOf, placeCard, ringOf } from './tourPlace.ts';
+import { finishTour, tourDone } from './tour-done.ts';
 import { stepWords } from './tour-words.ts';
 import s from './tour.module.css';
 
@@ -16,22 +17,6 @@ const STEPS = [
   { slot: 'shell.fire', key: 'tour.fire' },
   { slot: 'shell.tray', key: 'tour.notices' },
 ] as const;
-
-const DONE_KEY = 'tourDone';
-const done = () => {
-  try {
-    return localStorage.getItem(DONE_KEY) === '1';
-  } catch {
-    return false;
-  }
-};
-const finish = () => {
-  try {
-    localStorage.setItem(DONE_KEY, '1');
-  } catch {
-    /* It may show again next visit; it is short. */
-  }
-};
 
 /** The first shown element filling a slot. */
 function target(slot: string): DOMRect | null {
@@ -47,7 +32,7 @@ export function Tour() {
   const { panel } = useLocation();
   // Only a newcomer: nothing claimed and no XP yet.
   const fresh = Object.keys(state.skills).length === 0;
-  const [asked, setStep] = useState<number | null>(() => (fresh && !done() ? 0 : null));
+  const [asked, setStep] = useState<number | null>(() => (fresh && !tourDone() ? 0 : null));
   const [box, setBox] = useState<DOMRect | null>(null);
   // Starting the first step is the tour's first answer: it moves on by itself.
   const step = asked === 0 && !fresh ? 1 : asked;
@@ -65,7 +50,7 @@ export function Tour() {
   // A sheet open over the page (Settings, Notices) has the player's attention: the tour waits.
   if (step === null || !box || panel) return null;
   const end = () => {
-    finish();
+    finishTour();
     setStep(null);
   };
   const next = () => (step + 1 < STEPS.length ? setStep(step + 1) : end());
