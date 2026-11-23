@@ -15,6 +15,8 @@ export interface Reason {
 export const QUIET_STOPS: readonly string[] = [
   'stoppedByPlayer',
   'expeditionHome',
+  // A descent over (session 212): its own line says how it went.
+  'deepHome',
   'bossRested',
   'realmRested',
   'fireOut',

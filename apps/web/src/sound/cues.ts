@@ -43,6 +43,9 @@ export function cueFor(e: GameEvent): Cue | null {
     case 'realmShare':
     case 'bountyDone':
       return 'goal';
+    // A descent (session 212): the deepest yet rings like a Rare find.
+    case 'deepDone':
+      return e.record ? 'rare' : 'goal';
     case 'deedDone':
       // An elite or master deed rings like a Rare find; the rest, the goal's small chime.
       return e.tier === 'elite' || e.tier === 'master' ? 'rare' : 'goal';

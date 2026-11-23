@@ -86,6 +86,16 @@ export interface EventMap {
   realmFell: { boss: string; week: string; strikes: number };
   /** This player's share of a fallen realm's boss, taken. */
   realmShare: { boss: string; gold: number; marks: number };
+  /** A descent into the Deep ended (session 212): the depth it reached from where it began, the deepest ever
+   *  (and whether this one went past it), the marks it brought, and how it ended. */
+  deepDone: {
+    depth: number;
+    from: number;
+    deepest: number;
+    record: boolean;
+    marks: number;
+    outcome: 'retreated' | 'lost' | 'surfaced';
+  };
   /** A bounty done and claimed (session 175): its foe, whether elite, what it paid. */
   bountyDone: { foe: string; elite: boolean; gold: number; marks: number };
   /** Rivals (session 173): a listed player passed you on a ladder you climb; `foe` is their name as it was
@@ -134,5 +144,6 @@ export const NOTABLE_EVENTS: readonly (keyof EventMap)[] = [
   'realmFell',
   'realmShare',
   'bountyDone',
+  'deepDone',
 ];
 export const isNotable = (e: GameEvent): boolean => NOTABLE_EVENTS.includes(e.type);

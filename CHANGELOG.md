@@ -349,3 +349,4 @@
 - Session 209: the year's simulation plays the steady player to two years and reports what each system still gives in year two.
 - Session 210: six bosses, two to a region, the first met in the first weeks; a run's boss is drawn from those the player has opened.
 - Session 211: each boss fights its own way (rises, rages, mends, wards, turns hits aside, takes wing), said on its row and in the arena, and counted in Your odds.
+- Session 212: the Deep, a descent under the Ashen Peaks at Hitpoints 99, a depth each ten minutes against foes growing with depth and a boss each tenth, the week's omens over it, a pack of 30 meals, waystones.

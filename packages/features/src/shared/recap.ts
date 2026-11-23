@@ -113,9 +113,10 @@ export function recapLines(a: AwaySummary, notices: readonly GameEvent[] = []): 
         href: '/combat/expeditions',
       });
     }
-  // Each boss fought alone in the lane (session 72), and the realm's (session 190).
+  // Each boss fought alone in the lane (session 72), the realm's (session 190), and each descent into the
+  // Deep (session 212).
   for (const e of a.events)
-    if (e.type === 'bossFought' || e.type === 'realmFought') {
+    if (e.type === 'bossFought' || e.type === 'realmFought' || e.type === 'deepDone') {
       const line = noticeLine(e)!;
       lines.push({ kind: line.kind, text: line.text, icon: line.icon, href: line.href });
     }

@@ -8,6 +8,7 @@ import { fighterOf, healthAt, mealsOf } from '../shared/combat/state.ts';
 import { foeById, HITPOINTS, type Foe } from '../shared/combat/data.ts';
 import { BOSSES, REGIONS, STAGE_MINUTES, type Boss, type Region } from '../shared/expeditions/data.ts';
 import { bossOfRun } from './route.ts';
+import { DEEP_RULES } from './deep.ts';
 import { expeditionsOf, RUN_FINDS, setExpeditions, type Last, type Run } from '../shared/expeditions/state.ts';
 import { skillLevel } from '../shared/skill.ts';
 import { noRoom } from '../shared/storehouse.ts';
@@ -141,4 +142,6 @@ export const RULES: Record<string, ActionRules> = {
   ...Object.fromEntries(REGIONS.map((r) => [r, runRules(r)])),
   ...Object.fromEntries(BOSSES.map((b) => [b.id, bossRules(b)])),
   realm: REALM_RULES,
+  // The Deep (session 212).
+  deep: DEEP_RULES,
 };

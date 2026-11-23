@@ -9,6 +9,7 @@ import { bossFoughtWords } from './expeditions/boss-words.ts';
 import { rankUpWords } from './rank-up.ts';
 import { realmWords } from './realm-words.ts';
 import { bountyWords } from './bounty-words.ts';
+import { deepDoneWords } from './expeditions/deep-words.ts';
 import { seasonOpenedWords } from './season-view.ts';
 import { remedyFor } from './remedy.ts';
 
@@ -191,6 +192,17 @@ export function noticeLine(e: GameEvent): (RecapLine & { at: number }) | null {
         kind: 'expedition',
         text: w.body ? `${w.title}. ${w.body}` : w.title,
         icon: e.boss,
+        href: '/combat/expeditions',
+        at: e.at,
+      };
+    }
+    case 'deepDone': {
+      // The Deep (session 212).
+      const w = deepDoneWords(e);
+      return {
+        kind: 'expedition',
+        text: `${w.title}. ${w.body}`,
+        icon: 'peaks',
         href: '/combat/expeditions',
         at: e.at,
       };
