@@ -1,6 +1,29 @@
-// The deeds and honours of year two's content (sessions 215 to 218): part of the strings file (en.ts). The
+// The deeds and honours of year two's content (sessions 215 to 219): part of the strings file (en.ts). The
 // Deep's depths, the pedlar's favour and the realm's works, with the titles and banner they open.
 export const yearTwo = {
+  // Kindling's gifts (session 219): a rim aflame at any skill's eighth, each skill's title at its tenth.
+  'honour.frame.kindled': 'Kindled',
+  'hiscores.kindlings': 'Kindlings',
+  'hiscores.kindlingsCount': 'Kindlings',
+  'hiscores.kindlingsNote':
+    'Every Kindling past 99 across all your skills; of the same count, whoever reached it first.',
+  'hiscores.unrankedKindlings': 'You join this ladder with your first Kindling past 99.',
+  'moment.rankUpKindlings': '{place} on the Kindlings ladder',
+  'rival.passedKindlings': '{name} passed you on the Kindlings ladder: you are {place}',
+  'rival.kindlings': '{count} Kindlings',
+  'rival.kindlingsOne': '1 Kindling',
+  'honour.unlock.anyEighth': 'With Kindling 8 in any skill',
+  'honour.title.kindled-woodcutting': 'Kindled Woodcutter',
+  'honour.title.kindled-mining': 'Kindled Miner',
+  'honour.title.kindled-fishing': 'Kindled Angler',
+  'honour.title.kindled-runecraft': 'Kindled Runecrafter',
+  'honour.title.kindled-smithing': 'Kindled Smith',
+  'honour.title.kindled-cooking': 'Kindled Cook',
+  'honour.title.kindled-fletching': 'Kindled Fletcher',
+  'honour.title.kindled-melee': 'Kindled Warrior',
+  'honour.title.kindled-archery': 'Kindled Archer',
+  'honour.title.kindled-magic': 'Kindled Mage',
+  'honour.title.kindled-hitpoints': 'Kindled Heart',
   'deed.realmWorksFirst.name': "A hand in the realm's work",
   'deed.realmWorksFirst.text': "Give to the realm's work of a season it is finished in.",
   'deed.realmWorks.name': "The realm's works: {count}",

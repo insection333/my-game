@@ -117,6 +117,7 @@ export function views(): View[] {
     '/hiscores?skill=woodcutting',
     // The Deep's ladder of the week (session 214), the keeper among those who went down.
     '/hiscores?skill=deep',
+    '/hiscores?skill=kindlings',
     '/combat/expeditions',
     '/castle',
     '/castle/army',

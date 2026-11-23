@@ -1,5 +1,5 @@
 // Kindling's art (session 17, ART.md, Kindling): the flames a kindled skill's seal wears on its rim, one
-// for each Kindling up to five, and the three Paths, each its emblem on an ember seal (the round ember
+// for each Kindling up to five, an ornament at its foot from the sixth (session 219), and the three Paths, each its emblem on an ember seal (the round ember
 // face marks the family): Bounty a bound sheaf, Lore an open book, Fortune a starred gold coin.
 import type { ReactNode } from 'react';
 import { circle, Glint, INK, M, Shape, type Tone } from './style.tsx';
@@ -37,6 +37,23 @@ export function KindledFlames({ count }: { count: number }) {
       {Array.from({ length: n }, (_, i) => (
         <Flame key={i} turn={(i - (n - 1) / 2) * step} />
       ))}
+    </g>
+  );
+}
+
+/** A seal's sixth Kindling (session 219): a small ember set in a gold mount at the foot of the rim, with a
+ *  leaf of flame either side. */
+export function KindledOrnament() {
+  return (
+    <g data-ornament>
+      {[-1, 1].map((side) => (
+        <g key={side} transform={`translate(24 44.6) scale(${side} 1)`}>
+          <Shape d="M2 -1.2 C5.6 -3.6 9.4 -3.2 11 -1.4 C8.6 0.4 5 0.8 2 -1.2 Z" tone={M.flame} />
+        </g>
+      ))}
+      <Shape d={circle(24, 44.2, 3.1)} tone={M.amber} lit={circle(23.3, 43.5, 1.6)} />
+      <circle cx={24} cy={44.2} r={1.5} fill={M.flame.base} stroke={INK} strokeWidth={0.6} />
+      <Glint x={23.3} y={43.4} r={0.5} />
     </g>
   );
 }

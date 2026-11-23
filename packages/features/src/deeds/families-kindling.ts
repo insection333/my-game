@@ -1,5 +1,6 @@
 // The deeds of Kindling (step 17): each skill's first Kindling past 99 and its fifth, when its Path is
-// at its strongest; and ten Kindlings across every skill.
+// at its strongest, and since session 219 its eighth (opening the Kindled frame) and tenth (its title); and
+// ten Kindlings across every skill.
 import { fmt } from '@idle-clash/content';
 import { KINDLINGS_THAT_STRENGTHEN } from '../shared/kindling.ts';
 import { allSkills } from '../shared/standing.ts';
@@ -8,6 +9,8 @@ import { deed, skillName, type Deed, type Steps } from './content.ts';
 const KINDLINGS: Steps = [
   [1, 'elite'],
   [KINDLINGS_THAT_STRENGTHEN, 'master'],
+  [8, 'master'],
+  [10, 'master'],
 ];
 const ALL_KINDLINGS = 10;
 

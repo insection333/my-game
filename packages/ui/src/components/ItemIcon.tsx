@@ -5,7 +5,7 @@
 import { useId } from 'react';
 import { hasIcon, ICONS } from '../icons/index.tsx';
 import { Crest } from '../icons/heraldry.tsx';
-import { KindledFlames } from '../icons/kindling.tsx';
+import { KindledFlames, KindledOrnament } from '../icons/kindling.tsx';
 import { M, RIM_TONES, RimTone, Shape } from '../icons/style.tsx';
 
 export type IconSize = 24 | 32 | 48 | 96;
@@ -23,7 +23,8 @@ export function ItemIcon({
   label?: string;
   silhouette?: boolean;
   /** For a skill's seal: the highest tier its skill has reached (the rim's metal), and whether it is
-   *  at the top level (a star on the rim), and its Kindlings (a flame on the rim for each, up to five). */
+   *  at the top level (a star on the rim), and its Kindlings (a flame on the rim for each, up to five; an
+   *  ornament at its foot from the sixth, session 219). */
   seal?: { tier: number; top: boolean; kindlings?: number };
   /** For arms ('crest'): the id of the lord or stronghold bearing them (icons/heraldry.tsx). */
   crest?: string;
@@ -64,6 +65,7 @@ export function ItemIcon({
               <Draw />
               {seal.top && <TopStar />}
               {!!seal.kindlings && <KindledFlames count={seal.kindlings} />}
+              {(seal.kindlings ?? 0) >= 6 && <KindledOrnament />}
             </RimTone.Provider>
           ) : crest !== undefined ? (
             <Crest seed={crest} />

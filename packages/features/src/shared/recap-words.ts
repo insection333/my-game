@@ -222,6 +222,15 @@ export function noticeLine(e: GameEvent): (RecapLine & { at: number }) | null {
       const name = e.foe || t('rival.someone');
       const place = fmt.ordinal(e.place);
       const season = /^season:(\d+)$/.exec(e.skill);
+      // The Kindlings ladder (session 219).
+      if (e.skill === 'kindlings:all')
+        return {
+          kind: 'rank',
+          text: t('rival.passedKindlings', { name, place }),
+          icon: null,
+          href: '/hiscores?skill=kindlings',
+          at: e.at,
+        };
       // The Deep's ladder of the week (session 214), kept as `deep:<Monday>`.
       if (e.skill.startsWith('deep:'))
         return {
