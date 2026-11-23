@@ -324,3 +324,4 @@
 - Session 184: the companions approved as a family, after the goose, the falcon and the stone whelp were redrawn; the realm boss's top-three badge decided against (its ladder's medals are the honour).
 - Session 185: Castle Clash's art and the arms approved, after the spy guild's hood, the Espionage mask and the black outrider horse were lifted to read in the dark theme; the glossary gains bounty, elite, lucky action, notices while away, the realm's boss, rival, strike and the week's contract.
 - Session 186: the Storehouse finds an item by name once 30 kinds are held.
+- Session 187: the Storehouse sells every find kept to sell (the Uncommon finds, used nowhere) at one press, asking first.

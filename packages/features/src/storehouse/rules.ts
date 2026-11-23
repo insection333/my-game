@@ -1,7 +1,7 @@
 // The Storehouse's routes (GAME_DESIGN.md section 10): selling to the vendor, buying food from it,
 // and enlarging the Storehouse. Pure: each takes the state and returns a new one and an answer.
 import { countOf, give, take, type State } from '@idle-clash/kernel';
-import { itemOf } from '../shared/catalog.ts';
+import { findOf, itemOf } from '../shared/catalog.ts';
 import { FOODS, HITPOINTS } from '../shared/combat/data.ts';
 import { combatOf } from '../shared/combat/state.ts';
 import { skillLevel } from '../shared/skill.ts';
@@ -10,6 +10,7 @@ import { ENLARGE_COSTS, noRoom, storeOf } from '../shared/storehouse.ts';
 type Refusal<C extends string> = { ok: false; reason: { code: C; detail?: Record<string, string | number> } };
 export type SellResult = { ok: true; gold: number } | Refusal<'notSellable' | 'notEnough' | 'wornItem'>;
 export type BuyResult = { ok: true; gold: number } | Refusal<'notSold' | 'notEnoughGold' | 'storehouseFull'>;
+export type SellFindsResult = { ok: true; gold: number; kinds: number } | Refusal<'nothingToSell'>;
 export type EnlargeResult = { ok: true } | Refusal<'fullyEnlarged' | 'notEnoughGold'>;
 
 /** What the vendor pays for one; legendary finds are kept, so they sell for nothing. */
@@ -28,6 +29,28 @@ export function sell(state: State, item: string, count: number): { state: State;
   take(next, item, count);
   give(next, 'gold', each * count);
   return { state: next, result: { ok: true, gold: each * count } };
+}
+
+/** The finds kept to sell (session 187): every Uncommon find held. None is used anywhere (a test holds it),
+ *  so selling them all loses nothing but their spaces. */
+export const keptToSell = (state: State): string[] =>
+  Object.keys(state.items).filter(
+    (id) => findOf(id)?.rarity === 'uncommon' && priceOf(id) > 0 && countOf(state, id) > 0,
+  );
+
+/** Sells every find kept to sell, all of each, at the vendor's price. */
+export function sellFinds(state: State): { state: State; result: SellFindsResult } {
+  const held = keptToSell(state);
+  if (!held.length) return { state, result: { ok: false, reason: { code: 'nothingToSell' } } };
+  const next = structuredClone(state);
+  let gold = 0;
+  for (const id of held) {
+    const n = countOf(state, id);
+    take(next, id, n);
+    gold += priceOf(id) * n;
+  }
+  give(next, 'gold', gold);
+  return { state: next, result: { ok: true, gold, kinds: held.length } };
 }
 
 export function buy(state: State, item: string, count: number): { state: State; result: BuyResult } {

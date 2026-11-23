@@ -253,3 +253,18 @@
   max-width: 24rem;
   margin-bottom: var(--s-4);
 }
+
+/* Selling the finds kept to sell (session 187): its question and its answer under the space, the row's
+   width; empty, it takes no room (the gap above it given back), its status line still heard. */
+.capacityAnswer {
+  flex: 1 1 100%;
+  min-width: 0;
+}
+
+.capacityAnswer:not(:has(.ask, .sold:not(:empty))) {
+  margin-top: calc(-1 * var(--s-2));
+}
+
+.capacityAnswer .sold:not(:empty) {
+  margin-top: 0;
+}
