@@ -88,7 +88,7 @@ export function SpyGuild() {
     <g>
       <Shape
         d="M24 3 C34 3 40 11 40 22 C40 30 42 38 45 45 H3 C6 38 8 30 8 22 C8 11 14 3 24 3 Z"
-        tone={M.seal}
+        tone={M.cloak}
         lit="M24 3 C14 3 8 11 8 22 C8 30 6 38 3 45 H8 C11 37 12.4 29 12.4 22 C12.4 12 17 5.6 24 3 Z"
         shade="M24 3 C34 3 40 11 40 22 C40 30 42 38 45 45 H39 C37 38 35.6 30 35.6 22 C35.6 12 31 5.6 24 3 Z"
       />
@@ -103,7 +103,7 @@ export function SpyGuild() {
           tone={M.amber}
         />
       ))}
-      <path d="M17 41 L24 44 L31 41" fill="none" stroke={M.seal.shadow} strokeWidth={1.4} />
+      <path d="M17 41 L24 44 L31 41" fill="none" stroke={M.cloak.shadow} strokeWidth={1.4} />
       <Shape d="M21.5 41.5 L24 46 L26.5 41.5 Z" tone={M.steel} />
     </g>
   );

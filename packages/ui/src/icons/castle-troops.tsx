@@ -98,7 +98,7 @@ export function Vanguard({ stage }: { stage: number }) {
 const COATS: readonly { coat: Tone; mane: Tone }[] = [
   { coat: M.eagle, mane: M.bark },
   { coat: M.oakWood, mane: M.oakBark },
-  { coat: M.obsidian, mane: M.amethyst },
+  { coat: M.nightCoat, mane: M.amethyst },
   { coat: M.wight, mane: M.sapphire },
 ];
 
