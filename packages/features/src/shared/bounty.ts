@@ -19,8 +19,12 @@ export type Bounty = z.infer<typeof Bounty>;
 
 export const BountyState = z
   .object({
-    /** The bounty held: its foe, its count, and the foe's wins when it was taken. */
-    taken: Bounty.extend({ base: Count, day: Day, at: z.number().nonnegative() }).strict().nullable(),
+    /** The bounty held: its foe, its count, the foe's wins when it was taken, and (session 183) the wins
+     *  over it in the Combat lane's own fights since, which are what count (an expedition's fights of the
+     *  foe met it at its usual strength, an elite bounty's too). Older bounties count from `base`. */
+    taken: Bounty.extend({ base: Count, day: Day, at: z.number().nonnegative(), won: Count.optional() })
+      .strict()
+      .nullable(),
     /** The day's bounties already taken (each offer once a day). */
     day: Day.nullable(),
     took: z.array(Key).max(3),
@@ -56,11 +60,27 @@ export const dayOf = (at: number): string => new Date(at).toISOString().slice(0,
  *  500 wins and finished any bounty at once). */
 export const winsOver = (state: State, foe: string): number => doneCount(state, `combat:${foe}`);
 
+/** The wins counted towards the bounty held: the lane's fights of its foe since it was taken. */
+export function bountyWins(state: State): number {
+  const t = bountyOf(state).taken;
+  if (!t) return 0;
+  return Math.max(0, t.won ?? winsOver(state, t.foe) - t.base);
+}
+
+/** A win in the Combat lane's own fight of a foe, begun at `startedAt`: counted towards the bounty held on
+ *  it, if it was taken before the fight began. */
+export function countBountyWin(state: State, foe: string, startedAt: number): void {
+  const b = bountyOf(state);
+  const t = b.taken;
+  if (!t || t.foe !== foe || t.at > startedAt) return;
+  setBounty(state, { ...b, taken: { ...t, won: bountyWins(state) + 1 } });
+}
+
 /** The elite bounty held on this foe, if any, not yet done; for a fight begun at `startedAt`, one taken
  *  before it began (a fight under way when the bounty is taken is fought as it began). */
 export function eliteHeld(state: State, foe: string, startedAt = Infinity): boolean {
   const t = bountyOf(state).taken;
-  return !!t && t.elite && t.foe === foe && t.at <= startedAt && winsOver(state, foe) - t.base < t.count;
+  return !!t && t.elite && t.foe === foe && t.at <= startedAt && bountyWins(state) < t.count;
 }
 
 /** A foe as it is fought: elite while an elite bounty on it is held. */

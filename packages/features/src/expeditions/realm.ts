@@ -23,6 +23,7 @@ import {
   realmBossIn,
   realmFoe,
   realmOf,
+  weekEnds,
   weekOf,
 } from '../shared/realm.ts';
 import { realmName } from '../shared/realm-words.ts';
@@ -158,6 +159,8 @@ export function realmView(state: State, now: number): RealmView | null {
           label: t('realm.take'),
         }
       : null,
-    note: r.fell ? t('realm.fell') : t('realm.note'),
+    // The week turns at Monday 00:00 UTC, said in the player's own clock (session 183: "on Monday" was
+    // Monday 11:00 in Sydney).
+    note: r.fell ? t('realm.fell', { when: fmt.when(weekEnds(now), now) }) : t('realm.note'),
   };
 }

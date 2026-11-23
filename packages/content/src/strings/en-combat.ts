@@ -168,6 +168,7 @@ export const combat: Record<string, string> = {
   'bounty.paysOne': 'Pays {gold} gold and 1 mark',
   'bounty.note': 'Three a day, on foes you fare well against. Take one and fight it in your Combat lane.',
   'bounty.heldNote': 'Fight it in your Combat lane: each win counts.',
+  'bounty.allTaken': "Today's three are taken: new bounties come {back}.",
   'bounty.take': 'Take',
   'bounty.claim': 'Claim',
   'bounty.letGo': 'Let go',

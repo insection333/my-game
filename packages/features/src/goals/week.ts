@@ -10,6 +10,7 @@ import { findsIn } from '../shared/catalog.ts';
 import { xpBonusPct } from '../shared/complete.ts';
 import { expeditionsOf } from '../shared/expeditions/state.ts';
 import { doneCount } from '../shared/given.ts';
+import { weekEnds, weekOf } from '../shared/week-time.ts';
 import { earning, nice } from './ladder.ts';
 import { bestIn, paces, type Pace } from './pace.ts';
 import type { WeekContract, WeekTask } from './state.ts';
@@ -23,15 +24,7 @@ export const WEEK_PAY_HOURS = 4;
 export const WEEK_BOSSES = 3;
 export const WEEK_STEPS = 2;
 
-/** The Monday a moment's week began (UTC). */
-export function weekOf(at: number): string {
-  const d = new Date(at);
-  const back = (d.getUTCDay() + 6) % 7;
-  return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() - back)).toISOString().slice(0, 10);
-}
-
-/** When the week of `at` ends: the next Monday 00:00 UTC. */
-export const weekEnds = (at: number): number => Date.parse(`${weekOf(at)}T00:00:00Z`) + 7 * DAY;
+export { weekEnds, weekOf };
 
 const bossWins = (state: State) => Object.values(expeditionsOf(state).wins).reduce((n, w) => n + w, 0);
 const steps = (state: State) => Object.values(state.mastery).reduce((n, done) => n + masteryStep(done), 0);

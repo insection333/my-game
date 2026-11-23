@@ -8,7 +8,7 @@ import { fight, maxHealth, retreatShare, type Fought } from '../shared/combat/fi
 import { countWin, fightXp, spoils } from '../shared/combat/spoils.ts';
 import { combatOf, fighterOf, healthAt, mealsOf, setCombat } from '../shared/combat/state.ts';
 import { skillLevel } from '../shared/skill.ts';
-import { asFought, eliteHeld, ELITE } from '../shared/bounty.ts';
+import { asFought, countBountyWin, eliteHeld, ELITE } from '../shared/bounty.ts';
 import { noRoom } from '../shared/storehouse.ts';
 
 export const FEATURE = 'combat';
@@ -60,6 +60,7 @@ function battle(foe: Foe): ActionRules {
       if (f.retreated) return false;
       spoils(ctx, p, foe, elite ? { finds: ELITE.FINDS } : {});
       countWin(ctx, foe.id, true);
+      countBountyWin(ctx.state, foe.id, ctx.startedAt);
     },
   };
 }
