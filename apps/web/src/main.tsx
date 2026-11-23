@@ -11,7 +11,9 @@ import { watchErrors } from './errors.ts';
 import { boot } from './game/session.ts';
 import { watchScrollboxes } from './scrollbox.ts';
 import { applyTheme, followScheme, readTheme } from './theme.ts';
+import { bearTranslation } from './translated.ts';
 
+bearTranslation();
 watchErrors();
 reloadOnStaleFiles();
 watchBuild(new URL(import.meta.url).pathname);
