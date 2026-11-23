@@ -39,36 +39,57 @@ export function CompanionHound() {
 export function CompanionFalcon() {
   return (
     <Tuft ground={M.oakBark}>
-      {/* Upright on a perch of bark: the slate back and folded wing, a barred cream breast, the hooked beak. */}
+      {/* A falcon perched in profile, facing left: the slate wing folded and crossing past the tail, a barred
+          cream breast, the dark moustache under a yellow-ringed eye, a hooked beak, yellow feet. */}
       <Shape
-        d="M15 38 C12 30 13 21 18 16 C23 12 30 13 32 19 C34 26 33 33 30 40 Z"
-        tone={C.slate}
-        lit={litAt(22, 24, 10)}
-        shade={shadeAt(26, 28, 10)}
-      >
-        <path d="M15.6 22 C14.6 28 15.4 34 18 39 L22 39 C20.6 33 20 27 20.6 22 Z" fill={M.bone.base} />
-        <path d="M16 26 H19.6 M16 30 H20 M16.6 34 H20.4" stroke={C.slate.base} strokeWidth={1} strokeLinecap="round" />
-      </Shape>
-      <Shape d="M26 36 L33 44.4 L28.4 44.6 L23.6 39 Z" tone={C.slate} />
-      <Shape
-        d="M12 15 C12 10 15.6 7 20 7 C25 7 28 10.4 28 15 C28 18 26 20.4 23 21 L15 21 C13 20 12 18 12 15 Z"
-        tone={C.slate}
-        lit={litAt(19, 13, 8)}
+        d="M14 34 C12 27 13 20 17 16 C21 12.6 27 13 29.6 18 C32 23 31.6 30 29 36 Z"
+        tone={M.bone}
+        lit={litAt(19, 24, 9)}
+        shade={shadeAt(24, 29, 9)}
       >
         <path
-          d="M16.6 15 C16.4 18 17 20 18.4 21.4"
+          d="M15.4 24 H19 M15 27.6 H19.6 M15.4 31.2 H20 M16.4 34.6 H20.6"
+          stroke={C.slate.base}
+          strokeWidth={1.1}
+          strokeLinecap="round"
+          strokeDasharray="1.4 1.2"
+        />
+      </Shape>
+      <Shape
+        d="M20 18 C26 16 32 20 33 27 C34 33 33 39 31 45 L27.6 44.6 C27 38 24 31 20.6 26 Z"
+        tone={C.slate}
+        lit="M20 18 C26 16 32 20 33 27 C30 23 25.4 21 21.4 21.6 Z"
+        shade="M33 27 C34 33 33 39 31 45 L29.4 44.8 C30.6 38 31 32 30.6 27 Z"
+      >
+        <path
+          d="M24 27 C27 30 29 35 29.6 41 M27 25.6 C30 29 31.4 34 31.6 40"
+          fill="none"
+          stroke={C.slate.shadow}
+          strokeWidth={1}
+        />
+      </Shape>
+      <Shape
+        d="M11.4 14.6 C11.4 9.8 15 6.6 19.6 6.6 C24.6 6.6 27.6 10 27.4 14.6 C27.2 18.4 24.4 21 20 21 C15 21 11.4 19 11.4 14.6 Z"
+        tone={C.slate}
+        lit={litAt(19, 12.6, 8)}
+      >
+        <path d="M13.4 16.4 C15 19.4 18 20.6 21 20.4 C19.6 18.6 19.4 16.4 20 14.6 Z" fill={M.bone.light} />
+        <path
+          d="M16.6 14.6 C16.4 17.4 17 19.4 18.4 21"
           fill="none"
           stroke={M.coal.shadow}
-          strokeWidth={2.4}
+          strokeWidth={2.6}
           strokeLinecap="round"
         />
       </Shape>
       <Shape
-        d="M12.8 12.2 L6.6 14 C5.2 15.6 5.4 18.2 7.4 18.8 C7.6 17.6 8.4 16.8 9.6 16.6 L13 16.8 Z"
+        d="M12.4 11.8 L6.4 13.4 C4.8 15 4.8 17.8 6.8 18.8 C7.2 17.4 8 16.6 9.4 16.4 L12.6 16.4 Z"
         tone={M.amber}
-        lit="M12.8 12.2 L6.6 14 C6 14.8 5.8 15.6 6 16.4 L12.8 14.6 Z"
+        lit="M12.4 11.8 L6.4 13.4 C5.8 14.2 5.4 15 5.6 15.8 L12.4 14 Z"
       />
-      <Eye x={16} y={13} r={1.9} iris={M.amber.light} />
+      <circle cx={15.6} cy={12.8} r={2.6} fill={M.amber.light} />
+      <Eye x={15.6} y={12.8} r={1.8} />
+      <path d="M17 39 L16.4 42.4 M20.6 39.4 L20.6 42.4" stroke={M.amber.base} strokeWidth={2} strokeLinecap="round" />
     </Tuft>
   );
 }
@@ -136,38 +157,50 @@ export function CompanionTortoise() {
 export function CompanionStoneWhelp() {
   return (
     <Tuft ground={M.stone}>
-      {/* A troll's pup: a round grey body, a head too big, ears out wide, two small tusks. */}
+      {/* A troll's pup, squat as a boulder: a round body with stony patches and moss on its back, a broad
+          head with small round ears low on its sides, a grin with two short tusks under a heavy brow. */}
       <Shape
-        d="M13 41 C10 33 13 25 22 24 C31 23 37 29 36 37 L35 41 Z"
+        d="M10 41 C8 32 13 24 23 24 C33 24 38 31 37 41 Z"
         tone={M.troll}
-        lit={litAt(23, 31, 11)}
-        shade={shadeAt(27, 35, 11)}
+        lit={litAt(22, 31, 12)}
+        shade={shadeAt(26, 35, 12)}
       >
-        <path d="M27 30 L31 29 L33 33 L29 35 Z" fill={M.stone.base} stroke={M.stone.shadow} strokeWidth={0.8} />
+        <path d="M26 27 C30 26 34 28 35.6 32 C32 30.6 28.6 30 26 30.6 Z" fill={M.leaf.base} />
+        <path d="M28.4 33 L32 32.2 L33.6 35.6 L30 37 Z" fill={M.stone.base} stroke={M.stone.shadow} strokeWidth={0.8} />
+        <path d="M14 36 L16.6 35 L17.6 38 L15 38.8 Z" fill={M.stone.base} stroke={M.stone.shadow} strokeWidth={0.8} />
       </Shape>
       <Shape
-        d="M7 18 C7 11 13 7 20 7 C27 7 32 11 32 18 C32 24 27 27.6 20 27.6 C13 27.6 7 24 7 18 Z"
+        d="M5 19 C5 11.6 11 7 19 7 C27 7 33 11.6 33 19 C33 25 27.4 28.4 19 28.4 C10.6 28.4 5 25 5 19 Z"
         tone={M.troll}
-        lit={litAt(19, 15, 10)}
-        shade={shadeAt(22, 19, 10)}
+        lit={litAt(18, 15.4, 11)}
+        shade={shadeAt(21, 19, 11)}
       >
         <path
-          d="M11 13 C14 11.4 18 11.6 21 13"
+          d="M8.6 14.6 C12 12.4 17 12.4 21 14"
           fill="none"
           stroke={M.troll.shadow}
-          strokeWidth={1.6}
+          strokeWidth={2}
           strokeLinecap="round"
         />
+        <path
+          d="M22 9.4 L26.4 9 L27.4 12.4 L23.4 13.2 Z"
+          fill={M.stone.base}
+          stroke={M.stone.shadow}
+          strokeWidth={0.8}
+        />
       </Shape>
-      <Shape d="M8 16 L1.6 12.6 L6 20.4 Z M31 15 L38 10.6 L33.4 19.6 Z" tone={M.troll} lit="M8 16 L1.6 12.6 L5 17 Z" />
+      <Shape d={circle(5.6, 19.4, 2.8)} tone={M.troll} lit={circle(5, 18.8, 1.4)} />
+      <Shape d={circle(32.6, 18.4, 2.8)} tone={M.troll} />
+      <path d="M8.4 22.6 C12 25.4 17 25.6 21 23.6" fill="none" stroke={INK} strokeWidth={1.3} strokeLinecap="round" />
       <path
-        d="M9.4 23.4 L8.6 18.4 L12.6 22.6 Z M15.6 24.2 L16.4 19 L18.8 23.8 Z"
+        d="M10.4 23.8 L10 20.4 L12.8 23.6 Z M17.2 24.6 L17.8 21 L19.6 24.2 Z"
         fill={M.bone.light}
         stroke={INK}
         strokeWidth={1}
         strokeLinejoin="round"
       />
-      <Eye x={12.6} y={16.4} r={1.7} iris={M.amber.light} />
+      <Eye x={11.4} y={17.4} r={1.8} iris={M.amber.light} />
+      <Eye x={17.6} y={17.6} r={1.6} iris={M.amber.light} />
     </Tuft>
   );
 }

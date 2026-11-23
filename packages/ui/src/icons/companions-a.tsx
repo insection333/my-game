@@ -213,28 +213,49 @@ export function CompanionCat() {
 export function CompanionGoose() {
   return (
     <Tuft>
-      {/* The body low and full, wing folded; the long neck up to a head that looks left. */}
+      {/* A greylag on its tuft: the body a low teardrop, its tail raised behind; the folded wing barred in
+          darker grey over a pale belly; a slim neck up to a head that looks left, with an orange bill. */}
       <Shape
-        d="M14 34 C14 27 21 23 30 23 C38 23 44 27 44 32 C44 37 39 40 31 40 L19 40 C16 40 14 37.6 14 34 Z"
+        d="M13 33 C13 27 19 24 27 24 C35 24 41 26 45 22 C45 28 42 33 38 36 C35 39 30 40 24 40 L18 40 C15 40 13 37 13 33 Z"
         tone={C.goose}
-        lit={litAt(26, 29, 12)}
-        shade={shadeAt(31, 33, 12)}
+        lit="M13 33 C13 27 19 24 27 24 C31 24 34 24.6 37 25.4 C30 25.6 22 27 17 31 C15.4 32.4 14 33.4 13 33 Z"
+        shade="M45 22 C45 28 42 33 38 36 C35 39 30 40 24 40 L22 40 C30 38 37 33 41 26 Z"
       >
-        <path d="M22 28 C28 26 36 27 41 31 C36 31.5 29 33 23 32 Z" fill={C.goose.shadow} />
+        <path
+          d="M17 36 C22 39 30 39 35 36.4"
+          fill="none"
+          stroke={C.goose.light}
+          strokeWidth={2.6}
+          strokeLinecap="round"
+        />
+      </Shape>
+      {/* The folded wing, its feathers edged. */}
+      <Shape
+        d="M20 29 C25 26 33 25.4 41 26.6 C38 31 32 34 25 34 C22 34 20 32 20 29 Z"
+        tone={C.slate}
+        lit="M20 29 C25 26 33 25.4 41 26.6 C34 27.4 27 28.6 21.4 31 Z"
+      >
+        <path
+          d="M27 33.6 C29 31 32 29.4 35 28.6 M31.6 32.8 C33.6 30.6 36 29.2 38.6 28.4"
+          fill="none"
+          stroke={C.slate.shadow}
+          strokeWidth={1}
+        />
       </Shape>
       <Shape
-        d="M14 31 C12 25 12 18 14 13 L19.6 13.4 C18.4 18 18.4 24 20.4 29 Z"
+        d="M13.6 31 C11.6 25 11.8 19 13.6 14 L18.6 14.4 C17.6 19 17.8 24 19.8 29 Z"
         tone={C.goose}
-        lit="M14 31 C12 25 12 18 14 13 L16 13.2 C15 18 15 25 16.6 30 Z"
+        lit="M13.6 31 C11.6 25 11.8 19 13.6 14 L15.4 14.2 C14.6 19 14.8 25 16.2 30 Z"
       />
       <Shape
-        d="M10 12 C10 8 12.6 6 16 6 C19.4 6 21.4 8.4 21 11.4 C20.6 14 18.4 15 16 15 C12.6 15 10 14.4 10 12 Z"
+        d="M9.6 12.4 C9.6 8.6 12.2 6.4 15.6 6.4 C19 6.4 21 8.8 20.6 11.8 C20.2 14.4 18 15.4 15.6 15.4 C12.2 15.4 9.6 14.6 9.6 12.4 Z"
         tone={C.goose}
-        lit={litAt(15, 10, 5)}
+        lit={litAt(15, 10.4, 5)}
       />
-      <Shape d="M10.4 10.4 L3.4 12 L10.6 13.8 Z" tone={M.amber} lit="M10.4 10.4 L3.4 12 L10.4 11.8 Z" />
+      <Shape d="M10.2 10.4 L2.8 12.4 L10.4 14.4 Z" tone={M.amber} lit="M10.2 10.4 L2.8 12.4 L10.2 12.2 Z" />
+      <path d="M2.8 12.4 L4.6 12" stroke={INK} strokeWidth={1.4} strokeLinecap="round" />
       <path d="M20 40 V42.6 M26 40 V42.6" stroke={M.amber.base} strokeWidth={2.2} strokeLinecap="round" />
-      <Eye x={14} y={9.8} r={1.3} />
+      <Eye x={13.6} y={10.2} r={1.3} />
     </Tuft>
   );
 }
