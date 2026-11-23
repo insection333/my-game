@@ -23,6 +23,7 @@ Plain, warm and brief, with an old-world flavour in names rather than in instruc
 | Bar | Metal smelted from ore: copper, bronze, iron, steel |
 | Block | Stops one player sending you messages, and nothing else; Unblock lets them again |
 | Boss | A region's last and hardest foe: met at an expedition's end, or fought alone once a day |
+| Bounty | One of three a day on Combat: a foe you fare well against and about an hour of fights of it, paid in gold and marks once done |
 | Call to arms | Castle Clash: answered once a day for AP held in reserve; days in a row build a streak that adds to the hourly AP |
 | Castle Clash | The castle each lord raises at total level 100: an edict for the rest of the game, troops, spies and sieges |
 | Castle rating | A castle's lasting strength from its buildings, troops and best relics; lords are matched near it |
@@ -42,6 +43,7 @@ Plain, warm and brief, with an old-world flavour in names rather than in instruc
 | Drop | An item a foe leaves behind |
 | Easy, Fair, Costly, Too strong | Your odds verdicts, by how much food a fight costs and whether you would retreat |
 | Edict | Castle Clash: a lift to XP, fight gold or finds across the game while the treasury holds what it needs |
+| Elite | A bounty's foe once a style is at 99: harder hits, half again its health, its finds twice as likely |
 | Enlarge | Buy more Storehouse slots with gold |
 | Expedition | A run into a region for 1, 2, 4 or 8 hours in the Combat lane: fight stages, caches and camps, twists, a fork, and the region's boss at the end |
 | Find | A rare extra from an action, at one of three rarities |
@@ -64,6 +66,7 @@ Plain, warm and brief, with an old-world flavour in names rather than in instruc
 | Lasting mark | The bonus a Legendary find gives the first time you find it |
 | Legendary | The rarest find, about 1 in 5,000 actions |
 | Level | A step in a skill, 1 to 40; every level unlocks something |
+| Lucky action | A late tier's third choice: slower, one item at a time, its Rare and Legendary finds twice as likely an hour |
 | Marks | What expeditions and bosses pay, spent on relics |
 | Mastery | How practised you are at one action; each step makes it faster and richer |
 | Medallion | A deed's mark on the Deeds tab, ringed in its tier's colour and filled once done |
@@ -72,14 +75,17 @@ Plain, warm and brief, with an old-world flavour in names rather than in instruc
 | Milestone | A long goal, such as total level 100 |
 | Next action | The action queued behind a lane's current one; it starts when the current one stops |
 | Notices | The tray of things that happened and need you |
+| Notices while away | Your browser's own notices, off until switched on: a lane stopped, lanes about to rest, a siege that breached your walls |
 | Orders of the day | Castle Clash: three small aims each day, the day's strongholds always among them; each pays war marks when done, and all three pay more |
 | Path | A level-99 skill's way of working: Bounty (more of what it makes), Lore (more XP) or Fortune (likelier Rare and Legendary finds); free to change |
 | Perk | A lasting bonus unlocked at a level |
 | Picture | The face you show others: thirty, twelve yours from the start, the rest opened by foes overcome and bosses beaten |
 | Rank | Your standing, from Wanderer to Legend of the Realm, rising with your total level |
 | Rare | A find of about 1 in 500 actions |
+| Realm's boss | The boss of the week, fought by every player once a day at their own measure; when the realm has struck enough it falls, and everyone who struck takes a share |
 | Region | Where foes are fought: the march, the Sunken Fen and the Ashen Peaks, each a tab of Combat |
 | Relic | A lasting boost bought with marks, in ranks: XP in a skill, food, finds or Storehouse space |
+| Rival | Who stands just above or just below you on a ladder, with the gap as you would close it |
 | Rout | Castle Clash: all five of a day's mercenary strongholds taken, worth war marks of its own |
 | Retreat | Leaving a fight at low health with no food; nothing is lost and the lane stops |
 | Scene | The view behind your profile: the march by day, by night, or your castle |
@@ -92,6 +98,7 @@ Plain, warm and brief, with an old-world flavour in names rather than in instruc
 | Stoke | Keep the fire burning |
 | Storehouse | Where everything you own is kept |
 | Storehouse full | No free slot for a new kind of item: a lane that would make one stops |
+| Strike | A win over the realm's boss: one a day |
 | Style | Melee, Archery or Magic: set by the weapon you wear |
 | Supply | A style's extra damage, one used a foe: whetstones for Melee, arrows for Archery, runes for Magic |
 | Supply cache | What short goals and the daily goal pay in: gold for certain, and a draw for more |
@@ -111,6 +118,7 @@ Plain, warm and brief, with an old-world flavour in names rather than in instruc
 | War chest | Castle Clash: the realm's share of gold spent in castles, from which mercenary bounties are paid |
 | War marks | Castle Clash: earned in battle and incursions; they pay for the War College and war relics |
 | War relic | Castle Clash: one of nine relics forged with war marks, three worn at once |
+| Week's contract | Four tasks a week drawn from your own play, about eight hours of it each, paid with a supply cache and a week kept |
 | Work | One of the six buildings of the steading, raised five times, each time for a little more |
 | Worn | Gear your fighter has on, marked on its tile in the Storehouse; the one worn is never sold |
 | XP | Experience; earned by actions, it raises levels |

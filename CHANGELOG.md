@@ -322,3 +322,4 @@
 - Session 182: signing out switches off notices while away in that browser, which went on showing the signed-out player's notices.
 - Session 183: the systems together: an elite bounty can no longer be done by an expedition's fights of its foe at its usual strength; the bounty board says when new bounties come once the day's three are taken; a fallen realm boss says when the next comes in your own clock.
 - Session 184: the companions approved as a family, after the goose, the falcon and the stone whelp were redrawn; the realm boss's top-three badge decided against (its ladder's medals are the honour).
+- Session 185: Castle Clash's art and the arms approved, after the spy guild's hood, the Espionage mask and the black outrider horse were lifted to read in the dark theme; the glossary gains bounty, elite, lucky action, notices while away, the realm's boss, rival, strike and the week's contract.

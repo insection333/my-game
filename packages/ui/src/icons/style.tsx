@@ -93,6 +93,10 @@ export const M = {
   mud: tone('#b49a76', '#7a5f43', '#4a3725'),
   cinder: tone('#d3d0cb', '#8e8a85', '#55524e'),
   obsidian: tone('#6f6a80', '#2d2a38', '#141219'),
+  // A spy's cloak and a black horse's coat (session 185): dark, with a light tone that reads on the dark
+  // theme's ground, where the seal's and obsidian's sank into it.
+  cloak: tone('#8696a3', '#3f4d59', '#222b33'),
+  nightCoat: tone('#938cab', '#3a354b', '#1a1723'),
   flame: tone('#fff0a8', '#ffa23a', '#d4511f'),
   /** Food: a pie's meat, a stew's broth. */
   meat: tone('#df9474', '#a04c35', '#62291c'),
