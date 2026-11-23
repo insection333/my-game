@@ -16,6 +16,11 @@ const dayMonth = (ms: number): string => {
 };
 /** "9 Nov 2025" */
 const fullDay = (ms: number): string => `${dayMonth(ms)} ${new Date(ms).getFullYear()}`;
+/** Said without its year: this year's, or within half a year either way (session 197: in the last week of
+ *  December the next contract came "4 Jan 2027", without the hour it turns). */
+const HALF_YEAR = 183 * 86_400_000;
+const near = (at: number, now: number): boolean =>
+  new Date(at).getFullYear() === new Date(now).getFullYear() || Math.abs(at - now) < HALF_YEAR;
 const conjunction = new Intl.ListFormat('en-GB', { type: 'conjunction' });
 const ordinals = new Intl.PluralRules('en-GB', { type: 'ordinal' });
 const SUFFIX: Record<string, string> = { one: 'st', two: 'nd', few: 'rd', other: 'th' };
@@ -69,15 +74,15 @@ export const fmt = {
   time: (ms: number): string => timeOfDay.format(ms),
   /** milliseconds since the epoch → "20 Oct 2026", in the player's own time zone */
   date: (ms: number): string => fullDay(ms),
-  /** A day, as a find found or a deed done says it (session 79): "9 Nov" this year, "9 Nov 2025" before. */
-  day: (at: number, now: number): string =>
-    new Date(at).getFullYear() === new Date(now).getFullYear() ? dayMonth(at) : fullDay(at),
-  /** A moment in the last while, as a report or a pill says it (session 64): "20:22" today, "9 Nov,
-   *  20:22" this year, "9 Nov 2025" before; where every day said its year, even yesterday. */
+  /** A day, as a find found or a deed done says it (session 79): "9 Nov" this year or near it, "9 Nov 2025"
+   *  further off. */
+  day: (at: number, now: number): string => (near(at, now) ? dayMonth(at) : fullDay(at)),
+  /** A moment in the last while or the coming one, as a report or a pill says it (session 64): "20:22"
+   *  today, "9 Nov, 20:22" this year or near it, "9 Nov 2025" further off; where every day said its year. */
   when: (at: number, now: number): string => {
     const [a, n] = [new Date(at), new Date(now)];
     if (a.toDateString() === n.toDateString()) return timeOfDay.format(at);
-    if (a.getFullYear() === n.getFullYear()) return `${dayMonth(at)}, ${timeOfDay.format(at)}`;
+    if (near(at, now)) return `${dayMonth(at)}, ${timeOfDay.format(at)}`;
     return fullDay(at);
   },
   /** ["a", "b", "c"] → "a, b and c": words joined as a sentence joins them */
