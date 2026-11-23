@@ -6,6 +6,7 @@
 import { LIVE_PATH, type LiveMessage } from '@idle-clash/contracts';
 import type { GameEvent, State } from '@idle-clash/kernel';
 import { setConnected } from './connection.ts';
+import { shownPlayer } from '../api.ts';
 
 export interface LiveHandlers {
   state: (state: State, now: number) => void;
@@ -32,7 +33,10 @@ export function openLive(on: LiveHandlers): { close: () => void } {
   const open = (again: boolean) => {
     if (typeof WebSocket === 'undefined') return;
     const scheme = location.protocol === 'https:' ? 'wss:' : 'ws:';
-    socket = new WebSocket(`${scheme}//${location.host}${LIVE_PATH}`);
+    const player = shownPlayer();
+    socket = new WebSocket(
+      `${scheme}//${location.host}${LIVE_PATH}${player ? `?player=${encodeURIComponent(player)}` : ''}`,
+    );
     socket.onopen = () => {
       pause = 1000;
       setConnected(true);
@@ -51,6 +55,8 @@ export function openLive(on: LiveHandlers): { close: () => void } {
     socket.onclose = (e: CloseEvent) => {
       if (closed) return;
       if (e.code === 4401) return on.signedOut();
+      // A page of another player than the session's (session 208) loads afresh as the session's.
+      if (e.code === 4409) return location.reload();
       // Banned (session 95): the welcome page says the account is closed.
       if (e.code === 4403) return on.signedOut('banned');
       // Closed for a newer page: commands still go through; live news waits for the player's return.

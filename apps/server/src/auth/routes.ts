@@ -29,6 +29,10 @@ export function identify(ctx: Ctx) {
       ctx.sessions.end(token);
       throw fail(403, 'banned');
     }
+    // A page names the player it shows (session 208): one of another player, under the session a second
+    // tab signed into, is refused rather than acting on the session's player.
+    const shown = req.headers['x-player'] ?? (req.query as { player?: unknown } | undefined)?.player;
+    if (typeof shown === 'string' && shown && shown !== id) throw fail(409, 'otherPlayer');
     req.playerId = id;
   };
 }

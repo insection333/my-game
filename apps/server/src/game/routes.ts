@@ -29,7 +29,7 @@ import { castlesLadder } from './castles-ladder.ts';
 import { SEASON, seasonLadderAt } from './season-ladder.ts';
 import { TOTAL } from './hiscores.ts';
 import { hear } from './watching.ts';
-import { contractRoute, fail } from '../http.ts';
+import { contractRoute, fail, HttpError } from '../http.ts';
 import { identify, keepCookie, requirePlayer } from '../auth/routes.ts';
 import { SESSION_COOKIE, tokenHash } from '../auth/sessions.ts';
 import { noteVisit } from '../feedback.ts';
@@ -223,8 +223,10 @@ export function gameRoutes(app: FastifyInstance, ctx: Ctx, features: readonly Fe
   app.get(LIVE_PATH, { websocket: true, preValidation: opening }, (socket, req) => {
     try {
       who(req);
-    } catch {
+    } catch (err) {
       req.playerId = null;
+      // A page of another player than the session's (session 208) loads afresh.
+      if (err instanceof HttpError && err.code === 'otherPlayer') return socket.close(4409, 'other player');
     }
     const player = req.playerId;
     if (!player) return socket.close(4401, 'not signed in');

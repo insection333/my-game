@@ -326,6 +326,8 @@ export const ErrorCode = z.enum([
   'nameNotAllowed',
   'wrongPassword',
   'notAdmin',
+  // A page of one player under another's session in the same browser (session 208): it loads afresh.
+  'otherPlayer',
   'serverError',
 ]);
 export type ErrorCode = z.infer<typeof ErrorCode>;
