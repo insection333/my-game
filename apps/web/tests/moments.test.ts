@@ -1,4 +1,6 @@
 // Moments: what the page shows for notable events, and how close ones are grouped.
+// The game installs its late icons (every icon but the welcome page's) before any of its pages draws.
+import '../src/late-icons.ts';
 import { FEATURES } from '@idle-clash/features';
 import type { GameEvent } from '@idle-clash/kernel';
 import { describe, expect, it } from 'vitest';

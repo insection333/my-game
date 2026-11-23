@@ -1,5 +1,7 @@
 // The lanes as the shell shows them: each says what it is doing, with that action's icon (a fight its
 // foe, not the foe's drop), and a stopped lane says why and what puts it right.
+// The game installs its late icons (every icon but the welcome page's) before any of its pages draws.
+import '../src/late-icons.ts';
 import { actionRegistry, FEATURES } from '@idle-clash/features';
 import { XP_TABLE } from '@idle-clash/content';
 import { createEngine, newState, seeded, type Command, type State } from '@idle-clash/kernel';
