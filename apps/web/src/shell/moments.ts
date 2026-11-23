@@ -14,6 +14,7 @@ import {
   rankUpWords,
   realmWords,
   bountyWords,
+  deepDoneWords,
   seasonOpenedWords,
   skill as skillKit,
   type Feature,
@@ -55,6 +56,8 @@ function rank(e: GameEvent): number {
   if (e.type === 'realmFell' || e.type === 'realmShare') return 5;
   if (e.type === 'realmFought') return 8;
   if (e.type === 'bountyDone') return e.elite ? 5 : 8;
+  // A descent (session 212): the deepest yet ranks with an elite deed.
+  if (e.type === 'deepDone') return e.record ? 5 : 8;
   if (e.type === 'kindled') return 1;
   // First on a ladder ranks with a master deed; the top three or ten with an elite one.
   if (e.type === 'rankUp') return e.band === 1 ? 1 : e.band <= 10 ? 5 : 8;
@@ -89,6 +92,7 @@ function sizeOf(e: GameEvent): MomentSize {
   if (e.type === 'bossFought') return bossFoughtWords(e).size;
   if (e.type === 'realmFell' || e.type === 'realmShare') return 'banner';
   if (e.type === 'bountyDone') return e.elite ? 'banner' : 'toast';
+  if (e.type === 'deepDone') return deepDoneWords(e).size;
   // A work raised: a press answered; fully raised, a banner (session 76).
   if (e.type === 'workRaised') return e.stage >= 5 ? 'banner' : 'toast';
   // A relic raised, as a work is (session 98).
@@ -182,6 +186,10 @@ function describe(
     case 'bountyDone': {
       const w = bountyWords(e);
       return { title: w.title, body: w.body, icon: hasIcon(e.foe) ? e.foe : null };
+    }
+    case 'deepDone': {
+      const w = deepDoneWords(e);
+      return { title: w.title, body: w.body, icon: 'peaks' };
     }
     case 'realmFought':
     case 'realmFell':

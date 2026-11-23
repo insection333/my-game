@@ -74,4 +74,5 @@ export * as kindlingData from './shared/kindling.ts';
 export type { SteadingView, WorkRow } from './steading/index.ts';
 export { workRaisedWords } from './steading/view.ts';
 export { relicRaisedWords } from './expeditions/relics-view.ts';
+export { deepDoneWords } from './shared/expeditions/deep-words.ts';
 export * as castleEngine from './shared/castle/index.ts';

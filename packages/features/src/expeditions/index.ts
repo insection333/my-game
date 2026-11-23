@@ -12,6 +12,7 @@ import { bossRows, expeditionView } from './views.ts';
 import { realmView, takeShare } from './realm.ts';
 import { expeditionErrands } from './errands.ts';
 import { trade } from './trade.ts';
+import { descend, surfaceNow } from './deep.ts';
 
 export type { BossRow, ExpeditionView, RegionTab, RouteView, RunView, StageChip, TwistView } from './views.ts';
 export type { RelicRow, RelicsView } from './relics-view.ts';
@@ -25,7 +26,16 @@ export const expeditions = defineFeature({
   flag: { on: true, note: 'Expeditions, bosses and relics since session 16' },
   content: CONTENT,
   effects: [],
-  stops: ['expeditionHome', 'bossRested', 'realmRested', 'noWeapon', 'tooHurt', 'hitpointsTooLow', 'storehouseFull'],
+  stops: [
+    'expeditionHome',
+    'deepHome',
+    'bossRested',
+    'realmRested',
+    'noWeapon',
+    'tooHurt',
+    'hitpointsTooLow',
+    'storehouseFull',
+  ],
   rules: RULES,
   routes: {
     setOut: defineRoute({
@@ -43,6 +53,17 @@ export const expeditions = defineFeature({
       input: z.object({}).strict(),
       example: {},
       run: (state) => abandon(state),
+    }),
+    // The Deep (session 212): a descent begun from the deepest waystone, and surfacing from it.
+    descend: defineRoute({
+      input: z.object({}).strict(),
+      example: {},
+      run: (state) => descend(state),
+    }),
+    surface: defineRoute({
+      input: z.object({}).strict(),
+      example: {},
+      run: (state, _input, now) => surfaceNow(state, now),
     }),
     share: defineRoute({
       input: z.object({}).strict(),

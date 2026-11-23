@@ -3,6 +3,7 @@
 import type { Find, Item } from '@idle-clash/content';
 import { FOES, regionOf } from '../shared/combat/data.ts';
 import { BOSSES, REGIONS } from '../shared/expeditions/data.ts';
+import { DEEP } from '../shared/expeditions/deep.ts';
 import type { FeatureContent } from '../define.ts';
 
 const opensAt = (region: string) =>
@@ -26,6 +27,8 @@ export const CONTENT: FeatureContent = {
     ...BOSSES.map((b) => ({ id: b.id, level: b.hitpoints, gives: [{ item: b.drop, count: 1 }] })),
     // The realm's boss of the week (session 174), fought at each player's own measure.
     { id: 'realm', level: 1 },
+    // The Deep (session 212), opened at Hitpoints 99.
+    { id: 'deep', level: DEEP.OPENS },
   ],
   finds: FINDS,
 };

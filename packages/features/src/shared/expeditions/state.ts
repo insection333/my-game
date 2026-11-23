@@ -84,9 +84,28 @@ export const ExpeditionState = z
       })
       .strict()
       .optional(),
+    /** The Deep (session 212): the deepest depth reached ever and this week, the week it counts for, the
+     *  descents made, and the descent under way. Saves from before have none. */
+    deep: z
+      .object({
+        deepest: Count,
+        week: Day.nullable(),
+        weekDeepest: Count,
+        descents: Count,
+        /** `was`: the deepest ever as the descent began, so its end says whether it went past it; `fed`: the
+         *  meals eaten from the descent's pack. */
+        run: z
+          .object({ depth: Count, from: Count, was: Count, marks: Count, seq: Count, fed: Count })
+          .strict()
+          .nullable(),
+      })
+      .strict()
+      .optional(),
   })
   .strict();
 export type ExpeditionState = z.infer<typeof ExpeditionState>;
+export type DeepState = NonNullable<ExpeditionState['deep']>;
+export const DEEP_EMPTY: DeepState = { deepest: 0, week: null, weekDeepest: 0, descents: 0, run: null };
 
 const EMPTY: ExpeditionState = Object.freeze({
   marks: 0,
