@@ -13,16 +13,20 @@ import { watchScrollboxes } from './scrollbox.ts';
 import { applyTheme, followScheme, readTheme } from './theme.ts';
 import { bearTranslation } from './translated.ts';
 
-bearTranslation();
-watchErrors();
-reloadOnStaleFiles();
-watchBuild(new URL(import.meta.url).pathname);
-applyTheme(readTheme());
-followScheme();
-watchScrollboxes();
-void boot();
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-);
+// A browser too old for the game has been told so by old-browser.js (session 207): the game does not start
+// over its words.
+if (document.documentElement.dataset.tooOld !== 'true') {
+  bearTranslation();
+  watchErrors();
+  reloadOnStaleFiles();
+  watchBuild(new URL(import.meta.url).pathname);
+  applyTheme(readTheme());
+  followScheme();
+  watchScrollboxes();
+  void boot();
+  createRoot(document.getElementById('root')!).render(
+    <StrictMode>
+      <App />
+    </StrictMode>,
+  );
+}
