@@ -11,6 +11,7 @@ import { fills } from '../slots.tsx';
 import { navigate, trayHref, useLocation, withPanel } from '../router.ts';
 import { ItemPanel } from '../pages/Items.tsx';
 import { DeedSheet, HonoursSheet } from '../pages/DeedSheets.tsx';
+import { PedlarSheet } from '../pages/PedlarSheet.tsx';
 import { WorkSheet } from '../pages/Steading.tsx';
 import { Settings } from '../pages/Panels.tsx';
 import { trayReadAt } from '../pages/tray-read.ts';
@@ -133,6 +134,7 @@ export function Shell({ children }: { children: ReactNode }) {
       {panel === 'honours' && <HonoursSheet onClose={close} />}
       {panel === 'player' && <ProfileSheet onClose={() => navigate(withoutSheet('name'))} />}
       {panel === 'work' && <WorkSheet onClose={() => navigate(withoutSheet('work'))} />}
+      {panel === 'pedlar' && <PedlarSheet onClose={close} />}
       {panel === 'settings' && (
         <Sheet title={t('settings.title')} closeLabel={t('shell.close')} onClose={close} slot="settings.account">
           <Settings />

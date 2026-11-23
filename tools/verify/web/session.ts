@@ -71,6 +71,8 @@ export function views(): View[] {
     '/',
     // A work half raised: its next raising, part of its cost held and part not.
     '/?panel=work&work=smokehouse',
+    // The pedlar's wants of the day (session 217), from what two months of play have found, gathered and cooked.
+    '/?panel=pedlar',
     '/skills',
     '/skills/mining',
     '/skills/fishing',

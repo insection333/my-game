@@ -10,7 +10,7 @@ export interface ErrandRow {
 }
 
 /** Each errand's place among the others. */
-export const ERRAND_ORDER = { share: 0, bountyDone: 1, realm: 2, bosses: 3, bounties: 4, deep: 5 } as const;
+export const ERRAND_ORDER = { share: 0, bountyDone: 1, realm: 2, bosses: 3, bounties: 4, deep: 5, pedlar: 6 } as const;
 
 /** Whether an action is under way or next in a lane: an errand being done is not asked for. */
 export const inHand = (

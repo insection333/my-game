@@ -17,6 +17,7 @@ import { STAGES, stageOf, WORKS } from '../shared/steading.ts';
 import { castleStanding, type CastleStanding } from '../shared/castle/mirror.ts';
 import { bestInTwist, seasonsPlayed } from '../shared/season-state.ts';
 import { weeksKept } from '../shared/weeks.ts';
+import { favourOf } from '../shared/pedlar.ts';
 import { bountyOf } from '../shared/bounty.ts';
 import { companionById, companionFound, COMPANIONS } from '../shared/companions.ts';
 import { SEASON_PLAYED } from './content.ts';
@@ -130,6 +131,8 @@ export class Reader {
   realmFallen = () => this.exp().realm?.fallen ?? 0;
   /** The deepest depth reached in the Deep (session 215). */
   deepest = () => this.exp().deep?.deepest ?? 0;
+  /** The pedlar's favour (session 217). */
+  favour = () => favourOf(this.state);
   bossWins = (boss: string) => (Object.hasOwn(this.exp().wins, boss) ? this.exp().wins[boss] : 0);
   /** Runs of a length brought home with the boss beaten. */
   runsOf = (hours: number) => {

@@ -130,6 +130,8 @@ export const HONOURS: readonly Honour[] = [
   // The Deep (session 215): its 100th depth (about the year's end) and its 150th (about two years in).
   title('deepdelver', by('deep-100')),
   title('abyssal', by('deep-150')),
+  // The pedlar's favour (session 217): about half a year of lots.
+  title('roadfriend', by('favour-500')),
   title('kindled', { anyOf: firstKindlings, text: 'honour.unlock.anyKindled' }),
   title('everflame', by('kindlings-10')),
   // Six seasons played (session 166): a year's play.
@@ -143,6 +145,8 @@ export const HONOURS: readonly Honour[] = [
   { id: 'ember', kind: 'banner', unlock: by('region-peaks') },
   { id: 'night', kind: 'banner', unlock: at(2_000) },
   { id: 'gold', kind: 'banner', unlock: by('gold-1000000') },
+  // The pedlar's ribbon (session 217): his favour earned.
+  { id: 'pedlar', kind: 'banner', unlock: by('favour-150') },
   { id: 'dawn', kind: 'banner', unlock: { anyOf: ninetyNines, text: 'honour.unlock.any99' } },
   // Frames: by points, then two of prestige (session 43), for a castle grown great and a war long fought.
   { id: 'bronze', kind: 'frame', unlock: at(500) },

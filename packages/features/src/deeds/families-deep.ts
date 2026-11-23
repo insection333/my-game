@@ -1,7 +1,7 @@
-// The Deep's deeds (session 215): depths reached, its waystones from the first to the 150th. The first comes
+// The Deep's deeds (session 215), and the pedlar's (session 217): depths reached, its waystones from the first to the 150th. The first comes
 // in a steady player's first descent at 99; the 150th, with the Deep's relics, about two years in.
 import { fmt } from '@idle-clash/content';
-import { deed, DEPTHS, type Deed } from './content.ts';
+import { deed, DEPTHS, FAVOUR, type Deed } from './content.ts';
 
 export function deepDeeds(): Deed[] {
   return DEPTHS.map(([depth, tier]) =>
@@ -17,6 +17,24 @@ export function deepDeeds(): Deed[] {
       mark: fmt.int(depth),
       icon: 'peaks',
       measure: (r) => r.deepest(),
+    }),
+  );
+}
+
+/** The pedlar's favour (session 217): the first lot handed in, then favour earned. */
+export function pedlarDeeds(): Deed[] {
+  return FAVOUR.map(([count, tier]) =>
+    deed({
+      id: `favour-${count}`,
+      family: 'favour',
+      key: count === 1 ? 'deed.favourFirst' : 'deed.favour',
+      brief: true,
+      shows: count === 1 ? 'none' : 'count',
+      tier,
+      target: count,
+      words: { count: fmt.int(count) },
+      mark: fmt.int(count),
+      measure: (r) => r.favour(),
     }),
   );
 }

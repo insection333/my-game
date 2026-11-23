@@ -47,6 +47,8 @@ function everything(): State {
     steading: { stages: Object.fromEntries(WORKS.map((w) => [w.id, STAGES])) },
     combat: { worn, health: null, healthAt: 0, retreated: null },
     storehouse: { enlargements: ENLARGE_COSTS.length },
+    // Five hundred lots handed to the pedlar (session 217).
+    pedlar: { day: null, handed: [], favour: 500 },
     expeditions: {
       marks: 0,
       relics: Object.fromEntries(relics().map((r) => [r.id, r.ranks])),

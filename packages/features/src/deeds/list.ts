@@ -9,7 +9,7 @@ import { kindlingDeeds } from './families-kindling.ts';
 import { runs } from './families-runs.ts';
 import { seasonDeeds, weekDeeds } from './families-seasons.ts';
 import { companionDeeds } from './families-companions.ts';
-import { deepDeeds } from './families-deep.ts';
+import { deepDeeds, pedlarDeeds } from './families-deep.ts';
 import { steadingDeeds } from './families-steading.ts';
 import { Reader } from './reader.ts';
 import { deedsOf } from './state.ts';
@@ -51,7 +51,10 @@ export const CATEGORIES: readonly { id: string; families: readonly string[] }[] 
       'deep',
     ],
   },
-  { id: 'home', families: ['fire', 'gold', 'store', 'works', 'steading', 'season', 'seasons', 'weeks', 'hidden'] },
+  {
+    id: 'home',
+    families: ['fire', 'gold', 'store', 'works', 'steading', 'season', 'seasons', 'weeks', 'favour', 'hidden'],
+  },
 ];
 
 let made: { list: Deed[]; byId: Map<string, Deed> } | null = null;
@@ -71,6 +74,7 @@ function make() {
       ...weekDeeds(),
       ...companionDeeds(),
       ...deepDeeds(),
+      ...pedlarDeeds(),
     ];
     made = { list, byId: new Map(list.map((d) => [d.id, d])) };
   }
