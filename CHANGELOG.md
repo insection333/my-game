@@ -337,3 +337,4 @@
 - Session 197: dates within half a year are said without their year, so the last week of December keeps the hour things turn ("4 Jan, 11:00").
 - Session 198: the realm's boss asks three strikes for each player who struck it last week, four at least, so a realm of one or a realm whose friends drift off can still fell it.
 - Session 199: larger text on a phone no longer pushes the account and bell off the header or cuts lane names short; step 6 checks every view at 150% text.
+- Session 200: in Windows' high contrast the bars keep their fill and the open page and tab are marked; step 6 checks it.

@@ -75,3 +75,21 @@
     height: 8px;
   }
 }
+
+/* High contrast (session 200): the browser paints backgrounds in the system's colours, so the fill would
+   vanish into its track; it keeps the system's highlight inside a drawn track. */
+@media (forced-colors: active) {
+  .track {
+    border: 1px solid CanvasText;
+    background: Canvas;
+  }
+
+  .fill {
+    forced-color-adjust: none;
+    background: Highlight;
+  }
+
+  .notches {
+    forced-color-adjust: none;
+  }
+}

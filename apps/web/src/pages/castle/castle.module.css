@@ -685,3 +685,16 @@
     min-width: 0;
   }
 }
+
+/* High contrast (session 200): a battle's tug keeps the attack in the highlight against the defence. */
+@media (forced-colors: active) {
+  .tug {
+    forced-color-adjust: none;
+    border: 1px solid CanvasText;
+    background: Canvas;
+  }
+
+  .tugAttack {
+    background: Highlight;
+  }
+}

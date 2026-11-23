@@ -213,3 +213,12 @@
     white-space: nowrap;
   }
 }
+
+/* High contrast (session 200): the odds' meter keeps its fill in the system's highlight. */
+@media (forced-colors: active) {
+  .meter {
+    forced-color-adjust: none;
+    border: 1px solid CanvasText;
+    background: linear-gradient(to right, Highlight var(--odds), Canvas var(--odds));
+  }
+}

@@ -120,3 +120,14 @@
     background: var(--woad-soft);
   }
 }
+
+/* High contrast (session 200): every tab's line was painted alike; the open one keeps the highlight. */
+@media (forced-colors: active) {
+  .tab {
+    border-bottom-color: Canvas;
+  }
+
+  .tab[aria-current='page'] {
+    border-bottom-color: Highlight;
+  }
+}
