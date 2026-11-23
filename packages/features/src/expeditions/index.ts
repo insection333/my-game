@@ -13,12 +13,14 @@ import { realmView, takeShare } from './realm.ts';
 import { expeditionErrands } from './errands.ts';
 import { trade } from './trade.ts';
 import { descend, surfaceNow } from './deep.ts';
+import { deepView } from './deep-view.ts';
 
 export type { BossRow, ExpeditionView, RegionTab, RouteView, RunView, StageChip, TwistView } from './views.ts';
 export type { RelicRow, RelicsView } from './relics-view.ts';
 export type { TradeView } from './trade.ts';
 export { marksText } from './trade.ts';
 export type { RealmView } from './realm.ts';
+export type { DeepView } from './deep-view.ts';
 export { routeView } from './views.ts';
 
 export const expeditions = defineFeature({
@@ -87,6 +89,7 @@ export const expeditions = defineFeature({
     'combat.bosses': ({ state, now }) => bossRows(state, now) as unknown as Json,
     'combat.realm': ({ state, now }) => realmView(state, now) as unknown as Json,
     'combat.relics': ({ state }) => relicsView(state) as unknown as Json,
+    'combat.deep': ({ state, now }) => deepView(state, now) as unknown as Json,
     'hearth.errands': ({ state, now }) => expeditionErrands(state, now) as unknown as Json,
     'collection.log': ({ state, now }) => bossLog(state, now) as unknown as Json,
   },

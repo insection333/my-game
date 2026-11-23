@@ -5,6 +5,7 @@ import { t } from '@idle-clash/content';
 import {
   routeView,
   type BossRow,
+  type DeepView,
   type RealmView,
   type ExpeditionView,
   type RelicsView,
@@ -24,6 +25,7 @@ import { fills, Slot } from '../slots.tsx';
 import { CombatHead } from './CombatHead.tsx';
 import { Legend, Ribbon, Twists } from './ExpeditionRoute.tsx';
 import { Bosses, Relics } from './ExpeditionSide.tsx';
+import { DeepPanel } from './DeepPanel.tsx';
 import s from './expeditions.module.css';
 
 export const EXPEDITIONS_PATH = '/combat/expeditions';
@@ -35,17 +37,26 @@ export function Expeditions() {
   const [bosses] = fills<BossRow[]>(features, 'combat.bosses', state, now);
   const [realm] = fills<RealmView>(features, 'combat.realm', state, now);
   const [relics] = fills<RelicsView>(features, 'combat.relics', state, now);
+  const [deep] = fills<DeepView>(features, 'combat.deep', state, now);
   return (
     <>
       <CombatHead expeditions />
       <div className={s.layout}>
-        {view && (
-          <section data-section>
-            <Slot id="combat.expedition" className={s.runArea}>
-              {view.data.run ? <Run view={view.data} run={view.data.run} /> : <Plan view={view.data} />}
-            </Slot>
-          </section>
-        )}
+        <div className={s.runArea}>
+          {view && (
+            <section data-section>
+              <Slot id="combat.expedition" className={s.runArea}>
+                {view.data.run ? <Run view={view.data} run={view.data.run} /> : <Plan view={view.data} />}
+              </Slot>
+            </section>
+          )}
+          {/* The Deep, from Hitpoints 99 (session 213). */}
+          {deep && (
+            <section data-section>
+              <DeepPanel deep={deep.data} />
+            </section>
+          )}
+        </div>
         <div className={s.side}>
           {bosses && (
             <section data-section>

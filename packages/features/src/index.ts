@@ -55,6 +55,7 @@ export { careerOf, type Career } from './deeds/career.ts';
 export type {
   BossRow,
   RealmView,
+  DeepView,
   ExpeditionView,
   RegionTab,
   RelicRow,
