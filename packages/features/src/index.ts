@@ -33,6 +33,8 @@ export { realmName, realmWords } from './shared/realm-words.ts';
 export { bountyWords } from './shared/bounty-words.ts';
 export type { BountyView, BountyLine } from './combat/bounty.ts';
 export { RealmMirror, realmBossIn, weekOf, REALM_PER_PLAYER, REALM_LEAST } from './shared/realm.ts';
+export { deepOf } from './expeditions/deep.ts';
+export { weekEnds } from './shared/week-time.ts';
 export { allSkills, totalLevel } from './shared/standing.ts';
 export { remedyFor, type Remedy } from './shared/remedy.ts';
 export { seasonOpenedWords, seasonPill, seasonView, type SeasonView } from './shared/season-view.ts';

@@ -4,6 +4,7 @@
 import { MINUTE, seeded, type State } from '@idle-clash/kernel';
 import { describe, expect, it } from 'vitest';
 import { deepView, reachOf } from '../src/expeditions/deep-view.ts';
+import { expeditionErrands } from '../src/expeditions/errands.ts';
 import { deepOf, descend } from '../src/expeditions/deep.ts';
 import { engine, fighterOfLevel, T0 } from './helpers/expedition.ts';
 
@@ -49,5 +50,17 @@ describe('the Deep on the page', () => {
     expect(v.run).toBeNull();
     expect(v.deepest).toBe(`Deepest: depth ${deepOf(after).deepest}`);
     expect(v.from).toBe('From depth 10, your deepest waystone');
+  });
+
+  it('asks on the Hearth for a first depth this week, and not once one is reached or under way', () => {
+    const asks = (st: State, at: number) =>
+      expeditionErrands(st, at).some((r) => r.text.startsWith('Go down into the Deep'));
+    expect(asks(fighterOfLevel(95, 1, 'melee'), T0)).toBe(false);
+    const s = fighterOfLevel(99, 1, 'melee');
+    expect(asks(s, T0)).toBe(true);
+    expect(asks(go(s, T0 + 30 * MINUTE).state, T0 + 30 * MINUTE)).toBe(false);
+    const after = go(s, T0 + 12 * 60 * MINUTE).state;
+    expect(asks(after, T0 + 12 * 60 * MINUTE)).toBe(false);
+    expect(asks(after, T0 + 8 * 24 * 60 * MINUTE)).toBe(true);
   });
 });

@@ -1,6 +1,6 @@
 // Rivals in words (session 173): who stands just above and below you on a ladder, and the gap as you would
 // close it: on a skill's ladder, in time at your best work there ("about 2 h of your Oak tree"); on Total,
-// in total levels; on the season's ladder, in goals.
+// in total levels; on the season's ladder, in goals; on the Deep's, in depths (session 214).
 import type { HiscoreRow } from '@idle-clash/contracts';
 import { fmt, t } from '@idle-clash/content';
 import { bestIn, paces } from '@idle-clash/features';
@@ -10,6 +10,7 @@ import type { State } from '@idle-clash/kernel';
 export function gapWords(ladder: string, you: HiscoreRow, other: HiscoreRow, state: State): string {
   const diff = Math.abs(other.xp - you.xp);
   if (ladder === 'season') return diff === 1 ? t('rival.goalsOne') : t('rival.goals', { count: fmt.int(diff) });
+  if (ladder === 'deep') return diff === 1 ? t('rival.depthsOne') : t('rival.depths', { count: fmt.int(diff) });
   if (ladder === 'total') {
     const levels = Math.abs(other.level - you.level);
     if (levels > 0) return levels === 1 ? t('rival.levelsOne') : t('rival.levels', { count: fmt.int(levels) });

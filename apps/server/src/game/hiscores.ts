@@ -12,6 +12,7 @@ import { lookOf, readLook } from './look.ts';
 import { climb } from './rank-ups.ts';
 import { Ranks } from './ranks.ts';
 import { isQuiet, isSeasonRow, seasonEntries } from './season-ladder.ts';
+import { deepEntries } from './deep-ladder.ts';
 
 export const TOTAL = 'total';
 export const LADDER_ROWS = 25;
@@ -122,6 +123,8 @@ export class Hiscores {
     }
     // The season's ladder: the goals done since it opened (session 165).
     entries.push(...seasonEntries(at, state, had));
+    // The Deep's ladder of the week (session 214).
+    entries.push(...deepEntries(at, state));
     const climbs: GameEvent[] = [];
     for (const e of entries) {
       const old = had.get(e.skill);

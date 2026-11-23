@@ -23,6 +23,14 @@ export function rankUpWords(e: Extract<GameEvent, { type: 'rankUp' }>): {
   const band = BAND[e.band] as string | undefined;
   // A season's ladder (session 165), kept as `season:N`: named by its number, as notices outlive it.
   const season = /^season:(\d+)$/.exec(e.skill);
+  // The Deep's ladder of the week (session 214), kept as `deep:<Monday>`.
+  if (e.skill.startsWith('deep:'))
+    return {
+      title: t('moment.rankUpDeep', { place }),
+      body: band ? t(band) : null,
+      skill: 'peaks',
+      href: '/hiscores?skill=deep',
+    };
   if (season)
     return {
       title: t('moment.rankUpSeason', { place, number: fmt.int(Number(season[1])) }),

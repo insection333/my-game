@@ -27,6 +27,7 @@ import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { ipOf, limit, type Ctx } from '../context.ts';
 import { castlesLadder } from './castles-ladder.ts';
 import { SEASON, seasonLadderAt } from './season-ladder.ts';
+import { deepLadder, deepLadderAt } from './deep-ladder.ts';
 import { TOTAL } from './hiscores.ts';
 import { hear } from './watching.ts';
 import { contractRoute, fail, HttpError } from '../http.ts';
@@ -130,6 +131,8 @@ export function gameRoutes(app: FastifyInstance, ctx: Ctx, features: readonly Fe
           castlesLadder(ctx.db, req.playerId!),
           // The week's strikes on the realm's boss (session 174).
           ctx.realm.ladder(req.playerId!, at),
+          // The Deep's deepest of the week (session 214), once anyone has gone down.
+          ...deepLadder(ctx.hiscores.ladder(deepLadderAt(at), req.playerId!)),
         ],
       } satisfies HiscoresResponse;
     },
