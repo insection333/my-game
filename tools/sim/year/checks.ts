@@ -7,6 +7,7 @@ import { HONOURS } from '../../../packages/features/src/deeds/honours.ts';
 import { pointsOf } from '../../../packages/features/src/deeds/list.ts';
 import { companionChecks } from './companions.ts';
 import { titleChecks } from './titles.ts';
+import { secondYearChecks, TWO_YEARS } from './second-year.ts';
 import { stageOf, WORKS } from '../../../packages/features/src/shared/steading.ts';
 import { fighter } from '../combat.ts';
 import { DAY, focusedPlayer, gaps, T0 } from '../player.ts';
@@ -17,8 +18,8 @@ type Check = (ok: boolean, what: string) => void;
 const YEAR = 365;
 /** A year, and the 25% either side a target may stray. */
 const [EARLY, LATE] = [Math.round(YEAR * 0.75), Math.round(YEAR * 1.25)];
-/** The steady player plays on to eighteen months, for the castle's long arc (session 138). */
-const MONTHS_18 = 548;
+/** The steady player plays on to two years: the castle's long arc (session 138, eighteen months) and what
+ *  each system still gives in the second year (session 209). */
 const STAGES = [1, 7, 30, 90, 180, 365];
 /** The seed verify plays; another may be given to measure a check before it is trusted (session 180). */
 const SEED = Number(process.env.YEAR_SEED ?? 11);
@@ -52,7 +53,7 @@ export function yearChecks(check: Check, lines: string[]): { steady: Year; light
   const steady = playYear(
     STEADY,
     SEED,
-    MONTHS_18,
+    TWO_YEARS,
     (day, state) => {
       points[day] = pointsOf(state);
       for (const w of WORKS) for (let n = raised[w.id].length; n < stageOf(state, w.id); n++) raised[w.id].push(day);
@@ -105,6 +106,7 @@ export function yearChecks(check: Check, lines: string[]): { steady: Year; light
   // its Edict of Vigor lifting every skill's XP; the targets above all hold with it.
   for (const y of [steady, light]) castleYear(y, check, lines);
   companionChecks(steady, check, lines);
+  secondYearChecks(steady, check, lines);
 
   // A moment about every two minutes of active play at every stage of the year, never five without one.
   lines.push(`\n## Moments in the steady player's active hour`);

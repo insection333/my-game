@@ -32,6 +32,8 @@ export interface CastleDay {
   spent: number;
   tier: number;
   marks: number;
+  /** War marks held, unspent (session 209: what a currency keeps once it has nothing to buy). */
+  held: number;
   rating: number;
   /** The troops' evolution, the least evolved of the three (0 to 3), and their lowest level. */
   evolution: number;
@@ -228,6 +230,7 @@ export class Lordship {
         spent: start - purse,
         tier: c.incursionTier,
         marks: c.warMarksEarned,
+        held: c.warMarks,
         rating: c.rating,
         evolution: Math.min(...UNIT_IDS.map((u) => E.evolutionOf(c.levels[u]))),
         troops: Math.min(...UNIT_IDS.map((u) => c.levels[u])),
