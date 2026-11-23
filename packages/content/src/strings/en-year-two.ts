@@ -5,7 +5,8 @@ export const yearTwo = {
   'honour.frame.kindled': 'Kindled',
   'hiscores.kindlings': 'Kindlings',
   'hiscores.kindlingsCount': 'Kindlings',
-  'hiscores.kindlingsNote': 'Every Kindling past 99 across all your skills; of the same count, whoever reached it first.',
+  'hiscores.kindlingsNote':
+    'Every Kindling past 99 across all your skills; of the same count, whoever reached it first.',
   'hiscores.unrankedKindlings': 'You join this ladder with your first Kindling past 99.',
   'moment.rankUpKindlings': '{place} on the Kindlings ladder',
   'rival.passedKindlings': '{name} passed you on the Kindlings ladder: you are {place}',
