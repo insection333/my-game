@@ -1,5 +1,5 @@
 // The notices tray and settings: sheets over any page.
-import { fmt, t } from '@idle-clash/content';
+import { daysBefore, fmt, t } from '@idle-clash/content';
 import { Button, Field, TextLink } from '@idle-clash/ui';
 import { useEffect, useState, type FormEvent } from 'react';
 import { useGame } from '../game/hooks.ts';
@@ -40,10 +40,9 @@ export function Tray() {
     window.dispatchEvent(new Event('tray-read'));
   }, [view.now]);
   if (!list.length) return <p className={s.note}>{t('tray.empty')}</p>;
-  const today = new Date(view.now).setHours(0, 0, 0, 0);
   const label = (at: number) => {
-    const d = new Date(at).setHours(0, 0, 0, 0);
-    return d === today ? t('tray.today') : d === today - 86_400_000 ? t('tray.yesterday') : fmt.day(at, view.now);
+    const d = daysBefore(at, view.now);
+    return d === 0 ? t('tray.today') : d === 1 ? t('tray.yesterday') : fmt.day(at, view.now);
   };
   const days = [...new Set(list.map((n) => label(n.at)))];
   return (

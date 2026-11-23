@@ -12,3 +12,13 @@ export function dayTurns(now: number, timeZone?: string): string {
   const time = new Intl.DateTimeFormat('en-GB', { timeZone, hour: '2-digit', minute: '2-digit' }).format(next);
   return date.format(next) === date.format(now) ? t('day.turnsAt', { time }) : t('day.turnsTomorrow', { time });
 }
+
+/** How many days of the player's own calendar lie between `at` and `now`: 0 today, 1 yesterday. Counted by
+ *  date (session 203), as the days the clocks change are 23 and 25 hours long. */
+export function daysBefore(at: number, now: number): number {
+  const date = (x: number) => {
+    const d = new Date(x);
+    return Date.UTC(d.getFullYear(), d.getMonth(), d.getDate());
+  };
+  return Math.round((date(now) - date(at)) / DAY);
+}

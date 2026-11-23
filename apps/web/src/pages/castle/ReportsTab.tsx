@@ -1,7 +1,7 @@
 // The Reports tab (session 42, the owner: battle reports easy to take in and good to look at): every
 // siege, defence, stronghold, fortress and spy's errand as a card, newest first under the day it fell on,
 // with filters across the top. The War tab shows the latest few (LatestReports) with the way here.
-import { fmt, t } from '@idle-clash/content';
+import { daysBefore, fmt, t } from '@idle-clash/content';
 import type { castleEngine } from '@idle-clash/features';
 import { ItemIcon, Panel, Pill, Tabs, TextLink } from '@idle-clash/ui';
 import { navigate } from '../../router.ts';
@@ -31,12 +31,11 @@ const icon = (f: Filter) =>
     <ItemIcon name={ICON[f]} crest={f === 'strongholds' ? 'stronghold' : undefined} size={24} />
   );
 
-const DAY = 86_400_000;
 /** The day a report fell on, as its heading says it: Today, Yesterday, or the date. */
 function dayOf(at: number, now: number): string {
-  const day = (x: number) => new Date(x).toDateString();
-  if (day(at) === day(now)) return t('castle.reports.today');
-  if (day(at) === day(now - DAY)) return t('castle.reports.yesterday');
+  const d = daysBefore(at, now);
+  if (d === 0) return t('castle.reports.today');
+  if (d === 1) return t('castle.reports.yesterday');
   return fmt.day(at, now);
 }
 

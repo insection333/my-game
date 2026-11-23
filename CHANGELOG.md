@@ -340,3 +340,4 @@
 - Session 200: in Windows' high contrast the bars keep their fill and the open page and tab are marked; step 6 checks it.
 - Session 201: a notice held over the quiet hours comes at 08:00 by the player's clock on the nights summer time ends and begins, where it came an hour early or late.
 - Session 202: a page left open across a deploy loads the new build when next hidden or moved to another page, where it ran the old one until closed.
+- Session 203: Today and Yesterday in the tray and the castle's reports hold on the days after the clocks change.
