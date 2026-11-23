@@ -83,6 +83,12 @@ function SkillPage({ feature }: { feature: Feature }) {
             <ProgressBar value={head.progress} label={head.toNext} />
           </div>
           <div className={s.muted}>{head.toNext}</div>
+          {/* What lifts its XP, each source by name (session 194). */}
+          {head.gains && (
+            <div className={s.muted} data-gains>
+              {head.gains}
+            </div>
+          )}
           {head.nextUnlock && <div>{head.nextUnlock}</div>}
         </Slot>
       )}

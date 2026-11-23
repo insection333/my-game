@@ -21,6 +21,7 @@ import { extraYieldPct, xpBonusPct } from './complete.ts';
 import { itemOf } from './catalog.ts';
 import { STYLE_SKILLS } from './combat/data.ts';
 import { healsFor } from './combat/state.ts';
+import { xpGainsWords } from './xp-gains.ts';
 
 export interface SkillAction {
   id: string;
@@ -48,6 +49,8 @@ export interface SkillSummary {
   top: boolean;
   /** Kindlings earned past 99: a flame each on the seal. */
   kindlings: number;
+  /** On the skill's own head: what lifts its XP, each source by name (session 194), or null. */
+  gains?: string | null;
 }
 export interface SkillActionRow {
   action: { feature: string; id: string };
@@ -187,7 +190,11 @@ export function skillSlots(def: SkillDef): Record<string, SlotFill> {
       };
     },
     'skills.list': ({ state }) => summary(xpOf(state, skill)),
-    'skill.header': ({ state }) => summary(xpOf(state, skill)),
+    // With what lifts its XP, each source by name (session 194).
+    'skill.header': ({ state, now }) => ({
+      ...summary(xpOf(state, skill)),
+      gains: xpGainsWords(state, skill, def.finds, now),
+    }),
     'skill.actions': ({ state, now }) => {
       const level = skillLevel(state, skill);
       // The XP an hour each row states is what the lane pays now, every gain counted.

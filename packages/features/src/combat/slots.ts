@@ -17,6 +17,7 @@ import { findsOf } from '../shared/combat/spoils.ts';
 import { healthShown } from './arena.ts';
 import { gearDoes, wearNeeds } from './gear.ts';
 import { FEATURE } from './rules.ts';
+import { xpGainsWords } from '../shared/xp-gains.ts';
 
 export interface GearChoice {
   item: string;
@@ -56,6 +57,8 @@ export interface LoadoutView {
   /** "No food" when none is carried. */
   noFood: string | null;
   supply: SupplyView | null;
+  /** What lifts the style's XP, each source by name (session 194), or null. */
+  gains: string | null;
 }
 export interface FoeRow {
   foe: { feature: string; id: string };
@@ -145,6 +148,7 @@ function loadout(state: State, now: number): LoadoutView {
       }),
     })),
     noFood: meals.length ? null : t('combat.noFood'),
+    gains: style ? xpGainsWords(state, style, findsOf(style), now) : null,
   };
 }
 
