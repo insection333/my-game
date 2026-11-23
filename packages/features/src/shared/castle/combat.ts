@@ -110,7 +110,7 @@ export function defensePower(def: Side, att: Side): number {
   return total * walls * vigilance * def.morale * poison * lift(-def.wounded);
 }
 
-/** R = attacker × uniform(0.96, 1.04) ÷ defender, from a roll in [0, 1). */
+/** R = attacker × uniform(1 − spread, 1 + spread) ÷ defender (the spread `COMBAT.ROLL_SPREAD`, ±10%), from a roll in [0, 1). */
 export function combatRatio(att: Side, def: Side, roll: number): { attack: number; defense: number; r: number } {
   const attack = attackPower(att, def);
   const defense = defensePower(def, att);

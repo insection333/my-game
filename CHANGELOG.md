@@ -330,3 +330,4 @@
 - Session 190: the recap says the realm's boss fell with your strike while you were away, and a strike fought in the lane.
 - Session 191: once every relic is raised, the quartermaster takes marks for gold (25 for an hour of your earning), so marks keep their worth all year.
 - Session 192: Sell finds also takes Rare finds with no use left (every action open and mastered); one with actions still to open is kept, and says so.
+- Session 193: a content test holds the numbers the castle writes into its words (castellans, decrees, studies, spies, the treasury, the trap) to the constants the engine plays by.
