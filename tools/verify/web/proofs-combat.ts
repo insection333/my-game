@@ -9,6 +9,8 @@
 //   whole game, its chip asking for a region's short name.
 // - The Storehouse finds an item by name once its shelves run long (session 186): forty kinds held, and
 //   "copper" leaves the copper ore and the copper bar; a name held by nothing says so.
+// - The finds kept to sell go at one press (session 187): asked first, then every bird's nest and amber
+//   nugget sold, the carved acorn (a Rare find, with a use) kept, and the sale said.
 import { XP_TABLE } from '@idle-clash/content';
 import { HOUR, type State } from '@idle-clash/kernel';
 import { playerWith, run, say } from './proofs-lanes.ts';
@@ -221,6 +223,26 @@ async function searchTheStorehouse(served: Served, problems: string[]) {
   }
 }
 
+async function sellTheFinds(served: Served, problems: string[]) {
+  const page = await playerWith(served, 'Nest Keeper', '/storehouse', (s) => ({
+    ...s,
+    items: { 'birds-nest': 90, 'amber-nugget': 2, 'carved-acorn': 3, 'pine-logs': 40 },
+  }));
+  try {
+    await page.getByRole('button', { name: 'Sell finds for 11,400 gold' }).click({ timeout: 5_000 });
+    await page.getByText("Sell every bird's nest and amber nugget for 11,400 gold?").waitFor({ timeout: 3_000 });
+    await page.getByRole('button', { name: 'Sell', exact: true }).click();
+    await page.getByText('Sold 2 kinds of find for 11,400 gold').waitFor({ timeout: 3_000 });
+    const names = (await page.locator('[data-ui="ItemTile"]').allInnerTexts()).join(' ');
+    if (/Bird's nest|Amber nugget/.test(names) || !/Carved acorn/.test(names)) throw new Error(`it left ${names}`);
+    if (await page.getByRole('button', { name: /^Sell finds/ }).count()) throw new Error('it still offers the sale');
+  } catch (err) {
+    problems.push(`Storehouse: the finds kept to sell did not go at one press (${say(err)})`);
+  } finally {
+    await page.close();
+  }
+}
+
 export async function runCombatProofs(served: Served): Promise<string[]> {
   const problems: string[] = [];
   await regionInView(served, problems);
@@ -228,5 +250,6 @@ export async function runCombatProofs(served: Served): Promise<string[]> {
   await wearFromThePage(served, problems);
   await retreatCostsNothing(served, problems);
   await searchTheStorehouse(served, problems);
+  await sellTheFinds(served, problems);
   return problems;
 }

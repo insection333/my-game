@@ -1,6 +1,6 @@
 // The Storehouse: its space and the vendor. Items themselves belong to the features that make them;
 // this feature counts the slots, enlarges them, sells to the vendor and buys its food.
-import { fmt, Id, t } from '@idle-clash/content';
+import { fmt, Id, midSentence, t } from '@idle-clash/content';
 import { countOf, type State } from '@idle-clash/kernel';
 import { z } from 'zod';
 import { defineFeature, defineRoute, type Json } from '../define.ts';
@@ -9,7 +9,7 @@ import { healsFor } from '../shared/combat/state.ts';
 import { skillLevel } from '../shared/skill.ts';
 import { capacity, ENLARGE_COSTS, noRoom, SLOTS_PER_ENLARGEMENT, slotsUsed, storeOf } from '../shared/storehouse.ts';
 import { useFind } from './finds.ts';
-import { buy, enlarge, sell } from './rules.ts';
+import { buy, enlarge, keptToSell, priceOf, sell, sellFinds } from './rules.ts';
 
 /** The Storehouse's space, as the page shows it. */
 export interface CapacityView {
@@ -18,6 +18,23 @@ export interface CapacityView {
   text: string;
   /** The next enlargement, or null once the Storehouse is as large as it gets. */
   enlarge: { label: string; affordable: boolean } | null;
+  /** The finds kept to sell, sold at one press after asking (session 187), or null when none is held. */
+  sellFinds: { label: string; ask: string } | null;
+}
+
+/** The finds named as a sentence says them: two by name and the rest counted. */
+function findsWords(held: string[]): string {
+  const names = held.map((id) => midSentence(t(`item.${id}`)));
+  if (names.length <= 3)
+    return names.length === 1 ? names[0] : t('list.and', { first: names.slice(0, -1).join(', '), last: names.at(-1)! });
+  return t('store.sellFinds.more', { first: names.slice(0, 2).join(', '), count: fmt.int(names.length - 2) });
+}
+
+function sellFindsView(state: State): CapacityView['sellFinds'] {
+  const held = keptToSell(state);
+  if (!held.length) return null;
+  const gold = fmt.int(held.reduce((n, id) => n + priceOf(id) * countOf(state, id), 0));
+  return { label: t('store.sellFinds', { gold }), ask: t('store.sellFinds.ask', { finds: findsWords(held), gold }) };
 }
 
 /** Food: what is carried, and what the vendor sells at this Hitpoints level. */
@@ -59,6 +76,7 @@ function capacityView(state: State): CapacityView {
             label: t('store.enlarge', { slots: fmt.int(SLOTS_PER_ENLARGEMENT), gold: fmt.int(cost) }),
             affordable: countOf(state, 'gold') >= cost,
           },
+    sellFinds: sellFindsView(state),
   };
 }
 
@@ -112,6 +130,11 @@ export const storehouse = defineFeature({
         .strict(),
       example: { item: 'carved-acorn', action: { feature: 'woodcutting', id: 'pine-tree' } },
       run: (state, input, now) => useFind(state, input.item, input.action, now, input.count ?? 1),
+    }),
+    sellFinds: defineRoute({
+      input: z.object({}).strict(),
+      example: {},
+      run: (state) => sellFinds(state),
     }),
     enlarge: defineRoute({
       input: z.object({}).strict(),

@@ -18,6 +18,13 @@ export const store = {
   'store.inUse.lane': 'Your {skill} lane uses these, and stops when they run out.',
   'store.inUse.food': 'You eat these in your fights.',
   'store.inUse.supply': 'Your fights use these for {pct} more damage.',
+  // The finds kept to sell, sold at one press (session 187).
+  'store.sellFinds': 'Sell finds for {gold} gold',
+  'store.sellFinds.ask':
+    'Sell every {finds} for {gold} gold? They are used nowhere, and your collection log keeps them.',
+  'store.sellFinds.more': '{first} and {count} more',
+  'store.soldFinds': 'Sold {count} kinds of find for {gold} gold',
+  'store.soldFindsOne': 'Sold 1 kind of find for {gold} gold',
   'store.sellYes': 'Sell',
   'store.sellNo': 'Keep them',
   'store.sold': 'Sold {count} for {gold} gold',

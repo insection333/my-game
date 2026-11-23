@@ -3,7 +3,7 @@
 import { fmt, t } from '@idle-clash/content';
 import { items, type CapacityView } from '@idle-clash/features';
 import { countOf } from '@idle-clash/kernel';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Button, Field, ItemIcon, Panel, ProgressBar } from '@idle-clash/ui';
 import { useGame } from '../game/hooks.ts';
 import { game } from '../game/store.ts';
@@ -13,27 +13,76 @@ import { itemHref, KIND_TITLE, KINDS, wornBy } from './Items.tsx';
 import { itemMatches, SEARCH_FROM } from './item-search.ts';
 import s from './items.module.css';
 
-/** Slots used of the total, and the next enlargement with its price. */
+/** Slots used of the total, the next enlargement with its price, and the finds kept to sell sold at one
+ *  press after asking (session 187). */
 function Capacity() {
   const { state, now, features } = useGame();
+  const [asking, setAsking] = useState(false);
+  const [sold, setSold] = useState('');
+  const box = useRef<HTMLDivElement>(null);
   const [cap] = fills<CapacityView>(features, 'store.capacity', state, now);
   if (!cap) return null;
   const { data } = cap;
+  const focusIn = (selector: string) =>
+    requestAnimationFrame(() => box.current?.querySelector<HTMLElement>(selector)?.focus());
+  const sell = () => {
+    setAsking(false);
+    const r = game.act('storehouse', 'sellFinds', {}) as { ok: boolean; gold?: number; kinds?: number } | null;
+    const gold = fmt.int(r?.gold ?? 0);
+    if (r?.ok)
+      setSold(
+        r.kinds === 1
+          ? t('store.soldFindsOne', { gold })
+          : t('store.soldFinds', { count: fmt.int(r.kinds ?? 0), gold }),
+      );
+    focusIn('[data-status]');
+  };
   return (
     <Slot id="store.capacity" className={s.capacity}>
       <div className={s.capacityText}>
         <span>{data.text}</span>
         <ProgressBar value={data.used / data.total} label={data.text} tone="woad" />
       </div>
-      {data.enlarge && (
-        <Button
-          variant="secondary"
-          disabled={!data.enlarge.affordable}
-          onClick={() => game.act('storehouse', 'enlarge', {})}
-        >
-          {data.enlarge.label}
-        </Button>
+      {!asking && (data.enlarge || data.sellFinds) && (
+        <div className={s.actions}>
+          {data.sellFinds && (
+            <Button
+              variant="secondary"
+              data-sell-finds
+              onClick={() => (setAsking(true), setSold(''), focusIn('[data-answer]'))}
+            >
+              {data.sellFinds.label}
+            </Button>
+          )}
+          {data.enlarge && (
+            <Button
+              variant="secondary"
+              disabled={!data.enlarge.affordable}
+              onClick={() => game.act('storehouse', 'enlarge', {})}
+            >
+              {data.enlarge.label}
+            </Button>
+          )}
+        </div>
       )}
+      <div ref={box} className={s.capacityAnswer}>
+        {asking && data.sellFinds && (
+          <div className={s.ask}>
+            <p>{data.sellFinds.ask}</p>
+            <div className={s.actions}>
+              <Button variant="primary" data-answer onClick={sell}>
+                {t('store.sellYes')}
+              </Button>
+              <Button variant="secondary" onClick={() => (setAsking(false), focusIn('[data-sell-finds]'))}>
+                {t('store.sellNo')}
+              </Button>
+            </div>
+          </div>
+        )}
+        <p role="status" data-status tabIndex={-1} className={s.sold}>
+          {sold}
+        </p>
+      </div>
     </Slot>
   );
 }
