@@ -10,6 +10,7 @@ import { foods, supplies } from '../catalog.ts';
 import { HITPOINTS, LADDERS, SUPPLY_DAMAGE, type Foe } from './data.ts';
 import { maxHealth, regenPerSecond, type Fighter, type Meal } from './fight.ts';
 import { steadingDamagePct, steadingFoodHealPct } from '../steading.ts';
+import { temperGains } from '../temper.ts';
 
 const ItemId = z.string().regex(/^[a-z0-9][a-z0-9-]{0,63}$/);
 export const CombatState = z
@@ -56,11 +57,15 @@ export const styleOf = (state: State): Style | null => {
   return w ? (itemOf(w)?.gear?.style ?? null) : null;
 };
 
-/** The style's perks, with the Training yard's damage added. */
-const withYard = (perks: ReturnType<typeof perksAt>, state: State) => ({
-  ...perks,
-  damage: perks.damage + steadingDamagePct(state),
-});
+/** The style's perks, with the Training yard's damage and the worn set's tempering (session 216) added. */
+const withYard = (perks: ReturnType<typeof perksAt>, state: State) => {
+  const tempered = temperGains(state, (slot) => wornIn(state, slot));
+  return {
+    ...perks,
+    damage: perks.damage + steadingDamagePct(state) + tempered.damage,
+    guard: perks.guard + tempered.guard,
+  };
+};
 
 const hitpointsPart = (state: State) => {
   const hpLevel = skillLevel(state, HITPOINTS);

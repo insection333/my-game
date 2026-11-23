@@ -9,6 +9,7 @@ import { FOES, HITPOINTS, regionOf, STYLE_SKILLS } from '../shared/combat/data.t
 import { BOSSES } from '../shared/expeditions/data.ts';
 import { perksAt, skillLevel } from '../shared/skill.ts';
 import { addGiven } from '../shared/given.ts';
+import { trophyWanted } from '../shared/temper.ts';
 
 export { RARE_FIND_COMPLETIONS };
 
@@ -41,7 +42,9 @@ export function actionsFor(state: State, item: string, all = false): ActionRef[]
 export const spentFind = (state: State, item: string): boolean =>
   findOf(item)?.rarity === 'rare' &&
   actionsFor(state, item).length === actionsFor(state, item, true).length &&
-  findUses(state, item).length === 0;
+  findUses(state, item).length === 0 &&
+  // A boss's Rare find is a trophy (session 216): kept while some gear held it suits can still be tempered.
+  !trophyWanted(state, item);
 
 export function useFind(
   state: State,

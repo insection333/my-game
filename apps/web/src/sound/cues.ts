@@ -32,6 +32,7 @@ export function cueFor(e: GameEvent): Cue | null {
     case 'workRaised':
     case 'findUsed':
     case 'relicRaised':
+    case 'gearTempered':
       return 'goal';
     case 'bossFought':
       return !e.won ? null : e.first ? 'rare' : 'goal';

@@ -96,6 +96,8 @@ describe('every item says where it comes from and where it goes', () => {
     expect(items.usedIn(FEATURES, melee).map(label)).toEqual(['Melee: 500 mastery completions on one foe']);
     expect(items.usedIn(FEATURES, 'chieftains-torc').map(label)).toEqual([
       'Combat: 500 mastery completions on one foe of its region',
+      // A trophy too, at the forge (session 216).
+      'Smithing: a trophy, tempering any armour or a weapon of Melee from level 90',
     ]);
     // An Uncommon find is only sold, and a Legendary one kept: no use is claimed for either.
     expect(items.usedIn(FEATURES, 'birds-nest')).toEqual([]);

@@ -7,6 +7,7 @@ import type { GameEvent, State } from '@idle-clash/kernel';
 import { itemOf } from '../../../packages/features/src/shared/catalog.ts';
 import { rankOf, RELIC_COSTS, relics } from '../../../packages/features/src/shared/expeditions/relics.ts';
 import { STAGES, stageCost, stageOf, WORKS } from '../../../packages/features/src/shared/steading.ts';
+import { TROPHY_STYLE, trophyWanted } from '../../../packages/features/src/shared/temper.ts';
 import { ACTS, ALL_SKILLS, ARTISAN, have, level } from './world.ts';
 import { behind } from './plan.ts';
 import { bounties } from './bounties.ts';
@@ -81,6 +82,8 @@ function keeps(state: State): Set<string> {
   for (const id of Object.keys(state.items)) {
     const it = itemOf(id);
     if (it?.kind === 'food') keep.add(id);
+    // Boss trophies, kept while gear held can still be tempered with them (session 216).
+    if (Object.hasOwn(TROPHY_STYLE, id) && trophyWanted(state, id)) keep.add(id);
     if (
       it?.supply &&
       TIER_LEVELS[it.supply.tier - 1] <= level(state, it.supply.style) &&
