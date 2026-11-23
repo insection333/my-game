@@ -21,7 +21,7 @@ export const store = {
   // The finds kept to sell, sold at one press (session 187).
   'store.sellFinds': 'Sell finds for {gold} gold',
   'store.sellFinds.ask':
-    'Sell every {finds} for {gold} gold? They are used nowhere, and your collection log keeps them.',
+    'Sell every {finds} for {gold} gold? They have no use left, and your collection log keeps them.',
   'store.sellFinds.more': '{first} and {count} more',
   'store.soldFinds': 'Sold {count} kinds of find for {gold} gold',
   'store.soldFindsOne': 'Sold 1 kind of find for {gold} gold',
@@ -73,5 +73,6 @@ export const store = {
   'item.panel.nextStep': '{count} bring mastery {step}',
   'item.panel.nextStepOne': 'One brings mastery {step}',
   'item.panel.allMastered': 'Every action it can go to is at full mastery: it is kept to sell.',
+  'item.panel.openMastered': 'Every action open to you is at full mastery: keep it for those your levels open.',
   'item.panel.unknown': 'There is no such item.',
 };

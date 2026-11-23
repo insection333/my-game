@@ -45,7 +45,7 @@ describe('selling the finds kept to sell', () => {
     }) as { sellFinds: { label: string; ask: string } | null };
     expect(view.sellFinds?.label).toBe('Sell finds for 11,400 gold');
     expect(view.sellFinds?.ask).toBe(
-      "Sell every bird's nest and amber nugget for 11,400 gold? They are used nowhere, and your collection log keeps them.",
+      "Sell every bird's nest and amber nugget for 11,400 gold? They have no use left, and your collection log keeps them.",
     );
     const four = storehouse.slots['store.capacity']({
       state: { ...newState(9, T0), items: { 'birds-nest': 1, 'amber-nugget': 1, 'rough-garnet': 1, 'chalk-stub': 1 } },

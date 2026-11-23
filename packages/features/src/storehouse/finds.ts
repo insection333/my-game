@@ -15,25 +15,33 @@ export { RARE_FIND_COMPLETIONS };
 export type UseFindResult =
   { ok: true } | { ok: false; reason: { code: 'notARareFind' | 'notOwned' | 'notItsAction' | 'masteryFull' } };
 
-/** The actions a find may be used on: its skill's actions the player has open. */
-export function actionsFor(state: State, item: string): ActionRef[] {
+/** The actions a find may be used on: its skill's actions the player has open (`all`: every one, open or
+ *  not, to tell whether any is still to come). */
+export function actionsFor(state: State, item: string, all = false): ActionRef[] {
   const f = findOf(item);
   if (!f) return [];
   if ((STYLE_SKILLS as readonly string[]).includes(f.skill))
-    return FOES.filter((x) => x.hitpoints <= skillLevel(state, HITPOINTS)).map((x) => ({
+    return FOES.filter((x) => all || x.hitpoints <= skillLevel(state, HITPOINTS)).map((x) => ({
       feature: 'combat',
       id: x.id,
     }));
   // A boss's find goes to a foe of the boss's region.
   const boss = BOSSES.find((b) => b.finds.rare === item || b.finds.legendary === item);
   if (boss)
-    return FOES.filter((x) => regionOf(x.tier) === boss.region && x.hitpoints <= skillLevel(state, HITPOINTS)).map(
-      (x) => ({ feature: 'combat', id: x.id }),
-    );
+    return FOES.filter(
+      (x) => regionOf(x.tier) === boss.region && (all || x.hitpoints <= skillLevel(state, HITPOINTS)),
+    ).map((x) => ({ feature: 'combat', id: x.id }));
   const own = skillActions().find((s) => s.skill === f.skill);
   const level = skillLevel(state, f.skill);
-  return (own?.actions ?? []).filter((a) => a.level <= level).map((a) => ({ feature: own!.feature, id: a.id }));
+  return (own?.actions ?? []).filter((a) => all || a.level <= level).map((a) => ({ feature: own!.feature, id: a.id }));
 }
+
+/** A Rare find with no use left (session 192): every action it may go to is open and at full mastery, so it is
+ *  kept only to sell. One with an action still to open keeps its worth for later. */
+export const spentFind = (state: State, item: string): boolean =>
+  findOf(item)?.rarity === 'rare' &&
+  actionsFor(state, item).length === actionsFor(state, item, true).length &&
+  findUses(state, item).length === 0;
 
 export function useFind(
   state: State,
