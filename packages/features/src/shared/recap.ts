@@ -22,15 +22,17 @@ import {
 export { noticeLine, RECAP_ORDER, type RecapKind, type RecapLine };
 
 /** What happened to the player on the server while away, said in its notices rather than by the advance:
- *  a siege or a caught spy against their castle (kind `defence`), and a climb on the ladders, which the
- *  server says as the read that opens the page records it (so a little after the time away ends). */
+ *  a siege or a caught spy against their castle (kind `defence`), the realm's boss fallen with their strike,
+ *  and a climb on the ladders, which the server says as the read that opens the page records it (so a
+ *  little after the time away ends). */
 function fromNotices(a: AwaySummary, notices: readonly GameEvent[]): RecapLine[] {
   const lines: RecapLine[] = [];
   for (const e of [...notices].sort((x, y) => x.at - y.at)) {
     if (e.at <= a.from || e.at > a.to + 60_000) continue;
     const line = noticeLine(e);
     if (e.type === 'castleBesieged' || e.type === 'castleSpyCaught') lines.push({ ...line!, kind: 'defence' });
-    else if (e.type === 'rankUp' && line) lines.push(line);
+    // The realm's boss fell with this player's strike while they were away (session 190: only the bell said).
+    else if ((e.type === 'rankUp' || e.type === 'realmFell') && line) lines.push(line);
   }
   return lines.map(({ kind, text, icon, href }) => ({ kind, text, icon, href }));
 }
@@ -111,9 +113,9 @@ export function recapLines(a: AwaySummary, notices: readonly GameEvent[] = []): 
         href: '/combat/expeditions',
       });
     }
-  // Each boss fought alone in the lane (session 72).
+  // Each boss fought alone in the lane (session 72), and the realm's (session 190).
   for (const e of a.events)
-    if (e.type === 'bossFought') {
+    if (e.type === 'bossFought' || e.type === 'realmFought') {
       const line = noticeLine(e)!;
       lines.push({ kind: line.kind, text: line.text, icon: line.icon, href: line.href });
     }
