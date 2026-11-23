@@ -247,3 +247,9 @@
     transform: translateY(-1px);
   }
 }
+
+/* The search (session 186): under the space; the width of a name or two, not of the page. */
+.search {
+  max-width: 24rem;
+  margin-bottom: var(--s-4);
+}

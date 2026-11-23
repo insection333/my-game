@@ -6,6 +6,9 @@ import s from './Field.module.css';
 
 interface Common {
   label: string;
+  /** The label for screen readers alone, where the field says what it is by its place and placeholder
+   *  (the Storehouse's search, session 186). */
+  labelHidden?: boolean;
   hint?: string;
   error?: string | null;
 }
@@ -15,7 +18,7 @@ export type FieldProps = Common &
     | (Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'id'> & { rows: number })
   );
 
-export function Field({ label, hint, error, className, ...rest }: FieldProps) {
+export function Field({ label, labelHidden, hint, error, className, ...rest }: FieldProps) {
   const id = useId();
   const note = error ?? hint;
   const shared = {
@@ -26,7 +29,7 @@ export function Field({ label, hint, error, className, ...rest }: FieldProps) {
   } as const;
   return (
     <div className={[s.field, className].filter(Boolean).join(' ')}>
-      <label htmlFor={id} className={s.label}>
+      <label htmlFor={id} className={labelHidden ? 'visually-hidden' : s.label}>
         {label}
       </label>
       {rest.rows !== undefined ? (

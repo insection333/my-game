@@ -2,7 +2,7 @@
 // (see numbers.ts). The content check fails on a missing key, an unused key, or a term GLOSSARY.md
 // says to avoid. Keep sections in order; within a feature's section, keys follow its content. The gathering
 // and artisan skills' words are in en-skills.ts, Combat's in en-combat.ts, the privacy page's and the
-// terms' in en-legal.ts, Fishing's and Cooking's in en-food.ts, Fletching's, Runecraft's and the supplies' in en-supplies.ts, the goals ladder's, its rewards' and your standing's in en-progress.ts, Kindling's in en-kindling.ts, the seasons' in en-seasons.ts, notices while away in en-push.ts, the lanes' in en-lanes.ts, the steading's in en-steading.ts, the closed test's in en-test.ts, the admin page's and reporting's in en-moderation.ts.
+// terms' in en-legal.ts, Fishing's and Cooking's in en-food.ts, Fletching's, Runecraft's and the supplies' in en-supplies.ts, the goals ladder's, its rewards' and your standing's in en-progress.ts, Kindling's in en-kindling.ts, the seasons' in en-seasons.ts, notices while away in en-push.ts, the Storehouse's and the vendor's in en-store.ts, the lanes' in en-lanes.ts, the steading's in en-steading.ts, the closed test's in en-test.ts, the admin page's and reporting's in en-moderation.ts.
 import { combat } from './en-combat.ts';
 import { deeds } from './en-deeds.ts';
 import { honours } from './en-honours.ts';
@@ -12,6 +12,7 @@ import { food } from './en-food.ts';
 import { kindling } from './en-kindling.ts';
 import { seasons } from './en-seasons.ts';
 import { push } from './en-push.ts';
+import { store } from './en-store.ts';
 import { lanes } from './en-lanes.ts';
 import { castle } from './en-castle.ts';
 import { castleWar } from './en-castle-war.ts';
@@ -66,70 +67,6 @@ export const en: Record<string, string> = {
   'skill.tier': 'Tier {tier}',
   'skill.ladder.title': 'Every level',
   'combat.title': 'Combat',
-  'store.title': 'Storehouse',
-  'store.tab.items': 'Items',
-  'store.tab.log': 'Collection log',
-  'store.empty': 'Logs and ores you gather land here.',
-  'store.empty.go': 'Start in Woodcutting',
-  'store.capacity': '{used} of {total} slots',
-  'store.capacityOver': '{used} of {total} slots: finds are kept even when full',
-  'store.enlarge': 'Add {slots} slots for {gold} gold',
-  'store.sellOne': 'Sell 1',
-  'store.sellTen': 'Sell 10',
-  'store.sellAllButOne': 'Sell all but 1',
-  'store.sellAsk': 'Sell {count} for {gold} gold?',
-  'store.inUse.lane': 'Your {skill} lane uses these, and stops when they run out.',
-  'store.inUse.food': 'You eat these in your fights.',
-  'store.inUse.supply': 'Your fights use these for {pct} more damage.',
-  'store.sellYes': 'Sell',
-  'store.sellNo': 'Keep them',
-  'store.sold': 'Sold {count} for {gold} gold',
-  'store.buyTen': 'Buy 10',
-  'food.heals': 'Heals {health}',
-  'action.heals': 'Each heals {health}',
-  'food.price': '{gold} gold each',
-  'food.have': '×{count}',
-  'food.noRoom': 'No room in the Storehouse',
-  'stop.storehouseFull': 'Storehouse full',
-  'help.storehouse.title': 'Storehouse',
-  'help.storehouse.body':
-    'The Storehouse holds any number of each item, but only so many different items. Sell what you do not need to the vendor, buy food, and enlarge it with gold.',
-  'store.kind.resource': 'Resources',
-  'store.kind.supply': 'Supplies',
-  'store.kind.gear': 'Gear',
-  'store.kind.food': 'Food',
-  'store.kind.find': 'Finds',
-  'item.panel.have': 'You have {count}',
-  'item.panel.sells': 'Sells for {gold} gold',
-  'item.panel.comesFrom': 'Comes from',
-  'item.panel.usedIn': 'Used in',
-  'item.panel.action': '{skill}: {action} (×{count})',
-  'item.panel.kept': '{skill}: {action} (not used up)',
-  'item.panel.find': '{skill}: {rarity} find',
-  'item.panel.nothing': 'Nothing.',
-  'item.panel.unused': 'Nothing; it is kept to sell.',
-  'store.worn': 'Worn',
-  'item.panel.wearing': 'Your fighter wears it now: the one worn is never sold.',
-  'item.panel.vendor': 'The vendor in Combat: {gold} gold each',
-  'item.panel.vendorFrom': 'The vendor in Combat: {gold} gold each, from Hitpoints level {level}',
-  'item.panel.eaten': 'Combat: eaten by your fighter',
-  'item.panel.wielded': 'Combat: wielded in {style}',
-  'item.panel.worn.helm': 'Combat: worn on the head',
-  'item.panel.worn.body': 'Combat: worn on the body',
-  'item.panel.worn.legs': 'Combat: worn on the legs',
-  'item.panel.carried': 'Combat: carried into {style} fights',
-  'item.panel.inLog': 'Kept: a page of your collection log',
-  'item.panel.useOn': '{skill}: {count} mastery completions on one of its actions',
-  'item.panel.useOnFoe': '{skill}: {count} mastery completions on one foe',
-  'item.panel.useOnRegion': 'Combat: {count} mastery completions on one foe of its region',
-  'item.panel.use': 'Or use it: {count} mastery completions on one action',
-  'item.panel.completions': '{count} done so far',
-  'item.panel.useButton': 'Use',
-  'item.panel.useMany': 'Use {count}',
-  'item.panel.nextStep': '{count} bring mastery {step}',
-  'item.panel.nextStepOne': 'One brings mastery {step}',
-  'item.panel.allMastered': 'Every action it can go to is at full mastery: it is kept to sell.',
-  'item.panel.unknown': 'There is no such item.',
   'hiscores.title': 'Hiscores',
   'hiscores.total': 'Total',
   'hiscores.rank': 'Rank',
@@ -313,6 +250,7 @@ export const en: Record<string, string> = {
   ...kindling,
   ...seasons,
   ...push,
+  ...store,
   ...lanes,
   ...steading,
   ...closedTest,

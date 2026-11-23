@@ -7,6 +7,8 @@
 //   the tabs, and pressing Fen changed only the tab's underline.
 // - A boss fought in the lane is named on its chip (session 108): Fight on the Troll-chief blanked the
 //   whole game, its chip asking for a region's short name.
+// - The Storehouse finds an item by name once its shelves run long (session 186): forty kinds held, and
+//   "copper" leaves the copper ore and the copper bar; a name held by nothing says so.
 import { XP_TABLE } from '@idle-clash/content';
 import { HOUR, type State } from '@idle-clash/kernel';
 import { playerWith, run, say } from './proofs-lanes.ts';
@@ -151,11 +153,80 @@ async function bossFoughtInTheLane(served: Served, problems: string[]) {
   }
 }
 
+const SHELVES = [
+  'pine-logs',
+  'ash-logs',
+  'oak-logs',
+  'yew-logs',
+  'maple-logs',
+  'silverbark-logs',
+  'elderwood-logs',
+  'ancient-logs',
+  'copper-ore',
+  'tin-ore',
+  'iron-ore',
+  'coal',
+  'moonsilver-ore',
+  'star-iron-ore',
+  'ember-ore',
+  'dawnstone',
+  'perch',
+  'trout',
+  'pike',
+  'salmon',
+  'moon-carp',
+  'silver-eel',
+  'ember-char',
+  'dawn-sturgeon',
+  'copper-bar',
+  'bronze-bar',
+  'iron-bar',
+  'steel-bar',
+  'moonsilver-bar',
+  'star-iron-bar',
+  'embersteel-bar',
+  'dawnsteel-bar',
+  'bronze-key',
+  'iron-key',
+  'steel-key',
+  'moonsilver-key',
+  'star-iron-key',
+  'embersteel-key',
+  'dawnsteel-key',
+  'bread',
+];
+
+async function searchTheStorehouse(served: Served, problems: string[]) {
+  const page = await playerWith(served, 'Hoarder', '/storehouse', (s) => ({
+    ...s,
+    items: Object.fromEntries(SHELVES.map((id) => [id, 5])),
+    features: { ...s.features, storehouse: { enlargements: 3 } },
+  }));
+  try {
+    await page.setViewportSize({ width: 390, height: 844 });
+    const tiles = page.locator('[data-ui="ItemTile"]');
+    await tiles.nth(SHELVES.length - 1).waitFor({ timeout: 5_000 });
+    await page.getByRole('searchbox', { name: 'Find an item' }).fill('COPPER');
+    await page.waitForFunction(() => document.querySelectorAll('[data-ui="ItemTile"]').length === 2, undefined, {
+      timeout: 3_000,
+    });
+    const names = (await tiles.allInnerTexts()).map((x) => x.replace(/\s+/g, ' ').trim());
+    if (!names.every((n) => /Copper (ore|bar)/.test(n))) throw new Error(`it left ${names.join(', ')}`);
+    await page.getByRole('searchbox', { name: 'Find an item' }).fill('griffin');
+    await page.getByText('Nothing you hold goes by that name.').waitFor({ timeout: 3_000 });
+  } catch (err) {
+    problems.push(`Storehouse: the search did not find an item by its name (${say(err)})`);
+  } finally {
+    await page.close();
+  }
+}
+
 export async function runCombatProofs(served: Served): Promise<string[]> {
   const problems: string[] = [];
   await regionInView(served, problems);
   await bossFoughtInTheLane(served, problems);
   await wearFromThePage(served, problems);
   await retreatCostsNothing(served, problems);
+  await searchTheStorehouse(served, problems);
   return problems;
 }
