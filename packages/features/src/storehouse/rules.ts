@@ -2,6 +2,7 @@
 // and enlarging the Storehouse. Pure: each takes the state and returns a new one and an answer.
 import { countOf, give, take, type State } from '@idle-clash/kernel';
 import { findOf, itemOf } from '../shared/catalog.ts';
+import { spentFind } from './finds.ts';
 import { FOODS, HITPOINTS } from '../shared/combat/data.ts';
 import { combatOf } from '../shared/combat/state.ts';
 import { skillLevel } from '../shared/skill.ts';
@@ -31,11 +32,11 @@ export function sell(state: State, item: string, count: number): { state: State;
   return { state: next, result: { ok: true, gold: each * count } };
 }
 
-/** The finds kept to sell (session 187): every Uncommon find held. None is used anywhere (a test holds it),
- *  so selling them all loses nothing but their spaces. */
+/** The finds kept to sell (session 187): every Uncommon find held, none used anywhere (a test holds it), and
+ *  every Rare find with no use left (session 192), so selling them all loses nothing but their spaces. */
 export const keptToSell = (state: State): string[] =>
   Object.keys(state.items).filter(
-    (id) => findOf(id)?.rarity === 'uncommon' && priceOf(id) > 0 && countOf(state, id) > 0,
+    (id) => (findOf(id)?.rarity === 'uncommon' || spentFind(state, id)) && priceOf(id) > 0 && countOf(state, id) > 0,
   );
 
 /** Sells every find kept to sell, all of each, at the vendor's price. */

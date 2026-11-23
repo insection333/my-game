@@ -9,6 +9,7 @@ import {
   laneUsing,
   RARE_FIND_COMPLETIONS,
   findUses,
+  spentFind,
   type FindUse,
 } from '@idle-clash/features';
 import { countOf, type State } from '@idle-clash/kernel';
@@ -172,7 +173,10 @@ function UseFind({ item }: { item: string }) {
   return (
     <section className={s.sources}>
       <h3>{t('item.panel.use', { count: fmt.int(RARE_FIND_COMPLETIONS) })}</h3>
-      {rows.length === 0 && <p className={s.muted}>{t('item.panel.allMastered')}</p>}
+      {/* Kept to sell only once every action is open too (session 192); else more open with levels. */}
+      {rows.length === 0 && (
+        <p className={s.muted}>{t(spentFind(state, item) ? 'item.panel.allMastered' : 'item.panel.openMastered')}</p>
+      )}
       <div className={s.useList}>
         {rows.map(({ action: a, completions, next }) => (
           <ActionRow
