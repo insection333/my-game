@@ -4,7 +4,7 @@ export const skills: Record<string, string> = {
   'skill.woodcutting': 'Woodcutting',
   'help.woodcutting.title': 'Woodcutting',
   'help.woodcutting.body':
-    'Cut trees in the Gathering lane for logs. Logs sell to the vendor, and Smithing turns them into bows and staves. Old trees open four levels after their kind: slower, but two logs each.',
+    'Cut trees in the Gathering lane for logs. Logs sell to the vendor, and Smithing turns them into bows and staves. Old trees open four levels after their kind: slower, but two logs each. From tier 5, a grove opens ten levels in: slower, one log each, Rare and Legendary finds twice as likely an hour.',
   'action.woodcutting.pine-tree': 'Pine tree',
   'action.woodcutting.old-pine': 'Old pine',
   'action.woodcutting.ash-tree': 'Ash tree',
@@ -51,7 +51,7 @@ export const skills: Record<string, string> = {
   'skill.mining': 'Mining',
   'help.mining.title': 'Mining',
   'help.mining.body':
-    'Mine veins in the Gathering lane for ore. Smithing smelts ore into bars. With the fire burning, Mining can work the second Gathering lane while Woodcutting works the first. Deep seams open four levels after their vein: slower, but two ores each.',
+    'Mine veins in the Gathering lane for ore. Smithing smelts ore into bars. With the fire burning, Mining can work the second Gathering lane while Woodcutting works the first. Deep seams open four levels after their vein: slower, but two ores each. From tier 5, a geode opens ten levels in: slower, one ore each, Rare and Legendary finds twice as likely an hour.',
   'action.mining.copper-vein': 'Copper vein',
   'action.mining.deep-copper-seam': 'Deep copper seam',
   'action.mining.tin-vein': 'Tin vein',
@@ -95,7 +95,7 @@ export const skills: Record<string, string> = {
   'skill.smithing': 'Smithing',
   'help.smithing.title': 'Smithing',
   'help.smithing.body':
-    'Smelt ore into bars in the Artisan lane, then forge bars and logs into gear: a sword for Melee, a bow for Archery, a staff for Magic, and armour for any style. A recipe stops when an ingredient runs out, and your Next action starts.',
+    "Smelt ore into bars in the Artisan lane, then forge bars and logs into gear: a sword for Melee, a bow for Archery, a staff for Magic, and armour for any style; whetstones, Melee's supply; and the keys the standing stones ask for. A recipe stops when an ingredient runs out, and your Next action starts.",
   'action.smithing.copper-bar': 'Copper bar',
   'item.copper-bar': 'Copper bar',
   'action.smithing.copper-sword': 'Copper sword',

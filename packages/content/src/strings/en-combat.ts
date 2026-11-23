@@ -69,7 +69,7 @@ export const combat: Record<string, string> = {
   'stopShort.tooHurt': 'Out of food',
   'help.combat.title': 'Combat',
   'help.combat.body':
-    'Wear a weapon and fight in the Combat lane. Your weapon sets your style: Melee beats Archery, Archery beats Magic, Magic beats Melee. Food is eaten below half health; with none left you retreat, losing nothing.',
+    "Wear a weapon and fight in the Combat lane. Your weapon sets your style: Melee beats Archery, Archery beats Magic, Magic beats Melee. Food is eaten below half health; with none left you retreat, losing nothing. Each day three bounties on foes you fare well against pay gold and marks for about an hour of fights, and the Expeditions tab holds runs, the bosses and the realm's boss of the week, which every player strikes once a day.",
   'action.combat.hollow-rat': 'Hollow rat',
   'action.combat.goblin-slinger': 'Goblin slinger',
   'action.combat.marsh-wisp': 'Marsh wisp',
@@ -116,7 +116,8 @@ export const combat: Record<string, string> = {
   'help.magic.title': 'Magic',
   'help.magic.body': "The staff's style. It beats Melee and loses to Archery. Every fight with a staff worn trains it.",
   'help.hitpoints.title': 'Hitpoints',
-  'help.hitpoints.body': 'Health, armour and the foes you can face. Every fight trains it, whatever your style.',
+  'help.hitpoints.body':
+    'Health, armour and the foes you can face. Every fight trains it: fully while your style stands at or above it, a third while your style is below, so it keeps pace with your best style.',
   'perk.heavy-blows': 'Heavy blows',
   'perk.sure-strike': 'Sure strike',
   'perk.parry': 'Parry',
