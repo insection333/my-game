@@ -68,3 +68,23 @@ export const realmStrikes = sqliteTable(
   },
   (t) => [primaryKey({ columns: [t.week, t.playerId] }), index('realm_strikes_week').on(t.week, t.strikes)],
 );
+
+/** The realm's work of a season (session 218): the worth it asks (set at its first gift, from the givers of the
+ *  season before) and when it was finished. */
+export const realmWorkSeasons = sqliteTable('realm_work_seasons', {
+  season: integer('season').primaryKey(),
+  needed: integer('needed').notNull(),
+  doneAt: integer('done_at'),
+});
+
+/** Each player's gifts to a season's work, all told, and when their first came. */
+export const realmWorkGifts = sqliteTable(
+  'realm_work_gifts',
+  {
+    season: integer('season').notNull(),
+    playerId: text('player_id').notNull(),
+    worth: integer('worth').notNull(),
+    firstAt: integer('first_at').notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.season, t.playerId] })],
+);

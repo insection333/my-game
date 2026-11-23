@@ -12,6 +12,7 @@ export function announce(ctx: Ctx, playerId: string, doc: SaveDoc, events: GameE
     ctx.telemetry.events(playerId, events);
     ctx.notices.add(playerId, events);
     ctx.realm.heard(playerId, events);
+    ctx.realmWorks.heard(playerId, events);
     ctx.hiscores.update(playerId, doc.state, at);
   })();
 }

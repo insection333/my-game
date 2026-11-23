@@ -21,7 +21,7 @@ import {
   type Feature,
 } from '@idle-clash/features';
 import { isNotable, type GameEvent } from '@idle-clash/kernel';
-import { pressSaid } from './moment-presses.ts';
+import { pressSaid, realmWorkSaid } from './moment-presses.ts';
 import { hasIcon } from '@idle-clash/ui';
 
 export type MomentSize = 'centre' | 'banner' | 'toast';
@@ -85,7 +85,8 @@ const byYou = (e: GameEvent) =>
   e.type === 'findUsed' ||
   e.type === 'relicRaised' ||
   e.type === 'gearTempered' ||
-  e.type === 'pedlarPaid';
+  e.type === 'pedlarPaid' ||
+  e.type === 'realmGiven';
 
 function sizeOf(e: GameEvent): MomentSize {
   if (e.type === 'levelUp' || e.type === 'kindled' || (e.type === 'find' && e.rarity === 'legendary')) return 'centre';
@@ -102,6 +103,7 @@ function sizeOf(e: GameEvent): MomentSize {
   // A relic raised, as a work is (session 98).
   if (e.type === 'relicRaised') return relicRaisedWords(e.relic, e.rank)?.top ? 'banner' : 'toast';
   if (e.type === 'gearTempered') return temperedWords(e.item, e.step).top ? 'banner' : 'toast';
+  if (e.type === 'realmGiven' || e.type === 'realmWorkStage') return realmWorkSaid(e).size;
   if (e.type === 'masteryStep' || (e.type === 'find' && e.rarity === 'rare')) return 'banner';
   if (e.type === 'rankUp') return e.band === 1 ? 'centre' : e.band <= 10 ? 'banner' : 'toast';
   if (e.type === 'seasonOpened') return 'banner';
@@ -184,6 +186,9 @@ function describe(
     case 'pedlarPaid':
     case 'gearTempered':
       return pressSaid(e);
+    case 'realmGiven':
+    case 'realmWorkStage':
+      return realmWorkSaid(e);
     case 'bossFought': {
       const w = bossFoughtWords(e);
       return { title: w.title, body: w.body, icon: hasIcon(e.boss) ? e.boss : null };

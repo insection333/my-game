@@ -32,7 +32,7 @@ function fromNotices(a: AwaySummary, notices: readonly GameEvent[]): RecapLine[]
     const line = noticeLine(e);
     if (e.type === 'castleBesieged' || e.type === 'castleSpyCaught') lines.push({ ...line!, kind: 'defence' });
     // The realm's boss fell with this player's strike while they were away (session 190: only the bell said).
-    else if ((e.type === 'rankUp' || e.type === 'realmFell') && line) lines.push(line);
+    else if ((e.type === 'rankUp' || e.type === 'realmFell' || e.type === 'realmWorkStage') && line) lines.push(line);
   }
   return lines.map(({ kind, text, icon, href }) => ({ kind, text, icon, href }));
 }

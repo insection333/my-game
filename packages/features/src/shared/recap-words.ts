@@ -1,5 +1,6 @@
 // The recap's and the notices tray's words for one event (split from recap.ts in session 66): a line's
 // kinds in the recap's order, its picture and where it leads.
+import { realmWorkWords } from './realm-work-words.ts';
 import { fmt, formatStop, isQuietStop, t } from '@idle-clash/content';
 import type { GameEvent } from '@idle-clash/kernel';
 import { skillActions } from './catalog.ts';
@@ -195,6 +196,11 @@ export function noticeLine(e: GameEvent): (RecapLine & { at: number }) | null {
         href: '/combat/expeditions',
         at: e.at,
       };
+    }
+    case 'realmWorkStage': {
+      // The realm's work (session 218): a stage raised with this player's part.
+      const w = realmWorkWords(e);
+      return { kind: 'goal', text: `${w.title}. ${w.body}`, icon: null, href: '/?panel=realm-work', at: e.at };
     }
     case 'deepDone': {
       // The Deep (session 212).

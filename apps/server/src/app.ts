@@ -34,6 +34,7 @@ import { backupsHealth } from './ops/status.ts';
 import { HOUSEKEEPING_EVERY_MS, keepHouse } from './housekeeping.ts';
 import { Push } from './push/push.ts';
 import { Realm } from './game/realm.ts';
+import { RealmWorks } from './game/realm-works.ts';
 import { pushRoutes } from './push/routes.ts';
 import { keysOf, webPushSender } from './push/send.ts';
 import { withCastle } from './castle/mirror.ts';
@@ -75,6 +76,7 @@ export async function buildApp(
     hiscores: new Hiscores(db),
     push: null as unknown as Push,
     realm: new Realm(db),
+    realmWorks: new RealmWorks(db),
   };
   ctx.push = new Push(
     {
@@ -96,6 +98,11 @@ export async function buildApp(
   };
   // The realm's boss fell (session 174): each who struck it hears at once, and their tray keeps it.
   ctx.realm.onFell = (playerId, events) => {
+    ctx.live.publish(playerId, { type: 'events', events });
+    ctx.notices.add(playerId, events);
+  };
+  // A stage of the realm's work raised (session 218): each who gave hears at once, and their tray keeps it.
+  ctx.realmWorks.onStage = (playerId, events) => {
     ctx.live.publish(playerId, { type: 'events', events });
     ctx.notices.add(playerId, events);
   };
