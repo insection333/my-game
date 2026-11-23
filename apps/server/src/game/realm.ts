@@ -1,15 +1,15 @@
 // The realm's boss of the week on the server (session 174): the strikes each player lands on it, counted
 // from their saves' own events as they are written (`realmFought` won, by the week it was fought in); the
-// strikes the week needs, set at its first (four for each player who played the week before, eight at
-// least); its fall, told at once to everyone who struck; how the week stands, written into each save before
-// the engine runs (as the castle is); and the week's ladder of strikes for the hiscores.
+// strikes the week needs, set at its first (three for each player who struck it the week before, four at
+// least: session 198); its fall, told at once to everyone who struck; how the week stands, written into each
+// save before the engine runs (as the castle is); and the week's ladder of strikes for the hiscores.
 import { readLook } from './look.ts';
 import type { HiscoreRow, Ladder } from '@idle-clash/contracts';
 import { REALM_LEAST, REALM_PER_PLAYER, realmBossIn, weekOf, type RealmMirror } from '@idle-clash/features';
 import type { GameEvent, State } from '@idle-clash/kernel';
-import { and, asc, desc, eq, gte, isNotNull, isNull, sql } from 'drizzle-orm';
+import { and, asc, desc, eq, isNotNull, isNull, sql } from 'drizzle-orm';
 import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
-import { players, realmStrikes, realmWeeks, visits } from '../db/schema.ts';
+import { players, realmStrikes, realmWeeks } from '../db/schema.ts';
 import { LADDER_ROWS } from './hiscores.ts';
 
 const DAY = 86_400_000;
@@ -29,19 +29,20 @@ export class Realm {
     this.db = db;
   }
 
-  /** The week's row: made at its first need, sized to the players who played the week before. */
+  /** The week's row: made at its first need, sized to the players who struck the realm's boss the week
+   *  before (session 198: sized to all who played, a realm whose friends drifted off was asked more strikes
+   *  than its players could give, and one of one could never fell it). */
   private weekRow(week: string) {
     const held = this.weeks.get(week);
     if (held) return held;
     const row = this.db.select().from(realmWeeks).where(eq(realmWeeks.week, week)).get();
     if (row) return this.keep(week, row);
-    const from = lastWeekOf(week);
-    const played = this.db
-      .select({ n: sql<number>`count(distinct ${visits.playerId})` })
-      .from(visits)
-      .where(and(gte(visits.day, from), sql`${visits.day} < ${week}`))
+    const struck = this.db
+      .select({ n: sql<number>`count(distinct ${realmStrikes.playerId})` })
+      .from(realmStrikes)
+      .where(eq(realmStrikes.week, lastWeekOf(week)))
       .get()!.n;
-    const needed = Math.max(REALM_LEAST, REALM_PER_PLAYER * played);
+    const needed = Math.max(REALM_LEAST, REALM_PER_PLAYER * struck);
     this.db.insert(realmWeeks).values({ week, needed, fellAt: null }).onConflictDoNothing().run();
     return this.keep(week, this.db.select().from(realmWeeks).where(eq(realmWeeks.week, week)).get()!);
   }
