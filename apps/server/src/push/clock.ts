@@ -38,13 +38,20 @@ export const isQuiet = (at: number, tz: string): boolean => {
   return h >= QUIET.FROM || h < QUIET.TO;
 };
 
-/** The end of the quiet hours `at` falls in: the next 08:00 in the player's clock. */
+/** A zone's offset from UTC at a moment, in milliseconds. */
+const offsetAt = (at: number, tz: string): number => {
+  const p = parts(at, tz);
+  return Date.UTC(p.y, p.m - 1, p.d, p.h, p.min) - Math.floor(at / 60_000) * 60_000;
+};
+
+/** The end of the quiet hours `at` falls in: the next 08:00 in the player's clock, at the morning's own
+ *  offset (session 201: at the evening's, the night summer time ended held a notice to 07:00). */
 export function quietEnds(at: number, tz: string): number {
   const p = parts(at, tz);
-  const wall = Date.UTC(p.y, p.m - 1, p.d, p.h, p.min);
-  const offset = wall - Math.floor(at / 60_000) * 60_000;
   const day = p.h >= QUIET.FROM ? p.d + 1 : p.d;
-  return Date.UTC(p.y, p.m - 1, day, QUIET.TO, 0) - offset;
+  const wall = Date.UTC(p.y, p.m - 1, day, QUIET.TO, 0);
+  const guess = wall - offsetAt(at, tz);
+  return wall - offsetAt(guess, tz);
 }
 
 /** A time of day in the player's clock, as 14:30. */
