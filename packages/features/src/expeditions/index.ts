@@ -14,6 +14,7 @@ import { expeditionErrands } from './errands.ts';
 import { trade } from './trade.ts';
 import { descend, surfaceNow } from './deep.ts';
 import { deepView } from './deep-view.ts';
+import { raiseDeepRelic } from './deep-relics.ts';
 
 export type { BossRow, ExpeditionView, RegionTab, RouteView, RunView, StageChip, TwistView } from './views.ts';
 export type { RelicRow, RelicsView } from './relics-view.ts';
@@ -21,6 +22,7 @@ export type { TradeView } from './trade.ts';
 export { marksText } from './trade.ts';
 export type { RealmView } from './realm.ts';
 export type { DeepView } from './deep-view.ts';
+export type { DeepRelicRow } from './deep-relics.ts';
 export { routeView } from './views.ts';
 
 export const expeditions = defineFeature({
@@ -66,6 +68,12 @@ export const expeditions = defineFeature({
       input: z.object({}).strict(),
       example: {},
       run: (state, _input, now) => surfaceNow(state, now),
+    }),
+    // The Deep's relics (session 215): a rank raised with marks.
+    deepRelic: defineRoute({
+      input: z.object({ relic: z.string().regex(/^[a-z][a-z-]{0,63}$/) }).strict(),
+      example: { relic: 'deep-satchel' },
+      run: (state, input, now) => raiseDeepRelic(state, input.relic, now),
     }),
     share: defineRoute({
       input: z.object({}).strict(),

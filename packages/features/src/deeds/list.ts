@@ -9,6 +9,7 @@ import { kindlingDeeds } from './families-kindling.ts';
 import { runs } from './families-runs.ts';
 import { seasonDeeds, weekDeeds } from './families-seasons.ts';
 import { companionDeeds } from './families-companions.ts';
+import { deepDeeds } from './families-deep.ts';
 import { steadingDeeds } from './families-steading.ts';
 import { Reader } from './reader.ts';
 import { deedsOf } from './state.ts';
@@ -36,7 +37,19 @@ export const CATEGORIES: readonly { id: string; families: readonly string[] }[] 
   { id: 'finds', families: ['legendary', 'log', 'collector', 'companion', 'companions'] },
   {
     id: 'runs',
-    families: ['bossFirst', 'bossesAll', 'boss', 'trophy', 'trophies', 'runLength', 'runs', 'twists', 'relic', 'realm'],
+    families: [
+      'bossFirst',
+      'bossesAll',
+      'boss',
+      'trophy',
+      'trophies',
+      'runLength',
+      'runs',
+      'twists',
+      'relic',
+      'realm',
+      'deep',
+    ],
   },
   { id: 'home', families: ['fire', 'gold', 'store', 'works', 'steading', 'season', 'seasons', 'weeks', 'hidden'] },
 ];
@@ -57,6 +70,7 @@ function make() {
       ...seasonDeeds(),
       ...weekDeeds(),
       ...companionDeeds(),
+      ...deepDeeds(),
     ];
     made = { list, byId: new Map(list.map((d) => [d.id, d])) };
   }

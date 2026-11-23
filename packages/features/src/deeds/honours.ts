@@ -127,6 +127,9 @@ export const HONOURS: readonly Honour[] = [
   // Every boss beaten (session 210, six of them).
   title('bossbane', by('bosses-all')),
   title('trailblazer', by('runs-250')),
+  // The Deep (session 215): its 100th depth (about the year's end) and its 150th (about two years in).
+  title('deepdelver', by('deep-100')),
+  title('abyssal', by('deep-150')),
   title('kindled', { anyOf: firstKindlings, text: 'honour.unlock.anyKindled' }),
   title('everflame', by('kindlings-10')),
   // Six seasons played (session 166): a year's play.
@@ -148,6 +151,9 @@ export const HONOURS: readonly Honour[] = [
   { id: 'dawn', kind: 'frame', unlock: at(8_000) },
   { id: 'royal', kind: 'frame', unlock: by('castle-level-25') },
   { id: 'obsidian', kind: 'frame', unlock: by('defeats-250000') },
+  // The Deep (session 215): its 25th depth, and its 125th (year two's spring).
+  { id: 'delver', kind: 'frame', unlock: by('deep-25') },
+  { id: 'abyss', kind: 'frame', unlock: by('deep-125') },
   // Pictures (session 43): twelve for everyone from the first day, a foe's once a hundred of them have
   // fallen to you, a boss's once beaten.
   ...PICTURES_OPEN.map((id): Honour => ({ id, kind: 'picture', unlock: null })),
@@ -160,6 +166,8 @@ export const HONOURS: readonly Honour[] = [
   { id: 'ember', kind: 'glow', unlock: by('routs-10') },
   { id: 'frost', kind: 'glow', unlock: by('boss-drowned-warden-100') },
   { id: 'wyrmfire', kind: 'glow', unlock: by('boss-ember-wyrm-250') },
+  // The Deep's 50th depth (session 215): a lantern's light.
+  { id: 'lantern', kind: 'glow', unlock: by('deep-50') },
   { id: 'aurora', kind: 'glow', unlock: by('rank-legend') },
   // Badges beside the title: rare, each for a feat few reach.
   { id: 'tower', kind: 'badge', unlock: by('castle-level-25') },

@@ -6,7 +6,7 @@ import { PictureRim, RIMS } from '../icons/portraits.tsx';
 import { ItemIcon, type IconSize } from './ItemIcon.tsx';
 import s from './Picture.module.css';
 
-export const GLOWS = ['verdant', 'ember', 'frost', 'wyrmfire', 'aurora'] as const;
+export const GLOWS = ['verdant', 'ember', 'frost', 'wyrmfire', 'lantern', 'aurora'] as const;
 
 export function Picture({
   picture,

@@ -11,6 +11,7 @@ import { bossCommands } from './boss-start.ts';
 import { CombatArena, useFightClock } from './CombatArena.tsx';
 import { RealmRow } from './RealmRow.tsx';
 import { Quartermaster } from './Quartermaster.tsx';
+import { DeepRelics } from './DeepRelics.tsx';
 import s from './expeditions.module.css';
 
 const VERDICT_TONE = { easy: 'moss', fair: 'woad', costly: 'gold', tooStrong: 'neutral' } as const;
@@ -82,6 +83,9 @@ export function Relics({ relics }: { relics: RelicsView }) {
         {relics.trade && <Quartermaster trade={relics.trade} />}
         {/* Fourteen rows scroll inside their own box, which takes the keyboard too. */}
         <div className={s.relics} data-scrollbox tabIndex={0} role="group" aria-label={t('relic.title')}>
+          {/* The Deep's relics lead from Hitpoints 99 (session 215), in the same box: they never run out of
+              ranks, and the panel keeps its height. */}
+          {relics.deep && <DeepRelics rows={relics.deep} />}
           {relics.relics.map((r) => (
             <ActionRow
               key={r.id}

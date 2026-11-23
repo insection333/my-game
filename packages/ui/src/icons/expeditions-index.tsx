@@ -22,6 +22,7 @@ import {
   Stormfeather,
   WightKingsSceptre,
 } from './bosses-second-finds.tsx';
+import { DeepsteelEdge, DelversSatchel, LanternOfTheDeep } from './relics-deep.tsx';
 import { Camp, ExpeditionMark, FenVista, MarchVista, PeaksVista, Signpost } from './journey.tsx';
 import {
   BuildersCord,
@@ -41,6 +42,10 @@ import {
 } from './relics.tsx';
 
 export const EXPEDITION_ICONS: Record<string, IconDef> = {
+  // The Deep's relics (session 215).
+  'deep-satchel': { draw: DelversSatchel, family: 'relic', title: "Delver's satchel (a relic of the Deep)" },
+  'deep-lantern': { draw: LanternOfTheDeep, family: 'relic', title: 'Lantern of the Deep (a relic of the Deep)' },
+  'deep-edge': { draw: DeepsteelEdge, family: 'relic', title: 'Deepsteel edge (a relic of the Deep)' },
   'barrow-king': { draw: BarrowKing, family: 'foe', title: 'The Barrow-king (boss)' },
   'troll-chief': { draw: TrollChief, family: 'foe', title: 'The Troll-chief of the hill (boss)' },
   'mire-mother': { draw: MireMother, family: 'foe', title: 'The Mire-mother (boss)' },

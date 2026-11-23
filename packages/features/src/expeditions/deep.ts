@@ -10,6 +10,7 @@ import { countWin, fightXp, spoils } from '../shared/combat/spoils.ts';
 import { combatOf, fighterOf, healthAt, mealsOf, setCombat } from '../shared/combat/state.ts';
 import { product } from '../shared/expeditions/data.ts';
 import { bossDepth, deepBoss, deepFoe, DEEP, marksAt, omensOf, waystoneOf } from '../shared/expeditions/deep.ts';
+import { deepMeals, inTheDeep } from '../shared/expeditions/deep-relics.ts';
 import { DEEP_EMPTY, expeditionsOf, setExpeditions, type DeepState } from '../shared/expeditions/state.ts';
 import { weekOf } from '../shared/week-time.ts';
 import { skillLevel } from '../shared/skill.ts';
@@ -71,9 +72,12 @@ export function surfaceNow(state: State, at: number): Answer<DeepResult> {
   return { state: out, result: { ok: true }, events };
 }
 
+/** The meals a descent's pack holds: its own, and the satchel's (session 215). */
+export const packSize = (state: State) => DEEP.PACK + deepMeals(state);
+
 /** What is left of the descent's pack: the best meals held, up to the pack's size less those eaten. */
 export function packOf(state: State, fed: number): Meal[] {
-  let left = Math.max(0, DEEP.PACK - fed);
+  let left = Math.max(0, packSize(state) - fed);
   return mealsOf(state).flatMap((m) => {
     const count = Math.min(m.count, left);
     left -= count;
@@ -87,7 +91,7 @@ function playDepth(ctx: ActionContext, depth: number, seq: number, fed: number) 
   const base = foeAt(state, depth, seq);
   if (!base) return { end: 'retreated' as const, eaten: 0 };
   const mods = omensOf(weekOf(ctx.at));
-  const foe = hardened(deepFoe(base, depth), mods);
+  const foe = inTheDeep(state, hardened(deepFoe(base, depth), mods));
   const r = seeded(ctx.seed ?? 0);
   let i = 0;
   const rng = () => r('deep', i++);
@@ -135,7 +139,8 @@ export const DEEP_RULES: ActionRules = {
   duration: (ctx) => {
     const run = deepOf(ctx.state).run;
     if (!run || !bossDepth(run.depth + 1)) return DEEP.STAGE_MINUTES * 60_000;
-    const fought = playBoss(ctx, deepBoss(run.depth + 1), omensOf(weekOf(ctx.at)), packOf(ctx.state, run.fed));
+    const boss = inTheDeep(ctx.state, deepBoss(run.depth + 1));
+    const fought = playBoss(ctx, boss, omensOf(weekOf(ctx.at)), packOf(ctx.state, run.fed));
     return (fought?.seconds ?? 3) * 1000;
   },
   complete: (ctx) => {
@@ -147,7 +152,8 @@ export const DEEP_RULES: ActionRules = {
     let [marks, paid] = [0, 0];
     let eaten: number;
     if (bossDepth(depth)) {
-      const fought = fightBoss(ctx, deepBoss(depth), mods, { meals: packOf(ctx.state, run.fed) });
+      const boss = inTheDeep(ctx.state, deepBoss(depth));
+      const fought = fightBoss(ctx, boss, mods, { meals: packOf(ctx.state, run.fed) });
       eaten = fought.eaten;
       if (!fought.won) return void surface(ctx, 'lost');
       paid = fought.marks;

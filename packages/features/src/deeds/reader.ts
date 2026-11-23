@@ -128,6 +128,8 @@ export class Reader {
   eliteBounties = () => bountyOf(this.state).elites;
   /** Weeks the realm's boss fell with this player's strike, the share taken (session 174). */
   realmFallen = () => this.exp().realm?.fallen ?? 0;
+  /** The deepest depth reached in the Deep (session 215). */
+  deepest = () => this.exp().deep?.deepest ?? 0;
   bossWins = (boss: string) => (Object.hasOwn(this.exp().wins, boss) ? this.exp().wins[boss] : 0);
   /** Runs of a length brought home with the boss beaten. */
   runsOf = (hours: number) => {

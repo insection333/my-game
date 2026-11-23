@@ -9,6 +9,8 @@ export const honours: Record<string, string> = {
   'honour.none.badge': 'No badge',
   'honour.frame.royal': 'Royal',
   'honour.frame.obsidian': 'Obsidian',
+  'honour.frame.delver': 'Delver',
+  'honour.frame.abyss': 'Abyss',
   // Pictures: folk of the march and its beasts, then foes overcome and bosses beaten.
   'honour.picture.note': "A foe's picture opens once you have slain a hundred of them; a boss's once beaten.",
   'honour.picture.forester': 'Forester',
@@ -49,6 +51,7 @@ export const honours: Record<string, string> = {
   'honour.glow.ember': 'Ember',
   'honour.glow.frost': 'Frost',
   'honour.glow.wyrmfire': 'Wyrmfire',
+  'honour.glow.lantern': 'Lantern',
   'honour.glow.aurora': 'Aurora',
   // Badges beside the title.
   'honour.badge.tower': 'Tower',

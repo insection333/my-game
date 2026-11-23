@@ -261,3 +261,15 @@
 .traded:empty {
   display: none;
 }
+
+/* The Deep's relics at the head of the Relics panel (session 215), set off from the relics below. */
+.deepRelics {
+  display: grid;
+  border-bottom: 1px solid var(--line);
+}
+
+.deepRelicsHead {
+  display: grid;
+  gap: var(--s-1);
+  padding: var(--s-3) var(--s-4) 0;
+}
