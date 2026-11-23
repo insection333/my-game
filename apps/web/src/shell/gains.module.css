@@ -4,7 +4,7 @@
 .gains {
   position: fixed;
   bottom: calc(var(--menu-h) + 64px + env(safe-area-inset-bottom, 0px));
-  right: var(--gutter);
+  right: max(var(--gutter), env(safe-area-inset-right, 0px));
   z-index: 14;
   display: grid;
   justify-items: end;

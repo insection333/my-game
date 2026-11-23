@@ -21,6 +21,7 @@ Outside the menu:
 - **The notices tray**: a bell in the header with a count of new notices and unread messages. Two tabs: Notices (lane stops, goals claimed, the away recap) and Messages (session 45).
 - **The account menu** (session 130, the owner): the player's picture at the top right opens a small popup under it: Hiscores, Deeds, Your profile (their own card) and Settings (privacy, terms, sign out, and, session 9, delete account). A cross in its top right, Escape (which hands the focus back), a press outside, the focus tabbing out of it (session 132) or choosing a place closes it. On a phone, where Hiscores has no room at the foot, the picture is ringed in woad while the hiscores are open.
 - **The tour**: a short overlay on a player's first visit, pointing at slots by name, never at layout classes. Its end, the tray's last reading and the offer of notices while away are kept for each player in a browser (session 204), not for the device.
+- **A phone's edges (session 206):** the page is drawn edge to edge, and nothing read or pressed stands under a notch, rounded corners, status bar or home bar: each bar keeps its own spacing with the phone's reported inset added.
 - **Closing what opens (session 42, the owner's rule):** every popup (a sheet, a moment of any size, the tour's card) closes from a cross in its top right; verify fails a popup without one.
 
 ## 2. The shell

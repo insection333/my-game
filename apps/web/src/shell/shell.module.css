@@ -631,3 +631,114 @@
   white-space: nowrap;
   box-shadow: 0 4px 14px var(--shade);
 }
+
+/* A phone's notch, rounded corners and home bar (session 206). The page is drawn edge to edge
+   (viewport-fit=cover), so a phone reports what stands over its edges as safe-area insets (nothing on a
+   desktop; on an iPhone on its side, 59 px of each side). The bars reach the edges and keep what they hold
+   inside: the header clears the status bar and the sides, the rail the notch, the page and the strip both
+   sides, the menu the home bar. Each value is the frame's own, the inset added where one is reported. */
+.app {
+  grid-template-rows: calc(var(--header-h) + env(safe-area-inset-top, 0px)) minmax(0, 1fr) auto auto;
+}
+
+.header {
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-right: max(var(--s-1), env(safe-area-inset-right, 0px));
+  padding-left: max(var(--gutter), env(safe-area-inset-left, 0px));
+}
+
+.content,
+.strip {
+  padding-right: max(var(--gutter), env(safe-area-inset-right, 0px));
+  padding-left: max(var(--gutter), env(safe-area-inset-left, 0px));
+}
+
+.menu {
+  padding-right: env(safe-area-inset-right, 0px);
+  padding-left: env(safe-area-inset-left, 0px);
+}
+
+.moments {
+  bottom: calc(var(--menu-h) + 72px + env(safe-area-inset-bottom, 0px));
+}
+
+.centreMoment {
+  padding: max(var(--gutter), env(safe-area-inset-top, 0px)) max(var(--gutter), env(safe-area-inset-right, 0px))
+    max(var(--gutter), env(safe-area-inset-bottom, 0px)) max(var(--gutter), env(safe-area-inset-left, 0px));
+}
+
+@media (min-width: 768px) {
+  .app {
+    grid-template-columns: calc(64px + env(safe-area-inset-left, 0px)) minmax(0, 1fr);
+    grid-template-rows: calc(var(--header-h) + env(safe-area-inset-top, 0px)) auto minmax(0, 1fr);
+  }
+
+  .header {
+    padding-left: var(--gutter);
+  }
+
+  .menu {
+    padding-top: calc(var(--header-h) + var(--s-2) + env(safe-area-inset-top, 0px));
+    padding-right: 0;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .strip {
+    padding-left: var(--gutter);
+  }
+
+  .content {
+    padding-right: max(var(--s-5), env(safe-area-inset-right, 0px));
+    padding-left: var(--s-5);
+    padding-bottom: calc(var(--s-5) + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@media (min-width: 1024px) {
+  .app {
+    grid-template-columns:
+      calc(var(--rail-w) + env(safe-area-inset-left, 0px)) minmax(0, 1fr)
+      calc(var(--lanes-w) + env(safe-area-inset-right, 0px));
+    grid-template-rows: calc(var(--header-h) + env(safe-area-inset-top, 0px)) minmax(0, 1fr);
+  }
+
+  .header {
+    padding-right: max(var(--s-2), env(safe-area-inset-right, 0px));
+  }
+
+  .crest {
+    height: calc(var(--header-h) + env(safe-area-inset-top, 0px));
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-left: calc(var(--s-4) + env(safe-area-inset-left, 0px));
+  }
+
+  .menu {
+    padding-top: calc(var(--header-h) + var(--s-4) + env(safe-area-inset-top, 0px));
+    padding-right: var(--s-3);
+    padding-left: calc(var(--s-3) + env(safe-area-inset-left, 0px));
+  }
+
+  .railFoot {
+    margin-bottom: calc(var(--s-3) + env(safe-area-inset-bottom, 0px));
+    margin-left: calc(var(--s-3) + env(safe-area-inset-left, 0px));
+  }
+
+  .content {
+    padding-right: var(--s-5);
+  }
+
+  .lanesPanel {
+    padding-right: env(safe-area-inset-right, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) and (max-height: 520px) {
+  .menu {
+    padding-top: calc(var(--header-h) + 2px + env(safe-area-inset-top, 0px));
+  }
+}
+
+.connection {
+  top: calc(var(--header-h) + env(safe-area-inset-top, 0px));
+}
