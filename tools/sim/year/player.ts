@@ -22,6 +22,7 @@ import { DAY, T0 } from '../player.ts';
 import { dailyBoss } from './bosses.ts';
 import { descent, raiseDeepRelics } from './deep.ts';
 import { temperGear } from './temper.ts';
+import { handInLots } from './pedlar.ts';
 import { Lordship } from './castle.ts';
 import type { Kind, Year, YearDay } from './kinds.ts';
 import { equip, feed, goalsAndDeeds, raiseRelics, raiseWorks, styleToTrain, takePaths, tidy } from './house.ts';
@@ -159,7 +160,8 @@ export function playYear(
    *  set when it stands idle, or for a piece of gear, so the work of the visit (and its goals) holds. */
   function manage(t: number, leaving: boolean, window: [number, number], settle: boolean) {
     const day = out.days.length + 1;
-    if (leaving || t === window[0]) state = tidy(state, t);
+    // The pedlar's lots handed in as they are held (session 217), before the vendor sees the rest.
+    if (leaving || t === window[0]) state = tidy(handInLots(state, t).state, t);
     if (leaving) {
       state = takePaths(state, t);
       state = raiseDeepRelics(state, t).state;

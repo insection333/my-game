@@ -206,3 +206,10 @@ export const DEPTHS: Steps = [
   [125, 'elite'],
   [150, 'master'],
 ];
+/** The pedlar's favour (session 217): a lot handed in, one favour; three a day at most. */
+export const FAVOUR: Steps = [
+  [1, 'easy'],
+  [30, 'easy'],
+  [150, 'hard'],
+  [500, 'elite'],
+];

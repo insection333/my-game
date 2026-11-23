@@ -35,6 +35,7 @@
   --banner-night: #433a86;
   --banner-gold: #a07c14;
   --banner-dawn: #b4475e;
+  --banner-pedlar: #7a4a8c;
   /* The loadout's figure (ART.md): its body, the light on its upper left, the shade on its right. */
   --figure: #e3e9e2;
   --figure-lit: #f7f9f5;
@@ -124,6 +125,8 @@
     --banner-night: #a49be8;
     --banner-gold: #d8b04a;
     --banner-dawn: #f08aa0;
+  --banner-pedlar: #c39ad6;
+    --banner-pedlar: #c39ad6;
     --figure: #25363c;
     --figure-lit: #34494f;
     --figure-shade: #1b282d;

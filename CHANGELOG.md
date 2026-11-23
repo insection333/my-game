@@ -355,3 +355,4 @@
 - Session 214: the Deep's ladder of the week on Hiscores (deepest this week, first there above), rivals in depths, a climb a moment, and the Hearth asking for a first depth each week.
 - Session 215: the Deep's relics (satchel, lantern, edge) bought with marks, without a last rank; the Deep grows by compounding; depth deeds, the Delver of the Deep and the Abyssal, the Delver and Abyss frames and the Lantern glow; the year's player descends daily at 99.
 - Session 216: boss trophies temper gear at Smithing 90 (a step +1% damage or 1% less taken, five a piece, the set held under 10%), on the gear sheet with what the next step takes; trophies kept while wanted.
+- Session 217: the pedlar, wanting three lots a day of what the player has found, gathered or cooked, each handed in at one press for gold and favour; favour deeds, the Pedlar's ribbon and Friend of the Road.

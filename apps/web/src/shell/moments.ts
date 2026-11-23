@@ -9,6 +9,7 @@ import {
   workRaisedWords,
   relicRaisedWords,
   temperedWords,
+  pedlarPaidWords,
   castleEngine,
   expeditionStory as storyOf,
   kindlingData,
@@ -83,7 +84,8 @@ const byYou = (e: GameEvent) =>
   e.type === 'workRaised' ||
   e.type === 'findUsed' ||
   e.type === 'relicRaised' ||
-  e.type === 'gearTempered';
+  e.type === 'gearTempered' ||
+  e.type === 'pedlarPaid';
 
 function sizeOf(e: GameEvent): MomentSize {
   if (e.type === 'levelUp' || e.type === 'kindled' || (e.type === 'find' && e.rarity === 'legendary')) return 'centre';
@@ -181,6 +183,10 @@ function describe(
     case 'relicRaised': {
       const w = relicRaisedWords(e.relic, e.rank);
       return { title: w?.title ?? '', body: w?.body ?? null, icon: hasIcon(e.relic) ? e.relic : null };
+    }
+    case 'pedlarPaid': {
+      const w = pedlarPaidWords(e);
+      return { title: w.title, body: w.body, icon: hasIcon(e.item) ? e.item : null };
     }
     case 'gearTempered': {
       const w = temperedWords(e.item, e.step);

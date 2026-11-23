@@ -7,6 +7,7 @@ import type { GameEvent, State } from '@idle-clash/kernel';
 import { itemOf } from '../../../packages/features/src/shared/catalog.ts';
 import { rankOf, RELIC_COSTS, relics } from '../../../packages/features/src/shared/expeditions/relics.ts';
 import { STAGES, stageCost, stageOf, WORKS } from '../../../packages/features/src/shared/steading.ts';
+import { pedlarWants } from './pedlar.ts';
 import { TROPHY_STYLE, trophyWanted } from '../../../packages/features/src/shared/temper.ts';
 import { ACTS, ALL_SKILLS, ARTISAN, have, level } from './world.ts';
 import { behind } from './plan.ts';
@@ -115,6 +116,8 @@ function bestGear(state: State): string[] {
 export function tidy(state: State, now: number): State {
   let s = state;
   const keep = keeps(s);
+  // The pedlar's wants of the day, kept for him (session 217).
+  for (const item of pedlarWants(s, now)) keep.add(item);
   for (const [item, n] of Object.entries(s.items))
     if (n > 0 && !keep.has(item)) {
       const before = have(s, 'gold');

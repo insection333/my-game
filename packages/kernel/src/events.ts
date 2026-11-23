@@ -42,6 +42,8 @@ export interface EventMap {
   findUsed: { item: string; action: ActionRef; completions: number; count?: number };
   /** An expedition relic raised a rank by the player's press (session 98). */
   relicRaised: { relic: string; rank: number };
+  /** A lot handed to the pedlar by the player's press (session 217): what, the gold paid, the favour now. */
+  pedlarPaid: { item: string; count: number; gold: number; favour: number };
   /** A worn piece tempered a step at the forge by the player's press (session 216). */
   gearTempered: { item: string; step: number };
   /** A steading work raised a stage by the player's press (session 76); its building is also a deed. */
@@ -133,6 +135,7 @@ export const NOTABLE_EVENTS: readonly (keyof EventMap)[] = [
   'findUsed',
   'relicRaised',
   'gearTempered',
+  'pedlarPaid',
   'kindled',
   'castleSiege',
   'castleBesieged',
