@@ -165,6 +165,12 @@ export function raiseRelics(state: State, now: number): { state: State; bought: 
       bought++;
     }
   }
+  // Every relic raised: the marks go to the quartermaster for gold (session 191), as a player's would.
+  const lots = Math.floor(marks() / 25);
+  if (lots > 0 && relics().every((r) => rankOf(s, r.id) >= r.ranks)) {
+    const r = route(s, 'expeditions', 'trade', { lots }, now);
+    if (r.result.ok) s = r.state;
+  }
   return { state: s, bought };
 }
 

@@ -227,3 +227,30 @@
   color: var(--ink-2);
   font-size: var(--t-small);
 }
+
+/* The quartermaster (session 191): above the relics once all are raised. */
+.trade {
+  display: grid;
+  gap: var(--s-2);
+  padding: var(--s-3) var(--s-4);
+  border-bottom: 1px solid var(--line);
+}
+
+.trade p {
+  margin: 0;
+}
+
+.tradeActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
+.traded {
+  color: var(--ink-2);
+  font-size: var(--t-small);
+}
+
+.traded:empty {
+  display: none;
+}

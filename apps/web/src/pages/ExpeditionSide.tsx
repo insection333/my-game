@@ -10,6 +10,7 @@ import { Slot } from '../slots.tsx';
 import { bossCommands } from './boss-start.ts';
 import { CombatArena, useFightClock } from './CombatArena.tsx';
 import { RealmRow } from './RealmRow.tsx';
+import { Quartermaster } from './Quartermaster.tsx';
 import s from './expeditions.module.css';
 
 const VERDICT_TONE = { easy: 'moss', fair: 'woad', costly: 'gold', tooStrong: 'neutral' } as const;
@@ -74,6 +75,8 @@ export function Relics({ relics }: { relics: RelicsView }) {
   return (
     <Panel title={t('relic.title')} aside={relics.marks} flush>
       <Slot id="combat.relics">
+        {/* Every relic raised: the quartermaster leads, as the marks have nothing else to buy. */}
+        {relics.trade && <Quartermaster trade={relics.trade} />}
         {/* Fourteen rows scroll inside their own box, which takes the keyboard too. */}
         <div className={s.relics} data-scrollbox tabIndex={0} role="group" aria-label={t('relic.title')}>
           {relics.relics.map((r) => (

@@ -80,6 +80,7 @@ Plain, warm and brief, with an old-world flavour in names rather than in instruc
 | Path | A level-99 skill's way of working: Bounty (more of what it makes), Lore (more XP) or Fortune (likelier Rare and Legendary finds); free to change |
 | Perk | A lasting bonus unlocked at a level |
 | Picture | The face you show others: thirty, twelve yours from the start, the rest opened by foes overcome and bosses beaten |
+| Quartermaster | Takes 25 marks for an hour of your earning in gold, once every relic is fully raised |
 | Rank | Your standing, from Wanderer to Legend of the Realm, rising with your total level |
 | Rare | A find of about 1 in 500 actions |
 | Realm's boss | The boss of the week, fought by every player once a day at their own measure; when the realm has struck enough it falls, and everyone who struck takes a share |

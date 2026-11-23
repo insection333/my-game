@@ -3,7 +3,7 @@
 export const expeditions = {
   'help.expeditions.title': 'Expeditions',
   'help.expeditions.body':
-    "Set out into a region for 1, 2, 4 or 8 hours from the Combat page, here or away. A run is six ten-minute fight stages an hour against foes drawn for it, with a cache and a camp each hour, one or two twists, a fork whose road you choose before setting out, and the region's boss at the end. Runs pay at least as well as the lane, and they and the bosses pay marks, which buy relics: lasting boosts in ranks.",
+    "Set out into a region for 1, 2, 4 or 8 hours from the Combat page, here or away. A run is six ten-minute fight stages an hour against foes drawn for it, with a cache and a camp each hour, one or two twists, a fork whose road you choose before setting out, and the region's boss at the end. Runs pay at least as well as the lane, and they, the bosses and bounties pay marks, which buy relics: lasting boosts in ranks. Once every relic is raised, the quartermaster trades marks for gold.",
 
   'action.expeditions.march': 'Expedition into the march',
   'action.expeditions.fen': 'Expedition into the Sunken Fen',
@@ -169,4 +169,8 @@ export const expeditions = {
   'errand.bountyDone': 'Your bounty on the {foe} is done: claim it',
   'errand.bounties': '{count} bounties on offer',
   'errand.bountiesOne': 'One bounty on offer',
+  // The quartermaster (session 191): marks for gold once every relic is raised.
+  'trade.note': 'Every relic is fully raised: the quartermaster takes {marks} for an hour of your earning.',
+  'trade.button': 'Trade {marks} for {gold} gold',
+  'trade.done': 'Traded {marks} for {gold} gold',
 };

@@ -6,6 +6,7 @@ import { BOSSES } from '../shared/expeditions/data.ts';
 import { RELIC_COSTS, rankOf, relics, type RelicEffect } from '../shared/expeditions/relics.ts';
 import { expeditionsOf } from '../shared/expeditions/state.ts';
 import type { CollectionGroup } from '../shared/skill-slots.ts';
+import { tradeView, type TradeView } from './trade.ts';
 
 export interface RelicRow {
   id: string;
@@ -22,6 +23,8 @@ export interface RelicRow {
 export interface RelicsView {
   marks: string;
   relics: RelicRow[];
+  /** The quartermaster, once every relic is raised (session 191). */
+  trade: TradeView | null;
 }
 
 function effectText(e: RelicEffect, n: number): string {
@@ -68,6 +71,7 @@ export function relicsView(state: State): RelicsView {
         affordable: cost !== null && marks >= cost,
       };
     }),
+    trade: tradeView(state),
   };
 }
 

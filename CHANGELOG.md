@@ -328,3 +328,4 @@
 - Session 188: the Hearth's Next up says the day's fights waiting: a share or a bounty to take, the realm's strike, the bosses that can be fought and the bounties on offer.
 - Session 189: the fire going out is a quiet stop: no red line in the recap or the tray on every return.
 - Session 190: the recap says the realm's boss fell with your strike while you were away, and a strike fought in the lane.
+- Session 191: once every relic is raised, the quartermaster takes marks for gold (25 for an hour of your earning), so marks keep their worth all year.

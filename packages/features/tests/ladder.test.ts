@@ -6,7 +6,7 @@ import { createEngine, HOUR, newState, seeded, type State } from '@idle-clash/ke
 import { describe, expect, it } from 'vitest';
 import { goals, type GoalsView } from '../src/goals/index.ts';
 import { earning } from '../src/goals/ladder.ts';
-import { paces } from '../src/goals/pace.ts';
+import { paces } from '../src/shared/pace.ts';
 import { goalsOf, type ShortGoal } from '../src/goals/state.ts';
 import { actionRegistry, FEATURES } from '../src/index.ts';
 

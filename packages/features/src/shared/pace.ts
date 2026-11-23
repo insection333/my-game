@@ -1,13 +1,13 @@
-// The player's pace, as goals size themselves by it (GAME_DESIGN.md section 11): for every action open
+// The player's pace (shared since session 191, as the quartermaster pays by it too), as goals size themselves by it (GAME_DESIGN.md section 11): for every action open
 // now, the seconds one completion takes, the gold it brings and the XP it earns. Skills come from the
 // shared catalog and foes from shared/combat, so goals name no feature's code.
 import { masteryStep, MASTERY_STEPS } from '@idle-clash/content';
 import type { ActionRef, State } from '@idle-clash/kernel';
-import { itemOf, skillActions } from '../shared/catalog.ts';
-import { FOES } from '../shared/combat/data.ts';
-import { oddsFor } from '../shared/combat/odds.ts';
-import { fighterOf } from '../shared/combat/state.ts';
-import { actionModifiers, skillLevel } from '../shared/skill.ts';
+import { itemOf, skillActions } from './catalog.ts';
+import { FOES } from './combat/data.ts';
+import { oddsFor } from './combat/odds.ts';
+import { fighterOf } from './combat/state.ts';
+import { actionModifiers, skillLevel } from './skill.ts';
 
 export interface Pace {
   action: ActionRef;
@@ -76,4 +76,19 @@ export function bestIn(list: readonly Pace[], skill: string): Pace | undefined {
   return list
     .filter((p) => p.skill === skill)
     .reduce<Pace | undefined>((a, b) => (!a || b.xpEach / b.secondsEach > a.xpEach / a.secondsEach ? b : a), undefined);
+}
+
+/** A round sum: a few significant figures, as rewards are said. */
+export function nice(n: number): number {
+  if (n < 20) return Math.max(1, Math.round(n));
+  if (n < 100) return Math.round(n / 5) * 5;
+  if (n < 1000) return Math.round(n / 10) * 10;
+  const unit = 10 ** (Math.floor(Math.log10(n)) - 2);
+  return Math.round(n / unit) * unit;
+}
+
+/** Gold a second at the player's best paying work outside the Artisan lane (or in it, with nothing else). */
+export function earning(list: readonly Pace[]): number {
+  const own = list.filter((p) => p.lane !== 'artisan');
+  return Math.max(0, ...(own.length ? own : list).map((p) => p.goldEach / p.secondsEach));
 }

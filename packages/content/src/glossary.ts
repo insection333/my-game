@@ -135,6 +135,7 @@ export const TERMS: [term: string, meaning: string][] = [
     'Picture',
     'The face you show others: thirty, twelve yours from the start, the rest opened by foes overcome and bosses beaten',
   ],
+  ['Quartermaster', 'Takes 25 marks for an hour of your earning in gold, once every relic is fully raised'],
   ['Rank', 'Your standing, from Wanderer to Legend of the Realm, rising with your total level'],
   ['Rare', 'A find of about 1 in 500 actions'],
   [
