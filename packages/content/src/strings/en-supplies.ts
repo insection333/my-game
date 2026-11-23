@@ -4,7 +4,7 @@ export const supplies = {
   'skill.runecraft': 'Runecraft',
   'help.runecraft.title': 'Runecraft',
   'help.runecraft.body':
-    "Draw runes at the old standing stones in the Gathering lane, eight at a time: they are Magic's supply. Every stone past the first needs its tier's key, which Smithing binds from two bars and you keep. Ancient stones open four levels after their stone: slower, but sixteen runes a draw.",
+    "Draw runes at the old standing stones in the Gathering lane, eight at a time: they are Magic's supply. Every stone past the first needs its tier's key, which Smithing binds from two bars and you keep. Ancient stones open four levels after their stone: slower, but sixteen runes a draw. From tier 5, a ley stone opens ten levels in: slower, eight runes a draw, Rare and Legendary finds twice as likely an hour.",
   'action.runecraft.spark-stone': 'Spark stone',
   'action.runecraft.ancient-spark-stone': 'Ancient spark stone',
   'action.runecraft.gale-stone': 'Gale stone',
@@ -48,7 +48,7 @@ export const supplies = {
   'skill.fletching': 'Fletching',
   'help.fletching.title': 'Fletching',
   'help.fletching.body':
-    "Fletch arrows in the Artisan lane, 25 at a time from a bar and a log of their tier: they are Archery's supply. A recipe stops when an ingredient runs out, and your Next action starts.",
+    "Fletch arrows in the Artisan lane, 25 at a time from a bar and a log of their tier: they are Archery's supply. From tier 5, the same arrows fletched by hand open seven levels in: slower, Rare and Legendary finds twice as likely an hour. A recipe stops when an ingredient runs out, and your Next action starts.",
   'action.fletching.copper-arrows': 'Copper arrows',
   'item.copper-arrows': 'Copper arrows',
   'action.fletching.bronze-arrows': 'Bronze arrows',

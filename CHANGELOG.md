@@ -333,3 +333,4 @@
 - Session 193: a content test holds the numbers the castle writes into its words (castellans, decrees, studies, spies, the treasury, the trap) to the constants the engine plays by.
 - Session 194: a skill's page and Combat's loadout say what lifts the XP, each source by name (the fire, marks, relic, Shrine, edict, Path, season).
 - Session 195: a skill at 99 offers its next Kindling in the Hearth's Next up, where it offered nothing.
+- Session 196: the help sheets say the game as it is (Hitpoints' third share, every kind of goal, bounties and the realm's boss, lucky actions, whetstones and keys, Sell finds).

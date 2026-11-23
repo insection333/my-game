@@ -4,7 +4,7 @@ export const food = {
   'skill.fishing': 'Fishing',
   'help.fishing.title': 'Fishing',
   'help.fishing.body':
-    "Fish the shallows in the Gathering lane. Cooking turns your catch into food that heals more for its worth than the vendor's. With the fire burning, Fishing can work the second Gathering lane beside another gathering skill. Deep pools open four levels after their shallows: slower, but two fish each.",
+    "Fish the shallows in the Gathering lane. Cooking turns your catch into food that heals more for its worth than the vendor's. With the fire burning, Fishing can work the second Gathering lane beside another gathering skill. Deep pools open four levels after their shallows: slower, but two fish each. From tier 5, a spawning run opens ten levels in: slower, one fish each, Rare and Legendary finds twice as likely an hour.",
   'action.fishing.perch-shallows': 'Perch shallows',
   'action.fishing.deep-perch-pool': 'Deep perch pool',
   'action.fishing.trout-shallows': 'Trout shallows',

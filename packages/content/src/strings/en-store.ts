@@ -37,7 +37,7 @@ export const store = {
   'stop.storehouseFull': 'Storehouse full',
   'help.storehouse.title': 'Storehouse',
   'help.storehouse.body':
-    'The Storehouse holds any number of each item, but only so many different items. Sell what you do not need to the vendor, buy food, and enlarge it with gold.',
+    'The Storehouse holds any number of each item, but only so many different items. Sell what you do not need to the vendor (Sell finds sells every find with no use left at one press), buy food, and enlarge it with gold.',
   'store.kind.resource': 'Resources',
   'store.kind.supply': 'Supplies',
   'store.kind.gear': 'Gear',
