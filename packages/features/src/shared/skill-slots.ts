@@ -253,6 +253,17 @@ export function skillSlots(def: SkillDef): Record<string, SlotFill> {
       const xp = xpOf(state, skill);
       const p = levelProgress(xp);
       const next = nextUnlock(ladder, p.level);
+      // At 99 nothing is left to unlock: the next Kindling is the climb (session 195), placed by how far it is.
+      if (!next && p.level >= MAX_LEVEL) {
+        const k = kindlingsIn(xp);
+        const away = KINDLE_XP - (xp - XP_TABLE[MAX_LEVEL] - k * KINDLE_XP);
+        return {
+          skill,
+          text: t('kindling.nextUp', { count: fmt.int(k + 1) }),
+          away: t('skill.xpAway', { xp: fmt.int(away) }),
+          xpAway: away,
+        };
+      }
       if (!next) return null;
       return {
         skill,

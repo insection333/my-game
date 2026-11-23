@@ -11,6 +11,8 @@ export const kindling = {
   'kindling.count': 'Kindled {count} times',
   'kindling.unkindled': 'Not yet kindled',
   'kindling.toNext': '{xp} XP to the next Kindling',
+  // A skill at 99 in the Hearth's Next up (session 195).
+  'kindling.nextUp': 'Kindling {count}: another flame on its seal',
   'kindling.locked': 'At level 99 this skill takes a Path, and its XP past 99 counts towards Kindlings.',
   'kindling.noPath':
     'Hitpoints rises with the styles, so it takes no Path of its own; its Kindlings are flames on its seal.',
