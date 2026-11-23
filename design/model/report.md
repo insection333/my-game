@@ -527,9 +527,6 @@ PASS  the march, magic, 1 h: a run pays at least the lane's best
 PASS  the march, magic, 2 h: a run pays at least the lane's best
 PASS  the march, magic, 4 h: a run pays at least the lane's best
 PASS  the march, magic, 8 h: a run pays at least the lane's best
-The Troll-chief of the hill: magic at 39 with food wins 100% (0.9 meals a fight); archery without food 0%
-PASS  The Troll-chief of the hill falls to magic at the region's top, nine fights in ten
-PASS  The Troll-chief of the hill beats archery without food more often than not
 the Sunken Fen, melee at 69: the lane's best 30167 an hour; runs 1 h 52572 (boss 100%), 2 h 48647 (boss 100%), 4 h 47014 (boss 100%), 8 h 45222 (boss 100%)
 PASS  the Sunken Fen, melee, 1 h: a run pays at least the lane's best
 PASS  the Sunken Fen, melee, 2 h: a run pays at least the lane's best
@@ -545,9 +542,6 @@ PASS  the Sunken Fen, magic, 1 h: a run pays at least the lane's best
 PASS  the Sunken Fen, magic, 2 h: a run pays at least the lane's best
 PASS  the Sunken Fen, magic, 4 h: a run pays at least the lane's best
 PASS  the Sunken Fen, magic, 8 h: a run pays at least the lane's best
-The Drowned Warden: melee at 69 with food wins 100% (1.1 meals a fight); magic without food 0%
-PASS  The Drowned Warden falls to melee at the region's top, nine fights in ten
-PASS  The Drowned Warden beats magic without food more often than not
 the Ashen Peaks, melee at 99: the lane's best 55187 an hour; runs 1 h 97081 (boss 100%), 2 h 88511 (boss 100%), 4 h 83597 (boss 100%), 8 h 81134 (boss 100%)
 PASS  the Ashen Peaks, melee, 1 h: a run pays at least the lane's best
 PASS  the Ashen Peaks, melee, 2 h: a run pays at least the lane's best
@@ -563,8 +557,23 @@ PASS  the Ashen Peaks, magic, 1 h: a run pays at least the lane's best
 PASS  the Ashen Peaks, magic, 2 h: a run pays at least the lane's best
 PASS  the Ashen Peaks, magic, 4 h: a run pays at least the lane's best
 PASS  the Ashen Peaks, magic, 8 h: a run pays at least the lane's best
-The Ember Wyrm: archery at 99 with food wins 100% (1.2 meals a fight); melee without food 0%
-PASS  The Ember Wyrm falls to archery at the region's top, nine fights in ten
+The Barrow-king: archery at 21 with food wins 100% (0.3 meals a fight); melee without food 2%
+PASS  The Barrow-king falls to archery at its tier's top, nine fights in ten
+PASS  The Barrow-king beats melee without food more often than not
+The Troll-chief of the hill: magic at 39 with food wins 100% (0.9 meals a fight); archery without food 0%
+PASS  The Troll-chief of the hill falls to magic at its tier's top, nine fights in ten
+PASS  The Troll-chief of the hill beats archery without food more often than not
+The Mire-mother: magic at 53 with food wins 100% (1.0 meals a fight); archery without food 0%
+PASS  The Mire-mother falls to magic at its tier's top, nine fights in ten
+PASS  The Mire-mother beats archery without food more often than not
+The Drowned Warden: melee at 69 with food wins 100% (1.1 meals a fight); magic without food 0%
+PASS  The Drowned Warden falls to melee at its tier's top, nine fights in ten
+PASS  The Drowned Warden beats magic without food more often than not
+The Storm-roc: melee at 84 with food wins 100% (1.1 meals a fight); magic without food 0%
+PASS  The Storm-roc falls to melee at its tier's top, nine fights in ten
+PASS  The Storm-roc beats magic without food more often than not
+The Ember Wyrm: archery at 99 with food wins 100% (1.3 meals a fight); melee without food 0%
+PASS  The Ember Wyrm falls to archery at its tier's top, nine fights in ten
 PASS  The Ember Wyrm beats melee without food more often than not
 Relics: 4310 marks for every rank of every relic; 78 marks a day at the top; 55 days
 PASS  Every relic at full rank takes two to four months of daily runs at the top

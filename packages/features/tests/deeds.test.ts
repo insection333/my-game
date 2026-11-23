@@ -53,7 +53,7 @@ function everything(): State {
       drawn: 0,
       run: null,
       bossDay: {},
-      wins: Object.fromEntries(BOSSES.map((b) => [b.id, 100])),
+      wins: Object.fromEntries(BOSSES.map((b) => [b.id, 250])),
       runs: { '1': 100, '2': 80, '4': 50, '8': 20 },
       twists: TWISTS.map((x) => x.id),
       // Half a year of the realm's boss falling with their strike (session 174).

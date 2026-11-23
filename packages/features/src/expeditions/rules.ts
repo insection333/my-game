@@ -6,7 +6,8 @@ import type { ActionContext, ActionRules, GameEvent, StopReason } from '@idle-cl
 import { maxHealth, retreatShare } from '../shared/combat/fight.ts';
 import { fighterOf, healthAt, mealsOf } from '../shared/combat/state.ts';
 import { foeById, HITPOINTS, type Foe } from '../shared/combat/data.ts';
-import { BOSSES, bossIn, REGIONS, STAGE_MINUTES, type Boss, type Region } from '../shared/expeditions/data.ts';
+import { BOSSES, REGIONS, STAGE_MINUTES, type Boss, type Region } from '../shared/expeditions/data.ts';
+import { bossOfRun } from './route.ts';
 import { expeditionsOf, RUN_FINDS, setExpeditions, type Last, type Run } from '../shared/expeditions/state.ts';
 import { skillLevel } from '../shared/skill.ts';
 import { noRoom } from '../shared/storehouse.ts';
@@ -44,7 +45,7 @@ function home(ctx: ActionContext, run: Run, outcome: 'won' | 'lost' | 'retreated
     region: run.region,
     hours: run.hours,
     road: run.road,
-    boss: bossIn(run.region).id,
+    boss: bossOfRun(run).id,
     outcome,
     cleared: run.cleared,
     stages: stageCount(run),
@@ -70,14 +71,13 @@ function noting(ctx: ActionContext, finds: string[]): ActionContext {
 }
 
 function runRules(region: Region): ActionRules {
-  const boss = bossIn(region);
   return {
     lane: 'combat',
     seeded: true,
     check: (ctx) => {
       const run = runOf(ctx, region);
       if (!run) return { code: 'expeditionHome' };
-      if (run.at >= stageCount(run)) return unfit(ctx, boss, [boss.drop]);
+      if (run.at >= stageCount(run)) return unfit(ctx, bossOfRun(run), [bossOfRun(run).drop]);
       const foe = foeById(run.stages[run.at].foe)!;
       const cache = run.stages[run.at].after === 'cache' ? cacheAt(ctx.state, run) : null;
       return unfit(ctx, foe, [foe.drop, ...(cache ? [cache.item] : [])]);
@@ -85,7 +85,7 @@ function runRules(region: Region): ActionRules {
     duration: (ctx) => {
       const run = runOf(ctx, region);
       if (!run || run.at < stageCount(run)) return STAGE_MINUTES * 60_000;
-      return (playBoss(ctx, boss, modsAt(run, run.at))?.seconds ?? 3) * 1000;
+      return (playBoss(ctx, bossOfRun(run), modsAt(run, run.at))?.seconds ?? 3) * 1000;
     },
     complete: (ctx) => {
       const run = runOf(ctx, region);
@@ -100,7 +100,7 @@ function runRules(region: Region): ActionRules {
         setExpeditions(ctx.state, { ...e, marks: e.marks + marks, run: next });
         return;
       }
-      const fought = fightBoss(c, boss, modsAt(run, run.at));
+      const fought = fightBoss(c, bossOfRun(run), modsAt(run, run.at));
       home(c, { ...run, marks: run.marks + fought.marks }, fought.won ? 'won' : 'lost', finds);
     },
   };

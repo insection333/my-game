@@ -38,7 +38,10 @@ export const honours: Record<string, string> = {
   'honour.picture.ash-shaman': 'Ash shaman',
   'honour.picture.obsidian-golem': 'Obsidian golem',
   'honour.picture.ember-sorcerer': 'Ember sorcerer',
+  'honour.picture.barrow-king': 'The Barrow-king',
   'honour.picture.troll-chief': 'The Troll-chief',
+  'honour.picture.mire-mother': 'The Mire-mother',
+  'honour.picture.storm-roc': 'The Storm-roc',
   'honour.picture.drowned-warden': 'The Drowned Warden',
   'honour.picture.ember-wyrm': 'The Ember Wyrm',
   // Glows: slow light round the picture.

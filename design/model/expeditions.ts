@@ -8,13 +8,22 @@ export const LENGTHS = [1, 2, 4, 8];
 export const STAGE_MINUTES = 10;
 export const STAGES_PER_HOUR = 6;
 
-/** Each region's boss: the region's last foe made into a fight of its own (calibrated below). */
+/** A boss: its tier's last foe made into a fight of its own (calibrated below). Two in each region since
+ *  session 210: one at the region's last tier and one a tier or two below. */
 export interface Boss extends Foe {
   /** Marks a win pays, before twists and roads. */
   marks: number;
 }
-const bossOf = (id: string, name: string, style: Style, region: number, gold: number, marks: number): Boss => {
-  const top = FOES.filter((f) => f.region === region).at(-1)!;
+const bossOf = (
+  id: string,
+  name: string,
+  style: Style,
+  region: number,
+  tier: number,
+  gold: number,
+  marks: number,
+): Boss => {
+  const top = FOES.filter((f) => f.region === region && f.tier === tier).at(-1)!;
   return {
     ...top,
     id,
@@ -31,11 +40,17 @@ const bossOf = (id: string, name: string, style: Style, region: number, gold: nu
 /** A boss has ten times its region's last foe's health and hits 80% harder. */
 export const BOSS_HP = 10;
 export const BOSS_HIT = 1.8;
+/** By level, weakest first. */
 export const BOSSES: Boss[] = [
-  bossOf('troll-chief', 'The Troll-chief of the hill', 'melee', 1, 2_500, 5),
-  bossOf('drowned-warden', 'The Drowned Warden', 'archery', 2, 12_000, 10),
-  bossOf('ember-wyrm', 'The Ember Wyrm', 'magic', 3, 30_000, 15),
+  bossOf('barrow-king', 'The Barrow-king', 'magic', 1, 2, 800, 3),
+  bossOf('troll-chief', 'The Troll-chief of the hill', 'melee', 1, 4, 2_500, 5),
+  bossOf('mire-mother', 'The Mire-mother', 'melee', 2, 5, 6_000, 8),
+  bossOf('drowned-warden', 'The Drowned Warden', 'archery', 2, 6, 12_000, 10),
+  bossOf('storm-roc', 'The Storm-roc', 'archery', 3, 7, 20_000, 12),
+  bossOf('ember-wyrm', 'The Ember Wyrm', 'magic', 3, 8, 30_000, 15),
 ];
+/** A region's last boss: the one at its last tier, met at a run's end by a fighter at the region's top. */
+export const regionBoss = (region: number): Boss => BOSSES.filter((b) => b.region === region).at(-1)!;
 /** A boss find's chance a win: a Rare and a Legendary for each boss. */
 export const BOSS_FINDS = { rare: 1 / 12, legendary: 1 / 80 };
 

@@ -233,11 +233,12 @@ const CASTLE_YEAR = { level: 15, tier: 26, marks: 550 };
 /** The days each of the troops' later evolutions should come in (session 138): the second within the first
  *  months, the third about half a year in, the fourth past the year, each gap about double the last. The
  *  fourth turns on how a lord's gold went for a year, so it moves with the seed (session 176: days 451, 422,
- *  382 and 397 at seeds 11 to 14, the third within 170 to 177): held past the year and before sixteen months. */
+ *  382 and 397 at seeds 11 to 14, the third within 170 to 177). Session 210's daily bosses bring their gold too
+ *  (days 357 to 368 at seeds 11 to 13): held to about a year, from eleven months to sixteen. */
 const EVOLUTION_DAYS = [
   [30, 120],
   [150, 220],
-  [365, 480],
+  [330, 480],
 ] as const;
 
 function castleYear(y: Year, check: Check, lines: string[]) {

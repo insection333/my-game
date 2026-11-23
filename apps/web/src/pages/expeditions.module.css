@@ -184,6 +184,13 @@
   max-height: min(30rem, 52dvh);
 }
 
+/* The bosses' rows: four or so in view, the rest below (session 210: six of them ran the panel past a phone's
+   page area, and on a wide screen pushed the relics below the fold). */
+.bosses {
+  display: block;
+  max-height: min(19rem, 36dvh);
+}
+
 /* Every twist and road, folded away. */
 .legend {
   font-size: var(--t-small);

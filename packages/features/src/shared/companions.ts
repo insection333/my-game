@@ -27,8 +27,11 @@ export const COMPANIONS: readonly Companion[] = [
   { id: 'falcon', skill: 'archery' },
   { id: 'toad', skill: 'magic' },
   { id: 'tortoise', skill: 'hitpoints' },
+  { id: 'barrow-raven', boss: 'barrow-king' },
   { id: 'stone-whelp', boss: 'troll-chief' },
+  { id: 'mire-newt', boss: 'mire-mother' },
   { id: 'lantern-frog', boss: 'drowned-warden' },
+  { id: 'roc-chick', boss: 'storm-roc' },
   { id: 'wyrmling', boss: 'ember-wyrm' },
 ];
 

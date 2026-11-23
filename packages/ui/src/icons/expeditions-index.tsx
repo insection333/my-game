@@ -1,5 +1,5 @@
-// Expeditions' icons (session 16), registered beside the rest (index.tsx): the three bosses and their
-// six finds, each region's vista (a run's icon), the camp, the fork's signpost, the marks, and the
+// Expeditions' icons (session 16), registered beside the rest (index.tsx): the six bosses (three since session
+// 210) and their twelve finds, each region's vista (a run's icon), the camp, the fork's signpost, the marks, and the
 // fourteen relics.
 import type { IconDef } from './index.tsx';
 import {
@@ -13,6 +13,15 @@ import {
   WardensLantern,
   WyrmScale,
 } from './bosses.tsx';
+import { BarrowKing, MireMother, StormRoc } from './bosses-second.tsx';
+import {
+  BarrowRing,
+  MireMothersEgg,
+  MirePearl,
+  RocTalon,
+  Stormfeather,
+  WightKingsSceptre,
+} from './bosses-second-finds.tsx';
 import { Camp, ExpeditionMark, FenVista, MarchVista, PeaksVista, Signpost } from './journey.tsx';
 import {
   BuildersCord,
@@ -32,7 +41,20 @@ import {
 } from './relics.tsx';
 
 export const EXPEDITION_ICONS: Record<string, IconDef> = {
+  'barrow-king': { draw: BarrowKing, family: 'foe', title: 'The Barrow-king (boss)' },
   'troll-chief': { draw: TrollChief, family: 'foe', title: 'The Troll-chief of the hill (boss)' },
+  'mire-mother': { draw: MireMother, family: 'foe', title: 'The Mire-mother (boss)' },
+  'storm-roc': { draw: StormRoc, family: 'foe', title: 'The Storm-roc (boss)' },
+  'barrow-ring': { draw: BarrowRing, family: 'find', title: 'Barrow ring (Rare boss find)' },
+  'wight-kings-sceptre': {
+    draw: WightKingsSceptre,
+    family: 'find',
+    title: "Wight-king's sceptre (Legendary boss find)",
+  },
+  'mire-pearl': { draw: MirePearl, family: 'find', title: 'Mire pearl (Rare boss find)' },
+  'mire-mothers-egg': { draw: MireMothersEgg, family: 'find', title: "Mire-mother's egg (Legendary boss find)" },
+  'roc-talon': { draw: RocTalon, family: 'find', title: 'Roc talon (Rare boss find)' },
+  stormfeather: { draw: Stormfeather, family: 'find', title: 'Stormfeather (Legendary boss find)' },
   'drowned-warden': { draw: DrownedWarden, family: 'foe', title: 'The Drowned Warden (boss)' },
   'ember-wyrm': { draw: EmberWyrm, family: 'foe', title: 'The Ember Wyrm (boss)' },
   'chieftains-torc': { draw: ChieftainsTorc, family: 'find', title: "Chieftain's torc (Rare boss find)" },

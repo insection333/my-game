@@ -1,4 +1,4 @@
-// Companions (session 179): fourteen small creatures that join a player by chance, one for each skill and
+// Companions (session 179; seventeen since session 210): small creatures that join a player by chance, one for each skill and
 // each boss, shown beside their picture; their deeds and their place among the honours. Part of the strings
 // file (en.ts).
 export const companions: Record<string, string> = {
@@ -17,7 +17,10 @@ export const companions: Record<string, string> = {
   'honour.companion.falcon': 'Falcon',
   'honour.companion.toad': 'Toad',
   'honour.companion.tortoise': 'Tortoise',
+  'honour.companion.barrow-raven': 'Barrow raven',
   'honour.companion.stone-whelp': 'Stone whelp',
+  'honour.companion.mire-newt': 'Mire newt',
+  'honour.companion.roc-chick': 'Roc chick',
   'honour.companion.lantern-frog': 'Lantern frog',
   'honour.companion.wyrmling': 'Wyrmling',
   // Their deeds: each one's words say where it joins you and the span it joins within, never the point.

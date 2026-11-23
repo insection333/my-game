@@ -1,4 +1,4 @@
-// The fourteen companions by id (session 179), for the icon registry (honours-index.tsx).
+// The companions by id (session 179; seventeen since session 210), for the icon registry (honours-index.tsx).
 import {
   CompanionSquirrel,
   CompanionMole,
@@ -17,6 +17,7 @@ import {
   CompanionLanternFrog,
   CompanionWyrmling,
 } from './companions-b.tsx';
+import { CompanionBarrowRaven, CompanionMireNewt, CompanionRocChick } from './companions-c.tsx';
 
 export const COMPANION_ART = {
   squirrel: CompanionSquirrel,
@@ -30,7 +31,10 @@ export const COMPANION_ART = {
   falcon: CompanionFalcon,
   toad: CompanionToad,
   tortoise: CompanionTortoise,
+  'barrow-raven': CompanionBarrowRaven,
   'stone-whelp': CompanionStoneWhelp,
+  'mire-newt': CompanionMireNewt,
   'lantern-frog': CompanionLanternFrog,
+  'roc-chick': CompanionRocChick,
   wyrmling: CompanionWyrmling,
 } as const;

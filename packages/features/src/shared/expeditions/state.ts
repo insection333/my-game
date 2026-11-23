@@ -23,6 +23,8 @@ export const Route = z
     twists: z.array(Key).min(1).max(2),
     roads: z.tuple([Key, Key]),
     fork: Count,
+    /** The boss at its end, drawn from the region's two (session 210). Runs from before met the region's last. */
+    boss: Key.optional(),
   })
   .strict();
 export type Route = z.infer<typeof Route>;
