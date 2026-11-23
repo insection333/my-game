@@ -7,7 +7,7 @@ import { HOUR, newState, xpOf, type State } from '@idle-clash/kernel';
 import { describe, expect, it } from 'vitest';
 import type { GoalsView } from '../src/goals/index.ts';
 import { goals } from '../src/goals/index.ts';
-import '../src/index.ts';
+import { FEATURES } from '../src/index.ts';
 import { bestIn, paces } from '../src/goals/pace.ts';
 import { goalsOf } from '../src/goals/state.ts';
 import { measure, weekOf } from '../src/goals/week.ts';
@@ -104,5 +104,19 @@ describe("the week's contract", () => {
     const undone = goals.routes.refresh.run(made, {}, later).state;
     expect(goalsOf(undone).week!.week).toBe(weekOf(later));
     expect(goalsOf(undone).weeks).toBe(0);
+  });
+
+  it('counts the work made, not the completions a Rare find gives it (session 181)', () => {
+    const s = made;
+    const task = w.tasks.find((t) => t.kind === 'count')!;
+    expect(task).toBeDefined();
+    const store = FEATURES.find((f) => f.id === 'storehouse')!;
+    const held = { ...s, items: { ...s.items, 'guild-smiths-seal': 2 } };
+    const used = store.routes.useFind.run(held, { item: 'guild-smiths-seal', action: task.action!, count: 2 }, T0) as {
+      state: State;
+      result: { ok: boolean };
+    };
+    expect(used.result.ok).toBe(true);
+    expect(measure(used.state, task)).toBe(measure(s, task));
   });
 });

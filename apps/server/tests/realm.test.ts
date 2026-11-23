@@ -75,4 +75,20 @@ describe("the realm's boss on the server", () => {
     const id = await idOf(await signUp(s, 'Alder'));
     expect(s.ctx.realm.standing(id, T0, null).needed).toBe(8);
   });
+
+  it("owes each fallen week once, last week's before this week's, however the shares are taken", async () => {
+    s = await server();
+    const id = await idOf(await signUp(s, 'Alder'));
+    s.ctx.db.update(players).set({ listedAt: 0, firstActAt: 0 }).where(eq(players.id, id)).run();
+    const lastWeek = T0 - 7 * DAY;
+    // The boss falls with this player's strikes last week and again this week.
+    for (let i = 0; i < 8; i++) s.ctx.realm.heard(id, [strike(id, lastWeek + i * 60_000)]);
+    for (let i = 0; i < 8; i++) s.ctx.realm.heard(id, [strike(id, T0 + i * 60_000)]);
+    const last = weekOf(lastWeek);
+    const week = weekOf(T0);
+    // Last week's first; once it is taken, this week's; once that is taken, nothing, whichever was last.
+    expect(s.ctx.realm.standing(id, T0, null).owed?.week).toBe(last);
+    expect(s.ctx.realm.standing(id, T0, last).owed?.week).toBe(week);
+    expect(s.ctx.realm.standing(id, T0, week).owed).toBeNull();
+  });
 });

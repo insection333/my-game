@@ -25,10 +25,14 @@ import {
   realmOf,
   weekOf,
 } from '../shared/realm.ts';
+import { realmName } from '../shared/realm-words.ts';
 import { noRoom } from '../shared/storehouse.ts';
 import { dayOf } from './boss.ts';
 
 const NONE = { day: null, claimed: null, fallen: 0 };
+/** Whether a week's share is taken: it, or a later week's, was the last claimed (weeks are dates, so they
+ *  sort as text). */
+const taken = (claimed: string | null, week: string) => claimed !== null && week <= claimed;
 const realmPart = (e: ExpeditionState) => e.realm ?? NONE;
 
 /** Whether the realm's boss has been fought today. */
@@ -90,7 +94,7 @@ export function takeShare(state: State, now: number): { state: State; result: Sh
   const owed = realmOf(state)?.owed ?? null;
   const e = expeditionsOf(state);
   const part = realmPart(e);
-  if (!owed || part.claimed === owed.week) return { state, result: { ok: false, reason: 'none' }, events: [] };
+  if (!owed || taken(part.claimed, owed.week)) return { state, result: { ok: false, reason: 'none' }, events: [] };
   const out = structuredClone(state);
   const foe = realmFoe(out, now);
   const gold = (foe?.gold ?? 0) * REALM_SHARE_STRIKES;
@@ -135,8 +139,8 @@ export function realmView(state: State, now: number): RealmView | null {
   const o = foe ? oddsFor(state, foe) : null;
   const rested = realmRested(state, now);
   const part = realmPart(expeditionsOf(state));
-  const owed = r.owed && part.claimed !== r.owed.week ? r.owed : null;
-  const name = t('realm.name', { boss: t(`boss.${boss.id}`) });
+  const owed = r.owed && !taken(part.claimed, r.owed.week) ? r.owed : null;
+  const name = realmName(boss.id);
   return {
     boss: boss.id,
     name,
@@ -150,7 +154,7 @@ export function realmView(state: State, now: number): RealmView | null {
     ready: o !== null && !rested,
     share: owed
       ? {
-          text: t('realm.owed', { boss: t('realm.name', { boss: t(`boss.${owed.boss}`) }) }),
+          text: t('realm.owed', { boss: realmName(owed.boss) }),
           label: t('realm.take'),
         }
       : null,

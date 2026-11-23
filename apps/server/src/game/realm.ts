@@ -114,9 +114,11 @@ export class Realm {
     const week = weekOf(now);
     const w = this.weekRow(week);
     const mine = this.mine(week, playerId);
-    // A fallen boss they struck, this week or last, whose share they have not taken.
-    const owedIn = [week, lastWeekOf(week)].find((wk) => {
-      if (wk === claimed) return false;
+    // A fallen boss they struck, last week or this, whose share they have not taken: the older first, and
+    // a week at or before the last one claimed is taken (`claimed` holds one week, so two weeks owed at
+    // once must be taken in turn, or each would stand owed again once the other was taken).
+    const owedIn = [lastWeekOf(week), week].find((wk) => {
+      if (claimed !== null && wk <= claimed) return false;
       const row =
         wk === week
           ? w

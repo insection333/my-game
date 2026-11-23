@@ -141,4 +141,22 @@ describe('notices while away', () => {
     await pass(45);
     expect(calls).toBe(1);
   });
+
+  it('keeps a siege heard in the minute after the page closed, as the absence is foreseen (session 181)', async () => {
+    s = await server();
+    const sent = capture();
+    const p = await player('Hazel');
+    s.ctx.push.gone(p.id);
+    s.clock.now += 20_000;
+    s.ctx.push.now(p.id, {
+      type: 'castleBesieged',
+      at: s.clock.now,
+      foe: 'Keeper',
+      outcome: 'breached',
+      lost: 100,
+      marks: 2,
+    });
+    await pass(2);
+    expect(sent).toHaveLength(1);
+  });
 });

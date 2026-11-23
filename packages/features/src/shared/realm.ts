@@ -60,24 +60,25 @@ export function realmOf(state: State): RealmMirror | null {
   return r.success ? r.data : null;
 }
 
-/** The realm's boss at this player's measure: the strongest foe open to them that they fare well against
- *  (Easy or Fair), with a boss's health, in the realm boss's name. Null for a player who cannot fight. */
+/** A foe as the realm's boss: a boss's health, in the realm boss's name. */
+function asRealm(base: Foe, at: number): Foe {
+  const boss = realmBossIn(weekOf(at));
+  return { ...base, id: `realm:${boss.id}:${base.id}`, hp: base.hp * REALM_HP, gold: base.gold * REALM_GOLD };
+}
+
+/** The realm's boss at this player's measure: made from the strongest foe open to them whose realm's version
+ *  (four times the health) they still fare well against (Easy or Fair), so the boss is one they can beat
+ *  (session 181: measured from the foe itself, a player three weeks in met it "Too strong"); else from the
+ *  weakest. Null for a player who cannot fight. */
 export function realmFoe(state: State, at: number): Foe | null {
   const hp = skillLevel(state, 'hitpoints');
   const open = FOES.filter((f) => f.hitpoints <= hp);
+  if (!open.length) return null;
   let base: Foe | null = null;
   for (const f of open) {
-    const o = oddsFor(state, f);
+    const o = oddsFor(state, asRealm(f, at));
     if (!o) return null;
     if (o.verdict === 'easy' || o.verdict === 'fair') base = f;
   }
-  base ??= open[0] ?? null;
-  if (!base) return null;
-  const boss = realmBossIn(weekOf(at));
-  return {
-    ...base,
-    id: `realm:${boss.id}:${base.id}`,
-    hp: base.hp * REALM_HP,
-    gold: base.gold * REALM_GOLD,
-  };
+  return asRealm(base ?? open[0], at);
 }
