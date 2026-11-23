@@ -49,6 +49,7 @@ export function erase(ctx: Ctx, playerId: string): void {
     ctx.notices.remove(playerId);
     ctx.push.remove(playerId);
     ctx.realm.remove(playerId);
+    ctx.realmWorks.remove(playerId);
     const name = ctx.db.select({ name: players.name }).from(players).where(eq(players.id, playerId)).get()?.name;
     if (name) ctx.notices.forgetFoe(name);
     ctx.hiscores.remove(playerId);

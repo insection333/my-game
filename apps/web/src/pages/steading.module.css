@@ -100,3 +100,20 @@
   text-decoration: underline dotted;
   text-underline-offset: 3px;
 }
+
+/* The realm's work (session 218): across the head of the works, set off from the player's own. */
+.realmWork {
+  grid-column: 1 / -1;
+}
+
+.gifts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
+.materials {
+  display: grid;
+  justify-self: stretch;
+  min-width: 0;
+}

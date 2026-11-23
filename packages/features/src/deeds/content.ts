@@ -213,3 +213,9 @@ export const FAVOUR: Steps = [
   [150, 'hard'],
   [500, 'elite'],
 ];
+/** The realm's works finished with the player's part (session 218): one a season at most. */
+export const REALM_WORKS_RAISED: Steps = [
+  [1, 'hard'],
+  [3, 'elite'],
+  [6, 'master'],
+];

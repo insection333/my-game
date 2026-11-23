@@ -1,7 +1,7 @@
-// The Deep's deeds (session 215), and the pedlar's (session 217): depths reached, its waystones from the first to the 150th. The first comes
+// The Deep's deeds (session 215), the pedlar's (session 217) and the realm's works' (session 218): depths reached, its waystones from the first to the 150th. The first comes
 // in a steady player's first descent at 99; the 150th, with the Deep's relics, about two years in.
 import { fmt } from '@idle-clash/content';
-import { deed, DEPTHS, FAVOUR, type Deed } from './content.ts';
+import { deed, DEPTHS, FAVOUR, REALM_WORKS_RAISED, type Deed } from './content.ts';
 
 export function deepDeeds(): Deed[] {
   return DEPTHS.map(([depth, tier]) =>
@@ -35,6 +35,24 @@ export function pedlarDeeds(): Deed[] {
       words: { count: fmt.int(count) },
       mark: fmt.int(count),
       measure: (r) => r.favour(),
+    }),
+  );
+}
+
+/** The realm's works raised with the player's part (session 218). */
+export function realmWorkDeeds(): Deed[] {
+  return REALM_WORKS_RAISED.map(([count, tier]) =>
+    deed({
+      id: `realm-works-${count}`,
+      family: 'realmWorks',
+      key: count === 1 ? 'deed.realmWorksFirst' : 'deed.realmWorks',
+      brief: true,
+      shows: count === 1 ? 'none' : 'count',
+      tier,
+      target: count,
+      words: { count: fmt.int(count) },
+      mark: fmt.int(count),
+      measure: (r) => r.realmWorks(),
     }),
   );
 }

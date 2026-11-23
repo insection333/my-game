@@ -34,7 +34,11 @@ export function cueFor(e: GameEvent): Cue | null {
     case 'relicRaised':
     case 'gearTempered':
     case 'pedlarPaid':
+    case 'realmGiven':
       return 'goal';
+    // A stage of the realm's work raised (session 218); its finishing rings like a Rare find.
+    case 'realmWorkStage':
+      return e.stage >= 5 ? 'rare' : 'goal';
     case 'bossFought':
       return !e.won ? null : e.first ? 'rare' : 'goal';
     // The realm's boss (session 174): a strike the goal's chime, its fall like a Rare find.

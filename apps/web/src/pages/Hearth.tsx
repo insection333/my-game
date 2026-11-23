@@ -8,6 +8,7 @@ import {
   type NextUpRow,
   type PlaqueView,
   type StandingView,
+  type RealmWorkView,
   type SteadingView,
 } from '@idle-clash/features';
 import { ActionRow, Button, hasIcon, ItemIcon, MarchScene, Panel, Picture, Pill, ProgressBar } from '@idle-clash/ui';
@@ -35,6 +36,7 @@ export function Hearth() {
   const [standing] = fills<StandingView>(features, 'hearth.standing', state, now);
   const [plaque] = fills<PlaqueView>(features, 'hearth.plaque', state, now);
   const [steading] = fills<SteadingView>(features, 'hearth.steading', state, now);
+  const [realmWork] = fills<RealmWorkView>(features, 'hearth.realmWork', state, now);
   const castle = castleNote(state, now);
   const errands = useErrands();
   const season = seasonView(now, state);
@@ -162,7 +164,7 @@ export function Hearth() {
         )}
         {steading?.data.open && (
           <section data-section className={s.steadingArea}>
-            <Steading view={steading.data} />
+            <Steading view={steading.data} realm={realmWork?.data ?? null} />
           </section>
         )}
       </div>

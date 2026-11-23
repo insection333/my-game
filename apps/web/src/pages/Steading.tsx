@@ -2,7 +2,8 @@
 // what it gives, a work ready to raise marked; and a work's sheet (`?panel=work&work=woodyard`) with
 // its next raising, what it costs against what is held, and the button that raises it.
 import { t } from '@idle-clash/content';
-import type { SteadingView, WorkRow } from '@idle-clash/features';
+import type { RealmWorkView, SteadingView, WorkRow } from '@idle-clash/features';
+import { RealmWorkTile } from './RealmWork.tsx';
 import { Button, Panel, Pill, ProgressBar, Sheet } from '@idle-clash/ui';
 import { useGame } from '../game/hooks.ts';
 import { game } from '../game/store.ts';
@@ -13,10 +14,12 @@ import s from './steading.module.css';
 
 const sheetOf = (id: string) => `${location.pathname}?panel=work&work=${id}`;
 
-export function Steading({ view }: { view: SteadingView }) {
+export function Steading({ view, realm }: { view: SteadingView; realm: RealmWorkView | null }) {
   return (
     <Panel title={t('steading.title')} flush>
       <Slot id="hearth.steading" className={s.works}>
+        {/* The realm's work of the season (session 218), first among the works. */}
+        {realm && <RealmWorkTile view={realm} />}
         {view.rows.map((row) => (
           <a
             key={row.id}

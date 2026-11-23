@@ -22,7 +22,7 @@ import { DAY, T0 } from '../player.ts';
 import { dailyBoss } from './bosses.ts';
 import { descent, raiseDeepRelics } from './deep.ts';
 import { temperGear } from './temper.ts';
-import { handInLots } from './pedlar.ts';
+import { giveToRealm, handInLots } from './pedlar.ts';
 import { Lordship } from './castle.ts';
 import type { Kind, Year, YearDay } from './kinds.ts';
 import { equip, feed, goalsAndDeeds, raiseRelics, raiseWorks, styleToTrain, takePaths, tidy } from './house.ts';
@@ -181,6 +181,8 @@ export function playYear(
         if (kept.day && today) today.castle = kept.day;
         for (const f of kept.firsts) dayFirst(f);
       }
+      // What gold is left above a reserve goes to the realm's work (session 218).
+      state = giveToRealm(state, t).state;
     }
     // Gathering: feed the artisan lane while it holds under half a day's work; otherwise level.
     const low = artisanStock(state) < 12 * 3600 ? scarcest(state) : null;

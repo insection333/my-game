@@ -39,6 +39,8 @@ export { allSkills, totalLevel } from './shared/standing.ts';
 export { remedyFor, type Remedy } from './shared/remedy.ts';
 export { seasonOpenedWords, seasonPill, seasonView, type SeasonView } from './shared/season-view.ts';
 export { seasonAt, TWISTS } from './shared/season.ts';
+export { REALM_WORK, realmWorkIn, type RealmWorkMirror } from './shared/realm-work.ts';
+export { realmWorkWords } from './shared/realm-work-words.ts';
 export { paces, bestIn, type Pace } from './shared/pace.ts';
 export { goalsOf } from './goals/state.ts';
 export type {
@@ -75,7 +77,7 @@ export { storyOf as expeditionStory } from './shared/expeditions/story.ts';
 export { bossFoughtWords } from './shared/expeditions/boss-words.ts';
 export type { KindlingView } from './kindling/index.ts';
 export * as kindlingData from './shared/kindling.ts';
-export type { SteadingView, WorkRow } from './steading/index.ts';
+export type { RealmWorkView, SteadingView, WorkRow } from './steading/index.ts';
 export { workRaisedWords } from './steading/view.ts';
 export { relicRaisedWords } from './expeditions/relics-view.ts';
 export { temperedWords } from './shared/temper-view.ts';
