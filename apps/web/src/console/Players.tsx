@@ -1,10 +1,10 @@
 // A player's record in the console (`/admin/players/<id>`; the brief, the console since session 227): rename
 // them, ban or unban them, check and mend their save and see what was mended, set a new password when they
 // have forgotten theirs, and read the save itself. Reached from the directory and from Moderation.
-import type { AdminSaveResponse } from '@idle-clash/contracts';
-import { t } from '@idle-clash/content';
+import { FIRE_WATCH_HOURS, type AdminSaveResponse } from '@idle-clash/contracts';
+import { fmt, t } from '@idle-clash/content';
 import { dayOf } from '../pages/days.ts';
-import { Button, Field, Panel, TextLink } from '@idle-clash/ui';
+import { Button, Field, Panel, Pill, TextLink } from '@idle-clash/ui';
 import { useEffect, useState, type FormEvent } from 'react';
 import { api } from '../api.ts';
 import { handled } from '../game/session.ts';
@@ -80,7 +80,17 @@ function PlayerPanel({
     );
   };
   return (
-    <Panel title={t('console.record.account')} aside={player.bannedAt ? t('admin.banned') : undefined}>
+    <Panel
+      title={t('console.record.account')}
+      aside={
+        player.bannedAt ? (
+          t('admin.banned')
+        ) : player.fireHours >= FIRE_WATCH_HOURS ? (
+          // A fire that never sleeps is a script's (session 156).
+          <Pill tone="ember">{t('admin.fireWatch', { hours: fmt.num(player.fireHours) })}</Pill>
+        ) : undefined
+      }
+    >
       <Slot id="admin.player" className={s.player}>
         <form className={s.search} onSubmit={rename}>
           <Field label={t('admin.newName')} value={name} onChange={(e) => setName(e.target.value)} maxLength={16} />
