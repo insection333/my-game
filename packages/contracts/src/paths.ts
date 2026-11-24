@@ -47,6 +47,11 @@ export const PATHS = {
   adminOverview: '/api/admin/overview',
   adminDirectory: '/api/admin/directory',
   adminAudit: '/api/admin/audit',
+  adminRecord: '/api/admin/record',
+  adminGrant: '/api/admin/grant',
+  adminXp: '/api/admin/xp',
+  adminSignOut: '/api/admin/sign-out',
+  adminDelete: '/api/admin/delete',
 } as const;
 
 /** A feature's own route. */

@@ -278,3 +278,24 @@
 .record > a {
   justify-self: start;
 }
+
+/* The record's standing beside its name, and a question asked in place (a ban, signing out everywhere). */
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-1);
+  margin: var(--s-1) 0 0;
+}
+
+.ask {
+  display: grid;
+  gap: var(--s-2);
+  padding: var(--s-3);
+  border: 1px solid var(--alert);
+  border-radius: var(--r-control);
+  background: var(--alert-soft);
+}
+
+.ask p {
+  margin: 0;
+}

@@ -204,3 +204,30 @@
 .actionCell {
   display: grid;
 }
+
+/* A part that spans every column of its grid (the record's skills). */
+.wide {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+
+/* A form of a few fields, no wider than they need. */
+.form {
+  display: grid;
+  gap: var(--s-3);
+  max-width: 36rem;
+}
+
+/* Two panels side by side where there is room (the record's Give and take beside Give XP). */
+.pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--s-4);
+  align-items: start;
+}
+
+@container main (min-width: 52rem) {
+  .pair {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

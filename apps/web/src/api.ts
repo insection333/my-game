@@ -13,6 +13,9 @@ import {
   type AdminTestResponse,
   type AdminOverviewResponse,
   type AuditResponse,
+  type GrantResult,
+  type RecordResponse,
+  type XpResult,
   type DirectoryFilter,
   type DirectoryResponse,
   type DirectorySort,
@@ -132,6 +135,13 @@ export const api = {
     directory: (q: { query: string; filter: DirectoryFilter; sort: DirectorySort; page: number }) =>
       post<DirectoryResponse>(PATHS.adminDirectory, q),
     audit: (query: string, before: number | null) => post<AuditResponse>(PATHS.adminAudit, { query, before }),
+    record: (playerId: string) => post<RecordResponse>(PATHS.adminRecord, { playerId }),
+    grant: (playerId: string, item: string, count: number, reason: string) =>
+      post<GrantResult>(PATHS.adminGrant, { playerId, item, count, reason }),
+    xp: (playerId: string, skill: string, xp: number, reason: string) =>
+      post<XpResult>(PATHS.adminXp, { playerId, skill, xp, reason }),
+    signOut: (playerId: string) => post<void>(PATHS.adminSignOut, { playerId }),
+    remove: (playerId: string, name: string) => post<void>(PATHS.adminDelete, { playerId, name }),
   },
   push: {
     key: () => get<PushKeyResponse>(PATHS.pushKey),

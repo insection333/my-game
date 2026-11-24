@@ -1,161 +1,118 @@
-// A player's record in the console (`/admin/players/<id>`; the brief, the console since session 227): rename
-// them, ban or unban them, check and mend their save and see what was mended, set a new password when they
-// have forgotten theirs, and read the save itself. Reached from the directory and from Moderation.
-import { FIRE_WATCH_HOURS, type AdminSaveResponse } from '@idle-clash/contracts';
+// A player's record in the console (`/admin/players/<id>`; the brief, the console since session 227, its
+// parts since session 229): their name and standing at its head, then by tabs (`?tab=`) the Summary (who
+// they are, what they hold and do, their skills and castle), Account (rename, ban, password, sign out
+// everywhere, messages, delete), Give and take (gold, items and XP, each with a reason), Save (check and
+// mend, download, what was repaired, the save itself) and History (what admins have done to them). A name
+// in the address (`@Rowan`) opens that player's record.
+import { FIRE_WATCH_HOURS, type RecordResponse } from '@idle-clash/contracts';
 import { fmt, t } from '@idle-clash/content';
-import { dayOf } from '../pages/days.ts';
-import { Button, Field, Panel, Pill, TextLink } from '@idle-clash/ui';
-import { useEffect, useState, type FormEvent } from 'react';
+import { Pill, Tabs, TextLink } from '@idle-clash/ui';
+import { useEffect, useState } from 'react';
 import { api } from '../api.ts';
 import { handled } from '../game/session.ts';
+import { PageHead } from '../pages/PageHead.tsx';
 import { untilLoaded } from '../Ready.tsx';
 import { refused } from '../refused.ts';
-import { navigate } from '../router.ts';
+import { navigate, replace, useLocation } from '../router.ts';
 import { Slot } from '../slots.tsx';
-import { PageHead } from '../pages/PageHead.tsx';
+import { RecordAccount } from './RecordAccount.tsx';
+import { RecordGrants } from './RecordGrants.tsx';
+import { RecordHistory, RecordSave } from './RecordSave.tsx';
+import { RecordSummary } from './RecordSummary.tsx';
 import s from './admin.module.css';
 
-const why = (err: unknown) =>
-  refused(err, {
-    nameTaken: t('error.nameTaken'),
-    nameNotAllowed: t('error.nameNotAllowed'),
-    notFound: t('admin.none'),
-  });
+const TABS = ['summary', 'account', 'grants', 'save', 'history'] as const;
+type Tab = (typeof TABS)[number];
+const TAB_WORDS: Record<Tab, () => string> = {
+  summary: () => t('record.summary'),
+  account: () => t('record.account'),
+  grants: () => t('record.grants'),
+  save: () => t('record.save'),
+  history: () => t('record.history'),
+};
+
+/** Runs an admin's press: its answer, or why it was refused, in the words given for its refusals. */
+export type Run = <T>(go: () => Promise<T>, then: (r: T) => void, own?: Parameters<typeof refused>[1]) => Promise<void>;
 
 export function PlayerRecord({ id }: { id: string }) {
-  const [save, setSave] = useState<AdminSaveResponse | null>(null);
+  useLocation();
+  const asked = new URLSearchParams(location.search).get('tab');
+  const tab: Tab = TABS.find((x) => x === asked) ?? 'summary';
+  const [record, setRecord] = useState<RecordResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const load = (then?: () => void) =>
-    untilLoaded(api.admin.save(id)).then(
-      (r) => {
-        setSave(r);
-        then?.();
-      },
-      (err: unknown) => {
-        if (!handled(err)) setError(why(err));
-      },
-    );
-  useEffect(() => void load(), [id]); // eslint-disable-line react-hooks/exhaustive-deps
-  const run = async <T,>(go: () => Promise<T>, then: (r: T) => void) => {
+  const load = () =>
+    untilLoaded(api.admin.record(id)).then(setRecord, (err: unknown) => {
+      if (!handled(err)) setError(refused(err, { notFound: t('admin.none') }));
+    });
+  useEffect(() => {
+    // A record named in the address (`/admin/players/@Rowan`), as an admin can write it or pass it on, is
+    // found by the name and opened at its own address.
+    if (id.startsWith('@'))
+      void untilLoaded(api.admin.directory({ query: id.slice(1), filter: 'all', sort: 'name', page: 0 })).then(
+        (r) => {
+          const found = r.rows.find((x) => x.name.toLowerCase() === id.slice(1).toLowerCase());
+          if (found) replace(`/admin/players/${encodeURIComponent(found.id)}${location.search}`);
+          else setError(t('admin.none'));
+        },
+        (err: unknown) => void handled(err),
+      );
+    else void load();
+  }, [id]); // eslint-disable-line react-hooks/exhaustive-deps
+  const run: Run = async (go, then, own) => {
     setError(null);
     try {
       then(await go());
     } catch (err) {
-      if (!handled(err)) setError(why(err));
+      if (!handled(err)) setError(refused(err, own));
     }
   };
+  const here = `/admin/players/${encodeURIComponent(id)}`;
   return (
     <div className={s.record}>
       <TextLink href="/admin/players" onNavigate={navigate}>
         {t('console.allPlayers')}
       </TextLink>
-      <PageHead title={save?.player.name ?? t('console.players')} />
-      {save && <PlayerPanel key={save.player.id} save={save} reload={() => void load()} run={run} />}
+      <PageHead title={record?.name ?? t('console.players')}>
+        {record && (
+          <p className={s.badges}>
+            {record.bannedAt !== null && <Pill tone="ember">{t('admin.banned')}</Pill>}
+            {record.online && <Pill tone="moss">{t('record.online')}</Pill>}
+            {record.mutedUntil !== null && <Pill>{t('console.standing.muted')}</Pill>}
+            {record.reports.name + record.reports.cheating > 0 && (
+              <Pill tone="ember">
+                {t('console.standing.reports', { count: fmt.int(record.reports.name + record.reports.cheating) })}
+              </Pill>
+            )}
+            {/* A fire that never sleeps is a script's (session 156). */}
+            {record.fireHours >= FIRE_WATCH_HOURS && (
+              <Pill tone="ember">{t('admin.fireWatch', { hours: fmt.num(record.fireHours) })}</Pill>
+            )}
+          </p>
+        )}
+      </PageHead>
       {error && (
         <p className={s.error} role="alert">
           {error}
         </p>
       )}
+      {record && (
+        <Slot id="admin.player" className={s.player}>
+          <Tabs
+            label={t('record.tabs')}
+            onNavigate={navigate}
+            tabs={TABS.map((x) => ({
+              href: x === 'summary' ? here : `${here}?tab=${x}`,
+              label: TAB_WORDS[x](),
+              current: x === tab,
+            }))}
+          />
+          {tab === 'summary' && <RecordSummary record={record} />}
+          {tab === 'account' && <RecordAccount record={record} reload={() => void load()} run={run} />}
+          {tab === 'grants' && <RecordGrants record={record} reload={() => void load()} run={run} />}
+          {tab === 'save' && <RecordSave id={id} run={run} />}
+          {tab === 'history' && <RecordHistory record={record} />}
+        </Slot>
+      )}
     </div>
-  );
-}
-
-function PlayerPanel({
-  save,
-  reload,
-  run,
-}: {
-  save: AdminSaveResponse;
-  reload: () => void;
-  run: <T>(go: () => Promise<T>, then: (r: T) => void) => Promise<void>;
-}) {
-  const { player } = save;
-  const [name, setName] = useState(player.name);
-  const [password, setPassword] = useState<string | null>(null);
-  const rename = (e: FormEvent) => {
-    e.preventDefault();
-    void run(
-      () => api.admin.rename(player.id, name.trim()),
-      () => reload(),
-    );
-  };
-  return (
-    <Panel
-      title={t('console.record.account')}
-      aside={
-        player.bannedAt ? (
-          t('admin.banned')
-        ) : player.fireHours >= FIRE_WATCH_HOURS ? (
-          // A fire that never sleeps is a script's (session 156).
-          <Pill tone="ember">{t('admin.fireWatch', { hours: fmt.num(player.fireHours) })}</Pill>
-        ) : undefined
-      }
-    >
-      <Slot id="admin.player" className={s.player}>
-        <form className={s.search} onSubmit={rename}>
-          <Field label={t('admin.newName')} value={name} onChange={(e) => setName(e.target.value)} maxLength={16} />
-          <Button type="submit" variant="secondary">
-            {t('admin.rename')}
-          </Button>
-        </form>
-        <div className={s.actions}>
-          <Button
-            variant="secondary"
-            onClick={() =>
-              void run(
-                () => api.admin.ban(player.id, !player.bannedAt),
-                () => reload(),
-              )
-            }
-          >
-            {player.bannedAt ? t('admin.unban') : t('admin.ban')}
-          </Button>
-          <Button
-            variant="secondary"
-            onClick={() =>
-              void run(
-                () => api.admin.mend(player.id),
-                () => reload(),
-              )
-            }
-          >
-            {t('admin.mend')}
-          </Button>
-          <Button
-            variant="primary"
-            onClick={() =>
-              void run(
-                () => api.admin.resetPassword(player.id),
-                (r) => setPassword(r.password),
-              )
-            }
-          >
-            {t('admin.reset')}
-          </Button>
-        </div>
-        {password && (
-          <div className={s.password} data-password>
-            <p>{t('admin.newPassword')}</p>
-            <code>{password}</code>
-          </div>
-        )}
-        <h3>{t('admin.repairs')}</h3>
-        {save.repairs.length === 0 ? (
-          <p className={s.note}>{t('admin.noRepairs')}</p>
-        ) : (
-          <ul className={s.repairs}>
-            {save.repairs.map((r) => (
-              <li key={r.at}>
-                {dayOf(r.at)}: {r.repairs.join('; ')}
-              </li>
-            ))}
-          </ul>
-        )}
-        <h3>{t('admin.save')}</h3>
-        <pre className={s.doc} data-scrolls>
-          {JSON.stringify(save.doc, null, 2)}
-        </pre>
-      </Slot>
-    </Panel>
   );
 }

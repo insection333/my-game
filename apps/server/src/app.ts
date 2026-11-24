@@ -24,6 +24,8 @@ import { adminRoutes } from './admin/routes.ts';
 import { auditRoutes } from './admin/audit.ts';
 import { directoryRoutes } from './admin/directory.ts';
 import { overviewRoutes } from './admin/overview.ts';
+import { powerRoutes } from './admin/powers.ts';
+import { recordRoutes } from './admin/record.ts';
 import { feedbackRoutes } from './feedback.ts';
 import { moderationRoutes } from './moderation.ts';
 import { profileRoutes } from './game/profile.ts';
@@ -151,6 +153,8 @@ export async function buildApp(
   overviewRoutes(app, ctx);
   directoryRoutes(app, ctx);
   auditRoutes(app, ctx);
+  recordRoutes(app, ctx);
+  powerRoutes(app, ctx);
   feedbackRoutes(app, ctx, features);
   if (config.emailEnabled) emailRoutes(app, ctx);
   gameRoutes(app, ctx, features);
