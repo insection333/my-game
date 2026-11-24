@@ -79,6 +79,9 @@ export interface EventMap {
   castleSpied: { foe: string; mission: string; success: boolean };
   /** Castle Clash: your assault on an incursion's fortress, taken or held against you. */
   castleIncursion: { fortress: string; tier: number; won: boolean; marks: number; spoils?: 'armoury' | 'hoard' };
+  /** A chamber of the season's legendary siege assaulted (session 220): which, won or held, its marks, and
+   *  whether it took the fortress. */
+  castleLegend: { legend: string; chamber: number; won: boolean; marks: number; taken: boolean };
   /** Castle Clash: orders of the day done (session 40), and the war marks they paid; `all` when the three
    *  together paid too. */
   castleOrders: { orders: string[]; all: boolean; marks: number };
@@ -148,6 +151,7 @@ export const NOTABLE_EVENTS: readonly (keyof EventMap)[] = [
   'castleSpyCaught',
   'castleSpied',
   'castleIncursion',
+  'castleLegend',
   'castleTempered',
   'castleOrders',
   'rankUp',

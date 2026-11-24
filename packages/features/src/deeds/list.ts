@@ -28,6 +28,7 @@ export const CATEGORIES: readonly { id: string; families: readonly string[] }[] 
       'castle',
       'fortresses',
       'routs',
+      'legends',
       'warMarks',
       'halls',
       'bounties',

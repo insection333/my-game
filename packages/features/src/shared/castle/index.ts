@@ -22,3 +22,4 @@ export * from './tactics.ts';
 export * from './temper.ts';
 export * from './orders.ts';
 export * from './next.ts';
+export * from './legend.ts';

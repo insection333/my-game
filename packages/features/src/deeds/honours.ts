@@ -162,6 +162,8 @@ export const HONOURS: readonly Honour[] = [
   { id: 'ember', kind: 'banner', unlock: by('region-peaks') },
   { id: 'night', kind: 'banner', unlock: at(2_000) },
   { id: 'gold', kind: 'banner', unlock: by('gold-1000000') },
+  // The legendary siege taken in three seasons (session 220): the legend's own colours.
+  { id: 'legend', kind: 'banner', unlock: by('legends-3') },
   // The pedlar's ribbon (session 217): his favour earned.
   { id: 'pedlar', kind: 'banner', unlock: by('favour-150') },
   { id: 'dawn', kind: 'banner', unlock: { anyOf: ninetyNines, text: 'honour.unlock.any99' } },

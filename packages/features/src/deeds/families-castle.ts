@@ -109,6 +109,30 @@ export function castleDeeds(): Deed[] {
       }),
     ),
   ];
+  // The legendary siege taken (session 220): once a season.
+  const legends = [
+    deed({
+      id: 'legend-first',
+      family: 'legends',
+      key: 'deed.legendFirst',
+      tier: 'elite',
+      target: 1,
+      words: {},
+      mark: fmt.int(1),
+      shows: 'none',
+      measure: (r) => r.castle('legends'),
+    }),
+    deed({
+      id: 'legends-3',
+      family: 'legends',
+      key: 'deed.legends',
+      tier: 'master',
+      target: 3,
+      words: { count: fmt.int(3) },
+      mark: fmt.int(3),
+      measure: (r) => r.castle('legends'),
+    }),
+  ];
   const relics = RELICS.length * RELIC.LEVELS;
   const ranks = TECH_IDS.length * TECH.RANKS;
   const halls = [
@@ -144,5 +168,5 @@ export function castleDeeds(): Deed[] {
       measure: (r) => r.castle('studies'),
     }),
   ];
-  return [raised, ...levels, ...taken, ...routs, ...marks, ...halls, ...tempered];
+  return [raised, ...levels, ...taken, ...routs, ...legends, ...marks, ...halls, ...tempered];
 }

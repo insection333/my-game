@@ -50,12 +50,23 @@ export const fortressName = read({
   'hollow-crown-hold': 'castle.fortress.hollow-crown-hold',
 });
 
+/** The season's legendary fortress by its name (session 220). */
+export const legendName = read({
+  'the-drowned-throne': 'castle.legend.the-drowned-throne',
+  'the-ninefold-gate': 'castle.legend.the-ninefold-gate',
+  'the-ember-crown': 'castle.legend.the-ember-crown',
+  'the-stag-kings-hall': 'castle.legend.the-stag-kings-hall',
+  'the-hollow-star': 'castle.legend.the-hollow-star',
+  'the-last-bastion': 'castle.legend.the-last-bastion',
+});
+
 type CastleEvent = EventOf<
   | 'castleSiege'
   | 'castleBesieged'
   | 'castleSpyCaught'
   | 'castleSpied'
   | 'castleIncursion'
+  | 'castleLegend'
   | 'castleTempered'
   | 'castleOrders'
 >;
@@ -65,6 +76,7 @@ export const isCastleEvent = (e: GameEvent): e is CastleEvent =>
   e.type === 'castleSpyCaught' ||
   e.type === 'castleSpied' ||
   e.type === 'castleIncursion' ||
+  e.type === 'castleLegend' ||
   e.type === 'castleTempered' ||
   e.type === 'castleOrders';
 
@@ -110,6 +122,7 @@ export function castleIcon(e: CastleEvent): string {
   switch (e.type) {
     case 'castleSiege':
     case 'castleIncursion':
+    case 'castleLegend':
       return 'tech-siegecraft';
     case 'castleBesieged':
     case 'castleOrders':
@@ -192,6 +205,16 @@ export function castleMoment(e: CastleEvent): {
         href: '/castle',
         // A hoard takes the centre of the screen, as a Legendary find does; the armoury a banner.
         size: e.spoils === 'hoard' ? 'centre' : e.won ? 'banner' : 'toast',
+      };
+    case 'castleLegend':
+      // The legendary siege (session 220): a chamber won a banner, the fortress taken the centre.
+      return {
+        title: e.taken
+          ? t('castle.legend.taken', { legend: legendName(e.legend) })
+          : t('castle.legend.chamber', { legend: legendName(e.legend), n: fmt.int(e.chamber + 1) }),
+        body: join([e.won ? t('castle.report.won') : t('castle.legend.held'), ...marksText(e.marks)]),
+        href: '/castle',
+        size: e.taken ? 'centre' : e.won ? 'banner' : 'toast',
       };
     case 'castleOrders':
       // The three together: a banner; one order done: a toast.

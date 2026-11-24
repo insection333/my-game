@@ -2,7 +2,7 @@
 // of the day's strongholds or the fortress, from the first day. The work is kept on the lord's own castle
 // with that foe's pair (castleEngine's foe-spies.ts), and the battle and the odds both count it.
 import { SIEGE } from '@idle-clash/content';
-import { castleEngine as E } from '@idle-clash/features';
+import { castleEngine as E, seasonAt } from '@idle-clash/features';
 import { purseOf, roll, setPurse, store, type Io, type Outcome } from './service.ts';
 
 type Castle = E.Castle;
@@ -10,6 +10,14 @@ type Castle = E.Castle;
 /** The foe a target names, as it stands today: one of the day's strongholds not yet fallen, or the
  *  fortress at the lord's own tier. */
 function foeOf(att: Castle, target: string, now: number) {
+  // The next chamber of the season's legendary siege (session 220).
+  if (target.startsWith('legend:')) {
+    const season = seasonAt(now)?.number;
+    const next = season ? E.nextChamber(att, season, now) : null;
+    if (!season || !next || target !== E.chamberKey(season, next.chamber.n)) return null;
+    const legend = E.legendOf(season);
+    return { level: next.chamber.level, name: E.legendName(legend), data: { legend, chamber: next.chamber.n } };
+  }
   if (target.startsWith('fortress:')) {
     const tier = Number(target.slice('fortress:'.length));
     if (tier !== att.incursionTier) return null;

@@ -49,6 +49,8 @@ export interface Mercenary {
 
 /** The rating of a castle with every military level at L (buildings 240, units 300 per L^1.05). */
 const RATING_PER_LEVEL = 540;
+/** The level every unit of a foe of this rating stands at. */
+export const levelOfRating = (rating: number): number => Math.max(1, (rating / RATING_PER_LEVEL) ** (1 / 1.05));
 
 /** The day's strongholds for this attacker, `count` of them, around their rating. */
 export function mercenaries(c: Castle, now: number, count: number): Mercenary[] {
@@ -62,7 +64,7 @@ export function mercenaries(c: Castle, now: number, count: number): Mercenary[] 
       first: h % MERCENARY_NAMES.first.length,
       second: (h >>> 8) % MERCENARY_NAMES.second.length,
       rating,
-      level: Math.max(1, (rating / RATING_PER_LEVEL) ** (1 / 1.05)),
+      level: levelOfRating(rating),
       garrison: GARRISONS[(h >>> 16) % GARRISONS.length],
       trap: TRAPS[(h >>> 24) % TRAPS.length].id,
     };

@@ -66,6 +66,9 @@ export function cueFor(e: GameEvent): Cue | null {
       return e.outcome === 'repelled' ? null : e.rout ? 'rare' : 'goal';
     case 'castleIncursion':
       return !e.won ? null : e.spoils ? 'rare' : 'goal';
+    // A legend's chamber won the chime; the legend taken like a Rare find (session 220).
+    case 'castleLegend':
+      return !e.won ? null : e.taken ? 'rare' : 'goal';
     case 'castleBesieged':
       return e.outcome === 'repelled' ? 'goal' : 'stopped';
     case 'castleSpyCaught':

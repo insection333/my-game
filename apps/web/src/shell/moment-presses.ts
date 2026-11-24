@@ -1,8 +1,22 @@
 // The moments of a press answered at the forge, the Reliquary or the pedlar (sessions 98, 216 and 217): the
 // words and the picture of a relic raised, a piece tempered and a lot handed in; and the realm's work (218).
 import { pedlarPaidWords, realmWorkWords, relicRaisedWords, temperedWords } from '@idle-clash/features';
-import type { EventOf } from '@idle-clash/kernel';
+import type { EventOf, GameEvent } from '@idle-clash/kernel';
 import { hasIcon } from '@idle-clash/ui';
+
+/** A press of the player's own answered: a siege, an assault, a relic tempered, a work raised. */
+export const byYou = (e: GameEvent) =>
+  e.type === 'castleSiege' ||
+  e.type === 'castleSpied' ||
+  e.type === 'castleIncursion' ||
+  e.type === 'castleLegend' ||
+  e.type === 'castleTempered' ||
+  e.type === 'workRaised' ||
+  e.type === 'findUsed' ||
+  e.type === 'relicRaised' ||
+  e.type === 'gearTempered' ||
+  e.type === 'pedlarPaid' ||
+  e.type === 'realmGiven';
 
 type Said = { title: string; body: string | null; icon: string | null };
 

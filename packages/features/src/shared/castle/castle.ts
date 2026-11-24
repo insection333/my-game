@@ -65,6 +65,12 @@ export interface Castle {
   warMarksEarned: number;
   excavationDepth: number;
   incursionTier: number;
+  /** The legendary siege (session 220): the season last assaulted, the chambers taken in it, the tier its
+   *  strength was fixed at, and the seasons it was taken in all. */
+  legendSeason: number;
+  legendTaken: number;
+  legendBase: number;
+  legends: number;
   /** Days all five strongholds fell (session 38). */
   routs: number;
   /** The orders of the day (session 40), or null before the first. */
@@ -127,6 +133,10 @@ export function newCastle(userId: string, now: number): Castle {
     warMarksEarned: 0,
     excavationDepth: 0,
     incursionTier: 1,
+    legendSeason: 0,
+    legendTaken: 0,
+    legendBase: 0,
+    legends: 0,
     routs: 0,
     orders: null,
     relics: {},

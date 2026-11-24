@@ -21,7 +21,7 @@ import {
   type Feature,
 } from '@idle-clash/features';
 import { isNotable, type GameEvent } from '@idle-clash/kernel';
-import { pressSaid, realmWorkSaid } from './moment-presses.ts';
+import { byYou, pressSaid, realmWorkSaid } from './moment-presses.ts';
 import { hasIcon } from '@idle-clash/ui';
 
 export type MomentSize = 'centre' | 'banner' | 'toast';
@@ -74,19 +74,6 @@ function rank(e: GameEvent): number {
   }
   return e.type === 'levelUp' ? 3 : e.type === 'masteryStep' ? 6 : 8;
 }
-
-/** A press of the player's own in the castle answered: a siege, an assault, a relic tempered. */
-const byYou = (e: GameEvent) =>
-  e.type === 'castleSiege' ||
-  e.type === 'castleSpied' ||
-  e.type === 'castleIncursion' ||
-  e.type === 'castleTempered' ||
-  e.type === 'workRaised' ||
-  e.type === 'findUsed' ||
-  e.type === 'relicRaised' ||
-  e.type === 'gearTempered' ||
-  e.type === 'pedlarPaid' ||
-  e.type === 'realmGiven';
 
 function sizeOf(e: GameEvent): MomentSize {
   if (e.type === 'levelUp' || e.type === 'kindled' || (e.type === 'find' && e.rarity === 'legendary')) return 'centre';
