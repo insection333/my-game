@@ -2,6 +2,7 @@
 // season; every lord meets the same garrisons and traps, its strength fixed from the lord's might at their
 // first assault (0.9 of it to 1.11, a step a chamber), a chamber opening each week (session 222); each chamber
 // pays war marks, the fifth takes it.
+import { newState } from '@idle-clash/kernel';
 import { describe, expect, it } from 'vitest';
 import {
   assaultLegend,
@@ -18,6 +19,8 @@ import {
   syncCastle,
   winChance,
   bastionRating,
+  legendAwaits,
+  mirrorFor,
   bestOffense,
   castleSide,
   chamberSide,
@@ -113,5 +116,21 @@ describe('the legendary siege', () => {
     );
     expect(after).toBeGreaterThanOrEqual(before);
     expect(foeOps(spied, key, T0).poison).toBe(1);
+  });
+
+  it("tells the Hearth of the week's chamber standing open, from the save's mirror (session 223)", () => {
+    const at = (c: Castle, now: number) => {
+      const state = newState(1, now);
+      state.features.castle = mirrorFor(c, 0, now);
+      return legendAwaits(state, now);
+    };
+    const day8 = chamberOpens(2, 1) + 86_400_000;
+    expect(at({ ...strong(), legendSeason: 2, legendTaken: 1 }, day8)).toEqual({ season: 2, n: 1 });
+    // Its second chamber taken, the third waits for its week.
+    expect(at({ ...strong(), legendSeason: 2, legendTaken: 2 }, day8)).toBeNull();
+    // A season of its own: the first chamber, whatever the last season left.
+    expect(at({ ...strong(), legendSeason: 1, legendTaken: 8 }, day8)).toEqual({ season: 2, n: 0 });
+    expect(at({ ...strong(), legendSeason: 2, legendTaken: 8 }, day8)).toBeNull();
+    expect(at({ ...strong(), incursionTier: 9 }, day8)).toBeNull();
   });
 });

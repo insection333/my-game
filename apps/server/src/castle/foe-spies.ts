@@ -14,7 +14,8 @@ function foeOf(att: Castle, target: string, now: number) {
   if (target.startsWith('legend:')) {
     const season = seasonAt(now)?.number;
     const next = season ? E.nextChamber(att, season, now) : null;
-    if (!season || !next || target !== E.chamberKey(season, next.chamber.n)) return null;
+    // Not before its week (session 223): the spies' work lasts hours, and would be spent on a closed gate.
+    if (!season || !next || next.opens > now || target !== E.chamberKey(season, next.chamber.n)) return null;
     const legend = E.legendOf(season);
     return { level: next.chamber.level, name: E.legendName(legend), data: { legend, chamber: next.chamber.n } };
   }
