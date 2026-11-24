@@ -23,7 +23,7 @@ export async function runConsoleProofs(served: Served): Promise<string[]> {
     if (asked.some((p) => p === '/api/game' || p.startsWith('/api/game/')))
       problems.push('The console loaded the game for its own account');
     step = 'each section opens from its link';
-    for (const name of ['Players', 'Moderation', 'Mail', 'Closed test', 'Audit log', 'Overview']) {
+    for (const name of ['Players', 'Moderation', 'Mail', 'Live', 'Closed test', 'Audit log', 'System', 'Overview']) {
       await page.getByRole('navigation', { name: 'Console sections' }).getByRole('link', { name }).click();
       await page.getByRole('heading', { name, level: 1 }).waitFor({ timeout: 10_000 });
     }

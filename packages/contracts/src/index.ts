@@ -11,3 +11,4 @@ export * from './mail.ts';
 export * from './push.ts';
 export * from './live.ts';
 export * from './console.ts';
+export * from './console-live.ts';

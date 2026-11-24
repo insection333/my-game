@@ -23,6 +23,7 @@ import { RateLimiter } from './security.ts';
 import { adminRoutes } from './admin/routes.ts';
 import { auditRoutes } from './admin/audit.ts';
 import { directoryRoutes } from './admin/directory.ts';
+import { liveRoutes } from './admin/live.ts';
 import { overviewRoutes } from './admin/overview.ts';
 import { powerRoutes } from './admin/powers.ts';
 import { recordRoutes } from './admin/record.ts';
@@ -155,6 +156,7 @@ export async function buildApp(
   auditRoutes(app, ctx);
   recordRoutes(app, ctx);
   powerRoutes(app, ctx);
+  liveRoutes(app, ctx);
   feedbackRoutes(app, ctx, features);
   if (config.emailEnabled) emailRoutes(app, ctx);
   gameRoutes(app, ctx, features);
