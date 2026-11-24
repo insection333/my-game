@@ -25,9 +25,8 @@ const inboxOf = async (cookie: string) => json<{ letters: { body: string; realm:
 describe("the console's live operations", () => {
   it('says who joined last, and sends a letter to every player not banned, as the game', async () => {
     const { players, admin } = await setup();
-    const birch = JSON.parse(
-      (await s.app.inject({ method: 'GET', url: '/api/me', headers: { cookie: players[1] } })).body,
-    ).player.id as string;
+    const me = (await s.app.inject({ method: 'GET', url: '/api/me', headers: { cookie: players[1] } })).body;
+    const birch = (JSON.parse(me) as { player: { id: string } }).player.id;
     await json(admin, '/api/admin/ban', { playerId: birch, banned: true });
     const live = await json<{ joined: { name: string }[]; reach: number }>(admin, '/api/admin/live');
     expect(live.joined.map((p) => p.name).sort()).toEqual(['Alder', 'Birch', 'Cedar']);
