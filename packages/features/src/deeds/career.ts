@@ -1,6 +1,7 @@
 // A player's career at a glance (session 44), for their profile card: total level, deed points and deeds
 // done, titles earned, Kindlings, foes slain, bosses beaten and runs brought home, and their castle's
-// standing (level, fortresses taken, routs). Read from their save as it stands.
+// standing (level, fortresses taken, routs; legends taken and the Deep's deepest since session 226). Read from
+// their save as it stands.
 import type { State } from '@idle-clash/kernel';
 import { BOSSES } from '../shared/expeditions/data.ts';
 import { totalLevel } from '../shared/standing.ts';
@@ -19,7 +20,9 @@ export interface Career {
   defeats: number;
   bossWins: number;
   runs: number;
-  castle: { level: number; fortresses: number; routs: number } | null;
+  /** The deepest depth reached in the Deep (session 226), 0 before the first descent. */
+  deepest: number;
+  castle: { level: number; fortresses: number; routs: number; legends: number } | null;
 }
 
 export function careerOf(state: State, now: number): Career {
@@ -37,8 +40,14 @@ export function careerOf(state: State, now: number): Career {
     defeats: r.allDefeats(),
     bossWins: BOSSES.reduce((n, b) => n + r.bossWins(b.id), 0),
     runs: r.runs(),
+    deepest: r.deepest(),
     castle: r.castleRaised()
-      ? { level: r.castle('level'), fortresses: r.castle('taken'), routs: r.castle('routs') }
+      ? {
+          level: r.castle('level'),
+          fortresses: r.castle('taken'),
+          routs: r.castle('routs'),
+          legends: r.castle('legends'),
+        }
       : null,
   };
 }

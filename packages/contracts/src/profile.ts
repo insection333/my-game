@@ -24,6 +24,8 @@ export interface Profile {
     defeats: number;
     bossWins: number;
     runs: number;
+    /** The deepest depth reached in the Deep (session 226), 0 before the first descent. */
+    deepest: number;
   };
   /** Their places on the hiscores (session 54), once listed: Total first, then their three best skills,
    *  the best first. */
@@ -34,6 +36,8 @@ export interface Profile {
     rating: number;
     fortresses: number;
     routs: number;
+    /** The season's legendary sieges taken to the last chamber (session 226). */
+    legends: number;
     siegesWon: number;
     siegesLost: number;
     defencesHeld: number;

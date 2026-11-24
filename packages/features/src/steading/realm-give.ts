@@ -1,7 +1,8 @@
 // Giving to the realm's work (session 218; its numbers in shared/realm-work.ts): gold, or all of a material
-// held, at its price; refused once the season's work stands finished. The server counts what is given.
+// held but the pedlar's lot of the day, at its price; refused once the season's work stands finished. The server counts what is given.
 import { countOf, take, type GameEvent, type State } from '@idle-clash/kernel';
 import { itemOf } from '../shared/catalog.ts';
+import { pedlarKeeps } from '../shared/pedlar-lots.ts';
 import { realmWorkIn, realmWorkOf } from '../shared/realm-work.ts';
 import { seasonAt } from '../shared/season.ts';
 
@@ -28,7 +29,8 @@ export function give(state: State, gift: { gold?: number; item?: string }, now: 
   const gold = gift.gold ?? 0;
   const item = gift.item ?? null;
   if (item !== null && !givable(item)) return no('notMaterial');
-  const count = item ? countOf(state, item) : 0;
+  // The pedlar's lot of the day is kept back (session 226): Give all gives the rest.
+  const count = item ? countOf(state, item) - pedlarKeeps(state, now, item) : 0;
   if (gold <= 0 && count <= 0) return no('nothing');
   if (gold > countOf(state, 'gold')) return no('short');
   const out = structuredClone(state);

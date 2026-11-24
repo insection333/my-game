@@ -2,7 +2,7 @@
 export const steading = {
   'help.steading.title': 'The steading',
   'help.steading.body':
-    'Works you build around your Hearth with gold and your own materials. Each can be raised five times; every raising gives a small lasting bonus and shows in the scene above.',
+    'Works you build around your Hearth with gold and your own materials. Each can be raised five times; every raising gives a small lasting bonus and shows in the scene above. Each season the whole realm raises one work of its own together, from the gold and materials anyone gives; every giver hears as each stage is raised.',
   'steading.title': 'The steading',
   'steading.missing': 'There is no such work.',
   'steading.raise': 'Raise',

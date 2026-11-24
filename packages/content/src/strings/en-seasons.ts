@@ -28,13 +28,13 @@ export const seasons = {
   'season.next': 'Next: {name}',
   'season.goals': '{count} goals done this season',
   'season.goalsOne': '1 goal done this season',
-  'season.openedBodyFirst': '{gives} for eight weeks.',
-  'season.openedBody': '{gives} for eight weeks. {last}',
+  'season.openedBodyFirst': '{gives} for eight weeks. The realm raises {work} together.',
+  'season.openedBody': '{gives} for eight weeks. The realm raises {work} together. {last}',
   'season.last': 'Last season you did {count} goals.',
   'season.lastOne': 'Last season you did 1 goal.',
   'hiscores.season': 'Season',
   'hiscores.seasonGoals': 'Goals',
   'hiscores.seasonNote':
-    "Goals done since this season opened: each short goal and each day's goal counts one, and each is set by your own pace. {left}.",
+    "Goals done since this season opened: each short goal, day's goal and week's contract counts one, and each is set by your own pace. {left}.",
   'hiscores.unrankedSeason': "You join this season's ladder with your first goal done in it.",
 };

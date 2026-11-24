@@ -3,8 +3,10 @@
 import { countOf, give, take, type GameEvent, type State } from '@idle-clash/kernel';
 import { itemOf } from '../shared/catalog.ts';
 import { earning, nice, paces } from '../shared/pace.ts';
-import { pedlarOf } from '../shared/pedlar.ts';
-import { lotsOf, type Lot, type LotKind } from './lots.ts';
+import { dayOf, handedToday, pedlarOf } from '../shared/pedlar.ts';
+import { lotsOf, type Lot, type LotKind } from '../shared/pedlar-lots.ts';
+
+export { dayOf, handedToday };
 
 export const PEDLAR = {
   /** The pay, as a share of the lot's price. */
@@ -13,19 +15,11 @@ export const PEDLAR = {
   LEAST_SECONDS: 600,
 } as const;
 
-export const dayOf = (at: number): string => new Date(at).toISOString().slice(0, 10);
-
 /** What a lot pays, in gold. */
 export function payFor(state: State, lot: Lot): number {
   const price = (itemOf(lot.item)?.value ?? 0) * lot.count * PEDLAR.PRICE;
   return nice(Math.max(price, earning(paces(state)) * PEDLAR.LEAST_SECONDS));
 }
-
-/** The lots handed in today. */
-export const handedToday = (state: State, at: number): LotKind[] => {
-  const p = pedlarOf(state);
-  return p.day === dayOf(at) ? p.handed : [];
-};
 
 type Answer<R> = { state: State; result: R; events: GameEvent[] };
 export type HandInResult = { ok: true; gold: number } | { ok: false; reason: 'none' | 'done' | 'short' };

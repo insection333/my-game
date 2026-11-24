@@ -2,11 +2,14 @@
 // Uncommon find the player has found, a material of a gathering skill they have gathered and passed by twenty
 // levels, and a dish they have cooked. Drawn only from what the player has or makes, so a lot is never a chore to fetch;
 // each pick is the candidate with the least of the day's draws (rendezvous hashing), so a level gained in the
-// day adds a candidate without reshuffling the others.
-import { seeded, type State } from '@idle-clash/kernel';
-import { allFinds, foods, itemOf, skillActions } from '../shared/catalog.ts';
-import { FOODS } from '../shared/combat/data.ts';
-import { skillLevel } from '../shared/skill.ts';
+// day adds a candidate without reshuffling the others. Shared (session 226), so Sell finds and the realm's work
+// keep back what the pedlar wants today without importing the pedlar.
+import { fmt, t } from '@idle-clash/content';
+import { countOf, seeded, type State } from '@idle-clash/kernel';
+import { allFinds, foods, itemOf, skillActions } from './catalog.ts';
+import { FOODS } from './combat/data.ts';
+import { dayOf, handedToday } from './pedlar.ts';
+import { skillLevel } from './skill.ts';
 
 export type LotKind = 'find' | 'material' | 'dish';
 export interface Lot {
@@ -72,4 +75,19 @@ export function lotsOf(state: State, day: string): Lot[] {
   const dish = pick(state, day, 'dish', dishes);
   if (dish) lots.push({ kind: 'dish', item: dish, count: 10 });
   return lots;
+}
+
+/** How many of an item to keep back for a lot the pedlar wants today and has not had (session 226): Sell finds
+ *  and the realm's Give all leave it, where they sold or gave the day's lot away at the same press. */
+export function pedlarKeeps(state: State, at: number, item: string): number {
+  const handed = handedToday(state, at);
+  const lot = lotsOf(state, dayOf(at)).find((l) => l.item === item && !handed.includes(l.kind));
+  return lot ? Math.min(lot.count, countOf(state, item)) : 0;
+}
+
+/** The pedlar's want of an item today, in a sentence (session 226), said before selling it, or null. */
+export function pedlarWants(state: State, at: number, item: string): string | null {
+  const handed = handedToday(state, at);
+  const lot = lotsOf(state, dayOf(at)).find((l) => l.item === item && !handed.includes(l.kind));
+  return lot ? t('pedlar.wantsThese', { count: fmt.int(lot.count) }) : null;
 }

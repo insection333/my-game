@@ -2,7 +2,7 @@
 // lots kept from the vendor until then.
 import { FEATURES } from '@idle-clash/features';
 import type { State } from '@idle-clash/kernel';
-import { lotsOf } from '../../../packages/features/src/pedlar/lots.ts';
+import { lotsOf } from '../../../packages/features/src/shared/pedlar-lots.ts';
 import { dayOf } from '../../../packages/features/src/pedlar/rules.ts';
 
 /** The items the day's lots want, kept from the vendor. */

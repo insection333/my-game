@@ -147,11 +147,12 @@ export const PAIRINGS: Steps = [
   [5, 'elite'],
   [15, 'master'],
 ];
-/** Companions gathered (session 179): three, seven, and all fourteen. */
+/** Companions gathered (session 179): three, seven, and all of them (seventeen since session 210's bosses; a
+ *  test holds the last to every companion, session 226). */
 export const COMPANIONS_GATHERED: Steps = [
   [3, 'hard'],
   [7, 'elite'],
-  [14, 'master'],
+  [17, 'master'],
 ];
 /** The weeks' contracts kept (session 172): the steps, the 26th opening the Steadfast in the year's middle. */
 export const WEEKS: Steps = [

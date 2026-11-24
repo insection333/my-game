@@ -119,6 +119,7 @@ function Card({ p }: { p: Profile }) {
           {c.defeats > 0 && <Stat label={t('profile.defeats')} value={fmt.int(c.defeats)} />}
           {c.bossWins > 0 && <Stat label={t('profile.bossWins')} value={fmt.int(c.bossWins)} />}
           {c.runs > 0 && <Stat label={t('profile.runs')} value={fmt.int(c.runs)} />}
+          {c.deepest > 0 && <Stat label={t('profile.deepest')} value={fmt.int(c.deepest)} />}
         </dl>
       </section>
       {p.places.length > 0 && (
@@ -143,6 +144,7 @@ function Card({ p }: { p: Profile }) {
             <Stat label={t('profile.rating')} value={fmt.int(p.castle.rating)} />
             <Stat label={t('profile.fortresses')} value={fmt.int(p.castle.fortresses)} />
             <Stat label={t('profile.routs')} value={fmt.int(p.castle.routs)} />
+            {p.castle.legends > 0 && <Stat label={t('profile.legends')} value={fmt.int(p.castle.legends)} />}
           </dl>
           <div className={s.records}>
             <Record label={t('profile.sieges')} won={p.castle.siegesWon} lost={p.castle.siegesLost} />

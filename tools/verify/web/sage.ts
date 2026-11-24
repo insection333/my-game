@@ -6,7 +6,7 @@
 // Hearth leads with the chamber standing open. The pages of year two were checked only as a year-in
 // player saw them, where nothing of the second year had begun.
 import { XP_TABLE } from '@idle-clash/content';
-import { allSkills, kindlingData } from '@idle-clash/features';
+import { allSkills, FEATURES, findOf, items, kindlingData } from '@idle-clash/features';
 import { seeded, type Command, type State } from '@idle-clash/kernel';
 import type { Ctx } from '../../../apps/server/src/context.ts';
 import { keeper } from './elder.ts';
@@ -58,8 +58,12 @@ function grown(ctx: Ctx, base: State, now: number): State {
   const paths = Object.fromEntries(allSkills().map((k) => [k, STYLES.includes(k) ? 'lore' : 'bounty']));
   const expeditions = s.features.expeditions as Record<string, unknown>;
   const deep = withDeep(s, 31, now).features.expeditions as { deep: Record<string, unknown> };
+  // Two years have found every Uncommon and Rare find there is (the recap told the last tier's as first finds).
+  const finds = items.catalog(FEATURES).filter((i) => ['uncommon', 'rare'].includes(findOf(i.id)?.rarity ?? ''));
+  const found = Object.fromEntries(finds.map((f, i) => [f.id, now - (700 - i) * 86_400_000]));
   return {
     ...s,
+    found: { ...s.found, ...found },
     skills,
     items: {
       ...s.items,

@@ -18,3 +18,11 @@ const EMPTY: PedlarState = { day: null, handed: [], favour: 0 };
 
 export const pedlarOf: (state: State) => PedlarState = partReader('pedlar', PedlarState, EMPTY);
 export const favourOf = (state: State): number => pedlarOf(state).favour;
+
+export const dayOf = (at: number): string => new Date(at).toISOString().slice(0, 10);
+
+/** The lots handed in today. */
+export const handedToday = (state: State, at: number): ('find' | 'material' | 'dish')[] => {
+  const p = pedlarOf(state);
+  return p.day === dayOf(at) ? p.handed : [];
+};

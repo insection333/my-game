@@ -6,7 +6,7 @@ import { newState, type State } from '@idle-clash/kernel';
 import { describe, expect, it } from 'vitest';
 import { itemOf } from '../src/shared/catalog.ts';
 import { favourOf } from '../src/shared/pedlar.ts';
-import { lotsOf } from '../src/pedlar/lots.ts';
+import { lotsOf } from '../src/shared/pedlar-lots.ts';
 import { dayOf, handIn } from '../src/pedlar/rules.ts';
 import { pedlarErrands } from '../src/pedlar/view.ts';
 import { FEATURES } from '../src/registry.ts';

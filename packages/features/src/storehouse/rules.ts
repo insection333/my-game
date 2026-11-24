@@ -5,6 +5,7 @@ import { findOf, itemOf } from '../shared/catalog.ts';
 import { spentFind } from './finds.ts';
 import { FOODS, HITPOINTS } from '../shared/combat/data.ts';
 import { combatOf } from '../shared/combat/state.ts';
+import { pedlarKeeps } from '../shared/pedlar-lots.ts';
 import { skillLevel } from '../shared/skill.ts';
 import { ENLARGE_COSTS, noRoom, storeOf } from '../shared/storehouse.ts';
 
@@ -33,22 +34,26 @@ export function sell(state: State, item: string, count: number): { state: State;
 }
 
 /** The finds kept to sell (session 187): every Uncommon find held, none used anywhere (a test holds it), and
- *  every Rare find with no use left (session 192), so selling them all loses nothing but their spaces. */
-export const keptToSell = (state: State): string[] =>
-  Object.keys(state.items).filter(
-    (id) => (findOf(id)?.rarity === 'uncommon' || spentFind(state, id)) && priceOf(id) > 0 && countOf(state, id) > 0,
-  );
+ *  every Rare find with no use left (session 192), so selling them all loses nothing but their spaces. The
+ *  pedlar's find of the day is kept back, three of it, until handed in (session 226). */
+export function findsToSell(state: State, at: number): { item: string; count: number }[] {
+  return Object.keys(state.items)
+    .filter((id) => (findOf(id)?.rarity === 'uncommon' || spentFind(state, id)) && priceOf(id) > 0)
+    .map((item) => ({ item, count: countOf(state, item) - pedlarKeeps(state, at, item) }))
+    .filter((x) => x.count > 0);
+}
 
-/** Sells every find kept to sell, all of each, at the vendor's price. */
-export function sellFinds(state: State): { state: State; result: SellFindsResult } {
-  const held = keptToSell(state);
+export const keptToSell = (state: State, at: number): string[] => findsToSell(state, at).map((x) => x.item);
+
+/** Sells every find kept to sell, all of each but the pedlar's, at the vendor's price. */
+export function sellFinds(state: State, at: number): { state: State; result: SellFindsResult } {
+  const held = findsToSell(state, at);
   if (!held.length) return { state, result: { ok: false, reason: { code: 'nothingToSell' } } };
   const next = structuredClone(state);
   let gold = 0;
-  for (const id of held) {
-    const n = countOf(state, id);
-    take(next, id, n);
-    gold += priceOf(id) * n;
+  for (const { item, count } of held) {
+    take(next, item, count);
+    gold += priceOf(item) * count;
   }
   give(next, 'gold', gold);
   return { state: next, result: { ok: true, gold, kinds: held.length } };

@@ -62,7 +62,12 @@ function xpTask(state: State, p: Pace, now: number): WeekTask {
 export function candidates(state: State, now: number): WeekTask[] {
   const list = paces(state);
   const skills = [...new Set(list.map((p) => p.skill))].filter((s) => xpOf(state, s) > 0 && s !== 'hitpoints');
-  const working = new Set(Object.values(state.lanes).flatMap((l) => (l.current ? [l.current.action.feature] : [])));
+  // A Combat lane on a run, a boss or the Deep trains the style as a foe does (session 226).
+  const working = new Set(
+    Object.values(state.lanes).flatMap((l) =>
+      l.current ? [l.current.action.feature === 'expeditions' ? 'combat' : l.current.action.feature] : [],
+    ),
+  );
   const best = skills.flatMap((s) => bestIn(list, s) ?? []);
   best.sort((a, b) => Number(working.has(b.action.feature)) - Number(working.has(a.action.feature)));
   const xp = best.map((p) => xpTask(state, p, now));
