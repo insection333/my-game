@@ -121,13 +121,6 @@ export function views(): View[] {
   const isConsole = (path: string) => path === '/admin' || path.startsWith('/admin/');
   const newcomer = map.views.filter((v) => !isConsole(v.path));
   const staff: ViewSpec[] = map.views.filter((v) => isConsole(v.path)).map((v) => ({ ...v, as: 'staff' as const }));
-  const gate: ViewSpec = {
-    page: 'Admin',
-    path: '/admin',
-    phone: ['console.signIn'],
-    desktop: ['console.signIn'],
-    as: 'visitor',
-  };
   return [...newcomer, ...sheets, ...veteran, ...elders, ...keepers, ...sages, ...squires, ...visitor, ...staff].map(
     (v) => ({
       ...v,
