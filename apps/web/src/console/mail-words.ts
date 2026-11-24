@@ -1,5 +1,5 @@
 // The mail monitor's letters, read (session 78): who an action falls on, and when the letter was sent.
-import { whenOf } from './days.ts';
+import { whenOf } from '../pages/days.ts';
 
 /** The player a letter's Warn and Mute fall on: its sender, or none for the realm's own warnings. */
 export const letterSender = (m: { from: string }): string | null => m.from || null;

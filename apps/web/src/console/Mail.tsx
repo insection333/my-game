@@ -12,7 +12,7 @@ import { handled } from '../game/session.ts';
 import { navigate, useLocation } from '../router.ts';
 import { Slot } from '../slots.tsx';
 import s from './admin.module.css';
-import { letterSender, letterWhen } from './admin-mail-words.ts';
+import { letterSender, letterWhen } from './mail-words.ts';
 
 const VIEWS = ['sent', 'flagged', 'refused', 'watch'] as const;
 type View = (typeof VIEWS)[number];
@@ -51,7 +51,7 @@ const viewHref = (v: View) => {
   return url.pathname + url.search;
 };
 
-export function AdminMail() {
+export function MailMonitor() {
   useLocation();
   const asks = new URLSearchParams(location.search).get('mail');
   const view: View = VIEWS.find((v) => v === asks) ?? 'sent';

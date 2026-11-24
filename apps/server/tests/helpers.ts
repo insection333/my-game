@@ -57,6 +57,7 @@ export async function server(
     log: false,
     now: () => clock.now,
     adminNames: [],
+    staff: { name: 'Admin', password: null },
     backupStatusDir: null,
     readsPerMinute: 120,
     pagesPerMinute: 20,

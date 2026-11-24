@@ -22,6 +22,9 @@ export interface Config {
   now: () => number;
   /** Players who may open the admin page, by name (any case). */
   adminNames: string[];
+  /** The admin console's own account (session 227): its name, and its password from a secret (never in the
+   *  repository). With no password set, there is no such account. */
+  staff: { name: string; password: string | null };
   /** Reads of the game, notices and hiscores a player may make in a minute (READS_PER_MINUTE). */
   readsPerMinute: number;
   /** New live pages one address may open in a minute (PAGES_PER_MINUTE). */
@@ -47,6 +50,14 @@ const pace = (value: string | undefined, fallback: number) => {
   return value !== undefined && Number.isSafeInteger(n) && n >= 1 ? n : fallback;
 };
 
+/** The console account's password: as written, or base64 as the deploy writes it (no character of it then
+ *  read by the settings file as anything but itself); null when neither is set. */
+export function consolePassword(env: NodeJS.ProcessEnv): string | null {
+  if (env.ADMIN_ACCOUNT_PASSWORD) return env.ADMIN_ACCOUNT_PASSWORD;
+  const b64 = env.ADMIN_ACCOUNT_PASSWORD_B64?.trim();
+  return b64 ? Buffer.from(b64, 'base64').toString('utf8') || null : null;
+}
+
 export function configFromEnv(env: NodeJS.ProcessEnv = process.env): Config {
   return {
     port: Number(env.PORT ?? 3000),
@@ -65,6 +76,7 @@ export function configFromEnv(env: NodeJS.ProcessEnv = process.env): Config {
       .split(',')
       .map((s) => s.trim())
       .filter(Boolean),
+    staff: { name: env.ADMIN_ACCOUNT_NAME?.trim() || 'Admin', password: consolePassword(env) },
     backupStatusDir: env.BACKUP_STATUS_DIR ?? null,
     readsPerMinute: pace(env.READS_PER_MINUTE, 120),
     pagesPerMinute: pace(env.PAGES_PER_MINUTE, 20),

@@ -11,6 +11,7 @@ import { contractRoute, fail } from '../http.ts';
 import { nameAllowed } from './names.ts';
 import { checkPassword, dummyHash, hashPassword } from './passwords.ts';
 import { SESSION_COOKIE, SESSION_DAYS, tokenHash } from './sessions.ts';
+import { STAFF_HOURS } from './staff.ts';
 
 const MIN = 60_000;
 const HOUR = 60 * MIN;
@@ -19,11 +20,16 @@ const HOUR = 60 * MIN;
 export function identify(ctx: Ctx) {
   return (req: FastifyRequest): void => {
     req.playerId = null;
+    req.staff = false;
     const token = req.cookies[SESSION_COOKIE];
     if (!token) return;
     const id = ctx.sessions.find(token, ctx.config.now());
     if (!id) return;
-    const row = ctx.db.select({ bannedAt: players.bannedAt }).from(players).where(eq(players.id, id)).get();
+    const row = ctx.db
+      .select({ bannedAt: players.bannedAt, role: players.role })
+      .from(players)
+      .where(eq(players.id, id))
+      .get();
     if (!row) return;
     if (row.bannedAt) {
       ctx.sessions.end(token);
@@ -34,24 +40,37 @@ export function identify(ctx: Ctx) {
     const shown = req.headers['x-player'] ?? (req.query as { player?: unknown } | undefined)?.player;
     if (typeof shown === 'string' && shown && shown !== id) throw fail(409, 'otherPlayer');
     req.playerId = id;
+    req.staff = row.role === 'staff';
   };
 }
 
 /** Whether a name is on the server's admin list. */
 export const isAdmin = (ctx: Ctx, name: string) => ctx.config.adminNames.some((n) => nameKey(n) === nameKey(name));
 
-/** A signed-in player on the admin list; anyone else is refused. */
+/** The console's own account, or a signed-in player on the admin list; anyone else is refused. */
 export const requireAdmin = (ctx: Ctx) => {
   const who = identify(ctx);
   return (req: FastifyRequest): void => {
     who(req);
     if (!req.playerId) throw fail(401, 'notSignedIn');
+    if (req.staff) return;
     const row = ctx.db.select({ name: players.name }).from(players).where(eq(players.id, req.playerId)).get();
     if (!row || !isAdmin(ctx, row.name)) throw fail(403, 'notAdmin');
   };
 };
 
+/** A signed-in player. The console's own account is refused (session 227): it never plays. */
 export const requirePlayer = (ctx: Ctx) => {
+  const who = identify(ctx);
+  return (req: FastifyRequest): void => {
+    who(req);
+    if (!req.playerId) throw fail(401, 'notSignedIn');
+    if (req.staff) throw fail(403, 'staffAccount');
+  };
+};
+
+/** Anyone signed in, the console's account too (signing out). */
+export const requireSignedIn = (ctx: Ctx) => {
   const who = identify(ctx);
   return (req: FastifyRequest): void => {
     who(req);
@@ -59,20 +78,21 @@ export const requirePlayer = (ctx: Ctx) => {
   };
 };
 
-function startSession(ctx: Ctx, reply: FastifyReply, playerId: string) {
-  keepCookie(ctx, reply, ctx.sessions.create(playerId, ctx.config.now()));
+function startSession(ctx: Ctx, reply: FastifyReply, playerId: string, staff = false) {
+  const lasts = (staff ? STAFF_HOURS * HOUR : SESSION_DAYS * 24 * HOUR) / 1000;
+  keepCookie(ctx, reply, ctx.sessions.create(playerId, ctx.config.now(), lasts * 1000), lasts);
 }
 
 /** Gives the browser the session's cookie for another SESSION_DAYS. Sent at sign-in and again whenever the
  *  game is opened (session 157): the server renews a session as it is used, but a cookie given its days
  *  only at sign-in was dropped by the browser on day 30 however often the player came back. */
-export function keepCookie(ctx: Ctx, reply: FastifyReply, token: string) {
+export function keepCookie(ctx: Ctx, reply: FastifyReply, token: string, seconds = SESSION_DAYS * 86_400) {
   reply.setCookie(SESSION_COOKIE, token, {
     httpOnly: true,
     sameSite: 'lax',
     secure: ctx.config.secureCookies,
     path: '/',
-    maxAge: SESSION_DAYS * 86_400,
+    maxAge: seconds,
   });
 }
 
@@ -137,7 +157,7 @@ export function authRoutes(app: FastifyInstance, ctx: Ctx): void {
     const ok = await checkPassword(row?.passwordHash ?? (await dummyHash()), input.password);
     if (!row || !ok) throw fail(401, 'wrongNameOrPassword');
     if (row.bannedAt) throw fail(403, 'banned');
-    startSession(ctx, reply, row.id);
+    startSession(ctx, reply, row.id, row.role === 'staff');
     ctx.telemetry.record('signIn', row.id);
     return { player: view(row) } satisfies AuthResponse;
   });
@@ -153,7 +173,7 @@ export function authRoutes(app: FastifyInstance, ctx: Ctx): void {
       reply.clearCookie(SESSION_COOKIE, { path: '/' });
       return reply.code(204).send();
     },
-    requirePlayer(ctx),
+    requireSignedIn(ctx),
   );
 
   contractRoute(
@@ -161,12 +181,15 @@ export function authRoutes(app: FastifyInstance, ctx: Ctx): void {
     ROUTES.me,
     ({ req, reply }) => {
       const row = req.playerId ? ctx.db.select().from(players).where(eq(players.id, req.playerId)).get() : undefined;
-      if (row) keepCookie(ctx, reply, req.cookies[SESSION_COOKIE]!);
+      // The console's session keeps the hours it was given at sign-in (session 227).
+      if (row && row.role !== 'staff') keepCookie(ctx, reply, req.cookies[SESSION_COOKIE]!);
+      const staff = row?.role === 'staff';
       return {
         player: row ? view(row) : null,
         flags: ctx.config.flags,
         email: { enabled: ctx.config.emailEnabled },
-        admin: row ? isAdmin(ctx, row.name) : false,
+        admin: row ? staff || isAdmin(ctx, row.name) : false,
+        staff,
       } satisfies MeResponse;
     },
     identify(ctx),

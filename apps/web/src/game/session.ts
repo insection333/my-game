@@ -10,7 +10,8 @@ import { replace } from '../router.ts';
 import { notePlayed } from '../welcome-path.ts';
 import type * as Store from './store.ts';
 
-export type Phase = 'loading' | 'signedOut' | 'playing' | 'offline';
+/** `console`: the admin console's own account (session 227), which never loads the game. */
+export type Phase = 'loading' | 'signedOut' | 'playing' | 'offline' | 'console';
 export type Bounced = 'banned' | 'deleted' | 'ended';
 export interface Session {
   phase: Phase;
@@ -21,12 +22,22 @@ export interface Session {
   email: boolean;
   /** Whether this player may open the admin page. */
   admin: boolean;
+  /** Whether this is the admin console's own account, which never plays (session 227). */
+  staff: boolean;
   /** Why the session ended, for the welcome page to say: a ban (session 95), or the account deleted
    *  (session 96). */
   bounced: Bounced | null;
 }
 
-let session: Session = { phase: 'loading', player: null, flags: {}, email: false, admin: false, bounced: null };
+let session: Session = {
+  phase: 'loading',
+  player: null,
+  flags: {},
+  email: false,
+  admin: false,
+  staff: false,
+  bounced: null,
+};
 const listeners = new Set<() => void>();
 
 function setSession(next: Partial<Session>) {
@@ -52,7 +63,7 @@ export function signedOut(why: Bounced | null = null) {
   void game?.then((m) => m.stop());
   keepFor(null);
   showPlayer(null);
-  setSession({ phase: 'signedOut', player: null, admin: false, bounced: why });
+  setSession({ phase: 'signedOut', player: null, admin: false, staff: false, bounced: why });
 }
 
 /** Why the welcome page is shown: a ban; or a session that ended in the middle of play (session 157: the
@@ -69,6 +80,14 @@ export function handled(err: unknown): err is ApiError {
   return false;
 }
 
+/** The console's own account: the console, and never the game (session 227). */
+function enterConsole(player: PlayerView) {
+  keepFor(player.id);
+  showPlayer(player.id);
+  setSession({ phase: 'console', player, admin: true, staff: true, bounced: null });
+  if (!location.pathname.startsWith('/admin')) replace('/admin');
+}
+
 async function enter(player: PlayerView) {
   keepFor(player.id);
   showPlayer(player.id);
@@ -82,8 +101,9 @@ async function enter(player: PlayerView) {
 export async function boot(): Promise<void> {
   try {
     const me = await api.me();
-    setSession({ flags: me.flags, email: me.email.enabled, admin: me.admin });
-    if (me.player) await enter(me.player);
+    setSession({ flags: me.flags, email: me.email.enabled, admin: me.admin, staff: me.staff });
+    if (me.player && me.staff) enterConsole(me.player);
+    else if (me.player) await enter(me.player);
     else setSession({ phase: 'signedOut' });
   } catch (err) {
     if (!handled(err)) setSession({ phase: 'offline' });
@@ -93,12 +113,12 @@ export async function boot(): Promise<void> {
 export const account = {
   signUp: async (name: string, password: string) => enter((await api.signUp(name, password)).player),
   signIn: async (name: string, password: string) => {
-    await enter((await api.signIn(name, password)).player);
-    // Whether the page offers the admin page is the server's to say.
-    void api.me().then(
-      (me) => setSession({ admin: me.admin }),
-      () => undefined,
-    );
+    const { player } = await api.signIn(name, password);
+    // Whether the page offers the admin page, or is the console's own account, is the server's to say.
+    const me = await api.me().catch(() => null);
+    if (me?.staff) return enterConsole(player);
+    await enter(player);
+    if (me) setSession({ admin: me.admin });
   },
   /** Deletes the account and everything with it, then opens the welcome page. */
   deleteAccount: async (password: string) => {
@@ -113,7 +133,8 @@ export const account = {
     // 182): left on, a browser signed out went on showing the player's notices.
     await pushOff().catch(() => undefined);
     await api.signOut().catch(() => undefined);
-    replace('/welcome/sign-in');
+    // The console's account goes back to the console's own sign-in (session 227).
+    replace(session.staff ? '/admin' : '/welcome/sign-in');
     signedOut();
   },
 };

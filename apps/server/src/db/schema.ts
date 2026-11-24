@@ -27,6 +27,11 @@ export const players = sqliteTable(
      *  action, and when an action came half an hour or more after it. */
     firstActAt: integer('first_act_at'),
     listedAt: integer('listed_at'),
+    /** 'player', or 'staff' for the admin console's own account (session 227): it signs in, never plays,
+     *  and stands in no count of players. */
+    role: text('role', { enum: ['player', 'staff'] })
+      .notNull()
+      .default('player'),
   },
   (t) => [index('players_email').on(t.email), index('players_look').on(t.nameLook)],
 );

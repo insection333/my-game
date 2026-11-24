@@ -12,7 +12,7 @@ const files = (dir: string): string[] =>
     e.isDirectory() ? files(join(dir, e.name)) : /\.tsx?$/.test(e.name) ? [join(dir, e.name)] : [],
   );
 /** Text that leaves the game, where a day needs its year. */
-const LEAVES = new Set(['pages/feedback-copy.ts']);
+const LEAVES = new Set(['console/feedback-copy.ts']);
 
 describe('days on the pages', () => {
   it('say no year this year', () => {

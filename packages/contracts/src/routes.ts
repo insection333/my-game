@@ -219,6 +219,8 @@ export interface MeResponse {
   email: { enabled: boolean };
   /** Whether this player may open the admin page. */
   admin: boolean;
+  /** Whether this is the admin console's own account (session 227), which never plays. */
+  staff: boolean;
 }
 /** A fire burning this many hours in a day is flagged on the admin page: people sleep (session 156). */
 export const FIRE_WATCH_HOURS = 20;
@@ -328,6 +330,8 @@ export const ErrorCode = z.enum([
   'notAdmin',
   // A page of one player under another's session in the same browser (session 208): it loads afresh.
   'otherPlayer',
+  // The admin console's own account, which never plays (session 227).
+  'staffAccount',
   'serverError',
 ]);
 export type ErrorCode = z.infer<typeof ErrorCode>;

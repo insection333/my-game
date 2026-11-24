@@ -8,7 +8,7 @@ import { Skill } from './pages/Skill.tsx';
 import { Skills } from './pages/Skills.tsx';
 import { Combat } from './pages/Combat.tsx';
 import { Expeditions, EXPEDITIONS_PATH } from './pages/Expeditions.tsx';
-import { Admin } from './pages/Admin.tsx';
+import Console from './console/Console.tsx';
 import { Hiscores } from './pages/Hiscores.tsx';
 import { Castle, castleTab } from './pages/castle/Castle.tsx';
 import { Deeds, DEEDS_PATH } from './pages/Deeds.tsx';
@@ -29,11 +29,17 @@ function Page({ path }: { path: string }) {
   if (path === DEEDS_PATH) return <Deeds />;
   const legal = legalPage(path);
   if (legal) return <Legal page={legal} />;
-  if (path === '/admin') return <Admin />;
   return <NotFound />;
 }
 
 export default function Game({ path }: { path: string }) {
+  // The admin console stands outside the game's shell (session 227), for a player on the admin list too.
+  if (path === '/admin' || path.startsWith('/admin/'))
+    return (
+      <Fault bare>
+        <Console path={path} />
+      </Fault>
+    );
   return (
     <Fault bare>
       <Shell>

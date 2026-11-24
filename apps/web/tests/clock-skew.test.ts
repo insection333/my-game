@@ -5,7 +5,7 @@
 import { fmt } from '@idle-clash/content';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { setServerTime } from '../src/game/clock.ts';
-import { letterWhen } from '../src/pages/admin-mail-words.ts';
+import { letterWhen } from '../src/console/mail-words.ts';
 import { dayOf, whenOf } from '../src/pages/days.ts';
 
 const SERVER = Date.UTC(2026, 10, 20, 12);

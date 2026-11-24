@@ -1,0 +1,264 @@
+/* The admin console's frame (session 227): a bar across the top, the sections, and the page. On a phone the
+   sections stand as a grid of links under the bar; from 1,024 px they are a rail down the left in the lodge's
+   night, as the game's own rail is (session 131), with gold leaf for the section open. The page scrolls as a
+   document. Sizes in rem, so larger text gives up room as a narrower screen would (session 199). */
+
+.console {
+  min-height: 100dvh;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto auto minmax(0, 1fr);
+  grid-template-areas: 'bar' 'nav' 'main';
+  background: var(--bg);
+}
+
+.skip {
+  position: absolute;
+  left: var(--s-2);
+  top: -100px;
+  z-index: 30;
+  padding: var(--s-2) var(--s-3);
+  background: var(--surface);
+  border-radius: var(--r-control);
+}
+
+.skip:focus {
+  top: var(--s-2);
+}
+
+.bar {
+  grid-area: bar;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  container: bar / inline-size;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-2);
+  min-height: var(--header-h);
+  padding: env(safe-area-inset-top, 0px) max(var(--s-2), env(safe-area-inset-right, 0px)) 0
+    max(var(--gutter), env(safe-area-inset-left, 0px));
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-width: 0;
+}
+
+.brandName {
+  font: 500 1.25rem / 1 var(--font-book);
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.brandRole {
+  padding-left: var(--s-2);
+  border-left: 1px solid var(--line-strong);
+  font: 600 var(--t-small) / 1.2 var(--font-ui);
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+
+.who {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-3);
+  min-width: 0;
+}
+
+.whoName {
+  font-size: var(--t-small);
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+
+/* A narrow bar keeps the mark, the console's name and the one button. */
+@container bar (max-width: 40rem) {
+  .whoName {
+    display: none;
+  }
+}
+
+@container bar (max-width: 22rem) {
+  .brandName {
+    display: none;
+  }
+
+  .brandRole {
+    padding-left: 0;
+    border-left: 0;
+  }
+}
+
+.nav {
+  grid-area: nav;
+  padding: var(--s-2) max(var(--gutter), env(safe-area-inset-right, 0px)) var(--s-2)
+    max(var(--gutter), env(safe-area-inset-left, 0px));
+  border-bottom: 1px solid var(--line);
+}
+
+.nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 7.5rem), 1fr));
+  gap: var(--s-1);
+}
+
+.navLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--tap);
+  padding: 0 var(--s-2);
+  border: 1px solid var(--line);
+  border-radius: var(--r-control);
+  background: var(--surface);
+  color: var(--ink-2);
+  font: 600 var(--t-body) / 1.2 var(--font-ui);
+  text-align: center;
+  text-decoration: none;
+}
+
+.navLink:hover {
+  color: var(--ink);
+}
+
+.navLink[aria-current='page'] {
+  color: var(--ink);
+  border-color: var(--moss);
+  background: var(--moss-soft);
+}
+
+.navLink:focus-visible {
+  outline: 2px solid var(--woad);
+  outline-offset: 2px;
+}
+
+.main {
+  grid-area: main;
+  min-width: 0;
+  outline: none;
+}
+
+.content {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: var(--s-3) max(var(--gutter), env(safe-area-inset-right, 0px))
+    max(var(--s-6), env(safe-area-inset-bottom, 0px)) max(var(--gutter), env(safe-area-inset-left, 0px));
+  container: main / inline-size;
+}
+
+/* From 768 px the bar is drawn in the lodge's night. */
+@media (min-width: 768px) {
+  .bar {
+    background: linear-gradient(180deg, var(--chrome-bg-2), var(--chrome-bg));
+    border-bottom-color: var(--chrome-line);
+    box-shadow: 0 6px 16px -10px rgb(0 0 0 / 0.55);
+  }
+}
+
+/* From 1,024 px the sections are a rail down the left, the full height of the screen. */
+@media (min-width: 1024px) {
+  .console {
+    grid-template-columns: 15rem minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-areas: 'bar bar' 'nav main';
+  }
+
+  .nav {
+    position: sticky;
+    top: var(--header-h);
+    align-self: start;
+    height: calc(100dvh - var(--header-h));
+    overflow-y: auto;
+    padding: var(--s-4) var(--s-2) var(--s-4) max(var(--s-2), env(safe-area-inset-left, 0px));
+    border-bottom: 0;
+    border-right: 1px solid var(--chrome-line);
+    background: linear-gradient(180deg, var(--chrome-bg), var(--chrome-bg-2));
+  }
+
+  .nav ul {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px;
+  }
+
+  .navLink {
+    justify-content: flex-start;
+    padding: 0 var(--s-3);
+    border: 0;
+    background: transparent;
+    text-align: start;
+    transition:
+      background-color 120ms ease,
+      color 120ms ease;
+  }
+
+  .navLink:hover {
+    background: rgb(255 255 255 / 0.05);
+  }
+
+  .navLink[aria-current='page'] {
+    color: var(--gold-leaf);
+    background: linear-gradient(90deg, rgb(217 178 90 / 0.16), rgb(217 178 90 / 0.03));
+    box-shadow: inset 3px 0 0 var(--gold-leaf);
+  }
+}
+
+/* The sign-in: a card on the lodge's night. */
+.gate {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: max(var(--s-4), env(safe-area-inset-top, 0px)) max(var(--gutter), env(safe-area-inset-right, 0px))
+    max(var(--s-4), env(safe-area-inset-bottom, 0px)) max(var(--gutter), env(safe-area-inset-left, 0px));
+  background: radial-gradient(120% 80% at 50% 0%, var(--chrome-bg-2), var(--chrome-bg));
+}
+
+.gateCard {
+  width: min(100%, 26rem);
+  display: grid;
+  gap: var(--s-3);
+  padding: var(--s-5) var(--s-4);
+  border: 1px solid var(--line);
+  border-radius: var(--r-panel);
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: var(--raise);
+}
+
+.gateMark {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+
+.gateGame {
+  margin: 0;
+  font: 600 var(--t-small) / 1.2 var(--font-ui);
+  color: var(--ink-2);
+}
+
+.gateTitle {
+  margin: 0;
+  font: 500 1.5rem / 1.15 var(--font-book);
+}
+
+.gateLead {
+  margin: 0;
+  color: var(--ink-2);
+}
+
+.gateError {
+  margin: 0;
+  padding: var(--s-2) var(--s-3);
+  border-radius: var(--r-control);
+  background: var(--alert-soft);
+  color: var(--ink);
+}

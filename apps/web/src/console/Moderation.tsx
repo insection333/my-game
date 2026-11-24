@@ -1,10 +1,10 @@
-// Bad actors on the admin page (session 39), under the player search: the players reported, those reported
+// The console's Moderation section (bad actors, session 39): the players reported, those reported
 // by players who have played a while first, each with Open (to rename or ban them, which settles their
 // reports) and Dismiss; and sieges between lords summed by pair over 30 days, most gold first, so gold
 // flowing one way between two accounts shows. Each list scrolls in its own box.
 import type { AdminReportsResponse, AdminSiegeFlowsResponse } from '@idle-clash/contracts';
 import { fmt, t } from '@idle-clash/content';
-import { dayOf } from './days.ts';
+import { dayOf } from '../pages/days.ts';
 import { ActionRow, Button, Panel, Pill } from '@idle-clash/ui';
 import { useEffect, useState } from 'react';
 import { api } from '../api.ts';
@@ -12,15 +12,15 @@ import { handled } from '../game/session.ts';
 import { Slot } from '../slots.tsx';
 import s from './admin.module.css';
 
-/** `open`: opens a player in the panel beside; `version` changes when an action there may settle reports. */
-export function AdminModeration({ open, version }: { open: (id: string) => void; version: number }) {
+/** `open`: opens a player in the Players section, where renaming or banning them settles their reports. */
+export function Moderation({ open }: { open: (id: string) => void }) {
   const [reports, setReports] = useState<AdminReportsResponse | null>(null);
   const [flows, setFlows] = useState<AdminSiegeFlowsResponse | null>(null);
   const load = () => {
     api.admin.reports().then(setReports, (err: unknown) => void handled(err));
     api.admin.siegeFlows().then(setFlows, (err: unknown) => void handled(err));
   };
-  useEffect(load, [version]);
+  useEffect(load, []);
   const dismiss = (id: string) => api.admin.settleReports(id).then(load, (err: unknown) => void handled(err));
   return (
     <Slot id="admin.moderation" className={s.test}>

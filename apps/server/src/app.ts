@@ -10,6 +10,7 @@ import { emailRoutes } from './auth/email.ts';
 import { LogMailer, type Mailer } from './auth/mailer.ts';
 import { authRoutes, identify } from './auth/routes.ts';
 import { Sessions } from './auth/sessions.ts';
+import { ensureStaff } from './auth/staff.ts';
 import type { Config } from './config.ts';
 import type { Ctx } from './context.ts';
 import { ipOf, limit } from './context.ts';
@@ -112,6 +113,10 @@ export async function buildApp(
     ctx.notices.add(playerId, events);
   };
   app.decorateRequest('playerId', null);
+  app.decorateRequest('staff', false);
+  // The admin console's own account, from the server's secret (session 227).
+  const staff = await ensureStaff(ctx);
+  if (staff === 'nameHeld') app.log.warn({ name: config.staff.name }, 'the console account name is held by a player');
   harden(app, config.origins);
   if (config.webDist) tellBuild(app, config.webDist);
   await app.register(cookie);

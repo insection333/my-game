@@ -3,7 +3,7 @@
 import { t } from '@idle-clash/content';
 import { Button } from '@idle-clash/ui';
 import { useEffect, useRef, useState } from 'react';
-import s from './admin.module.css';
+import s from '../console/admin.module.css';
 
 export function CopyButton({ text, label }: { text: () => string; label: string }) {
   const [state, setState] = useState<'idle' | 'copied' | 'manual'>('idle');

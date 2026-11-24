@@ -116,9 +116,30 @@ export function views(): View[] {
   const visitor: ViewSpec[] = map.views
     .filter((v) => v.path === '/privacy' || v.path === '/terms')
     .map((v) => ({ ...v, as: 'visitor' as const }));
-  // The admin page is the admin's: a newcomer gets the page that does not exist.
-  const newcomer = map.views.filter((v) => v.path !== '/admin');
-  return [...newcomer, ...sheets, ...veteran, ...elders, ...keepers, ...sages, ...squires, ...visitor].map((v) => ({
+  // The admin console is the admins': a newcomer gets the page that does not exist. The console's own
+  // account sees every section, and a visitor at /admin its sign-in (session 227).
+  const isConsole = (path: string) => path === '/admin' || path.startsWith('/admin/');
+  const newcomer = map.views.filter((v) => !isConsole(v.path));
+  const staff: ViewSpec[] = map.views.filter((v) => isConsole(v.path)).map((v) => ({ ...v, as: 'staff' as const }));
+  const gate: ViewSpec = {
+    page: 'Admin',
+    path: '/admin',
+    phone: ['console.signIn'],
+    desktop: ['console.signIn'],
+    as: 'visitor',
+  };
+  return [
+    ...newcomer,
+    ...sheets,
+    ...veteran,
+    ...elders,
+    ...keepers,
+    ...sages,
+    ...squires,
+    ...visitor,
+    ...staff,
+    gate,
+  ].map((v) => ({
     ...v,
     name: (v.as ? `${v.as}-` : '') + (v.path.replace(/^\//, '').replace(/[^a-z0-9]+/gi, '-') || 'hearth'),
   }));

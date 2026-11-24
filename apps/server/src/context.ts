@@ -40,6 +40,8 @@ export interface Ctx {
 declare module 'fastify' {
   interface FastifyRequest {
     playerId: string | null;
+    /** Whether the signed-in account is the admin console's own (session 227). */
+    staff: boolean;
   }
 }
 

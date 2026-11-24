@@ -21,7 +21,7 @@ export class Sessions {
   }
 
   /** A new session; past the limit, the player's least recently used sessions end. */
-  create(playerId: string, now: number): string {
+  create(playerId: string, now: number, lastsMs = SESSION_DAYS * DAY): string {
     const token = newToken();
     this.db
       .insert(sessions)
@@ -29,7 +29,7 @@ export class Sessions {
         tokenHash: tokenHash(token),
         playerId,
         createdAt: now,
-        expiresAt: now + SESSION_DAYS * DAY,
+        expiresAt: now + lastsMs,
         lastSeenAt: now,
       })
       .run();
@@ -63,7 +63,8 @@ export class Sessions {
       .where(and(eq(sessions.tokenHash, tokenHash(token)), gt(sessions.expiresAt, now)))
       .get();
     if (!row) return null;
-    if (now - row.lastSeenAt > DAY) {
+    // Renewed as it is used; a session made shorter than a day (the console's, session 227) never is.
+    if (now - row.lastSeenAt > DAY && row.expiresAt - row.createdAt >= DAY) {
       this.db
         .update(sessions)
         .set({ lastSeenAt: now, expiresAt: now + SESSION_DAYS * DAY })

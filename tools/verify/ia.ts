@@ -1,6 +1,9 @@
 // Reads IA.md: the menu, the pages and every slot. The manifest check (session 3) compares each
 // feature's slot contributions against this list.
 
+/** Who a view is opened as: a player of the run, the admin console's own account (session 227), or a visitor. */
+export type As = 'veteran' | 'elder' | 'keeper' | 'sage' | 'squire' | 'staff' | 'visitor';
+
 export interface ViewSpec {
   /** The page heading in IA.md this view belongs to. */
   page: string;
@@ -10,7 +13,7 @@ export interface ViewSpec {
   desktop: string[];
   /** Who the page is opened as: the run's newcomer (the default), a player three weeks in, one two
    *  months into the climb, or a visitor who is not signed in. */
-  as?: 'veteran' | 'elder' | 'keeper' | 'sage' | 'squire' | 'visitor';
+  as?: As;
 }
 
 export interface PageMap {
