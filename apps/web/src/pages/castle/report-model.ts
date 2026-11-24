@@ -3,7 +3,7 @@
 // clash of strength, and what it moved. Pure, so the page and its tests read reports the same way.
 import { fmt, t } from '@idle-clash/content';
 import { castleEngine } from '@idle-clash/features';
-import { fortressName, mercName, missionName, outcomeName } from './labels.ts';
+import { chamberName, fortressName, mercName, missionName, outcomeName } from './labels.ts';
 
 type Report = castleEngine.CastleReport;
 const num = (x: unknown): number => (typeof x === 'number' && Number.isFinite(x) ? x : 0);
@@ -23,6 +23,8 @@ const FILTER_OF: Record<string, Exclude<Filter, 'all'>> = {
   siegeIn: 'defences',
   mercenary: 'strongholds',
   incursion: 'strongholds',
+  // A legend's chamber is a fortress too (session 225: it stood under All alone).
+  legend: 'strongholds',
   spyOut: 'spies',
   spyIn: 'spies',
 };
@@ -159,7 +161,7 @@ export function cardOf(r: Report, me: string): ReportCard | null {
         kind: 'battle',
         word: won ? t('castle.report.won') : t('castle.legend.held'),
         good: won,
-        title: t('castle.legend.chamberName', { legend: name, n: fmt.int(num(d.chamber) + 1) }),
+        title: chamberName(str(d.legend), num(d.chamber)),
         left: you,
         right: { seed: str(d.legend), name, lord: false },
         spoils: marks,
@@ -167,13 +169,16 @@ export function cardOf(r: Report, me: string): ReportCard | null {
     }
     case 'spyOut': {
       const done = d.success === true;
-      // Spies at one of the day's foes (session 167): a stronghold or the fortress, named as itself.
+      // Spies at one of the day's foes (session 167): a stronghold, the fortress or a legend's chamber
+      // (session 225: a chamber was named as a departed lord), each named as itself.
       const m = d.merc && typeof d.merc === 'object' ? (d.merc as Record<string, unknown>) : null;
       const foeSide: Side = m
         ? { seed: str(m.id), name: mercName(num(m.first), num(m.second)), lord: false }
         : typeof d.fortress === 'string'
           ? { seed: d.fortress, name: fortressName(d.fortress), lord: false }
-          : lord;
+          : typeof d.legend === 'string'
+            ? { seed: d.legend, name: chamberName(d.legend, num(d.chamber)), lord: false }
+            : lord;
       return {
         ...base,
         kind: 'spy',

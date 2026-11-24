@@ -2,8 +2,9 @@
 // (`?panel=realm-work`): where it stands, what the realm has given and your part, the thanks for the last work
 // raised with your part, and what you can give (gold in a few amounts, or all of a material held).
 import { t } from '@idle-clash/content';
-import type { RealmWorkView } from '@idle-clash/features';
+import { laneUsing, type RealmWorkView } from '@idle-clash/features';
 import { ActionRow, Button, hasIcon, ItemIcon, Pill, ProgressBar, Sheet } from '@idle-clash/ui';
+import { useState } from 'react';
 import { useGame } from '../game/hooks.ts';
 import { game } from '../game/store.ts';
 import { navigate } from '../router.ts';
@@ -35,6 +36,7 @@ export function RealmWorkSheet({ onClose }: { onClose: () => void }) {
   const { state, now, features } = useGame();
   const [view] = fills<RealmWorkView>(features, 'hearth.realmWork', state, now);
   const v = view?.data;
+  const [asking, setAsking] = useState<string | null>(null);
   return (
     <Sheet
       title={v?.name ?? t('realmWork.title')}
@@ -68,11 +70,27 @@ export function RealmWorkSheet({ onClose }: { onClose: () => void }) {
                   key={m.item}
                   icon={hasIcon(m.item) ? <ItemIcon name={m.item} size={32} /> : undefined}
                   name={m.label}
-                  facts={[m.worth]}
+                  facts={
+                    asking === m.item
+                      ? [t('realmWork.giveAsk', { worth: m.worth }), ...[laneUsing(state, m.item) ?? []].flat()]
+                      : [m.worth]
+                  }
                   actions={
-                    <Button onClick={() => game.act('steading', 'give', { item: m.item })}>
-                      {t('realmWork.give')}
-                    </Button>
+                    asking === m.item ? (
+                      <>
+                        <Button
+                          variant="primary"
+                          onClick={() => (setAsking(null), game.act('steading', 'give', { item: m.item }))}
+                        >
+                          {t('realmWork.giveYes')}
+                        </Button>
+                        <Button variant="secondary" onClick={() => setAsking(null)}>
+                          {t('store.sellNo')}
+                        </Button>
+                      </>
+                    ) : (
+                      <Button onClick={() => setAsking(m.item)}>{t('realmWork.give')}</Button>
+                    )
                   }
                 />
               ))}

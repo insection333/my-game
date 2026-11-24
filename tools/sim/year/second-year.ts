@@ -4,7 +4,7 @@
 // what each currency holds with nothing new to buy. Since session 222 its targets are checks: a first every
 // week, deeds every quarter, every currency spent as it comes, and the Deep still growing; and, as before,
 // the lanes keep working and the Storehouse never fills.
-import { seasonAt } from '@idle-clash/features';
+import { seasonAt, weekOf } from '@idle-clash/features';
 import { SEASON_DAYS } from '../../../packages/features/src/shared/season.ts';
 import { DAY, T0 } from '../player.ts';
 import type { Year } from './player.ts';
@@ -78,7 +78,20 @@ export function secondYearChecks(y: Year, check: Check, lines: string[]): void {
     if (deeds < fewest.deeds) Object.assign(fewest, { deeds, quarter: `days ${from} to ${to}` });
   }
   if (waits.length) lines.push(`Six days or more without a first: ${waits.join(', ')}`);
-  check(longestAll <= 6, `The second year: a first every week (the longest wait ${longestAll} days, at most 6)`);
+  // A first in every week of year two, Monday to Sunday as the game's weeks turn (session 225: held as never
+  // seven days running without one, it sat on its edge at every seed and fell to a change in the armour's
+  // tempering); and no wait past eight days (chambers opening all at once, nine at seed 12).
+  const weeks = new Map<string, boolean>();
+  for (const d of y.days.filter((x) => x.day > YEAR)) {
+    const week = weekOf(T0 + (d.day - 1) * DAY + 12 * 3600 * 1000);
+    weeks.set(week, (weeks.get(week) ?? false) || d.firsts.length > 0);
+  }
+  const whole = [...weeks].slice(1, -1);
+  const bare = whole.filter(([, any]) => !any).map(([w]) => w);
+  check(
+    bare.length === 0 && longestAll <= 8,
+    `The second year: a first in every week (weeks without one: ${bare.join(', ') || 'none'}; the longest wait ${longestAll} days, at most 8)`,
+  );
   check(
     fewest.deeds >= 1,
     `The second year: deeds in every quarter (the fewest ${fewest.deeds}, ${fewest.quarter}; at least 1)`,

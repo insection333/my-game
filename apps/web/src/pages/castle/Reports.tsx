@@ -2,7 +2,16 @@
 // The cards (ReportCards.tsx) and the account (Account.tsx, session 42) draw them.
 import { fmt, t } from '@idle-clash/content';
 import { castleEngine } from '@idle-clash/features';
-import { foeMissionDoes, fortressName, mercName, missionDoes, missionName, outcomeName, trapName } from './labels.ts';
+import {
+  chamberName,
+  foeMissionDoes,
+  fortressName,
+  mercName,
+  missionDoes,
+  missionName,
+  outcomeName,
+  trapName,
+} from './labels.ts';
 import { reportSheet, when } from './report-model.ts';
 
 export { reportSheet, when };
@@ -56,7 +65,9 @@ export function readReport(r: Report): { line: string; facts: string[] } {
         ? mercName(num(m.first), num(m.second))
         : typeof d.fortress === 'string'
           ? fortressName(d.fortress)
-          : foe;
+          : typeof d.legend === 'string'
+            ? chamberName(d.legend, num(d.chamber))
+            : foe;
       return {
         line: t('castle.report.spyOut', { mission: missionName(str(d.mission)), foe: at }),
         facts: [
@@ -65,7 +76,12 @@ export function readReport(r: Report): { line: string; facts: string[] } {
           // What a mission that got through left on them (session 169: its account said "Nothing changed
           // hands" of wells poisoned).
           ...(d.success === true && str(d.mission) !== 'scout'
-            ? [missionLeft(str(d.mission), m !== null || typeof d.fortress === 'string')]
+            ? [
+                missionLeft(
+                  str(d.mission),
+                  m !== null || typeof d.fortress === 'string' || typeof d.legend === 'string',
+                ),
+              ]
             : []),
         ],
       };

@@ -3,7 +3,7 @@
 // After each one, no gold has been made or lost unaccounted (purses, treasuries, the war chest and the
 // gold destroyed always sum to the start), no server error, and every castle stays sound.
 import { XP_TABLE } from '@idle-clash/content';
-import { allSkills, castleEngine as E } from '@idle-clash/features';
+import { allSkills, castleEngine as E, seasonAt } from '@idle-clash/features';
 import { describe, expect, it } from 'vitest';
 import { CastleStore } from '../src/castle/store.ts';
 import { post, server, signUp, type TestServer } from './helpers.ts';
@@ -24,6 +24,8 @@ function generator(seed: number) {
 describe('Castle Clash under random play', () => {
   it('never makes or loses gold unaccounted, never errs, and keeps every castle sound', async () => {
     s = await server();
+    // In a season (session 225), so the legendary siege is fought and spied on with the rest.
+    s.clock.now = Date.UTC(2027, 0, 1, 9);
     const rand = generator(32);
     const pick = <T>(xs: readonly T[]): T => xs[Math.floor(rand() * xs.length)];
     const castles = new CastleStore(s.ctx);
@@ -43,7 +45,15 @@ describe('Castle Clash under random play', () => {
       const c = castles.read(id)!;
       const level = 8 + i * 3;
       const levels = Object.fromEntries(Object.keys(c.levels).map((k) => [k, level])) as E.Castle['levels'];
-      const raised = { ...c, levels, shieldUntil: s.clock.now - 1, activeAp: 240, treasury: 20_000_000, warMarks: 300 };
+      const raised = {
+        ...c,
+        levels,
+        shieldUntil: s.clock.now - 1,
+        activeAp: 240,
+        treasury: 20_000_000,
+        warMarks: 300,
+        incursionTier: 10 + i,
+      };
       castles.write({ ...raised, rating: E.bastionRating(raised) });
       lords.push({ cookie, id });
     }
@@ -101,6 +111,13 @@ describe('Castle Clash under random play', () => {
         { type: 'spy', target: other, mission: pick(['scout', 'poison', 'sabotage', 'forge']) },
         { type: 'siege', target },
         { type: 'siege', target },
+        { type: 'legend', shares: shares() },
+        { type: 'legend' },
+        {
+          type: 'spy',
+          target: `legend:${seasonAt(s.clock.now)?.number ?? 1}:${Math.floor(rand() * 8)}`,
+          mission: pick(['poison', 'sabotage', 'forge']),
+        },
       ] as const);
       const res = await post(s, '/api/castle/act', { requestId: `req-fuzz-${++n}`, action }, me.cookie);
       expect(res.statusCode, `${JSON.stringify(action)}: ${res.body}`).toBe(200);
@@ -117,6 +134,7 @@ describe('Castle Clash under random play', () => {
         expect(c.infirmaryPct).toBeGreaterThanOrEqual(0);
         expect(c.infirmaryPct).toBeLessThanOrEqual(30);
         expect(c.warMarks).toBeGreaterThanOrEqual(0);
+        expect(c.legendTaken >= 0 && c.legendTaken <= E.LEGEND.CHAMBERS).toBe(true);
         expect(c.rating).toBeGreaterThanOrEqual(ratings.get(l.id)!);
         ratings.set(l.id, c.rating);
       }

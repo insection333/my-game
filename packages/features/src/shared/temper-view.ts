@@ -4,7 +4,7 @@ import { fmt, t } from '@idle-clash/content';
 import { countOf, type State } from '@idle-clash/kernel';
 import { itemOf } from './catalog.ts';
 import { skillLevel } from './skill.ts';
-import { stepCost, stepsOf, TEMPER, trophiesFor } from './temper.ts';
+import { guardOf, stepCost, stepsOf, TEMPER, trophiesFor } from './temper.ts';
 
 export interface TemperLine {
   /** "Tempered 2 of 5: +2% damage", or null before the first step. */
@@ -30,7 +30,7 @@ export function temperLine(state: State, item: string): TemperLine | null {
   const weapon = itemOf(item)?.gear?.slot === 'weapon';
   const gives = weapon
     ? t('temper.damage', { pct: fmt.pct(steps * TEMPER.PCT) })
-    : t('temper.guard', { pct: fmt.pct(steps * TEMPER.PCT) });
+    : t('temper.guard', { pct: fmt.pct(guardOf(steps)) });
   const said = steps ? t('temper.steps', { steps: fmt.int(steps), of: fmt.int(TEMPER.STEPS), gives }) : null;
   const cost = steps < TEMPER.STEPS ? stepCost(item, steps + 1) : null;
   if (!cost || !open) return { steps: said, next: null, short: open ? null : t('temper.opens'), ready: false };
@@ -63,10 +63,13 @@ export function temperLine(state: State, item: string): TemperLine | null {
  *  banner. */
 export function temperedWords(item: string, step: number): { title: string; body: string; top: boolean } {
   const weapon = itemOf(item)?.gear?.slot === 'weapon';
-  const pct = fmt.pct(step * TEMPER.PCT);
   return {
     title: t('temper.done', { item: t(`item.${item}`), step: fmt.int(step), of: fmt.int(TEMPER.STEPS) }),
-    body: t('temper.now', { gives: weapon ? t('temper.damage', { pct }) : t('temper.guard', { pct }) }),
+    body: t('temper.now', {
+      gives: weapon
+        ? t('temper.damage', { pct: fmt.pct(step * TEMPER.PCT) })
+        : t('temper.guard', { pct: fmt.pct(guardOf(step)) }),
+    }),
     top: step >= TEMPER.STEPS,
   };
 }

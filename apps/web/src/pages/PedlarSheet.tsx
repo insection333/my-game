@@ -1,7 +1,8 @@
 // The pedlar's sheet (session 217, `?panel=pedlar`), opened from the Hearth's Next up: each of the day's lots
-// with its picture, what is held, what it pays and Hand in; the favour earned, and when the wants change.
+// with its picture, what is held, what it pays and Hand in (and what a running lane uses it for, session 225:
+// ten of the dish a fight was eating went with no word); the favour earned, and when the wants change.
 import { t } from '@idle-clash/content';
-import type { PedlarView } from '@idle-clash/features';
+import { laneUsing, type PedlarView } from '@idle-clash/features';
 import { ActionRow, Button, hasIcon, ItemIcon, Pill, Sheet } from '@idle-clash/ui';
 import { useGame } from '../game/hooks.ts';
 import { game } from '../game/store.ts';
@@ -27,7 +28,7 @@ export function PedlarSheet({ onClose }: { onClose: () => void }) {
                 key={l.kind}
                 icon={hasIcon(l.item) ? <ItemIcon name={l.item} size={32} /> : undefined}
                 name={l.name}
-                facts={[l.held, l.pays]}
+                facts={[l.held, l.pays, ...(l.done ? [] : [laneUsing(state, l.item) ?? []].flat())]}
                 status={l.done ? <Pill tone="moss">{t('pedlar.handed')}</Pill> : undefined}
                 actions={
                   !l.done && (

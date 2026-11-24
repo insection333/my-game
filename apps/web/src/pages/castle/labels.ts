@@ -1,6 +1,6 @@
 // Castle Clash's ids to their strings, each written out, so every key is literal and checked (verify's
 // content step), and an unknown id reads as nothing rather than a key.
-import { t } from '@idle-clash/content';
+import { fmt, t } from '@idle-clash/content';
 import { castleEngine } from '@idle-clash/features';
 
 export const { fortressName, outcomeName, mercName, relicName, missionName } = castleEngine;
@@ -152,3 +152,7 @@ export const refusal = read({
   closed: 'castle.refused.closed',
   noCastle: 'castle.refused.noCastle',
 });
+
+/** A chamber of a season's legend by name ("The Drowned Throne: chamber 3"), for its reports. */
+export const chamberName = (legend: string, chamber: number): string =>
+  t('castle.legend.chamberName', { legend: castleEngine.legendName(legend), n: fmt.int(chamber + 1) });

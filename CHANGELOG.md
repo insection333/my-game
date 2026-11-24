@@ -363,3 +363,4 @@
 - Session 222: the two-year targets made checks (a first every week, deeds every quarter, every currency spent, the Deep growing); the legendary siege now eight chambers, one opening each week of the season.
 - Session 223: a sweep of sessions 209 to 222: the realm's boss names whose way it fights with, spies wait for a legend chamber's week, and the Hearth says when a chamber stands open.
 - Session 224: a player two years in on the review sheets; a moment's deed wears its own medallion rather than another deed's picture.
+- Session 225: a deep sweep of the recent changes: every armour tempering step counts, giving all of a material to the realm's work asks first, the pedlar's lots say a lane's use, and a legend chamber's spy reports and battles read and file as themselves.

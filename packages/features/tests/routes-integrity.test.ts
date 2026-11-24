@@ -8,6 +8,8 @@ import { describe, expect, it } from 'vitest';
 import { FEATURES } from '../src/index.ts';
 import { FOES } from '../src/shared/combat/data.ts';
 import { relics } from '../src/shared/expeditions/relics.ts';
+import { DEEP_RELICS } from '../src/shared/expeditions/deep-relics.ts';
+import { SEASON_EPOCH } from '../src/shared/season.ts';
 import { weekOf } from '../src/shared/week-time.ts';
 import { expeditionsOf, setExpeditions } from '../src/shared/expeditions/state.ts';
 import { allSkills } from '../src/shared/standing.ts';
@@ -28,10 +30,26 @@ const POOL: Record<string, fc.Arbitrary<unknown>> = {
   region: fc.constantFrom('march', 'fen', 'peaks'),
   hours: fc.constantFrom(1, 2, 4, 8),
   road: fc.constantFrom('high-pass', 'low-road', 'no-such-road'),
-  relic: fc.constantFrom(...relics().map((r) => r.id), 'no-such-relic'),
+  relic: fc.constantFrom(...relics().map((r) => r.id), ...DEEP_RELICS, 'no-such-relic'),
   skill: fc.constantFrom(...SKILLS, 'no-such-skill'),
   path: fc.constantFrom('bounty', 'lore', 'fortune', null),
-  kind: fc.constantFrom('title', 'banner', 'frame', 'picture', 'companion', 'glow', 'badge', 'scene'),
+  // An honour's kind, or a pedlar's lot (session 217).
+  kind: fc.constantFrom(
+    'title',
+    'banner',
+    'frame',
+    'picture',
+    'companion',
+    'glow',
+    'badge',
+    'scene',
+    'find',
+    'material',
+    'dish',
+  ),
+  // Sessions 191 and 218: the quartermaster's lots, gold given to the realm's work.
+  lots: fc.constantFrom(1, 3, 1_000, 1_000_000),
+  gold: fc.constantFrom(0, 1, 999, 1_000, 2_500_000, 1e12),
   id: fc.constantFrom('woad', 'the-kindled', 'squirrel', 'no-such-honour', null),
   // Sessions 172 to 179: a bounty's foe, the week's task to swap.
   foe: fc.constantFrom(...FOES.map((f) => f.id), 'no-such-foe'),
@@ -111,15 +129,16 @@ function exchanged(route: string, input: Record<string, unknown>, before: State,
     expect(held(before, input.item) - held(after, input.item)).toBe(input.count);
     expect(gold).toBeGreaterThan(0);
   }
+  if (route === 'give' && input.item === undefined) expect(gold).toBe(-(input.gold as number));
   if (route === 'buy') {
     expect(held(after, input.item) - held(before, input.item)).toBe(input.count);
     expect(gold).toBeLessThan(0);
   }
 }
 
-function play(start: State, plan: Step[]) {
+function play(start: State, plan: Step[], from = T0) {
   let state = start;
-  let t = T0;
+  let t = from;
   const rng = seeded(start.seed);
   for (const step of plan) {
     t += step.at;
@@ -145,6 +164,31 @@ describe('the routes and commands, in any order', () => {
   it('leave a newcomer’s save sound, and a refusal changes nothing', () => {
     fc.assert(
       fc.property(fc.integer({ min: 1, max: 1e6 }), steps, (seed, plan) => play(newState(seed, T0), plan)),
+      { numRuns: Number(process.env.RUNS ?? 60) },
+    );
+  });
+
+  it('leave a veteran’s save sound in a season, its realm’s work standing, and a refusal changes nothing', () => {
+    // Session 225: in a season, so the realm's work takes gifts, the Deep holds its season's omen and the realm's
+    // boss bears its mark.
+    const IN = SEASON_EPOCH + 10 * 86_400_000;
+    const inSeason = (seed: number): State => {
+      const s = { ...veteran(seed), clock: IN };
+      s.features['realm-work'] = {
+        season: 1,
+        work: 'beacon',
+        needed: 40_000_000,
+        given: 1_000_000,
+        mine: 0,
+        givers: 1,
+        finished: 0,
+        thanks: null,
+      };
+      s.features.realm = { ...(s.features.realm as object), week: weekOf(IN), owed: null };
+      return s;
+    };
+    fc.assert(
+      fc.property(fc.integer({ min: 1, max: 1e6 }), steps, (seed, plan) => play(inSeason(seed), plan, IN)),
       { numRuns: Number(process.env.RUNS ?? 60) },
     );
   });

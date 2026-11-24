@@ -26,6 +26,8 @@ export const progress: Record<string, string> = {
   'realmWork.material': '{item} ×{count}',
   'realmWork.worth': 'Worth {gold} gold',
   'realmWork.give': 'Give all',
+  'realmWork.giveAsk': 'Give all of it for good? {worth}',
+  'realmWork.giveYes': 'Give',
   'realmWork.materials': 'Materials you hold, any tier, at their price',
   'realmWork.raised': '{work}: stage {stage} of 5 raised',
   'realmWork.raisedBody': 'The realm raised it together, your part with the rest.',

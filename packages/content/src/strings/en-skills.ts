@@ -95,7 +95,7 @@ export const skills: Record<string, string> = {
   'skill.smithing': 'Smithing',
   'help.smithing.title': 'Smithing',
   'help.smithing.body':
-    "Smelt ore into bars in the Artisan lane, then forge bars and logs into gear: a sword for Melee, a bow for Archery, a staff for Magic, and armour for any style; whetstones, Melee's supply; and the keys the standing stones ask for. A recipe stops when an ingredient runs out, and your Next action starts. From level 90, temper the gear you wear from its sheet on Combat: each step takes its tier's bars and trophies (a boss's Rare find; a weapon those of bosses who fight in its style, armour any), five steps a piece, up to +10% damage and 10% less damage taken for the set.",
+    "Smelt ore into bars in the Artisan lane, then forge bars and logs into gear: a sword for Melee, a bow for Archery, a staff for Magic, and armour for any style; whetstones, Melee's supply; and the keys the standing stones ask for. A recipe stops when an ingredient runs out, and your Next action starts. From level 90, temper the gear you wear from its sheet on Combat: each step takes its tier's bars and trophies (a boss's Rare find; a weapon those of bosses who fight in its style, armour any), five steps a piece: a weapon up to +5% damage, the three pieces of armour together up to 10% less damage taken.",
   'action.smithing.copper-bar': 'Copper bar',
   'item.copper-bar': 'Copper bar',
   'action.smithing.copper-sword': 'Copper sword',

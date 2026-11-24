@@ -2,9 +2,11 @@
 // linear (a tier's piece the same for everyone who wears it) and a boss's Rare find seen again worth only its
 // price. At Smithing 90, a worn piece is tempered a step with its own tier's bars and a boss's Rare find, its
 // trophy: a weapon only by the trophies of bosses who fight in its style (the Ember Wyrm's tempers a staff),
-// armour by any. A weapon's step is +1% damage, an armour piece's 1% less damage taken, five steps a piece;
-// the whole set is held under +10% damage and 10% less taken, as the steading's gains are held small. Kept by
-// the piece (the kind of item), in Smithing's part of the save; read by the fighter here, as the steading is.
+// armour by any. Five steps a piece: a weapon's step is +1% damage (+5% whole), an armour piece's a fifteenth of
+// the set's 10% less damage taken (session 225: at 1% a step the armour's fifteen steps were held under 10%,
+// so its last five took bars and trophies for nothing while each piece claimed 5%), held small as the
+// steading's gains are. Kept by the piece (the kind of item), in Smithing's part of the save; read by the
+// fighter here, as the steading is.
 import type { State } from '@idle-clash/kernel';
 import type { GearSlot } from '@idle-clash/content';
 import { z } from 'zod';
@@ -16,9 +18,9 @@ export const TEMPER = {
   /** The Smithing level that opens it. */
   OPENS: 90,
   STEPS: 5,
-  /** A weapon's step in damage, an armour piece's in damage taken, in percent. */
+  /** A weapon's step in damage, in percent. */
   PCT: 1,
-  /** The whole set's most, each way. */
+  /** The armour's most, in damage taken, in percent: the three pieces tempered whole. */
   CAP: 10,
   /** A step's bars of the piece's tier, and its trophies: both times the step (the fifth: 100 bars, 5). */
   BARS: 20,
@@ -57,18 +59,20 @@ export function stepCost(item: string, step: number): { bar: string; bars: numbe
   return { bar: BARS[gear.tier - 1], bars: TEMPER.BARS * step, trophies: step };
 }
 
-/** What the worn set's tempering gives a fighter: damage from the weapon, less taken from the armour, each held
- *  under the cap. */
+/** An armour step's share of the set's guard: a fifteenth of it, so every step counts. */
+export const ARMOUR_STEP = TEMPER.CAP / (3 * TEMPER.STEPS);
+
+/** Steps of armour as damage taken off, in percent, to a tenth. */
+export const guardOf = (steps: number): number => Math.round(steps * ARMOUR_STEP * 10) / 10;
+
+/** What the worn set's tempering gives a fighter: damage from the weapon, less taken from the armour. */
 export function temperGains(state: State, worn: (slot: GearSlot) => string | null): { damage: number; guard: number } {
   const steps = (slot: GearSlot) => {
     const id = worn(slot);
     return id ? stepsOf(state, id) : 0;
   };
   const armour = steps('helm') + steps('body') + steps('legs');
-  return {
-    damage: Math.min(TEMPER.CAP, steps('weapon') * TEMPER.PCT),
-    guard: Math.min(TEMPER.CAP, armour * TEMPER.PCT),
-  };
+  return { damage: steps('weapon') * TEMPER.PCT, guard: Math.min(TEMPER.CAP, armour * ARMOUR_STEP) };
 }
 
 /** Whether a boss's Rare find is still wanted as a trophy: some gear held that it suits is not fully tempered. */

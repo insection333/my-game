@@ -56,6 +56,17 @@ describe('tempering', () => {
     expect(oddsFor(armour, golem)!.foodPerHour).toBeLessThan(oddsFor(s, golem)!.foodPerHour);
   });
 
+  it("counts every armour step: a fifteenth of the set's 10% each, none past it held for nothing (session 225)", () => {
+    const s = smith(90, { 'wyrm-scale': 100 });
+    const base = fighterOf(s, golem)!;
+    // Four steps on each piece: 12 of 15, 8% (at 1% a step the set was held at 10% from its tenth step on).
+    const four = times(times(times(s, 'helm', 4), 'body', 4), 'legs', 4);
+    expect(fighterOf(four, golem)!.perks.guard).toBeCloseTo(base.perks.guard + 8);
+    const helm = (s.features.combat as { worn: { helm: string } }).worn.helm;
+    expect(temperedWords(helm, 1).body).toBe('Now: 0.7% less damage taken');
+    expect(temperLine(times(s, 'helm', 5), helm)?.steps).toBe('Tempered 5 of 5: 3.3% less damage taken');
+  });
+
   it('says on the gear sheet what the next step takes and what is short', () => {
     const s = smith(90, { 'chieftains-torc': 1 });
     const sword = (s.features.combat as { worn: { weapon: string } }).worn.weapon;
