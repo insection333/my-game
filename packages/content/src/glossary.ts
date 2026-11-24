@@ -101,7 +101,7 @@ export const TERMS: [term: string, meaning: string][] = [
   ['Legendary', 'The rarest find, about 1 in 5,000 actions'],
   [
     'Legendary siege',
-    "Castle Clash: a season's named fortress of five chambers, taken in order once a season, measured against your castle's might",
+    "Castle Clash: a season's named fortress of eight chambers, one opening each week, taken in order once a season and measured against your castle's might",
   ],
   ['Level', 'A step in a skill, 1 to 40; every level unlocks something'],
   [

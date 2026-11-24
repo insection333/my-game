@@ -1,9 +1,11 @@
 // The second year (session 209, the plan *Dead and short content, 23 November*): the steady player plays on
 // to two years, and the report says what each system still gives once the climb is done: the last day each
 // kind of first came, the firsts and deeds of each quarter of year two, the longest wait for a first, and
-// what each currency holds with nothing new to buy. Figures for now; each becomes a check as the plan's
-// parts land (session 221). Held already: the lanes keep working and the Storehouse never fills.
+// what each currency holds with nothing new to buy. Since session 222 its targets are checks: a first every
+// week, deeds every quarter, every currency spent as it comes, and the Deep still growing; and, as before,
+// the lanes keep working and the Storehouse never fills.
 import { seasonAt } from '@idle-clash/features';
+import { SEASON_DAYS } from '../../../packages/features/src/shared/season.ts';
 import { DAY, T0 } from '../player.ts';
 import type { Year } from './player.ts';
 
@@ -44,6 +46,14 @@ export function secondYearChecks(y: Year, check: Check, lines: string[]): void {
   );
 
   // Each quarter of year two: days with a first, the longest wait, the deeds and titles, and what came.
+  let longestAll = 0;
+  const fewest = { deeds: Infinity, quarter: '' };
+  const waits: string[] = [];
+  let run = 0;
+  for (const d of y.days.filter((x) => x.day > YEAR)) {
+    run = d.firsts.length ? 0 : run + 1;
+    if (run === 6) waits.push(`from day ${d.day - 5}`);
+  }
   for (const [from, to] of QUARTERS) {
     const days = y.days.filter((d) => d.day >= from && d.day <= to);
     const withFirst = days.filter((d) => d.firsts.length).length;
@@ -64,7 +74,15 @@ export function secondYearChecks(y: Year, check: Check, lines: string[]): void {
     lines.push(
       `Days ${from} to ${to}: a first on ${withFirst} of ${days.length} days, the longest wait ${longest} days; ${deeds} deeds (${titles} titles); ${mix || 'nothing'}`,
     );
+    longestAll = Math.max(longestAll, longest);
+    if (deeds < fewest.deeds) Object.assign(fewest, { deeds, quarter: `days ${from} to ${to}` });
   }
+  if (waits.length) lines.push(`Six days or more without a first: ${waits.join(', ')}`);
+  check(longestAll <= 6, `The second year: a first every week (the longest wait ${longestAll} days, at most 6)`);
+  check(
+    fewest.deeds >= 1,
+    `The second year: deeds in every quarter (the fewest ${fewest.deeds}, ${fewest.quarter}; at least 1)`,
+  );
 
   // What each currency holds at each quarter's end: one that only grows has nothing left to buy.
   const at = [YEAR, ...QUARTERS.map(([, to]) => to)];
@@ -75,12 +93,33 @@ export function secondYearChecks(y: Year, check: Check, lines: string[]): void {
   lines.push(`- the Deep's deepest ${held((d) => d.deepest ?? 0)}`);
   lines.push(`- war marks ${held((d) => d.castle?.held ?? 0)}`);
   lines.push(`- legends taken ${held((d) => d.castle?.legends ?? 0)}`);
+  // Every currency has a use: each is spent in every quarter of year two (what it holds falls on some day of
+  // each), as one with nothing to buy never is.
+  const spent = (f: (d: Year['days'][number]) => number) =>
+    QUARTERS.every(([from, to]) => y.days.some((d) => d.day >= from && d.day <= to && f(d) < f(y.days[d.day - 2])));
+  const currencies = [
+    ['gold', (d: Year['days'][number]) => d.gold],
+    ['expedition marks', (d: Year['days'][number]) => d.marks],
+    ['war marks', (d: Year['days'][number]) => d.castle?.held ?? 0],
+  ] as const;
+  const unspent = currencies.filter(([, f]) => !spent(f)).map(([name]) => name);
+  check(
+    unspent.length === 0,
+    `The second year: every currency is spent in every quarter (unspent in one: ${unspent.join(', ') || 'none'})`,
+  );
+  // The Deep still growing: deeper in each half of year two.
+  const deep = (n: number) => y.days[n - 1].deepest ?? 0;
+  check(
+    deep(547) > deep(YEAR) && deep(TWO_YEARS) > deep(547),
+    `The second year: the Deep's deepest grows in each half (${deep(YEAR)}, ${deep(547)}, ${deep(TWO_YEARS)})`,
+  );
   const castle = at.map((n) => y.days[n - 1].castle);
   lines.push(
     `- the castle: level ${castle.map((c) => c?.level.toFixed(1) ?? '-').join(', ')}; evolution ${castle.map((c) => c?.evolution ?? '-').join(', ')}; incursion tier ${castle.map((c) => c?.tier ?? '-').join(', ')}`,
   );
 
-  // The season's legend (session 220): each season that ends within the two years taken, within six weeks.
+  // The season's legend (session 220): taken within its season, a chamber a week (session 222), in every
+  // season that ends within the two years but one at most (a lord who spends its gold elsewhere may let one go).
   const opened = new Map<number, number>();
   for (const d of y.days) {
     const s = seasonAt(T0 + (d.day - 1) * DAY + 12 * 3600 * 1000);
@@ -94,11 +133,10 @@ export function secondYearChecks(y: Year, check: Check, lines: string[]): void {
   lines.push(
     `The season's legend taken, days into each season: ${takenIn.map((x) => (Number.isFinite(x.days) ? x.days : 'never')).join(', ')}`,
   );
-  const most = Math.max(...takenIn.map((x) => x.days));
-  const longest = Number.isFinite(most) ? `${most} days` : 'one never taken';
+  const inSeason = takenIn.filter((x) => x.days <= SEASON_DAYS).length;
   check(
-    takenIn.length > 0 && most <= 42,
-    `Every season's legend is taken within six weeks of its opening (the longest ${longest})`,
+    takenIn.length > 0 && inSeason >= takenIn.length - 1,
+    `The season's legend is taken within its season in all seasons but one at most (${inSeason} of ${takenIn.length})`,
   );
 
   // Held already in year two, as in year one.

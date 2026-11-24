@@ -360,3 +360,4 @@
 - Session 219: Kindling's gifts: an ornament on a seal at its sixth Kindling, the Kindled frame at any eighth, each skill's own title at its tenth, and a Kindlings ladder on Hiscores.
 - Session 220: the legendary siege: each season a named fortress of five chambers on the War, taken in order once a season, measured against the lord's own might at their first assault; war marks, two deeds and the Legend banner.
 - Session 221: seasons pair two twists from the seventh, the fifteen pairings in turn, with deeds for pairings played; every season holds an omen of its own in the Deep and puts its mark on the realm's boss.
+- Session 222: the two-year targets made checks (a first every week, deeds every quarter, every currency spent, the Deep growing); the legendary siege now eight chambers, one opening each week of the season.

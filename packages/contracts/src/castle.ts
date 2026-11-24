@@ -41,7 +41,7 @@ export const CastleAction = z.discriminatedUnion('type', [
   act('legend', { shares: Shares.optional() }),
   // A lord, or one of the day's foes: a stronghold or the fortress (session 167).
   act('spy', {
-    target: z.union([Target, z.string().regex(/^fortress:\d{1,3}$/), z.string().regex(/^legend:\d{1,3}:[0-4]$/)]),
+    target: z.union([Target, z.string().regex(/^fortress:\d{1,3}$/), z.string().regex(/^legend:\d{1,3}:[0-7]$/)]),
     mission: z.enum(['scout', 'poison', 'sabotage', 'forge']),
   }),
   act('siege', { target: Target, shares: Shares.optional() }),

@@ -267,6 +267,7 @@ function legend(io: Io, c: Castle): Outcome {
   const r = E.assaultLegend(c, season, io.now, roll());
   if (r === 'ap') return { ok: false, reason: 'ap' };
   if (r === 'none') return { ok: false, reason: 'unknown' };
+  if (r === 'waiting') return { ok: false, reason: 'locked' };
   store(io, r.castle);
   const id = E.legendOf(season);
   const data = {
