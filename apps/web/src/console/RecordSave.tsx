@@ -3,12 +3,13 @@
 // to the player, newest first.
 import type { AdminSaveResponse, AuditEntry, RecordResponse } from '@idle-clash/contracts';
 import { t } from '@idle-clash/content';
-import { Button, Panel, ResponsiveTable, type Column } from '@idle-clash/ui';
+import { Button, Panel, ResponsiveTable, TextLink, type Column } from '@idle-clash/ui';
 import { useEffect, useState } from 'react';
 import { api } from '../api.ts';
 import { dayOf, whenOf } from '../pages/days.ts';
 import { untilLoaded } from '../Ready.tsx';
-import { actionWords, detailWords } from './Audit.tsx';
+import { actionWords, auditHref, detailWords } from './Audit.tsx';
+import { navigate } from '../router.ts';
 import type { Run } from './Players.tsx';
 import s from './admin.module.css';
 import p from './pages.module.css';
@@ -76,12 +77,20 @@ export function RecordHistory({ record }: { record: RecordResponse }) {
       {record.history.length === 0 ? (
         <p className={s.note}>{t('record.noHistory')}</p>
       ) : (
-        <ResponsiveTable
-          caption={t('record.history')}
-          columns={columns}
-          rows={record.history}
-          rowKey={(e) => String(e.id)}
-        />
+        <>
+          <ResponsiveTable
+            caption={t('record.history')}
+            columns={columns}
+            rows={record.history}
+            rowKey={(e) => String(e.id)}
+          />
+          {/* The record keeps the newest twenty; the log keeps all (session 231). */}
+          <p className={s.note}>
+            <TextLink href={auditHref(record.name)} onNavigate={navigate}>
+              {t('record.allHistory', { name: record.name })}
+            </TextLink>
+          </p>
+        </>
       )}
     </Panel>
   );

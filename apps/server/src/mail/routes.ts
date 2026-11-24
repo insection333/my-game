@@ -17,18 +17,21 @@ import { limit, type Ctx } from '../context.ts';
 import { mail, mailMutes, mailRefused, players } from '../db/schema.ts';
 import { audit } from '../admin/audit.ts';
 import { contractRoute, fail } from '../http.ts';
-import { announceMail, block, inbox, readAll, remove, send } from './mail.ts';
+import { announceMail, block, inbox, keepNewest, readAll, remove, send } from './mail.ts';
 
 const DAY = 86_400_000;
 export const MUTE_DAYS = 7;
 const SHOWN = 200;
 
-const idOf = (ctx: Ctx, name: string) =>
-  ctx.db
-    .select({ id: players.id })
+/** A player by name; the console's own account is none (session 231: a warning could be sent it). */
+const idOf = (ctx: Ctx, name: string) => {
+  const row = ctx.db
+    .select({ id: players.id, role: players.role })
     .from(players)
     .where(eq(players.nameKey, nameKey(name)))
-    .get()?.id ?? null;
+    .get();
+  return row && row.role === 'player' ? row.id : null;
+};
 
 export function mailRoutes(app: FastifyInstance, ctx: Ctx): void {
   const now = () => ctx.config.now();
@@ -169,6 +172,7 @@ export function mailRoutes(app: FastifyInstance, ctx: Ctx): void {
           .insert(mail)
           .values({ toId: target, fromId: REALM, body: t('mail.warning'), at: t0 })
           .run();
+        keepNewest(ctx, target);
         announceMail(ctx, target);
       } else if (input.action === 'mute')
         ctx.db

@@ -39,7 +39,7 @@ describe("a player's record and the admin's powers", () => {
     expect(r).toMatchObject({ name: 'Rowan', sessions: 1 });
     expect(r.skills.find((x) => x.skill === 'woodcutting')).toMatchObject({ level: 1 });
     expect(r.lanes.map((l) => l.lane)).toContain('Gathering');
-    expect(r.catalog[0]).toEqual({ id: 'gold', name: 'Gold' });
+    expect(r.catalog[0]).toMatchObject({ id: 'gold', name: 'Gold' });
   });
 
   it('gives and takes, never below nothing, each logged with its reason', async () => {

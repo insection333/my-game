@@ -13,6 +13,8 @@ import { untilLoaded } from '../Ready.tsx';
 import { navigate } from '../router.ts';
 import { Slot } from '../slots.tsx';
 import { Bars } from './Bars.tsx';
+import { useFresh } from './fresh.ts';
+import { Facts } from './RecordSummary.tsx';
 import s from './pages.module.css';
 
 interface Tile {
@@ -55,24 +57,13 @@ const share = (p: number | null, of: number): Pick<Tile, 'value' | 'note'> =>
     ? { value: '–', note: t('console.kpi.noCohort') }
     : { value: fmt.pct(p), note: t('console.kpi.cohort', { count: fmt.int(of) }) };
 
-function Facts({ rows }: { rows: [string, ReactNode][] }) {
-  return (
-    <dl className={s.facts}>
-      {rows.map(([k, v]) => (
-        <div key={k}>
-          <dt>{k}</dt>
-          <dd>{v}</dd>
-        </div>
-      ))}
-    </dl>
-  );
-}
-
 export function Overview() {
   const [o, setO] = useState<AdminOverviewResponse | null>(null);
+  const read = () => api.admin.overview().then(setO, (err: unknown) => void handled(err));
   useEffect(() => {
     untilLoaded(api.admin.overview()).then(setO, (err: unknown) => void handled(err));
   }, []);
+  useFresh(() => void read());
   if (!o) return null;
   const p = o.players;
   const { boss, work, season } = o.realm;

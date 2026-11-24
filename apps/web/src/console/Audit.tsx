@@ -9,7 +9,7 @@ import { api } from '../api.ts';
 import { handled } from '../game/session.ts';
 import { whenOf } from '../pages/days.ts';
 import { untilLoaded } from '../Ready.tsx';
-import { navigate } from '../router.ts';
+import { navigate, useLocation } from '../router.ts';
 import { Slot } from '../slots.tsx';
 import s from './pages.module.css';
 
@@ -47,9 +47,18 @@ export function detailWords(e: Pick<AuditEntry, 'action' | 'detail'>): string {
   return '';
 }
 
+/** The log searched for what was typed, at its own address (session 231), so a search can be kept or linked. */
+export const auditHref = (q: string) => `/admin/audit${q ? `?${new URLSearchParams({ q }).toString()}` : ''}`;
+
 export function Audit() {
-  const [typed, setTyped] = useState('');
-  const [query, setQuery] = useState('');
+  useLocation();
+  const query = (new URLSearchParams(location.search).get('q') ?? '').slice(0, 64);
+  const [typed, setTyped] = useState(query);
+  const [shown, setShown] = useState(query);
+  if (shown !== query) {
+    setShown(query);
+    setTyped(query);
+  }
   const [entries, setEntries] = useState<AuditEntry[] | null>(null);
   const [more, setMore] = useState<number | null>(null);
   const load = (q: string, before: number | null) =>
@@ -63,7 +72,7 @@ export function Audit() {
   useEffect(() => void load(query, null), [query]);
   const search = (e: FormEvent) => {
     e.preventDefault();
-    setQuery(typed.trim());
+    navigate(auditHref(typed.trim()));
   };
   const columns: Column<AuditEntry>[] = [
     { key: 'when', label: t('console.audit.when'), cell: (e) => whenOf(e.at) },
@@ -109,7 +118,9 @@ export function Audit() {
           </Button>
         </form>
       </Panel>
-      {entries?.length === 0 && <p className={s.note}>{t('console.audit.none')}</p>}
+      {entries?.length === 0 && (
+        <p className={s.note}>{query ? t('console.audit.noneFound') : t('console.audit.none')}</p>
+      )}
       {entries && entries.length > 0 && (
         <Panel flush>
           <ResponsiveTable caption={t('console.audit')} columns={columns} rows={entries} rowKey={(e) => String(e.id)} />

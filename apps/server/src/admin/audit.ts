@@ -1,8 +1,10 @@
 // The console's Audit log (session 228): every admin action, by whom, to whom and what it changed, kept in
 // `admin_actions` (as well as telemetry, by id). Names are kept as they were, so the log reads after a
 // rename or an account deleted.
+import { t } from '@idle-clash/content';
 import { AUDIT_PAGE, ROUTES, type AuditEntry, type AuditResponse } from '@idle-clash/contracts';
-import { and, desc, eq, like, lt, or } from 'drizzle-orm';
+import { and, desc, eq, inArray, lt, or, sql } from 'drizzle-orm';
+import type { SQLiteColumn } from 'drizzle-orm/sqlite-core';
 import type { FastifyInstance, FastifyRequest } from 'fastify';
 import { requireAdmin } from '../auth/routes.ts';
 import type { Ctx } from '../context.ts';
@@ -36,13 +38,37 @@ export function audit(
   ctx.telemetry.record(`admin.${action}`, actorId, targetId ? { target: targetId } : undefined);
 }
 
+/** Every action the log keeps, as the console says it. */
+const ACTIONS: Record<string, () => string> = {
+  rename: () => t('audit.rename'),
+  ban: () => t('audit.ban'),
+  unban: () => t('audit.unban'),
+  mend: () => t('audit.mend'),
+  resetPassword: () => t('audit.resetPassword'),
+  dismissReports: () => t('audit.dismissReports'),
+  warn: () => t('audit.warn'),
+  mute: () => t('audit.mute'),
+  unmute: () => t('audit.unmute'),
+  give: () => t('audit.give'),
+  take: () => t('audit.take'),
+  xp: () => t('audit.xp'),
+  signOut: () => t('audit.signOut'),
+  delete: () => t('audit.delete'),
+  broadcast: () => t('audit.broadcast'),
+};
+/** The actions whose words, as the console says them ("Gave", "Banned"), hold what was typed (session 231). */
+const said = (q: string) => Object.keys(ACTIONS).filter((a) => ACTIONS[a]().toLowerCase().includes(q.toLowerCase()));
+
 export function auditRoutes(app: FastifyInstance, ctx: Ctx): void {
   contractRoute<{ query: string; before: number | null }>(
     app,
     ROUTES.adminAudit,
     ({ input }) => {
       const q = input.query.trim();
-      const words = q ? `%${q}%` : null;
+      // Anywhere in the action, either name or what it changed (an item, a skill, a reason: session 231);
+      // % and _ taken literally.
+      const words = q ? `%${q.replace(/[\\%_]/g, (c) => `\\${c}`)}%` : null;
+      const like = (col: SQLiteColumn) => sql`${col} like ${words} escape '\\'`;
       const rows = ctx.db
         .select()
         .from(adminActions)
@@ -51,9 +77,11 @@ export function auditRoutes(app: FastifyInstance, ctx: Ctx): void {
             input.before ? lt(adminActions.id, input.before) : undefined,
             words
               ? or(
-                  like(adminActions.action, words),
-                  like(adminActions.actorName, words),
-                  like(adminActions.targetName, words),
+                  like(adminActions.action),
+                  like(adminActions.actorName),
+                  like(adminActions.targetName),
+                  like(adminActions.detail),
+                  ...(said(q).length ? [inArray(adminActions.action, said(q))] : []),
                 )
               : undefined,
           ),

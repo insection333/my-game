@@ -12,6 +12,7 @@ import { untilLoaded } from '../Ready.tsx';
 import { refused } from '../refused.ts';
 import { navigate } from '../router.ts';
 import { Slot } from '../slots.tsx';
+import { useFresh } from './fresh.ts';
 import { Facts } from './RecordSummary.tsx';
 import a from './admin.module.css';
 import s from './pages.module.css';
@@ -30,6 +31,8 @@ export function Live() {
   const [said, setSaid] = useState<{ text: string; bad: boolean } | null>(null);
   const load = () => untilLoaded(api.admin.live()).then(setLive, (err: unknown) => void handled(err));
   useEffect(() => void load(), []);
+  // Who is online moves by the minute: read again while the page is in view (session 231).
+  useFresh(() => void api.admin.live().then(setLive, (err: unknown) => void handled(err)));
   if (!live) return null;
   const send = async () => {
     setAsking(false);
@@ -60,7 +63,7 @@ export function Live() {
           )}
         </Panel>
         <Panel title={t('console.joined')}>
-          <Facts rows={live.joined.map((p) => [p.name, dayOf(p.createdAt, live.at)])} />
+          <Facts rows={live.joined.map((p) => [named(p), dayOf(p.createdAt, live.at)])} />
         </Panel>
       </Slot>
       <Slot id="admin.letter" className={s.stack}>

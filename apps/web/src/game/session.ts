@@ -67,9 +67,10 @@ export function signedOut(why: Bounced | null = null) {
 }
 
 /** Why the welcome page is shown: a ban; or a session that ended in the middle of play (session 157: the
- *  password changed on another device, or the session lapsed), said so the player knows to sign in again. */
+ *  password changed on another device, or the session lapsed) or of the console (session 231: its twelve
+ *  hours), said so the player knows to sign in again. */
 export const bounceOf = (code: string, phase: Phase): Bounced | null =>
-  code === 'banned' ? 'banned' : phase === 'playing' ? 'ended' : null;
+  code === 'banned' ? 'banned' : phase === 'playing' || phase === 'console' ? 'ended' : null;
 
 /** What every failed request does first: a lost session sends the player back to the welcome page. */
 export function handled(err: unknown): err is ApiError {

@@ -6,24 +6,17 @@ import { ROUTES, type GrantResult, type XpResult } from '@idle-clash/contracts';
 import { levelFor, t } from '@idle-clash/content';
 import { allSkills } from '@idle-clash/features';
 import { countOf, give, handle, seeded, take, type GameEvent, type SaveDoc } from '@idle-clash/kernel';
-import { eq } from 'drizzle-orm';
 import type { FastifyInstance } from 'fastify';
 import { randomUUID } from 'node:crypto';
 import { erase } from '../auth/account.ts';
 import { requireAdmin } from '../auth/routes.ts';
 import { withCastle } from '../castle/mirror.ts';
 import type { Ctx } from '../context.ts';
-import { players } from '../db/schema.ts';
 import { announce } from '../game/announce.ts';
 import { contractRoute, fail } from '../http.ts';
 import { audit } from './audit.ts';
 import { catalogOf } from './record.ts';
-
-const playerOf = (ctx: Ctx, id: string) => {
-  const row = ctx.db.select().from(players).where(eq(players.id, id)).get();
-  if (!row || row.role !== 'player') throw fail(404, 'notFound');
-  return row;
-};
+import { onceAtATime, targetOf } from './target.ts';
 
 /** Changes a player's save as one of their own requests would, brought up to now first, and tells their
  *  open pages. */
@@ -39,20 +32,24 @@ async function change<R>(ctx: Ctx, playerId: string, edit: (doc: SaveDoc) => { d
     next = r.doc;
     return r;
   });
-  if (next) announce(ctx, playerId, next, events, t);
+  // An admin's change is no act of the player's: it never counts towards their joining the hiscores.
+  if (next) announce(ctx, playerId, next, events, t, false);
   return out.result;
 }
 
 export function powerRoutes(app: FastifyInstance, ctx: Ctx): void {
   const admin = requireAdmin(ctx);
   const names = new Map(catalogOf().map((i) => [i.id, i.name]));
+  const claim = onceAtATime();
 
   contractRoute<{ playerId: string; item: string; count: number; reason: string }>(
     app,
     ROUTES.adminGrant,
     async ({ req, input }) => {
-      playerOf(ctx, input.playerId);
+      targetOf(ctx, input.playerId);
       if (!names.has(input.item)) return { ok: false, reason: 'unknown' } satisfies GrantResult;
+      const key = `grant:${input.playerId}:${input.item}:${input.count}:${input.reason}`;
+      if (!claim(req.playerId!, key, ctx.config.now())) return { ok: false, reason: 'repeated' } satisfies GrantResult;
       const result = await change<GrantResult>(ctx, input.playerId, (doc) => {
         const state = structuredClone(doc.state);
         if (input.count > 0) give(state, input.item, input.count);
@@ -74,8 +71,10 @@ export function powerRoutes(app: FastifyInstance, ctx: Ctx): void {
     app,
     ROUTES.adminXp,
     async ({ req, input }) => {
-      playerOf(ctx, input.playerId);
+      targetOf(ctx, input.playerId);
       if (!allSkills().includes(input.skill)) return { ok: false, reason: 'unknown' } satisfies XpResult;
+      const key = `xp:${input.playerId}:${input.skill}:${input.xp}:${input.reason}`;
+      if (!claim(req.playerId!, key, ctx.config.now())) return { ok: false, reason: 'repeated' } satisfies XpResult;
       const result = await change<XpResult>(ctx, input.playerId, (doc) => {
         const state = structuredClone(doc.state);
         const had = Object.hasOwn(state.skills, input.skill) ? state.skills[input.skill].xp : 0;
@@ -93,7 +92,7 @@ export function powerRoutes(app: FastifyInstance, ctx: Ctx): void {
     app,
     ROUTES.adminSignOut,
     ({ req, reply, input }) => {
-      playerOf(ctx, input.playerId);
+      targetOf(ctx, input.playerId);
       ctx.sessions.endAll(input.playerId);
       ctx.live.closePlayer(input.playerId);
       audit(ctx, req, 'signOut', input.playerId);
@@ -106,7 +105,7 @@ export function powerRoutes(app: FastifyInstance, ctx: Ctx): void {
     app,
     ROUTES.adminDelete,
     ({ req, reply, input }) => {
-      const row = playerOf(ctx, input.playerId);
+      const row = targetOf(ctx, input.playerId, req);
       // Their name typed as it is, so the wrong player is never deleted by a slip.
       if (row.name !== input.name.trim()) throw fail(422, 'invalidInput', { fields: ['name'] });
       erase(ctx, input.playerId);

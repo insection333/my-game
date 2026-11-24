@@ -7,7 +7,7 @@
 import { FIRE_WATCH_HOURS, type RecordResponse } from '@idle-clash/contracts';
 import { fmt, t } from '@idle-clash/content';
 import { Pill, Tabs, TextLink } from '@idle-clash/ui';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { api } from '../api.ts';
 import { handled } from '../game/session.ts';
 import { PageHead } from '../pages/PageHead.tsx';
@@ -58,12 +58,18 @@ export function PlayerRecord({ id }: { id: string }) {
       );
     else void load();
   }, [id]); // eslint-disable-line react-hooks/exhaustive-deps
+  // One press at a time (session 231): a double click on Give gave twice, and on Set a new password set two.
+  const busy = useRef(false);
   const run: Run = async (go, then, own) => {
+    if (busy.current) return;
+    busy.current = true;
     setError(null);
     try {
       then(await go());
     } catch (err) {
-      if (!handled(err)) setError(refused(err, own));
+      if (!handled(err)) setError(refused(err, { yourself: t('record.yourself'), ...own }));
+    } finally {
+      busy.current = false;
     }
   };
   const here = `/admin/players/${encodeURIComponent(id)}`;

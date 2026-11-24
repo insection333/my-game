@@ -4,22 +4,15 @@
 // open page; the count it goes to is the one the admin was shown, or it is asked again. System: the build,
 // the server's health, the features switched on, the size of the tables that grow, and the browser errors
 // of the last day.
-import {
-  MAIL,
-  REALM,
-  ROUTES,
-  type BroadcastResult,
-  type LiveResponse,
-  type SystemResponse,
-} from '@idle-clash/contracts';
+import { REALM, ROUTES, type BroadcastResult, type LiveResponse, type SystemResponse } from '@idle-clash/contracts';
 import { FEATURES } from '@idle-clash/features';
-import { and, desc, eq, inArray, isNull, notInArray } from 'drizzle-orm';
+import { and, desc, eq, inArray, isNull } from 'drizzle-orm';
 import type { FastifyInstance } from 'fastify';
 import { requireAdmin } from '../auth/routes.ts';
 import type { Ctx } from '../context.ts';
 import { adminActions, mail, players, telemetry } from '../db/schema.ts';
 import { contractRoute } from '../http.ts';
-import { announceMail } from '../mail/mail.ts';
+import { announceMail, keepNewest } from '../mail/mail.ts';
 import { backupsHealth } from '../ops/status.ts';
 import { buildOf } from '../web.ts';
 import { audit } from './audit.ts';
@@ -88,23 +81,11 @@ export function liveRoutes(app: FastifyInstance, ctx: Ctx): void {
       ctx.store.sqlite.transaction(() => {
         for (const id of ids) {
           ctx.db.insert(mail).values({ toId: id, fromId: REALM, body: input.text, at }).run();
-          // Each inbox keeps its newest, the oldest going first, as it does for every letter.
-          const keep = ctx.db
-            .select({ id: mail.id })
-            .from(mail)
-            .where(eq(mail.toId, id))
-            .orderBy(desc(mail.at), desc(mail.id))
-            .limit(MAIL.INBOX)
-            .all()
-            .map((r) => r.id);
-          ctx.db
-            .delete(mail)
-            .where(and(eq(mail.toId, id), notInArray(mail.id, keep)))
-            .run();
+          keepNewest(ctx, id);
         }
       })();
       for (const id of ids) if (ctx.live.has(id)) announceMail(ctx, id);
-      audit(ctx, req, 'broadcast', null, { count: ids.length, text: input.text.slice(0, 200) });
+      audit(ctx, req, 'broadcast', null, { count: ids.length, text: input.text });
       return { ok: true, count: ids.length } satisfies BroadcastResult;
     },
     admin,
