@@ -21,6 +21,9 @@ import { castleRoutes } from './castle/routes.ts';
 import { contractRoute, harden } from './http.ts';
 import { RateLimiter } from './security.ts';
 import { adminRoutes } from './admin/routes.ts';
+import { auditRoutes } from './admin/audit.ts';
+import { directoryRoutes } from './admin/directory.ts';
+import { overviewRoutes } from './admin/overview.ts';
 import { feedbackRoutes } from './feedback.ts';
 import { moderationRoutes } from './moderation.ts';
 import { profileRoutes } from './game/profile.ts';
@@ -133,6 +136,11 @@ export async function buildApp(
     async ({ req, reply, input }) => {
       limit(ctx, reply, `errors:${ipOf(req)}`, 30, 60_000);
       req.log.warn({ browserError: input, player: req.playerId }, 'browser error');
+      // Counted for the console's overview (session 228), by player id only, as all telemetry is.
+      ctx.telemetry.record('browserError', req.playerId, {
+        message: input.message.slice(0, 300),
+        url: input.url.slice(0, 200),
+      });
       return reply.code(204).send();
     },
     identify(ctx),
@@ -140,6 +148,9 @@ export async function buildApp(
   authRoutes(app, ctx);
   accountRoutes(app, ctx);
   adminRoutes(app, ctx);
+  overviewRoutes(app, ctx);
+  directoryRoutes(app, ctx);
+  auditRoutes(app, ctx);
   feedbackRoutes(app, ctx, features);
   if (config.emailEnabled) emailRoutes(app, ctx);
   gameRoutes(app, ctx, features);

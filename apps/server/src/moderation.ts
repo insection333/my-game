@@ -18,6 +18,7 @@ import type { FastifyInstance } from 'fastify';
 import { isAdmin, requireAdmin, requirePlayer } from './auth/routes.ts';
 import { limit, type Ctx } from './context.ts';
 import { players, reports, siegeFlows } from './db/schema.ts';
+import { audit } from './admin/audit.ts';
 import { contractRoute, fail } from './http.ts';
 
 const DAY = 86_400_000;
@@ -156,7 +157,7 @@ export function moderationRoutes(app: FastifyInstance, ctx: Ctx): void {
     MODERATION_ROUTES.adminSettleReports,
     ({ req, reply, input }) => {
       settleReports(ctx, input.playerId, now());
-      ctx.telemetry.record('admin.dismissReports', req.playerId, { target: input.playerId });
+      audit(ctx, req, 'dismissReports', input.playerId);
       return reply.code(204).send();
     },
     admin,

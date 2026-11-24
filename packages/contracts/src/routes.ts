@@ -11,6 +11,7 @@ import { MAIL_ROUTES } from './mail.ts';
 import { PUSH_ROUTES } from './push.ts';
 import { PROFILE_ROUTES } from './profile.ts';
 import { CLOSED_TEST_ROUTES } from './closed-test.ts';
+import { CONSOLE_ROUTES } from './console.ts';
 import { PATHS } from './paths.ts';
 
 export const SignUp = z.object({ name: PlayerName, password: Password, ageConfirmed: z.literal(true) }).strict();
@@ -199,6 +200,7 @@ export const ROUTES = {
     example: { playerId: '00000000-0000-4000-8000-000000000000' },
   }),
   ...CLOSED_TEST_ROUTES,
+  ...CONSOLE_ROUTES,
   ...CASTLE_ROUTES,
   ...MODERATION_ROUTES,
   ...PROFILE_ROUTES,

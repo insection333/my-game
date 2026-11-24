@@ -44,6 +44,9 @@ export const PATHS = {
   pushKey: '/api/push/key',
   pushOn: '/api/push/on',
   pushOff: '/api/push/off',
+  adminOverview: '/api/admin/overview',
+  adminDirectory: '/api/admin/directory',
+  adminAudit: '/api/admin/audit',
 } as const;
 
 /** A feature's own route. */

@@ -1,5 +1,5 @@
 // The admin console (session 227): signed out, /admin leads to the welcome page's sign-in, the one the
-// players use (the owner: no sign-in of its own); signed in there as Admin, the console opens on Players
+// players use (the owner: no sign-in of its own); signed in there as Admin, the console opens on its Overview
 // without the game ever loading, each section opens from its link, and Sign out comes back to the form.
 import { openPage, type Served } from './session.ts';
 
@@ -19,11 +19,11 @@ export async function runConsoleProofs(served: Served): Promise<string[]> {
     await page.getByLabel('Name').fill('Admin');
     await page.getByLabel('Password').fill(served.ctx.config.staff.password!);
     await page.getByRole('button', { name: 'Sign in' }).click();
-    await page.getByRole('heading', { name: 'Players', level: 1 }).waitFor({ timeout: 10_000 });
+    await page.getByRole('heading', { name: 'Overview', level: 1 }).waitFor({ timeout: 10_000 });
     if (asked.some((p) => p === '/api/game' || p.startsWith('/api/game/')))
       problems.push('The console loaded the game for its own account');
     step = 'each section opens from its link';
-    for (const name of ['Moderation', 'Mail', 'Closed test', 'Players']) {
+    for (const name of ['Players', 'Moderation', 'Mail', 'Closed test', 'Audit log', 'Overview']) {
       await page.getByRole('navigation', { name: 'Console sections' }).getByRole('link', { name }).click();
       await page.getByRole('heading', { name, level: 1 }).waitFor({ timeout: 10_000 });
     }

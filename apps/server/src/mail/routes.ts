@@ -15,6 +15,7 @@ import type { FastifyInstance } from 'fastify';
 import { requireAdmin, requirePlayer } from '../auth/routes.ts';
 import { limit, type Ctx } from '../context.ts';
 import { mail, mailMutes, mailRefused, players } from '../db/schema.ts';
+import { audit } from '../admin/audit.ts';
 import { contractRoute, fail } from '../http.ts';
 import { announceMail, block, inbox, readAll, remove, send } from './mail.ts';
 
@@ -158,7 +159,7 @@ export function mailRoutes(app: FastifyInstance, ctx: Ctx): void {
   contractRoute<{ player: string; action: 'warn' | 'mute' | 'unmute' }>(
     app,
     MAIL_ROUTES.adminMailAction,
-    ({ reply, input }) => {
+    ({ req, reply, input }) => {
       const target = idOf(ctx, input.player);
       if (!target) throw fail(404, 'notFound');
       const t0 = now();
@@ -176,6 +177,7 @@ export function mailRoutes(app: FastifyInstance, ctx: Ctx): void {
           .onConflictDoUpdate({ target: mailMutes.playerId, set: { until: t0 + MUTE_DAYS * DAY } })
           .run();
       else ctx.db.delete(mailMutes).where(eq(mailMutes.playerId, target)).run();
+      audit(ctx, req, input.action === 'warn' ? 'warn' : input.action === 'mute' ? 'mute' : 'unmute', target);
       return reply.code(204).send();
     },
     admin,

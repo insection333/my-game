@@ -263,3 +263,18 @@
 .opened:focus {
   outline: none;
 }
+
+/* A player's record (session 228): the way back to the directory, the name, and the record. */
+.record {
+  display: grid;
+  gap: var(--s-3);
+  justify-items: start;
+}
+
+.record > * {
+  justify-self: stretch;
+}
+
+.record > a {
+  justify-self: start;
+}

@@ -9,7 +9,16 @@ import { ROUTES } from '@idle-clash/contracts';
 import { eq, sql } from 'drizzle-orm';
 import type { FastifyInstance } from 'fastify';
 import { limit, type Ctx } from '../context.ts';
-import { bastionLogs, castleRecords, emailTokens, playerBastions, players, sessions, telemetry } from '../db/schema.ts';
+import {
+  adminActions,
+  bastionLogs,
+  castleRecords,
+  emailTokens,
+  playerBastions,
+  players,
+  sessions,
+  telemetry,
+} from '../db/schema.ts';
 import { contractRoute, fail } from '../http.ts';
 import { eraseFeedback } from '../feedback.ts';
 import { eraseModeration } from '../moderation.ts';
@@ -29,6 +38,14 @@ export function erase(ctx: Ctx, playerId: string): void {
     ctx.db
       .delete(telemetry)
       .where(sql`instr(${telemetry.data}, ${playerId}) > 0`)
+      .run();
+    // The console's log keeps what admins did, but nothing of this player (session 228): what was done to
+    // them goes, and an admin's own deleted account is no longer named on what they did.
+    ctx.db.delete(adminActions).where(eq(adminActions.targetId, playerId)).run();
+    ctx.db
+      .update(adminActions)
+      .set({ actorId: 'departed', actorName: '' })
+      .where(eq(adminActions.actorId, playerId))
       .run();
     eraseFeedback(ctx, playerId);
     eraseModeration(ctx, playerId);

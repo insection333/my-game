@@ -9,28 +9,40 @@ import { account, useSession } from '../game/session.ts';
 import { PageHead } from '../pages/PageHead.tsx';
 import { NotFound } from '../pages/Simple.tsx';
 import { Ready } from '../Ready.tsx';
-import { navigate, useLocation } from '../router.ts';
+import { navigate } from '../router.ts';
 import { ClosedTest } from './ClosedTest.tsx';
 import { MailMonitor } from './Mail.tsx';
 import { Moderation } from './Moderation.tsx';
-import { Players } from './Players.tsx';
+import { Audit } from './Audit.tsx';
+import { Directory } from './Directory.tsx';
+import { Overview } from './Overview.tsx';
+import { PlayerRecord } from './Players.tsx';
 import s from './console.module.css';
 
 export const SECTIONS = [
+  { id: 'overview', label: 'console.overview', lead: 'console.overview.lead' },
   { id: 'players', label: 'console.players', lead: 'console.players.lead' },
   { id: 'moderation', label: 'console.moderation', lead: 'console.moderation.lead' },
   { id: 'mail', label: 'console.mail', lead: 'console.mail.lead' },
   { id: 'test', label: 'console.test', lead: 'console.test.lead' },
+  { id: 'audit', label: 'console.audit', lead: 'console.audit.lead' },
 ] as const;
 export type SectionId = (typeof SECTIONS)[number]['id'];
 
-/** The section an address opens, or null for one the console does not have. */
+/** The section an address opens (a player's record is in Players), or null for one the console lacks. */
 export function sectionOf(path: string): SectionId | null {
-  const m = /^\/admin(?:\/([a-z]+))?$/.exec(path);
+  const m = /^\/admin(?:\/([a-z]+)(?:\/[^/]+)?)?$/.exec(path);
   if (!m) return null;
-  if (!m[1]) return 'players';
+  if (!m[1]) return 'overview';
+  if (path.split('/').length > 3 && m[1] !== 'players') return null;
   return SECTIONS.find((x) => x.id === m[1])?.id ?? null;
 }
+
+/** The player whose record an address opens. */
+const recordOf = (path: string): string | null => {
+  const m = /^\/admin\/players\/([^/]+)$/.exec(path);
+  return m ? decodeURIComponent(m[1]) : null;
+};
 
 const go = (href: string) => (e: MouseEvent) => {
   if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
@@ -38,22 +50,22 @@ const go = (href: string) => (e: MouseEvent) => {
   navigate(href);
 };
 
-function Body({ id }: { id: SectionId }) {
-  useLocation();
-  const opened = new URL(location.href).searchParams.get('player');
-  if (id === 'players') return <Players opened={opened} />;
-  if (id === 'moderation')
-    return <Moderation open={(p) => navigate(`/admin/players?player=${encodeURIComponent(p)}`)} />;
+function Body({ id, path }: { id: SectionId; path: string }) {
+  const record = recordOf(path);
+  if (id === 'overview') return <Overview />;
+  if (id === 'players') return record ? <PlayerRecord id={record} /> : <Directory />;
+  if (id === 'moderation') return <Moderation open={(p) => navigate(`/admin/players/${encodeURIComponent(p)}`)} />;
   if (id === 'mail') return <MailMonitor />;
+  if (id === 'audit') return <Audit />;
   return <ClosedTest />;
 }
 
-function Section({ id }: { id: SectionId }) {
+function Section({ id, path }: { id: SectionId; path: string }) {
   const at = SECTIONS.find((x) => x.id === id)!;
   return (
     <>
-      <PageHead title={t(at.label)} lead={t(at.lead)} />
-      <Body id={id} />
+      {!recordOf(path) && <PageHead title={t(at.label)} lead={t(at.lead)} />}
+      <Body id={id} path={path} />
     </>
   );
 }
@@ -92,7 +104,7 @@ export default function Console({ path }: { path: string }) {
       <nav className={s.nav} aria-label={t('console.sections')} data-chrome>
         <ul>
           {SECTIONS.map((x) => {
-            const href = `/admin/${x.id}`;
+            const href = x.id === 'overview' ? '/admin' : `/admin/${x.id}`;
             return (
               <li key={x.id}>
                 <a
@@ -110,7 +122,9 @@ export default function Console({ path }: { path: string }) {
         </ul>
       </nav>
       <main id="console-main" className={s.main} tabIndex={-1}>
-        <div className={s.content}>{section ? <Section key={section} id={section} /> : <NotFound />}</div>
+        <div className={s.content}>
+          {section ? <Section key={recordOf(path) ?? section} id={section} path={path} /> : <NotFound />}
+        </div>
       </main>
       <Ready />
     </div>
