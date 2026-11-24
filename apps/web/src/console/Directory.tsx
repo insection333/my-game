@@ -168,7 +168,10 @@ export function Directory() {
       {found && found.rows.length === 0 && <p className={s.note}>{t('console.directory.none')}</p>}
       {found && found.rows.length > 0 && (
         <>
-          <ResponsiveTable caption={t('admin.players')} columns={columns} rows={found.rows} rowKey={(r) => r.id} />
+          {/* On a panel's own ground, where its pills read as they do everywhere else. */}
+          <Panel flush>
+            <ResponsiveTable caption={t('admin.players')} columns={columns} rows={found.rows} rowKey={(r) => r.id} />
+          </Panel>
           <div className={s.pager}>
             <span>
               {t('console.page', {

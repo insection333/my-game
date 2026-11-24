@@ -110,7 +110,9 @@ export function Audit() {
       </Panel>
       {entries?.length === 0 && <p className={s.note}>{t('console.audit.none')}</p>}
       {entries && entries.length > 0 && (
-        <ResponsiveTable caption={t('console.audit')} columns={columns} rows={entries} rowKey={(e) => String(e.id)} />
+        <Panel flush>
+          <ResponsiveTable caption={t('console.audit')} columns={columns} rows={entries} rowKey={(e) => String(e.id)} />
+        </Panel>
       )}
       {more !== null && (
         <div className={s.pager}>
