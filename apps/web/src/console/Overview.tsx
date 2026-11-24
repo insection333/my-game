@@ -113,7 +113,7 @@ export function Overview() {
                 {
                   label: t('console.waiting.refused'),
                   value: fmt.int(o.moderation.refusedToday),
-                  note: t('console.waiting.refusedNote'),
+                  note: t('console.waiting.refusedWhat'),
                   href: '/admin/mail?mail=watch',
                 },
                 {

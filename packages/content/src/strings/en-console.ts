@@ -58,7 +58,7 @@ export const consoleWords = {
   'console.waiting.reports': 'Open reports',
   'console.waiting.reported': 'Players: {count}',
   'console.waiting.refused': 'Refused today',
-  'console.waiting.refusedNote': 'Messages the filter stopped',
+  'console.waiting.refusedWhat': 'Messages the filter stopped',
   'console.waiting.muted': 'Players muted',
   'console.waiting.feedback': 'Feedback this week',
   'console.realm': 'The realm',
