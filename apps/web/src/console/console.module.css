@@ -218,7 +218,7 @@
   }
 }
 
-@container bar (max-width: 22rem) {
+@container bar (max-width: 26rem) {
   .brandName {
     display: none;
   }
@@ -413,6 +413,11 @@
   border-radius: 2px;
   background: var(--woad);
   box-shadow: 0 0 8px var(--signal-glow);
+}
+
+/* Saira runs wider than the game's face: a strip of tabs set a little narrower keeps its labels whole. */
+.console :global([data-ui='Tab']) {
+  font-stretch: 88%;
 }
 
 /* A table's head on a faint band; a row under the pointer lit. */
