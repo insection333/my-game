@@ -279,12 +279,22 @@
   justify-self: start;
 }
 
-/* The record's standing beside its name, and a question asked in place (a ban, signing out everywhere). */
+/* The record's standing beside its name, on a panel's ground where its pills read as they do in a panel,
+   and a question asked in place (a ban, signing out everywhere). */
 .badges {
   display: flex;
   flex-wrap: wrap;
   gap: var(--s-1);
+  width: fit-content;
+  max-width: 100%;
   margin: var(--s-1) 0 0;
+  padding: var(--s-1);
+  border-radius: var(--r-control);
+  background: var(--surface);
+}
+
+.badges:empty {
+  display: none;
 }
 
 .ask {
