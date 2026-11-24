@@ -1,6 +1,6 @@
-// The admin console (session 227): signed out at /admin, the console's own sign-in; signed in there as
-// Admin, the console opens on Players without the game ever loading, each section opens from its link,
-// and Sign out comes back to the sign-in.
+// The admin console (session 227): signed out, /admin leads to the welcome page's sign-in, the one the
+// players use (the owner: no sign-in of its own); signed in there as Admin, the console opens on Players
+// without the game ever loading, each section opens from its link, and Sign out comes back to the form.
 import { openPage, type Served } from './session.ts';
 
 const say = (err: unknown) => (err instanceof Error ? err.message.split('\n')[0] : String(err));
@@ -10,11 +10,12 @@ export async function runConsoleProofs(served: Served): Promise<string[]> {
   const page = await openPage('chromium', '/admin', { viewport: { width: 390, height: 844 } }, 'visitor');
   const asked: string[] = [];
   page.on('request', (r) => asked.push(new URL(r.url()).pathname));
-  let step = 'the sign-in opens';
+  let step = '/admin leads to the sign-in';
   try {
     await page.goto(served.url + '/admin');
-    await page.getByRole('heading', { name: 'Admin console' }).waitFor({ timeout: 10_000 });
-    step = 'Admin signs in';
+    await page.waitForURL((u) => u.pathname.startsWith('/welcome'), { timeout: 10_000 });
+    await page.getByRole('link', { name: 'Sign in' }).click();
+    step = "Admin signs in on the players' form";
     await page.getByLabel('Name').fill('Admin');
     await page.getByLabel('Password').fill(served.ctx.config.staff.password!);
     await page.getByRole('button', { name: 'Sign in' }).click();
@@ -28,8 +29,7 @@ export async function runConsoleProofs(served: Served): Promise<string[]> {
     }
     step = 'Sign out comes back to the sign-in';
     await page.getByRole('button', { name: 'Sign out' }).click();
-    await page.getByRole('heading', { name: 'Admin console' }).waitFor({ timeout: 10_000 });
-    if (new URL(page.url()).pathname !== '/admin') problems.push(`Signing out of the console lands on ${page.url()}`);
+    await page.waitForURL((u) => u.pathname === '/welcome/sign-in', { timeout: 10_000 });
   } catch (err) {
     problems.push(`The console: ${step} failed (${say(err)})`);
   } finally {

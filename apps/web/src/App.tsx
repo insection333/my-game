@@ -7,9 +7,9 @@ import { replace, useLocation } from './router.ts';
 import { playedHere, welcomeFor } from './welcome-path.ts';
 
 const Game = lazy(() => import('./Game.tsx'));
-// The admin console (session 227): its own part of the page, and its own sign-in at /admin.
+// The admin console (session 227): its own part of the page. It is signed into on the welcome page's own
+// form, which opens the console for the console's account (the owner: no sign-in of its own).
 const Console = lazy(() => import('./console/Console.tsx'));
-const ConsoleSignIn = lazy(() => import('./console/ConsoleSignIn.tsx'));
 
 const isWelcome = (path: string) => path === '/welcome' || path === '/welcome/sign-in';
 export const isConsolePath = (path: string) => path === '/admin' || path.startsWith('/admin/');
@@ -21,7 +21,7 @@ export function App() {
   // Not signed in: every address leads to the welcome page, which returns there afterwards.
   // Signed in: the welcome page leads on to where the player was going.
   const redirect =
-    phase === 'signedOut' && !isWelcome(path) && !legalPage(path) && !isConsolePath(path)
+    phase === 'signedOut' && !isWelcome(path) && !legalPage(path)
       ? welcomeFor(location.pathname, location.search, playedHere())
       : phase === 'playing' && isWelcome(path)
         ? next
@@ -47,12 +47,6 @@ export function App() {
         <Legal page={legal} back="/welcome" standalone />
         <Ready />
       </>
-    );
-  if (phase === 'signedOut' && isConsolePath(path))
-    return (
-      <Suspense fallback={null}>
-        <ConsoleSignIn />
-      </Suspense>
     );
   if (phase === 'console')
     return (

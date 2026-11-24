@@ -13,8 +13,4 @@ export const consoleWords = {
   'console.mail.lead': 'Letters between players, and what the language filter stopped.',
   'console.test': 'Closed test',
   'console.test.lead': 'How each tester plays, and what they wrote to the team.',
-  'console.signIn.lead': 'Sign in to look after Idle Clash and its players.',
-  'console.signIn.name': 'Name',
-  'console.signIn.password': 'Password',
-  'console.signIn.submit': 'Sign in',
 };

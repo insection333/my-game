@@ -133,8 +133,7 @@ export const account = {
     // 182): left on, a browser signed out went on showing the player's notices.
     await pushOff().catch(() => undefined);
     await api.signOut().catch(() => undefined);
-    // The console's account goes back to the console's own sign-in (session 227).
-    replace(session.staff ? '/admin' : '/welcome/sign-in');
+    replace('/welcome/sign-in');
     signedOut();
   },
 };

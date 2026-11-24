@@ -3,7 +3,7 @@
 // Back to the game), the sections down the side in the lodge's night on a wide screen and as a grid of
 // links above the page on a phone, and the section open. Each section has its own address.
 import { t } from '@idle-clash/content';
-import { Button, GameMark } from '@idle-clash/ui';
+import { GameMark } from '@idle-clash/ui';
 import { useEffect, type MouseEvent } from 'react';
 import { account, useSession } from '../game/session.ts';
 import { PageHead } from '../pages/PageHead.tsx';
@@ -78,15 +78,15 @@ export default function Console({ path }: { path: string }) {
         </span>
         <span className={s.who}>
           <span className={s.whoName}>{t('console.signedInAs', { name: player?.name ?? '' })}</span>
-          {staff ? (
-            <Button variant="secondary" onClick={() => void account.signOut()}>
-              {t('console.signOut')}
-            </Button>
-          ) : (
-            <Button variant="secondary" onClick={() => navigate('/')}>
-              {t('console.back')}
-            </Button>
-          )}
+          {/* Drawn for the bar's night, so it is its own control and not a page's Button (one control, one look). */}
+          <button
+            type="button"
+            data-ui="ConsoleBarButton"
+            className={s.barButton}
+            onClick={() => (staff ? void account.signOut() : navigate('/'))}
+          >
+            {staff ? t('console.signOut') : t('console.back')}
+          </button>
         </span>
       </header>
       <nav className={s.nav} aria-label={t('console.sections')} data-chrome>
