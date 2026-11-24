@@ -9,6 +9,9 @@ export const seasons = {
   'season.name.omens': 'The Omens',
   'season.name.road': 'The Open Road',
   'season.name.plenty': 'The Plenty',
+  // Two twists together, from the seventh season (session 221).
+  'season.pairName': '{a} and {b}',
+  'season.givesPair': '{a}; {b}',
   'season.gives.greenwood': 'Gathering skills earn {pct} more XP',
   'season.gives.forgefire': 'Artisan skills earn {pct} more XP',
   'season.gives.muster': 'Melee, Archery, Magic and Hitpoints earn {pct} more XP',

@@ -1,6 +1,12 @@
 // The deeds and honours of year two's content (sessions 215 to 219): part of the strings file (en.ts). The
 // Deep's depths, the pedlar's favour and the realm's works, with the titles and banner they open.
 export const yearTwo = {
+  // Seasons of two twists (session 221).
+  'deed.pairingFirst.name': 'Two twists at once',
+  'deed.pairingFirst.text': 'Do {goals} goals or more in a season of two twists.',
+  'deed.pairings.name': '{count} pairings played',
+  'deed.pairings.text': 'Do {goals} goals or more in seasons of {count} different pairings of twists.',
+  'deeds.family.pairings': 'Pairings played',
   // The legendary siege (session 220).
   'deed.legendFirst.name': 'A legend taken',
   'deed.legendFirst.text': "Take all five chambers of a season's legendary siege.",

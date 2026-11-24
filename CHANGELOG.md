@@ -359,3 +359,4 @@
 - Session 218: the realm's work of the season, raised together in five stages from gold and materials of any tier, no one ranked by what they gave; each stage told to every giver, the finished work thanked by name; deeds for works raised.
 - Session 219: Kindling's gifts: an ornament on a seal at its sixth Kindling, the Kindled frame at any eighth, each skill's own title at its tenth, and a Kindlings ladder on Hiscores.
 - Session 220: the legendary siege: each season a named fortress of five chambers on the War, taken in order once a season, measured against the lord's own might at their first assault; war marks, two deeds and the Legend banner.
+- Session 221: seasons pair two twists from the seventh, the fifteen pairings in turn, with deeds for pairings played; every season holds an omen of its own in the Deep and puts its mark on the realm's boss.

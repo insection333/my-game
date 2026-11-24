@@ -43,7 +43,8 @@ function everything(): State {
   s.features = {
     goals: { claimed: [], weeks: 52 },
     bounty: { taken: null, day: null, took: [], done: 200, elites: 25 },
-    seasons: { goals: { '1': 60, '2': 60, '3': 60, '4': 60, '5': 60, '6': 60 }, seen: 6 },
+    // The six twists alone, then all fifteen pairings (session 221).
+    seasons: { goals: Object.fromEntries(Array.from({ length: 21 }, (_, i) => [String(i + 1), 60])), seen: 21 },
     steading: { stages: Object.fromEntries(WORKS.map((w) => [w.id, STAGES])) },
     combat: { worn, health: null, healthAt: 0, retreated: null },
     storehouse: { enlargements: ENLARGE_COSTS.length },

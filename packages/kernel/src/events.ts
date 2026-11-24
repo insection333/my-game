@@ -114,7 +114,7 @@ export interface EventMap {
   passedBy: { skill: string; foe: string; place: number };
   /** A season seen for the first time (session 166): its number, its twist, and the goals done in the season
    *  before it (0 when none). Said once, on the player's first visit in it. */
-  seasonOpened: { number: number; twist: string; last: number };
+  seasonOpened: { number: number; twist: string; pair?: string; last: number };
   /** A lane stopped; the reason says why, so the page can say what to do. */
   laneStopped: { lane: LaneId; action: ActionRef | null; reason: StopReason };
   /** A command was refused: what was asked, and why not, so the page can say so. */

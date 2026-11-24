@@ -27,4 +27,9 @@ describe('the help', () => {
     expect(t('help.smithing.body')).toMatch(/whetstones/);
     expect(t('help.storehouse.body')).toMatch(/Sell finds/);
   });
+
+  it("says the season's mark on the realm's boss and its omen in the Deep (session 221)", () => {
+    expect(t('help.combat.body')).toContain("season's mark");
+    expect(t('help.expeditions.body')).toContain("the season's own");
+  });
 });

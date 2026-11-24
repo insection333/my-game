@@ -8,7 +8,9 @@ import type { State } from '@idle-clash/kernel';
 import { z } from 'zod';
 import { FOES, type Foe } from './combat/data.ts';
 import { oddsFor } from './combat/odds.ts';
+import type { Trait } from './combat/foes.ts';
 import { BOSSES, type Boss } from './expeditions/data.ts';
+import { seasonAt } from './season.ts';
 import { skillLevel } from './skill.ts';
 import { weekEnds, weekOf } from './week-time.ts';
 
@@ -58,10 +60,27 @@ export function realmOf(state: State): RealmMirror | null {
   return r.success ? r.data : null;
 }
 
-/** A foe as the realm's boss: a boss's health, in the realm boss's name. */
+/** The season's mark on the realm's boss (session 221): each season it fights one of the bosses' ways, in
+ *  turn (all but the Ember Wyrm's turn of style, which a foe of the same style would not show), whatever
+ *  boss is the realm's that week. None before the first season. */
+export function realmMarkAt(at: number): Trait | null {
+  const season = seasonAt(at);
+  if (!season) return null;
+  const ways = BOSSES.map((b) => b.trait).filter((tr): tr is Trait => !!tr && tr.kind !== 'shift');
+  return ways[(season.number - 1) % ways.length];
+}
+
+/** A foe as the realm's boss: a boss's health, in the realm boss's name, with the season's mark. */
 function asRealm(base: Foe, at: number): Foe {
   const boss = realmBossIn(weekOf(at));
-  return { ...base, id: `realm:${boss.id}:${base.id}`, hp: base.hp * REALM_HP, gold: base.gold * REALM_GOLD };
+  const mark = realmMarkAt(at);
+  return {
+    ...base,
+    id: `realm:${boss.id}:${base.id}`,
+    hp: base.hp * REALM_HP,
+    gold: base.gold * REALM_GOLD,
+    ...(mark ? { trait: mark } : {}),
+  };
 }
 
 /** The realm's boss at this player's measure: made from the strongest foe open to them whose realm's version

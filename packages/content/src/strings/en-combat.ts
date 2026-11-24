@@ -86,7 +86,7 @@ export const combat: Record<string, string> = {
   'stopShort.tooHurt': 'Out of food',
   'help.combat.title': 'Combat',
   'help.combat.body':
-    "Wear a weapon and fight in the Combat lane. Your weapon sets your style: Melee beats Archery, Archery beats Magic, Magic beats Melee. Food is eaten below half health; with none left you retreat, losing nothing. Each day three bounties on foes you fare well against pay gold and marks for about an hour of fights, and the Expeditions tab holds runs, the bosses and the realm's boss of the week, which every player strikes once a day.",
+    "Wear a weapon and fight in the Combat lane. Your weapon sets your style: Melee beats Archery, Archery beats Magic, Magic beats Melee. Food is eaten below half health; with none left you retreat, losing nothing. Each day three bounties on foes you fare well against pay gold and marks for about an hour of fights, and the Expeditions tab holds runs, the bosses and the realm's boss of the week, which every player strikes once a day and which fights with the season's mark, said on its row.",
   'action.combat.hollow-rat': 'Hollow rat',
   'action.combat.goblin-slinger': 'Goblin slinger',
   'action.combat.marsh-wisp': 'Marsh wisp',

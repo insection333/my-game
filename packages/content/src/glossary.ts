@@ -99,6 +99,10 @@ export const TERMS: [term: string, meaning: string][] = [
   ['Lane', 'One of your workers: Gathering, Artisan, Combat; each runs one action at a time'],
   ['Lasting mark', 'The bonus a Legendary find gives the first time you find it'],
   ['Legendary', 'The rarest find, about 1 in 5,000 actions'],
+  [
+    'Legendary siege',
+    "Castle Clash: a season's named fortress of five chambers, taken in order once a season, measured against your castle's might",
+  ],
   ['Level', 'A step in a skill, 1 to 40; every level unlocks something'],
   [
     'Lucky action',
@@ -150,8 +154,10 @@ export const TERMS: [term: string, meaning: string][] = [
   ['Scene', 'The view behind your profile: the march by day, by night, or your castle'],
   [
     'Season',
-    'Eight weeks with a twist that lifts one part of the game (XP in some skills, finds, marks or items), the six twists in turn',
+    'Eight weeks with a twist that lifts one part of the game (XP in some skills, finds, marks or items), the six twists in turn; from the seventh, two twists together',
   ],
+  ["Season's mark", "The way the realm's boss fights for a season: one of the bosses' own, in turn"],
+  ["Season's omen", "An omen held in the Deep for a whole season, beside the week's two"],
   ['Short goals', 'Three rolling goals of 10 to 15 minutes'],
   ['Siege', "Castle Clash: an attack on another lord's castle for the treasury gold their vault cannot hide"],
   ['Slot', 'A space in the Storehouse for one kind of item, in any amount'],

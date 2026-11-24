@@ -24,7 +24,7 @@ export function RealmRow({ realm }: { realm: RealmView }) {
       <ActionRow
         icon={hasIcon(realm.boss) ? <ItemIcon name={realm.boss} size={32} /> : undefined}
         name={realm.name}
-        facts={[realm.strikes, realm.mine]}
+        facts={[realm.strikes, realm.mine, ...(realm.mark ? [realm.mark] : [])]}
         status={
           fighting ? (
             <Pill tone="woad">{t('action.working')}</Pill>

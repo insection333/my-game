@@ -53,6 +53,12 @@ export function DeepPanel({ deep }: { deep: DeepView }) {
         <div>
           <p className={s.note}>{deep.omensUntil}</p>
           <Twists twists={deep.omens} />
+          {deep.seasonOmen && (
+            <>
+              <p className={s.note}>{deep.seasonOmen.until}</p>
+              <Twists twists={[deep.seasonOmen.omen]} />
+            </>
+          )}
         </div>
         <div className={s.buttons}>
           {!run && (

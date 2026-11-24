@@ -140,6 +140,13 @@ export const SEASONS: Steps = [
   [3, 'hard'],
   [6, 'elite'],
 ];
+/** Pairings played (session 221): different pairings of two twists in whose seasons twenty goals were done;
+ *  the fifteen come round once in about two years and four months. */
+export const PAIRINGS: Steps = [
+  [1, 'hard'],
+  [5, 'elite'],
+  [15, 'master'],
+];
 /** Companions gathered (session 179): three, seven, and all fourteen. */
 export const COMPANIONS_GATHERED: Steps = [
   [3, 'hard'],

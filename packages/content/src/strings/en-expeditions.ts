@@ -3,7 +3,7 @@
 export const expeditions = {
   'help.expeditions.title': 'Expeditions',
   'help.expeditions.body':
-    "Set out into a region for 1, 2, 4 or 8 hours from the Combat page, here or away. A run is six ten-minute fight stages an hour against foes drawn for it, with a cache and a camp each hour, one or two twists, a fork whose road you choose before setting out, and one of the region's two bosses at the end, drawn from those your Hitpoints has opened. Each boss fights its own way, said on its row, and Your odds counts it. Runs pay at least as well as the lane, and they, the bosses and bounties pay marks, which buy relics: lasting boosts in ranks. Once every relic is raised, the quartermaster trades marks for gold. At Hitpoints 99 the Deep opens: a descent with no floor, a depth each ten minutes, its foes stronger each depth down and a boss at every tenth, as deep as a pack of 30 meals takes you; each tenth depth reached leaves a waystone to start from next time, and the week's two omens hold for everyone.",
+    "Set out into a region for 1, 2, 4 or 8 hours from the Combat page, here or away. A run is six ten-minute fight stages an hour against foes drawn for it, with a cache and a camp each hour, one or two twists, a fork whose road you choose before setting out, and one of the region's two bosses at the end, drawn from those your Hitpoints has opened. Each boss fights its own way, said on its row, and Your odds counts it. Runs pay at least as well as the lane, and they, the bosses and bounties pay marks, which buy relics: lasting boosts in ranks. Once every relic is raised, the quartermaster trades marks for gold. At Hitpoints 99 the Deep opens: a descent with no floor, a depth each ten minutes, its foes stronger each depth down and a boss at every tenth, as deep as a pack of 30 meals takes you; each tenth depth reached leaves a waystone to start from next time, and the week's two omens and the season's own hold for everyone.",
 
   'action.expeditions.march': 'Expedition into the march',
   'action.expeditions.fen': 'Expedition into the Sunken Fen',
@@ -82,6 +82,7 @@ export const expeditions = {
   'deep.deepest': 'Deepest: depth {depth}',
   'deep.week': 'This week: depth {depth}',
   'deep.omensUntil': "The week's omens, until {when}",
+  'deep.seasonOmen': "The season's omen, until {when}",
   'deep.from': 'From depth {depth}, your deepest waystone',
   'deep.fromSurface': 'From the surface',
   'deep.pack': 'A pack of {meals}: {food}',
@@ -123,6 +124,7 @@ export const expeditions = {
   'realm.struck': '{name}: struck',
   'realm.struckPays': '{gold} gold and {marks} marks',
   'realm.struckPaysOne': '{gold} gold and 1 mark',
+  'realm.mark': "The season's mark: {way}",
   'realm.held': '{name} held',
   'realm.heldBody': 'No strike today; try again {back}.',
   'realm.fallen': '{name} has fallen',
@@ -144,6 +146,13 @@ export const expeditions = {
   'twist.old-shrine': 'The old shrine',
   'twist.hunters-trail': "The hunters' trail",
   'twist.wardens-gate': "The warden's gate",
+  // The season's omens in the Deep (session 221).
+  'twist.rootbound': 'Rootbound',
+  'twist.forge-glow': 'Forge-glow',
+  'twist.war-drums': 'War drums',
+  'twist.falling-stars': 'Falling stars',
+  'twist.waymarks': 'Waymarks',
+  'twist.deep-larder': 'The deep larder',
   'twistPart.hit.less': 'your hits land {pct} less often',
   'twistPart.finds.twice': 'finds twice as likely',
   'twistPart.heal.less': 'food heals {pct} less',
