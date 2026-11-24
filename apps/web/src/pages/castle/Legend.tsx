@@ -89,9 +89,11 @@ export function Legend() {
               ]}
               fought={<Fought battle="legend" />}
               quiet={
-                <Button variant="quiet" onClick={() => navigate(sheetOf(l.key))}>
-                  {t('castle.target.spies.open')}
-                </Button>
+                waiting ? undefined : (
+                  <Button variant="quiet" onClick={() => navigate(sheetOf(l.key))}>
+                    {t('castle.target.spies.open')}
+                  </Button>
+                )
               }
               attack={
                 <Button
@@ -137,7 +139,11 @@ export function LegendSheet({ onClose }: { onClose: () => void }) {
           </p>
         )}
         <p className={s.muted}>{t('castle.legend.note')}</p>
-        <FoeMissions foe={l.key} level={l.chamber.level} />
+        {l.opens > now ? (
+          <p>{t('castle.legend.opens', { when: fmt.when(l.opens, now) })}</p>
+        ) : (
+          <FoeMissions foe={l.key} level={l.chamber.level} />
+        )}
         <div className={s.sheetSection}>
           <h3>{t('castle.legend.title')}</h3>
           <p>{garrisonWords(l.chamber.garrison, l.chamber.trap)}</p>

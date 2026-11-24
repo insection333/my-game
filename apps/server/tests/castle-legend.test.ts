@@ -52,6 +52,20 @@ describe('the legendary siege over HTTP', () => {
     expect(wrong.result.reason).toBe('unknown');
   });
 
+  it('opens a chamber a week: before its week neither the assault nor the spies go (session 223)', async () => {
+    s = await server();
+    s.clock.now = IN2;
+    const me = await lord('Steward', 12);
+    // Eight days into season 2: the first two chambers stand open.
+    for (const chamber of [0, 1]) expect((await act(me.cookie, { type: 'legend' })).result).toMatchObject({ chamber });
+    expect((await act(me.cookie, { type: 'legend' })).result.reason).toBe('locked');
+    const early = await act(me.cookie, { type: 'spy', target: E.chamberKey(2, 2), mission: 'poison' });
+    expect(early.result.reason).toBe('unknown');
+    s.clock.now = E.chamberOpens(2, 2) + 60_000;
+    const open = await act(me.cookie, { type: 'spy', target: E.chamberKey(2, 2), mission: 'poison' });
+    expect(open.result.ok).toBe(true);
+  });
+
   it('is refused before tier 10 and outside a season', async () => {
     s = await server();
     s.clock.now = IN2;

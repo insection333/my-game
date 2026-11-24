@@ -9,6 +9,8 @@ import { z } from 'zod';
 import type { Castle } from './castle.ts';
 import { avgLevel, edictBonusPct, requiredTreasury } from './economy.ts';
 import { partReader } from '../part.ts';
+import { seasonAt } from '../season.ts';
+import { chamberOpens, LEGEND } from './legend.ts';
 
 const Count = z.number().int().min(0).max(1e9);
 /** The castle's standing, for the deeds that read it (session 33): its average level (whole), fortresses
@@ -26,6 +28,8 @@ export const CastleStanding = z
     routs: Count.optional(),
     /** Seasons the legendary siege was taken in (session 220). */
     legends: Count.optional(),
+    /** The season's legend as far as it went, once the castle faces it (session 223), for the Hearth. */
+    legend: z.object({ season: Count, taken: Count }).strict().optional(),
     /** The day of the last Call to arms answered, for the Hearth's reminder. */
     called: z
       .string()
@@ -58,6 +62,16 @@ export const callAwaits = (state: State, now: number): boolean => {
   return !!standing && standing.called !== new Date(now).toISOString().slice(0, 10);
 };
 
+/** The season's legend chamber that stands open and untaken (session 223), as the save last heard: a week's
+ *  chamber waiting for the lord, for the Hearth's Next up; null when none waits. */
+export function legendAwaits(state: State, now: number): { season: number; n: number } | null {
+  const legend = mirrorOf(state).standing?.legend;
+  const season = seasonAt(now)?.number;
+  if (!legend || !season) return null;
+  const n = legend.season === season ? legend.taken : 0;
+  return n < LEGEND.CHAMBERS && chamberOpens(season, n) <= now ? { season, n } : null;
+}
+
 /** A lord's castle standing as their save holds it, or null before their castle is raised. */
 export const castleStanding = (state: State): CastleStanding | null => mirrorOf(state).standing ?? null;
 
@@ -73,6 +87,7 @@ export function standingOf(c: Castle): CastleStanding {
     tempered: Math.max(0, ...Object.values(c.tempers)),
     routs: c.routs,
     legends: c.legends,
+    ...(c.incursionTier >= LEGEND.OPENS_AT_TIER ? { legend: { season: c.legendSeason, taken: c.legendTaken } } : {}),
     called: c.lastCtaDateUtc,
   };
 }

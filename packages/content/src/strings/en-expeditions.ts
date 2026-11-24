@@ -124,7 +124,7 @@ export const expeditions = {
   'realm.struck': '{name}: struck',
   'realm.struckPays': '{gold} gold and {marks} marks',
   'realm.struckPaysOne': '{gold} gold and 1 mark',
-  'realm.mark': "The season's mark: {way}",
+  'realm.mark': 'This season it fights as {boss} does: {way}',
   'realm.held': '{name} held',
   'realm.heldBody': 'No strike today; try again {back}.',
   'realm.fallen': '{name} has fallen',

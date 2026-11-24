@@ -102,6 +102,8 @@ describe("a season's omen and mark", () => {
         realm: { week: weekOf(into(2)), needed: 8, strikes: 0, mine: 0, fell: false, owed: null },
       },
     };
-    expect(realmView(s, into(2))!.mark).toBe("The season's mark: Rages below half health");
+    expect(realmView(s, into(2))!.mark).toBe(
+      'This season it fights as the Troll-chief of the hill does: rages below half health',
+    );
   });
 });

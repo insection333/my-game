@@ -1,7 +1,7 @@
 // The realm's boss of the week in the Combat lane (session 174): fought once a day at the player's own
 // measure (shared/realm.ts), a win a strike for the realm, paying gold, marks and XP as a fight does; and,
 // once the server says it fell with the player's strike, their share taken from the Combat page.
-import { dayTurns, fmt, t } from '@idle-clash/content';
+import { dayTurns, fmt, midSentence, t } from '@idle-clash/content';
 import {
   give,
   seeded,
@@ -27,6 +27,8 @@ import {
   weekOf,
 } from '../shared/realm.ts';
 import { realmName } from '../shared/realm-words.ts';
+import type { Foe } from '../shared/combat/foes.ts';
+import { BOSSES, type Boss } from '../shared/expeditions/data.ts';
 import { traitWords } from './views.ts';
 import { noRoom } from '../shared/storehouse.ts';
 import { dayOf } from './boss.ts';
@@ -124,7 +126,7 @@ export interface RealmView {
   /** Your odds' verdict against the realm's boss at your measure. */
   verdict: string | null;
   verdictId: string | null;
-  /** The season's mark on it, in words ("The season's mark: Rages below half health"), or null. */
+  /** The season's mark on it, in words ("This season it fights as the Barrow-king does: …"), or null. */
   mark: string | null;
   /** Why it cannot be fought now (today's fought, no weapon), or null. */
   status: string | null;
@@ -132,6 +134,15 @@ export interface RealmView {
   /** A share to take: its words, and the button's. */
   share: { text: string; label: string } | null;
   note: string;
+}
+
+/** The season's mark said with the boss whose way it is (session 223): "This season it fights as the
+ *  Barrow-king does: its wights rise at a third of its health", where the Ember Wyrm's wights stood unexplained. */
+function markWords(foe: Foe, boss: Boss): string {
+  const trait = foe.trait!;
+  const from = BOSSES.find((b) => b.trait?.kind === trait.kind) ?? boss;
+  const way = traitWords({ ...boss, style: foe.style, trait }) ?? '';
+  return t('realm.mark', { boss: midSentence(t(`boss.${from.id}`)), way: midSentence(way) });
 }
 
 /** The realm's boss on the Combat page; null until the server has told the save of the realm's week. */
@@ -154,9 +165,7 @@ export function realmView(state: State, now: number): RealmView | null {
     fell: r.fell,
     verdict: o ? t(`verdict.${o.verdict}`) : null,
     verdictId: o?.verdict ?? null,
-    mark: foe?.trait
-      ? t('realm.mark', { way: traitWords({ ...boss, style: foe.style, trait: foe.trait }) ?? '' })
-      : null,
+    mark: foe?.trait ? markWords(foe, boss) : null,
     status: !o ? t('stop.noWeapon') : rested ? t('realm.rested', { back: dayTurns(now) }) : null,
     ready: o !== null && !rested,
     share: owed
