@@ -105,6 +105,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@fontsource-variable/saira':
+        specifier: ^5.3.0
+        version: 5.3.0
       '@fontsource/alegreya':
         specifier: 5.3.0
         version: 5.3.0
@@ -843,6 +846,9 @@ packages:
 
   '@fastify/websocket@11.3.3':
     resolution: {integrity: sha512-NBJoykKpFwrdX9Ezod1rt30p5NoPFu7vgeuUowSM3JVI5/hFNRPhetqkWMTiF/ifIzctwitbJut1gZ6FDg1mwQ==}
+
+  '@fontsource-variable/saira@5.3.0':
+    resolution: {integrity: sha512-C1rm7n1OuEx4Se/SAB/5EeUuCviGFFnYTr5vxuQQm2YIOfgbQWx/P6qqhdXlVCBRm/1UzNWCtDK5jNbVmO6W2w==}
 
   '@fontsource/alegreya-sans@5.3.0':
     resolution: {integrity: sha512-Uf0RbuwzhSS3NQrBFcRzEUm7TxDQW3qdAbQ6JIOhsIW6V+YN2dqlR99lhfEE38R3GHgMCMJBzqSp7aJxhNXSOw==}
@@ -2732,6 +2738,8 @@ snapshots:
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
+
+  '@fontsource-variable/saira@5.3.0': {}
 
   '@fontsource/alegreya-sans@5.3.0': {}
 

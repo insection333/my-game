@@ -47,7 +47,10 @@ export function System() {
           <Facts
             rows={[
               [t('console.server.since'), whenOf(sys.startedAt, sys.at)],
-              [t('console.server.build'), sys.build ?? t('console.server.noBuild')],
+              [
+                t('console.server.build'),
+                sys.build ? <code className={s.code}>{sys.build}</code> : t('console.server.noBuild'),
+              ],
               [t('console.server.memory'), mb(sys.memoryMb)],
               [t('console.server.database'), mb(sys.databaseMb)],
               [t('console.server.backups'), BACKUPS[sys.backups]()],
@@ -55,10 +58,17 @@ export function System() {
           />
         </Panel>
         <Panel title={t('console.features')}>
-          <Facts rows={sys.features.map((f) => [f.id, f.on ? t('console.feature.on') : t('console.feature.off')])} />
+          <Facts
+            rows={sys.features.map((f) => [
+              <code className={s.code}>{f.id}</code>,
+              <span className={s.state} data-on={f.on || undefined}>
+                {f.on ? t('console.feature.on') : t('console.feature.off')}
+              </span>,
+            ])}
+          />
         </Panel>
         <Panel title={t('console.tables')}>
-          <Facts rows={sys.tables.map((x) => [x.name, fmt.int(x.rows)])} />
+          <Facts rows={sys.tables.map((x) => [<code className={s.code}>{x.name}</code>, fmt.int(x.rows)])} />
         </Panel>
       </Slot>
       <Panel title={t('console.errors')} flush={sys.errors.length > 0}>

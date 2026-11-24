@@ -1,15 +1,66 @@
-/* The admin console's frame (session 227): a bar across the top, the sections, and the page. On a phone the
-   sections stand as a grid of links under the bar; from 1,024 px they are a rail down the left in the lodge's
-   night, as the game's own rail is (session 131), with gold leaf for the section open. The page scrolls as a
-   document. Sizes in rem, so larger text gives up room as a narrower screen would (session 199). */
+/* The admin console's frame (session 227), drawn since session 232 as the keepers' watch room: an instrument
+   deck in the lodge's night, in either theme. Its own tokens (below) carry every component inside it, so the
+   game's Panel, Button, Field, Tabs and tables read on its glass as they do in the dark theme. Two lights,
+   each with one meaning: signal (the woad, brightened) for what is live and what you press, gold leaf for
+   where you are. Saira for words and figures, its width set by the part: a little narrow for the dense
+   rows, a little wide for titles. Sizes in rem, so larger text gives up room as a narrower screen would
+   (session 199). */
 
 .console {
+  --bg: #0a141a;
+  --surface: #0f1c24;
+  --surface-2: #142630;
+  --ink: #e3ecef;
+  --ink-2: #93aab3;
+  --line: #1f3541;
+  --line-strong: #2f4c5b;
+  --moss: #78d4a0;
+  --moss-soft: #11301f;
+  --woad: #6ccbe8;
+  --woad-soft: #0f2f3b;
+  --woad-ink: #03121a;
+  --gold: #e2be62;
+  --gold-soft: #33290f;
+  --alert: #f48c9c;
+  --alert-soft: #3d1c24;
+  --ember: #f06a2e;
+  --ember-glow: #ffb24d;
+  --ember-ink: #f6894f;
+  --shade: rgb(0 0 0 / 0.45);
+  --scrim: rgb(0 0 0 / 0.6);
+  --chrome-bg: #071016;
+  --chrome-bg-2: #0b1820;
+  --chrome-line: #1a2d37;
+  --gold-leaf: #d9b25a;
+  --lit: rgb(255 255 255 / 0.04);
+  --raise: 0 1px 0 rgb(0 0 0 / 0.4), 0 18px 40px -26px rgb(0 0 0 / 0.95);
+  --signal-glow: rgb(108 203 232 / 0.32);
+  --font-ui: 'Saira Variable', 'Alegreya Sans', 'Segoe UI', system-ui, sans-serif;
+  --font-book: 'Saira Variable', 'Alegreya', Georgia, serif;
+  --font-code: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
+
   min-height: 100dvh;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   grid-template-rows: auto auto minmax(0, 1fr);
   grid-template-areas: 'bar' 'nav' 'main';
-  background: var(--bg);
+  color: var(--ink);
+  color-scheme: dark;
+  /* Set here as well as in the tokens: the page's font is inherited as the body resolved it. */
+  font-family: var(--font-ui);
+  font-stretch: 94%;
+  font-variant-numeric: tabular-nums;
+  /* The night, a faint chart's grid fading out below the bar, and the signal's light in the far corner. */
+  background:
+    radial-gradient(ellipse 60% 40% at 100% 0%, rgb(108 203 232 / 0.07), transparent 70%),
+    linear-gradient(180deg, transparent, var(--bg) 32rem),
+    repeating-linear-gradient(90deg, rgb(108 203 232 / 0.035) 0 1px, transparent 1px 40px),
+    repeating-linear-gradient(0deg, rgb(108 203 232 / 0.035) 0 1px, transparent 1px 40px), var(--bg);
+}
+
+/* Past the console's own height (a phone's overscroll) the page is its night too. */
+:global(body):has(.console) {
+  background: #0a141a;
 }
 
 .skip {
@@ -39,8 +90,19 @@
   min-height: var(--header-h);
   padding: env(safe-area-inset-top, 0px) max(var(--s-2), env(safe-area-inset-right, 0px)) 0
     max(var(--gutter), env(safe-area-inset-left, 0px));
-  background: var(--bg);
-  border-bottom: 1px solid var(--line);
+  background: linear-gradient(180deg, var(--chrome-bg-2), var(--chrome-bg));
+  border-bottom: 1px solid var(--chrome-line);
+  box-shadow: 0 10px 24px -18px rgb(0 0 0 / 0.9);
+}
+
+/* The bar's lower edge lit by the signal, brightest in the middle. */
+.bar::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 -1px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(108 203 232 / 0.5) 50%, transparent);
+  pointer-events: none;
 }
 
 .brand {
@@ -51,7 +113,9 @@
 }
 
 .brandName {
-  font: 500 1.25rem / 1 var(--font-book);
+  font: 600 1.125rem / 1 var(--font-book);
+  font-stretch: 112%;
+  letter-spacing: 0.01em;
   color: var(--ink);
   white-space: nowrap;
 }
@@ -59,8 +123,9 @@
 .brandRole {
   padding-left: var(--s-2);
   border-left: 1px solid var(--line-strong);
-  font: 600 var(--t-small) / 1.2 var(--font-ui);
-  color: var(--ink-2);
+  font: 500 var(--t-small) / 1.2 var(--font-ui);
+  letter-spacing: 0.04em;
+  color: var(--gold-leaf);
   white-space: nowrap;
 }
 
@@ -71,20 +136,62 @@
   min-width: 0;
 }
 
+/* The realm's time, with the signal's lamp: the console is live. */
+.clock {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: 2px var(--s-2);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font: 500 var(--t-small) / 1.4 var(--font-ui);
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+
+.lamp {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--woad);
+  box-shadow:
+    0 0 0 3px rgb(108 203 232 / 0.15),
+    0 0 10px var(--signal-glow);
+  animation: lamp 2.8s ease-in-out infinite;
+}
+
+@keyframes lamp {
+  50% {
+    box-shadow:
+      0 0 0 4px rgb(108 203 232 / 0.06),
+      0 0 4px rgb(108 203 232 / 0.15);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lamp {
+    animation: none;
+  }
+}
+
 .barButton {
   min-height: var(--tap);
   padding: 0 var(--s-3);
   border: 1px solid var(--line-strong);
   border-radius: var(--r-control);
-  background: transparent;
+  background: rgb(255 255 255 / 0.02);
   color: var(--ink);
   font: 600 var(--t-body) / 1 var(--font-ui);
   white-space: nowrap;
   cursor: pointer;
+  transition:
+    border-color 120ms ease,
+    background-color 120ms ease;
 }
 
 .barButton:hover {
-  background: var(--lit, rgb(255 255 255 / 0.05));
+  border-color: var(--woad);
+  background: var(--woad-soft);
 }
 
 .barButton:focus-visible {
@@ -98,9 +205,15 @@
   white-space: nowrap;
 }
 
-/* A narrow bar keeps the mark, the console's name and the one button. */
-@container bar (max-width: 40rem) {
+/* A narrow bar keeps the mark, the console's name, the clock and the one button. */
+@container bar (max-width: 48rem) {
   .whoName {
+    display: none;
+  }
+}
+
+@container bar (max-width: 30rem) {
+  .clock {
     display: none;
   }
 }
@@ -121,15 +234,29 @@
   padding: var(--s-2) max(var(--gutter), env(safe-area-inset-right, 0px)) var(--s-2)
     max(var(--gutter), env(safe-area-inset-left, 0px));
   border-bottom: 1px solid var(--line);
+  background: rgb(7 16 22 / 0.6);
 }
 
-.nav ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+/* On a phone the groups run together into one grid of links. */
+.groups {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 7.5rem), 1fr));
   gap: var(--s-1);
+}
+
+.group,
+.group ul {
+  display: contents;
+}
+
+.group ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.groupName {
+  display: none;
 }
 
 .navLink {
@@ -149,12 +276,13 @@
 
 .navLink:hover {
   color: var(--ink);
+  border-color: var(--line-strong);
 }
 
 .navLink[aria-current='page'] {
-  color: var(--ink);
-  border-color: var(--moss);
-  background: var(--moss-soft);
+  color: var(--gold-leaf);
+  border-color: rgb(217 178 90 / 0.55);
+  background: linear-gradient(180deg, rgb(217 178 90 / 0.14), rgb(217 178 90 / 0.04));
 }
 
 .navLink:focus-visible {
@@ -171,26 +299,21 @@
 .content {
   max-width: 80rem;
   margin: 0 auto;
-  padding: var(--s-3) max(var(--gutter), env(safe-area-inset-right, 0px))
+  padding: var(--s-4) max(var(--gutter), env(safe-area-inset-right, 0px))
     max(var(--s-6), env(safe-area-inset-bottom, 0px)) max(var(--gutter), env(safe-area-inset-left, 0px));
   container: main / inline-size;
 }
 
-/* From 768 px the bar is drawn in the lodge's night. */
-@media (min-width: 768px) {
-  .bar {
-    background: linear-gradient(180deg, var(--chrome-bg-2), var(--chrome-bg));
-    border-bottom-color: var(--chrome-line);
-    box-shadow: 0 6px 16px -10px rgb(0 0 0 / 0.55);
-  }
-}
-
-/* From 1,024 px the sections are a rail down the left, the full height of the screen. */
+/* From 1,024 px the sections are a rail down the left, the full height of the screen, in three groups. */
 @media (min-width: 1024px) {
   .console {
     grid-template-columns: 15rem minmax(0, 1fr);
     grid-template-rows: auto minmax(0, 1fr);
     grid-template-areas: 'bar bar' 'nav main';
+  }
+
+  .content {
+    padding-top: var(--s-5);
   }
 
   .nav {
@@ -202,19 +325,40 @@
     padding: var(--s-4) var(--s-2) var(--s-4) max(var(--s-2), env(safe-area-inset-left, 0px));
     border-bottom: 0;
     border-right: 1px solid var(--chrome-line);
-    background: linear-gradient(180deg, var(--chrome-bg), var(--chrome-bg-2));
+    background: linear-gradient(180deg, var(--chrome-bg), rgb(7 16 22 / 0.92));
   }
 
-  .nav ul {
+  .groups {
     grid-template-columns: minmax(0, 1fr);
+    gap: var(--s-4);
+  }
+
+  .group {
+    display: grid;
     gap: 2px;
+  }
+
+  .group ul {
+    display: grid;
+    gap: 2px;
+  }
+
+  .groupName {
+    display: block;
+    margin: 0 0 var(--s-1);
+    padding: 0 var(--s-3);
+    font: 500 var(--t-small) / 1.4 var(--font-ui);
+    letter-spacing: 0.06em;
+    color: var(--ink-2);
   }
 
   .navLink {
     justify-content: flex-start;
     padding: 0 var(--s-3);
     border: 0;
+    border-radius: var(--r-control);
     background: transparent;
+    font-weight: 500;
     text-align: start;
     transition:
       background-color 120ms ease,
@@ -222,12 +366,95 @@
   }
 
   .navLink:hover {
-    background: rgb(255 255 255 / 0.05);
+    background: rgb(108 203 232 / 0.06);
   }
 
   .navLink[aria-current='page'] {
     color: var(--gold-leaf);
-    background: linear-gradient(90deg, rgb(217 178 90 / 0.16), rgb(217 178 90 / 0.03));
-    box-shadow: inset 3px 0 0 var(--gold-leaf);
+    font-weight: 600;
+    background: linear-gradient(90deg, rgb(217 178 90 / 0.16), rgb(217 178 90 / 0.02));
+    box-shadow: inset 2px 0 0 var(--gold-leaf);
+  }
+}
+
+/* The game's own parts, on the console's glass. A panel is a pane of it: a hairline round, the signal along
+   its top edge, its title in Saira with a lit tick where the game sets gold leaf. */
+.console :global([data-ui='Panel']) {
+  position: relative;
+  background: linear-gradient(180deg, rgb(20 38 48 / 0.92), rgb(13 26 34 / 0.94));
+  border-color: var(--line);
+  box-shadow:
+    var(--raise),
+    inset 0 1px 0 rgb(255 255 255 / 0.035);
+}
+
+.console :global([data-ui='Panel'])::before {
+  content: '';
+  position: absolute;
+  inset: -1px var(--s-4) auto;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(108 203 232 / 0.55), transparent);
+  pointer-events: none;
+}
+
+.console :global([data-ui='Panel']) h2 {
+  font: 600 1.0625rem / 1.3 var(--font-book);
+  font-stretch: 106%;
+  letter-spacing: 0.01em;
+}
+
+.console :global([data-ui='Panel']) h2::before {
+  content: '';
+  display: inline-block;
+  width: 3px;
+  height: 0.85em;
+  margin-right: 10px;
+  vertical-align: -0.06em;
+  border-radius: 2px;
+  background: var(--woad);
+  box-shadow: 0 0 8px var(--signal-glow);
+}
+
+/* A table's head on a faint band; a row under the pointer lit. */
+.console :global([data-ui='ResponsiveTable']) th {
+  background: rgb(108 203 232 / 0.035);
+  letter-spacing: 0.03em;
+}
+
+.console :global([data-ui='ResponsiveTable']) tbody tr:hover td {
+  background: rgb(108 203 232 / 0.045);
+}
+
+/* A name in a table is a link by its colour, the line coming under the pointer: a column of underlined names
+   read as a wall of rules. */
+.console :global([data-ui='ResponsiveTable']) td a {
+  text-decoration: none;
+}
+
+.console :global([data-ui='ResponsiveTable']) td a:hover {
+  text-decoration: underline;
+}
+
+/* A page's title, wide and light against the night. */
+.content h1 {
+  font: 500 clamp(1.75rem, 1.4rem + 1.2vw, 2.25rem) / 1.1 var(--font-book);
+  font-stretch: 112%;
+  letter-spacing: -0.005em;
+}
+
+.content :global(:focus-visible) {
+  outline-color: var(--woad);
+}
+
+.content pre,
+.content code {
+  font-family: var(--font-code);
+  font-stretch: normal;
+}
+
+@media (forced-colors: active) {
+  .console :global([data-ui='Panel'])::before,
+  .bar::after {
+    display: none;
   }
 }

@@ -151,26 +151,36 @@ export function Directory() {
             {t('admin.find')}
           </Button>
         </form>
-        <Tabs
-          label={t('console.filters')}
-          onNavigate={navigate}
-          tabs={DIRECTORY_FILTERS.map((f) => ({
-            href: hrefOf({ ...ask, filter: f, page: 0 }),
-            label: t(FILTER_WORDS[f]),
-            short: t(FILTER_SHORT[f]),
-            current: f === ask.filter,
-          }))}
-        />
-        <Tabs
-          label={t('console.sorts')}
-          onNavigate={navigate}
-          tabs={DIRECTORY_SORTS.map((x) => ({
-            href: hrefOf({ ...ask, sort: x, page: 0 }),
-            label: t(SORT_WORDS[x]),
-            short: t(SORT_SHORT[x]),
-            current: x === ask.sort,
-          }))}
-        />
+        <div className={s.strip}>
+          <span className={s.stripName} aria-hidden="true">
+            {t('console.filters')}
+          </span>
+          <Tabs
+            label={t('console.filters')}
+            onNavigate={navigate}
+            tabs={DIRECTORY_FILTERS.map((f) => ({
+              href: hrefOf({ ...ask, filter: f, page: 0 }),
+              label: t(FILTER_WORDS[f]),
+              short: t(FILTER_SHORT[f]),
+              current: f === ask.filter,
+            }))}
+          />
+        </div>
+        <div className={s.strip}>
+          <span className={s.stripName} aria-hidden="true">
+            {t('console.sorts')}
+          </span>
+          <Tabs
+            label={t('console.sorts')}
+            onNavigate={navigate}
+            tabs={DIRECTORY_SORTS.map((x) => ({
+              href: hrefOf({ ...ask, sort: x, page: 0 }),
+              label: t(SORT_WORDS[x]),
+              short: t(SORT_SHORT[x]),
+              current: x === ask.sort,
+            }))}
+          />
+        </div>
       </Panel>
       {found && found.rows.length === 0 && <p className={s.note}>{t('console.directory.none')}</p>}
       {found && found.rows.length > 0 && (
