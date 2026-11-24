@@ -2,7 +2,7 @@
 // when, by which admin, what, to which player (their record a press away) and what it changed. Searched by
 // the action or a name; a hundred at a time, Older entries for the rest.
 import type { AuditEntry } from '@idle-clash/contracts';
-import { t } from '@idle-clash/content';
+import { fmt, t } from '@idle-clash/content';
 import { Button, Field, Panel, ResponsiveTable, TextLink, type Column } from '@idle-clash/ui';
 import { useEffect, useState, type FormEvent } from 'react';
 import { api } from '../api.ts';
@@ -24,6 +24,11 @@ const ACTIONS: Record<string, () => string> = {
   warn: () => t('audit.warn'),
   mute: () => t('audit.mute'),
   unmute: () => t('audit.unmute'),
+  give: () => t('audit.give'),
+  take: () => t('audit.take'),
+  xp: () => t('audit.xp'),
+  signOut: () => t('audit.signOut'),
+  delete: () => t('audit.delete'),
 };
 
 export const actionWords = (action: string): string => (Object.hasOwn(ACTIONS, action) ? ACTIONS[action]() : action);
@@ -33,6 +38,11 @@ export function detailWords(e: Pick<AuditEntry, 'action' | 'detail'>): string {
   const d = e.detail;
   if (e.action === 'rename' && d && typeof d.from === 'string' && typeof d.to === 'string')
     return t('audit.renamed', { from: d.from, to: d.to });
+  const said = (v: string | number | undefined) => (typeof v === 'number' ? fmt.int(v) : (v ?? ''));
+  if ((e.action === 'give' || e.action === 'take') && d)
+    return t('audit.items', { item: said(d.item), count: said(d.count), reason: said(d.reason) });
+  if (e.action === 'xp' && d)
+    return t('audit.xpGiven', { xp: said(d.xp), skill: said(d.skill), reason: said(d.reason) });
   return '';
 }
 

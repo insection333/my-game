@@ -120,7 +120,16 @@ export function views(): View[] {
   // account sees every section (session 227).
   const isConsole = (path: string) => path === '/admin' || path.startsWith('/admin/');
   const newcomer = map.views.filter((v) => !isConsole(v.path));
-  const staff: ViewSpec[] = map.views.filter((v) => isConsole(v.path)).map((v) => ({ ...v, as: 'staff' as const }));
+  const staff: ViewSpec[] = [
+    ...map.views.filter((v) => isConsole(v.path)),
+    // A player's record by each of its parts (session 229), found by the name in its address.
+    ...['', '?tab=account', '?tab=grants', '?tab=save', '?tab=history'].map((tab) => ({
+      page: 'Admin',
+      path: `/admin/players/@Keeper${tab}`,
+      phone: [],
+      desktop: [],
+    })),
+  ].map((v) => ({ ...v, as: 'staff' as const }));
   return [...newcomer, ...sheets, ...veteran, ...elders, ...keepers, ...sages, ...squires, ...visitor, ...staff].map(
     (v) => ({
       ...v,

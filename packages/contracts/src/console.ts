@@ -30,6 +30,36 @@ export const AuditQuery = z
   })
   .strict();
 
+const PlayerId = z.string().uuid();
+/** Why an admin changed a player's save, kept in the Audit log beside it. */
+export const Reason = z.string().trim().min(3).max(200);
+/** Most of anything given or taken at one press. */
+export const GRANT_MOST = 1_000_000_000;
+export const RecordQuery = z.object({ playerId: PlayerId }).strict();
+export const GrantRequest = z
+  .object({
+    playerId: PlayerId,
+    item: z.string().regex(/^[a-z][a-z0-9-]{0,63}$/),
+    /** Given when above nought, taken when below. */
+    count: z
+      .number()
+      .int()
+      .min(-GRANT_MOST)
+      .max(GRANT_MOST)
+      .refine((n) => n !== 0),
+    reason: Reason,
+  })
+  .strict();
+export const XpRequest = z
+  .object({
+    playerId: PlayerId,
+    skill: z.string().regex(/^[a-z][a-z0-9-]{0,31}$/),
+    xp: z.number().int().min(1).max(200_000_000),
+    reason: Reason,
+  })
+  .strict();
+export const DeleteRequest = z.object({ playerId: PlayerId, name: z.string().min(1).max(64) }).strict();
+
 const route = (r: RouteContract) => r;
 export const CONSOLE_ROUTES = {
   adminOverview: route({
@@ -55,6 +85,46 @@ export const CONSOLE_ROUTES = {
     auth: 'admin',
     input: AuditQuery,
     example: { query: '', before: null },
+  }),
+  adminRecord: route({
+    id: 'adminRecord',
+    method: 'POST',
+    path: PATHS.adminRecord,
+    auth: 'admin',
+    input: RecordQuery,
+    example: { playerId: '00000000-0000-4000-8000-000000000000' },
+  }),
+  adminGrant: route({
+    id: 'adminGrant',
+    method: 'POST',
+    path: PATHS.adminGrant,
+    auth: 'admin',
+    input: GrantRequest,
+    example: { playerId: '00000000-0000-4000-8000-000000000000', item: 'gold', count: 1000, reason: 'Lost to a fault' },
+  }),
+  adminXp: route({
+    id: 'adminXp',
+    method: 'POST',
+    path: PATHS.adminXp,
+    auth: 'admin',
+    input: XpRequest,
+    example: { playerId: '00000000-0000-4000-8000-000000000000', skill: 'mining', xp: 500, reason: 'Lost to a fault' },
+  }),
+  adminSignOut: route({
+    id: 'adminSignOut',
+    method: 'POST',
+    path: PATHS.adminSignOut,
+    auth: 'admin',
+    input: RecordQuery,
+    example: { playerId: '00000000-0000-4000-8000-000000000000' },
+  }),
+  adminDelete: route({
+    id: 'adminDelete',
+    method: 'POST',
+    path: PATHS.adminDelete,
+    auth: 'admin',
+    input: DeleteRequest,
+    example: { playerId: '00000000-0000-4000-8000-000000000000', name: 'Rowan' },
   }),
 } satisfies Record<string, RouteContract>;
 
@@ -139,3 +209,36 @@ export interface AuditResponse {
   /** The id to ask `before` for the next page, or null at the end. */
   more: number | null;
 }
+
+/** A player's record in the console (session 229): who they are, how they stand, what they hold and do,
+ *  their castle, and what admins have done to them. */
+export interface RecordResponse {
+  at: number;
+  id: string;
+  name: string;
+  createdAt: number;
+  bannedAt: number | null;
+  /** The last day they came ("2026-11-24"), whether a page is open now, and browsers signed in. */
+  seen: string | null;
+  online: boolean;
+  sessions: number;
+  listed: boolean;
+  mutedUntil: number | null;
+  reports: { name: number; cheating: number };
+  totalLevel: number;
+  /** The most hours their fire burned in a day of the last two (session 156). */
+  fireHours: number;
+  gold: number;
+  /** Kinds of item held, gold aside. */
+  kinds: number;
+  skills: { skill: string; name: string; level: number; xp: number }[];
+  /** Each lane: what it does or did, in the game's words, and why it stopped. */
+  lanes: { lane: string; doing: string | null; stopped: string | null }[];
+  castle: { level: number; rating: number } | null;
+  /** What admins have done to them, newest first. */
+  history: AuditEntry[];
+  /** Everything that can be given (gold first), by name, for the Grants form. */
+  catalog: { id: string; name: string }[];
+}
+export type GrantResult = { ok: true; held: number } | { ok: false; reason: 'notEnough' | 'unknown' };
+export type XpResult = { ok: true; xp: number; level: number } | { ok: false; reason: 'unknown' };
