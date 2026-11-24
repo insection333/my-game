@@ -5,7 +5,7 @@
 import type { GameEvent, State } from '@idle-clash/kernel';
 import { z } from 'zod';
 import { partReader } from './part.ts';
-import { seasonAt, TWISTS } from './season.ts';
+import { PAIRED_FROM, seasonAt, TWISTS, twistsOf } from './season.ts';
 
 export const SeasonsState = z
   .object({
@@ -28,16 +28,27 @@ export function noteSeasonGoal(state: State, at: number): void {
   state.features.seasons = { ...s, goals: { ...s.goals, [key]: (Object.hasOwn(s.goals, key) ? s.goals[key] : 0) + 1 } };
 }
 
-/** The most goals done in any one season with this twist. */
+/** The most goals done in any one season with this twist (alone, or paired with another). */
 export function bestInTwist(state: State, twist: string): number {
-  const at = TWISTS.findIndex((t) => t.id === twist);
-  if (at < 0) return 0;
+  if (!TWISTS.some((t) => t.id === twist)) return 0;
   return Math.max(
     0,
     ...Object.entries(seasonsOf(state).goals)
-      .filter(([n]) => (Number(n) - 1) % TWISTS.length === at)
+      .filter(([n]) => twistsOf(Number(n)).some((t) => t.id === twist))
       .map(([, count]) => count),
   );
+}
+
+/** The different pairings of two twists in whose seasons at least `goals` goals were done (session 221). */
+export function pairingsPlayed(state: State, goals: number): number {
+  const pairs = Object.entries(seasonsOf(state).goals)
+    .filter(([n, count]) => Number(n) >= PAIRED_FROM && count >= goals)
+    .map(([n]) =>
+      twistsOf(Number(n))
+        .map((t) => t.id)
+        .join('+'),
+    );
+  return new Set(pairs).size;
 }
 
 /** Seasons in which at least `goals` goals were done. */
@@ -58,5 +69,12 @@ export function openSeason(state: State, now: number): GameEvent | null {
   state.features.seasons = { ...s, seen: season.number };
   const before = String(season.number - 1);
   const last = Object.hasOwn(s.goals, before) ? s.goals[before] : 0;
-  return { type: 'seasonOpened', at: now, number: season.number, twist: season.twist.id, last };
+  return {
+    type: 'seasonOpened',
+    at: now,
+    number: season.number,
+    twist: season.twist.id,
+    ...(season.twists[1] ? { pair: season.twists[1].id } : {}),
+    last,
+  };
 }

@@ -6,7 +6,17 @@ import { fmt, midSentence, t } from '@idle-clash/content';
 import { actionKey, type State } from '@idle-clash/kernel';
 import { HITPOINTS } from '../shared/combat/data.ts';
 import { oddsFor } from '../shared/combat/odds.ts';
-import { bossDepth, deepBoss, deepFoe, DEEP, omensOf, waystoneOf } from '../shared/expeditions/deep.ts';
+import {
+  bossDepth,
+  deepBoss,
+  deepFoe,
+  DEEP,
+  omensAt,
+  omensOf,
+  seasonOmenAt,
+  waystoneOf,
+} from '../shared/expeditions/deep.ts';
+import { seasonAt } from '../shared/season.ts';
 import { skillLevel } from '../shared/skill.ts';
 import { weekEnds, weekOf } from '../shared/week-time.ts';
 import { deepOf, foeAt, packOf, packSize } from './deep.ts';
@@ -24,6 +34,8 @@ export interface DeepView {
   omens: TwistView[];
   /** "Until 30 Nov, 11:00" */
   omensUntil: string;
+  /** The season's omen (session 221), held until the season turns, and when that is; null before seasons. */
+  seasonOmen: { omen: TwistView; until: string } | null;
   /** "From depth 20, your deepest waystone" or "From the surface". */
   from: string;
   /** The meals the next descent carries, best first: "30 meals: Shark pie ×30", or "No food carried". */
@@ -43,17 +55,27 @@ export interface DeepView {
 
 const marks = (n: number) => (n === 1 ? t('expedition.marksOne') : t('expedition.marks', { marks: fmt.int(n) }));
 
+/** The season's omens' names, written whole so the content check sees each used. */
+const SEASON_OMEN_NAME: Record<string, string> = {
+  rootbound: 'twist.rootbound',
+  'forge-glow': 'twist.forge-glow',
+  'war-drums': 'twist.war-drums',
+  'falling-stars': 'twist.falling-stars',
+  waymarks: 'twist.waymarks',
+  'deep-larder': 'twist.deep-larder',
+};
+
 /** An omen's words: only what holds in the Deep (it has no caches, camps or stages to change). */
 const omenView = (tw: ReturnType<typeof omensOf>[number]): TwistView => ({
   id: tw.id,
-  name: t(`twist.${tw.id}`),
+  name: t(Object.hasOwn(SEASON_OMEN_NAME, tw.id) ? SEASON_OMEN_NAME[tw.id] : `twist.${tw.id}`),
   text: twistText({ ...tw, caches: undefined, camp: undefined, stages: undefined }),
 });
 
 /** How deep a pack should go from a depth: meals eaten depth by depth at Your odds' rate, until the pack is
  *  gone, a depth sends the fighter back, or a boss is likely to hold. At most fifty depths ahead. */
 export function reachOf(state: State, from: number, fed: number, seq: number, at: number) {
-  const mods = omensOf(weekOf(at));
+  const mods = omensAt(at);
   let left = packSize(state) - fed;
   for (let depth = from + 1; depth <= from + 50; depth++) {
     if (bossDepth(depth)) {
@@ -69,6 +91,13 @@ export function reachOf(state: State, from: number, fed: number, seq: number, at
     if (left < 0) return { depth: depth - 1, held: false };
   }
   return { depth: from + 50, held: false };
+}
+
+function seasonOmenView(now: number): DeepView['seasonOmen'] {
+  const omen = seasonOmenAt(now);
+  const season = seasonAt(now);
+  if (!omen || !season) return null;
+  return { omen: omenView(omen), until: t('deep.seasonOmen', { when: fmt.when(season.end, now) }) };
 }
 
 export function deepView(state: State, now: number): DeepView | null {
@@ -89,6 +118,7 @@ export function deepView(state: State, now: number): DeepView | null {
     week: d.week === weekOf(now) && d.weekDeepest > 0 ? t('deep.week', { depth: fmt.int(d.weekDeepest) }) : null,
     omens: omensOf(weekOf(now)).map(omenView),
     omensUntil: t('deep.omensUntil', { when: fmt.when(weekEnds(now), now) }),
+    seasonOmen: seasonOmenView(now),
     from: start > 0 ? t('deep.from', { depth: fmt.int(start) }) : t('deep.fromSurface'),
     pack:
       count === 0

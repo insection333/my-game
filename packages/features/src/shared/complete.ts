@@ -29,7 +29,7 @@ import { relicFindPct, relicXpPct } from './expeditions/relics.ts';
 import { steadingSavePct, steadingXpPct, steadingYieldPct } from './steading.ts';
 import { edictPct, mirrorOf } from './castle/mirror.ts';
 import { announceKindling, pathBonus, pathOf } from './kindling.ts';
-import { seasonAt, seasonFindPct, seasonXpPct, seasonYieldPct } from './season.ts';
+import { seasonFindPct, seasonXpPct, seasonXpTwist, seasonYieldPct } from './season.ts';
 import { actionModifiers, perksAt, skillLevel, yieldOf } from './skill.ts';
 
 export interface SkillDefinition {
@@ -77,7 +77,7 @@ export function xpParts(
     { source: 'steading', pct: steadingXpPct(state) },
     { source: 'edict', pct: edictPct(state, at, 'xp'), id: mirrorOf(state).edict ?? undefined },
     { source: 'path', pct: pathBonus(state, skill, 'xp'), id: pathOf(state, skill)?.id },
-    { source: 'season', pct: seasonXpPct(skill, at), id: seasonAt(at)?.twist.id },
+    { source: 'season', pct: seasonXpPct(skill, at), id: seasonXpTwist(skill, at)?.id },
   ];
   return parts.filter((p) => p.pct > 0);
 }

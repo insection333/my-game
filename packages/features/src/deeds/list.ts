@@ -62,6 +62,7 @@ export const CATEGORIES: readonly { id: string; families: readonly string[] }[] 
       'steading',
       'season',
       'seasons',
+      'pairings',
       'weeks',
       'favour',
       'realmWorks',

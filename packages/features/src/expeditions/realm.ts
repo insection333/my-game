@@ -27,6 +27,7 @@ import {
   weekOf,
 } from '../shared/realm.ts';
 import { realmName } from '../shared/realm-words.ts';
+import { traitWords } from './views.ts';
 import { noRoom } from '../shared/storehouse.ts';
 import { dayOf } from './boss.ts';
 
@@ -123,6 +124,8 @@ export interface RealmView {
   /** Your odds' verdict against the realm's boss at your measure. */
   verdict: string | null;
   verdictId: string | null;
+  /** The season's mark on it, in words ("The season's mark: Rages below half health"), or null. */
+  mark: string | null;
   /** Why it cannot be fought now (today's fought, no weapon), or null. */
   status: string | null;
   ready: boolean;
@@ -151,6 +154,9 @@ export function realmView(state: State, now: number): RealmView | null {
     fell: r.fell,
     verdict: o ? t(`verdict.${o.verdict}`) : null,
     verdictId: o?.verdict ?? null,
+    mark: foe?.trait
+      ? t('realm.mark', { way: traitWords({ ...boss, style: foe.style, trait: foe.trait }) ?? '' })
+      : null,
     status: !o ? t('stop.noWeapon') : rested ? t('realm.rested', { back: dayTurns(now) }) : null,
     ready: o !== null && !rested,
     share: owed

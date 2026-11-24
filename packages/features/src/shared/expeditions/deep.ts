@@ -2,10 +2,12 @@
 // Peaks for combat after 99, where the styles had no new place, foe or challenge left. A descent goes down
 // one depth at a time in the Combat lane: ten minutes of fights against the Peaks' foes made stronger by
 // depth, and every tenth depth one of the six bosses, its own way and all, made as strong as the Ember Wyrm
-// at that depth. The week's omens (two of the twists and roads) hold for everyone in the realm. Reaching a
+// at that depth. The week's omens (two of the twists and roads) and the season's hold for everyone. Reaching a
 // tenth depth leaves a waystone, so the next descent starts there. Nothing ends it but the fighter.
 import { BOSSES, bossIn, ROADS, TWISTS, type Boss, type Twist } from './data.ts';
 import type { Foe } from '../combat/foes.ts';
+import { seasonAt } from '../season.ts';
+import { weekOf } from '../week-time.ts';
 
 export const DEEP = {
   /** The Hitpoints level that opens it: Hitpoints keeps pace with the best style (session 177). */
@@ -46,6 +48,31 @@ export function omensOf(week: string): Twist[] {
   const a = (((n * 7) % len) + len) % len;
   const b = (a + 1 + ((((n * 3) % (len - 1)) + (len - 1)) % (len - 1))) % len;
   return [OMEN_POOL[a], OMEN_POOL[b]];
+}
+
+/** The season's omen (session 221): one more held in the Deep for the whole of a season, by its first twist,
+ *  beside the week's two. Each is the twist's own in the dark: the Greenwood's roots slow the foes, the
+ *  Forgefire's glow teaches more, the Muster's drums raise the foes and the marks alike, the Omens' falling
+ *  stars bring finds, the Open Road's waymarks marks, the Plenty's larder drops. */
+export const SEASON_OMENS: Readonly<Record<string, Twist>> = {
+  greenwood: { id: 'rootbound', foeHit: 0.9 },
+  forgefire: { id: 'forge-glow', xp: 1.1 },
+  muster: { id: 'war-drums', foeHit: 1.1, marks: 1.5 },
+  omens: { id: 'falling-stars', finds: 2 },
+  road: { id: 'waymarks', marks: 1.25 },
+  plenty: { id: 'deep-larder', drops: 1.5 },
+};
+
+/** The season's omen at a moment, or null before the first season. */
+export function seasonOmenAt(at: number): Twist | null {
+  const season = seasonAt(at);
+  return season && Object.hasOwn(SEASON_OMENS, season.twist.id) ? SEASON_OMENS[season.twist.id] : null;
+}
+
+/** Every omen holding in the Deep at a moment: the week's two and the season's. */
+export function omensAt(at: number): Twist[] {
+  const season = seasonOmenAt(at);
+  return season ? [...omensOf(weekOf(at)), season] : omensOf(weekOf(at));
 }
 
 /** One of the Peaks' foes as it stands at a depth: health, hits and gold grown by the depth. */
