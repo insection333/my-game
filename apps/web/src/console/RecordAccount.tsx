@@ -138,7 +138,7 @@ export function RecordAccount({ record: r, reload, run }: { record: RecordRespon
           )}
         </div>
       </Panel>
-      <Panel title={t('record.danger')}>
+      <Panel title={t('record.danger')} className={p.danger}>
         <form className={p.form} onSubmit={remove}>
           <p className={p.note}>{t('record.dangerLead')}</p>
           <Field label={t('record.typeName')} value={typed} onChange={(e) => setTyped(e.target.value)} maxLength={64} />

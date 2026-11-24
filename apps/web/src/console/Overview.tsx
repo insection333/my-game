@@ -7,6 +7,7 @@ import { fmt, t } from '@idle-clash/content';
 import { Panel, TextLink } from '@idle-clash/ui';
 import { useEffect, useState, type ReactNode } from 'react';
 import { api } from '../api.ts';
+import { setServerTime } from '../game/clock.ts';
 import { handled } from '../game/session.ts';
 import { whenOf } from '../pages/days.ts';
 import { untilLoaded } from '../Ready.tsx';
@@ -59,9 +60,11 @@ const share = (p: number | null, of: number): Pick<Tile, 'value' | 'note'> =>
 
 export function Overview() {
   const [o, setO] = useState<AdminOverviewResponse | null>(null);
-  const read = () => api.admin.overview().then(setO, (err: unknown) => void handled(err));
+  // The realm's clock in the bar keeps the server's time (session 232), learnt from each read.
+  const seen = (r: AdminOverviewResponse) => (setServerTime(r.at), setO(r));
+  const read = () => api.admin.overview().then(seen, (err: unknown) => void handled(err));
   useEffect(() => {
-    untilLoaded(api.admin.overview()).then(setO, (err: unknown) => void handled(err));
+    untilLoaded(api.admin.overview()).then(seen, (err: unknown) => void handled(err));
   }, []);
   useFresh(() => void read());
   if (!o) return null;
@@ -110,6 +113,7 @@ export function Overview() {
                 {
                   label: t('console.waiting.refused'),
                   value: fmt.int(o.moderation.refusedToday),
+                  note: t('console.waiting.refusedWhat'),
                   href: '/admin/mail?mail=watch',
                 },
                 {
@@ -170,7 +174,10 @@ export function Overview() {
             <Facts
               rows={[
                 [t('console.server.since'), whenOf(o.server.startedAt)],
-                [t('console.server.build'), o.server.build ?? t('console.server.noBuild')],
+                [
+                  t('console.server.build'),
+                  o.server.build ? <code className={s.code}>{o.server.build}</code> : t('console.server.noBuild'),
+                ],
                 [t('console.server.memory'), mb(o.server.memoryMb)],
                 [t('console.server.database'), mb(o.server.databaseMb)],
                 [t('console.server.saves'), fmt.int(o.server.saves)],

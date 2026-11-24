@@ -31,7 +31,8 @@
   font-size: var(--t-small);
 }
 
-/* Figures: a label above a large number, and a line under it. */
+/* Figures (session 232: the watch room's instruments): a label above a large, light number, a rule of the
+   signal down the left; a figure that leads somewhere lights its rule under the pointer. */
 .tiles {
   margin: 0;
   display: grid;
@@ -40,15 +41,36 @@
 }
 
 .tile {
+  position: relative;
   min-width: 0;
-  padding: var(--s-2) var(--s-3);
+  padding: var(--s-2) var(--s-3) var(--s-3) calc(var(--s-3) + 2px);
   border: 1px solid var(--line);
   border-radius: var(--r-control);
-  background: var(--surface-2);
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.025), transparent 70%), var(--surface);
+  transition: border-color 120ms ease;
+}
+
+.tile::before {
+  content: '';
+  position: absolute;
+  inset: var(--s-2) auto var(--s-2) -1px;
+  width: 2px;
+  border-radius: 2px;
+  background: rgb(108 203 232 / 0.45);
+}
+
+.tile:has(a):hover {
+  border-color: var(--line-strong);
+}
+
+.tile:has(a):hover::before {
+  background: var(--woad);
+  box-shadow: 0 0 8px var(--signal-glow);
 }
 
 .tile dt {
-  font: 600 var(--t-small) / 1.3 var(--font-ui);
+  font: 500 var(--t-small) / 1.3 var(--font-ui);
+  letter-spacing: 0.02em;
   color: var(--ink-2);
 }
 
@@ -57,7 +79,10 @@
 }
 
 .tileValue {
-  font: 600 1.75rem / 1.15 var(--font-book);
+  margin-top: 2px;
+  font: 300 2.125rem / 1.1 var(--font-book);
+  font-stretch: 104%;
+  letter-spacing: -0.01em;
   color: var(--ink);
   font-variant-numeric: tabular-nums;
 }
@@ -138,7 +163,15 @@
 .chartSvg {
   display: block;
   width: 100%;
-  height: 6rem;
+  height: 7rem;
+  color: var(--woad);
+}
+
+.chartGrid {
+  stroke: var(--line);
+  stroke-width: 1;
+  stroke-dasharray: 2 4;
+  vector-effect: non-scaling-stroke;
 }
 
 .chartHit {
@@ -149,9 +182,15 @@
   fill: var(--woad);
 }
 
+.chartTop {
+  fill: var(--woad);
+  filter: drop-shadow(0 0 3px var(--signal-glow));
+}
+
 .chartBase {
   stroke: var(--line-strong);
   stroke-width: 1;
+  vector-effect: non-scaling-stroke;
 }
 
 .chartAxis {
@@ -163,8 +202,9 @@
 }
 
 @media (forced-colors: active) {
-  .chartBar {
-    fill: Highlight;
+  .chartBar,
+  .chartTop {
+    fill: Highlight !important;
   }
 }
 
@@ -255,4 +295,70 @@
   display: grid;
   gap: 2px;
   overflow-wrap: anywhere;
+}
+
+/* A strip of tabs named at its start (the directory's Show and Sort by, session 232), so the two strips read
+   apart; on a narrow page the name stands above. */
+.strip {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2px;
+}
+
+.stripName {
+  font: 500 var(--t-small) / 1.4 var(--font-ui);
+  letter-spacing: 0.04em;
+  color: var(--ink-2);
+}
+
+@container main (min-width: 40rem) {
+  .strip {
+    grid-template-columns: 5.5rem minmax(0, 1fr);
+    align-items: center;
+    gap: var(--s-3);
+  }
+}
+
+/* What cannot be undone: the pane's edge lit in the alert's colour (the record's Delete the account). */
+.danger.danger:global([data-ui='Panel']) {
+  --woad: var(--alert);
+  --woad-soft: var(--alert-soft);
+  --woad-ink: #2a0b11;
+  border-color: rgb(244 140 156 / 0.3);
+}
+
+.danger.danger:global([data-ui='Panel'])::before {
+  background: linear-gradient(90deg, transparent, rgb(244 140 156 / 0.6), transparent);
+}
+
+.danger.danger:global([data-ui='Panel']) h2::before {
+  background: var(--alert);
+  box-shadow: 0 0 8px rgb(244 140 156 / 0.35);
+}
+
+/* A name the system knows by (a feature's id, a table's): set as code. */
+.code {
+  font-family: var(--font-code);
+  font-size: 0.875em;
+  color: var(--ink);
+}
+
+/* On or off, with its lamp. */
+.state {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.state::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ink-2);
+}
+
+.state[data-on]::before {
+  background: var(--moss);
+  box-shadow: 0 0 6px rgb(120 212 160 / 0.5);
 }

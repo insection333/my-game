@@ -1,10 +1,15 @@
 // The admin console (session 227): its own frame outside the game's shell, for the console's own account
 // and for players on the admin list. A bar across the top (the game's mark, who is signed in, Sign out or
 // Back to the game), the sections down the side in the lodge's night on a wide screen and as a grid of
-// links above the page on a phone, and the section open. Each section has its own address.
+// links above the page on a phone, and the section open. Each section has its own address. Since session 232
+// the console is the keepers' watch room, drawn in its own night in either theme (`console.module.css`):
+// Saira for its words and figures, the sections grouped (the realm, the players, the records), and the
+// realm's own time in the bar, as the realm's day turns at midnight UTC.
+import '@fontsource-variable/saira/wdth.css';
 import { t } from '@idle-clash/content';
 import { GameMark } from '@idle-clash/ui';
-import { useEffect, type MouseEvent } from 'react';
+import { useEffect, useState, type MouseEvent } from 'react';
+import { serverNow } from '../game/clock.ts';
 import { account, useSession } from '../game/session.ts';
 import { PageHead } from '../pages/PageHead.tsx';
 import { NotFound } from '../pages/Simple.tsx';
@@ -22,14 +27,20 @@ import { PlayerRecord } from './Players.tsx';
 import s from './console.module.css';
 
 export const SECTIONS = [
-  { id: 'overview', label: 'console.overview', lead: 'console.overview.lead' },
-  { id: 'players', label: 'console.players', lead: 'console.players.lead' },
-  { id: 'moderation', label: 'console.moderation', lead: 'console.moderation.lead' },
-  { id: 'mail', label: 'console.mail', lead: 'console.mail.lead' },
-  { id: 'live', label: 'console.live', lead: 'console.live.lead' },
-  { id: 'test', label: 'console.test', lead: 'console.test.lead' },
-  { id: 'audit', label: 'console.audit', lead: 'console.audit.lead' },
-  { id: 'system', label: 'console.system', lead: 'console.system.lead' },
+  { id: 'overview', label: 'console.overview', lead: 'console.overview.lead', group: 'realm' },
+  { id: 'live', label: 'console.live', lead: 'console.live.lead', group: 'realm' },
+  { id: 'players', label: 'console.players', lead: 'console.players.lead', group: 'players' },
+  { id: 'moderation', label: 'console.moderation', lead: 'console.moderation.lead', group: 'players' },
+  { id: 'mail', label: 'console.mail', lead: 'console.mail.lead', group: 'players' },
+  { id: 'test', label: 'console.test', lead: 'console.test.lead', group: 'players' },
+  { id: 'audit', label: 'console.audit', lead: 'console.audit.lead', group: 'records' },
+  { id: 'system', label: 'console.system', lead: 'console.system.lead', group: 'records' },
+] as const;
+/** The sections' groups, named on the rail (a phone's grid runs them together). */
+const GROUPS = [
+  { id: 'realm', label: () => t('console.group.realm') },
+  { id: 'players', label: () => t('console.group.players') },
+  { id: 'records', label: () => t('console.group.records') },
 ] as const;
 export type SectionId = (typeof SECTIONS)[number]['id'];
 
@@ -53,6 +64,23 @@ const go = (href: string) => (e: MouseEvent) => {
   e.preventDefault();
   navigate(href);
 };
+
+/** The realm's time, by the server's clock: its day turns at midnight UTC. Told to the minute, read again
+ *  each quarter minute. */
+function RealmClock() {
+  const [now, setNow] = useState(serverNow);
+  useEffect(() => {
+    const id = setInterval(() => setNow(serverNow()), 15_000);
+    return () => clearInterval(id);
+  }, []);
+  const at = new Date(now).toISOString().slice(11, 16);
+  return (
+    <span className={s.clock} title={t('console.clock.title')}>
+      <span className={s.lamp} aria-hidden="true" />
+      {t('console.clock', { time: at })}
+    </span>
+  );
+}
 
 function Body({ id, path }: { id: SectionId; path: string }) {
   const record = recordOf(path);
@@ -88,13 +116,14 @@ export default function Console({ path }: { path: string }) {
       <a className={s.skip} href="#console-main" data-ui="Link">
         {t('shell.skip')}
       </a>
-      <header className={s.bar} data-chrome>
+      <header className={s.bar}>
         <span className={s.brand}>
           <GameMark size={28} />
           <span className={s.brandName}>{t('shell.name')}</span>
           <span className={s.brandRole}>{t('console.title')}</span>
         </span>
         <span className={s.who}>
+          <RealmClock />
           <span className={s.whoName}>{t('console.signedInAs', { name: player?.name ?? '' })}</span>
           {/* Drawn for the bar's night, so it is its own control and not a page's Button (one control, one look). */}
           <button
@@ -107,25 +136,34 @@ export default function Console({ path }: { path: string }) {
           </button>
         </span>
       </header>
-      <nav className={s.nav} aria-label={t('console.sections')} data-chrome>
-        <ul>
-          {SECTIONS.map((x) => {
-            const href = x.id === 'overview' ? '/admin' : `/admin/${x.id}`;
-            return (
-              <li key={x.id}>
-                <a
-                  href={href}
-                  data-ui="ConsoleLink"
-                  className={s.navLink}
-                  aria-current={section === x.id ? 'page' : undefined}
-                  onClick={go(href)}
-                >
-                  {t(x.label)}
-                </a>
-              </li>
-            );
-          })}
-        </ul>
+      <nav className={s.nav} aria-label={t('console.sections')}>
+        <div className={s.groups}>
+          {GROUPS.map((g) => (
+            <div key={g.id} className={s.group}>
+              <p className={s.groupName} id={`console-group-${g.id}`}>
+                {g.label()}
+              </p>
+              <ul aria-labelledby={`console-group-${g.id}`}>
+                {SECTIONS.filter((x) => x.group === g.id).map((x) => {
+                  const href = x.id === 'overview' ? '/admin' : `/admin/${x.id}`;
+                  return (
+                    <li key={x.id}>
+                      <a
+                        href={href}
+                        data-ui="ConsoleLink"
+                        className={s.navLink}
+                        aria-current={section === x.id ? 'page' : undefined}
+                        onClick={go(href)}
+                      >
+                        {t(x.label)}
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          ))}
+        </div>
       </nav>
       <main id="console-main" className={s.main} tabIndex={-1}>
         <div className={s.content}>
