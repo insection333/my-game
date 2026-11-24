@@ -10,7 +10,7 @@ import {
   type AdminResetResponse,
   type AdminSaveResponse,
 } from '@idle-clash/contracts';
-import { asc, eq, sql } from 'drizzle-orm';
+import { and, asc, eq, sql } from 'drizzle-orm';
 import type { FastifyInstance } from 'fastify';
 import { randomInt } from 'node:crypto';
 import { hashPassword } from '../auth/passwords.ts';
@@ -70,7 +70,7 @@ export function adminRoutes(app: FastifyInstance, ctx: Ctx): void {
       const rows = ctx.db
         .select()
         .from(players)
-        .where(sql`${players.nameKey} like ${pattern} escape '\\'`)
+        .where(and(sql`${players.nameKey} like ${pattern} escape '\\'`, eq(players.role, 'player')))
         .orderBy(asc(players.nameKey))
         .limit(25)
         .all();

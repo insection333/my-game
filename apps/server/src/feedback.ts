@@ -106,8 +106,8 @@ export function feedbackRoutes(app: FastifyInstance, ctx: Ctx, features: readonl
         .orderBy(desc(players.createdAt))
         .limit(200)
         .all()
-        // The admins run the test; the players are everyone else.
-        .filter((p) => !isAdmin(ctx, p.name))
+        // The admins run the test, as does the console's own account; the players are everyone else.
+        .filter((p) => p.role !== 'staff' && !isAdmin(ctx, p.name))
         .map((p) => {
           const days = daysOf(p.id);
           const last = [...days].sort().at(-1);

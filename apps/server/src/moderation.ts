@@ -76,11 +76,11 @@ export function moderationRoutes(app: FastifyInstance, ctx: Ctx): void {
       const reporter = req.playerId!;
       limit(ctx, reply, `report:${reporter}`, REPORTS_A_DAY, DAY);
       const target = ctx.db
-        .select({ id: players.id })
+        .select({ id: players.id, role: players.role })
         .from(players)
         .where(eq(players.nameKey, nameKey(input.name)))
         .get();
-      if (!target) throw fail(404, 'notFound');
+      if (!target || target.role === 'staff') throw fail(404, 'notFound');
       if (target.id === reporter) throw fail(422, 'invalidInput', { fields: ['name'] });
       // An admin is never reported into a queue that admins read about themselves.
       if (!isAdmin(ctx, input.name)) {

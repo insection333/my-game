@@ -3,7 +3,7 @@
 // them now; and the feedback sent from Settings, newest first, each note and all of them copyable as
 // plain text to pass on. Each list scrolls in its own box, so no panel outgrows a phone's screen.
 import { fmt, t } from '@idle-clash/content';
-import { dayOf } from './days.ts';
+import { dayOf } from '../pages/days.ts';
 import type { AdminTestResponse, TesterView } from '@idle-clash/contracts';
 import { ActionRow, Panel, Pill } from '@idle-clash/ui';
 import { useEffect, useState } from 'react';
@@ -11,10 +11,10 @@ import { api } from '../api.ts';
 import { handled } from '../game/session.ts';
 import { Slot } from '../slots.tsx';
 import s from './admin.module.css';
-import { CopyButton } from './CopyButton.tsx';
+import { CopyButton } from '../pages/CopyButton.tsx';
 import { feedbackNote, feedbackNotes } from './feedback-copy.ts';
 
-export function AdminTest() {
+export function ClosedTest() {
   const [view, setView] = useState<AdminTestResponse | null>(null);
   useEffect(() => void api.admin.test().then(setView, (err: unknown) => void handled(err)), []);
   if (!view) return null;

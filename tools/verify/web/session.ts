@@ -39,6 +39,7 @@ export const ENGINES: Engine[] = ['chromium', 'firefox', 'webkit'];
 
 export { signedOut, views, type View } from './views.ts';
 import { signedOut } from './views.ts';
+import type { As } from '../ia.ts';
 
 let built: Promise<string | null> | null = null;
 /** Builds the web app once per verify run; resolves to an error message, or null when built. */
@@ -64,6 +65,8 @@ export interface Served {
   sage: { name: string; value: string };
   /** And of one a week in, whose castle was raised five days ago (`castles.ts`). */
   squire: { name: string; value: string };
+  /** And of the admin console's own account (session 227). */
+  staff: { name: string; value: string };
   /** The server's insides, for flows that set up a save the way the admin page will. */
   ctx: Ctx;
   close: () => Promise<void>;
@@ -93,6 +96,18 @@ export async function newcomer(url: string, name: string): Promise<{ name: strin
   return { name: cookieName, value };
 }
 
+/** Signs the admin console's own account in (session 227; its password is the run's own, not the live one). */
+async function staffIn(url: string, password: string): Promise<{ name: string; value: string }> {
+  const res = await fetch(`${url}/api/auth/sign-in`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', origin: url },
+    body: JSON.stringify({ name: 'Admin', password }),
+  });
+  if (res.status !== 200) throw new Error(`Signing the console in failed: ${res.status} ${await res.text()}`);
+  const [cookieName, value] = (res.headers.get('set-cookie') ?? '').split(';')[0].split('=');
+  return { name: cookieName, value };
+}
+
 async function start(): Promise<Served> {
   const port = await freePort();
   const url = `http://127.0.0.1:${port}`;
@@ -109,6 +124,7 @@ async function start(): Promise<Served> {
     log: false,
     now: () => Date.now(),
     adminNames: [],
+    staff: { name: 'Admin', password: 'proof-console-1' },
     backupStatusDir: null,
     // The screenshot run loads every page in three browsers, as the same few players, all from this
     // machine: far faster than any person, so the paces are lifted here.
@@ -207,6 +223,7 @@ async function start(): Promise<Served> {
     keeper: kpr,
     sage: sg,
     squire: sqr,
+    staff: await staffIn(url, ctx.config.staff.password!),
     ctx,
     close: async () => {
       await close();
@@ -219,12 +236,7 @@ let server: Promise<Served> | null = null;
 export const ensureServer = (): Promise<Served> => (server ??= start());
 
 /** A page for one view, in its own browser context, signed in unless the view is for visitors. */
-export async function openPage(
-  engine: Engine,
-  path: string,
-  options: BrowserContextOptions,
-  as?: 'veteran' | 'elder' | 'keeper' | 'sage' | 'squire' | 'visitor',
-): Promise<Page> {
+export async function openPage(engine: Engine, path: string, options: BrowserContextOptions, as?: As): Promise<Page> {
   const served = await ensureServer();
   const ctx = await (await browser(engine)).newContext(options);
   const players = {
@@ -233,6 +245,7 @@ export async function openPage(
     keeper: served.keeper,
     sage: served.sage,
     squire: served.squire,
+    staff: served.staff,
   };
   const cookie = as && as !== 'visitor' ? players[as] : served.cookie;
   if (!signedOut(path) && as !== 'visitor') await ctx.addCookies([{ ...cookie, url: served.url }]);

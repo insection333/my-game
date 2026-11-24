@@ -34,12 +34,13 @@ export function mutedUntil(ctx: Ctx, playerId: string, now: number): number | nu
 /** Sends a letter, or says why not. The time of the last letter is the sender's newest in the table. */
 export function send(ctx: Ctx, fromId: string, toName: string, raw: string, now: number): SendResult {
   const to = ctx.db
-    .select({ id: players.id, bannedAt: players.bannedAt })
+    .select({ id: players.id, bannedAt: players.bannedAt, role: players.role })
     .from(players)
     .where(eq(players.nameKey, nameKey(toName)))
     .get();
   // Names are public (the ladders), so a name that is no one's is said as such; a banned player's is not.
-  if (!to) return { ok: false, reason: 'noPlayer' };
+  // The console's own account is no player to write to (session 227).
+  if (!to || to.role === 'staff') return { ok: false, reason: 'noPlayer' };
   if (to.bannedAt !== null) return { ok: false, reason: 'blocked' };
   if (to.id === fromId) return { ok: false, reason: 'self' };
   if (mutedUntil(ctx, fromId, now) !== null) return { ok: false, reason: 'muted' };

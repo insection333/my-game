@@ -65,11 +65,16 @@ jobs:
         if: steps.server.outputs.ready == 'true' && (env.ACTION == 'deploy' || env.ACTION == 'rollback')
         env:
           ADMIN_NAMES: ${{ vars.ADMIN_NAMES }}
+          # The admin console's own account (session 227): its password, a secret, written base64 so that no
+          # character in it is read as anything but itself.
+          ADMIN_ACCOUNT_PASSWORD: ${{ secrets.ADMIN_ACCOUNT_PASSWORD }}
           R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
           R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
           R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
         run: |
           [ -n "$R2_SECRET_ACCESS_KEY" ] || echo "::warning::The R2 secrets are not set, so backups will fail."
+          [ -n "$ADMIN_ACCOUNT_PASSWORD" ] || echo "::warning::ADMIN_ACCOUNT_PASSWORD is not set, so the admin console has no account of its own."
+          CONSOLE_B64=$(printf '%s' "$ADMIN_ACCOUNT_PASSWORD" | base64 -w0)
           ssh server 'umask 077; cat >/etc/idleclash/server.env' <<EOF
           NODE_ENV=production
           PORT=3000
@@ -81,6 +86,7 @@ jobs:
           EMAIL_ENABLED=false
           BACKUP_STATUS_DIR=/var/lib/idleclash/status
           ADMIN_NAMES=$ADMIN_NAMES
+          ADMIN_ACCOUNT_PASSWORD_B64=$CONSOLE_B64
           EOF
           ssh server 'umask 077; cat >/etc/idleclash/backup.env' <<EOF
           BACKUP_REMOTE=r2:idleclash-backups

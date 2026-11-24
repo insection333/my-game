@@ -3,7 +3,7 @@
 // offers them; and its time reads as the game's others do ("14:22" today, "9 Nov, 13:02" this year).
 import { fmt } from '@idle-clash/content';
 import { describe, expect, it } from 'vitest';
-import { letterSender, letterWhen } from '../src/pages/admin-mail-words.ts';
+import { letterSender, letterWhen } from '../src/console/mail-words.ts';
 
 const NOW = Date.UTC(2026, 10, 11, 4);
 

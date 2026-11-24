@@ -7,8 +7,12 @@ import { replace, useLocation } from './router.ts';
 import { playedHere, welcomeFor } from './welcome-path.ts';
 
 const Game = lazy(() => import('./Game.tsx'));
+// The admin console (session 227): its own part of the page. It is signed into on the welcome page's own
+// form, which opens the console for the console's account (the owner: no sign-in of its own).
+const Console = lazy(() => import('./console/Console.tsx'));
 
 const isWelcome = (path: string) => path === '/welcome' || path === '/welcome/sign-in';
+export const isConsolePath = (path: string) => path === '/admin' || path.startsWith('/admin/');
 
 export function App() {
   const { path, next } = useLocation();
@@ -21,7 +25,9 @@ export function App() {
       ? welcomeFor(location.pathname, location.search, playedHere())
       : phase === 'playing' && isWelcome(path)
         ? next
-        : null;
+        : phase === 'console' && !isConsolePath(path)
+          ? '/admin'
+          : null;
   useEffect(() => {
     if (redirect) replace(redirect);
   }, [redirect]);
@@ -41,6 +47,12 @@ export function App() {
         <Legal page={legal} back="/welcome" standalone />
         <Ready />
       </>
+    );
+  if (phase === 'console')
+    return (
+      <Suspense fallback={null}>
+        <Console path={path} />
+      </Suspense>
     );
   if (phase === 'signedOut')
     return (

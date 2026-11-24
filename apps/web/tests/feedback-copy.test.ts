@@ -2,7 +2,7 @@
 // where they stood, the page and the day, and their words untouched.
 import type { FeedbackView } from '@idle-clash/contracts';
 import { describe, expect, it } from 'vitest';
-import { feedbackNote, feedbackNotes } from '../src/pages/feedback-copy.ts';
+import { feedbackNote, feedbackNotes } from '../src/console/feedback-copy.ts';
 
 const AT = Date.UTC(2026, 9, 27, 12);
 const note = (over: Partial<FeedbackView> = {}): FeedbackView => ({

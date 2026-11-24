@@ -1,36 +1,28 @@
-// The admin page (the brief): find a player; rename them, ban or unban them, look at their save and
-// what was mended in it, and set a new password when they have forgotten theirs; the reports and sieges
-// between lords to look into (AdminModeration.tsx, session 39); the mail monitor (AdminMail.tsx, session 45); and the closed
-// test's panel (AdminTest.tsx). Only players on the
-// server's admin list reach it; everyone else gets the page that does not exist.
+// The console's Players section (the brief; the console's frame since session 227): find a player; rename
+// them, ban or unban them, look at their save and what was mended in it, and set a new password when they
+// have forgotten theirs. `?player=` opens one (Moderation's Open leads here).
 import { FIRE_WATCH_HOURS, type AdminPlayerView, type AdminSaveResponse } from '@idle-clash/contracts';
 import { fmt, t } from '@idle-clash/content';
-import { dayOf } from './days.ts';
+import { dayOf } from '../pages/days.ts';
 import { ActionRow, Button, Field, Panel, Pill } from '@idle-clash/ui';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { api } from '../api.ts';
 import { handled, useSession } from '../game/session.ts';
 import { untilLoaded } from '../Ready.tsx';
 import { refused } from '../refused.ts';
+import { replace } from '../router.ts';
 import { Slot } from '../slots.tsx';
-import { AdminMail } from './AdminMail.tsx';
-import { AdminModeration } from './AdminModeration.tsx';
-import { AdminTest } from './AdminTest.tsx';
-import { PageHead } from './PageHead.tsx';
-import { NotFound } from './Simple.tsx';
 import s from './admin.module.css';
 
 const why = (err: unknown) =>
   refused(err, { nameTaken: t('error.nameTaken'), nameNotAllowed: t('error.nameNotAllowed') });
 
-export function Admin() {
+export function Players({ opened }: { opened: string | null }) {
   const { admin } = useSession();
   const [query, setQuery] = useState('');
   const [found, setFound] = useState<AdminPlayerView[] | null>(null);
   const [save, setSave] = useState<AdminSaveResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
-  // Changes whenever a player is opened again after an action, so the reports they settled leave the queue.
-  const [version, setVersion] = useState(0);
   // Opens on the first players by name, so there is something to act on at once.
   useEffect(() => {
     if (admin)
@@ -50,7 +42,6 @@ export function Admin() {
     if (top < 0 || top > innerHeight - 80) el.scrollIntoView({ block: 'start' });
     el.focus({ preventScroll: true });
   }, [shown]);
-  if (!admin) return <NotFound />;
   const run = async <T,>(go: () => Promise<T>, then: (r: T) => void) => {
     setError(null);
     try {
@@ -71,12 +62,19 @@ export function Admin() {
       () => api.admin.save(id),
       (r) => {
         setSave(r);
-        setVersion((v) => v + 1);
+        replace(`/admin/players?player=${encodeURIComponent(id)}`);
       },
     );
+  // A player named in the address (Moderation's Open) opens at once.
+  useEffect(() => {
+    if (!opened || opened === save?.player.id) return;
+    api.admin.save(opened).then(setSave, (err: unknown) => {
+      if (!handled(err)) setError(why(err));
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [opened]);
   return (
     <>
-      <PageHead title={t('admin.title')} />
       <div className={s.layout}>
         <section data-section>
           <Panel title={t('admin.players')} flush>
@@ -121,9 +119,6 @@ export function Admin() {
               </div>
             </Slot>
           </Panel>
-          <AdminModeration open={open} version={version} />
-          <AdminMail />
-          <AdminTest />
         </section>
         {save && (
           <section data-section ref={playerRef} tabIndex={-1} className={s.opened}>
