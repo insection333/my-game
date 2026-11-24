@@ -48,7 +48,7 @@ export function RecordSave({ id, run }: { id: string; run: Run }) {
           </ul>
         )}
         <h3>{t('admin.save')}</h3>
-        <pre className={s.doc} data-scrolls>
+        <pre className={s.doc} data-scrolls tabIndex={0} aria-label={t('admin.save')}>
           {JSON.stringify(save.doc, null, 2)}
         </pre>
       </div>
