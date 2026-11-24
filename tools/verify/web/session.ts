@@ -1,7 +1,7 @@
 // What steps 6 to 9 share: one build of the web app, the game's own server on a scratch database
 // with every built feature on, the three browser engines, a newcomer's session, and the list of
 // views to open (from IA.md, plus the sheets).
-import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync } from 'node:fs';
+import { existsSync, mkdtempSync, readdirSync, rmSync } from 'node:fs';
 import { createServer } from 'node:net';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -24,11 +24,10 @@ import { BEFORE, withGoals } from './season-goals.ts';
 import { crowdDeep, withDeep } from './deep-week.ts';
 import { castles, wrongdoing } from './castles.ts';
 import { elder, keeper } from './elder.ts';
+import { sage } from './sage.ts';
 import { withHonours } from './honours.ts';
 import { crowd, CROWD, RIVAL, veteran } from './veteran.ts';
 import { letters } from './letters.ts';
-import { SHEETS } from './sheets.ts';
-import { readPageMap, type ViewSpec } from '../ia.ts';
 
 export const DIST = join(ROOT, 'apps/web/dist');
 export const OUT = join(ROOT, '.verify');
@@ -38,110 +37,8 @@ export const height = (w: number) => (w < 1000 ? 844 : 900);
 export type Engine = 'chromium' | 'firefox' | 'webkit';
 export const ENGINES: Engine[] = ['chromium', 'firefox', 'webkit'];
 
-export interface View extends ViewSpec {
-  /** A short name for files and reports. */
-  name: string;
-}
-
-/** Views to open: every row of IA.md's "Visible without scrolling" tables, and the sheets (the tray, an item, settings). */
-export function views(): View[] {
-  const map = readPageMap(readFileSync(join(ROOT, 'IA.md'), 'utf8'));
-  const sheets = SHEETS;
-  /** The page a path is on, for its spec on the review sheets. */
-  const pageOf = (path: string, otherwise: string) =>
-    map.views.find((v) => v.path === path)?.page ??
-    ([
-      ['/skills/', 'Skill'],
-      ['/hiscores', 'Hiscores'],
-      ['/combat', 'Combat'],
-      ['/castle', 'Castle Clash'],
-    ].find(([p]) => path.startsWith(p))?.[1] ||
-      otherwise);
-  // The same pages for a player three weeks in, whose rows carry odds, pills and long names.
-  const veteran: ViewSpec[] = [
-    ...map.views.filter((v) => !signedOut(v.path)).map((v) => ({ ...v, as: 'veteran' as const })),
-    { page: 'Combat', path: '/combat?panel=gear&slot=weapon', phone: [], desktop: [], as: 'veteran' },
-    // A region still ahead: its foes locked, each saying the Hitpoints level that opens it.
-    { page: 'Combat', path: '/combat?region=peaks', phone: [], desktop: [], as: 'veteran' },
-    { page: 'Skill', path: '/skills/melee', phone: [], desktop: [], as: 'veteran' },
-    { page: 'Storehouse', path: '/storehouse?panel=item&item=carved-acorn', phone: [], desktop: [], as: 'veteran' },
-  ];
-  // Two months into the climb, in the Sunken Fen: the longest names and the largest numbers.
-  const elders: ViewSpec[] = [
-    '/',
-    // A work half raised: its next raising, part of its cost held and part not.
-    '/?panel=work&work=smokehouse',
-    // The pedlar's wants of the day (session 217), from what two months of play have found, gathered and cooked.
-    '/?panel=pedlar',
-    '/skills',
-    '/skills/mining',
-    '/skills/fishing',
-    '/skills/cooking',
-    '/skills/runecraft',
-    '/skills/fletching',
-    '/combat',
-    '/storehouse',
-    // The Castles ladder, with the elder's castle and the keeper's on it.
-    '/hiscores?skill=castle',
-    // This season's ladder (session 165): goals done since it opened, a squire new this season beside veterans.
-    '/hiscores?skill=season',
-    // A player's sheet, with Report this player.
-    '/hiscores?panel=player&name=Keeper',
-    // Messages behind the bell: letters read and unread, Reply, Delete and Block, and a player blocked.
-    '/?panel=tray&tray=mail',
-    // Deeds two months in: honours open, families half done, a sheet of choices.
-    '/hiscores/deeds',
-    '/hiscores/deeds?view=skills',
-    '/hiscores/deeds?view=combat',
-    '/hiscores/deeds?panel=honours',
-    // Expeditions two months in: the Fen's longest route, the bosses and the relics.
-    '/combat/expeditions?region=fen&hours=8',
-    // Castle Clash weeks after raising: every tab (the War first, the Reports last), and the account of a siege on the elder
-    // (report 6: castles.ts).
-    '/castle',
-    '/castle/army',
-    '/castle/citadel',
-    '/castle?panel=report&report=6',
-    '/castle/halls',
-    // The Reports tab (session 42): every report as a card, and one filter.
-    '/castle/reports',
-    '/castle/reports?show=spies',
-  ].map((path) => ({ page: pageOf(path, 'Hearth'), path, phone: [], desktop: [], as: 'elder' as const }));
-  // A year in: skills at 99, kindled, walking their Paths; the ladder that counts Kindlings; and a castle a
-  // year in (session 139): every troop at its fourth evolution, the Halls full; and every relic raised, the
-  // quartermaster leading (session 191).
-  const keepers: ViewSpec[] = [
-    '/skills',
-    '/skills/woodcutting',
-    '/skills/hitpoints',
-    '/hiscores?skill=woodcutting',
-    // The Deep's ladder of the week (session 214), the keeper among those who went down.
-    '/hiscores?skill=deep',
-    '/hiscores?skill=kindlings',
-    '/combat/expeditions',
-    '/castle',
-    '/castle/army',
-    '/castle/halls',
-  ].map((path) => ({ page: pageOf(path, 'Skills'), path, phone: [], desktop: [], as: 'keeper' as const }));
-  // A week in (session 139): a castle raised five days ago, its lords not yet open.
-  const squires: ViewSpec[] = ['/castle', '/castle/army', '/castle/citadel'].map((path) => ({
-    page: 'Castle Clash',
-    path,
-    phone: [],
-    desktop: [],
-    as: 'squire' as const,
-  }));
-  // The privacy page and the terms, as a visitor reads them from the welcome page.
-  const visitor: ViewSpec[] = map.views
-    .filter((v) => v.path === '/privacy' || v.path === '/terms')
-    .map((v) => ({ ...v, as: 'visitor' as const }));
-  // The admin page is the admin's: a newcomer gets the page that does not exist.
-  const newcomer = map.views.filter((v) => v.path !== '/admin');
-  return [...newcomer, ...sheets, ...veteran, ...elders, ...keepers, ...squires, ...visitor].map((v) => ({
-    ...v,
-    name: (v.as ? `${v.as}-` : '') + (v.path.replace(/^\//, '').replace(/[^a-z0-9]+/gi, '-') || 'hearth'),
-  }));
-}
+export { signedOut, views, type View } from './views.ts';
+import { signedOut } from './views.ts';
 
 let built: Promise<string | null> | null = null;
 /** Builds the web app once per verify run; resolves to an error message, or null when built. */
@@ -163,6 +60,8 @@ export interface Served {
   elder: { name: string; value: string };
   /** And of one a year in, with skills kindled past 99 (`elder.ts`). */
   keeper: { name: string; value: string };
+  /** And of one two years in (`sage.ts`). */
+  sage: { name: string; value: string };
   /** And of one a week in, whose castle was raised five days ago (`castles.ts`). */
   squire: { name: string; value: string };
   /** The server's insides, for flows that set up a save the way the admin page will. */
@@ -248,6 +147,7 @@ async function start(): Promise<Served> {
   const eld = await settle('Elder', (s) => elder(ctx, s, now), 131);
   // The keeper has been into the Deep this week (session 214).
   const kpr = await settle('Keeper', (s) => withDeep(keeper(ctx, s, now), 23, now), 118);
+  const sg = await settle('Sage', (s) => sage(ctx, s, now), 152);
   // A player a week in, whose castle was raised five days ago (session 139).
   const sqr = await settle(
     'Squire',
@@ -270,12 +170,13 @@ async function start(): Promise<Served> {
     id: ids.get(name)!,
     level: totalLevel(ctx.store.read(ids.get(name)!, now)!.doc.state),
   });
-  const [squireL, elderL, rivalL, keeperL] = ['Squire', 'Elder', RIVAL, 'Keeper'].map(lord);
-  castles(ctx, { squire: squireL.id, elder: elderL.id, rival: rivalL.id, keeper: keeperL.id }, now, {
+  const [squireL, elderL, rivalL, keeperL, sageL] = ['Squire', 'Elder', RIVAL, 'Keeper', 'Sage'].map(lord);
+  castles(ctx, { squire: squireL.id, elder: elderL.id, rival: rivalL.id, keeper: keeperL.id, sage: sageL.id }, now, {
     squire: squireL.level,
     elder: elderL.level,
     rival: rivalL.level,
     keeper: keeperL.level,
+    sage: sageL.level,
   });
   // Feedback on the admin page, so its notes and Copy buttons are seen at every width.
   const say = (c: { name: string; value: string }, text: string, page: string) =>
@@ -304,6 +205,7 @@ async function start(): Promise<Served> {
     veteran: vet,
     elder: eld,
     keeper: kpr,
+    sage: sg,
     squire: sqr,
     ctx,
     close: async () => {
@@ -316,19 +218,22 @@ async function start(): Promise<Served> {
 let server: Promise<Served> | null = null;
 export const ensureServer = (): Promise<Served> => (server ??= start());
 
-/** Welcome views are opened signed out; every other view as the run's newcomer, or its veteran. */
-export const signedOut = (path: string) => path.startsWith('/welcome');
-
 /** A page for one view, in its own browser context, signed in unless the view is for visitors. */
 export async function openPage(
   engine: Engine,
   path: string,
   options: BrowserContextOptions,
-  as?: 'veteran' | 'elder' | 'keeper' | 'squire' | 'visitor',
+  as?: 'veteran' | 'elder' | 'keeper' | 'sage' | 'squire' | 'visitor',
 ): Promise<Page> {
   const served = await ensureServer();
   const ctx = await (await browser(engine)).newContext(options);
-  const players = { veteran: served.veteran, elder: served.elder, keeper: served.keeper, squire: served.squire };
+  const players = {
+    veteran: served.veteran,
+    elder: served.elder,
+    keeper: served.keeper,
+    sage: served.sage,
+    squire: served.squire,
+  };
   const cookie = as && as !== 'visitor' ? players[as] : served.cookie;
   if (!signedOut(path) && as !== 'visitor') await ctx.addCookies([{ ...cookie, url: served.url }]);
   const page = await ctx.newPage();

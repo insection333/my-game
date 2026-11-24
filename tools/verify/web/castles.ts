@@ -5,8 +5,10 @@
 //   wounds and a breached wall, reports of each kind with their accounts, today's easiest stronghold fallen;
 //   and its rival's near its rating, who besieged it two hours ago, so the War lists a lord to strike back at;
 // - the keeper's, a year in (about day 380, level 22): every troop at its fourth evolution, every relic
-//   forged, tempers and a deep dig.
-import { castleEngine as E } from '@idle-clash/features';
+//   forged, tempers and a deep dig;
+// - the sage's, two years in (about day 730, level 25, session 224): the season's legend three chambers in,
+//   six taken before, its Call to arms answered today.
+import { castleEngine as E, seasonAt } from '@idle-clash/features';
 import { CastleStore } from '../../../apps/server/src/castle/store.ts';
 import { reports } from '../../../apps/server/src/db/schema.ts';
 import { noteSiege } from '../../../apps/server/src/moderation.ts';
@@ -15,7 +17,7 @@ import type { Ctx } from '../../../apps/server/src/context.ts';
 const HOUR = 3_600_000;
 const pick = (m: E.Mercenary) => ({ first: m.first, second: m.second, rating: m.rating });
 const DAY = 24 * HOUR;
-type Stage = 'early' | 'mid' | 'late';
+type Stage = 'early' | 'mid' | 'late' | 'ancient';
 /** What the elder's siege on its rival raided. */
 const RAIDED = 318_000;
 
@@ -71,6 +73,30 @@ const STAGES: Record<Stage, { age: number; level: number } & Partial<E.Castle>> 
     equippedRelics: ['banner-of-the-first-king', 'aegis-shard', 'ember-of-sieges'],
     drillXp: { vanguard: 24_000, outriders: 18_000, siege: 15_000 },
   },
+  ancient: {
+    age: 730,
+    level: 25,
+    incursionTier: 63,
+    warMarks: 31,
+    warMarksEarned: 4_620,
+    excavationDepth: 38,
+    techs: { logistics: 5, siegecraft: 5, fortification: 5, espionage: 5 },
+    relics: Object.fromEntries(
+      [
+        'banner-of-the-first-king',
+        'aegis-shard',
+        'ember-of-sieges',
+        'oathbound-horn',
+        'wyrmglass-lens',
+        'sentinels-eye',
+        'gilded-ledger',
+      ].map((id) => [id, 5]),
+    ),
+    tempers: { 'banner-of-the-first-king': 14, 'aegis-shard': 11, 'ember-of-sieges': 9 },
+    equippedRelics: ['banner-of-the-first-king', 'aegis-shard', 'ember-of-sieges'],
+    drillXp: { vanguard: 61_000, outriders: 52_000, siege: 47_000 },
+    legends: 6,
+  },
 };
 
 function raised(id: string, now: number, stage: Stage): E.Castle {
@@ -109,6 +135,20 @@ function raised(id: string, now: number, stage: Stage): E.Castle {
   return { ...out, rating: E.bastionRating(out) };
 }
 
+/** The season's legend three chambers in, set at the lord's might as their first assault would have, and the
+ *  day's Call to arms answered, so the Hearth leads with the chamber standing open (session 223). */
+function legendary(c: E.Castle, now: number): E.Castle {
+  const season = seasonAt(now)?.number ?? 0;
+  const open = [0, 1, 2, 3, 4, 5, 6, 7].filter((n) => E.chamberOpens(season, n) <= now).length;
+  return {
+    ...c,
+    lastCtaDateUtc: new Date(now).toISOString().slice(0, 10),
+    legendSeason: season,
+    legendTaken: Math.max(0, Math.min(3, open - 1)),
+    legendBase: Math.round(E.mightOf(c, now)),
+  };
+}
+
 /** Today's easiest stronghold, taken twelve minutes ago (its report is in castles()): fallen, one of five,
  *  and counted on the day's orders as taking it would have (session 62: the sheet said "1 of 5 fallen"
  *  beside "Take 3 strongholds, 0 of 3"). */
@@ -127,9 +167,9 @@ function fallen(c: E.Castle, now: number): E.Castle {
  *  each edict needs. */
 export function castles(
   ctx: Ctx,
-  ids: { squire: string; elder: string; rival: string; keeper: string },
+  ids: { squire: string; elder: string; rival: string; keeper: string; sage: string },
   now: number,
-  levels: { squire: number; elder: number; rival: number; keeper: number },
+  levels: { squire: number; elder: number; rival: number; keeper: number; sage: number },
 ): void {
   const store = new CastleStore(ctx);
   /** Writes a castle with its treasury at `times` what its edict needs, and returns it as written. */
@@ -140,6 +180,7 @@ export function castles(
   };
   keep(raised(ids.squire, now, 'early'), levels.squire, 1.5, 'vigor', { wallIntegrity: 100, infirmaryPct: 0 });
   keep(raised(ids.keeper, now, 'late'), levels.keeper, 2.2, 'fortune');
+  keep(legendary(raised(ids.sage, now, 'ancient'), now), levels.sage, 2.6, 'vigor');
   const mine = fallen(raised(ids.elder, now, 'mid'), now);
   keep(mine, levels.elder, 2.4, 'vigor', { payFromTreasury: false });
   // The rival a level above the elder in its troops, so it stands near the elder's rating.
