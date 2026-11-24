@@ -67,7 +67,7 @@ export const combat: Record<string, string> = {
   'temper.done': '{item} tempered to step {step} of {of}',
   'temper.now': 'Now: {gives}',
   'temper.note':
-    "A trophy is a boss's Rare find: a weapon takes those of bosses who fight in its style, armour any. The set holds at +10% damage and 10% less taken.",
+    "A trophy is a boss's Rare find: a weapon takes those of bosses who fight in its style, armour any. A weapon tempered whole gives +5% damage; the three pieces of armour tempered whole, 10% less damage taken.",
   'gear.nothingToWear': 'Nothing to wear here yet. Smithing makes it.',
   'verdict.easy': 'Easy',
   'verdict.fair': 'Fair',
