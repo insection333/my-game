@@ -56,8 +56,10 @@ describe('the legendary siege over HTTP', () => {
     s = await server();
     s.clock.now = IN2;
     const me = await lord('Steward', 12);
-    // Eight days into season 2: the first two chambers stand open.
-    for (const chamber of [0, 1]) expect((await act(me.cookie, { type: 'legend' })).result).toMatchObject({ chamber });
+    // Eight days into season 2, its first two chambers taken (a battle's roll is the server's own, so they
+    // are written as taken rather than fought).
+    const c = me.castles.read(me.id)!;
+    me.castles.write({ ...c, legendSeason: 2, legendTaken: 2, legendBase: Math.round(E.mightOf(c, IN2)) });
     expect((await act(me.cookie, { type: 'legend' })).result.reason).toBe('locked');
     const early = await act(me.cookie, { type: 'spy', target: E.chamberKey(2, 2), mission: 'poison' });
     expect(early.result.reason).toBe('unknown');

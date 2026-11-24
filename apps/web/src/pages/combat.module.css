@@ -43,6 +43,13 @@
   color: var(--ink-2);
 }
 
+/* The foes of a tier under the fight, scrolling inside their box where three with all their facts and the
+   fight would run past the page area. */
+.foeRows {
+  display: block;
+  max-height: min(27rem, 42dvh);
+}
+
 .tierTabs {
   padding: 0 var(--s-4);
 }

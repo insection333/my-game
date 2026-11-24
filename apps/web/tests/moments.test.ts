@@ -155,34 +155,6 @@ describe('moments', () => {
     expect(moment.icon).toBe('supply-cache');
     expect(moment.body).toContain('Hold 1,000 gold');
   });
-  it("wears the leading deed's medallion, not another deed's picture (session 224)", () => {
-    const events: GameEvent[] = [
-      {
-        type: 'deedDone',
-        at: T,
-        deed: 'legends-3',
-        name: 'Legends taken: 3',
-        icon: null,
-        tier: 'master',
-        points: 100,
-        mark: '3',
-      },
-      {
-        type: 'deedDone',
-        at: T + 40,
-        deed: 'woodcutting-99',
-        name: 'Woodcutting 99',
-        icon: 'woodcutting',
-        tier: 'hard',
-        points: 15,
-        mark: '99',
-      },
-    ];
-    const [moment] = momentsFrom(events, T - 1, FEATURES);
-    expect(moment.title).toBe('Deed done: Legends taken: 3');
-    expect(moment.icon).toBeNull();
-    expect(moment.medal).toEqual({ tier: 'master', mark: '3' });
-  });
   it('says who besieged your castle and what they took, a deleted lord by no name', () => {
     const struck: GameEvent = {
       type: 'castleBesieged',

@@ -139,11 +139,14 @@
   color: var(--ink-2);
 }
 
-/* The quiet press at the left, the attack at the right, on one line; a long attack's words wrap inside it
-   on the narrowest phones rather than running past the card. */
+/* The quiet press at the left, the attack at the right, on one line where both fit; where they do not, the
+   attack takes a line of its own at the right (session 224: squeezed beside Plan, "Siege for 982.3K and 20
+   AP" broke into two lines beside a lord's one-line Scout), and its words wrap inside it only on the
+   narrowest phones rather than running past the card. */
 .acts {
   grid-area: acts;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: var(--s-2) var(--s-3);
@@ -151,6 +154,7 @@
 }
 
 .acts > :last-child {
+  margin-left: auto;
   min-width: 0;
   max-width: 100%;
   white-space: normal;
