@@ -52,6 +52,9 @@ export const PATHS = {
   adminXp: '/api/admin/xp',
   adminSignOut: '/api/admin/sign-out',
   adminDelete: '/api/admin/delete',
+  adminLive: '/api/admin/live',
+  adminBroadcast: '/api/admin/broadcast',
+  adminSystem: '/api/admin/system',
 } as const;
 
 /** A feature's own route. */

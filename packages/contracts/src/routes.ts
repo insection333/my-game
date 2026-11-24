@@ -12,6 +12,7 @@ import { PUSH_ROUTES } from './push.ts';
 import { PROFILE_ROUTES } from './profile.ts';
 import { CLOSED_TEST_ROUTES } from './closed-test.ts';
 import { CONSOLE_ROUTES } from './console.ts';
+import { CONSOLE_LIVE_ROUTES } from './console-live.ts';
 import { PATHS } from './paths.ts';
 
 export const SignUp = z.object({ name: PlayerName, password: Password, ageConfirmed: z.literal(true) }).strict();
@@ -201,6 +202,7 @@ export const ROUTES = {
   }),
   ...CLOSED_TEST_ROUTES,
   ...CONSOLE_ROUTES,
+  ...CONSOLE_LIVE_ROUTES,
   ...CASTLE_ROUTES,
   ...MODERATION_ROUTES,
   ...PROFILE_ROUTES,
@@ -223,33 +225,6 @@ export interface MeResponse {
   admin: boolean;
   /** Whether this is the admin console's own account (session 227), which never plays. */
   staff: boolean;
-}
-/** A fire burning this many hours in a day is flagged on the admin page: people sleep (session 156). */
-export const FIRE_WATCH_HOURS = 20;
-/** A player as the admin page lists them. */
-export interface AdminPlayerView {
-  id: string;
-  name: string;
-  createdAt: number;
-  bannedAt: number | null;
-  totalLevel: number;
-  /** The most hours the fire burned in any 24 of the last 48 (session 156): a person's play shows as
-   *  minutes or a few hours, a script keeping it lit round the clock as nearly 24. */
-  fireHours: number;
-}
-export interface AdminPlayersResponse {
-  players: AdminPlayerView[];
-}
-export interface AdminSaveResponse {
-  player: AdminPlayerView;
-  /** The save as stored (mended on reading, as every read is). */
-  doc: unknown;
-  /** Every repair made to this player's save, oldest first. */
-  repairs: { at: number; repairs: string[] }[];
-}
-export interface AdminResetResponse {
-  /** A new password for the admin to pass on; it works once the player signs in with it. */
-  password: string;
 }
 export interface AuthResponse {
   player: PlayerView;

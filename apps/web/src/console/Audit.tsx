@@ -29,6 +29,7 @@ const ACTIONS: Record<string, () => string> = {
   xp: () => t('audit.xp'),
   signOut: () => t('audit.signOut'),
   delete: () => t('audit.delete'),
+  broadcast: () => t('audit.broadcast'),
 };
 
 export const actionWords = (action: string): string => (Object.hasOwn(ACTIONS, action) ? ACTIONS[action]() : action);

@@ -1,5 +1,36 @@
 // The admin console (session 227): its frame, its sign-in and its sections. Part of the strings file (en.ts).
 export const consoleWords = {
+  // Live operations and the system (session 230).
+  'console.live': 'Live',
+  'console.live.lead': 'Who is playing now, who joined lately, and a letter to every player.',
+  'console.online': 'Online now',
+  'console.online.none': 'No one has the game open now.',
+  'console.joined': 'Joined lately',
+  'console.letter': 'A letter to every player',
+  'console.letter.lead':
+    "It goes as the game's own letter, from the keepers of the realm, naming no admin, to every player not banned: {count} now. Each inbox keeps its newest twenty.",
+  'console.letter.text': 'The letter',
+  'console.letter.chars': '{used} of {max} characters',
+  'console.letter.send': 'Send to every player',
+  'console.letter.ask': 'Send this letter to every player not banned ({count})? It cannot be taken back.',
+  'console.letter.yes': 'Send it',
+  'console.letter.changed': 'Players have come or gone since: it now goes to {count}. Send again to be sure.',
+  'console.letter.sent': 'Sent to every player not banned ({count}).',
+  'console.letters': 'Letters sent to everyone',
+  'console.letters.none': 'None yet.',
+  'console.letters.meta': '{when}, by {admin}, to {count}',
+  'console.system': 'System',
+  'console.system.lead':
+    'The server, the features switched on here, the tables that grow, and errors seen in browsers.',
+  'console.features': 'Features',
+  'console.feature.on': 'On',
+  'console.feature.off': 'Off',
+  'console.tables': 'Tables',
+  'console.errors': 'Browser errors, last 24 h',
+  'console.errors.none': 'No browser has reported an error in the last day.',
+  'console.errors.signedOut': 'Signed out',
+  'console.errors.page': 'Page',
+  'console.errors.message': 'Error',
   'console.grant.gold': 'Gold',
   // The overview (session 228).
   'console.overview': 'Overview',
@@ -115,6 +146,7 @@ export const consoleWords = {
   'audit.xp': 'Gave XP',
   'audit.signOut': 'Signed out everywhere',
   'audit.delete': 'Deleted an account',
+  'audit.broadcast': 'Wrote to every player',
   'audit.items': '{item} ×{count}: {reason}',
   'audit.xpGiven': '{xp} {skill} XP: {reason}',
   // A player's record (session 229).

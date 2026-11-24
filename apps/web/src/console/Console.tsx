@@ -15,6 +15,8 @@ import { MailMonitor } from './Mail.tsx';
 import { Moderation } from './Moderation.tsx';
 import { Audit } from './Audit.tsx';
 import { Directory } from './Directory.tsx';
+import { Live } from './Live.tsx';
+import { System } from './System.tsx';
 import { Overview } from './Overview.tsx';
 import { PlayerRecord } from './Players.tsx';
 import s from './console.module.css';
@@ -24,8 +26,10 @@ export const SECTIONS = [
   { id: 'players', label: 'console.players', lead: 'console.players.lead' },
   { id: 'moderation', label: 'console.moderation', lead: 'console.moderation.lead' },
   { id: 'mail', label: 'console.mail', lead: 'console.mail.lead' },
+  { id: 'live', label: 'console.live', lead: 'console.live.lead' },
   { id: 'test', label: 'console.test', lead: 'console.test.lead' },
   { id: 'audit', label: 'console.audit', lead: 'console.audit.lead' },
+  { id: 'system', label: 'console.system', lead: 'console.system.lead' },
 ] as const;
 export type SectionId = (typeof SECTIONS)[number]['id'];
 
@@ -57,6 +61,8 @@ function Body({ id, path }: { id: SectionId; path: string }) {
   if (id === 'moderation') return <Moderation open={(p) => navigate(`/admin/players/${encodeURIComponent(p)}`)} />;
   if (id === 'mail') return <MailMonitor />;
   if (id === 'audit') return <Audit />;
+  if (id === 'live') return <Live />;
+  if (id === 'system') return <System />;
   return <ClosedTest />;
 }
 

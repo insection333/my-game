@@ -231,3 +231,28 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+/* Names in a list, as links (who is online now). */
+.names {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--s-3);
+}
+
+/* Letters sent to everyone: when and by whom over the words. */
+.letters {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--s-3);
+}
+
+.letters li {
+  display: grid;
+  gap: 2px;
+  overflow-wrap: anywhere;
+}

@@ -368,3 +368,4 @@
 - Session 227: the admin console: its own account (Admin, its password a server secret, never in the repository), signed into on the players' own form, which opens the console in place of the game; a frame with sections, outside the game's shell.
 - Session 228: the admin console's Overview (players, returns, a fortnight in bars, what waits, the realm, the server), a directory of players to find, filter, sort and page, each player's record at its own address, and an Audit log of every admin action.
 - Session 229: a player's record in the admin console by tabs: Summary, Account (ban, sign out everywhere, a new password, messages, delete), Give and take (gold, items and XP, each with a reason), Save (download it) and History.
+- Session 230: the admin console's Live (who plays now, who joined lately, a letter to every player as the game's own) and System (the server, features, tables, browser errors).
