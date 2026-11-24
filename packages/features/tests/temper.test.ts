@@ -56,7 +56,7 @@ describe('tempering', () => {
     expect(oddsFor(armour, golem)!.foodPerHour).toBeLessThan(oddsFor(s, golem)!.foodPerHour);
   });
 
-  it('counts every armour step: a fifteenth of the set\'s 10% each, none past it held for nothing (session 225)', () => {
+  it("counts every armour step: a fifteenth of the set's 10% each, none past it held for nothing (session 225)", () => {
     const s = smith(90, { 'wyrm-scale': 100 });
     const base = fighterOf(s, golem)!;
     // Four steps on each piece: 12 of 15, 8% (at 1% a step the set was held at 10% from its tenth step on).
