@@ -6,8 +6,10 @@ import { fmt, t } from '@idle-clash/content';
 import { countOf, type State } from '@idle-clash/kernel';
 import { itemOf } from '../shared/catalog.ts';
 import { nice } from '../shared/pace.ts';
+import { pedlarKeeps } from '../shared/pedlar-lots.ts';
 import { REALM_WORK, realmWorkOf, workStage, type RealmWorkId } from '../shared/realm-work.ts';
 import { seasonAt } from '../shared/season.ts';
+import { STAGES, stageCost, stageOf, WORKS } from '../shared/steading.ts';
 import { givable } from './realm-give.ts';
 import { realmWorkName } from '../shared/realm-work-words.ts';
 
@@ -28,13 +30,32 @@ export interface RealmWorkView {
   /** "The beacon on the hill stands, raised by Keeper, Elder and 3 more", or null. */
   thanks: string | null;
   gold: { amount: number; label: string }[];
-  materials: { item: string; label: string; worth: string }[];
+  materials: {
+    item: string;
+    label: string;
+    worth: string;
+    /** What is kept back for the pedlar's lot of the day (session 226), or null. */
+    kept: string | null;
+    /** The steading's next stage that takes it (session 226), said before it is given away, or null. */
+    steading: string | null;
+  }[];
 }
 
 const nameOf = (work: RealmWorkId) => realmWorkName(work);
 /** Gold to give: a hundredth, a tenth and half the purse, in round sums. */
 const AMOUNTS = [0.01, 0.1, 0.5];
 const MATERIALS = 6;
+
+/** A work of the player's own steading whose next stage takes this material, in a sentence, or null. */
+function steadingWants(state: State, item: string): string | null {
+  for (const w of WORKS) {
+    const stage = stageOf(state, w.id);
+    if (stage >= STAGES) continue;
+    const need = stageCost(w, stage + 1).items.find((x) => x.item === item);
+    if (need) return t('realmWork.steadingTakes', { work: t(`work.${w.id}`), count: fmt.int(need.count) });
+  }
+  return null;
+}
 
 export function realmWorkView(state: State, now: number): RealmWorkView | null {
   const season = seasonAt(now);
@@ -47,14 +68,18 @@ export function realmWorkView(state: State, now: number): RealmWorkView | null {
     .filter((g) => g >= 1000 && g <= purse)
     .map((amount) => ({ amount, label: t('realmWork.giveGold', { gold: fmt.short(amount) }) }));
   const materials = Object.keys(state.items)
-    .filter((id) => givable(id) && countOf(state, id) > 0)
-    .map((id) => ({ id, count: countOf(state, id), worth: itemOf(id)!.value * countOf(state, id) }))
+    .map((id) => ({ id, kept: givable(id) ? pedlarKeeps(state, now, id) : 0 }))
+    .map(({ id, kept }) => ({ id, kept, count: givable(id) ? countOf(state, id) - kept : 0 }))
+    .filter((x) => x.count > 0)
+    .map((x) => ({ ...x, worth: itemOf(x.id)!.value * x.count }))
     .sort((a, b) => b.worth - a.worth)
     .slice(0, MATERIALS)
     .map((x) => ({
       item: x.id,
       label: t('realmWork.material', { item: t(`item.${x.id}`), count: fmt.int(x.count) }),
       worth: t('realmWork.worth', { gold: fmt.short(x.worth) }),
+      kept: x.kept > 0 ? t('realmWork.pedlarKept', { count: fmt.int(x.kept) }) : null,
+      steading: steadingWants(state, x.id),
     }));
   const th = m.thanks;
   return {

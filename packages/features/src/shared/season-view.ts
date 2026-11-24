@@ -3,6 +3,8 @@
 // as the castle's edict is.
 import { fmt, midSentence, t } from '@idle-clash/content';
 import type { EventOf, State } from '@idle-clash/kernel';
+import { realmWorkIn } from './realm-work.ts';
+import { realmWorkName } from './realm-work-words.ts';
 import { SEASON_DAYS, seasonAt, TWISTS, type Twist } from './season.ts';
 import { seasonsOf } from './season-state.ts';
 
@@ -125,16 +127,18 @@ export function seasonPill(now: number, where: { skill: string } | { combat: tru
 }
 
 /** A season opened, as its moment and the tray say it (session 166): "Season 2: The Forgefire", what it
- *  lifts, and the goals done in the season before. */
+ *  lifts, the realm's work it opens (session 226), and the goals done in the season before. */
 export function seasonOpenedWords(e: EventOf<'seasonOpened'>): { title: string; body: string; icon: string } {
   const twist = TWISTS.find((x) => x.id === e.twist) ?? TWISTS[0];
   const pair = e.pair === undefined ? undefined : TWISTS.find((x) => x.id === e.pair);
   const twists = pair ? [twist, pair] : [twist];
   const gives = allGives(twists);
   const last = e.last === 0 ? null : e.last === 1 ? t('season.lastOne') : t('season.last', { count: fmt.int(e.last) });
+  // The season's work for the whole realm (session 226), which opens with it and was said nowhere as it did.
+  const work = midSentence(realmWorkName(realmWorkIn(e.number)));
   return {
     title: t('season.title', { number: fmt.int(e.number), name: namesOf(twists) }),
-    body: last ? t('season.openedBody', { gives, last }) : t('season.openedBodyFirst', { gives }),
+    body: last ? t('season.openedBody', { gives, work, last }) : t('season.openedBodyFirst', { gives, work }),
     icon: SEASON_PICTURE[twist.id] ?? 'woodcutting',
   };
 }

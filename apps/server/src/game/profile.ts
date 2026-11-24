@@ -69,6 +69,7 @@ export function profileOf(ctx: Ctx, name: string, now: number): (Omit<Profile, '
             rating: bastion.rating,
             fortresses: castle.fortresses,
             routs: castle.routs,
+            legends: castle.legends,
             ...none,
             ...record,
           }

@@ -85,7 +85,7 @@ describe('a season opened', () => {
     expect(out.events).toEqual([{ type: 'seasonOpened', at: second, number: 2, twist: 'forgefire', last: 84 }]);
     expect(seasonOpenedWords(out.events[0] as never)).toEqual({
       title: 'Season 2: The Forgefire',
-      body: 'Artisan skills earn 20% more XP for eight weeks. Last season you did 84 goals.',
+      body: 'Artisan skills earn 20% more XP for eight weeks. The realm raises the bridge over the Fen together. Last season you did 84 goals.',
       icon: 'smithing',
     });
     expect(refresh(out.state, second + 60_000).events).toEqual([]);
@@ -93,7 +93,9 @@ describe('a season opened', () => {
 
   it('says nothing of a season before its first goal, and of a season already said', () => {
     const quiet = refresh(player({}, 0), second).events[0];
-    expect(seasonOpenedWords(quiet as never).body).toBe('Artisan skills earn 20% more XP for eight weeks.');
+    expect(seasonOpenedWords(quiet as never).body).toBe(
+      'Artisan skills earn 20% more XP for eight weeks. The realm raises the bridge over the Fen together.',
+    );
     expect(refresh(player({}, 2), second).events).toEqual([]);
   });
 });

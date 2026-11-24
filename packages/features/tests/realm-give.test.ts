@@ -46,7 +46,7 @@ describe("giving to the realm's work", () => {
 
   it('offers round sums of the purse and the materials held, and nothing to give once finished', () => {
     const v = realmWorkView(rich(8_000_000), IN2)!;
-    expect(v).toMatchObject({ name: 'The bridge over the Fen', stage: 1, standing: 'Stage 1 of 5', finished: false });
+    expect(v).toMatchObject({ name: 'The bridge over the Fen', stage: 1, standing: 'Raised 1 of 5', finished: false });
     expect(v.gold.map((g) => g.label)).toEqual(['Give 20,000 gold', 'Give 200K gold', 'Give 1M gold']);
     expect(v.materials.map((m) => m.item)).toEqual(['oak-logs']);
     const done = realmWorkView(rich(40_000_000), IN2)!;

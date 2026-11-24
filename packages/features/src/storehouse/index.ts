@@ -6,10 +6,11 @@ import { z } from 'zod';
 import { defineFeature, defineRoute, type Json } from '../define.ts';
 import { FOODS, HITPOINTS } from '../shared/combat/data.ts';
 import { healsFor } from '../shared/combat/state.ts';
+import { pedlarKeeps } from '../shared/pedlar-lots.ts';
 import { skillLevel } from '../shared/skill.ts';
 import { capacity, ENLARGE_COSTS, noRoom, SLOTS_PER_ENLARGEMENT, slotsUsed, storeOf } from '../shared/storehouse.ts';
 import { useFind } from './finds.ts';
-import { buy, enlarge, keptToSell, priceOf, sell, sellFinds } from './rules.ts';
+import { buy, enlarge, findsToSell, priceOf, sell, sellFinds } from './rules.ts';
 
 /** The Storehouse's space, as the page shows it. */
 export interface CapacityView {
@@ -30,11 +31,21 @@ function findsWords(held: string[]): string {
   return t('store.sellFinds.more', { first: names.slice(0, 2).join(', '), count: fmt.int(names.length - 2) });
 }
 
-function sellFindsView(state: State): CapacityView['sellFinds'] {
-  const held = keptToSell(state);
+function sellFindsView(state: State, now: number): CapacityView['sellFinds'] {
+  const held = findsToSell(state, now);
   if (!held.length) return null;
-  const gold = fmt.int(held.reduce((n, id) => n + priceOf(id) * countOf(state, id), 0));
-  return { label: t('store.sellFinds', { gold }), ask: t('store.sellFinds.ask', { finds: findsWords(held), gold }) };
+  const gold = fmt.int(held.reduce((n, x) => n + priceOf(x.item) * x.count, 0));
+  const finds = findsWords(held.map((x) => x.item));
+  const ask = t('store.sellFinds.ask', { finds, gold });
+  // The pedlar's find of the day, kept back (session 226), said so the count left behind is no surprise.
+  const kept = held.find((x) => pedlarKeeps(state, now, x.item) > 0)?.item;
+  const keeps = kept
+    ? t('store.sellFinds.pedlar', {
+        count: fmt.int(pedlarKeeps(state, now, kept)),
+        item: t(`item.${kept}`),
+      })
+    : '';
+  return { label: t('store.sellFinds', { gold }), ask: keeps ? `${ask} ${keeps}` : ask };
 }
 
 /** Food: what is carried, and what the vendor sells at this Hitpoints level. */
@@ -60,7 +71,7 @@ export interface FoodView {
 
 const Count = z.number().int().min(1).max(1_000_000_000);
 
-function capacityView(state: State): CapacityView {
+function capacityView(state: State, now: number): CapacityView {
   const { enlargements } = storeOf(state);
   const [used, total] = [slotsUsed(state), capacity(state)];
   const cost = ENLARGE_COSTS[enlargements];
@@ -76,7 +87,7 @@ function capacityView(state: State): CapacityView {
             label: t('store.enlarge', { slots: fmt.int(SLOTS_PER_ENLARGEMENT), gold: fmt.int(cost) }),
             affordable: countOf(state, 'gold') >= cost,
           },
-    sellFinds: sellFindsView(state),
+    sellFinds: sellFindsView(state, now),
   };
 }
 
@@ -134,7 +145,7 @@ export const storehouse = defineFeature({
     sellFinds: defineRoute({
       input: z.object({}).strict(),
       example: {},
-      run: (state) => sellFinds(state),
+      run: (state, _input, now) => sellFinds(state, now),
     }),
     enlarge: defineRoute({
       input: z.object({}).strict(),
@@ -143,7 +154,7 @@ export const storehouse = defineFeature({
     }),
   },
   slots: {
-    'store.capacity': ({ state }) => capacityView(state) as unknown as Json,
+    'store.capacity': ({ state, now }) => capacityView(state, now) as unknown as Json,
     'combat.food': ({ state }) => foodView(state) as unknown as Json,
   },
   help: { title: 'help.storehouse.title', body: 'help.storehouse.body' },

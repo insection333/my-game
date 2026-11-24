@@ -7,6 +7,7 @@ import {
   healsFor,
   items,
   laneUsing,
+  pedlarWants,
   RARE_FIND_COMPLETIONS,
   findUses,
   spentFind,
@@ -91,7 +92,7 @@ export function ItemPanel({ item }: { item: string }) {
  *  first, saying what it comes to and what a running lane uses it for (session 71); every sale then says
  *  what it brought in. */
 function ItemActions({ item, value, gear }: { item: string; value: number; gear: boolean }) {
-  const { state } = useGame();
+  const { state, now } = useGame();
   const [asking, setAsking] = useState(false);
   const [sold, setSold] = useState('');
   const box = useRef<HTMLDivElement>(null);
@@ -108,6 +109,7 @@ function ItemActions({ item, value, gear }: { item: string; value: number; gear:
   // Selling never takes the last of something worn; "all but one" leaves one either way.
   const max = worn.includes(item) ? have - 1 : have;
   const using = laneUsing(state, item);
+  const wanted = pedlarWants(state, now, item);
   // A new question clears the last sale's line, which would stand under it as if it answered it.
   const ask = () => (setAsking(true), setSold(''), focusIn('[data-answer]'));
   const shown = have > 0 && (value > 0 || gear);
@@ -117,6 +119,7 @@ function ItemActions({ item, value, gear }: { item: string; value: number; gear:
         <div className={s.ask}>
           <p>{t('store.sellAsk', { count: fmt.int(have - 1), gold: fmt.int(value * (have - 1)) })}</p>
           {using && <p className={s.inUse}>{using}</p>}
+          {wanted && <p className={s.inUse}>{wanted}</p>}
           <div className={s.actions}>
             <Button variant="primary" data-answer onClick={() => (sell(have - 1), focusIn('[data-status]'))}>
               {t('store.sellYes')}

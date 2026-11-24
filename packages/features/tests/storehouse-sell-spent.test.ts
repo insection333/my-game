@@ -24,7 +24,7 @@ const woodcutter = (level: number, mastered: boolean): State => {
 
 describe('Rare finds with no use left', () => {
   it('are sold with the finds kept to sell once every action is open and mastered', () => {
-    expect(keptToSell(woodcutter(99, true)).sort()).toEqual(['birds-nest', 'carved-acorn']);
+    expect(keptToSell(woodcutter(99, true), T0).sort()).toEqual(['birds-nest', 'carved-acorn']);
     const r = storehouse.routes.sellFinds.run(woodcutter(99, true), {}, T0) as unknown as {
       result: { ok: boolean; kinds: number };
     };
@@ -32,7 +32,7 @@ describe('Rare finds with no use left', () => {
   });
 
   it('are kept while an action is unmastered, or not yet open', () => {
-    expect(keptToSell(woodcutter(99, false))).toEqual(['birds-nest']);
-    expect(keptToSell(woodcutter(60, true))).toEqual(['birds-nest']);
+    expect(keptToSell(woodcutter(99, false), T0)).toEqual(['birds-nest']);
+    expect(keptToSell(woodcutter(60, true), T0)).toEqual(['birds-nest']);
   });
 });

@@ -1,4 +1,4 @@
-// Companions (session 179): fourteen small creatures, one for each skill and each boss, that join a player
+// Companions (session 179): seventeen small creatures (fourteen until session 210), one for each skill and each boss, that join a player
 // by chance and are shown beside their picture (the Hearth's plaque, their card, the ladders). Cosmetic
 // only: a companion gives nothing, so finding one is a delight and never a duty. Each joins at a point drawn
 // from the save's own seed: a skill's somewhere between levels 30 and 90 of it (so the first comes in the

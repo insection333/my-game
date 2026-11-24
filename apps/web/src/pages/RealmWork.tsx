@@ -72,8 +72,11 @@ export function RealmWorkSheet({ onClose }: { onClose: () => void }) {
                   name={m.label}
                   facts={
                     asking === m.item
-                      ? [t('realmWork.giveAsk', { worth: m.worth }), ...[laneUsing(state, m.item) ?? []].flat()]
-                      : [m.worth]
+                      ? [
+                          t('realmWork.giveAsk', { worth: m.worth }),
+                          ...[m.kept ?? [], laneUsing(state, m.item) ?? [], m.steading ?? []].flat(),
+                        ]
+                      : [m.worth, ...[m.kept ?? []].flat()]
                   }
                   actions={
                     asking === m.item ? (

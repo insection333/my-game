@@ -5,6 +5,7 @@
 import { masteryStep } from '@idle-clash/content';
 import { countOf, LANE_IDS, seeded, xpOf, type State } from '@idle-clash/kernel';
 import { findsIn, skillActions } from '../shared/catalog.ts';
+import { styleOf } from '../shared/combat/state.ts';
 import { xpBonusPct } from '../shared/complete.ts';
 import { totalLevel } from '../shared/standing.ts';
 import { MILESTONES, type Milestone } from './content.ts';
@@ -108,6 +109,9 @@ export function makeShort(state: State, g: GoalsState, now: number): ShortGoal |
 export function makeDaily(state: State, now: number): DailyGoal | null {
   const list = paces(state);
   const working = new Set(atWork(state, list, true).map((p) => p.skill));
+  // A Combat lane on a run, a boss or the Deep trains the style worn (session 226).
+  const style = state.lanes.combat.current?.action.feature === 'expeditions' ? styleOf(state) : null;
+  if (style) working.add(style);
   const all = trained(state, list);
   const options = all.some((p) => working.has(p.skill)) ? all.filter((p) => working.has(p.skill)) : all;
   if (!options.length) return null;

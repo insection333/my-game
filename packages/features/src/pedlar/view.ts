@@ -5,7 +5,7 @@ import { countOf, type State } from '@idle-clash/kernel';
 import { ERRAND_ORDER, type ErrandRow } from '../shared/errand.ts';
 import { pedlarOf } from '../shared/pedlar.ts';
 import { dayOf, handedToday, payFor } from './rules.ts';
-import { lotsOf, type LotKind } from './lots.ts';
+import { lotsOf, type LotKind } from '../shared/pedlar-lots.ts';
 
 export const PEDLAR_HREF = '/?panel=pedlar';
 
