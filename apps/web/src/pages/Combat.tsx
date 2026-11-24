@@ -117,50 +117,54 @@ function CombatPage({ combat }: { combat: Feature }) {
             <Slot id="combat.foes">
               {/* The fight the lane is in, over the foes to choose from (or where it is, if elsewhere). */}
               <CombatArena now={now} place={{ region: region ?? '', tier }} />
-              {foes.map((f) => (
-                <ActionRow
-                  key={f.foe.id}
-                  icon={hasIcon(f.foe.id) ? <ItemIcon name={f.foe.id} size={32} /> : undefined}
-                  name={f.name}
-                  locked={f.locked}
-                  facts={[f.style, f.level, ...(f.matchup ? [f.matchup] : []), ...f.facts]}
-                  status={
-                    f.locked ? (
-                      <Pill>{f.opensAt}</Pill>
-                    ) : !loadout.style ? (
-                      <Pill>{t('stop.noWeapon')}</Pill>
-                    ) : fighting(f) ? (
-                      <Pill tone="woad">{t('action.working')}</Pill>
-                    ) : queued(f) ? (
-                      // Next in the lane, said where Next was pressed (session 124).
-                      <Pill tone="woad">{t('action.queued')}</Pill>
-                    ) : f.verdict ? (
-                      <Pill tone={VERDICT_TONE[f.verdictId as keyof typeof VERDICT_TONE]}>{f.verdict}</Pill>
-                    ) : undefined
-                  }
-                  actions={
-                    !f.locked &&
-                    loadout.style && (
-                      <>
-                        <Button
-                          variant="primary"
-                          disabled={fighting(f)}
-                          onClick={() => game.command({ type: 'start', lane: 'combat', action: f.foe })}
-                        >
-                          {t('combat.fight')}
-                        </Button>
-                        <Button
-                          variant="secondary"
-                          disabled={fighting(f) || queued(f)}
-                          onClick={() => game.command({ type: 'queueNext', lane: 'combat', action: f.foe })}
-                        >
-                          {t('action.queue')}
-                        </Button>
-                      </>
-                    )
-                  }
-                />
-              ))}
+              {/* The foes scroll inside their own box under the fight (session 224: a tier of three foes and
+                  the fight ran the panel past a 320 px phone's page area). */}
+              <div className={s.foeRows} data-scrollbox tabIndex={0} role="group" aria-label={t('combat.foes')}>
+                {foes.map((f) => (
+                  <ActionRow
+                    key={f.foe.id}
+                    icon={hasIcon(f.foe.id) ? <ItemIcon name={f.foe.id} size={32} /> : undefined}
+                    name={f.name}
+                    locked={f.locked}
+                    facts={[f.style, f.level, ...(f.matchup ? [f.matchup] : []), ...f.facts]}
+                    status={
+                      f.locked ? (
+                        <Pill>{f.opensAt}</Pill>
+                      ) : !loadout.style ? (
+                        <Pill>{t('stop.noWeapon')}</Pill>
+                      ) : fighting(f) ? (
+                        <Pill tone="woad">{t('action.working')}</Pill>
+                      ) : queued(f) ? (
+                        // Next in the lane, said where Next was pressed (session 124).
+                        <Pill tone="woad">{t('action.queued')}</Pill>
+                      ) : f.verdict ? (
+                        <Pill tone={VERDICT_TONE[f.verdictId as keyof typeof VERDICT_TONE]}>{f.verdict}</Pill>
+                      ) : undefined
+                    }
+                    actions={
+                      !f.locked &&
+                      loadout.style && (
+                        <>
+                          <Button
+                            variant="primary"
+                            disabled={fighting(f)}
+                            onClick={() => game.command({ type: 'start', lane: 'combat', action: f.foe })}
+                          >
+                            {t('combat.fight')}
+                          </Button>
+                          <Button
+                            variant="secondary"
+                            disabled={fighting(f) || queued(f)}
+                            onClick={() => game.command({ type: 'queueNext', lane: 'combat', action: f.foe })}
+                          >
+                            {t('action.queue')}
+                          </Button>
+                        </>
+                      )
+                    }
+                  />
+                ))}
+              </div>
             </Slot>
           </Panel>
         </section>

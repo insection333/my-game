@@ -291,7 +291,10 @@ export function momentsFrom(events: readonly GameEvent[], since: number, feature
           : t('moment.also', { what: also.join('; ') })
         : null,
     ].filter(Boolean);
-    const icon = best.icon ?? ordered.map((e) => describe(e, features).icon).find(Boolean) ?? null;
+    // The moment's own picture, or its deed's medallion; another's only when it has neither (session 224:
+    // "Legends taken: 3" wore a Woodcutting deed's axe, done in the same moment).
+    const icon =
+      best.icon ?? (best.medal ? null : (ordered.map((e) => describe(e, features).icon).find(Boolean) ?? null));
     const medal = icon ? undefined : (best.medal ?? ordered.map((e) => describe(e, features).medal).find(Boolean));
     return {
       key: String(group[0].at),

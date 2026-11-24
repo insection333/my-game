@@ -362,3 +362,4 @@
 - Session 221: seasons pair two twists from the seventh, the fifteen pairings in turn, with deeds for pairings played; every season holds an omen of its own in the Deep and puts its mark on the realm's boss.
 - Session 222: the two-year targets made checks (a first every week, deeds every quarter, every currency spent, the Deep growing); the legendary siege now eight chambers, one opening each week of the season.
 - Session 223: a sweep of sessions 209 to 222: the realm's boss names whose way it fights with, spies wait for a legend chamber's week, and the Hearth says when a chamber stands open.
+- Session 224: a player two years in on the review sheets; a moment's deed wears its own medallion rather than another deed's picture.
