@@ -21,6 +21,7 @@ import { contractRoute, fail } from '../http.ts';
 import { totalLevelOf } from '../game/standing.ts';
 import { fireBusiestDay } from '@idle-clash/kernel';
 import { settleReports } from '../moderation.ts';
+import { audit } from './audit.ts';
 
 const view = (ctx: Ctx, p: typeof players.$inferSelect): AdminPlayerView => ({
   id: p.id,
@@ -58,8 +59,6 @@ export function adminRoutes(app: FastifyInstance, ctx: Ctx): void {
     const repairs = ctx.store.damaged(id).map((d) => ({ at: d.at, repairs: JSON.parse(d.repairs) as string[] }));
     return { player, doc: saved.doc, repairs };
   };
-  const record = (action: string, by: string, target: string) =>
-    ctx.telemetry.record(`admin.${action}`, by, { target });
 
   contractRoute<{ query: string }>(
     app,
@@ -85,7 +84,7 @@ export function adminRoutes(app: FastifyInstance, ctx: Ctx): void {
     app,
     ROUTES.adminRename,
     ({ req, input }) => {
-      playerOf(ctx, input.playerId);
+      const before = playerOf(ctx, input.playerId).name;
       // Renaming someone into a name on the admin list would make them an admin.
       if (isAdmin(ctx, input.name)) throw fail(422, 'nameNotAllowed');
       if (nameHeld(ctx, input.name, input.playerId)) throw fail(409, 'nameTaken');
@@ -96,7 +95,7 @@ export function adminRoutes(app: FastifyInstance, ctx: Ctx): void {
         .run();
       ctx.hiscores.forget();
       settleReports(ctx, input.playerId, ctx.config.now());
-      record('rename', req.playerId!, input.playerId);
+      audit(ctx, req, 'rename', input.playerId, { from: before, to: input.name });
       return view(ctx, playerOf(ctx, input.playerId));
     },
     admin,
@@ -118,7 +117,7 @@ export function adminRoutes(app: FastifyInstance, ctx: Ctx): void {
         ctx.sessions.endAll(input.playerId);
         ctx.live.closePlayer(input.playerId, true);
       }
-      record(input.banned ? 'ban' : 'unban', req.playerId!, input.playerId);
+      audit(ctx, req, input.banned ? 'ban' : 'unban', input.playerId);
       return view(ctx, playerOf(ctx, input.playerId));
     },
     admin,
@@ -131,7 +130,7 @@ export function adminRoutes(app: FastifyInstance, ctx: Ctx): void {
     ROUTES.adminMend,
     async ({ req, input }) => {
       const out = await ctx.queue.run(input.playerId, () => saveOf(input.playerId));
-      record('mend', req.playerId!, input.playerId);
+      audit(ctx, req, 'mend', input.playerId);
       return out;
     },
     admin,
@@ -147,7 +146,7 @@ export function adminRoutes(app: FastifyInstance, ctx: Ctx): void {
       ctx.db.update(players).set({ passwordHash }).where(eq(players.id, input.playerId)).run();
       ctx.sessions.endAll(input.playerId);
       ctx.live.closePlayer(input.playerId);
-      record('resetPassword', req.playerId!, input.playerId);
+      audit(ctx, req, 'resetPassword', input.playerId);
       return { password } satisfies AdminResetResponse;
     },
     admin,

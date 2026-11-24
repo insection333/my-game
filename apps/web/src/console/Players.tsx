@@ -1,47 +1,41 @@
-// The console's Players section (the brief; the console's frame since session 227): find a player; rename
-// them, ban or unban them, look at their save and what was mended in it, and set a new password when they
-// have forgotten theirs. `?player=` opens one (Moderation's Open leads here).
-import { FIRE_WATCH_HOURS, type AdminPlayerView, type AdminSaveResponse } from '@idle-clash/contracts';
+// A player's record in the console (`/admin/players/<id>`; the brief, the console since session 227): rename
+// them, ban or unban them, check and mend their save and see what was mended, set a new password when they
+// have forgotten theirs, and read the save itself. Reached from the directory and from Moderation.
+import { FIRE_WATCH_HOURS, type AdminSaveResponse } from '@idle-clash/contracts';
 import { fmt, t } from '@idle-clash/content';
 import { dayOf } from '../pages/days.ts';
-import { ActionRow, Button, Field, Panel, Pill } from '@idle-clash/ui';
-import { useEffect, useRef, useState, type FormEvent } from 'react';
+import { Button, Field, Panel, Pill, TextLink } from '@idle-clash/ui';
+import { useEffect, useState, type FormEvent } from 'react';
 import { api } from '../api.ts';
-import { handled, useSession } from '../game/session.ts';
+import { handled } from '../game/session.ts';
 import { untilLoaded } from '../Ready.tsx';
 import { refused } from '../refused.ts';
-import { replace } from '../router.ts';
+import { navigate } from '../router.ts';
 import { Slot } from '../slots.tsx';
+import { PageHead } from '../pages/PageHead.tsx';
 import s from './admin.module.css';
 
 const why = (err: unknown) =>
-  refused(err, { nameTaken: t('error.nameTaken'), nameNotAllowed: t('error.nameNotAllowed') });
+  refused(err, {
+    nameTaken: t('error.nameTaken'),
+    nameNotAllowed: t('error.nameNotAllowed'),
+    notFound: t('admin.none'),
+  });
 
-export function Players({ opened }: { opened: string | null }) {
-  const { admin } = useSession();
-  const [query, setQuery] = useState('');
-  const [found, setFound] = useState<AdminPlayerView[] | null>(null);
+export function PlayerRecord({ id }: { id: string }) {
   const [save, setSave] = useState<AdminSaveResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
-  // Opens on the first players by name, so there is something to act on at once.
-  useEffect(() => {
-    if (admin)
-      untilLoaded(api.admin.players('')).then(
-        (r) => setFound(r.players),
-        (err: unknown) => void handled(err),
-      );
-  }, [admin]);
-  // Opened, the player's panel comes into view and takes the focus (session 94): on a phone it stands
-  // below every other panel, where Open looked as though it did nothing.
-  const playerRef = useRef<HTMLElement>(null);
-  const shown = save?.player.id;
-  useEffect(() => {
-    const el = playerRef.current;
-    if (!el) return;
-    const top = el.getBoundingClientRect().top;
-    if (top < 0 || top > innerHeight - 80) el.scrollIntoView({ block: 'start' });
-    el.focus({ preventScroll: true });
-  }, [shown]);
+  const load = (then?: () => void) =>
+    untilLoaded(api.admin.save(id)).then(
+      (r) => {
+        setSave(r);
+        then?.();
+      },
+      (err: unknown) => {
+        if (!handled(err)) setError(why(err));
+      },
+    );
+  useEffect(() => void load(), [id]); // eslint-disable-line react-hooks/exhaustive-deps
   const run = async <T,>(go: () => Promise<T>, then: (r: T) => void) => {
     setError(null);
     try {
@@ -50,88 +44,19 @@ export function Players({ opened }: { opened: string | null }) {
       if (!handled(err)) setError(why(err));
     }
   };
-  const search = (e: FormEvent) => {
-    e.preventDefault();
-    void run(
-      () => api.admin.players(query.trim()),
-      (r) => setFound(r.players),
-    );
-  };
-  const open = (id: string) =>
-    void run(
-      () => api.admin.save(id),
-      (r) => {
-        setSave(r);
-        replace(`/admin/players?player=${encodeURIComponent(id)}`);
-      },
-    );
-  // A player named in the address (Moderation's Open) opens at once.
-  useEffect(() => {
-    if (!opened || opened === save?.player.id) return;
-    api.admin.save(opened).then(setSave, (err: unknown) => {
-      if (!handled(err)) setError(why(err));
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [opened]);
   return (
-    <>
-      <div className={s.layout}>
-        <section data-section>
-          <Panel title={t('admin.players')} flush>
-            <Slot id="admin.players">
-              <form className={s.search} onSubmit={search}>
-                <Field
-                  label={t('admin.search')}
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  maxLength={64}
-                />
-                <Button type="submit" variant="primary">
-                  {t('admin.find')}
-                </Button>
-              </form>
-              {found?.length === 0 && <p className={s.note}>{t('admin.none')}</p>}
-              {/* Up to 25 players: the list scrolls in its own box, reachable from the keyboard. */}
-              <div className={s.results} data-scrollbox tabIndex={0} aria-label={t('admin.players')}>
-                {found?.map((p) => (
-                  <ActionRow
-                    key={p.id}
-                    name={p.name}
-                    facts={[
-                      t('admin.joined', { date: dayOf(p.createdAt) }),
-                      t('admin.totalLevel', { level: fmt.int(p.totalLevel) }),
-                    ]}
-                    status={
-                      p.bannedAt ? (
-                        <Pill tone="ember">{t('admin.banned')}</Pill>
-                      ) : p.fireHours >= FIRE_WATCH_HOURS ? (
-                        // A fire that never sleeps is a script's (session 156).
-                        <Pill tone="ember">{t('admin.fireWatch', { hours: fmt.num(p.fireHours) })}</Pill>
-                      ) : undefined
-                    }
-                    actions={
-                      <Button variant="secondary" onClick={() => open(p.id)}>
-                        {t('admin.open')}
-                      </Button>
-                    }
-                  />
-                ))}
-              </div>
-            </Slot>
-          </Panel>
-        </section>
-        {save && (
-          <section data-section ref={playerRef} tabIndex={-1} className={s.opened}>
-            <PlayerPanel key={save.player.id} save={save} reload={open} run={run} />
-          </section>
-        )}
-      </div>
+    <div className={s.record}>
+      <TextLink href="/admin/players" onNavigate={navigate}>
+        {t('console.allPlayers')}
+      </TextLink>
+      <PageHead title={save?.player.name ?? t('console.players')} />
+      {save && <PlayerPanel key={save.player.id} save={save} reload={() => void load()} run={run} />}
       {error && (
         <p className={s.error} role="alert">
           {error}
         </p>
       )}
-    </>
+    </div>
   );
 }
 
@@ -141,7 +66,7 @@ function PlayerPanel({
   run,
 }: {
   save: AdminSaveResponse;
-  reload: (id: string) => void;
+  reload: () => void;
   run: <T>(go: () => Promise<T>, then: (r: T) => void) => Promise<void>;
 }) {
   const { player } = save;
@@ -151,11 +76,21 @@ function PlayerPanel({
     e.preventDefault();
     void run(
       () => api.admin.rename(player.id, name.trim()),
-      () => reload(player.id),
+      () => reload(),
     );
   };
   return (
-    <Panel title={player.name} aside={player.bannedAt ? t('admin.banned') : undefined}>
+    <Panel
+      title={t('console.record.account')}
+      aside={
+        player.bannedAt ? (
+          t('admin.banned')
+        ) : player.fireHours >= FIRE_WATCH_HOURS ? (
+          // A fire that never sleeps is a script's (session 156).
+          <Pill tone="ember">{t('admin.fireWatch', { hours: fmt.num(player.fireHours) })}</Pill>
+        ) : undefined
+      }
+    >
       <Slot id="admin.player" className={s.player}>
         <form className={s.search} onSubmit={rename}>
           <Field label={t('admin.newName')} value={name} onChange={(e) => setName(e.target.value)} maxLength={16} />
@@ -169,7 +104,7 @@ function PlayerPanel({
             onClick={() =>
               void run(
                 () => api.admin.ban(player.id, !player.bannedAt),
-                () => reload(player.id),
+                () => reload(),
               )
             }
           >
@@ -180,7 +115,7 @@ function PlayerPanel({
             onClick={() =>
               void run(
                 () => api.admin.mend(player.id),
-                () => reload(player.id),
+                () => reload(),
               )
             }
           >

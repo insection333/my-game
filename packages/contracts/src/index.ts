@@ -10,3 +10,4 @@ export * from './profile.ts';
 export * from './mail.ts';
 export * from './push.ts';
 export * from './live.ts';
+export * from './console.ts';

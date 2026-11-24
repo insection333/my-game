@@ -34,14 +34,17 @@
   font-weight: 600;
 }
 
-@container (max-width: 420px) {
+/* Narrow (judged in rem, so larger text gives up room as a narrower screen would: session 199), each row is a
+   block: its first cell as the row's name, then each other cell on a line of its own beside its label. */
+@container (max-width: 40rem) {
   .table thead {
     display: none;
   }
 
   .table tr {
     display: grid;
-    grid-template-columns: 1fr auto;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px;
     padding: var(--s-2) var(--s-4);
     border-top: 1px solid var(--line);
   }
@@ -51,8 +54,24 @@
   }
 
   .table td {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0 var(--s-3);
+    min-width: 0;
     padding: 0;
     border: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .table td:not(:first-child)::before {
+    content: attr(data-label);
+    color: var(--ink-2);
+    font-size: var(--t-small);
+  }
+
+  .table td[data-align='end'] {
+    text-align: start;
   }
 
   .table tr[data-highlight] {

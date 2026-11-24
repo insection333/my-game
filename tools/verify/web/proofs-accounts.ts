@@ -85,17 +85,14 @@ async function signsIn(served: Served, name: string, password: string): Promise<
 async function adminResetsPassword(served: Served, problems: string[]) {
   const forgetful = await playerWith(served, 'Forgetful', '/', (s) => s);
   await forgetful.close();
-  const admin = await openPage('chromium', '/admin', { viewport: { width: 390, height: 844 } }, 'veteran');
-  let step = 'the admin page finds the player';
+  const admin = await openPage('chromium', '/admin/players', { viewport: { width: 390, height: 844 } }, 'veteran');
+  let step = 'the console finds the player';
   let password = '';
   try {
-    await admin.goto(served.url + '/admin');
+    await admin.goto(served.url + '/admin/players');
     await admin.getByLabel('Player name').fill('forget');
     await admin.getByRole('button', { name: 'Find' }).click();
-    await admin
-      .locator('[data-ui="ActionRow"]', { hasText: 'Forgetful' })
-      .getByRole('button', { name: 'Open' })
-      .click();
+    await admin.getByRole('link', { name: 'Forgetful', exact: true }).click();
     step = "the player's panel comes into view";
     const panel = admin.locator('[data-slot="admin.player"]');
     await panel.waitFor({ timeout: 10_000 });

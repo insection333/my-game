@@ -11,6 +11,11 @@ import {
   type GameResponse,
   type AdminPlayersResponse,
   type AdminTestResponse,
+  type AdminOverviewResponse,
+  type AuditResponse,
+  type DirectoryFilter,
+  type DirectoryResponse,
+  type DirectorySort,
   type AdminPlayerView,
   type AdminResetResponse,
   type AdminSaveResponse,
@@ -123,6 +128,10 @@ export const api = {
     reports: () => post<AdminReportsResponse>(PATHS.adminReports),
     settleReports: (playerId: string) => post<void>(PATHS.adminSettleReports, { playerId }),
     siegeFlows: () => post<AdminSiegeFlowsResponse>(PATHS.adminSiegeFlows),
+    overview: () => post<AdminOverviewResponse>(PATHS.adminOverview),
+    directory: (q: { query: string; filter: DirectoryFilter; sort: DirectorySort; page: number }) =>
+      post<DirectoryResponse>(PATHS.adminDirectory, q),
+    audit: (query: string, before: number | null) => post<AuditResponse>(PATHS.adminAudit, { query, before }),
   },
   push: {
     key: () => get<PushKeyResponse>(PATHS.pushKey),

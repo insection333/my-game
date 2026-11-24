@@ -88,3 +88,20 @@ export const realmWorkGifts = sqliteTable(
   },
   (t) => [primaryKey({ columns: [t.season, t.playerId] })],
 );
+
+/** What admins did (session 228), for the console's Audit log: every action on a player or the realm, by
+ *  whom, with what it changed. Names are kept as they were then, so the log reads after a rename. */
+export const adminActions = sqliteTable(
+  'admin_actions',
+  {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    at: integer('at').notNull(),
+    actorId: text('actor_id').notNull(),
+    actorName: text('actor_name').notNull(),
+    action: text('action').notNull(),
+    targetId: text('target_id'),
+    targetName: text('target_name'),
+    detail: text('detail'),
+  },
+  (t) => [index('admin_actions_at').on(t.at), index('admin_actions_target').on(t.targetId)],
+);
