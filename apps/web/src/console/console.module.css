@@ -218,6 +218,13 @@
   }
 }
 
+/* The narrowest bar (a 280 px phone, a player's Back to the game) keeps the mark alone beside its button. */
+@container bar (max-width: 20rem) {
+  .brandRole {
+    display: none;
+  }
+}
+
 @container bar (max-width: 26rem) {
   .brandName {
     display: none;
@@ -418,6 +425,19 @@
 /* Saira runs wider than the game's face: a strip of tabs set a little narrower keeps its labels whole. */
 .console :global([data-ui='Tab']) {
   font-stretch: 88%;
+}
+
+/* A compact strip shares its width alike among its tabs: set narrower still there (the directory's seven
+   filters on a 320 px phone). On the narrowest page (a 280 px fold, or larger text) even short labels cannot
+   share it, so the strip's tabs stand in rows instead, whole. */
+.console :global([data-compact] [data-ui='Tab']) {
+  font-stretch: 72%;
+}
+
+@container main (max-width: 17rem) {
+  .content :global(:has(> [data-ui='Tab'])) {
+    flex-wrap: wrap;
+  }
 }
 
 /* A table's head on a faint band; a row under the pointer lit. */
