@@ -67,7 +67,7 @@ export function System() {
             caption={t('console.errors')}
             columns={columns}
             rows={sys.errors}
-            rowKey={(e) => `${e.at}${e.message}`}
+            rowKey={(e) => `${sys.errors.indexOf(e)}`}
           />
         ) : (
           <p className={s.note}>{t('console.errors.none')}</p>

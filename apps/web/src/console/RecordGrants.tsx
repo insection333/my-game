@@ -20,6 +20,13 @@ export const amountOf = (typed: string, most = GRANT_MOST): number | null => {
   return Number.isSafeInteger(n) && n >= 1 && n <= most ? n : null;
 };
 
+const grantRefusal = (reason: 'notEnough' | 'unknown' | 'repeated') =>
+  reason === 'notEnough'
+    ? t('record.notEnough')
+    : reason === 'repeated'
+      ? t('record.repeated')
+      : t('record.unknownItem');
+
 export function RecordGrants({ record: r, reload, run }: { record: RecordResponse; reload: () => void; run: Run }) {
   const [item, setItem] = useState('');
   const [count, setCount] = useState('');
@@ -35,6 +42,8 @@ export function RecordGrants({ record: r, reload, run }: { record: RecordRespons
     r.skills.map((x) => ({ id: x.skill, name: x.name })),
     skill,
   );
+  const skillName = r.skills.find((x) => x.skill === skillId)?.name ?? skill;
+  const held = r.catalog.find((x) => x.id === itemId)?.held;
   const xpAmount = amountOf(xp, 200_000_000);
   const okReason = (text: string) => text.trim().length >= 3;
   const grant = (sign: 1 | -1) =>
@@ -44,7 +53,7 @@ export function RecordGrants({ record: r, reload, run }: { record: RecordRespons
         setSaid(
           res.ok
             ? { text: t('record.gave', { count: fmt.int(res.held) }), bad: false }
-            : { text: res.reason === 'notEnough' ? t('record.notEnough') : t('record.unknownItem'), bad: true },
+            : { text: grantRefusal(res.reason), bad: true },
         );
         if (res.ok) reload();
       },
@@ -55,8 +64,8 @@ export function RecordGrants({ record: r, reload, run }: { record: RecordRespons
       (res) => {
         setSaidXp(
           res.ok
-            ? { text: t('record.gaveXp', { skill, level: fmt.int(res.level) }), bad: false }
-            : { text: t('record.unknownSkill'), bad: true },
+            ? { text: t('record.gaveXp', { skill: skillName, level: fmt.int(res.level) }), bad: false }
+            : { text: res.reason === 'repeated' ? t('record.repeated') : t('record.unknownSkill'), bad: true },
         );
         if (res.ok) reload();
       },
@@ -81,6 +90,7 @@ export function RecordGrants({ record: r, reload, run }: { record: RecordRespons
               <option key={x.id} value={x.name} />
             ))}
           </datalist>
+          {held !== undefined && <p className={p.note}>{t('record.holds', { count: fmt.int(held) })}</p>}
           <Field
             label={t('record.count')}
             value={count}

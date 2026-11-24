@@ -266,8 +266,10 @@ export interface RecordResponse {
   castle: { level: number; rating: number } | null;
   /** What admins have done to them, newest first. */
   history: AuditEntry[];
-  /** Everything that can be given (gold first), by name, for the Grants form. */
-  catalog: { id: string; name: string }[];
+  /** Everything that can be given (gold first), by name, with how many they hold (session 231), for the
+   *  Grants form. */
+  catalog: { id: string; name: string; held: number }[];
 }
-export type GrantResult = { ok: true; held: number } | { ok: false; reason: 'notEnough' | 'unknown' };
-export type XpResult = { ok: true; xp: number; level: number } | { ok: false; reason: 'unknown' };
+/** `repeated`: the same change from the same admin a moment ago (a double click), made once (session 231). */
+export type GrantResult = { ok: true; held: number } | { ok: false; reason: 'notEnough' | 'unknown' | 'repeated' };
+export type XpResult = { ok: true; xp: number; level: number } | { ok: false; reason: 'unknown' | 'repeated' };

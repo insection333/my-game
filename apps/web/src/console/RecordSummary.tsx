@@ -9,11 +9,12 @@ import s from './pages.module.css';
 
 type Skill = RecordResponse['skills'][number];
 
-export function Facts({ rows }: { rows: [string, ReactNode][] }) {
+/** Labels and values in two columns; a label may be a link (a player's name on Live). */
+export function Facts({ rows }: { rows: [ReactNode, ReactNode][] }) {
   return (
     <dl className={s.facts}>
-      {rows.map(([k, v]) => (
-        <div key={k}>
+      {rows.map(([k, v], i) => (
+        <div key={i}>
           <dt>{k}</dt>
           <dd>{v}</dd>
         </div>

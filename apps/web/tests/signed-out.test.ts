@@ -23,5 +23,7 @@ describe('a session ended', () => {
     expect(bounceOf('notSignedIn', 'signedOut')).toBeNull();
     expect(bounceOf('banned', 'playing')).toBe('banned');
     expect(bounceOf('banned', 'loading')).toBe('banned');
+    // The console's twelve hours lapsing is said too (session 231), where the welcome page said nothing.
+    expect(bounceOf('notSignedIn', 'console')).toBe('ended');
   });
 });

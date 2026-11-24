@@ -11,7 +11,7 @@ import {
   type AdminSaveResponse,
 } from '@idle-clash/contracts';
 import { and, asc, eq, sql } from 'drizzle-orm';
-import type { FastifyInstance } from 'fastify';
+import type { FastifyInstance, FastifyRequest } from 'fastify';
 import { randomInt } from 'node:crypto';
 import { hashPassword } from '../auth/passwords.ts';
 import { isAdmin, nameHeld, requireAdmin } from '../auth/routes.ts';
@@ -22,6 +22,7 @@ import { totalLevelOf } from '../game/standing.ts';
 import { fireBusiestDay } from '@idle-clash/kernel';
 import { settleReports } from '../moderation.ts';
 import { audit } from './audit.ts';
+import { targetOf } from './target.ts';
 
 const view = (ctx: Ctx, p: typeof players.$inferSelect): AdminPlayerView => ({
   id: p.id,
@@ -38,11 +39,7 @@ const fireHoursOf = (ctx: Ctx, id: string): number => {
   return saved ? Math.round(fireBusiestDay(saved.doc.state) / 360_000) / 10 : 0;
 };
 
-const playerOf = (ctx: Ctx, id: string) => {
-  const row = ctx.db.select().from(players).where(eq(players.id, id)).get();
-  if (!row) throw fail(404, 'notFound');
-  return row;
-};
+const playerOf = (ctx: Ctx, id: string, notYourself?: FastifyRequest) => targetOf(ctx, id, notYourself);
 
 /** A new password the admin can read out: 16 letters and digits, unambiguous ones only. */
 function freshPassword(): string {
@@ -105,7 +102,7 @@ export function adminRoutes(app: FastifyInstance, ctx: Ctx): void {
     app,
     ROUTES.adminBan,
     ({ req, input }) => {
-      playerOf(ctx, input.playerId);
+      playerOf(ctx, input.playerId, input.banned ? req : undefined);
       ctx.db
         .update(players)
         .set({ bannedAt: input.banned ? ctx.config.now() : null })

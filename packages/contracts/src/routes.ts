@@ -309,6 +309,8 @@ export const ErrorCode = z.enum([
   'otherPlayer',
   // The admin console's own account, which never plays (session 227).
   'staffAccount',
+  // An admin banning or deleting themselves from the console (session 231).
+  'yourself',
   'serverError',
 ]);
 export type ErrorCode = z.infer<typeof ErrorCode>;

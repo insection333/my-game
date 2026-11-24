@@ -107,6 +107,8 @@ async function adminResetsPassword(served: Served, problems: string[]) {
     step = "it sets a new password, from the record's Account";
     await admin.getByRole('link', { name: 'Account', exact: true }).click();
     await admin.getByRole('button', { name: 'Set a new password' }).click();
+    // Asked once (session 231), then answered.
+    await admin.getByRole('group').getByRole('button', { name: 'Set a new password' }).click();
     password = ((await admin.locator('[data-password] code').textContent({ timeout: 10_000 })) ?? '').trim();
   } catch (err) {
     problems.push(`Admin: failed where ${step} (${say(err)})`);

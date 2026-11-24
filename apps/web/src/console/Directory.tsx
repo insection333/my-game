@@ -103,11 +103,18 @@ export function Directory() {
   useLocation();
   const ask = askOf(location.search);
   const [typed, setTyped] = useState(ask.query);
+  // The box says the search shown, as Back and Forward move between searches (session 231: it kept the last typed).
+  const [shown, setShown] = useState(ask.query);
+  if (shown !== ask.query) {
+    setShown(ask.query);
+    setTyped(ask.query);
+  }
   const [found, setFound] = useState<DirectoryResponse | null>(null);
   const key = hrefOf(ask);
   useEffect(() => {
     untilLoaded(api.admin.directory(askOf(location.search))).then(setFound, (err: unknown) => void handled(err));
   }, [key]);
+
   const go = (next: Partial<Ask>) => navigate(hrefOf({ ...ask, page: 0, ...next }));
   const search = (e: FormEvent) => {
     e.preventDefault();

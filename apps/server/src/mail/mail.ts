@@ -31,6 +31,23 @@ export function mutedUntil(ctx: Ctx, playerId: string, now: number): number | nu
   return m && m.until > now ? m.until : null;
 }
 
+/** An inbox keeps its newest MAIL.INBOX letters, the oldest going first: after every letter put in it, from a
+ *  player, a warning or a letter to everyone (session 231: a warning kept them all). */
+export function keepNewest(ctx: Ctx, toId: string): void {
+  const keep = ctx.db
+    .select({ id: mail.id })
+    .from(mail)
+    .where(eq(mail.toId, toId))
+    .orderBy(desc(mail.at), desc(mail.id))
+    .limit(MAIL.INBOX)
+    .all()
+    .map((r) => r.id);
+  ctx.db
+    .delete(mail)
+    .where(and(eq(mail.toId, toId), notInArray(mail.id, keep)))
+    .run();
+}
+
 /** Sends a letter, or says why not. The time of the last letter is the sender's newest in the table. */
 export function send(ctx: Ctx, fromId: string, toName: string, raw: string, now: number): SendResult {
   const to = ctx.db
@@ -83,19 +100,7 @@ export function send(ctx: Ctx, fromId: string, toName: string, raw: string, now:
       .insert(mail)
       .values({ toId: to.id, fromId, body, at: now, flagged: tried > 0 ? 1 : 0 })
       .run();
-    // The inbox keeps its newest; the oldest goes first.
-    const keep = ctx.db
-      .select({ id: mail.id })
-      .from(mail)
-      .where(eq(mail.toId, to.id))
-      .orderBy(desc(mail.at), desc(mail.id))
-      .limit(MAIL.INBOX)
-      .all()
-      .map((r) => r.id);
-    ctx.db
-      .delete(mail)
-      .where(and(eq(mail.toId, to.id), notInArray(mail.id, keep)))
-      .run();
+    keepNewest(ctx, to.id);
   })();
   announceMail(ctx, to.id);
   return { ok: true };

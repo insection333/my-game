@@ -11,9 +11,10 @@ import type { FastifyInstance } from 'fastify';
 import { requireAdmin } from '../auth/routes.ts';
 import { withCastle } from '../castle/mirror.ts';
 import type { Ctx } from '../context.ts';
-import { adminActions, mailMutes, playerBastions, players, reports, sessions, visits } from '../db/schema.ts';
+import { adminActions, mailMutes, playerBastions, reports, sessions, visits } from '../db/schema.ts';
 import { totalLevelOf } from '../game/standing.ts';
 import { contractRoute, fail } from '../http.ts';
+import { targetOf } from './target.ts';
 
 /** An action in the game's own words, or its address where the game has none. */
 const actionWords = (a: { feature: string; id: string }) => {
@@ -39,8 +40,7 @@ export const catalogOf = (): { id: string; name: string }[] => [
 
 export function recordOf(ctx: Ctx, playerId: string): RecordResponse {
   const now = ctx.config.now();
-  const p = ctx.db.select().from(players).where(eq(players.id, playerId)).get();
-  if (!p || p.role !== 'player') throw fail(404, 'notFound');
+  const p = targetOf(ctx, playerId);
   const saved = ctx.store.read(playerId, now);
   if (!saved) throw fail(404, 'notFound');
   const state = withCastle(ctx, playerId, saved.doc.state, now);
@@ -116,7 +116,7 @@ export function recordOf(ctx: Ctx, playerId: string): RecordResponse {
     }),
     castle: castle && rating !== undefined ? { level: castle.level, rating } : null,
     history,
-    catalog: catalogOf(),
+    catalog: catalogOf().map((i) => ({ ...i, held: countOf(state, i.id) })),
   };
 }
 
