@@ -103,6 +103,7 @@ export function PlayerRecord({ id }: { id: string }) {
             tabs={TABS.map((x) => ({
               href: x === 'summary' ? here : `${here}?tab=${x}`,
               label: TAB_WORDS[x](),
+              ...(x === 'grants' ? { short: t('record.grantsShort') } : {}),
               current: x === tab,
             }))}
           />
