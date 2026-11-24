@@ -1,29 +1,34 @@
 // The legendary siege (session 220, the plan *Dead and short content, 23 November*): each season a named
-// fortress of five chambers, taken one battle at a time and in order, once a season. Every chamber's garrison
+// fortress of eight chambers, taken one battle at a time and in order, once a season, a chamber opening each
+// week (session 222). Every chamber's garrison
 // and trap are the season's own and the same for everyone (friends can talk over the season's puzzle), and its
 // strength is measured against the lord's own might at their first assault on it and fixed for the season,
 // each chamber a step stronger: the first falls to a formation set against it, the last only with the spies'
 // work and a castle grown in the season. Measured against might, not rating, it asks the same of a lord a
-// month in as of one two years in. Each chamber pays war marks; the fifth makes it taken, a deed and, at three
+// month in as of one two years in. Each chamber pays war marks; the last makes it taken, a deed and, at three
 // seasons, a banner. Pure.
-import { ECONOMY, FORTRESSES, RECOVERY, SINKS, UNIT_IDS, type UnitId } from '@idle-clash/content';
+import { ECONOMY, FORTRESSES, RECOVERY, SINKS, TRAPS, UNIT_IDS, type UnitId } from '@idle-clash/content';
 import type { Castle } from './castle.ts';
 import { attackPower, castleSide, combatRatio, defensePower, type Side } from './combat.ts';
 import { lift, modifiers, noModifiers } from './effects.ts';
+import { SEASON_DAYS, SEASON_EPOCH } from '../season.ts';
 import { foeOps, NO_OPS, withOps, type FoeOps } from './foe-spies.ts';
 import { hash } from './mercenaries.ts';
 
 export const LEGEND = {
-  CHAMBERS: 5,
+  CHAMBERS: 8,
   /** AP an assault on a chamber takes. */
   AP: 40,
   /** Each chamber's defence against an even attack, as a share of the lord's might at the season's first
-   *  assault: the first a tenth under it, the last a sixth over it. */
-  SCALES: [0.9, 0.97, 1.04, 1.1, 1.16] as readonly number[],
+   *  assault: the first a tenth under it, the last a ninth over it. */
+  SCALES: [0.9, 0.93, 0.96, 0.99, 1.02, 1.05, 1.08, 1.11] as readonly number[],
   /** War marks a chamber pays, times its place (1 to 5). */
-  MARKS: 15,
+  MARKS: 10,
   /** The fortress tier a castle must have reached to face it. */
   OPENS_AT_TIER: 10,
+  /** Days between its chambers opening (session 222): the first as the season opens, then one a week, so a
+   *  season's legend is a week-by-week campaign rather than a day's work, the last opening in its eighth week. */
+  OPENS_EVERY_DAYS: 7,
 } as const;
 
 /** The season's fortress, named by the season (its chambers are drawn by `orderOf`). */
@@ -61,7 +66,7 @@ const plain = (base: Three, shares: Three, level: number): Side => ({
   poison: 0,
 });
 
-/** The season's chambers as five of the six fortresses' garrisons and traps, in an order drawn from the season
+/** The season's chambers as the six fortresses' garrisons and traps, in an order drawn from the season
  *  (the same for everyone), so no two chambers of a season match and seasons differ. */
 const orderOf = (season: number): number[] =>
   FORTRESSES.map((_, i) => i).sort((a, b) => hash(`legend:${season}:${a}`) - hash(`legend:${season}:${b}`));
@@ -87,7 +92,9 @@ export function legendNow(c: Castle, season: number, now: number) {
  *  is its share of the lord's might (walls at the level that power stands at). */
 export function chamberOf(c: Castle, season: number, n: number, now: number): Chamber {
   const { base } = legendNow(c, season, now);
-  const f = FORTRESSES[orderOf(season)[n]];
+  const f = FORTRESSES[orderOf(season)[n % FORTRESSES.length]];
+  // Past the sixth, a garrison met before behind the next trap, so no two chambers of a season match.
+  const trap = n < FORTRESSES.length ? f.trap : TRAPS[(TRAPS.findIndex((x) => x.id === f.trap) + 1) % TRAPS.length].id;
   const total = f.garrison[0] + f.garrison[1] + f.garrison[2];
   const shares = f.garrison.map((g) => g / total) as Three;
   const target = base * LEGEND.SCALES[n];
@@ -96,10 +103,14 @@ export function chamberOf(c: Castle, season: number, n: number, now: number): Ch
   const powerAt = (walls: number) => target / defensePower(plain([1, 1, 1], shares, walls), plain([1, 1, 1], EVEN, 0));
   let level = 1;
   for (let i = 0; i < 3; i++) level = Math.max(1, (powerAt(Math.round(level)) / 100) ** (1 / ECONOMY.STAT_EXPONENT));
-  return { n, power: powerAt(Math.round(level)), level, garrison: f.garrison, trap: f.trap };
+  return { n, power: powerAt(Math.round(level)), level, garrison: f.garrison, trap };
 }
 
 export const chamberKey = (season: number, n: number): string => `legend:${season}:${n}`;
+
+/** When a season's chamber opens: the first with the season, then one a week. */
+export const chamberOpens = (season: number, n: number): number =>
+  SEASON_EPOCH + ((season - 1) * SEASON_DAYS + n * LEGEND.OPENS_EVERY_DAYS) * 86_400_000;
 
 /** A chamber as a defending side, with the attacker's spies' work on it. */
 export function chamberSide(ch: Chamber, ops: FoeOps = NO_OPS): Side {
@@ -113,13 +124,21 @@ export function chamberSide(ch: Chamber, ops: FoeOps = NO_OPS): Side {
   );
 }
 
-/** The chamber that stands next this season, with the spies' work on it, or null when all five are taken or
+/** The chamber that stands next this season, with the spies' work on it, or null when all eight are taken or
  *  the castle has not reached the fortress tier that opens it. */
-export function nextChamber(c: Castle, season: number, now: number): { chamber: Chamber; side: Side } | null {
+export function nextChamber(
+  c: Castle,
+  season: number,
+  now: number,
+): { chamber: Chamber; side: Side; opens: number } | null {
   const { taken } = legendNow(c, season, now);
   if (taken >= LEGEND.CHAMBERS || c.incursionTier < LEGEND.OPENS_AT_TIER) return null;
   const chamber = chamberOf(c, season, taken, now);
-  return { chamber, side: chamberSide(chamber, foeOps(c, chamberKey(season, taken), now)) };
+  return {
+    chamber,
+    side: chamberSide(chamber, foeOps(c, chamberKey(season, taken), now)),
+    opens: chamberOpens(season, taken),
+  };
 }
 
 export type LegendResult =
@@ -131,17 +150,20 @@ export type LegendResult =
       attack: number;
       defense: number;
       marks: number;
-      /** All five taken by this battle. */
+      /** All eight taken by this battle. */
       taken: boolean;
     }
   | 'ap'
-  | 'none';
+  | 'none'
+  /** Its next chamber has not opened yet. */
+  | 'waiting';
 
 /** Assaults the season's next chamber with the attack's formation. Won: its war marks and drill XP, and the
- *  next chamber; the fifth takes the fortress. Lost: the wounds of a lost battle. `roll` in [0, 1). */
+ *  next chamber; the last takes the fortress. Lost: the wounds of a lost battle. `roll` in [0, 1). */
 export function assaultLegend(c: Castle, season: number, now: number, roll: number): LegendResult {
   const next = nextChamber(c, season, now);
   if (!next) return 'none';
+  if (now < next.opens) return 'waiting';
   if (c.activeAp + 1e-9 < LEGEND.AP) return 'ap';
   const mods = modifiers(c, now);
   const att = castleSide(c, now, 'attack');

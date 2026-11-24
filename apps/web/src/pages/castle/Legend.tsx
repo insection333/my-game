@@ -1,4 +1,4 @@
-// The season's legendary siege on the War (session 220): its next chamber of five as a card, with its garrison
+// The season's legendary siege on the War (session 220): its next chamber of eight as a card (one opening each week, session 222), with its garrison
 // and trap (the season's own, the same for everyone), the chance in the formation set against it, what it pays,
 // Assault and Send spies; and its sheet, with the spies' three missions and the attack as it will go. Taken, a
 // line says so until the season turns.
@@ -50,6 +50,8 @@ export function Legend() {
   const l = legendNow(castle, now);
   const marks = l ? Math.round(E.LEGEND.MARKS * (l.chamber.n + 1) * E.lift(E.modifiers(castle, now).marks)) : 0;
   const beyond = l !== null && l.chance === 0;
+  // A chamber opens each week (session 222): until its week, said and closed.
+  const waiting = l !== null && l.opens > now;
   return (
     <section data-section>
       <Panel
@@ -82,6 +84,7 @@ export function Legend() {
               facts={[
                 garrisonWords(l.chamber.garrison, l.chamber.trap),
                 t('castle.legend.pays', { marks: fmt.int(marks) }),
+                ...(waiting ? [t('castle.legend.opens', { when: fmt.when(l.opens, now) })] : []),
                 ...opsLines(castle, l.key, now),
               ]}
               fought={<Fought battle="legend" />}
@@ -93,7 +96,7 @@ export function Legend() {
               attack={
                 <Button
                   variant="primary"
-                  disabled={busy || beyond || !hasAp(castle, E.LEGEND.AP)}
+                  disabled={busy || beyond || waiting || !hasAp(castle, E.LEGEND.AP)}
                   onClick={() => assault(castle, l)}
                 >
                   {t('castle.incursion.assault', { ap: fmt.int(E.LEGEND.AP) })}
@@ -142,7 +145,7 @@ export function LegendSheet({ onClose }: { onClose: () => void }) {
           <div className={s.save}>
             <Button
               variant="primary"
-              disabled={busy || l.chance === 0 || !hasAp(castle, E.LEGEND.AP)}
+              disabled={busy || l.chance === 0 || l.opens > now || !hasAp(castle, E.LEGEND.AP)}
               onClick={() => {
                 onClose();
                 assault(castle, l);

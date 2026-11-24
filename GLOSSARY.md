@@ -65,7 +65,7 @@ Plain, warm and brief, with an old-world flavour in names rather than in instruc
 | Lane | One of your workers: Gathering, Artisan, Combat; each runs one action at a time |
 | Lasting mark | The bonus a Legendary find gives the first time you find it |
 | Legendary | The rarest find, about 1 in 5,000 actions |
-| Legendary siege | Castle Clash: a season's named fortress of five chambers, taken in order once a season, measured against your castle's might |
+| Legendary siege | Castle Clash: a season's named fortress of eight chambers, one opening each week, taken in order once a season and measured against your castle's might |
 | Level | A step in a skill, 1 to 40; every level unlocks something |
 | Lucky action | A late tier's third choice: slower, one item at a time, its Rare and Legendary finds twice as likely an hour |
 | Marks | What expeditions and bosses pay, spent on relics |

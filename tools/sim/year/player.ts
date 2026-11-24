@@ -2,7 +2,7 @@
 // with the fire; the light player two short looks), deciding every ten minutes of a visit what each
 // lane runs (plan.ts) and keeping house (house.ts); away between visits. Everything that happens is
 // recorded by day, for the year's checks.
-import { actionRegistry, combatData, FEATURES, storehouseData } from '@idle-clash/features';
+import { actionRegistry, combatData, FEATURES, seasonAt, storehouseData } from '@idle-clash/features';
 import {
   createEngine,
   HOUR,
@@ -105,6 +105,10 @@ export function playYear(
       slots: [0, 0],
     };
     today = day;
+    // A season opened (session 222): new twists, the Deep's omen, the realm's boss's mark, its legend and its
+    // work, said in a banner on the first visit in it.
+    const season = seasonAt(T0 + d * DAY + DAY - 1)?.number;
+    if (season !== undefined && season !== seasonAt(T0 + d * DAY - 1)?.number) day.firsts.push('season');
     for (const v of kind.visits) {
       const from = T0 + d * DAY + v.hour * HOUR;
       const window: [number, number] = [from, from + v.minutes * MINUTE];

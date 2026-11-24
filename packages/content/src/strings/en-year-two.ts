@@ -9,7 +9,7 @@ export const yearTwo = {
   'deeds.family.pairings': 'Pairings played',
   // The legendary siege (session 220).
   'deed.legendFirst.name': 'A legend taken',
-  'deed.legendFirst.text': "Take all five chambers of a season's legendary siege.",
+  'deed.legendFirst.text': "Take every chamber of a season's legendary siege.",
   'deed.legends.name': 'Legends taken: {count}',
   'deed.legends.text': 'Take the legendary siege in {count} seasons.',
   'deeds.family.legends': 'The legendary siege',

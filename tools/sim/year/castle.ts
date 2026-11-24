@@ -126,7 +126,7 @@ export class Lordship {
     // poisonings it needs and one try more (a single stack lasts four hours, so two are sent together).
     const season = seasonAt(t)?.number ?? 0;
     const chamber = season > 0 ? E.nextChamber(c, season, t) : null;
-    if (chamber) {
+    if (chamber && chamber.opens <= t) {
       const lkey = E.chamberKey(season, chamber.chamber.n);
       const at = (o: E.FoeOps) => E.bestOffense(c, E.chamberSide(chamber.chamber, o), t).r;
       const ops = () => E.foeOps(c, lkey, t);
@@ -170,11 +170,11 @@ export class Lordship {
       if (c.activeAp < SINKS.DRILL_AP) break;
       // The season's legend (session 220): the next chamber while it is likely to fall, as the fortress.
       const chamber = season > 0 ? E.nextChamber(c, season, t) : null;
-      if (chamber && c.activeAp >= E.LEGEND.AP) {
+      if (chamber && chamber.opens <= t && c.activeAp >= E.LEGEND.AP) {
         const best = E.bestOffense(c, chamber.side, t);
         if (best.r >= 1.05) {
           const r = E.assaultLegend({ ...c, offense: best.shares }, season, t, this.roll());
-          if (r !== 'ap' && r !== 'none') {
+          if (typeof r !== 'string') {
             c = r.castle;
             continue;
           }
@@ -254,6 +254,8 @@ export class Lordship {
     if (sum(c.relics) > sum(was.relics)) firsts.push('castle:relic');
     if (sum(c.tempers) > sum(was.tempers)) firsts.push('castle:temper');
     if (c.legends > was.legends) firsts.push('castle:legend');
+    // A chamber of the season's legend taken (session 222): a named fortress's battle won, said as a moment.
+    else if (c.legendTaken > (c.legendSeason === was.legendSeason ? was.legendTaken : 0)) firsts.push('castle:chamber');
     this.castle = c;
     const next = mirrored({ ...state, items: { ...state.items, gold: Math.max(0, Math.floor(purse)) } }, c, t);
     return {
