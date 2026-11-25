@@ -4,14 +4,13 @@
 // dealt with; the realm's season, boss and work; and the server's health.
 import type { AdminOverviewResponse, DayCount } from '@idle-clash/contracts';
 import { fmt, t } from '@idle-clash/content';
-import { Panel, TextLink } from '@idle-clash/ui';
+import { Panel } from '@idle-clash/ui';
 import { useEffect, useState, type ReactNode } from 'react';
 import { api } from '../api.ts';
 import { setServerTime } from '../game/clock.ts';
 import { handled } from '../game/session.ts';
 import { dayOf, whenOf } from '../pages/days.ts';
 import { untilLoaded } from '../Ready.tsx';
-import { navigate } from '../router.ts';
 import { Slot } from '../slots.tsx';
 import { Bars, type Point } from './Bars.tsx';
 import { Tiles, type Tile } from './Tiles.tsx';
@@ -164,9 +163,7 @@ export function Overview() {
               rows={[
                 [t('console.server.since'), whenOf(o.server.startedAt)],
                 [
-                  <TextLink href="/admin/system" onNavigate={navigate}>
-                    {t('console.load.cpu')}
-                  </TextLink>,
+                  t('console.load.cpu'),
                   o.server.cpuPct === null
                     ? t('console.load.measuring')
                     : t('console.load.cpuOf', { pct: fmt.num(o.server.cpuPct) }),

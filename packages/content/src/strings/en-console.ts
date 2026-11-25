@@ -62,7 +62,7 @@ export const consoleWords = {
   'console.load.ms': '{ms} ms',
   'console.load.loop': 'Longest waits (99%)',
   'console.load.console': "The console's share",
-  'console.load.consoleNote': 'Of the time spent answering',
+  'console.load.consoleShare': 'Of the time spent answering',
   'console.load.pages': 'Pages open',
   'console.load.heap': 'Memory in use',
   'console.load.hourRequests': 'Requests a minute, last hour',

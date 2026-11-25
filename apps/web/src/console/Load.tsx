@@ -30,7 +30,7 @@ export function Load({ sys }: { sys: SystemResponse }) {
             {
               label: t('console.load.console'),
               value: last ? `${fmt.num(last.consolePct)}%` : '–',
-              note: t('console.load.consoleNote'),
+              note: t('console.load.consoleShare'),
             },
             { label: t('console.load.pages'), value: fmt.int(pagesOpen) },
             { label: t('console.load.heap'), value: t('console.server.mb', { mb: fmt.int(heapMb) }) },
