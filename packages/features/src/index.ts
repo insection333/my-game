@@ -60,6 +60,7 @@ export { careerOf, type Career } from './deeds/career.ts';
 export type {
   BossRow,
   RealmView,
+  RoundView,
   DeepView,
   DeepRelicRow,
   ExpeditionView,

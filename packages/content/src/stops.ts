@@ -19,6 +19,8 @@ export const QUIET_STOPS: readonly string[] = [
   'deepHome',
   'bossRested',
   'realmRested',
+  // The day's bosses all fought (session 239).
+  'roundDone',
   'fireOut',
 ];
 export const isQuietStop = (code: string): boolean => QUIET_STOPS.includes(code);

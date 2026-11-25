@@ -32,6 +32,13 @@ export function setOut(state: State, region: Region, hours: Hours, road: string)
   return { state: out, result: { ok: true }, events: [] };
 }
 
+/** Whether a run home with its boss beaten sets out again (session 239). */
+export function setAgain(state: State, on: boolean): Answer<{ ok: true }> {
+  const out = structuredClone(state);
+  setExpeditions(out, { ...expeditionsOf(state), again: on });
+  return { state: out, result: { ok: true }, events: [] };
+}
+
 /** Gives up the run: what it brought is kept; the route is gone. */
 export function abandon(state: State): Answer<{ ok: true }> {
   const e = expeditionsOf(state);

@@ -3,7 +3,7 @@
 export const expeditions = {
   'help.expeditions.title': 'Expeditions',
   'help.expeditions.body':
-    "Set out into a region for 1, 2, 4 or 8 hours from the Combat page, here or away. A run is six ten-minute fight stages an hour against foes drawn for it, with a cache and a camp each hour, one or two twists, a fork whose road you choose before setting out, and one of the region's two bosses at the end, drawn from those your Hitpoints has opened. Each boss fights its own way, said on its row, and Your odds counts it. Runs pay at least as well as the lane, and they, the bosses and bounties pay marks, which buy relics: lasting boosts in ranks. Once every expedition relic is raised, the quartermaster trades marks for gold. At Hitpoints 99 the Deep opens: a descent with no floor, a depth each ten minutes, its foes stronger each depth down and a boss at every tenth, as deep as a pack of 30 meals takes you; each tenth depth reached leaves a waystone to start from next time, and the week's two omens and the season's own hold for everyone. The Deep's three relics, bought with marks, work there alone and have no last rank.",
+    "Set out into a region for 1, 2, 4 or 8 hours from the Combat page, here or away. A run is six ten-minute fight stages an hour against foes drawn for it, with a cache and a camp each hour, one or two twists, a fork whose road you choose before setting out, and one of the region's two bosses at the end, drawn from those your Hitpoints has opened. A run home with its boss beaten sets out again on a new route of the same length, unless you clear Set out again when home or a Next waits in the lane. Each boss can also be fought alone once a day, and Fight today's bosses fights every one you fare well against, with the realm's, one after another before the lane goes back to what it was on. Each boss fights its own way, said on its row, and Your odds counts it. Runs pay at least as well as the lane, and they, the bosses and bounties pay marks, which buy relics: lasting boosts in ranks. Once every expedition relic is raised, the quartermaster trades marks for gold. At Hitpoints 99 the Deep opens: a descent with no floor, a depth each ten minutes, its foes stronger each depth down and a boss at every tenth, as deep as a pack of 30 meals takes you; each tenth depth reached leaves a waystone to start from next time, and the week's two omens and the season's own hold for everyone. The Deep's three relics, bought with marks, work there alone and have no last rank.",
 
   'action.expeditions.march': 'Expedition into the march',
   'action.expeditions.fen': 'Expedition into the Sunken Fen',
@@ -104,6 +104,19 @@ export const expeditions = {
   'stopShort.expeditionHome': 'Home',
   'stop.bossRested': 'Already fought today',
   'stop.realmRested': 'Already fought today',
+  // The day's bosses (session 239).
+  'action.expeditions.bosses': "The day's bosses",
+  'stop.roundDone': "The day's bosses are fought",
+  'stopShort.roundDone': 'All fought',
+  'round.name': "The day's bosses",
+  'round.waiting': '{count} to fight today, one after another',
+  'round.fight': "Fight today's bosses",
+  'round.on': '{left} of {count} left today',
+  'round.onOne': 'The last of {count} today',
+  'expedition.again': 'Set out again when home',
+  'expedition.againNote':
+    'A run home with its boss beaten sets out on a new route the same length, unless a Next waits in the lane.',
+  'recap.runs': '{count} runs came home ({won} with the boss beaten), bringing {gained}',
   'stopShort.realmRested': 'Fought today',
   // The realm's boss of the week (session 174).
   'action.expeditions.realm': "The realm's boss",

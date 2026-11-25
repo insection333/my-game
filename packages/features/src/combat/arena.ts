@@ -15,6 +15,7 @@ import { foeById, SWING_S, type Foe } from '../shared/combat/data.ts';
 import { BOSSES } from '../shared/expeditions/data.ts';
 import { asFought } from '../shared/bounty.ts';
 import { realmFoe } from '../shared/realm.ts';
+import { roundOn } from '../shared/expeditions/round.ts';
 import { fight, maxHealth, type Fought, type Swing } from '../shared/combat/fight.ts';
 import { fighterOf, healthAt, mealsOf } from '../shared/combat/state.ts';
 
@@ -59,10 +60,14 @@ let cached: { key: string; arena: Arena | null } | null = null;
 export function arenaOf(state: State): Arena | null {
   const run = state.lanes.combat.current;
   if (!run || run.seed === undefined) return null;
+  // The day's bosses (session 239) fight each of their list in turn, as each is fought alone.
+  const id =
+    run.action.feature === 'expeditions' && run.action.id === 'bosses'
+      ? (roundOn(state, run.startedAt) ?? '')
+      : run.action.id;
   // The realm's boss of the week (session 174) is played out as a boss is, at the player's measure.
-  const realm =
-    run.action.feature === 'expeditions' && run.action.id === 'realm' ? realmFoe(state, run.startedAt) : null;
-  const boss = realm ?? (run.action.feature === 'expeditions' ? BOSSES.find((b) => b.id === run.action.id) : undefined);
+  const realm = run.action.feature === 'expeditions' && id === 'realm' ? realmFoe(state, run.startedAt) : null;
+  const boss = realm ?? (run.action.feature === 'expeditions' ? BOSSES.find((b) => b.id === id) : undefined);
   if (run.action.feature !== 'combat' && !boss) return null;
   const base = boss ?? foeById(run.action.id);
   if (!base) return null;

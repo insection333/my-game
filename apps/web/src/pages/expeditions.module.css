@@ -273,3 +273,21 @@
   gap: var(--s-1);
   padding: var(--s-3) var(--s-4) 0;
 }
+
+/* Set out again when home (session 239), as the welcome page's box reads. */
+.again {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  min-height: var(--tap);
+  cursor: pointer;
+  font-size: var(--t-body);
+}
+
+.again input {
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  flex: none;
+  accent-color: var(--woad);
+}

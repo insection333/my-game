@@ -5,7 +5,8 @@
 import { z } from 'zod';
 import { defineFeature, defineRoute, type Json } from '../define.ts';
 import { bossLog, relicsView } from './relics-view.ts';
-import { abandon, buyRelic, setOut } from './routes.ts';
+import { abandon, buyRelic, setAgain, setOut } from './routes.ts';
+import { planRound, roundView } from './round.ts';
 import { RULES } from './rules.ts';
 import { CONTENT } from './content.ts';
 import { bossRows, expeditionView } from './views.ts';
@@ -21,6 +22,7 @@ export type { RelicRow, RelicsView } from './relics-view.ts';
 export type { TradeView } from './trade.ts';
 export { marksText } from './trade.ts';
 export type { RealmView } from './realm.ts';
+export type { RoundView } from './round.ts';
 export type { DeepView } from './deep-view.ts';
 export type { DeepRelicRow } from './deep-relics.ts';
 export { routeView } from './views.ts';
@@ -35,6 +37,7 @@ export const expeditions = defineFeature({
     'deepHome',
     'bossRested',
     'realmRested',
+    'roundDone',
     'noWeapon',
     'tooHurt',
     'hitpointsTooLow',
@@ -52,6 +55,18 @@ export const expeditions = defineFeature({
         .strict(),
       example: { region: 'march' as const, hours: 1 as const, road: 'high-pass' },
       run: (state, input) => setOut(state, input.region, input.hours, input.road),
+    }),
+    // Whether a run home with its boss beaten sets out again (session 239).
+    again: defineRoute({
+      input: z.object({ on: z.boolean() }).strict(),
+      example: { on: false },
+      run: (state, input) => setAgain(state, input.on),
+    }),
+    // The day's bosses (session 239): the fights set for today, then started in the Combat lane.
+    round: defineRoute({
+      input: z.object({}).strict(),
+      example: {},
+      run: (state, _input, now) => planRound(state, now),
     }),
     abandon: defineRoute({
       input: z.object({}).strict(),
@@ -96,6 +111,7 @@ export const expeditions = defineFeature({
     'combat.expedition': ({ state, now }) => expeditionView(state, now) as unknown as Json,
     'combat.bosses': ({ state, now }) => bossRows(state, now) as unknown as Json,
     'combat.realm': ({ state, now }) => realmView(state, now) as unknown as Json,
+    'combat.round': ({ state, now }) => roundView(state, now) as unknown as Json,
     'combat.relics': ({ state }) => relicsView(state) as unknown as Json,
     'combat.deep': ({ state, now }) => deepView(state, now) as unknown as Json,
     'hearth.errands': ({ state, now }) => expeditionErrands(state, now) as unknown as Json,

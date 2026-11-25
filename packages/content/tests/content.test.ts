@@ -139,6 +139,8 @@ describe('t', () => {
       // A lord's spoils are a range ("2–5 war marks").
       'castle.target.paysLord',
       'castle.target.paysLordUnscouted',
+      // Runs home are folded into one recap line only from two (session 239).
+      'recap.runs',
       // The console's calendar shows eleven weeks and more of days (session 234).
       'record.daysPlayed',
     ];

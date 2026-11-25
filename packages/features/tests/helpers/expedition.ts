@@ -7,7 +7,7 @@ import { FOES, FOODS, regionOf } from '../../src/shared/combat/data.ts';
 import type { Region } from '../../src/shared/expeditions/data.ts';
 import { expeditionsOf } from '../../src/shared/expeditions/state.ts';
 import { nextRoute, type Hours } from '../../src/expeditions/route.ts';
-import { setOut } from '../../src/expeditions/routes.ts';
+import { setAgain, setOut } from '../../src/expeditions/routes.ts';
 
 export const T0 = Date.UTC(2026, 9, 28, 1);
 export const engine = createEngine(actionRegistry(FEATURES, () => true));
@@ -41,7 +41,8 @@ export function fighterOfLevel(level: number, seed: number, style: 'melee' | 'ar
 export function runOnce(region: Region, hours: Hours, seed: number, prepare: (s: State) => State = (s) => s) {
   let s = prepare(fighterAt(region, seed));
   const road = nextRoute(s, region, hours)!.roads[seed % 2];
-  s = setOut(s, region, hours, road).state;
+  // One run, measured alone: a run home with its boss beaten would set out again (session 239).
+  s = setAgain(setOut(s, region, hours, road).state, false).state;
   s = engine.command(
     s,
     T0,

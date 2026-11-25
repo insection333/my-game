@@ -79,8 +79,11 @@ export interface ExpeditionView {
   lengths: { hours: Hours; label: string }[];
   run: RunView | null;
   marks: string;
-  /** The last run home, told while no run is under way (session 74): its story, when, and its boss. */
+  /** The last run home, told while no run is under way (session 74) or above the run that set out again after
+   *  it (session 239): its story, when, and its boss. */
   last: { title: string; body: string; when: string; boss: string } | null;
+  /** Whether a run home with its boss beaten sets out again (session 239). */
+  again: boolean;
   /** Every twist and road there is, with what each changes: what a run may meet. */
   legend: TwistView[];
 }
@@ -175,7 +178,10 @@ export function expeditionView(state: State, now: number): ExpeditionView {
     lengths: LENGTHS.map((hours) => ({ hours, label: fmt.duration(hours * 3_600_000) })),
     run: e.run ? runView(state, e.run, now) : null,
     marks: e.marks === 1 ? t('expedition.marksOne') : t('expedition.marks', { marks: fmt.int(e.marks) }),
-    last: !e.run && e.last ? lastView(e.last, now) : null,
+    // A run that set out again keeps the last one home in view above it (session 239); one set out by hand
+    // clears it.
+    last: e.last ? lastView(e.last, now) : null,
+    again: e.again !== false,
     legend: [...TWISTS, ...ROADS].map(twistView),
   };
 }

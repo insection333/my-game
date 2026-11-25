@@ -1,13 +1,15 @@
 // Expeditions' lane rules. A run (`expeditions:march`) repeats once a stage: each fight stage takes
 // ten minutes, then the boss's fight as long as it plays; when the boss falls or wins, or the fighter
-// retreats, the run comes home with its story, and the lane stops. A boss (`expeditions:troll-chief`)
+// retreats, the run comes home with its story; a run home with its boss beaten sets out again on a new route
+// (session 239) unless the player turned that off or queued a Next, and otherwise the lane stops. A boss (`expeditions:troll-chief`)
 // can also be fought alone once a day.
 import type { ActionContext, ActionRules, GameEvent, StopReason } from '@idle-clash/kernel';
 import { maxHealth, retreatShare } from '../shared/combat/fight.ts';
 import { fighterOf, healthAt, mealsOf } from '../shared/combat/state.ts';
 import { foeById, HITPOINTS, type Foe } from '../shared/combat/data.ts';
 import { BOSSES, REGIONS, STAGE_MINUTES, type Boss, type Region } from '../shared/expeditions/data.ts';
-import { bossOfRun } from './route.ts';
+import { bossOfRun, nextRoute } from './route.ts';
+import { roundRules } from './round.ts';
 import { DEEP_RULES } from './deep.ts';
 import { expeditionsOf, RUN_FINDS, setExpeditions, type Last, type Run } from '../shared/expeditions/state.ts';
 import { skillLevel } from '../shared/skill.ts';
@@ -55,6 +57,23 @@ function home(ctx: ActionContext, run: Run, outcome: 'won' | 'lost' | 'retreated
   };
   setExpeditions(ctx.state, { ...e, marks: e.marks + extra, run: null, runs, last });
   ctx.emit({ type: 'expeditionDone', ...last });
+  if (outcome === 'won' && e.again !== false && !ctx.state.lanes[ctx.lane].next) setOutAgain(ctx, run);
+}
+
+/** A run home with its boss beaten sets out again (session 239): a new route of the same length into the same
+ *  region, by the same road where the fork offers it, else the fork's first. The lane then goes on with it as
+ *  it goes on with any action, unless the fighter is not fit to. */
+function setOutAgain(ctx: ActionContext, run: Run) {
+  const route = nextRoute(ctx.state, run.region, run.hours);
+  if (!route) return;
+  const e = expeditionsOf(ctx.state);
+  const road = route.roads.includes(run.road) ? run.road : route.roads[0];
+  setExpeditions(ctx.state, {
+    ...e,
+    drawn: e.drawn + 1,
+    twists: [...new Set([...e.twists, ...route.twists])].slice(-20),
+    run: { ...route, seq: e.drawn, road, at: 0, marks: 0, cleared: 0, finds: [] },
+  });
 }
 
 /** The lane's events, with each new find also kept for the run's story. */
@@ -138,10 +157,16 @@ function bossRules(boss: Boss): ActionRules {
   };
 }
 
-export const RULES: Record<string, ActionRules> = {
-  ...Object.fromEntries(REGIONS.map((r) => [r, runRules(r)])),
+const FIGHTS: Record<string, ActionRules> = {
   ...Object.fromEntries(BOSSES.map((b) => [b.id, bossRules(b)])),
   realm: REALM_RULES,
+};
+
+export const RULES: Record<string, ActionRules> = {
+  ...Object.fromEntries(REGIONS.map((r) => [r, runRules(r)])),
+  ...FIGHTS,
+  // The day's bosses (session 239), each fought by its own rules.
+  bosses: roundRules((id) => (Object.hasOwn(FIGHTS, id) ? FIGHTS[id] : undefined)),
   // The Deep (session 212).
   deep: DEEP_RULES,
 };
