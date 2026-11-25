@@ -213,6 +213,9 @@ export const deeds = {
   'deeds.recent': 'Done lately',
   'deeds.noneYet': 'Deeds you do appear here.',
   'deeds.unlocks': 'Unlocks {honours}',
+  // Followed on the Hearth (session 242).
+  'deeds.follow': 'Follow on the Hearth',
+  'deeds.unfollow': 'Stop following',
   'deeds.honours': 'Your honours',
   'deeds.choose': 'Choose honours',
   'deeds.show': 'Show',

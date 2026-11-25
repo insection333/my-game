@@ -7,8 +7,8 @@ import { z } from 'zod';
 import { defineFeature, defineRoute, type Json } from '../define.ts';
 import { honoursView, plaqueView } from './honours-view.ts';
 import { pending } from './list.ts';
-import { choose, refresh } from './rules.ts';
-import { deedsView } from './view.ts';
+import { choose, follow, refresh } from './rules.ts';
+import { deedsView, followedView } from './view.ts';
 
 export type { DeedCategory, DeedFamily, DeedRow, DeedStep, DeedsView } from './view.ts';
 export type { HonourChoice, HonourOption, HonoursView, PlaqueView } from './honours-view.ts';
@@ -37,6 +37,12 @@ export const deeds = defineFeature({
       example: { kind: 'banner', id: 'woad' },
       run: (state, input, _now) => choose(state, input.kind, input.id),
     }),
+    // Up to three deeds followed on the Hearth (session 242).
+    follow: defineRoute({
+      input: z.object({ id: Id, on: z.boolean() }).strict(),
+      example: { id: 'level-woodcutting-40', on: true },
+      run: (state, input) => follow(state, input.id, input.on),
+    }),
   },
   slots: {
     // Deeds done but not yet recorded, by id: the shell asks the server to record them as they change.
@@ -46,6 +52,7 @@ export const deeds = defineFeature({
         .join(' '),
     }),
     'hearth.plaque': ({ state }) => plaqueView(state),
+    'hearth.followed': ({ state, now }) => followedView(state, now) as unknown as Json,
     'hiscores.honours': ({ state, now }) => honoursView(state, now) as unknown as Json,
     'hiscores.deeds': ({ state, now }) => deedsView(state, now) as unknown as Json,
   },

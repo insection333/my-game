@@ -5,6 +5,8 @@ import { z } from 'zod';
 
 const Key = z.string().regex(/^[a-z0-9][a-z0-9-]{0,63}$/);
 const time = z.number().int().nonnegative();
+/** How many deeds may be followed on the Hearth at once (session 242). */
+export const FOLLOW = 3;
 
 export const DeedsState = z
   .object({
@@ -19,6 +21,8 @@ export const DeedsState = z
     scene: Key.nullable().default(null),
     // Session 179: the companion beside the picture.
     companion: Key.nullable().default(null),
+    /** Session 242: up to three deeds followed on the Hearth. Saves from before have none. */
+    followed: z.array(Key).max(FOLLOW).optional(),
   })
   .strict()
   .refine((d) => Object.keys(d.done).length <= 2000, 'too many deeds');

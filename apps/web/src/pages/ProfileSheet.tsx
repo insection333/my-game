@@ -120,6 +120,17 @@ function Card({ p }: { p: Profile }) {
           {c.bossWins > 0 && <Stat label={t('profile.bossWins')} value={fmt.int(c.bossWins)} />}
           {c.runs > 0 && <Stat label={t('profile.runs')} value={fmt.int(c.runs)} />}
           {c.deepest > 0 && <Stat label={t('profile.deepest')} value={fmt.int(c.deepest)} />}
+          {/* Lifetime records (session 242), each once above nought. */}
+          {c.finds > 0 && (
+            <Stat
+              label={t('profile.finds')}
+              value={t('profile.of', { n: fmt.int(c.finds), all: fmt.int(c.findsAll) })}
+            />
+          )}
+          {c.bounties > 0 && <Stat label={t('profile.bounties')} value={fmt.int(c.bounties)} />}
+          {c.weeks > 0 && <Stat label={t('profile.weeks')} value={fmt.int(c.weeks)} />}
+          {c.favour > 0 && <Stat label={t('profile.favour')} value={fmt.int(c.favour)} />}
+          {c.realmFallen > 0 && <Stat label={t('profile.realmFallen')} value={fmt.int(c.realmFallen)} />}
         </dl>
       </section>
       {p.places.length > 0 && (

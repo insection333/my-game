@@ -281,3 +281,17 @@
 .rivalText {
   min-width: 0;
 }
+
+/* Find a player (session 242): a name and Find, a line of the head that wraps under the tabs on a phone. */
+.find {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--s-2);
+  flex: 0 1 18rem;
+  min-width: 0;
+}
+
+.find > :first-child {
+  flex: 1 1 auto;
+  min-width: 0;
+}
