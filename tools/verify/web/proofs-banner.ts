@@ -28,6 +28,8 @@ export async function runBannerProofs(served: Served): Promise<string[]> {
     const fits = await phone.evaluate(() => document.documentElement.scrollWidth <= innerWidth);
     const box = await banner.boundingBox();
     if (!fits || !box || box.x < 0 || box.x + box.width > 320) problems.push('The banner: it runs past a 320 px phone');
+    // Kept beside the review sheets, as it is in no view of its own.
+    await phone.screenshot({ path: join(ROOT, '.verify/shots/banner-320.png') });
     step = 'its cross puts it away for good';
     await banner.getByRole('button', { name: 'Put the banner away' }).click();
     await banner.waitFor({ state: 'detached', timeout: 5_000 });
