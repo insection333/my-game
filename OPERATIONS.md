@@ -29,8 +29,11 @@ It prints three values for GitHub's secrets (repository Settings, Secrets and va
 `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID` and `R2_SECRET_ACCESS_KEY` (the Cloudflare R2 token for the
 `idleclash-backups` bucket), and the variable `ADMIN_NAMES` (the admins' player names, comma-separated; sign up first, then list
 the name), and the secret `ADMIN_ACCOUNT_PASSWORD` (the admin console's own account, named `Admin`: session 227; the
-deploy writes it base64 into the settings, and the server sets the account's password from it at every start, so
-changing the secret and deploying changes the password). Point `idleclash.com` and
+deploy writes it base64 into the settings, and the server sets the account's password from it when the secret is
+first seen or changes, so changing the secret and deploying changes the password; a password changed in the console
+stands until then). With no secret set, `Admin` is made with the first password `Password` (the owner, session
+237), and the console shows nothing but Choose your own password until it is changed: sign in as `Admin` right
+after the first deploy, as anyone who reads this repository knows the first password. Point `idleclash.com` and
 `www.idleclash.com` (A records) at the server, then run the deploy.
 
 ## Deploying

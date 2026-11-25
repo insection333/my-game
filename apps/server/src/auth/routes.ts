@@ -53,7 +53,16 @@ export const requireAdmin = (ctx: Ctx) => {
   return (req: FastifyRequest): void => {
     who(req);
     if (!req.playerId) throw fail(401, 'notSignedIn');
-    if (req.staff) return;
+    if (req.staff) {
+      // Not while it holds the first password it was made with (session 237): its own comes first.
+      const first = ctx.db
+        .select({ must: players.mustChangePassword })
+        .from(players)
+        .where(eq(players.id, req.playerId))
+        .get()?.must;
+      if (first) throw fail(403, 'mustChangePassword');
+      return;
+    }
     const row = ctx.db.select({ name: players.name }).from(players).where(eq(players.id, req.playerId)).get();
     if (!row || !isAdmin(ctx, row.name)) throw fail(403, 'notAdmin');
   };
@@ -190,6 +199,7 @@ export function authRoutes(app: FastifyInstance, ctx: Ctx): void {
         email: { enabled: ctx.config.emailEnabled },
         admin: row ? staff || isAdmin(ctx, row.name) : false,
         staff,
+        ...(staff && row?.mustChangePassword ? { mustChangePassword: true } : {}),
       } satisfies MeResponse;
     },
     identify(ctx),

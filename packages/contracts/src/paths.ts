@@ -17,6 +17,7 @@ export const PATHS = {
   resetPassword: '/api/auth/reset',
   deleteAccount: '/api/account/delete',
   changePassword: '/api/account/password',
+  consolePassword: '/api/account/console-password',
   adminPlayers: '/api/admin/players',
   adminSave: '/api/admin/save',
   adminRename: '/api/admin/rename',

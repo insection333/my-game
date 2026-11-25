@@ -24,6 +24,9 @@ export interface Session {
   admin: boolean;
   /** Whether this is the admin console's own account, which never plays (session 227). */
   staff: boolean;
+  /** The console's account still holding its first password: it chooses its own before anything else
+   *  (session 237). */
+  mustChangePassword: boolean;
   /** Why the session ended, for the welcome page to say: a ban (session 95), or the account deleted
    *  (session 96). */
   bounced: Bounced | null;
@@ -36,6 +39,7 @@ let session: Session = {
   email: false,
   admin: false,
   staff: false,
+  mustChangePassword: false,
   bounced: null,
 };
 const listeners = new Set<() => void>();
@@ -63,7 +67,7 @@ export function signedOut(why: Bounced | null = null) {
   void game?.then((m) => m.stop());
   keepFor(null);
   showPlayer(null);
-  setSession({ phase: 'signedOut', player: null, admin: false, staff: false, bounced: why });
+  setSession({ phase: 'signedOut', player: null, admin: false, staff: false, mustChangePassword: false, bounced: why });
 }
 
 /** Why the welcome page is shown: a ban; or a session that ended in the middle of play (session 157: the
@@ -78,14 +82,22 @@ export function handled(err: unknown): err is ApiError {
     signedOut(bounceOf(err.code, session.phase));
     return true;
   }
+  // The console's account must choose its own password first (session 237): the console shows only that.
+  if (err instanceof ApiError && err.code === 'mustChangePassword') {
+    setSession({ mustChangePassword: true });
+    return true;
+  }
   return false;
 }
 
 /** The console's own account: the console, and never the game (session 227). */
-function enterConsole(player: PlayerView) {
+/** The console's account has chosen its own password: the console opens. */
+export const passwordChosen = () => setSession({ mustChangePassword: false });
+
+function enterConsole(player: PlayerView, mustChangePassword = false) {
   keepFor(player.id);
   showPlayer(player.id);
-  setSession({ phase: 'console', player, admin: true, staff: true, bounced: null });
+  setSession({ phase: 'console', player, admin: true, staff: true, mustChangePassword, bounced: null });
   if (!location.pathname.startsWith('/admin')) replace('/admin');
 }
 
@@ -103,7 +115,7 @@ export async function boot(): Promise<void> {
   try {
     const me = await api.me();
     setSession({ flags: me.flags, email: me.email.enabled, admin: me.admin, staff: me.staff });
-    if (me.player && me.staff) enterConsole(me.player);
+    if (me.player && me.staff) enterConsole(me.player, me.mustChangePassword === true);
     else if (me.player) await enter(me.player);
     else setSession({ phase: 'signedOut' });
   } catch (err) {
@@ -117,7 +129,7 @@ export const account = {
     const { player } = await api.signIn(name, password);
     // Whether the page offers the admin page, or is the console's own account, is the server's to say.
     const me = await api.me().catch(() => null);
-    if (me?.staff) return enterConsole(player);
+    if (me?.staff) return enterConsole(player, me.mustChangePassword === true);
     await enter(player);
     if (me) setSession({ admin: me.admin });
   },

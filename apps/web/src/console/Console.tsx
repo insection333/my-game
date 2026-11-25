@@ -16,6 +16,7 @@ import { NotFound } from '../pages/Simple.tsx';
 import { Ready } from '../Ready.tsx';
 import { navigate } from '../router.ts';
 import { ClosedTest } from './ClosedTest.tsx';
+import { ConsolePassword } from './ConsolePassword.tsx';
 import { GoTo, goToKey } from './GoTo.tsx';
 import { G_MS, keyOf } from './keys.ts';
 import { Keys } from './Keys.tsx';
@@ -107,16 +108,23 @@ function Section({ id, path }: { id: SectionId; path: string }) {
   );
 }
 
+/** Where the console's account changes its password (session 237). */
+const PASSWORD_PATH = '/admin/password';
+
 const hrefOf = (id: SectionId) => (id === 'overview' ? '/admin' : `/admin/${id}`);
 
 export default function Console({ path }: { path: string }) {
-  const { admin, staff, player } = useSession();
+  const { admin, staff, player, mustChangePassword } = useSession();
+  // Holding its first password, the console's account sees only the form to choose its own (session 237).
+  const locked = staff && mustChangePassword;
+  const ownPassword = staff && path === PASSWORD_PATH;
   const section = sectionOf(path);
   const [going, setGoing] = useState(false);
   const [keys, setKeys] = useState(false);
   // Go to opens from anywhere in the console (session 233); ? lists the keys, G then a letter goes to a
   // section (session 234).
   useEffect(() => {
+    if (locked) return;
     let gAt = -Infinity;
     const onKey = (e: KeyboardEvent) => {
       const k = keyOf(e, performance.now() - gAt < G_MS);
@@ -139,13 +147,13 @@ export default function Console({ path }: { path: string }) {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, []);
+  }, [locked]);
   useEffect(() => {
     document.title = `${t('console.title')} · ${t('shell.name')}`;
   }, []);
   if (!admin) return <NotFound />;
   return (
-    <div className={s.console}>
+    <div className={s.console} data-locked={locked ? '' : undefined}>
       <a className={s.skip} href="#console-main" data-ui="Link">
         {t('shell.skip')}
       </a>
@@ -156,20 +164,35 @@ export default function Console({ path }: { path: string }) {
           <span className={s.brandRole}>{t('console.title')}</span>
         </span>
         <span className={s.who}>
-          <button
-            type="button"
-            data-ui="ConsoleBarButton"
-            className={`${s.barButton} ${s.goTo}`}
-            aria-keyshortcuts="Control+K Meta+K /"
-            onClick={() => setGoing(true)}
-          >
-            {t('console.goto')}
-            <kbd className={s.key} aria-hidden="true">
-              {goToKey(navigator.platform)}
-            </kbd>
-          </button>
+          {!locked && (
+            <button
+              type="button"
+              data-ui="ConsoleBarButton"
+              className={`${s.barButton} ${s.goTo}`}
+              aria-keyshortcuts="Control+K Meta+K /"
+              onClick={() => setGoing(true)}
+            >
+              {t('console.goto')}
+              <kbd className={s.key} aria-hidden="true">
+                {goToKey(navigator.platform)}
+              </kbd>
+            </button>
+          )}
           <RealmClock />
-          <span className={s.whoName}>{t('console.signedInAs', { name: player?.name ?? '' })}</span>
+          {staff && !locked ? (
+            // The console's account changes its own password from its name (session 237).
+            <a
+              href={PASSWORD_PATH}
+              data-ui="ConsoleBarLink"
+              className={`${s.whoName} ${s.whoLink}`}
+              title={t('console.password.title')}
+              onClick={go(PASSWORD_PATH)}
+            >
+              {t('console.signedInAs', { name: player?.name ?? '' })}
+            </a>
+          ) : (
+            <span className={s.whoName}>{t('console.signedInAs', { name: player?.name ?? '' })}</span>
+          )}
           {/* Drawn for the bar's night, so it is its own control and not a page's Button (one control, one look). */}
           <button
             type="button"
@@ -181,43 +204,56 @@ export default function Console({ path }: { path: string }) {
           </button>
         </span>
       </header>
-      <nav className={s.nav} aria-label={t('console.sections')}>
-        <div className={s.groups}>
-          {GROUPS.map((g) => (
-            <div key={g.id} className={s.group}>
-              <p className={s.groupName} id={`console-group-${g.id}`}>
-                {g.label()}
-              </p>
-              <ul aria-labelledby={`console-group-${g.id}`}>
-                {SECTIONS.filter((x) => x.group === g.id).map((x) => {
-                  const href = hrefOf(x.id);
-                  return (
-                    <li key={x.id}>
-                      <a
-                        href={href}
-                        data-ui="ConsoleLink"
-                        className={s.navLink}
-                        aria-current={section === x.id ? 'page' : undefined}
-                        onClick={go(href)}
-                      >
-                        {t(x.label)}
-                      </a>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          ))}
-        </div>
-      </nav>
+      {!locked && (
+        <nav className={s.nav} aria-label={t('console.sections')}>
+          <div className={s.groups}>
+            {GROUPS.map((g) => (
+              <div key={g.id} className={s.group}>
+                <p className={s.groupName} id={`console-group-${g.id}`}>
+                  {g.label()}
+                </p>
+                <ul aria-labelledby={`console-group-${g.id}`}>
+                  {SECTIONS.filter((x) => x.group === g.id).map((x) => {
+                    const href = hrefOf(x.id);
+                    return (
+                      <li key={x.id}>
+                        <a
+                          href={href}
+                          data-ui="ConsoleLink"
+                          className={s.navLink}
+                          aria-current={section === x.id ? 'page' : undefined}
+                          onClick={go(href)}
+                        >
+                          {t(x.label)}
+                        </a>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </nav>
+      )}
       <main id="console-main" className={s.main} tabIndex={-1}>
         <div className={s.content}>
-          {section ? <Section key={recordOf(path) ?? section} id={section} path={path} /> : <NotFound />}
+          {locked ? (
+            <ConsolePassword first />
+          ) : ownPassword ? (
+            <ConsolePassword first={false} />
+          ) : section ? (
+            <Section key={recordOf(path) ?? section} id={section} path={path} />
+          ) : (
+            <NotFound />
+          )}
         </div>
       </main>
       {going && (
         <GoTo
-          sections={SECTIONS.map((x) => ({ href: hrefOf(x.id), label: t(x.label) }))}
+          sections={[
+            ...SECTIONS.map((x) => ({ href: hrefOf(x.id), label: t(x.label) })),
+            ...(staff ? [{ href: PASSWORD_PATH, label: t('console.password.title') }] : []),
+          ]}
           onClose={() => setGoing(false)}
           onKeys={() => (setGoing(false), setKeys(true))}
         />

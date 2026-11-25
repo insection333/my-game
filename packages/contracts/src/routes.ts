@@ -146,6 +146,14 @@ export const ROUTES = {
     input: DeleteAccount,
     example: { password: 'a long enough secret', confirm: true },
   }),
+  consolePassword: route({
+    id: 'consolePassword',
+    method: 'POST',
+    path: PATHS.consolePassword,
+    auth: 'admin',
+    input: ChangePassword,
+    example: { current: 'Password', password: 'a new long secret' },
+  }),
   changePassword: route({
     id: 'changePassword',
     method: 'POST',
@@ -229,6 +237,8 @@ export interface MeResponse {
   admin: boolean;
   /** Whether this is the admin console's own account (session 227), which never plays. */
   staff: boolean;
+  /** The console's account still holding its first password, to be changed before anything else (session 237). */
+  mustChangePassword?: boolean;
 }
 export interface AuthResponse {
   player: PlayerView;
@@ -317,6 +327,10 @@ export const ErrorCode = z.enum([
   'staffAccount',
   // An admin banning or deleting themselves from the console (session 231).
   'yourself',
+  // The console's account still holding its first password (session 237): it chooses its own first.
+  'mustChangePassword',
+  // A new password the same as the one it replaces, or the console's first (session 237).
+  'samePassword',
   'serverError',
 ]);
 export type ErrorCode = z.infer<typeof ErrorCode>;

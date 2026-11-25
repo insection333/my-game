@@ -113,6 +113,7 @@ export const api = {
   signOut: () => post<void>(PATHS.signOut),
   deleteAccount: (password: string) => post<void>(PATHS.deleteAccount, { password, confirm: true }),
   changePassword: (current: string, password: string) => post<void>(PATHS.changePassword, { current, password }),
+  consolePassword: (current: string, password: string) => post<void>(PATHS.consolePassword, { current, password }),
   report: (name: string, reason: ReportReason) => post<void>(PATHS.reportPlayer, { name, reason }),
   profile: (name: string) => post<Profile>(PATHS.profile, { name }),
   mail: {
