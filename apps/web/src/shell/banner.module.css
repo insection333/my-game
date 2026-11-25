@@ -1,0 +1,40 @@
+/* The realm's banner (session 235): a strip at the head of the page column, edged in woad as the realm's
+   own word, its cross at the end of its first line. */
+.banner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: var(--s-2);
+  margin-bottom: var(--s-3);
+  padding: var(--s-2) var(--s-2) var(--s-2) var(--s-3);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--woad);
+  border-radius: var(--r-panel);
+  background: var(--woad-soft);
+  color: var(--ink);
+}
+
+.words {
+  margin: 0;
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  padding-block: 2px;
+  overflow-wrap: anywhere;
+}
+
+.from {
+  font-size: var(--t-small);
+  font-weight: 700;
+  color: var(--woad);
+}
+
+.close {
+  margin: -2px 0;
+}
+
+@media (forced-colors: active) {
+  .banner {
+    border-left-color: Highlight;
+  }
+}

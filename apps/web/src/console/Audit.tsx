@@ -35,6 +35,8 @@ const ACTIONS: Record<string, () => string> = {
   note: () => t('audit.note'),
   unnote: () => t('audit.unnote'),
   endSession: () => t('audit.endSession'),
+  banner: () => t('audit.banner'),
+  bannerDown: () => t('audit.bannerDown'),
 };
 
 export const actionWords = (action: string): string => (Object.hasOwn(ACTIONS, action) ? ACTIONS[action]() : action);
@@ -50,6 +52,7 @@ export function detailWords(e: Pick<AuditEntry, 'action' | 'detail'>): string {
   if (e.action === 'xp' && d)
     return t('audit.xpGiven', { xp: said(d.xp), skill: said(d.skill), reason: said(d.reason) });
   if ((e.action === 'note' || e.action === 'unnote') && d) return t('audit.noted', { note: said(d.note) });
+  if (e.action === 'banner' && d) return t('audit.bannerFor', { text: said(d.text), hours: said(d.hours) });
   return '';
 }
 

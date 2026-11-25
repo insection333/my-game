@@ -58,6 +58,8 @@ const ACTIONS: Record<string, () => string> = {
   note: () => t('audit.note'),
   unnote: () => t('audit.unnote'),
   endSession: () => t('audit.endSession'),
+  banner: () => t('audit.banner'),
+  bannerDown: () => t('audit.bannerDown'),
 };
 /** The actions whose words, as the console says them ("Gave", "Banned"), hold what was typed (session 231). */
 const said = (q: string) => Object.keys(ACTIONS).filter((a) => ACTIONS[a]().toLowerCase().includes(q.toLowerCase()));

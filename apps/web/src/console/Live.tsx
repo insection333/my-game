@@ -1,6 +1,7 @@
 // The console's Live section (session 230, `/admin/live`): who has the game open now and who joined lately,
 // each a press from their record; a letter to every player not banned, written here and asked once before it
 // goes, as the game's own letter from the keepers of the realm; and the letters already sent to everyone.
+// Since session 235 the realm's banner is put up and taken down here too.
 import { BROADCAST_MAX, type LiveResponse } from '@idle-clash/contracts';
 import { fmt, t } from '@idle-clash/content';
 import { Button, Field, Panel, TextLink } from '@idle-clash/ui';
@@ -13,6 +14,7 @@ import { refused } from '../refused.ts';
 import { navigate } from '../router.ts';
 import { Slot } from '../slots.tsx';
 import { useFresh } from './fresh.ts';
+import { ConsoleBanner } from './ConsoleBanner.tsx';
 import { Facts } from './RecordSummary.tsx';
 import a from './admin.module.css';
 import s from './pages.module.css';
@@ -65,6 +67,7 @@ export function Live() {
         <Panel title={t('console.joined')}>
           <Facts rows={live.joined.map((p) => [named(p), dayOf(p.createdAt, live.at)])} />
         </Panel>
+        <ConsoleBanner live={live} reload={() => void load()} />
       </Slot>
       <Slot id="admin.letter" className={s.stack}>
         <Panel title={t('console.letter')}>

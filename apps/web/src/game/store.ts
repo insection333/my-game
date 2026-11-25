@@ -20,6 +20,7 @@ import { onConnection, setConnected } from './connection.ts';
 import { announceGains } from './gains.ts';
 import { openLive } from './live.ts';
 import { refreshMail, setUnreadMail } from './mail.ts';
+import { setBanner } from './banner.ts';
 import { bounceOf, handled, sessionStore, signedOut } from './session.ts';
 import { serverNow, setServerTime } from './clock.ts';
 
@@ -94,6 +95,7 @@ async function resync() {
   try {
     const g = await api.game();
     adopt(g.state, g.now);
+    setBanner(g.banner ?? null);
     setConnected(true);
   } catch (err) {
     if (!handled(err) && err instanceof ApiError && err.code === 'offline') setConnected(false);
@@ -118,6 +120,7 @@ export async function start(flags: Record<string, boolean>): Promise<void> {
   const [g, n] = await Promise.all([api.game(), api.notices().catch(() => ({ notices: [] }))]);
   view = null;
   adopt(g.state, g.now);
+  setBanner(g.banner ?? null);
   publish({ ...view!, notices: n.notices, away: g.away ?? null });
   live?.close();
   live = openLive({
@@ -134,6 +137,7 @@ export async function start(flags: Record<string, boolean>): Promise<void> {
       });
     },
     mail: setUnreadMail,
+    banner: setBanner,
     signedOut: (why) => signedOut(why ?? bounceOf('notSignedIn', sessionStore.get().phase)),
     reopened: () => {
       void resync();

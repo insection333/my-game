@@ -27,6 +27,7 @@ import { LaneList, LaneStrip, laneViews } from './Lanes.tsx';
 import { useCountUp } from './countUp.ts';
 import { Sounds } from '../sound/Sounds.tsx';
 import { Connection } from './Connection.tsx';
+import { RealmBanner } from './RealmBanner.tsx';
 import { Gains } from './Gains.tsx';
 import { Moments } from './Moments.tsx';
 import s from './shell.module.css';
@@ -119,7 +120,10 @@ export function Shell({ children }: { children: ReactNode }) {
         <LaneStrip lanes={lanes} />
       </aside>
       <main id="main" className={s.main} data-main tabIndex={-1}>
-        <div className={s.content}>{children}</div>
+        <div className={s.content}>
+          <RealmBanner />
+          {children}
+        </div>
       </main>
       <aside className={s.lanesPanel} aria-label={t('shell.lanes')}>
         <h2 className={s.lanesTitle}>{t('shell.lanes')}</h2>
