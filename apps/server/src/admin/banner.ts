@@ -10,6 +10,7 @@ import type { Ctx } from '../context.ts';
 import { players, serverSettings } from '../db/schema.ts';
 import { contractRoute } from '../http.ts';
 import { audit } from './audit.ts';
+import { onceAtATime } from './target.ts';
 
 const KEY = 'banner';
 const HOUR = 3_600_000;
@@ -51,11 +52,15 @@ function put(ctx: Ctx, b: BannerView | null): void {
 
 export function bannerRoutes(app: FastifyInstance, ctx: Ctx): void {
   const admin = requireAdmin(ctx);
+  const claim = onceAtATime();
   contractRoute<{ text: string; hours: number }>(
     app,
     ROUTES.adminBanner,
     ({ req, input }) => {
       const now = ctx.config.now();
+      // A double press puts one banner up (session 236: it put up two, telling every page twice).
+      const standing = bannerView(ctx, now);
+      if (!claim(req.playerId!, `banner:${input.text}:${input.hours}`, now) && standing) return standing;
       const actor =
         ctx.db.select({ name: players.name }).from(players).where(eq(players.id, req.playerId!)).get()?.name ?? '';
       // Its id is the moment it went up, kept above the last one's so a banner put up again shows afresh.
@@ -74,6 +79,10 @@ export function bannerRoutes(app: FastifyInstance, ctx: Ctx): void {
       if (bannerView(ctx, ctx.config.now())) {
         put(ctx, null);
         audit(ctx, req, 'bannerDown', null);
+      } else if (storedOf(ctx)) {
+        // One whose time ran out is let go quietly: no page shows it, and none needs telling.
+        ctx.db.delete(serverSettings).where(eq(serverSettings.key, KEY)).run();
+        kept.set(ctx, null);
       }
       return reply.code(204).send();
     },

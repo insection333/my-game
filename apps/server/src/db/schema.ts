@@ -18,6 +18,9 @@ export const players = sqliteTable(
     email: text('email'),
     emailConfirmedAt: integer('email_confirmed_at'),
     bannedAt: integer('banned_at'),
+    /** The last day they came ("2026-11-25", UTC), kept by a trigger on `visits` (migration 0024, session 236),
+     *  so the console counts and sorts by it without looking up each player's visits. */
+    seenDay: text('seen_day'),
     /** The honours shown beside the name on the hiscores (session 15): a title's id, a banner's. */
     title: text('title'),
     banner: text('banner'),

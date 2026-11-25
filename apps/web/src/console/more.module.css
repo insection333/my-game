@@ -217,6 +217,7 @@
 
 .bannerText {
   overflow-wrap: anywhere;
+  white-space: pre-line;
 }
 
 /* How long it stands: a row of choices, the one chosen pressed. */
