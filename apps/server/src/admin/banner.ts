@@ -16,6 +16,7 @@ const KEY = 'banner';
 const HOUR = 3_600_000;
 /** Each server's banner as last read or written (undefined until then). */
 const kept = new WeakMap<Ctx, BannerView | null>();
+const keptOf = (ctx: Ctx, b: BannerView | null) => kept.set(ctx, b);
 
 function storedOf(ctx: Ctx): BannerView | null {
   if (kept.has(ctx)) return kept.get(ctx)!;
@@ -48,6 +49,20 @@ function put(ctx: Ctx, b: BannerView | null): void {
   kept.set(ctx, b);
   const banner = b ? { id: b.id, text: b.text, until: b.until } : null;
   for (const id of ctx.live.players()) ctx.live.publish(id, { type: 'banner', banner });
+}
+
+/** An admin's account gone (session 238): the banner they put up stays, no longer naming them, as their
+ *  entries in the log no longer do. */
+export function forgetBannerActor(ctx: Ctx, name: string): void {
+  const b = storedOf(ctx);
+  if (!b || b.actor !== name) return;
+  const nameless = { ...b, actor: '' };
+  ctx.db
+    .update(serverSettings)
+    .set({ value: JSON.stringify(nameless) })
+    .where(eq(serverSettings.key, KEY))
+    .run();
+  keptOf(ctx, nameless);
 }
 
 export function bannerRoutes(app: FastifyInstance, ctx: Ctx): void {

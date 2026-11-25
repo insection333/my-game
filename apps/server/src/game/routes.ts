@@ -219,6 +219,14 @@ export function gameRoutes(app: FastifyInstance, ctx: Ctx, features: readonly Fe
   // The live channel. A page that is not signed in is closed at once with code 4401.
   const who = identify(ctx);
   const opening = async (req: FastifyRequest, reply: FastifyReply) => {
+    // A page of another site never opens the channel (session 238): a browser names the page's site on every
+    // socket it opens, and the opening is a GET, which the guard on changes never looked at, so only the
+    // session cookie's SameSite stood between a player's news and a page elsewhere.
+    const origin = req.headers.origin;
+    if (origin && !ctx.config.origins.includes(origin)) {
+      await reply.code(403).send({ error: { code: 'forbiddenOrigin' } });
+      return;
+    }
     const r = ctx.limiter.take(`live:${ipOf(req)}`, ctx.config.pagesPerMinute, 60_000, now());
     if (!r.ok)
       await reply

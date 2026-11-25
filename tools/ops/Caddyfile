@@ -4,12 +4,8 @@ idleclash.com {
 	encode zstd gzip
 	header Strict-Transport-Security "max-age=31536000"
 	reverse_proxy 127.0.0.1:3000
-	log {
-		output file /var/log/caddy/idleclash.log {
-			roll_size 20mb
-			roll_keep 5
-		}
-	}
+	# No access log (session 238): it kept every visitor's connection address on disk, where the privacy
+	# page says the address is used a short while and not kept. Caddy's own errors go to its journal.
 }
 
 www.idleclash.com {
