@@ -33,7 +33,12 @@ export const players = sqliteTable(
       .notNull()
       .default('player'),
   },
-  (t) => [index('players_email').on(t.email), index('players_look').on(t.nameLook)],
+  // `players_created`: the console's counts of who joined when (session 233), where each walked the table.
+  (t) => [
+    index('players_email').on(t.email),
+    index('players_look').on(t.nameLook),
+    index('players_created').on(t.createdAt),
+  ],
 );
 
 /** A signed-in browser. Only the SHA-256 of the token is stored; the token lives in the cookie. */
@@ -130,7 +135,9 @@ export const visits = sqliteTable(
     playerId: text('player_id').notNull(),
     day: text('day').notNull(),
   },
-  (t) => [primaryKey({ columns: [t.playerId, t.day] })],
+  // `visits_day`: who came on a day, for the console's counts (session 233); by player alone the table, the
+  // fastest to grow, was walked whole for every day of the Overview's fortnight.
+  (t) => [primaryKey({ columns: [t.playerId, t.day] }), index('visits_day').on(t.day, t.playerId)],
 );
 
 // Castle Clash (sessions 28 onward, docs/castle-clash/): each player's castle in one row, the war chest

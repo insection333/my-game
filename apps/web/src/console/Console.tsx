@@ -16,6 +16,7 @@ import { NotFound } from '../pages/Simple.tsx';
 import { Ready } from '../Ready.tsx';
 import { navigate } from '../router.ts';
 import { ClosedTest } from './ClosedTest.tsx';
+import { GoTo, goToKey, opensGoTo } from './GoTo.tsx';
 import { MailMonitor } from './Mail.tsx';
 import { Moderation } from './Moderation.tsx';
 import { Audit } from './Audit.tsx';
@@ -104,9 +105,22 @@ function Section({ id, path }: { id: SectionId; path: string }) {
   );
 }
 
+const hrefOf = (id: SectionId) => (id === 'overview' ? '/admin' : `/admin/${id}`);
+
 export default function Console({ path }: { path: string }) {
   const { admin, staff, player } = useSession();
   const section = sectionOf(path);
+  const [going, setGoing] = useState(false);
+  // Go to opens from anywhere in the console (session 233).
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (!opensGoTo(e)) return;
+      e.preventDefault();
+      setGoing(true);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
   useEffect(() => {
     document.title = `${t('console.title')} · ${t('shell.name')}`;
   }, []);
@@ -123,6 +137,18 @@ export default function Console({ path }: { path: string }) {
           <span className={s.brandRole}>{t('console.title')}</span>
         </span>
         <span className={s.who}>
+          <button
+            type="button"
+            data-ui="ConsoleBarButton"
+            className={`${s.barButton} ${s.goTo}`}
+            aria-keyshortcuts="Control+K Meta+K /"
+            onClick={() => setGoing(true)}
+          >
+            {t('console.goto')}
+            <kbd className={s.key} aria-hidden="true">
+              {goToKey(navigator.platform)}
+            </kbd>
+          </button>
           <RealmClock />
           <span className={s.whoName}>{t('console.signedInAs', { name: player?.name ?? '' })}</span>
           {/* Drawn for the bar's night, so it is its own control and not a page's Button (one control, one look). */}
@@ -145,7 +171,7 @@ export default function Console({ path }: { path: string }) {
               </p>
               <ul aria-labelledby={`console-group-${g.id}`}>
                 {SECTIONS.filter((x) => x.group === g.id).map((x) => {
-                  const href = x.id === 'overview' ? '/admin' : `/admin/${x.id}`;
+                  const href = hrefOf(x.id);
                   return (
                     <li key={x.id}>
                       <a
@@ -170,6 +196,12 @@ export default function Console({ path }: { path: string }) {
           {section ? <Section key={recordOf(path) ?? section} id={section} path={path} /> : <NotFound />}
         </div>
       </main>
+      {going && (
+        <GoTo
+          sections={SECTIONS.map((x) => ({ href: hrefOf(x.id), label: t(x.label) }))}
+          onClose={() => setGoing(false)}
+        />
+      )}
       <Ready />
     </div>
   );

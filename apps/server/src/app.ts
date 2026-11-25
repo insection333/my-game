@@ -24,6 +24,7 @@ import { adminRoutes } from './admin/routes.ts';
 import { auditRoutes } from './admin/audit.ts';
 import { directoryRoutes } from './admin/directory.ts';
 import { liveRoutes } from './admin/live.ts';
+import { startPulse } from './admin/pulse.ts';
 import { overviewRoutes } from './admin/overview.ts';
 import { powerRoutes } from './admin/powers.ts';
 import { recordRoutes } from './admin/record.ts';
@@ -148,15 +149,17 @@ export async function buildApp(
     },
     identify(ctx),
   );
+  // How hard the server works, minute by minute, for the console's System (session 233).
+  const pulse = startPulse(app, config.now);
   authRoutes(app, ctx);
   accountRoutes(app, ctx);
   adminRoutes(app, ctx);
-  overviewRoutes(app, ctx);
+  overviewRoutes(app, ctx, pulse);
   directoryRoutes(app, ctx);
   auditRoutes(app, ctx);
   recordRoutes(app, ctx);
   powerRoutes(app, ctx);
-  liveRoutes(app, ctx);
+  liveRoutes(app, ctx, pulse);
   feedbackRoutes(app, ctx, features);
   if (config.emailEnabled) emailRoutes(app, ctx);
   gameRoutes(app, ctx, features);

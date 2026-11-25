@@ -1,6 +1,7 @@
-// The console's System section (session 230, `/admin/system`): the server (running since, build, memory,
-// database, backups), every feature and whether it is on here, the tables that grow, and the browser
-// errors of the last day, newest first, by player and page.
+// The console's System section (session 230, `/admin/system`): the server's load minute by minute
+// (session 233), the server (running since, build, memory, database, backups), every feature and whether
+// it is on here, the tables that grow, and the browser errors of the last day, newest first, by player
+// and page.
 import type { SystemResponse } from '@idle-clash/contracts';
 import { fmt, t } from '@idle-clash/content';
 import { Panel, ResponsiveTable, type Column } from '@idle-clash/ui';
@@ -10,6 +11,8 @@ import { handled } from '../game/session.ts';
 import { whenOf } from '../pages/days.ts';
 import { untilLoaded } from '../Ready.tsx';
 import { Slot } from '../slots.tsx';
+import { useFresh } from './fresh.ts';
+import { Load } from './Load.tsx';
 import { Facts } from './RecordSummary.tsx';
 import s from './pages.module.css';
 
@@ -32,6 +35,8 @@ const pageOf = (url: string) => {
 export function System() {
   const [sys, setSys] = useState<SystemResponse | null>(null);
   useEffect(() => void untilLoaded(api.admin.system()).then(setSys, (err: unknown) => void handled(err)), []);
+  // The load moves by the minute: read again while the page is in view (session 233).
+  useFresh(() => void api.admin.system().then(setSys, (err: unknown) => void handled(err)));
   if (!sys) return null;
   const mb = (n: number) => t('console.server.mb', { mb: fmt.num(n) });
   const columns: Column<Err>[] = [
@@ -42,6 +47,9 @@ export function System() {
   ];
   return (
     <div className={s.stack}>
+      <Slot id="admin.load">
+        <Load sys={sys} />
+      </Slot>
       <Slot id="admin.system" className={s.columns}>
         <Panel title={t('console.server')}>
           <Facts

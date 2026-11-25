@@ -16,6 +16,8 @@ import { announceMail, keepNewest } from '../mail/mail.ts';
 import { backupsHealth } from '../ops/status.ts';
 import { buildOf } from '../web.ts';
 import { audit } from './audit.ts';
+import { memo, statements } from './memo.ts';
+import type { Pulse } from './pulse.ts';
 
 const DAY = 86_400_000;
 /** The tables that grow with the realm, for the System section. */
@@ -30,9 +32,15 @@ const reachOf = (ctx: Ctx) =>
     .all()
     .map((p) => p.id);
 
-export function liveRoutes(app: FastifyInstance, ctx: Ctx): void {
+export function liveRoutes(app: FastifyInstance, ctx: Ctx, pulse: Pulse): void {
   const startedAt = ctx.config.now();
   const admin = requireAdmin(ctx);
+  // Counting a table reads the whole of its smallest index: the growing tables' rows are counted once a
+  // minute at most (session 233), where every open of System counted hundreds of thousands afresh.
+  const st = statements(ctx.store.sqlite);
+  const tables = memo(ctx.config.now, 60_000, () =>
+    GROWING.map((name) => ({ name, rows: (st(`select count(*) n from ${name}`).get() as { n: number }).n })),
+  );
 
   contractRoute(
     app,
@@ -113,16 +121,18 @@ export function liveRoutes(app: FastifyInstance, ctx: Ctx): void {
         });
       return {
         at: now,
+        pulse: {
+          hour: pulse.hour,
+          pagesOpen: ctx.live.pages,
+          heapMb: Math.round(process.memoryUsage().heapUsed / 1_048_576),
+        },
         build: ctx.config.webDist ? buildOf(ctx.config.webDist) : null,
         startedAt,
         memoryMb: Math.round(process.memoryUsage().rss / 1_048_576),
         databaseMb: Math.round(((pragma('page_size') * pragma('page_count')) / 1_048_576) * 10) / 10,
         backups: backupsHealth(ctx.config.backupStatusDir, now),
         features: FEATURES.map((f) => ({ id: f.id, on: !!ctx.config.flags[f.id] })),
-        tables: GROWING.map((name) => ({
-          name,
-          rows: (db.prepare(`select count(*) n from ${name}`).get() as { n: number }).n,
-        })),
+        tables: tables(),
         errors,
       } satisfies SystemResponse;
     },

@@ -65,6 +65,22 @@ async function pressProofs(served: Served): Promise<string[]> {
     await page.getByRole('table').waitFor({ timeout: 10_000 });
     const gave = await page.getByRole('row').filter({ hasText: 'proof of one press' }).count();
     if (gave !== 1) problems.push(`The console: a double click on Give gave ${gave} times`);
+    // Session 233: Ctrl K opens Go to from any section; a name typed finds the player, and Enter opens them.
+    step = 'Go to finds a player';
+    await page.goto(served.url + '/admin/system');
+    await page.locator('h1').waitFor();
+    await page.keyboard.press('Control+k');
+    await page.getByLabel('A section or a player').fill('Keep');
+    await page.getByRole('dialog').getByRole('link', { name: 'Keeper', exact: true }).waitFor({ timeout: 10_000 });
+    await page.keyboard.press('Enter');
+    await page.waitForURL((u) => /\/admin\/players\/[0-9a-f-]{36}$/.test(u.pathname));
+    await page.getByRole('heading', { name: 'Keeper' }).waitFor({ timeout: 10_000 });
+    step = 'Go to on a 320 px phone';
+    await page.setViewportSize({ width: 320, height: 640 });
+    await page.keyboard.press('/');
+    await page.getByRole('dialog').waitFor();
+    if (await page.evaluate(() => document.documentElement.scrollWidth > innerWidth))
+      problems.push('The console: Go to scrolls sideways on a 320 px phone');
   } catch (err) {
     problems.push(`The console: ${step} failed (${say(err)})`);
   } finally {

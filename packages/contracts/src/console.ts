@@ -199,6 +199,8 @@ export interface AdminOverviewResponse {
     saves: number;
     backups: 'fresh' | 'stale' | 'off';
     errorsDay: number;
+    /** The processor's share of one core in the last full minute (session 233), null in the first. */
+    cpuPct: number | null;
   };
 }
 

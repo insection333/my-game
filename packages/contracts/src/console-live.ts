@@ -56,8 +56,22 @@ export interface LiveResponse {
 }
 export type BroadcastResult = { ok: true; count: number } | { ok: false; reason: 'reachChanged'; reach: number };
 
+/** One minute of the server's work (session 233): answers given (a minute's worth), the time within which
+ *  95 in 100 were answered, the processor's time as a share of one core, the event loop's longest waits
+ *  (99 in 100 shorter), and the console's share of the time spent answering. */
+export interface PulseMinute {
+  at: number;
+  requests: number;
+  p95Ms: number;
+  cpuPct: number;
+  loopP99Ms: number;
+  consolePct: number;
+}
+
 export interface SystemResponse {
   at: number;
+  /** The last hour of the server's work, a minute at a time, oldest first; the pages open now. */
+  pulse: { hour: PulseMinute[]; pagesOpen: number; heapMb: number };
   build: string | null;
   startedAt: number;
   memoryMb: number;

@@ -2,50 +2,22 @@
 // new, playing today, this week and this month, online now, on the hiscores, banned) and how many come back;
 // a fortnight of sign-ups and of players each day; what waits for an admin, each leading to where it is
 // dealt with; the realm's season, boss and work; and the server's health.
-import type { AdminOverviewResponse } from '@idle-clash/contracts';
+import type { AdminOverviewResponse, DayCount } from '@idle-clash/contracts';
 import { fmt, t } from '@idle-clash/content';
 import { Panel, TextLink } from '@idle-clash/ui';
 import { useEffect, useState, type ReactNode } from 'react';
 import { api } from '../api.ts';
 import { setServerTime } from '../game/clock.ts';
 import { handled } from '../game/session.ts';
-import { whenOf } from '../pages/days.ts';
+import { dayOf, whenOf } from '../pages/days.ts';
 import { untilLoaded } from '../Ready.tsx';
 import { navigate } from '../router.ts';
 import { Slot } from '../slots.tsx';
-import { Bars } from './Bars.tsx';
+import { Bars, type Point } from './Bars.tsx';
+import { Tiles, type Tile } from './Tiles.tsx';
 import { useFresh } from './fresh.ts';
 import { Facts } from './RecordSummary.tsx';
 import s from './pages.module.css';
-
-interface Tile {
-  label: string;
-  value: string;
-  note?: string;
-  href?: string;
-}
-
-function Tiles({ tiles }: { tiles: Tile[] }) {
-  return (
-    <dl className={s.tiles}>
-      {tiles.map((x) => (
-        <div key={x.label} className={s.tile}>
-          <dt>
-            {x.href ? (
-              <TextLink href={x.href} onNavigate={navigate}>
-                {x.label}
-              </TextLink>
-            ) : (
-              x.label
-            )}
-          </dt>
-          <dd className={s.tileValue}>{x.value}</dd>
-          {x.note && <dd className={s.tileNote}>{x.note}</dd>}
-        </div>
-      ))}
-    </dl>
-  );
-}
 
 const BACKUPS = {
   fresh: () => t('console.server.backups.fresh'),
@@ -57,6 +29,15 @@ const share = (p: number | null, of: number): Pick<Tile, 'value' | 'note'> =>
   p === null
     ? { value: '–', note: t('console.kpi.noCohort') }
     : { value: fmt.pct(p), note: t('console.kpi.cohort', { count: fmt.int(of) }) };
+
+/** The fortnight's days as bars, each named by its day. */
+const fortnight = (days: DayCount[], of: 'signUps' | 'active'): Point[] =>
+  days.map((d) => ({
+    key: d.day,
+    label: dayOf(Date.parse(`${d.day}T12:00:00Z`)),
+    value: d[of],
+    said: fmt.int(d[of]),
+  }));
 
 export function Overview() {
   const [o, setO] = useState<AdminOverviewResponse | null>(null);
@@ -94,8 +75,16 @@ export function Overview() {
             ]}
           />
           <div className={s.charts}>
-            <Bars title={t('console.chart.active')} days={o.days} of="active" />
-            <Bars title={t('console.chart.signUps')} days={o.days} of="signUps" />
+            <Bars
+              title={t('console.chart.active')}
+              points={fortnight(o.days, 'active')}
+              heading={t('console.chart.dayHeading')}
+            />
+            <Bars
+              title={t('console.chart.signUps')}
+              points={fortnight(o.days, 'signUps')}
+              heading={t('console.chart.dayHeading')}
+            />
           </div>
         </Panel>
       </Slot>
@@ -174,6 +163,14 @@ export function Overview() {
             <Facts
               rows={[
                 [t('console.server.since'), whenOf(o.server.startedAt)],
+                [
+                  <TextLink href="/admin/system" onNavigate={navigate}>
+                    {t('console.load.cpu')}
+                  </TextLink>,
+                  o.server.cpuPct === null
+                    ? t('console.load.measuring')
+                    : t('console.load.cpuOf', { pct: fmt.num(o.server.cpuPct) }),
+                ],
                 [
                   t('console.server.build'),
                   o.server.build ? <code className={s.code}>{o.server.build}</code> : t('console.server.noBuild'),
