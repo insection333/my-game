@@ -156,6 +156,9 @@ export const en: Record<string, string> = {
   'stop.unavailable': 'That action is not available',
   'stop.wrongLane': 'That action belongs in another lane',
   'stop.alreadyRunning': 'Your lane already does that, and repeats it',
+  // A lane holds three to come (session 240).
+  'stop.alreadyQueued': 'Already next in your lane',
+  'stop.queueFull': 'Your lane holds {most} to come: let one go first',
   'stop.fireOut': 'The fire went out',
   'stop.stoppedByPlayer': 'Stopped',
   'stop.mended': 'Stopped while your save was mended',
@@ -168,6 +171,8 @@ export const en: Record<string, string> = {
   'stopShort.unavailable': 'Not available',
   'stopShort.wrongLane': 'Wrong lane',
   'stopShort.alreadyRunning': 'Already doing',
+  'stopShort.alreadyQueued': 'Already next',
+  'stopShort.queueFull': 'Next is full',
   'stopShort.fireOut': 'Fire went out',
   'stopShort.mended': 'Stopped',
   'stopShort.skillInOtherLane': 'Already busy',

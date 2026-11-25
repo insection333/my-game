@@ -16,11 +16,18 @@ export const ERRAND_ORDER = { share: 0, bountyDone: 1, realm: 2, bosses: 3, boun
 export const inHand = (
   lanes: Record<
     string,
-    { current: { action: { feature: string; id: string } } | null; next: { feature: string; id: string } | null }
+    {
+      current: { action: { feature: string; id: string } } | null;
+      next: { feature: string; id: string } | null;
+      /** What follows Next (session 240). */
+      then?: { feature: string; id: string }[];
+    }
   >,
   feature: string,
   id?: string,
 ) =>
   Object.values(lanes).some((l) =>
-    [l.current?.action, l.next].some((a) => a?.feature === feature && (id === undefined || a.id === id)),
+    [l.current?.action, l.next, ...(l.then ?? [])].some(
+      (a) => a?.feature === feature && (id === undefined || a.id === id),
+    ),
   );

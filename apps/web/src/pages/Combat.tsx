@@ -8,6 +8,7 @@ import { ActionRow, Button, hasIcon, ItemIcon, Panel, Pill, Sheet, Tabs } from '
 import { useEffect, useRef } from 'react';
 import { useGame } from '../game/hooks.ts';
 import { game } from '../game/store.ts';
+import { NextButton, queuedAt } from './NextButton.tsx';
 import { navigate, useLocation, withPanel } from '../router.ts';
 import { fillFor, Slot } from '../slots.tsx';
 import { CombatArena, useFightClock } from './CombatArena.tsx';
@@ -55,11 +56,8 @@ function CombatPage({ combat }: { combat: Feature }) {
   const triangle = fillFor<TrianglePart[]>(combat, 'combat.triangle', state, now) ?? [];
   const fighting = (f: FoeRow) =>
     LANE_IDS.some((l) => state.lanes[l].current && actionKey(state.lanes[l].current.action) === actionKey(f.foe));
-  // Next does nothing for the foe the lane fights (it repeats) or already has next (session 81).
-  const queued = (f: FoeRow) => {
-    const next = state.lanes.combat.next;
-    return next ? actionKey(next) === actionKey(f.foe) : false;
-  };
+  // A foe to come in the lane (session 240: three may wait).
+  const queued = (f: FoeRow) => queuedAt(state, f.foe) !== null;
   // A region chosen brings its foes into view (session 99): on a phone the loadout fills the screen under
   // the region tabs, and a press changed only the tab's underline. The first showing never moves.
   const foesRef = useRef<HTMLElement>(null);
@@ -152,13 +150,7 @@ function CombatPage({ combat }: { combat: Feature }) {
                           >
                             {t('combat.fight')}
                           </Button>
-                          <Button
-                            variant="secondary"
-                            disabled={fighting(f) || queued(f)}
-                            onClick={() => game.command({ type: 'queueNext', lane: 'combat', action: f.foe })}
-                          >
-                            {t('action.queue')}
-                          </Button>
+                          <NextButton state={state} lane="combat" action={f.foe} name={f.name} running={fighting(f)} />
                         </>
                       )
                     }

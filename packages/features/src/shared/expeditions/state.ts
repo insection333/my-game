@@ -84,6 +84,15 @@ export const ExpeditionState = z
       })
       .strict()
       .optional(),
+    /** Whether a run that comes home with its boss beaten sets out again on a new route of the same length into
+     *  the same region (session 239: a run's lane stood idle for the rest of a day away). Unset is on. */
+    again: z.boolean().optional(),
+    /** The day's bosses (session 239): the fights one press set for the day, the realm's boss as `realm`, fought
+     *  in this order in the Combat lane as `expeditions:bosses`, each once. */
+    round: z
+      .object({ day: Day, foes: z.array(Key).max(8) })
+      .strict()
+      .optional(),
     /** The Deep (session 212): the deepest depth reached ever and this week, the week it counts for, the
      *  descents made, and the descent under way. Saves from before have none. */
     deep: z

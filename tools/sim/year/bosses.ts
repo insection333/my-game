@@ -21,6 +21,8 @@ export function dailyBoss(state: State, now: number, leaving: number): Command[]
   if (!boss) return [];
   return [
     { type: 'start', lane: 'combat', action: { feature: 'expeditions', id: boss.id } },
+    // One Next, as a lane held before session 240.
+    { type: 'clearNext', lane: 'combat' },
     { type: 'queueNext', lane: 'combat', action: { feature: current.feature, id: current.id } },
   ];
 }

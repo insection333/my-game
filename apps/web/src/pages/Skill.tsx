@@ -8,6 +8,7 @@ import { SeasonPill } from './SeasonPill.tsx';
 import { memo, useEffect, useRef } from 'react';
 import { useGame } from '../game/hooks.ts';
 import { game } from '../game/store.ts';
+import { NextButton } from './NextButton.tsx';
 import { navigate } from '../router.ts';
 import { fillFor, fills, Slot } from '../slots.tsx';
 import { FindGrid } from './Finds.tsx';
@@ -59,12 +60,6 @@ function SkillPage({ feature }: { feature: Feature }) {
     LANE_IDS.some((l) => {
       const cur = state.lanes[l].current;
       return cur ? actionKey(cur.action) === actionKey(a.action) : false;
-    });
-  // Next does nothing for what a lane runs (it repeats) or already has next (session 81).
-  const queued = (a: SkillActionRow) =>
-    LANE_IDS.some((l) => {
-      const next = state.lanes[l].next;
-      return next ? actionKey(next) === actionKey(a.action) : false;
     });
   return (
     <>
@@ -167,13 +162,7 @@ function SkillPage({ feature }: { feature: Feature }) {
                         >
                           {t('action.start')}
                         </Button>
-                        <Button
-                          variant="secondary"
-                          disabled={running(a) || queued(a)}
-                          onClick={() => game.command({ type: 'queueNext', lane: lane(a), action: a.action })}
-                        >
-                          {t('action.queue')}
-                        </Button>
+                        <NextButton state={state} lane={lane(a)} action={a.action} name={a.name} running={running(a)} />
                       </>
                     )
                   }

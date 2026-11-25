@@ -10,6 +10,7 @@ import { realmName } from '../shared/realm-words.ts';
 import { realmView } from './realm.ts';
 import { bossRows } from './views.ts';
 import { deepOf } from './deep.ts';
+import { roundLeft } from '../shared/expeditions/round.ts';
 import { DEEP } from '../shared/expeditions/deep.ts';
 import { HITPOINTS } from '../shared/combat/data.ts';
 import { skillLevel } from '../shared/skill.ts';
@@ -19,6 +20,8 @@ const HREF = '/combat/expeditions';
 
 export function expeditionErrands(state: State, now: number): ErrandRow[] {
   const rows: ErrandRow[] = [];
+  // The day's bosses under way or next (session 239): the fights it holds are in hand.
+  const round = inHand(state.lanes, 'expeditions', 'bosses') ? roundLeft(state, now) : [];
   const r = realmOf(state);
   const realm = realmView(state, now);
   if (r && realm) {
@@ -29,7 +32,7 @@ export function expeditionErrands(state: State, now: number): ErrandRow[] {
         href: HREF,
         order: ERRAND_ORDER.share,
       });
-    if (realm.ready && !r.fell && !inHand(state.lanes, 'expeditions', 'realm'))
+    if (realm.ready && !r.fell && !inHand(state.lanes, 'expeditions', 'realm') && !round.includes('realm'))
       rows.push({
         icon: realmBossIn(r.week).id,
         text: t('errand.realm', { name: midSentence(realm.name) }),
@@ -38,7 +41,11 @@ export function expeditionErrands(state: State, now: number): ErrandRow[] {
       });
   }
   const bosses = bossRows(state, now).filter(
-    (b) => b.ready && (b.verdictId === 'easy' || b.verdictId === 'fair') && !inHand(state.lanes, 'expeditions', b.id),
+    (b) =>
+      b.ready &&
+      (b.verdictId === 'easy' || b.verdictId === 'fair') &&
+      !inHand(state.lanes, 'expeditions', b.id) &&
+      !round.includes(b.id),
   );
   if (bosses.length)
     rows.push({
