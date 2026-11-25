@@ -44,8 +44,10 @@ for _ in $(seq 1 60); do
 done
 [[ -n $up ]] || { echo "A server on $newest did not come up" >&2; exit 1; }
 
-players=$(sqlite3 "$db" 'select count(*) from players')
-unsaved=$(sqlite3 "$db" 'select count(*) from players where id not in (select player_id from saves)')
+# Players, not the console's own account, which never plays and has no save (session 227): counted among them,
+# it failed every rehearsal once the console had an account (session 237).
+players=$(sqlite3 "$db" "select count(*) from players where role = 'player'")
+unsaved=$(sqlite3 "$db" "select count(*) from players where role = 'player' and id not in (select player_id from saves)")
 [[ $unsaved == 0 ]] || { echo "$unsaved of $players players in $newest have no save" >&2; exit 1; }
 
 mkdir -p "$STATUS_DIR"

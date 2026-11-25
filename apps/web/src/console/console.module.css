@@ -520,6 +520,9 @@
 
 /* The console's account's name in the bar opens its password (session 237). */
 .whoLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
   text-decoration: none;
   border-radius: var(--r-control);
   padding: 2px var(--s-1);
