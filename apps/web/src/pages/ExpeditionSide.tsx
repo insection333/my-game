@@ -33,9 +33,10 @@ export function Bosses({
         <CombatArena now={now} place="bosses" />
         {/* The realm's boss of the week leads the bosses (session 174). */}
         {realm && <RealmRow realm={realm} round={round} />}
-        {round && <RoundRow round={round} />}
-        {/* Six bosses since session 210: their rows scroll inside their own box, as the relics' do. */}
+        {/* Six bosses since session 210: their rows scroll inside their own box, as the relics' do; the day's
+            bosses lead them inside it (session 239), so the panel keeps its height. */}
         <div className={s.bosses} data-scrollbox tabIndex={0} role="group" aria-label={t('expeditions.title')}>
+          {round && <RoundRow round={round} />}
           {bosses.map((b) => (
             <Boss key={b.id} boss={b} round={round} />
           ))}
