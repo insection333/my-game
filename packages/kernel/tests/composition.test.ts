@@ -31,6 +31,12 @@ const command: fc.Arbitrary<Command> = fc.oneof(
   }),
   fc.record({ type: fc.constant('stop' as const), lane: fc.constantFrom(...LANE_IDS) }),
   fc.record({ type: fc.constant('clearNext' as const), lane: fc.constantFrom(...LANE_IDS) }),
+  // One of the three to come (session 240).
+  fc.record({
+    type: fc.constant('clearNext' as const),
+    lane: fc.constantFrom(...LANE_IDS),
+    at: fc.integer({ min: 0, max: 2 }),
+  }),
   fc.constant({ type: 'stoke' as const }),
 );
 

@@ -8,6 +8,11 @@ export const lanes = {
   'lane.combat': 'Combat',
   'lane.resting': 'Resting',
   'lane.next': 'Next: {action}',
+  // A lane holds three to come (session 240).
+  'lane.then': '{first}, then {then}',
+  'lane.clearNext': 'Clear Next',
+  'action.unqueue': 'Not next',
+  'action.unqueueLabel': 'Take {action} out of Next',
   // A row queued in a lane (session 124), beside a running row's 'action.working'.
   'action.queued': 'Next in your lane',
   // A lucky action (session 176): slower, its finds twice as likely an hour.

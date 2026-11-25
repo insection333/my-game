@@ -74,6 +74,16 @@ export function laneFor(s: State, now: number, action: ActionRef, kind: LaneKind
   return 'gathering';
 }
 
+/** The actions a lane has to come, in order: Next, then the rest (session 240). */
+export const queueOf = (l: Pick<Lane, 'next' | 'then'>): ActionRef[] => (l.next ? [l.next, ...(l.then ?? [])] : []);
+
+/** Sets a lane's actions to come, keeping Next first and nothing after it when there is none. */
+export function setQueue(l: Lane, queue: readonly ActionRef[]): void {
+  l.next = queue[0] ?? null;
+  if (queue.length > 1) l.then = queue.slice(1);
+  else delete l.then;
+}
+
 /** A notable moment happened: the luck guarantee counts from here. */
 export function noteMoment(s: State, at: number): void {
   s.luck.lastMoment = Math.min(s.clock, Math.max(s.luck.lastMoment, at));

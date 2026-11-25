@@ -127,7 +127,10 @@ export const TERMS: [term: string, meaning: string][] = [
     'Short notes of up to 250 characters between players, kept behind the bell beside the notices; the inbox keeps your latest 20',
   ],
   ['Milestone', 'A long goal, such as total level 100'],
-  ['Next action', "The action queued behind a lane's current one; it starts when the current one stops"],
+  [
+    'Next action',
+    "An action queued behind a lane's current one, up to three in order; each starts when the one before stops",
+  ],
   ['Notices', 'The tray of things that happened and need you'],
   [
     'Notices while away',

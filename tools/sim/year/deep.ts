@@ -23,6 +23,8 @@ export function descent(state: State, now: number): { state: State; commands: Co
     state: begun.state,
     commands: [
       { type: 'start', lane: 'combat', action: { feature: 'expeditions', id: 'deep' } },
+      // One Next, as a lane held before session 240.
+      { type: 'clearNext', lane: 'combat' },
       { type: 'queueNext', lane: 'combat', action: { feature: current.feature, id: current.id } },
     ],
   };
