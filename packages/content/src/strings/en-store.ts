@@ -34,7 +34,7 @@ export const store = {
   'store.soldGearOne': 'Sold 1 kind of gear for {gold} gold',
   'store.lock': 'Lock',
   'store.unlock': 'Unlock',
-  'store.locked': 'Locked: kept from every sale',
+  'store.locked': 'Locked: kept from every sale.',
   'store.sellYes': 'Sell',
   'store.sellNo': 'Keep them',
   'store.sold': 'Sold {count} for {gold} gold',
