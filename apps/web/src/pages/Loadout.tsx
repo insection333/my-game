@@ -3,7 +3,8 @@
 // health, the food you carry and the supply in use.
 import { t } from '@idle-clash/content';
 import type { LoadoutSlot, LoadoutView, SupplyView, TrianglePart } from '@idle-clash/features';
-import { Figure, ItemIcon, Panel, ProgressBar, TextLink } from '@idle-clash/ui';
+import { Button, Figure, ItemIcon, Panel, ProgressBar, TextLink } from '@idle-clash/ui';
+import { game } from '../game/store.ts';
 import { navigate } from '../router.ts';
 import { itemHref } from './Items.tsx';
 import { Slot } from '../slots.tsx';
@@ -59,6 +60,7 @@ export function Loadout({ loadout, triangle }: { loadout: LoadoutView; triangle:
           </div>
         </div>
       </Slot>
+      <FightAs loadout={loadout} />
     </Panel>
   );
 }
@@ -129,5 +131,37 @@ function GearButton({ gear }: { gear: LoadoutSlot }) {
     >
       {gear.item ? <ItemIcon name={gear.item} size={32} /> : <span className={s.slotLabel}>{gear.label}</span>}
     </a>
+  );
+}
+
+/** Fight as another style, or put on better gear for this one, at one press (session 241): each wears the best
+ *  held for it, weapon and armour, where a switch took a press a piece on the gear sheet. */
+function FightAs({ loadout }: { loadout: LoadoutView }) {
+  if (!loadout.fightAs.length && !loadout.better) return null;
+  return (
+    <div className={s.fightAs}>
+      {loadout.fightAs.length > 0 && (
+        <div role="group" aria-label={t('combat.fightAsGroup')} className={s.styles}>
+          {loadout.fightAs.map((f) => (
+            <Button
+              key={f.id}
+              variant="secondary"
+              aria-label={t('combat.fightAs', { style: f.name })}
+              title={t('combat.fightAs', { style: f.name })}
+              aria-pressed={f.current}
+              data-current={f.current || undefined}
+              onClick={() => game.act('combat', 'wearBest', { style: f.id })}
+            >
+              <ItemIcon name={f.id} size={24} />
+            </Button>
+          ))}
+        </div>
+      )}
+      {loadout.better && loadout.styleId && (
+        <Button variant="secondary" onClick={() => game.act('combat', 'wearBest', { style: loadout.styleId })}>
+          {t('combat.wearBest')}
+        </Button>
+      )}
+    </div>
   );
 }

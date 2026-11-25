@@ -15,7 +15,7 @@ import { edictPct } from '../shared/castle/mirror.ts';
 import { pathBonus } from '../shared/kindling.ts';
 import { findsOf } from '../shared/combat/spoils.ts';
 import { healthShown } from './arena.ts';
-import { gearDoes, wearNeeds } from './gear.ts';
+import { bestChanges, gearDoes, stylesHeld, wearNeeds } from './gear.ts';
 import { FEATURE } from './rules.ts';
 import { xpGainsWords } from '../shared/xp-gains.ts';
 import { temperLine, type TemperLine } from '../shared/temper-view.ts';
@@ -62,6 +62,11 @@ export interface LoadoutView {
   supply: SupplyView | null;
   /** What lifts the style's XP, each source by name (session 194), or null. */
   gains: string | null;
+  /** The styles to fight as at one press, each wearing its best (session 241): while two are held, or one and no
+   *  weapon is worn. */
+  fightAs: { id: Style; name: string; current: boolean }[];
+  /** Whether better gear for the style worn is held (a press puts it on). */
+  better: boolean;
 }
 export interface FoeRow {
   foe: { feature: string; id: string };
@@ -153,6 +158,16 @@ function loadout(state: State, now: number): LoadoutView {
     })),
     noFood: meals.length ? null : t('combat.noFood'),
     gains: style ? xpGainsWords(state, style, findsOf(style), now) : null,
+    ...fightAs(state, style),
+  };
+}
+
+function fightAs(state: State, style: Style | null): Pick<LoadoutView, 'fightAs' | 'better'> {
+  const held = stylesHeld(state);
+  const shown = held.length > 1 || (!style && held.length > 0);
+  return {
+    fightAs: shown ? held.map((id) => ({ id, name: t(`skill.${id}`), current: id === style })) : [],
+    better: !!style && held.includes(style) && bestChanges(state, style).length > 0,
   };
 }
 

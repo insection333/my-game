@@ -16,13 +16,28 @@ export const ENLARGE_COSTS: readonly number[] = [
   650_000, 700_000, 750_000, 800_000, 850_000, 900_000, 925_000, 950_000, 975_000, 1_000_000, 1_000_000, 1_000_000,
 ];
 
+/** The most items a player may lock against selling. */
+export const LOCKS = 300;
+
 /** Gold is counted in the header, not in a slot. */
 export const SLOTLESS = new Set(['gold']);
 
-export const StoreState = z.object({ enlargements: z.number().int().min(0).max(ENLARGE_COSTS.length) }).strict();
+export const StoreState = z
+  .object({
+    enlargements: z.number().int().min(0).max(ENLARGE_COSTS.length),
+    /** Items the player locked against selling (session 241). Saves from before have none. */
+    locked: z
+      .array(z.string().regex(/^[a-z0-9][a-z0-9-]{0,63}$/))
+      .max(LOCKS)
+      .optional(),
+  })
+  .strict();
 export type StoreState = z.infer<typeof StoreState>;
 
 export const storeOf: (state: State) => StoreState = partReader('storehouse', StoreState, { enlargements: 0 });
+
+/** Whether an item is locked against selling (session 241): no sale, Sell finds or Sell old gear takes it. */
+export const isLocked = (state: State, item: string): boolean => (storeOf(state).locked ?? []).includes(item);
 
 /** Spaces: the first 24, six for each enlargement, and six for each rank of the builder's cord (a relic). */
 export const capacity = (state: State): number =>
