@@ -22,6 +22,7 @@ import {
 import { contractRoute, fail } from '../http.ts';
 import { eraseFeedback } from '../feedback.ts';
 import { eraseModeration } from '../moderation.ts';
+import { forgetBannerActor } from '../admin/banner.ts';
 import { changed } from '../admin/memo.ts';
 import { eraseNotes } from '../admin/notes.ts';
 import { checkPassword, hashPassword } from './passwords.ts';
@@ -73,6 +74,7 @@ export function erase(ctx: Ctx, playerId: string): void {
     ctx.realmWorks.remove(playerId);
     const name = ctx.db.select({ name: players.name }).from(players).where(eq(players.id, playerId)).get()?.name;
     if (name) ctx.notices.forgetFoe(name);
+    if (name) forgetBannerActor(ctx, name);
     ctx.hiscores.remove(playerId);
     ctx.store.remove(playerId);
     ctx.db.delete(players).where(eq(players.id, playerId)).run();

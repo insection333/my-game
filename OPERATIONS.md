@@ -15,7 +15,8 @@ One VentraIP VPS (2 cores, 2 GB, Ubuntu 24.04) with:
 | The database | `/var/lib/idleclash/idle-clash.db` (SQLite) |
 | Settings | `/etc/idleclash/server.env` and `backup.env`, written by each deploy from GitHub's secrets |
 | Releases | `/srv/idleclash/releases/<time>-<commit>`, the newest five; `current` points at the live one |
-| Logs | `journalctl -u idleclash` (the game), `/var/log/caddy/idleclash.log` (requests) |
+| security.txt | `apps/web/public/.well-known/security.txt` names where to report a weakness; its `Expires` is a year on (26 November 2027): renew it before then |
+| Logs | `journalctl -u idleclash` (the game: errors and warnings; no line for each request, session 238), `journalctl -u caddy` (the front door's errors; it keeps no access log, as the privacy page promises) |
 | Firewall | ufw: SSH, HTTP and HTTPS only; fail2ban on SSH |
 
 **Setting up a new server.** On a fresh Ubuntu 24.04 VPS, signed in as root:

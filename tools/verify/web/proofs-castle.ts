@@ -70,9 +70,13 @@ async function onAPhone(served: Served, problems: string[]) {
       await page.getByLabel(/^Heal by/).fill('5');
       const heal = page.getByRole('button', { name: /^Heal 5% for/ });
       await heal.click();
+      // Until another share of wounds stands on the page (session 238): waiting only for the old one to go
+      // passed once while the panel redrew mid-answer, and read the old share again a moment later.
       await page.waitForFunction(
-        (was) =>
-          !new RegExp(`\\b${was}% of your troops wounded`).test(document.querySelector('main')!.textContent ?? ''),
+        (was) => {
+          const m = /(\d+)% of your troops wounded/.exec(document.querySelector('main')!.textContent ?? '');
+          return m !== null && Number(m[1]) !== was;
+        },
         before,
         { timeout: 10_000 },
       );

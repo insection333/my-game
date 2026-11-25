@@ -54,25 +54,39 @@ export function strictJson(text: string): unknown {
   return value;
 }
 
-/** Counts attempts per key in a sliding window. In memory: one server, as the brief plans. */
+/** Counts attempts per key in a sliding window. In memory: one server, as the brief plans. Each key keeps its
+ *  own window (session 238): a sweep made by a key of a minute let go of keys of an hour whose attempts were
+ *  older than a minute, so a flood of other keys (sign-ups from many addresses) reset the hour's count of
+ *  sign-in tries on an account; and once past the sweep's mark, a sweep ran on every attempt. */
 export class RateLimiter {
-  private hits = new Map<string, number[]>();
+  private hits = new Map<string, { at: number[]; windowMs: number }>();
+  private swept = 0;
+  /** The keys held past which a sweep is made, and how often at most. */
+  static readonly SWEEP_AT = 50_000;
+  static readonly SWEEP_EVERY_MS = 60_000;
 
   /** Records an attempt; says whether it is allowed and, if not, how long to wait. */
   take(key: string, max: number, windowMs: number, now: number): { ok: true } | { ok: false; retryAfterMs: number } {
-    const recent = (this.hits.get(key) ?? []).filter((t) => t > now - windowMs);
+    const recent = (this.hits.get(key)?.at ?? []).filter((t) => t > now - windowMs);
     if (recent.length >= max) {
-      this.hits.set(key, recent);
+      this.hits.set(key, { at: recent, windowMs });
       return { ok: false, retryAfterMs: recent[0] + windowMs - now };
     }
     recent.push(now);
-    this.hits.set(key, recent);
-    if (this.hits.size > 50_000) this.sweep(now, windowMs);
+    this.hits.set(key, { at: recent, windowMs });
+    if (this.hits.size > RateLimiter.SWEEP_AT && now - this.swept >= RateLimiter.SWEEP_EVERY_MS) this.sweep(now);
     return { ok: true };
   }
 
-  private sweep(now: number, windowMs: number) {
-    for (const [k, v] of this.hits) if (!v.some((t) => t > now - windowMs)) this.hits.delete(k);
+  /** How many keys are held (for the tests). */
+  get size(): number {
+    return this.hits.size;
+  }
+
+  /** Lets go of each key whose own window holds no attempt. */
+  private sweep(now: number) {
+    this.swept = now;
+    for (const [k, v] of this.hits) if (!v.at.some((t) => t > now - v.windowMs)) this.hits.delete(k);
   }
 }
 

@@ -4,7 +4,6 @@
   "type": "module",
   "dependencies": {
     "@fastify/cookie": "11.1.2",
-    "@fastify/static": "10.1.5",
     "@fastify/websocket": "11.3.3",
     "@idle-clash/content": "workspace:*",
     "@idle-clash/contracts": "workspace:*",
@@ -13,9 +12,9 @@
     "@node-rs/argon2": "2.2.1",
     "better-sqlite3": "13.0.3",
     "drizzle-orm": "0.45.3",
-    "fastify": "5.12.5",
+    "fastify": "5.12.8",
     "web-push": "3.6.7",
-    "zod": "4.6.5"
+    "zod": "4.6.7"
   },
   "devDependencies": {
     "@types/better-sqlite3": "9.6.0",

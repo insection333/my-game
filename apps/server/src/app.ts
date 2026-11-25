@@ -5,7 +5,7 @@ import websocket from '@fastify/websocket';
 import { ROUTES } from '@idle-clash/contracts';
 import { actionRegistry, FEATURES, type Feature } from '@idle-clash/features';
 import { createEngine, PlayerQueue } from '@idle-clash/kernel';
-import Fastify, { type FastifyInstance } from 'fastify';
+import Fastify, { LogController, type FastifyInstance } from 'fastify';
 import { emailRoutes } from './auth/email.ts';
 import { LogMailer, type Mailer } from './auth/mailer.ts';
 import { authRoutes, identify } from './auth/routes.ts';
@@ -57,6 +57,10 @@ export interface Built {
   close: () => Promise<void>;
 }
 
+/** Browser error reports kept from one address in a day, and from everyone in an hour (session 238). */
+export const ERRORS_A_DAY = 100;
+export const ERRORS_AN_HOUR = 1_000;
+
 export async function buildApp(
   config: Config,
   opts: { mailer?: Mailer; features?: readonly Feature[] } = {},
@@ -65,6 +69,11 @@ export async function buildApp(
     logger: config.log
       ? { redact: ['req.headers.cookie', 'req.headers.authorization', 'res.headers["set-cookie"]'] }
       : false,
+    // No line for every request (session 238): each carried the player's connection address into the
+    // journal, kept for months, where the privacy page says the address is used a short while and not
+    // kept; and at play's pace it filled the journal. Errors and warnings are still logged; the console's
+    // System counts the requests.
+    logController: new LogController({ disableRequestLogging: true }),
     bodyLimit: 16 * 1024,
     // Only a proxy on this machine (Caddy, from session 10) may say who the client is; anyone else's
     // X-Forwarded-For is ignored, so it cannot be used to slip past the per-address limits.
@@ -143,6 +152,14 @@ export async function buildApp(
     ROUTES.errors,
     async ({ req, reply, input }) => {
       limit(ctx, reply, `errors:${ipOf(req)}`, 30, 60_000);
+      // Kept up to a day's worth from one address and an hour's from all (session 238): past them a report is
+      // taken and let go, where a script sending thirty a minute filled the journal and the telemetry, kept
+      // half a year, by tens of thousands of rows a day. A page faulting in earnest sends a handful.
+      const now = config.now();
+      const kept =
+        ctx.limiter.take(`errors-day:${ipOf(req)}`, ERRORS_A_DAY, 86_400_000, now).ok &&
+        ctx.limiter.take('errors-hour', ERRORS_AN_HOUR, 3_600_000, now).ok;
+      if (!kept) return reply.code(204).send();
       req.log.warn({ browserError: input, player: req.playerId }, 'browser error');
       // Counted for the console's overview (session 228), by player id only, as all telemetry is.
       ctx.telemetry.record('browserError', req.playerId, {
