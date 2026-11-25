@@ -11,6 +11,7 @@ import { skillLevel } from '../shared/skill.ts';
 import { capacity, ENLARGE_COSTS, noRoom, SLOTS_PER_ENLARGEMENT, slotsUsed, storeOf } from '../shared/storehouse.ts';
 import { useFind } from './finds.ts';
 import { buy, enlarge, findsToSell, priceOf, sell, sellFinds } from './rules.ts';
+import { oldGear, sellGear, setLock } from './tidy.ts';
 
 /** The Storehouse's space, as the page shows it. */
 export interface CapacityView {
@@ -21,6 +22,8 @@ export interface CapacityView {
   enlarge: { label: string; affordable: boolean } | null;
   /** The finds kept to sell, sold at one press after asking (session 187), or null when none is held. */
   sellFinds: { label: string; ask: string } | null;
+  /** The old gear held, sold at one press after asking (session 241), or null when none is held. */
+  sellGear: { label: string; ask: string } | null;
 }
 
 /** The finds named as a sentence says them: two by name and the rest counted. */
@@ -46,6 +49,16 @@ function sellFindsView(state: State, now: number): CapacityView['sellFinds'] {
       })
     : '';
   return { label: t('store.sellFinds', { gold }), ask: keeps ? `${ask} ${keeps}` : ask };
+}
+
+function sellGearView(state: State): CapacityView['sellGear'] {
+  const held = oldGear(state);
+  if (!held.length) return null;
+  const gold = fmt.int(held.reduce((n, x) => n + priceOf(x.item) * x.count, 0));
+  return {
+    label: t('store.sellGear', { gold }),
+    ask: t('store.sellGear.ask', { gear: findsWords(held.map((x) => x.item)), gold }),
+  };
 }
 
 /** Food: what is carried, and what the vendor sells at this Hitpoints level. */
@@ -88,6 +101,7 @@ function capacityView(state: State, now: number): CapacityView {
             affordable: countOf(state, 'gold') >= cost,
           },
     sellFinds: sellFindsView(state, now),
+    sellGear: sellGearView(state),
   };
 }
 
@@ -146,6 +160,17 @@ export const storehouse = defineFeature({
       input: z.object({}).strict(),
       example: {},
       run: (state, _input, now) => sellFinds(state, now),
+    }),
+    // Old gear at one press, and locks against selling (session 241).
+    sellGear: defineRoute({
+      input: z.object({}).strict(),
+      example: {},
+      run: (state) => sellGear(state),
+    }),
+    lock: defineRoute({
+      input: z.object({ item: Id, on: z.boolean() }).strict(),
+      example: { item: 'copper-sword', on: true },
+      run: (state, input) => setLock(state, input.item, input.on),
     }),
     enlarge: defineRoute({
       input: z.object({}).strict(),

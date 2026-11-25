@@ -5,8 +5,17 @@ import type { Command } from './commands.ts';
 import { isNotable, type GameEvent } from './events.ts';
 import type { Rng } from './rng.ts';
 import type { ActionContext, ActionRegistry } from './rules.ts';
-import { actionKey, LANE_IDS, laneKind, type ActionRef, type LaneId, type State, type StopReason } from './schema.ts';
-import { noteMoment } from './state.ts';
+import {
+  actionKey,
+  LANE_IDS,
+  laneKind,
+  QUEUE,
+  type ActionRef,
+  type LaneId,
+  type State,
+  type StopReason,
+} from './schema.ts';
+import { noteMoment, queueOf, setQueue } from './state.ts';
 import { DEFAULT_CONFIG, type KernelConfig } from './time.ts';
 export interface Advanced {
   state: State;
@@ -34,6 +43,8 @@ export const KERNEL_STOP_CODES = [
   'mended',
   'skillInOtherLane',
   'alreadyRunning',
+  'alreadyQueued',
+  'queueFull',
 ] as const;
 
 const reason = (code: string, detail?: Record<string, string | number>): StopReason =>
@@ -99,7 +110,8 @@ export function createEngine(registry: ActionRegistry, config: KernelConfig = DE
     return null;
   }
 
-  /** Stops a lane with a reason, then starts its queued Next action if there is one. */
+  /** Stops a lane with a reason, then starts what it has to come: Next, or if Next cannot start, the next of the
+   *  rest that can (session 240), each refused said as a stop. */
   function halt(
     s: State,
     lane: LaneId,
@@ -115,12 +127,15 @@ export function createEngine(registry: ActionRegistry, config: KernelConfig = DE
     l.current = null;
     l.stopped = action ? { reason: why, at, action } : { reason: why, at };
     if (!quiet) events.push({ type: 'laneStopped', at, lane, action, reason: why });
-    const next = l.next;
-    if (!next) return;
-    l.next = null;
-    const refused = begin(s, lane, next, at, rng, events);
-    if (!refused) events.push({ type: 'nextStarted', at, lane, action: next });
-    else {
+    const queue = queueOf(l);
+    setQueue(l, []);
+    for (const [i, next] of queue.entries()) {
+      const refused = begin(s, lane, next, at, rng, events);
+      if (!refused) {
+        events.push({ type: 'nextStarted', at, lane, action: next });
+        setQueue(l, queue.slice(i + 1));
+        return;
+      }
       l.stopped = { reason: refused, at, action: next };
       events.push({ type: 'laneStopped', at, lane, action: next, reason: refused });
     }
@@ -161,7 +176,7 @@ export function createEngine(registry: ActionRegistry, config: KernelConfig = DE
       const run = s.lanes[lane].current!;
       s.clock = at;
       if (due.fireOut) {
-        s.lanes[lane].next = null;
+        setQueue(s.lanes[lane], []);
         halt(s, lane, run.action, reason('fireOut'), at, rng, events);
         continue;
       }
@@ -222,14 +237,20 @@ export function createEngine(registry: ActionRegistry, config: KernelConfig = DE
           const why = begin(s, cmd.lane, cmd.action, now, rng, events);
           return why ? { ok: false, reason: why } : { ok: true };
         }
-        // A lane repeats what it runs, so queueing that behind itself does nothing (session 81).
+        // A lane repeats what it runs, so queueing that behind itself does nothing (session 81); nor does
+        // queueing what is already to come, and a lane holds three to come (session 240).
         if (actionKey(l.current.action) === actionKey(cmd.action))
           return { ok: false, reason: reason('alreadyRunning') };
-        l.next = cmd.action;
+        const queue = queueOf(l);
+        if (queue.some((a) => actionKey(a) === actionKey(cmd.action)))
+          return { ok: false, reason: reason('alreadyQueued') };
+        if (queue.length >= QUEUE) return { ok: false, reason: reason('queueFull', { most: QUEUE }) };
+        setQueue(l, [...queue, cmd.action]);
         return { ok: true };
       }
       case 'clearNext':
-        l.next = null;
+        // One of the actions to come, by its place, or all of them.
+        setQueue(l, cmd.at === undefined ? [] : queueOf(l).filter((_, i) => i !== cmd.at));
         return { ok: true };
       case 'stop':
         if (l.current) halt(s, cmd.lane, l.current.action, reason('stoppedByPlayer'), now, rng, events);

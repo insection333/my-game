@@ -13,11 +13,11 @@ import { itemHref, KIND_TITLE, KINDS, wornBy } from './Items.tsx';
 import { itemMatches, SEARCH_FROM } from './item-search.ts';
 import s from './items.module.css';
 
-/** Slots used of the total, the next enlargement with its price, and the finds kept to sell sold at one
- *  press after asking (session 187). */
+/** Slots used of the total, the next enlargement with its price, and the finds kept to sell (session 187) and
+ *  the old gear (session 241) each sold at one press after asking. */
 function Capacity() {
   const { state, now, features } = useGame();
-  const [asking, setAsking] = useState(false);
+  const [asking, setAsking] = useState<'finds' | 'gear' | null>(null);
   const [sold, setSold] = useState('');
   const box = useRef<HTMLDivElement>(null);
   const [cap] = fills<CapacityView>(features, 'store.capacity', state, now);
@@ -25,33 +25,43 @@ function Capacity() {
   const { data } = cap;
   const focusIn = (selector: string) =>
     requestAnimationFrame(() => box.current?.querySelector<HTMLElement>(selector)?.focus());
-  const sell = () => {
-    setAsking(false);
-    const r = game.act('storehouse', 'sellFinds', {}) as { ok: boolean; gold?: number; kinds?: number } | null;
+  const sell = (kind: 'finds' | 'gear') => {
+    setAsking(null);
+    const route = kind === 'finds' ? 'sellFinds' : 'sellGear';
+    const r = game.act('storehouse', route, {}) as { ok: boolean; gold?: number; kinds?: number } | null;
     const gold = fmt.int(r?.gold ?? 0);
+    const count = fmt.int(r?.kinds ?? 0);
+    const one = r?.kinds === 1;
     if (r?.ok)
       setSold(
-        r.kinds === 1
-          ? t('store.soldFindsOne', { gold })
-          : t('store.soldFinds', { count: fmt.int(r.kinds ?? 0), gold }),
+        kind === 'finds'
+          ? one
+            ? t('store.soldFindsOne', { gold })
+            : t('store.soldFinds', { count, gold })
+          : one
+            ? t('store.soldGearOne', { gold })
+            : t('store.soldGear', { count, gold }),
       );
     focusIn('[data-status]');
   };
+  const offer = asking === 'finds' ? data.sellFinds : asking === 'gear' ? data.sellGear : null;
+  const open = (kind: 'finds' | 'gear') => (setAsking(kind), setSold(''), focusIn('[data-answer]'));
   return (
     <Slot id="store.capacity" className={s.capacity}>
       <div className={s.capacityText}>
         <span>{data.text}</span>
         <ProgressBar value={data.used / data.total} label={data.text} tone="woad" />
       </div>
-      {!asking && (data.enlarge || data.sellFinds) && (
+      {!asking && (data.enlarge || data.sellFinds || data.sellGear) && (
         <div className={s.actions}>
           {data.sellFinds && (
-            <Button
-              variant="secondary"
-              data-sell-finds
-              onClick={() => (setAsking(true), setSold(''), focusIn('[data-answer]'))}
-            >
+            <Button variant="secondary" data-sell-finds onClick={() => open('finds')}>
               {data.sellFinds.label}
+            </Button>
+          )}
+          {data.sellGear && (
+            <Button variant="secondary" data-sell-gear onClick={() => open('gear')}>
+              {data.sellGear.label}
             </Button>
           )}
           {data.enlarge && (
@@ -66,14 +76,14 @@ function Capacity() {
         </div>
       )}
       <div ref={box} className={s.capacityAnswer}>
-        {asking && data.sellFinds && (
+        {asking && offer && (
           <div className={s.ask}>
-            <p>{data.sellFinds.ask}</p>
+            <p>{offer.ask}</p>
             <div className={s.actions}>
-              <Button variant="primary" data-answer onClick={sell}>
+              <Button variant="primary" data-answer onClick={() => sell(asking)}>
                 {t('store.sellYes')}
               </Button>
-              <Button variant="secondary" onClick={() => (setAsking(false), focusIn('[data-sell-finds]'))}>
+              <Button variant="secondary" onClick={() => (setAsking(null), focusIn(`[data-sell-${asking}]`))}>
                 {t('store.sellNo')}
               </Button>
             </div>

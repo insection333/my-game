@@ -8,7 +8,8 @@ const lane = z.enum(LANE_IDS);
 export const Command = z.discriminatedUnion('type', [
   z.object({ type: z.literal('start'), lane, action: ActionRef }).strict(),
   z.object({ type: z.literal('queueNext'), lane, action: ActionRef }).strict(),
-  z.object({ type: z.literal('clearNext'), lane }).strict(),
+  /** `at`: one of the actions to come by its place (0 is Next); without it, all of them (session 240). */
+  z.object({ type: z.literal('clearNext'), lane, at: z.number().int().min(0).max(2).optional() }).strict(),
   z.object({ type: z.literal('stop'), lane }).strict(),
   z.object({ type: z.literal('stoke') }).strict(),
 ]);

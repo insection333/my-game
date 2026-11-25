@@ -1,11 +1,11 @@
 // Combat: the foes fought in the Combat lane, the gear worn, and the Combat page's slots. The four
 // combat skills (Melee, Archery, Magic, Hitpoints) are features of their own; all share
 // shared/combat/ for the triangle, the foes and how a fight resolves.
-import { GEAR_SLOTS, Id, type GearSlot, type Item } from '@idle-clash/content';
+import { GEAR_SLOTS, Id, STYLES, type GearSlot, type Item } from '@idle-clash/content';
 import { z } from 'zod';
 import { defineFeature, defineRoute } from '../define.ts';
 import { FOES, FOODS } from '../shared/combat/data.ts';
-import { remove, wear } from './gear.ts';
+import { remove, wear, wearBest } from './gear.ts';
 import { RULES } from './rules.ts';
 import { SLOTS_FILLED } from './slots.ts';
 import { bountyView, claim, letGo, take } from './bounty.ts';
@@ -31,6 +31,12 @@ export const combat = defineFeature({
       input: z.object({ item: Id }).strict(),
       example: { item: 'copper-sword' },
       run: (state, input) => wear(state, input.item),
+    }),
+    // Fight as a style, wearing the best held for it (session 241).
+    wearBest: defineRoute({
+      input: z.object({ style: z.enum(STYLES) }).strict(),
+      example: { style: 'melee' as const },
+      run: (state, input) => wearBest(state, input.style),
     }),
     remove: defineRoute({
       input: z.object({ slot: z.enum(GEAR_SLOTS) }).strict(),

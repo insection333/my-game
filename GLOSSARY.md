@@ -75,7 +75,7 @@ Plain, warm and brief, with an old-world flavour in names rather than in instruc
 | Mercenary stronghold | Castle Clash: one of five targets made for you each day near your rating, the harder paying more; it falls for the day once breached, and its bounty comes from the war chest |
 | Messages | Short notes of up to 250 characters between players, kept behind the bell beside the notices; the inbox keeps your latest 20 |
 | Milestone | A long goal, such as total level 100 |
-| Next action | The action queued behind a lane's current one; it starts when the current one stops |
+| Next action | An action queued behind a lane's current one, up to three in order; each starts when the one before stops |
 | Notices | The tray of things that happened and need you |
 | Notices while away | Your browser's own notices, off until switched on: a lane stopped, lanes about to rest, a siege that breached your walls |
 | Orders of the day | Castle Clash: three small aims each day, the day's strongholds always among them; each pays war marks when done, and all three pay more |

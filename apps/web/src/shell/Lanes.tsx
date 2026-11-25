@@ -2,7 +2,7 @@
 // chips in the phone's strip. Each lane says what it is doing, how far along, and why it stopped.
 import { formatStop, hasString, isQuietStop, midSentence, t } from '@idle-clash/content';
 import { remedyFor, type Feature } from '@idle-clash/features';
-import { LANE_IDS, type ActionRef, type LaneId, type State } from '@idle-clash/kernel';
+import { LANE_IDS, queueOf, type ActionRef, type LaneId, type State } from '@idle-clash/kernel';
 import { Button, hasIcon, ItemIcon, LaneCard } from '@idle-clash/ui';
 import { game } from '../game/store.ts';
 import { betterFor, type Better } from './better.ts';
@@ -22,6 +22,8 @@ export interface LaneView {
   short?: string;
   /** What it is doing, in the words a phone's chip has room for. */
   chip?: string;
+  /** Whether anything waits to come in it (session 240), which Clear Next lets go. */
+  queued?: boolean;
   /** What the action makes (or the foe fought), for its icon. */
   icon?: string;
   /** Stopped by itself (not by the player), so it needs the player: out of ore, the fire out. */
@@ -119,8 +121,10 @@ export function laneViews(
     const again = !run && !l.next ? againOf(id, l.stopped, canStart) : undefined;
     const fix = l.stopped ? fixFor(l.stopped.reason) : undefined;
     const make = !run && !l.next && !again && l.stopped ? makeOf(features, id, l.stopped, canStart) : undefined;
-    const note = l.next
-      ? t('lane.next', { action: actionName(l.next) })
+    // Each of the three a lane holds to come (session 240): "Next: Oak bow, then Oak arrows".
+    const queue = queueOf(l);
+    const note = queue.length
+      ? t('lane.next', { action: queue.map(actionName).reduce((a, b) => t('lane.then', { first: a, then: b })) })
       : !run && l.stopped
         ? comingIn(state, features, l.stopped.reason)
           ? t('lane.waiting', { why: formatStop(l.stopped.reason) })
@@ -141,6 +145,7 @@ export function laneViews(
       note: halted && !on ? undefined : note,
       short: !run && l.stopped ? formatStop(l.stopped.reason, 'short') : undefined,
       chip: run ? chipDoing(run.action) : undefined,
+      queued: queue.length > 0,
       halted,
       fix: !run && !l.next && l.stopped && !((again || make) && fix?.item) ? fix : undefined,
       again,
@@ -203,6 +208,11 @@ export function LaneList({ lanes }: { lanes: LaneView[] }) {
                     onClick={() => game.command({ type: 'start', lane: l.id, action: l.better!.action })}
                   >
                     {l.better.label}
+                  </Button>
+                )}
+                {l.queued && (
+                  <Button variant="quiet" onClick={() => game.command({ type: 'clearNext', lane: l.id })}>
+                    {t('lane.clearNext')}
                   </Button>
                 )}
                 <Button variant="secondary" onClick={() => game.command({ type: 'stop', lane: l.id })}>
