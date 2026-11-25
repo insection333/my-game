@@ -234,7 +234,8 @@
 
 /* A narrow bar keeps the mark, the console's name, the clock and the one button. */
 @container bar (max-width: 48rem) {
-  .whoName {
+  .whoName,
+  .whoName.whoLink {
     display: none;
   }
 }
@@ -509,4 +510,26 @@
   .bar::after {
     display: none;
   }
+}
+
+/* Holding its first password, the console shows the form alone (session 237): no rail beside it. */
+.console[data-locked] {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: 'bar' 'main';
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+/* The console's account's name in the bar opens its password (session 237). */
+.whoLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  text-decoration: none;
+  border-radius: var(--r-control);
+  padding: 2px var(--s-1);
+}
+
+.whoLink:hover {
+  color: var(--ink);
+  text-decoration: underline;
 }

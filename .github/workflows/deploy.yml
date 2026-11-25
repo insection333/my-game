@@ -73,7 +73,7 @@ jobs:
           R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
         run: |
           [ -n "$R2_SECRET_ACCESS_KEY" ] || echo "::warning::The R2 secrets are not set, so backups will fail."
-          [ -n "$ADMIN_ACCOUNT_PASSWORD" ] || echo "::warning::ADMIN_ACCOUNT_PASSWORD is not set, so the admin console has no account of its own."
+          [ -n "$ADMIN_ACCOUNT_PASSWORD" ] || echo "::warning::ADMIN_ACCOUNT_PASSWORD is not set, so the console account Admin is made with the first password Password, to be changed at its first sign-in."
           CONSOLE_B64=$(printf '%s' "$ADMIN_ACCOUNT_PASSWORD" | base64 -w0)
           ssh server 'umask 077; cat >/etc/idleclash/server.env' <<EOF
           NODE_ENV=production

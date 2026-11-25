@@ -1,6 +1,10 @@
 // Everything the server reads from its environment, read once at start. Secrets live only here.
 import { FEATURES } from '@idle-clash/features';
 
+/** The password the console's account is first made with when no secret is set (the owner, 26 November
+ *  2026), changed at its first sign-in before anything else. */
+export const FIRST_PASSWORD = 'Password';
+
 export interface Config {
   port: number;
   host: string;
@@ -24,7 +28,9 @@ export interface Config {
   adminNames: string[];
   /** The admin console's own account (session 227): its name, and its password from a secret (never in the
    *  repository). With no password set, there is no such account. */
-  staff: { name: string; password: string | null };
+  /** The console's own account: its password from the secret, or with none set, the first password it is
+   *  made with (`first`, the owner's "Password", session 237), which it must change at its first sign-in. */
+  staff: { name: string; password: string | null; first?: string | null };
   /** Reads of the game, notices and hiscores a player may make in a minute (READS_PER_MINUTE). */
   readsPerMinute: number;
   /** New live pages one address may open in a minute (PAGES_PER_MINUTE). */
@@ -76,7 +82,11 @@ export function configFromEnv(env: NodeJS.ProcessEnv = process.env): Config {
       .split(',')
       .map((s) => s.trim())
       .filter(Boolean),
-    staff: { name: env.ADMIN_ACCOUNT_NAME?.trim() || 'Admin', password: consolePassword(env) },
+    staff: {
+      name: env.ADMIN_ACCOUNT_NAME?.trim() || 'Admin',
+      password: consolePassword(env),
+      first: FIRST_PASSWORD,
+    },
     backupStatusDir: env.BACKUP_STATUS_DIR ?? null,
     readsPerMinute: pace(env.READS_PER_MINUTE, 120),
     pagesPerMinute: pace(env.PAGES_PER_MINUTE, 20),

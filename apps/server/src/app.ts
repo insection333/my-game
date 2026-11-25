@@ -11,6 +11,7 @@ import { LogMailer, type Mailer } from './auth/mailer.ts';
 import { authRoutes, identify } from './auth/routes.ts';
 import { Sessions } from './auth/sessions.ts';
 import { ensureStaff } from './auth/staff.ts';
+import { consolePasswordRoutes } from './auth/console-password.ts';
 import type { Config } from './config.ts';
 import type { Ctx } from './context.ts';
 import { ipOf, limit } from './context.ts';
@@ -164,6 +165,7 @@ export async function buildApp(
   powerRoutes(app, ctx);
   liveRoutes(app, ctx, pulse);
   noteRoutes(app, ctx);
+  consolePasswordRoutes(app, ctx);
   activityRoutes(app, ctx);
   bannerRoutes(app, ctx);
   feedbackRoutes(app, ctx, features);

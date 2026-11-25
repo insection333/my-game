@@ -37,6 +37,7 @@ const ACTIONS: Record<string, () => string> = {
   endSession: () => t('audit.endSession'),
   banner: () => t('audit.banner'),
   bannerDown: () => t('audit.bannerDown'),
+  consolePassword: () => t('audit.consolePassword'),
 };
 
 export const actionWords = (action: string): string => (Object.hasOwn(ACTIONS, action) ? ACTIONS[action]() : action);

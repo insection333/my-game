@@ -21,6 +21,9 @@ export const players = sqliteTable(
     /** The last day they came ("2026-11-25", UTC), kept by a trigger on `visits` (migration 0024, session 236),
      *  so the console counts and sorts by it without looking up each player's visits. */
     seenDay: text('seen_day'),
+    /** The console's account while it still holds the first password it was given (session 237): every admin
+     *  route refuses it until a password of the owner's own is chosen. */
+    mustChangePassword: integer('must_change_password', { mode: 'boolean' }).notNull().default(false),
     /** The honours shown beside the name on the hiscores (session 15): a title's id, a banner's. */
     title: text('title'),
     banner: text('banner'),

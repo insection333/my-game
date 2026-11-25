@@ -98,7 +98,7 @@ export async function newcomer(url: string, name: string): Promise<{ name: strin
 }
 
 /** Signs the admin console's own account in (session 227; its password is the run's own, not the live one). */
-async function staffIn(url: string, password: string): Promise<{ name: string; value: string }> {
+export async function staffIn(url: string, password: string): Promise<{ name: string; value: string }> {
   const res = await fetch(`${url}/api/auth/sign-in`, {
     method: 'POST',
     headers: { 'content-type': 'application/json', origin: url },

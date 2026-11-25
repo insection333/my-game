@@ -23,4 +23,18 @@ export const bannerWords = {
   'audit.banner': 'Put up a banner',
   'audit.bannerDown': 'Took the banner down',
   'audit.bannerFor': '"{text}" for {hours} h',
+  // The console's own password (session 237).
+  'audit.consolePassword': "Changed the console's password",
+  'console.password.title': 'Your password',
+  'console.password.lead': "The console's own password. Changing it signs out the console everywhere else.",
+  'console.password.firstTitle': 'Choose your own password',
+  'console.password.firstLead':
+    'The console was made with a first password everyone could guess. Choose your own before anything else: the console opens once you have.',
+  'console.password.firstCurrent': 'The first password',
+  'console.password.again': 'The new password again',
+  'console.password.mismatch': 'The two new passwords differ.',
+  'console.password.same': 'Choose one that is neither the password it replaces nor the first.',
+  'console.password.others': 'Every other browser signed in to the console is signed out; this one stays.',
+  'console.password.save': 'Save the password',
+  'console.password.done': 'Saved.',
 };

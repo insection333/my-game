@@ -85,8 +85,9 @@ esac
     spawnSync(ctl, ['stop']);
     expect(r.stderr).toBe('');
     expect(r.stdout).toMatch(/^Restored idleclash-\d{8}-\d{6}\.db\.gz; the database it replaced is at /);
+    // The console's own account comes back with the players (made at start with its first password: session 237).
     expect(execFileSync('sqlite3', [env.DB!, 'select name from players order by name'], { encoding: 'utf8' })).toBe(
-      'Alder\nBirch\n',
+      'Admin\nAlder\nBirch\n',
     );
     expect(readdirSync(join(dir, 'live')).some((f) => f.startsWith('game.db.replaced-'))).toBe(true);
   });
