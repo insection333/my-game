@@ -1,5 +1,6 @@
 // The game over HTTP: read your state, send a command, call a feature's route, and the live channel.
 // Every change runs one at a time per player and acts once per request id (the kernel's `handle`).
+import { bannerNow } from '../admin/banner.ts';
 import {
   featurePath,
   FeatureRequest,
@@ -54,7 +55,7 @@ export function gameRoutes(app: FastifyInstance, ctx: Ctx, features: readonly Fe
     if (recap && !away) absences.delete(playerId);
     // The hiscores hear of progress whenever the page reads it, not only when the save is written.
     ctx.hiscores.update(playerId, out.state, t);
-    return { state: out.state, now: t, away };
+    return { state: out.state, now: t, away, banner: bannerNow(ctx, t) };
   };
 
   /** The recap of each player's absence so far, kept until they are back (session 155): the page records

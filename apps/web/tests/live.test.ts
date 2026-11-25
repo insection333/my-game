@@ -38,7 +38,14 @@ afterEach(() => {
   doc.listeners.length = 0;
 });
 
-const handlers = () => ({ state: vi.fn(), events: vi.fn(), signedOut: vi.fn(), reopened: vi.fn(), mail: vi.fn() });
+const handlers = () => ({
+  state: vi.fn(),
+  events: vi.fn(),
+  signedOut: vi.fn(),
+  reopened: vi.fn(),
+  mail: vi.fn(),
+  banner: vi.fn(),
+});
 
 describe('the live channel', () => {
   it('reopens a dropped page with growing pauses', () => {

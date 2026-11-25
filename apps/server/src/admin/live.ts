@@ -16,6 +16,7 @@ import { announceMail, keepNewest } from '../mail/mail.ts';
 import { backupsHealth } from '../ops/status.ts';
 import { buildOf } from '../web.ts';
 import { audit } from './audit.ts';
+import { bannerView } from './banner.ts';
 import { memo, statements } from './memo.ts';
 import type { Pulse } from './pulse.ts';
 
@@ -73,7 +74,14 @@ export function liveRoutes(app: FastifyInstance, ctx: Ctx, pulse: Pulse): void {
           const d = (r.detail ? JSON.parse(r.detail) : {}) as { count?: number; text?: string };
           return { at: r.at, actor: r.actorName, count: d.count ?? 0, text: d.text ?? '' };
         });
-      return { at: ctx.config.now(), online: named, joined, reach: reachOf(ctx).length, sent } satisfies LiveResponse;
+      return {
+        at: ctx.config.now(),
+        online: named,
+        joined,
+        reach: reachOf(ctx).length,
+        sent,
+        banner: bannerView(ctx, ctx.config.now()),
+      } satisfies LiveResponse;
     },
     admin,
   );

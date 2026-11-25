@@ -13,3 +13,4 @@ export * from './live.ts';
 export * from './console.ts';
 export * from './console-live.ts';
 export * from './console-more.ts';
+export * from './console-banner.ts';

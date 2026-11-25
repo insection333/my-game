@@ -39,6 +39,7 @@ import {
   type PushKeyResponse,
   type ActivityResponse,
   type NoteResult,
+  type BannerView,
 } from '@idle-clash/contracts';
 import type { castleEngine } from '@idle-clash/features';
 import { heardBuild } from './deploys.ts';
@@ -155,6 +156,8 @@ export const api = {
     unnote: (playerId: string, noteId: number) => post<void>(PATHS.adminNoteDelete, { playerId, noteId }),
     activity: (playerId: string) => post<ActivityResponse>(PATHS.adminActivity, { playerId }),
     endSession: (playerId: string, handle: string) => post<void>(PATHS.adminEndSession, { playerId, handle }),
+    banner: (text: string, hours: number) => post<BannerView>(PATHS.adminBanner, { text, hours }),
+    bannerDown: () => post<void>(PATHS.adminBannerDown),
   },
   push: {
     key: () => get<PushKeyResponse>(PATHS.pushKey),

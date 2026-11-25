@@ -3,7 +3,7 @@
 // fresh read, since changes made while it was closed were not heard. A player may hold a few pages
 // open; past that the server closes their oldest (4408), which waits until the player comes back to it
 // rather than reopening at once, or many tabs would close each other for ever.
-import { LIVE_PATH, type LiveMessage } from '@idle-clash/contracts';
+import { LIVE_PATH, type Banner, type LiveMessage } from '@idle-clash/contracts';
 import type { GameEvent, State } from '@idle-clash/kernel';
 import { setConnected } from './connection.ts';
 import { shownPlayer } from '../api.ts';
@@ -14,6 +14,8 @@ export interface LiveHandlers {
   events: (events: GameEvent[]) => void;
   /** How many letters wait, when a letter comes or letters are read (session 45). */
   mail: (unread: number) => void;
+  /** The realm's banner put up or taken down (session 235). */
+  banner: (banner: Banner | null) => void;
   signedOut: (why?: 'banned') => void;
   reopened: () => void;
 }
@@ -48,6 +50,7 @@ export function openLive(on: LiveHandlers): { close: () => void } {
         if (msg.type === 'state') on.state(msg.state, msg.now);
         else if (msg.type === 'events') on.events(msg.events);
         else if (msg.type === 'mail') on.mail(msg.unread);
+        else if (msg.type === 'banner') on.banner(msg.banner);
       } catch {
         /* A message this page cannot read is skipped; the next read corrects it. */
       }

@@ -3,6 +3,7 @@
 // features switched on, the tables' sizes, the browser errors of the last day).
 import { z } from 'zod';
 import { PATHS } from './paths.ts';
+import type { BannerView } from './console-banner.ts';
 import type { RouteContract } from './routes.ts';
 
 /** A letter to every player: longer than a player's own (250), as an announcement may need. */
@@ -53,6 +54,8 @@ export interface LiveResponse {
   reach: number;
   /** Letters to everyone already sent, newest first. */
   sent: { at: number; actor: string; count: number; text: string }[];
+  /** The realm's banner standing now (session 235). */
+  banner: BannerView | null;
 }
 export type BroadcastResult = { ok: true; count: number } | { ok: false; reason: 'reachChanged'; reach: number };
 

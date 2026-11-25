@@ -14,6 +14,7 @@ import { CLOSED_TEST_ROUTES } from './closed-test.ts';
 import { CONSOLE_ROUTES } from './console.ts';
 import { CONSOLE_LIVE_ROUTES } from './console-live.ts';
 import { CONSOLE_MORE_ROUTES } from './console-more.ts';
+import { CONSOLE_BANNER_ROUTES, type Banner } from './console-banner.ts';
 import { PATHS } from './paths.ts';
 
 export const SignUp = z.object({ name: PlayerName, password: Password, ageConfirmed: z.literal(true) }).strict();
@@ -205,6 +206,7 @@ export const ROUTES = {
   ...CONSOLE_ROUTES,
   ...CONSOLE_LIVE_ROUTES,
   ...CONSOLE_MORE_ROUTES,
+  ...CONSOLE_BANNER_ROUTES,
   ...CASTLE_ROUTES,
   ...MODERATION_ROUTES,
   ...PROFILE_ROUTES,
@@ -237,6 +239,8 @@ export interface GameResponse {
   now: number;
   /** On reading the game after a quarter of an hour away: what happened meanwhile (the recap). */
   away?: AwaySummary | null;
+  /** The realm's banner standing now (session 235), if any. */
+  banner?: Banner | null;
 }
 /** One hiscore entry: a place on a ladder. */
 export interface HiscoreRow {

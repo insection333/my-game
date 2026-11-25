@@ -59,6 +59,8 @@ export const PATHS = {
   adminNoteDelete: '/api/admin/note/delete',
   adminActivity: '/api/admin/activity',
   adminEndSession: '/api/admin/end-session',
+  adminBanner: '/api/admin/banner',
+  adminBannerDown: '/api/admin/banner/down',
 } as const;
 
 /** A feature's own route. */
