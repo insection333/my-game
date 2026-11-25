@@ -40,7 +40,7 @@ describe('Claim all', () => {
     const n = ready(s);
     expect(n).toBeGreaterThanOrEqual(2);
     expect(view(s).claimAll).toBe(`Claim all ${n}`);
-    const r = goals.routes.claimAll.run(s, {}, T0) as {
+    const r = goals.routes.claimAll.run(s, {}, T0) as unknown as {
       state: State;
       result: { ok: boolean; count: number };
       events: { type: string }[];
