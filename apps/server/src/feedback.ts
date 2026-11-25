@@ -13,6 +13,7 @@ import { limit, type Ctx } from './context.ts';
 import { feedback, players, visits } from './db/schema.ts';
 import { totalLevelOf } from './game/standing.ts';
 import { contractRoute } from './http.ts';
+import { memo, statements } from './admin/memo.ts';
 
 const HOUR = 3_600_000;
 const DAY = 24 * HOUR;
@@ -85,63 +86,76 @@ export function feedbackRoutes(app: FastifyInstance, ctx: Ctx, features: readonl
       saved && goals ? (goals.slots['hearth.goals']({ state: saved.doc.state, now: now() }) as unknown) : null;
     return ((view as GoalsView | null)?.rows ?? []).filter((r) => r.state !== 'claimed').map((r) => r.name);
   };
-  const daysOf = (playerId: string) =>
-    new Set(
-      ctx.db
-        .select({ day: visits.day })
-        .from(visits)
-        .where(eq(visits.playerId, playerId))
-        .all()
-        .map((v) => v.day),
-    );
+  // A player's visits summed in one walk of their own key (session 233), where every day was read out and
+  // gathered in a set for each tester and each note.
+  const st = statements(ctx.store.sqlite);
+  const visitsOf = (playerId: string, joinedAt: number) =>
+    st(
+      `select count(*) n, max(day) last, coalesce(max(day = @d2), 0) d2, coalesce(max(day = @d3), 0) d3
+       from visits where player_id = @id`,
+    ).get({ id: playerId, d2: dayOf(joinedAt + DAY), d3: dayOf(joinedAt + 2 * DAY) }) as {
+      n: number;
+      last: string | null;
+      d2: number;
+      d3: number;
+    };
   const totalOf = (playerId: string) => totalLevelOf(ctx, playerId);
 
-  contractRoute(
-    app,
-    ROUTES.adminTest,
-    () => {
-      const testers: TesterView[] = ctx.db
-        .select()
-        .from(players)
-        .orderBy(desc(players.createdAt))
-        .limit(200)
-        .all()
-        // The admins run the test, as does the console's own account; the players are everyone else.
-        .filter((p) => p.role !== 'staff' && !isAdmin(ctx, p.name))
-        .map((p) => {
-          const days = daysOf(p.id);
-          const last = [...days].sort().at(-1);
-          // Back on a day: yes or no once it has come; null while it is still ahead.
-          const back = (at: number) => (dayOf(at) > dayOf(now()) ? null : days.has(dayOf(at)));
-          return {
-            name: p.name,
-            joinedAt: p.createdAt,
-            daysPlayed: days.size,
-            day2: back(p.createdAt + DAY),
-            day3: back(p.createdAt + 2 * DAY),
-            lastSeen: last ? Date.parse(`${last}T00:00:00Z`) : null,
-            totalLevel: totalOf(p.id),
-            aims: aimsOf(p.id),
-            listed: p.listedAt !== null,
-          };
-        });
-      const notes: FeedbackView[] = ctx.db
-        .select({ f: feedback, name: players.name })
-        .from(feedback)
-        .leftJoin(players, eq(players.id, feedback.playerId))
-        .orderBy(desc(feedback.id))
-        .limit(200)
-        .all()
-        .map(({ f, name }) => ({
-          name,
-          at: f.at,
-          page: f.page,
-          text: f.text,
-          totalLevel: totalOf(f.playerId),
-          daysPlayed: daysOf(f.playerId).size,
-        }));
-      return { testers, feedback: notes } satisfies AdminTestResponse;
-    },
-    requireAdmin(ctx),
-  );
+  // Read once a minute at most and shared (session 233): each tester's aims are read from their save, and
+  // 200 of them held the server a quarter of a second on a grown realm. The closed test is of friends, so
+  // the newest 25 players are its testers; the console's directory holds everyone.
+  const readTest = memo(now, TEST_MS, () => testOf());
+  contractRoute(app, ROUTES.adminTest, () => readTest(), requireAdmin(ctx));
+
+  function testOf(): AdminTestResponse {
+    const testers: TesterView[] = ctx.db
+      .select()
+      .from(players)
+      .where(eq(players.role, 'player'))
+      .orderBy(desc(players.createdAt))
+      .limit(TESTERS)
+      .all()
+      // The admins run the test, as does the console's own account; the players are everyone else.
+      .filter((p) => !isAdmin(ctx, p.name))
+      .map((p) => {
+        const v = visitsOf(p.id, p.createdAt);
+        const away = !v.last || v.last < dayOf(now() - 2 * DAY);
+        // Back on a day: yes or no once it has come; null while it is still ahead.
+        const back = (at: number, came: number) => (dayOf(at) > dayOf(now()) ? null : came === 1);
+        return {
+          name: p.name,
+          joinedAt: p.createdAt,
+          daysPlayed: v.n,
+          day2: back(p.createdAt + DAY, v.d2),
+          day3: back(p.createdAt + 2 * DAY, v.d3),
+          lastSeen: v.last ? Date.parse(`${v.last}T00:00:00Z`) : null,
+          totalLevel: totalOf(p.id),
+          // What the Hearth asks of a tester at play: one away three days or more is asked nothing new, and
+          // reading their save for it was the page's greatest cost.
+          aims: away ? [] : aimsOf(p.id),
+          away,
+          listed: p.listedAt !== null,
+        };
+      });
+    const notes: FeedbackView[] = ctx.db
+      .select({ f: feedback, name: players.name })
+      .from(feedback)
+      .leftJoin(players, eq(players.id, feedback.playerId))
+      .orderBy(desc(feedback.id))
+      .limit(100)
+      .all()
+      .map(({ f, name }) => ({
+        name,
+        at: f.at,
+        page: f.page,
+        text: f.text,
+        totalLevel: totalOf(f.playerId),
+        daysPlayed: visitsOf(f.playerId, 0).n,
+      }));
+    return { testers, feedback: notes };
+  }
 }
+
+/** The closed test's testers, the newest players, and how long its page's figures stand. */
+export const TESTERS = 25;
+export const TEST_MS = 60_000;

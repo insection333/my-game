@@ -57,6 +57,8 @@ export interface TesterView {
   totalLevel: number;
   /** What the Hearth asks of them now: their goals, in the game's own words. */
   aims: string[];
+  /** Away three days or more (session 233): their goals are not read, as they ask nothing new. */
+  away: boolean;
   /** Whether other players see them on the hiscores yet (once they have played a while). */
   listed: boolean;
 }

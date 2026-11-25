@@ -74,7 +74,11 @@ function Tester({ p }: { p: TesterView }) {
         t('admin.joined', { date: dayOf(p.joinedAt) }),
         p.daysPlayed === 1 ? t('admin.test.dayOne') : t('admin.test.days', { days: fmt.int(p.daysPlayed) }),
         t('admin.totalLevel', { level: fmt.int(p.totalLevel) }),
-        p.aims.length ? t('admin.test.aims', { aims: p.aims.join('; ') }) : t('admin.test.noAims'),
+        p.away
+          ? t('admin.test.away')
+          : p.aims.length
+            ? t('admin.test.aims', { aims: p.aims.join('; ') })
+            : t('admin.test.noAims'),
       ]}
       status={
         <span className={s.pills}>

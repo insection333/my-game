@@ -362,3 +362,32 @@
   background: var(--moss);
   box-shadow: 0 0 6px rgb(120 212 160 / 0.5);
 }
+
+/* Go to's places (session 233): a list of links, a player's total level beside their name. */
+.places {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+}
+
+.places li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-3);
+  min-height: var(--tap);
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+  min-width: 0;
+}
+
+.places li > :first-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* What stands in a sheet keeps the sheet's sides (and a phone's insets on its side, session 206). */
+.inSheet {
+  padding: var(--s-2) max(var(--s-4), env(safe-area-inset-right, 0px)) 0 max(var(--s-4), env(safe-area-inset-left, 0px));
+}

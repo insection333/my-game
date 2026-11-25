@@ -27,6 +27,7 @@ export const closedTest = {
   'admin.test.day3Soon': 'Day 3 to come',
   'admin.test.aims': 'Aiming for: {aims}',
   'admin.test.noAims': 'No goals yet',
+  'admin.test.away': 'Away three days or more',
   'admin.test.unlisted': 'Not on the hiscores yet',
   'admin.test.feedback': 'Feedback',
   'admin.test.noFeedback': 'No feedback yet.',

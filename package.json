@@ -13,7 +13,8 @@
     "format": "prettier --write .",
     "design:check": "node design/model/checks2.ts",
     "design:build": "node design/model/build-docs.ts",
-    "load": "node tools/load/run.ts"
+    "load": "node tools/load/run.ts",
+    "load:console": "node tools/load/console.ts"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.13.0",

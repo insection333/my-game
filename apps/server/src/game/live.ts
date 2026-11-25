@@ -50,6 +50,13 @@ export class LiveHub {
     return [...this.sockets.keys()];
   }
 
+  /** Every page open, a player's tabs each counted (the console's System, session 233). */
+  get pages(): number {
+    let n = 0;
+    for (const set of this.sockets.values()) n += set.size;
+    return n;
+  }
+
   /** Open pages, for the "online now" count on the hiscores. */
   get online(): number {
     return this.sockets.size;
