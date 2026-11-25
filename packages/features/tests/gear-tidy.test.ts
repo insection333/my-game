@@ -15,8 +15,7 @@ import { itemOf } from '../src/shared/catalog.ts';
 
 const T0 = Date.UTC(2026, 10, 26, 9);
 type Answer = { state: State; result: { ok: boolean; [k: string]: unknown } };
-const route = (f: typeof combat  , name: string, input: object, s: State) =>
-  f.routes[name].run(s, input, T0) as Answer;
+const route = (f: typeof combat, name: string, input: object, s: State) => f.routes[name].run(s, input, T0) as Answer;
 
 /** A fighter at Melee and Magic 42 and Hitpoints 42 (tier 5 open) wearing iron, holding older and newer gear. */
 function fighter(): State {

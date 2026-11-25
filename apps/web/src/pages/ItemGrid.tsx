@@ -30,8 +30,18 @@ function Capacity() {
     const route = kind === 'finds' ? 'sellFinds' : 'sellGear';
     const r = game.act('storehouse', route, {}) as { ok: boolean; gold?: number; kinds?: number } | null;
     const gold = fmt.int(r?.gold ?? 0);
-    const key = kind === 'finds' ? 'store.soldFinds' : 'store.soldGear';
-    if (r?.ok) setSold(r.kinds === 1 ? t(`${key}One`, { gold }) : t(key, { count: fmt.int(r.kinds ?? 0), gold }));
+    const count = fmt.int(r?.kinds ?? 0);
+    const one = r?.kinds === 1;
+    if (r?.ok)
+      setSold(
+        kind === 'finds'
+          ? one
+            ? t('store.soldFindsOne', { gold })
+            : t('store.soldFinds', { count, gold })
+          : one
+            ? t('store.soldGearOne', { gold })
+            : t('store.soldGear', { count, gold }),
+      );
     focusIn('[data-status]');
   };
   const offer = asking === 'finds' ? data.sellFinds : asking === 'gear' ? data.sellGear : null;
