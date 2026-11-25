@@ -139,6 +139,8 @@ describe('t', () => {
       // A lord's spoils are a range ("2–5 war marks").
       'castle.target.paysLord',
       'castle.target.paysLordUnscouted',
+      // The console's calendar shows eleven weeks and more of days (session 234).
+      'record.daysPlayed',
     ];
     const plural = /\{(count|skills|marks|days|points|slots|sieges|stages)\} (?:[A-Za-z]+ )?[a-z]+s\b/;
     const missing = allStringKeys().filter(

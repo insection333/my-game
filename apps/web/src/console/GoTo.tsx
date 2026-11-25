@@ -1,14 +1,16 @@
 // Go to (session 233): from anywhere in the console, Ctrl K (⌘ K) or / opens a sheet to go straight to a
 // section or a player by name, where finding a player meant opening Players and searching there. The
 // sections match as typed; players are asked of the directory once typing pauses, from two letters, at
-// most eight, so the sheet adds a light read only when one is wanted. Enter opens the first.
+// most eight, so the sheet adds a light read only when one is wanted. Enter opens the first. Since session 234
+// the players opened lately lead, and the list of keys is a press away.
 import type { DirectoryRow } from '@idle-clash/contracts';
 import { fmt, t } from '@idle-clash/content';
-import { Field, Sheet, TextLink } from '@idle-clash/ui';
+import { Button, Field, Sheet, TextLink } from '@idle-clash/ui';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { api } from '../api.ts';
 import { handled } from '../game/session.ts';
 import { navigate } from '../router.ts';
+import { recentPlayers } from './recent.ts';
 import s from './pages.module.css';
 
 export interface Place {
@@ -21,6 +23,7 @@ export interface Place {
 /** How long typing pauses before players are asked for, and the most shown. */
 const PAUSE_MS = 250;
 const SHOWN = 8;
+const hrefOf = (id: string) => `/admin/players/${encodeURIComponent(id)}`;
 
 /** The key that opens Go to as this device writes it: ⌘ K on a Mac or an iPad, Ctrl K elsewhere. */
 export const goToKey = (platform: string) =>
@@ -34,7 +37,7 @@ export function opensGoTo(e: Pick<KeyboardEvent, 'key' | 'ctrlKey' | 'metaKey' |
   return !(el && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName)));
 }
 
-export function GoTo({ sections, onClose }: { sections: Place[]; onClose: () => void }) {
+export function GoTo({ sections, onClose, onKeys }: { sections: Place[]; onClose: () => void; onKeys: () => void }) {
   const [typed, setTyped] = useState('');
   // The players found, with the words they were found for: those found for other words are not shown.
   const [found, setFound] = useState<{ words: string; rows: DirectoryRow[] }>({ words: '', rows: [] });
@@ -52,13 +55,20 @@ export function GoTo({ sections, onClose }: { sections: Place[]; onClose: () => 
     }, PAUSE_MS);
     return () => clearTimeout(at);
   }, [words]);
+  // The players opened lately come first (session 234): all of them before anything is typed, then those
+  // whose names hold what was typed.
+  const [recent] = useState(recentPlayers);
+  const lately = recent.filter((p) => !words || p.name.toLowerCase().includes(words));
   const places: Place[] = [
+    ...lately.map((p) => ({ href: hrefOf(p.id), label: p.name, note: t('console.goto.lately') })),
     ...sections.filter((x) => !words || x.label.toLowerCase().includes(words)),
-    ...(words.length < 2 || found.words !== words ? [] : found.rows).map((p) => ({
-      href: `/admin/players/${encodeURIComponent(p.id)}`,
-      label: p.name,
-      note: t('console.goto.level', { level: fmt.int(p.totalLevel) }),
-    })),
+    ...(words.length < 2 || found.words !== words ? [] : found.rows)
+      .filter((p) => !lately.some((x) => x.id === p.id))
+      .map((p) => ({
+        href: hrefOf(p.id),
+        label: p.name,
+        note: t('console.goto.level', { level: fmt.int(p.totalLevel) }),
+      })),
   ];
   const go = (href: string) => {
     onClose();
@@ -93,6 +103,11 @@ export function GoTo({ sections, onClose }: { sections: Place[]; onClose: () => 
         ) : (
           <p className={s.note}>{t('console.goto.none')}</p>
         )}
+        <div>
+          <Button variant="quiet" onClick={onKeys}>
+            {t('console.goto.keys')}
+          </Button>
+        </div>
       </form>
     </Sheet>
   );

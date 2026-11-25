@@ -28,6 +28,7 @@ import { sage } from './sage.ts';
 import { withHonours } from './honours.ts';
 import { crowd, CROWD, RIVAL, veteran } from './veteran.ts';
 import { letters } from './letters.ts';
+import { consoleNotes } from './console-notes.ts';
 
 export const DIST = join(ROOT, 'apps/web/dist');
 export const OUT = join(ROOT, '.verify');
@@ -215,6 +216,8 @@ async function start(): Promise<Served> {
     { elder: elderId, keeper: ids.get('Keeper')!, veteran: ids.get('Veteran')!, blocked: ids.get(CROWD[0])! },
     now,
   );
+  const staff = await staffIn(url, ctx.config.staff.password!);
+  await consoleNotes(ctx, url, staff, ids.get('Keeper')!, now);
   return {
     url,
     cookie,
@@ -223,7 +226,7 @@ async function start(): Promise<Served> {
     keeper: kpr,
     sage: sg,
     squire: sqr,
-    staff: await staffIn(url, ctx.config.staff.password!),
+    staff,
     ctx,
     close: async () => {
       await close();

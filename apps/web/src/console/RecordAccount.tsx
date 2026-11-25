@@ -6,6 +6,7 @@ import { t } from '@idle-clash/content';
 import { Button, Field, Panel } from '@idle-clash/ui';
 import { useState, type FormEvent } from 'react';
 import { api } from '../api.ts';
+import { forget } from './recent.ts';
 import { CopyButton } from '../pages/CopyButton.tsx';
 import { navigate } from '../router.ts';
 import type { Run } from './Players.tsx';
@@ -38,7 +39,7 @@ export function RecordAccount({ record: r, reload, run }: { record: RecordRespon
     e.preventDefault();
     void run(
       () => api.admin.remove(r.id, typed),
-      () => navigate('/admin/players'),
+      () => (forget(r.id), navigate('/admin/players')),
       { invalidInput: t('record.typeName') },
     );
   };

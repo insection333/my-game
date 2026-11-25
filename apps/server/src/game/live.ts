@@ -62,6 +62,11 @@ export class LiveHub {
     return this.sockets.size;
   }
 
+  /** The sessions a player has pages open under (session 234), by their hashes. */
+  openSessions(playerId: string): Set<string> {
+    return new Set([...(this.sockets.get(playerId) ?? [])].map((s) => this.sessionOf.get(s) ?? ''));
+  }
+
   /** Closes a player's pages: signed out everywhere (4401: the account deleted, a password reset), or
    *  banned (4403), which the page says on the welcome page it lands on (session 95). */
   closePlayer(playerId: string, banned = false): void {

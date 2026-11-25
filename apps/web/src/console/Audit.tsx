@@ -1,11 +1,13 @@
 // The console's Audit log (session 228, `/admin/audit`): every action taken from the console, newest first:
 // when, by which admin, what, to which player (their record a press away) and what it changed. Searched by
 // the action or a name; a hundred at a time, Older entries for the rest.
-import type { AuditEntry } from '@idle-clash/contracts';
+import { FILE_MOST, type AuditEntry } from '@idle-clash/contracts';
 import { fmt, t } from '@idle-clash/content';
 import { Button, Field, Panel, ResponsiveTable, TextLink, type Column } from '@idle-clash/ui';
 import { useEffect, useState, type FormEvent } from 'react';
 import { api } from '../api.ts';
+import { csvOf, fileName, isoWhen } from './csv.ts';
+import { DownloadCsv } from './Download.tsx';
 import { handled } from '../game/session.ts';
 import { whenOf } from '../pages/days.ts';
 import { untilLoaded } from '../Ready.tsx';
@@ -30,6 +32,9 @@ const ACTIONS: Record<string, () => string> = {
   signOut: () => t('audit.signOut'),
   delete: () => t('audit.delete'),
   broadcast: () => t('audit.broadcast'),
+  note: () => t('audit.note'),
+  unnote: () => t('audit.unnote'),
+  endSession: () => t('audit.endSession'),
 };
 
 export const actionWords = (action: string): string => (Object.hasOwn(ACTIONS, action) ? ACTIONS[action]() : action);
@@ -44,11 +49,44 @@ export function detailWords(e: Pick<AuditEntry, 'action' | 'detail'>): string {
     return t('audit.items', { item: said(d.item), count: said(d.count), reason: said(d.reason) });
   if (e.action === 'xp' && d)
     return t('audit.xpGiven', { xp: said(d.xp), skill: said(d.skill), reason: said(d.reason) });
+  if ((e.action === 'note' || e.action === 'unnote') && d) return t('audit.noted', { note: said(d.note) });
   return '';
 }
 
 /** The log searched for what was typed, at its own address (session 231), so a search can be kept or linked. */
 export const auditHref = (q: string) => `/admin/audit${q ? `?${new URLSearchParams({ q }).toString()}` : ''}`;
+
+/** Every entry the search finds, as a file (session 234). */
+async function auditFile(query: string) {
+  const entries: AuditEntry[] = [];
+  for (let before: number | null = null; entries.length < FILE_MOST;) {
+    const r = await api.admin.audit(query, before, true);
+    entries.push(...r.entries);
+    if (r.more === null) break;
+    before = r.more;
+  }
+  return {
+    name: fileName('audit-log'),
+    text: csvOf(
+      [
+        t('console.audit.when'),
+        t('console.audit.admin'),
+        t('console.audit.action'),
+        t('console.csv.detail'),
+        t('console.audit.player'),
+        t('console.csv.id'),
+      ],
+      entries.map((e) => [
+        isoWhen(e.at),
+        e.actor || t('console.audit.departed'),
+        actionWords(e.action),
+        detailWords(e),
+        e.target,
+        e.targetId,
+      ]),
+    ),
+  };
+}
 
 export function Audit() {
   useLocation();
@@ -126,9 +164,10 @@ export function Audit() {
           <ResponsiveTable caption={t('console.audit')} columns={columns} rows={entries} rowKey={(e) => String(e.id)} />
         </Panel>
       )}
-      {more !== null && (
+      {entries && entries.length > 0 && (
         <div className={s.pager}>
-          <Button onClick={() => void load(query, more)}>{t('console.audit.older')}</Button>
+          <DownloadCsv make={() => auditFile(query)} />
+          {more !== null && <Button onClick={() => void load(query, more)}>{t('console.audit.older')}</Button>}
         </div>
       )}
     </Slot>

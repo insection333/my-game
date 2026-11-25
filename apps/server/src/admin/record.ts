@@ -14,6 +14,7 @@ import type { Ctx } from '../context.ts';
 import { adminActions, mailMutes, playerBastions, reports, sessions, visits } from '../db/schema.ts';
 import { totalLevelOf } from '../game/standing.ts';
 import { contractRoute, fail } from '../http.ts';
+import { notesOf } from './notes.ts';
 import { targetOf } from './target.ts';
 
 /** An action in the game's own words, or its address where the game has none. */
@@ -116,6 +117,7 @@ export function recordOf(ctx: Ctx, playerId: string): RecordResponse {
     }),
     castle: castle && rating !== undefined ? { level: castle.level, rating } : null,
     history,
+    notes: notesOf(ctx, playerId),
     catalog: catalogOf().map((i) => ({ ...i, held: countOf(state, i.id) })),
   };
 }

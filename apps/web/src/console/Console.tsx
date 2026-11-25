@@ -16,7 +16,9 @@ import { NotFound } from '../pages/Simple.tsx';
 import { Ready } from '../Ready.tsx';
 import { navigate } from '../router.ts';
 import { ClosedTest } from './ClosedTest.tsx';
-import { GoTo, goToKey, opensGoTo } from './GoTo.tsx';
+import { GoTo, goToKey } from './GoTo.tsx';
+import { G_MS, keyOf } from './keys.ts';
+import { Keys } from './Keys.tsx';
 import { MailMonitor } from './Mail.tsx';
 import { Moderation } from './Moderation.tsx';
 import { Audit } from './Audit.tsx';
@@ -111,12 +113,23 @@ export default function Console({ path }: { path: string }) {
   const { admin, staff, player } = useSession();
   const section = sectionOf(path);
   const [going, setGoing] = useState(false);
-  // Go to opens from anywhere in the console (session 233).
+  const [keys, setKeys] = useState(false);
+  // Go to opens from anywhere in the console (session 233); ? lists the keys, G then a letter goes to a
+  // section (session 234).
   useEffect(() => {
+    let gAt = -Infinity;
     const onKey = (e: KeyboardEvent) => {
-      if (!opensGoTo(e)) return;
+      const k = keyOf(e, performance.now() - gAt < G_MS);
+      gAt = -Infinity;
+      if (!k) return;
+      if ('g' in k) {
+        gAt = performance.now();
+        return;
+      }
       e.preventDefault();
-      setGoing(true);
+      if ('goTo' in k) setGoing(true);
+      else if ('keys' in k) setKeys(true);
+      else navigate(hrefOf(k.section));
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -200,7 +213,11 @@ export default function Console({ path }: { path: string }) {
         <GoTo
           sections={SECTIONS.map((x) => ({ href: hrefOf(x.id), label: t(x.label) }))}
           onClose={() => setGoing(false)}
+          onKeys={() => (setGoing(false), setKeys(true))}
         />
+      )}
+      {keys && (
+        <Keys sections={SECTIONS.map((x) => ({ id: x.id, label: t(x.label) }))} onClose={() => setKeys(false)} />
       )}
       <Ready />
     </div>

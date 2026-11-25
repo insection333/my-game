@@ -82,6 +82,14 @@ db.exec(`with recursive k(i) as (select 1 union all select i + 1 from k where i 
 db.exec(`with recursive k(i) as (select 1 union all select i + 1 from k where i < 300)
   insert into reports (reporter_id, target_id, reason, at) select ${pid(`1 + k.i % ${PLAYERS}`)},
   ${pid('1 + (k.i * 7) % 60')}, 'abuse', ${now} - k.i * 60000 from k`);
+// A year of admins' work, and notes on players (session 234).
+db.exec(`with recursive k(i) as (select 1 union all select i + 1 from k where i < 20000)
+  insert into admin_actions (at, actor_id, actor_name, action, target_id, target_name, detail)
+  select ${now} - k.i * 1500, 'admin', 'Admin', case k.i % 3 when 0 then 'give' when 1 then 'note' else 'warn' end,
+  ${pid(`1 + k.i % ${PLAYERS}`)}, 'Player' || (1 + k.i % ${PLAYERS}), '{"item":"Oak logs","count":5,"reason":"A fault"}' from k`);
+db.exec(`with recursive k(i) as (select 1 union all select i + 1 from k where i < 3000)
+  insert into admin_notes (player_id, at, actor_id, actor_name, text) select ${pid(`1 + k.i % ${PLAYERS}`)},
+  ${now} - k.i * 60000, 'admin', 'Admin', 'Asked about a lost sword; gave it back.' from k`);
 db.exec('commit');
 db.exec('analyze');
 const rows = (t: string) => (db.prepare(`select count(*) n from ${t}`).get() as { n: number }).n;
@@ -90,7 +98,9 @@ const saveKb = Math.round(
 );
 console.log(
   `Saves of ${saveKb} KB. Realm of ${PLAYERS} players built in ${Math.round(performance.now() - t0)} ms: ` +
-    ['players', 'saves', 'visits', 'hiscores', 'telemetry', 'notices', 'mail'].map((t) => `${t} ${rows(t)}`).join(', '),
+    ['players', 'saves', 'visits', 'hiscores', 'telemetry', 'notices', 'mail', 'admin_actions']
+      .map((t) => `${t} ${rows(t)}`)
+      .join(', '),
 );
 
 const signed = await post(s, '/api/auth/sign-in', { name: 'Admin', password: 'console load 1' }, undefined, {
@@ -108,6 +118,9 @@ const READS: [string, string, unknown][] = [
   ['Directory, active', '/api/admin/directory', { query: '', filter: 'active', sort: 'seen', page: 0 }],
   ['Directory, last page', '/api/admin/directory', { query: '', filter: 'all', sort: 'level', page: 59 }],
   ['A record', '/api/admin/record', { playerId: '00000000-0000-4000-8000-000000001234' }],
+  ['Activity', '/api/admin/activity', { playerId: '00000000-0000-4000-8000-000000001234' }],
+  ['Directory, as a file', '/api/admin/directory', { query: '', filter: 'all', sort: 'level', page: 2, file: true }],
+  ['Audit log, as a file', '/api/admin/audit', { query: '', before: null, file: true }],
   ['Audit log', '/api/admin/audit', { query: '', before: null }],
   ['Audit log, a search', '/api/admin/audit', { query: 'Gave', before: null }],
   ['Live', '/api/admin/live', ''],

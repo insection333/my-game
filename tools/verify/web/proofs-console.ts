@@ -1,6 +1,7 @@
 // The admin console (session 227): signed out, /admin leads to the welcome page's sign-in, the one the
 // players use (the owner: no sign-in of its own); signed in there as Admin, the console opens on its Overview
 // without the game ever loading, each section opens from its link, and Sign out comes back to the form.
+import { readFileSync } from 'node:fs';
 import { openPage, type Served } from './session.ts';
 
 const say = (err: unknown) => (err instanceof Error ? err.message.split('\n')[0] : String(err));
@@ -39,7 +40,8 @@ export async function runConsoleProofs(served: Served): Promise<string[]> {
 }
 
 /** Session 231: a double click on Give gives once (it gave twice), and Back to an earlier search of the
- *  players puts that search back in its box (the box kept the last typed). */
+ *  players puts that search back in its box (the box kept the last typed). Session 233: Go to; session 234:
+ *  the players opened lately, the keys, Download as CSV and the record's Activity. */
 async function pressProofs(served: Served): Promise<string[]> {
   const problems: string[] = [];
   const page = await openPage('chromium', '/admin', { viewport: { width: 1440, height: 900 } }, 'staff');
@@ -81,6 +83,35 @@ async function pressProofs(served: Served): Promise<string[]> {
     await page.getByRole('dialog').waitFor();
     if (await page.evaluate(() => document.documentElement.scrollWidth > innerWidth))
       problems.push('The console: Go to scrolls sideways on a 320 px phone');
+    // Session 234: the player opened lately leads Go to; ? lists the keys; G then A goes to the Audit log,
+    // whose Download as CSV hands over a spreadsheet's file; the record's Activity signs out one browser.
+    step = 'Go to offers the player opened lately';
+    await page.keyboard.press('Escape');
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.keyboard.press('Control+k');
+    await page.getByRole('dialog').getByText('Opened lately').first().waitFor({ timeout: 10_000 });
+    step = 'the list of keys';
+    await page.getByRole('dialog').getByRole('button', { name: 'Keys', exact: true }).click();
+    await page.getByRole('dialog', { name: 'Keys' }).getByText('Go to a section or a player').waitFor();
+    await page.keyboard.press('Escape');
+    step = 'G then A';
+    await page.locator('h1').click();
+    await page.keyboard.press('g');
+    await page.keyboard.press('a');
+    await page.waitForURL((u) => u.pathname === '/admin/audit');
+    step = 'Download as CSV';
+    await page.getByRole('table').waitFor({ timeout: 10_000 });
+    const [file] = await Promise.all([
+      page.waitForEvent('download'),
+      page.getByRole('button', { name: 'Download as CSV' }).click(),
+    ]);
+    const text = readFileSync(await file.path(), 'utf8');
+    if (!/^\uFEFFWhen,Admin,Action,/.test(text) || !text.includes('proof of one press'))
+      problems.push(`The console: Download as CSV gave ${JSON.stringify(text.slice(0, 60))}`);
+    step = "the record's Activity";
+    await page.goto(served.url + '/admin/players/@Keeper?tab=activity');
+    await page.getByRole('img', { name: /of \d+ days/ }).waitFor({ timeout: 10_000 });
+    await page.getByRole('button', { name: 'Sign out this browser' }).first().waitFor({ timeout: 10_000 });
   } catch (err) {
     problems.push(`The console: ${step} failed (${say(err)})`);
   } finally {

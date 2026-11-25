@@ -4,6 +4,7 @@
 // size the realm will grow to.
 import {
   DIRECTORY_PAGE,
+  FILE_PAGE,
   nameKey,
   ROUTES,
   type DirectoryFilter,
@@ -38,7 +39,7 @@ const SORTS: Record<DirectorySort, string> = {
 };
 
 export function directoryRoutes(app: FastifyInstance, ctx: Ctx): void {
-  contractRoute<{ query: string; filter: DirectoryFilter; sort: DirectorySort; page: number }>(
+  contractRoute<{ query: string; filter: DirectoryFilter; sort: DirectorySort; page: number; file?: true }>(
     app,
     ROUTES.adminDirectory,
     ({ input }) => {
@@ -56,10 +57,12 @@ export function directoryRoutes(app: FastifyInstance, ctx: Ctx): void {
         where p.role = 'player' and p.name_key like @pattern escape '\\'`;
       const filtered = `select * from (${rows}) p where ${FILTERS[input.filter]}`;
       const db = ctx.store.sqlite;
+      const size = input.file ? FILE_PAGE : DIRECTORY_PAGE;
       const total = (db.prepare(`select count(*) n from (${filtered})`).get(params) as { n: number }).n;
       const page = db
         .prepare(`${filtered} order by ${SORTS[input.sort]} limit @limit offset @offset`)
-        .all({ ...params, limit: DIRECTORY_PAGE, offset: input.page * DIRECTORY_PAGE }) as {
+        // A larger page for a file (session 234).
+        .all({ ...params, limit: size, offset: input.page * size }) as {
         id: string;
         name: string;
         created_at: number;

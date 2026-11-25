@@ -3,6 +3,7 @@
 // added beside the admin page's (routes.ts, moderation.ts, mail.ts, closed-test.ts).
 import { z } from 'zod';
 import { PATHS } from './paths.ts';
+import type { AdminNote } from './console-more.ts';
 import type { RouteContract } from './routes.ts';
 
 export const DIRECTORY_FILTERS = ['all', 'new', 'active', 'away', 'banned', 'reported', 'muted'] as const;
@@ -18,6 +19,8 @@ export const DirectoryQuery = z
     filter: z.enum(DIRECTORY_FILTERS),
     sort: z.enum(DIRECTORY_SORTS),
     page: z.number().int().min(0).max(10_000),
+    /** A page of 1,000 for a file (session 234). */
+    file: z.literal(true).optional(),
   })
   .strict();
 
@@ -27,6 +30,8 @@ export const AuditQuery = z
     /** Words in the action, the admin's name or the player's name. */
     query: z.string().max(64),
     before: z.number().int().positive().nullable(),
+    /** A page of 1,000 for a file (session 234). */
+    file: z.literal(true).optional(),
   })
   .strict();
 
@@ -268,6 +273,8 @@ export interface RecordResponse {
   castle: { level: number; rating: number } | null;
   /** What admins have done to them, newest first. */
   history: AuditEntry[];
+  /** Notes admins keep on them, newest first (session 234). */
+  notes: AdminNote[];
   /** Everything that can be given (gold first), by name, with how many they hold (session 231), for the
    *  Grants form. */
   catalog: { id: string; name: string; held: number }[];

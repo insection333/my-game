@@ -238,6 +238,7 @@
 
 .pagerButtons {
   display: inline-flex;
+  flex-wrap: wrap;
   gap: var(--s-2);
 }
 

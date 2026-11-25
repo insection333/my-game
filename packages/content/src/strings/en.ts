@@ -21,6 +21,7 @@ import { steading } from './en-steading.ts';
 import { closedTest } from './en-test.ts';
 import { moderation } from './en-moderation.ts';
 import { consoleWords } from './en-console.ts';
+import { consoleMoreWords } from './en-console-more.ts';
 import { mail } from './en-mail.ts';
 import { legal } from './en-legal.ts';
 import { progress } from './en-progress.ts';
@@ -263,6 +264,7 @@ export const en: Record<string, string> = {
   ...closedTest,
   ...moderation,
   ...consoleWords,
+  ...consoleMoreWords,
   ...mail,
   ...castle,
   ...castleWar,

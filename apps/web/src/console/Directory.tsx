@@ -6,6 +6,8 @@ import {
   DIRECTORY_FILTERS,
   DIRECTORY_PAGE,
   DIRECTORY_SORTS,
+  FILE_MOST,
+  FILE_PAGE,
   type DirectoryFilter,
   type DirectoryResponse,
   type DirectoryRow,
@@ -15,6 +17,8 @@ import { fmt, t } from '@idle-clash/content';
 import { Button, Field, Panel, Pill, ResponsiveTable, Tabs, TextLink, type Column } from '@idle-clash/ui';
 import { useEffect, useState, type FormEvent } from 'react';
 import { api } from '../api.ts';
+import { csvOf, fileName, isoDay } from './csv.ts';
+import { DownloadCsv } from './Download.tsx';
 import { handled } from '../game/session.ts';
 import { dayOf } from '../pages/days.ts';
 import { untilLoaded } from '../Ready.tsx';
@@ -97,6 +101,43 @@ function Standing({ row, now }: { row: DirectoryRow; now: number }) {
     !row.listed && <Pill key="l">{t('console.standing.unlisted')}</Pill>,
   ].filter(Boolean);
   return pills.length ? <span className={s.pills}>{pills}</span> : <span>{t('console.standing.fine')}</span>;
+}
+
+/** Every player the view finds, in its order, as a file (session 234). */
+async function directoryFile(ask: Ask) {
+  const rows: DirectoryRow[] = [];
+  for (let page = 0; rows.length < FILE_MOST; page++) {
+    const r = await api.admin.directory({ ...ask, page, file: true });
+    rows.push(...r.rows);
+    if (r.rows.length < FILE_PAGE) break;
+  }
+  return {
+    name: fileName('players'),
+    text: csvOf(
+      [
+        t('console.col.name'),
+        t('console.csv.id'),
+        t('console.col.joined'),
+        t('console.col.seen'),
+        t('console.col.level'),
+        t('console.csv.banned'),
+        t('record.listed'),
+        t('console.csv.reports'),
+        t('record.muted'),
+      ],
+      rows.map((x) => [
+        x.name,
+        x.id,
+        isoDay(x.createdAt),
+        x.seen,
+        x.totalLevel,
+        isoDay(x.bannedAt),
+        x.listed ? t('record.yes') : t('record.no'),
+        x.openReports,
+        isoDay(x.mutedUntil),
+      ]),
+    ),
+  };
 }
 
 export function Directory() {
@@ -198,6 +239,7 @@ export function Directory() {
               })}
             </span>
             <span className={s.pagerButtons}>
+              <DownloadCsv make={() => directoryFile(ask)} />
               <Button disabled={ask.page === 0} onClick={() => go({ page: ask.page - 1 })}>
                 {t('console.prev')}
               </Button>
