@@ -11,6 +11,7 @@ import {
   RARE_FIND_COMPLETIONS,
   findUses,
   spentFind,
+  storehouseData,
   type FindUse,
 } from '@idle-clash/features';
 import { countOf, type State } from '@idle-clash/kernel';
@@ -113,6 +114,9 @@ function ItemActions({ item, value, gear }: { item: string; value: number; gear:
   // A new question clears the last sale's line, which would stand under it as if it answered it.
   const ask = () => (setAsking(true), setSold(''), focusIn('[data-answer]'));
   const shown = have > 0 && (value > 0 || gear);
+  // Locked against selling (session 241): no sale here, nor Sell finds or Sell old gear.
+  const locked = storehouseData.isLocked(state, item);
+  const lock = (on: boolean) => game.act('storehouse', 'lock', { item, on });
   return (
     <div ref={box}>
       {shown && asking && (
@@ -138,7 +142,15 @@ function ItemActions({ item, value, gear }: { item: string; value: number; gear:
               {t('gear.wear')}
             </Button>
           )}
-          {value > 0 && (
+          {value > 0 && locked && (
+            <>
+              <span className={s.muted}>{t('store.locked')}</span>
+              <Button variant="quiet" onClick={() => lock(false)}>
+                {t('store.unlock')}
+              </Button>
+            </>
+          )}
+          {value > 0 && !locked && (
             <>
               <Button variant="secondary" disabled={max < 1} onClick={() => sell(1)}>
                 {t('store.sellOne')}
@@ -153,6 +165,9 @@ function ItemActions({ item, value, gear }: { item: string; value: number; gear:
                   {t('store.sellAllButOne')}
                 </Button>
               )}
+              <Button variant="quiet" onClick={() => lock(true)}>
+                {t('store.lock')}
+              </Button>
             </>
           )}
         </div>

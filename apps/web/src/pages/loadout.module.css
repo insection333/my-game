@@ -152,3 +152,20 @@
 .health .meal span {
   color: var(--ink);
 }
+
+/* Fight as a style, or wear the best for this one (session 241). */
+.fightAs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.styles {
+  display: flex;
+  gap: var(--s-1);
+}
+
+.styles [data-current] {
+  box-shadow: inset 0 0 0 2px var(--woad);
+}

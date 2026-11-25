@@ -7,10 +7,10 @@ import { FOODS, HITPOINTS } from '../shared/combat/data.ts';
 import { combatOf } from '../shared/combat/state.ts';
 import { pedlarKeeps } from '../shared/pedlar-lots.ts';
 import { skillLevel } from '../shared/skill.ts';
-import { ENLARGE_COSTS, noRoom, storeOf } from '../shared/storehouse.ts';
+import { ENLARGE_COSTS, isLocked, noRoom, storeOf } from '../shared/storehouse.ts';
 
 type Refusal<C extends string> = { ok: false; reason: { code: C; detail?: Record<string, string | number> } };
-export type SellResult = { ok: true; gold: number } | Refusal<'notSellable' | 'notEnough' | 'wornItem'>;
+export type SellResult = { ok: true; gold: number } | Refusal<'notSellable' | 'notEnough' | 'wornItem' | 'locked'>;
 export type BuyResult = { ok: true; gold: number } | Refusal<'notSold' | 'notEnoughGold' | 'storehouseFull'>;
 export type SellFindsResult = { ok: true; gold: number; kinds: number } | Refusal<'nothingToSell'>;
 export type EnlargeResult = { ok: true } | Refusal<'fullyEnlarged' | 'notEnoughGold'>;
@@ -25,6 +25,7 @@ export function sell(state: State, item: string, count: number): { state: State;
   const each = priceOf(item);
   if (each <= 0) return { state, result: { ok: false, reason: { code: 'notSellable' } } };
   if (countOf(state, item) < count) return { state, result: { ok: false, reason: { code: 'notEnough' } } };
+  if (isLocked(state, item)) return { state, result: { ok: false, reason: { code: 'locked' } } };
   const worn = Object.values(combatOf(state).worn).includes(item);
   if (worn && countOf(state, item) === count) return { state, result: { ok: false, reason: { code: 'wornItem' } } };
   const next = structuredClone(state);
@@ -38,7 +39,9 @@ export function sell(state: State, item: string, count: number): { state: State;
  *  pedlar's find of the day is kept back, three of it, until handed in (session 226). */
 export function findsToSell(state: State, at: number): { item: string; count: number }[] {
   return Object.keys(state.items)
-    .filter((id) => (findOf(id)?.rarity === 'uncommon' || spentFind(state, id)) && priceOf(id) > 0)
+    .filter(
+      (id) => (findOf(id)?.rarity === 'uncommon' || spentFind(state, id)) && priceOf(id) > 0 && !isLocked(state, id),
+    )
     .map((item) => ({ item, count: countOf(state, item) - pedlarKeeps(state, at, item) }))
     .filter((x) => x.count > 0);
 }
@@ -78,6 +81,6 @@ export function enlarge(state: State): { state: State; result: EnlargeResult } {
   if (countOf(state, 'gold') < cost) return { state, result: { ok: false, reason: { code: 'notEnoughGold' } } };
   const next = structuredClone(state);
   take(next, 'gold', cost);
-  next.features.storehouse = { enlargements: enlargements + 1 };
+  next.features.storehouse = { ...storeOf(state), enlargements: enlargements + 1 };
   return { state: next, result: { ok: true } };
 }

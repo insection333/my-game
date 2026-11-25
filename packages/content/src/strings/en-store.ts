@@ -26,6 +26,15 @@ export const store = {
   'store.sellFinds.pedlar': '{item} ×{count}: kept back for the pedlar today.',
   'store.soldFinds': 'Sold {count} kinds of find for {gold} gold',
   'store.soldFindsOne': 'Sold 1 kind of find for {gold} gold',
+  // Old gear at one press, and locks (session 241).
+  'store.sellGear': 'Sell old gear for {gold} gold',
+  'store.sellGear.ask':
+    'Sell {gear} for {gold} gold? Each is two tiers or more below what you may wear; worn and tempered pieces keep one.',
+  'store.soldGear': 'Sold {count} kinds of gear for {gold} gold',
+  'store.soldGearOne': 'Sold 1 kind of gear for {gold} gold',
+  'store.lock': 'Lock',
+  'store.unlock': 'Unlock',
+  'store.locked': 'Locked: kept from every sale',
   'store.sellYes': 'Sell',
   'store.sellNo': 'Keep them',
   'store.sold': 'Sold {count} for {gold} gold',
@@ -38,7 +47,7 @@ export const store = {
   'stop.storehouseFull': 'Storehouse full',
   'help.storehouse.title': 'Storehouse',
   'help.storehouse.body':
-    "The Storehouse holds any number of each item, but only so many different items. Sell what you do not need to the vendor (Sell finds sells every find with no use left at one press, keeping back the pedlar's of the day), buy food, and enlarge it with gold.",
+    "The Storehouse holds any number of each item, but only so many different items. Sell what you do not need to the vendor (Sell finds sells every find with no use left at one press, keeping back the pedlar's of the day, and Sell old gear every piece two tiers or more below what you may wear), lock an item from its panel to keep it from every sale, buy food, and enlarge it with gold.",
   'store.kind.resource': 'Resources',
   'store.kind.supply': 'Supplies',
   'store.kind.gear': 'Gear',
