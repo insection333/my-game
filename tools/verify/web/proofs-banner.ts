@@ -2,6 +2,8 @@
 // game for every player, fits a 320 px phone, is put away by its cross and stays away on reload for that
 // player alone, and goes from an open page the moment it is taken down. Taken down at the end whatever
 // happens, so no view after this one wears it.
+import { join } from 'node:path';
+import { ROOT } from '../exec.ts';
 import { openPage, type Served } from './session.ts';
 
 const say = (err: unknown) => (err instanceof Error ? err.message.split('\n')[0] : String(err));
@@ -37,6 +39,8 @@ export async function runBannerProofs(served: Served): Promise<string[]> {
     await wide.goto(served.url + '/');
     const theirs = wide.getByRole('region', { name: 'From the keepers of the realm' });
     await theirs.getByText(TEXT).waitFor({ timeout: 10_000 });
+    await wide.screenshot({ path: join(ROOT, '.verify/shots/banner-1440.png') });
+    await admin.screenshot({ path: join(ROOT, '.verify/shots/banner-console-1440.png') });
     await admin.getByRole('button', { name: 'Take it down' }).click();
     await theirs.waitFor({ state: 'detached', timeout: 10_000 });
   } catch (err) {

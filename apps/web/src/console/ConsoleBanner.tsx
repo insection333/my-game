@@ -72,7 +72,7 @@ export function ConsoleBanner({ live, reload }: { live: LiveResponse; reload: ()
           <Field
             label={b ? t('console.banner.another') : t('console.banner.text')}
             hint={t('console.banner.chars', { used: fmt.int(text.length), max: fmt.int(BANNER_MAX) })}
-            rows={2}
+            rows={5}
             value={text}
             maxLength={BANNER_MAX}
             onChange={(e) => (setText(e.target.value), setSaid(null))}
