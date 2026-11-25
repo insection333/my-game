@@ -234,7 +234,8 @@
 
 /* A narrow bar keeps the mark, the console's name, the clock and the one button. */
 @container bar (max-width: 48rem) {
-  .whoName {
+  .whoName,
+  .whoName.whoLink {
     display: none;
   }
 }
