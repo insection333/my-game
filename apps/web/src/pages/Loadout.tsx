@@ -3,7 +3,7 @@
 // health, the food you carry and the supply in use.
 import { t } from '@idle-clash/content';
 import type { LoadoutSlot, LoadoutView, SupplyView, TrianglePart } from '@idle-clash/features';
-import { Button, Figure, IconButton, ItemIcon, Panel, ProgressBar, TextLink } from '@idle-clash/ui';
+import { Button, Figure, ItemIcon, Panel, ProgressBar, TextLink } from '@idle-clash/ui';
 import { game } from '../game/store.ts';
 import { navigate } from '../router.ts';
 import { itemHref } from './Items.tsx';
@@ -143,15 +143,17 @@ function FightAs({ loadout }: { loadout: LoadoutView }) {
       {loadout.fightAs.length > 0 && (
         <div role="group" aria-label={t('combat.fightAsGroup')} className={s.styles}>
           {loadout.fightAs.map((f) => (
-            <IconButton
+            <Button
               key={f.id}
-              label={t('combat.fightAs', { style: f.name })}
+              variant="secondary"
+              aria-label={t('combat.fightAs', { style: f.name })}
+              title={t('combat.fightAs', { style: f.name })}
               aria-pressed={f.current}
               data-current={f.current || undefined}
               onClick={() => game.act('combat', 'wearBest', { style: f.id })}
             >
               <ItemIcon name={f.id} size={24} />
-            </IconButton>
+            </Button>
           ))}
         </div>
       )}
