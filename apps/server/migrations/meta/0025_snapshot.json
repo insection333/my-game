@@ -79,10 +79,7 @@
       "indexes": {
         "bastion_logs_user_at": {
           "name": "bastion_logs_user_at",
-          "columns": [
-            "user_id",
-            "created_at"
-          ],
+          "columns": ["user_id", "created_at"],
           "isUnique": false
         }
       },
@@ -281,9 +278,7 @@
       "indexes": {
         "feedback_at": {
           "name": "feedback_at",
-          "columns": [
-            "at"
-          ],
+          "columns": ["at"],
           "isUnique": false
         }
       },
@@ -349,30 +344,19 @@
       "indexes": {
         "hiscores_skill_xp": {
           "name": "hiscores_skill_xp",
-          "columns": [
-            "skill",
-            "xp"
-          ],
+          "columns": ["skill", "xp"],
           "isUnique": false
         },
         "hiscores_rank": {
           "name": "hiscores_rank",
-          "columns": [
-            "skill",
-            "\"level\" desc",
-            "\"xp\" desc",
-            "reached_at"
-          ],
+          "columns": ["skill", "\"level\" desc", "\"xp\" desc", "reached_at"],
           "isUnique": false
         }
       },
       "foreignKeys": {},
       "compositePrimaryKeys": {
         "hiscores_player_id_skill_pk": {
-          "columns": [
-            "player_id",
-            "skill"
-          ],
+          "columns": ["player_id", "skill"],
           "name": "hiscores_player_id_skill_pk"
         }
       },
@@ -436,25 +420,17 @@
       "indexes": {
         "mail_to_at": {
           "name": "mail_to_at",
-          "columns": [
-            "to_id",
-            "at"
-          ],
+          "columns": ["to_id", "at"],
           "isUnique": false
         },
         "mail_from_at": {
           "name": "mail_from_at",
-          "columns": [
-            "from_id",
-            "at"
-          ],
+          "columns": ["from_id", "at"],
           "isUnique": false
         },
         "mail_at": {
           "name": "mail_at",
-          "columns": [
-            "at"
-          ],
+          "columns": ["at"],
           "isUnique": false
         }
       },
@@ -492,10 +468,7 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {
         "mail_blocks_blocker_id_blocked_id_pk": {
-          "columns": [
-            "blocker_id",
-            "blocked_id"
-          ],
+          "columns": ["blocker_id", "blocked_id"],
           "name": "mail_blocks_blocker_id_blocked_id_pk"
         }
       },
@@ -568,17 +541,12 @@
       "indexes": {
         "mail_refused_from_at": {
           "name": "mail_refused_from_at",
-          "columns": [
-            "from_id",
-            "at"
-          ],
+          "columns": ["from_id", "at"],
           "isUnique": false
         },
         "mail_refused_at": {
           "name": "mail_refused_at",
-          "columns": [
-            "at"
-          ],
+          "columns": ["at"],
           "isUnique": false
         }
       },
@@ -622,10 +590,7 @@
       "indexes": {
         "notices_player_at": {
           "name": "notices_player_at",
-          "columns": [
-            "player_id",
-            "at"
-          ],
+          "columns": ["player_id", "at"],
           "isUnique": false
         }
       },
@@ -1114,10 +1079,7 @@
       "indexes": {
         "idx_bastion_matchmaking": {
           "name": "idx_bastion_matchmaking",
-          "columns": [
-            "bastion_rating",
-            "shield_until_utc"
-          ],
+          "columns": ["bastion_rating", "shield_until_utc"],
           "isUnique": false
         }
       },
@@ -1255,30 +1217,22 @@
       "indexes": {
         "players_name_key_unique": {
           "name": "players_name_key_unique",
-          "columns": [
-            "name_key"
-          ],
+          "columns": ["name_key"],
           "isUnique": true
         },
         "players_email": {
           "name": "players_email",
-          "columns": [
-            "email"
-          ],
+          "columns": ["email"],
           "isUnique": false
         },
         "players_look": {
           "name": "players_look",
-          "columns": [
-            "name_look"
-          ],
+          "columns": ["name_look"],
           "isUnique": false
         },
         "players_created": {
           "name": "players_created",
-          "columns": [
-            "created_at"
-          ],
+          "columns": ["created_at"],
           "isUnique": false
         }
       },
@@ -1344,27 +1298,17 @@
       "indexes": {
         "reports_once": {
           "name": "reports_once",
-          "columns": [
-            "reporter_id",
-            "target_id",
-            "reason"
-          ],
+          "columns": ["reporter_id", "target_id", "reason"],
           "isUnique": true
         },
         "reports_target_open": {
           "name": "reports_target_open",
-          "columns": [
-            "target_id",
-            "settled_at"
-          ],
+          "columns": ["target_id", "settled_at"],
           "isUnique": false
         },
         "reports_reporter_at": {
           "name": "reports_reporter_at",
-          "columns": [
-            "reporter_id",
-            "at"
-          ],
+          "columns": ["reporter_id", "at"],
           "isUnique": false
         }
       },
@@ -1415,9 +1359,7 @@
       "indexes": {
         "sessions_player": {
           "name": "sessions_player",
-          "columns": [
-            "player_id"
-          ],
+          "columns": ["player_id"],
           "isUnique": false
         }
       },
@@ -1475,17 +1417,12 @@
       "indexes": {
         "siege_flows_at": {
           "name": "siege_flows_at",
-          "columns": [
-            "at"
-          ],
+          "columns": ["at"],
           "isUnique": false
         },
         "siege_flows_pair": {
           "name": "siege_flows_pair",
-          "columns": [
-            "attacker_id",
-            "defender_id"
-          ],
+          "columns": ["attacker_id", "defender_id"],
           "isUnique": false
         }
       },
@@ -1536,17 +1473,12 @@
       "indexes": {
         "telemetry_type_at": {
           "name": "telemetry_type_at",
-          "columns": [
-            "type",
-            "at"
-          ],
+          "columns": ["type", "at"],
           "isUnique": false
         },
         "telemetry_at": {
           "name": "telemetry_at",
-          "columns": [
-            "at"
-          ],
+          "columns": ["at"],
           "isUnique": false
         }
       },
@@ -1576,20 +1508,14 @@
       "indexes": {
         "visits_day": {
           "name": "visits_day",
-          "columns": [
-            "day",
-            "player_id"
-          ],
+          "columns": ["day", "player_id"],
           "isUnique": false
         }
       },
       "foreignKeys": {},
       "compositePrimaryKeys": {
         "visits_player_id_day_pk": {
-          "columns": [
-            "player_id",
-            "day"
-          ],
+          "columns": ["player_id", "day"],
           "name": "visits_player_id_day_pk"
         }
       },
@@ -1659,16 +1585,12 @@
       "indexes": {
         "admin_actions_at": {
           "name": "admin_actions_at",
-          "columns": [
-            "at"
-          ],
+          "columns": ["at"],
           "isUnique": false
         },
         "admin_actions_target": {
           "name": "admin_actions_target",
-          "columns": [
-            "target_id"
-          ],
+          "columns": ["target_id"],
           "isUnique": false
         }
       },
@@ -1726,10 +1648,7 @@
       "indexes": {
         "admin_notes_player": {
           "name": "admin_notes_player",
-          "columns": [
-            "player_id",
-            "at"
-          ],
+          "columns": ["player_id", "at"],
           "isUnique": false
         }
       },
@@ -1780,16 +1699,12 @@
       "indexes": {
         "push_due_at": {
           "name": "push_due_at",
-          "columns": [
-            "at"
-          ],
+          "columns": ["at"],
           "isUnique": false
         },
         "push_due_player": {
           "name": "push_due_player",
-          "columns": [
-            "player_id"
-          ],
+          "columns": ["player_id"],
           "isUnique": false
         }
       },
@@ -1827,10 +1742,7 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {
         "push_sent_player_id_day_pk": {
-          "columns": [
-            "player_id",
-            "day"
-          ],
+          "columns": ["player_id", "day"],
           "name": "push_sent_player_id_day_pk"
         }
       },
@@ -1893,16 +1805,12 @@
       "indexes": {
         "push_subs_endpoint_unique": {
           "name": "push_subs_endpoint_unique",
-          "columns": [
-            "endpoint"
-          ],
+          "columns": ["endpoint"],
           "isUnique": true
         },
         "push_subs_player": {
           "name": "push_subs_player",
-          "columns": [
-            "player_id"
-          ],
+          "columns": ["player_id"],
           "isUnique": false
         }
       },
@@ -1946,20 +1854,14 @@
       "indexes": {
         "realm_strikes_week": {
           "name": "realm_strikes_week",
-          "columns": [
-            "week",
-            "strikes"
-          ],
+          "columns": ["week", "strikes"],
           "isUnique": false
         }
       },
       "foreignKeys": {},
       "compositePrimaryKeys": {
         "realm_strikes_week_player_id_pk": {
-          "columns": [
-            "week",
-            "player_id"
-          ],
+          "columns": ["week", "player_id"],
           "name": "realm_strikes_week_player_id_pk"
         }
       },
@@ -2033,10 +1935,7 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {
         "realm_work_gifts_season_player_id_pk": {
-          "columns": [
-            "season",
-            "player_id"
-          ],
+          "columns": ["season", "player_id"],
           "name": "realm_work_gifts_season_player_id_pk"
         }
       },
