@@ -33,13 +33,17 @@ const reachOf = (ctx: Ctx) =>
     .all()
     .map((p) => p.id);
 
+/** How long the tables' rows stand: a count walks a whole table (the visits by the million in a year of a
+ *  large realm), and they grow by the day (session 236: a minute). */
+const TABLES_MS = 300_000;
+
 export function liveRoutes(app: FastifyInstance, ctx: Ctx, pulse: Pulse): void {
   const startedAt = ctx.config.now();
   const admin = requireAdmin(ctx);
   // Counting a table reads the whole of its smallest index: the growing tables' rows are counted once a
   // minute at most (session 233), where every open of System counted hundreds of thousands afresh.
   const st = statements(ctx.store.sqlite);
-  const tables = memo(ctx.config.now, 60_000, () =>
+  const tables = memo(ctx.config.now, TABLES_MS, () =>
     GROWING.map((name) => ({ name, rows: (st(`select count(*) n from ${name}`).get() as { n: number }).n })),
   );
 
@@ -78,7 +82,9 @@ export function liveRoutes(app: FastifyInstance, ctx: Ctx, pulse: Pulse): void {
         at: ctx.config.now(),
         online: named,
         joined,
-        reach: reachOf(ctx).length,
+        // Counted, not listed: the page asks every half minute (session 236).
+        reach: (st(`select count(*) n from players where role = 'player' and banned_at is null`).get() as { n: number })
+          .n,
         sent,
         banner: bannerView(ctx, ctx.config.now()),
       } satisfies LiveResponse;

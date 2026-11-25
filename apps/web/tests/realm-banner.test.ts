@@ -35,3 +35,22 @@ describe("the realm's banner", () => {
     expect(bannerShown(1_000)).toBeNull();
   });
 });
+
+describe("the realm's banner in a browser that keeps nothing", () => {
+  it('is still put away by its cross for the page (session 236: the cross did nothing)', () => {
+    vi.stubGlobal('localStorage', {
+      getItem: () => {
+        throw new Error('blocked');
+      },
+      setItem: () => {
+        throw new Error('blocked');
+      },
+    });
+    keepFor('alder');
+    setBanner({ id: 300, text: TEXT, until: 5_000 });
+    putAway();
+    expect(bannerShown(1_000)).toBeNull();
+    keepFor('birch');
+    expect(bannerShown(1_000)?.id).toBe(300);
+  });
+});

@@ -23,6 +23,11 @@
   overflow-wrap: anywhere;
 }
 
+.words > :last-child {
+  /* A line break the admin wrote is kept. */
+  white-space: pre-line;
+}
+
 .from {
   font-size: var(--t-small);
   font-weight: 700;

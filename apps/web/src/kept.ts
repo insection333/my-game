@@ -8,6 +8,9 @@ export function keepFor(id: string | null): void {
   who = id;
 }
 
+/** The player what is kept belongs to now (null signed out). */
+export const keptFor = (): string | null => who;
+
 const key = (name: string) => (who ? `${name}:${who}` : name);
 
 /** What is kept under `name` for this player: null if nothing, undefined if this browser keeps nothing. */

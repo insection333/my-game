@@ -4,7 +4,7 @@
 import { BANNER_HOURS, BANNER_MAX, type LiveResponse } from '@idle-clash/contracts';
 import { fmt, t } from '@idle-clash/content';
 import { Button, Field, Panel } from '@idle-clash/ui';
-import { useState, type FormEvent } from 'react';
+import { useRef, useState, type FormEvent } from 'react';
 import { api } from '../api.ts';
 import { handled } from '../game/session.ts';
 import { whenOf } from '../pages/days.ts';
@@ -26,8 +26,12 @@ export function ConsoleBanner({ live, reload }: { live: LiveResponse; reload: ()
   const [hours, setHours] = useState<(typeof BANNER_HOURS)[number]>(6);
   const [said, setSaid] = useState<{ text: string; bad: boolean } | null>(null);
   const [busy, setBusy] = useState(false);
+  // One press at a time, held in a ref (session 236): a state set by the first click is not yet read by a
+  // second in the same moment, so a double click put the banner up twice.
+  const pressing = useRef(false);
   const act = async (go: () => Promise<unknown>, done: string) => {
-    if (busy) return;
+    if (pressing.current) return;
+    pressing.current = true;
     setBusy(true);
     try {
       await go();
@@ -36,6 +40,7 @@ export function ConsoleBanner({ live, reload }: { live: LiveResponse; reload: ()
     } catch (err) {
       if (!handled(err)) setSaid({ text: refused(err), bad: true });
     } finally {
+      pressing.current = false;
       setBusy(false);
     }
   };

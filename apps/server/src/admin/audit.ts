@@ -10,6 +10,7 @@ import { requireAdmin } from '../auth/routes.ts';
 import type { Ctx } from '../context.ts';
 import { adminActions, players } from '../db/schema.ts';
 import { contractRoute } from '../http.ts';
+import { changed } from './memo.ts';
 
 const nameOf = (ctx: Ctx, id: string): string | null =>
   ctx.db.select({ name: players.name }).from(players).where(eq(players.id, id)).get()?.name ?? null;
@@ -36,6 +37,8 @@ export function audit(
     })
     .run();
   ctx.telemetry.record(`admin.${action}`, actorId, targetId ? { target: targetId } : undefined);
+  // What the console keeps (the directory) is made afresh, so the change shows at once (session 236).
+  changed(ctx);
 }
 
 /** Every action the log keeps, as the console says it. */

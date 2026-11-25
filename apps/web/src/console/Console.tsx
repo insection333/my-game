@@ -129,7 +129,13 @@ export default function Console({ path }: { path: string }) {
       e.preventDefault();
       if ('goTo' in k) setGoing(true);
       else if ('keys' in k) setKeys(true);
-      else navigate(hrefOf(k.section));
+      else {
+        // G then a letter from inside an open sheet goes, and the sheet with it (session 236: it stayed open
+        // over the section).
+        setGoing(false);
+        setKeys(false);
+        navigate(hrefOf(k.section));
+      }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);

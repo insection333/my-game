@@ -5,13 +5,28 @@
 // admin is answered from it: the page says the time its figures stand at.
 import type Database from 'better-sqlite3';
 
-export function memo<T>(now: () => number, ms: number, make: () => T): () => T {
+export function memo<T>(now: () => number, ms: number, make: () => T): (() => T) & { forget: () => void } {
   let made: { at: number; value: T } | null = null;
-  return () => {
+  const read = () => {
     const t = now();
     if (!made || t - made.at >= ms || t < made.at) made = { at: t, value: make() };
     return made.value;
   };
+  /** Made afresh at the next read (an admin changed what it holds). */
+  read.forget = () => void (made = null);
+  return read;
+}
+
+/** What is kept for each server and must be made afresh once an admin acts or an account goes (session
+ *  236: the directory, so a ban or a rename shows at once). */
+const forgetters = new WeakMap<object, Set<() => void>>();
+export function onChange(ctx: object, forget: () => void): void {
+  const set = forgetters.get(ctx) ?? new Set();
+  set.add(forget);
+  forgetters.set(ctx, set);
+}
+export function changed(ctx: object): void {
+  for (const f of forgetters.get(ctx) ?? []) f();
 }
 
 /** A statement prepared once and kept, where the console's reads prepared each query afresh on every read. */

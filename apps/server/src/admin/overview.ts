@@ -11,7 +11,7 @@ import type { Ctx } from '../context.ts';
 import { contractRoute } from '../http.ts';
 import { backupsHealth } from '../ops/status.ts';
 import { buildOf } from '../web.ts';
-import { memo, statements } from './memo.ts';
+import { memo, onChange, statements } from './memo.ts';
 import type { Pulse } from './pulse.ts';
 
 const DAY = 86_400_000;
@@ -28,6 +28,10 @@ export function overviewRoutes(app: FastifyInstance, ctx: Ctx, pulse: Pulse): vo
   const st = statements(db);
   const one = (q: string, ...args: unknown[]) => (st(q).get(...args) as { n: number | null }).n ?? 0;
   const read = memo(ctx.config.now, OVERVIEW_MS, () => overviewOf());
+  /** The players who came on each day gone by, kept: a past day's count does not change. */
+  const pastDays = new Map<string, number>();
+  // An account gone takes its visits with it, and an admin's act changes the counts: both made afresh.
+  onChange(ctx, () => (pastDays.clear(), read.forget()));
   contractRoute(app, ROUTES.adminOverview, () => read(), requireAdmin(ctx));
 
   function overviewOf(): AdminOverviewResponse {
@@ -36,25 +40,30 @@ export function overviewRoutes(app: FastifyInstance, ctx: Ctx, pulse: Pulse): vo
     const dayStart = Date.parse(`${today}T00:00:00Z`);
     const player = "role = 'player'";
     const daysAgo = (n: number) => dayOf(now - n * DAY);
-    // Who came today, this week and this month: for each player, whether a visit stands on or after each
-    // day, found by the visits' own key (player, day). Counting the month's visits apart held the server
-    // 23 ms on a realm of 3,000.
-    const came = st(
-      `select coalesce(sum(exists(select 1 from visits v where v.player_id = p.id and v.day >= @today)), 0) today,
-         coalesce(sum(exists(select 1 from visits v where v.player_id = p.id and v.day >= @week)), 0) week,
-         coalesce(sum(exists(select 1 from visits v where v.player_id = p.id and v.day >= @month)), 0) month
-       from players p where p.${player}`,
-    ).get({ today, week: daysAgo(6), month: daysAgo(29) }) as { today: number; week: number; month: number };
+    // Every count of players in one walk of them (session 236: five walks), and who came today, this week
+    // and this month by each player's last day, kept on their row (a player came on or after a day exactly
+    // when their last visit is on or after it). Three lookups of each player's visits held a realm of 10,000
+    // for 30 ms.
+    const c = st(
+      `select count(*) total, coalesce(sum(created_at >= @dayStart), 0) newToday,
+         coalesce(sum(created_at >= @weekAgo), 0) newWeek, coalesce(sum(listed_at is not null), 0) listed,
+         coalesce(sum(banned_at is not null), 0) banned, coalesce(sum(seen >= @today), 0) today,
+         coalesce(sum(seen >= @week), 0) week, coalesce(sum(seen >= @month), 0) month
+       from (select created_at, listed_at, banned_at, seen_day seen from players where ${player})`,
+    ).get({ dayStart, weekAgo: now - 7 * DAY, today, week: daysAgo(6), month: daysAgo(29) }) as Record<
+      'total' | 'newToday' | 'newWeek' | 'listed' | 'banned' | 'today' | 'week' | 'month',
+      number
+    >;
     const players = {
-      total: one(`select count(*) n from players where ${player}`),
-      newToday: one(`select count(*) n from players where ${player} and created_at >= ?`, dayStart),
-      newWeek: one(`select count(*) n from players where ${player} and created_at >= ?`, now - 7 * DAY),
-      activeToday: came.today,
-      activeWeek: came.week,
-      activeMonth: came.month,
+      total: c.total,
+      newToday: c.newToday,
+      newWeek: c.newWeek,
+      activeToday: c.today,
+      activeWeek: c.week,
+      activeMonth: c.month,
       online: ctx.live.online,
-      listed: one(`select count(*) n from players where ${player} and listed_at is not null`),
-      banned: one(`select count(*) n from players where ${player} and banned_at is not null`),
+      listed: c.listed,
+      banned: c.banned,
     };
     // Back on their second day: a visit the day after they joined. On their seventh: any visit six or more
     // days after. Each over the players who have had that day.
@@ -84,9 +93,17 @@ export function overviewRoutes(app: FastifyInstance, ctx: Ctx, pulse: Pulse): vo
            where ${player} and created_at >= ? group by day`,
       ).all(Date.parse(`${from}T00:00:00Z`)) as { day: string; n: number }[],
     );
+    // A day gone by keeps its count (session 236): only the days not yet counted, today among them, are read.
+    for (const d of pastDays.keys()) if (d < from) pastDays.delete(d);
+    const unread = Array.from({ length: 14 }, (_, i) => daysAgo(13 - i)).find((d) => d === today || !pastDays.has(d))!;
     const visited = byDay(
-      st('select day, count(*) n from visits where day >= ? group by day').all(from) as { day: string; n: number }[],
+      st('select day, count(*) n from visits where day >= ? group by day').all(unread) as { day: string; n: number }[],
     );
+    for (const [d, n] of pastDays) if (!visited.has(d)) visited.set(d, n);
+    for (const [d, n] of visited) if (d < today) pastDays.set(d, n);
+    // A day with no visits has none to keep, yet is counted: noted as nought.
+    for (let d = unread; d < today; d = dayOf(Date.parse(`${d}T00:00:00Z`) + DAY))
+      if (!pastDays.has(d)) pastDays.set(d, 0);
     const days: DayCount[] = Array.from({ length: 14 }, (_, i) => {
       const day = daysAgo(13 - i);
       return { day, signUps: joined.get(day) ?? 0, active: visited.get(day) ?? 0 };

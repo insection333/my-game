@@ -169,6 +169,13 @@
       "when": 1795599615244,
       "tag": "0023_admin_notes",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "6",
+      "when": 1795611557544,
+      "tag": "0024_players_seen_day",
+      "breakpoints": true
     }
   ]
 }

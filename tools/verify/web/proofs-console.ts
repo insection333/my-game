@@ -93,12 +93,12 @@ async function pressProofs(served: Served): Promise<string[]> {
     step = 'the list of keys';
     await page.getByRole('dialog').getByRole('button', { name: 'Keys', exact: true }).click();
     await page.getByRole('dialog', { name: 'Keys' }).getByText('Go to a section or a player').waitFor();
-    await page.keyboard.press('Escape');
+    // Session 236: G then A from inside the open sheet goes, and the sheet with it.
     step = 'G then A';
-    await page.locator('h1').click();
     await page.keyboard.press('g');
     await page.keyboard.press('a');
     await page.waitForURL((u) => u.pathname === '/admin/audit');
+    if (await page.getByRole('dialog').count()) problems.push('The console: G then A left the list of keys open');
     step = 'Download as CSV';
     await page.getByRole('table').waitFor({ timeout: 10_000 });
     const [file] = await Promise.all([

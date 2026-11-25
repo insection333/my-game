@@ -22,6 +22,7 @@ import {
 import { contractRoute, fail } from '../http.ts';
 import { eraseFeedback } from '../feedback.ts';
 import { eraseModeration } from '../moderation.ts';
+import { changed } from '../admin/memo.ts';
 import { eraseNotes } from '../admin/notes.ts';
 import { checkPassword, hashPassword } from './passwords.ts';
 import { requirePlayer } from './routes.ts';
@@ -49,6 +50,7 @@ export function erase(ctx: Ctx, playerId: string): void {
       .where(eq(adminActions.actorId, playerId))
       .run();
     eraseNotes(ctx, playerId);
+    changed(ctx);
     eraseFeedback(ctx, playerId);
     eraseModeration(ctx, playerId);
     eraseMail(ctx, playerId);
