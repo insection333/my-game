@@ -33,7 +33,7 @@ The three pillars decide everything below:
 
 ### Lanes, the queue and time away
 
-- Each lane runs one action and repeats it. Behind it you may queue one **Next** action, which starts when the current one stops (out of ingredients, Storehouse full, a retreat).
+- Each lane runs one action and repeats it. Behind it you may queue up to three actions to come, **Next** and two more (session 240), each starting in turn when the one before stops (out of ingredients, Storehouse full, a retreat); one that cannot start passes to the next that can.
 - When you leave, lanes keep going for **24 hours** from your last visit. The server counts completions from elapsed time, rolls finds in batches and credits everything when you return.
 - **The away recap** opens on return and leads with the best thing that happened (order: Legendary find, new collection entry, level, Rare find, mastery step, goal, Uncommon finds as one line).
 

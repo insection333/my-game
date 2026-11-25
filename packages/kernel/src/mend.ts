@@ -9,9 +9,10 @@ import {
   ActionRef,
   RequestRecord,
   SkillXp,
+  QUEUE,
 } from './schema.ts';
 import type { Lane, LaneId, State } from './schema.ts';
-import { newState } from './state.ts';
+import { newState, setQueue } from './state.ts';
 
 export interface Mended {
   doc: SaveDoc;
@@ -69,6 +70,17 @@ function mendLane(id: LaneId, raw: unknown, now: number, repairs: string[]): Lan
   if (raw.next !== null && raw.next !== undefined) {
     if (ActionRef.safeParse(raw.next).success) lane.next = ActionRef.parse(raw.next);
     else repairs.push(`The ${id} lane's Next action was damaged and was cleared`);
+  }
+  // What follows Next (session 240): each readable one kept in order, up to the lane's three, and only behind a
+  // Next (the first moves up when Next is gone).
+  if (raw.then !== undefined) {
+    const list: unknown[] = Array.isArray(raw.then) ? raw.then : [];
+    const good = list.filter((a) => ActionRef.safeParse(a).success).map((a) => ActionRef.parse(a));
+    const kept = [...(lane.next ? [lane.next] : []), ...good].slice(0, QUEUE);
+    const whole = Array.isArray(raw.then) && good.length === list.length && good.length > 0 && !!lane.next;
+    if (!whole || kept.length < good.length + 1)
+      repairs.push(`The ${id} lane's actions after Next were damaged and some were cleared`);
+    setQueue(lane, kept);
   }
   const st = raw.stopped;
   if (!lane.stopped && isObject(st) && isTime(st.at) && StopReason.safeParse(st.reason).success) {

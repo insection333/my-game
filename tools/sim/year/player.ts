@@ -205,6 +205,8 @@ export function playYear(
     making = plan.making;
     if (!settle && !plan.making && state.lanes.artisan.current) return combatLane();
     setLane('artisan', plan.now, t, window);
+    // One Next, as a lane held before session 240.
+    if (plan.next && plan.next !== plan.now) run(t, { type: 'clearNext', lane: 'artisan' }, window);
     if (plan.next && plan.next !== plan.now)
       run(t, { type: 'queueNext', lane: 'artisan', action: { feature: plan.next.feature, id: plan.next.id } }, window);
     combatLane();
@@ -254,6 +256,7 @@ export function playYear(
     state = set.state;
     if (!run(t, { type: 'start', lane: 'combat', action: { feature: 'expeditions', id: region } }, window))
       return false;
+    run(t, { type: 'clearNext', lane: 'combat' }, window);
     run(t, { type: 'queueNext', lane: 'combat', action: { feature: 'combat', id: foe } }, window);
     return true;
   }

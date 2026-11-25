@@ -52,10 +52,20 @@ export const Running = z
   .refine((r) => r.endsAt > r.startedAt, 'an action must end after it starts');
 export type Running = z.infer<typeof Running>;
 
+/** How many actions a lane holds to come: Next and two more (session 240). */
+export const QUEUE = 3;
+
 export const Lane = z
   .object({
     current: Running.nullable(),
     next: ActionRef.nullable(),
+    /** What follows Next, in order (session 240: a lane holds three to come, Next and two more). Only beside a
+     *  Next; older saves have none. */
+    then: z
+      .array(ActionRef)
+      .min(1)
+      .max(QUEUE - 1)
+      .optional(),
     /** Why the lane stopped and when, with the action that stopped (session 89; older saves have none), so
      *  the lane can offer to start it again once put right. */
     stopped: z.object({ reason: StopReason, at: time, action: ActionRef.optional() }).strict().nullable(),
