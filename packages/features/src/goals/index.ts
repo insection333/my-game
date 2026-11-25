@@ -6,10 +6,25 @@ import { defineFeature, defineRoute, type Json } from '../define.ts';
 import { firstStepRows, firstStepsDone } from './first-steps.ts';
 import { ladderRows } from './ladder-view.ts';
 import { standingView } from './ranks.ts';
-import { claim, needsRefresh, refresh, swap } from './rules.ts';
-import type { GoalsView } from './view.ts';
+import { claim, claimAll, needsRefresh, refresh, swap } from './rules.ts';
+import type { State } from '@idle-clash/kernel';
+import type { GoalRow, GoalsView } from './view.ts';
 
 export type { GoalRow, GoalsView } from './view.ts';
+
+/** The rows the Hearth lists: First steps while unfinished, the ladder after. */
+const rowsOf = (state: State, now: number): GoalRow[] =>
+  firstStepsDone(state) ? ladderRows(state, now) : firstStepRows(state, now);
+
+/** The goals ready to claim, in the order the Hearth lists them (session 242). */
+const readyOf = (rows: readonly GoalRow[]): string[] =>
+  rows.flatMap((r) => (r.button && 'claim' in r.button ? [r.button.claim] : []));
+
+/** Claim all, offered while two goals or more are ready. */
+const claimAllOf = (rows: readonly GoalRow[]): string | null => {
+  const ready = readyOf(rows).length;
+  return ready > 1 ? t('goals.claimAll', { count: fmt.int(ready) }) : null;
+};
 export type { StandingView } from './ranks.ts';
 
 export const goals = defineFeature({
@@ -24,6 +39,11 @@ export const goals = defineFeature({
       input: z.object({ goal: Id }).strict(),
       example: { goal: 'chop-a-pine' },
       run: (state, input, now) => claim(state, input.goal, now),
+    }),
+    claimAll: defineRoute({
+      input: z.object({}).strict(),
+      example: {},
+      run: (state, _input, now) => claimAll(state, (s) => readyOf(rowsOf(s, now)), now),
     }),
     swap: defineRoute({
       input: z.object({ task: z.number().int().min(0).max(3) }).strict(),
@@ -49,13 +69,16 @@ export const goals = defineFeature({
           progress: t('goals.progress', { done: fmt.int(done), total: fmt.int(rows.length) }),
           rows,
           refresh: false,
+          claimAll: claimAllOf(rows),
         } satisfies GoalsView as unknown as Json;
       }
+      const rows = ladderRows(state, now);
       return {
         title: t('goals.title'),
         progress: null,
-        rows: ladderRows(state, now),
+        rows,
         refresh: needsRefresh(state, now),
+        claimAll: claimAllOf(rows),
       } satisfies GoalsView as unknown as Json;
     },
   },

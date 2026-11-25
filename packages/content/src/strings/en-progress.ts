@@ -4,6 +4,8 @@ export const progress: Record<string, string> = {
   // Goals
   'goals.firstSteps': 'First steps',
   'goals.title': 'Goals',
+  // Every goal ready at one press (session 242), offered from two.
+  'goals.claimAll': 'Claim all {count}',
   'goals.count': '{now} of {of}',
   'goals.start': 'Start',
   'goals.doneToday': 'Done; the next comes {back}',
@@ -109,7 +111,7 @@ export const progress: Record<string, string> = {
   'goals.needsItem': 'Needs {item}',
   'help.goals.title': 'Goals',
   'help.goals.body':
-    "Goals show what to aim for next. First steps walk you through the game; then three short goals follow your lanes, a daily goal asks for a day's work in one skill, the week's contract sets four tasks drawn from your own play, and a milestone marks the next total level. Claim each for its reward: a supply cache, or gold for a milestone.",
+    "Goals show what to aim for next. First steps walk you through the game; then three short goals follow your lanes, a daily goal asks for a day's work in one skill, the week's contract sets four tasks drawn from your own play, and a milestone marks the next total level. Claim each for its reward: a supply cache, or gold for a milestone; Claim all takes every one ready at once. Follow up to three deeds from their sheets to keep them in Next up.",
   // Supply caches: what short goals and the daily goal pay in
   'goals.reward.cache': 'A cache, about {amount} gold',
   'goals.openCache': 'Open cache',

@@ -9,6 +9,7 @@ import { HONOURS, unlocked } from './honours.ts';
 import { deedList, pointsOf } from './list.ts';
 import { Reader } from './reader.ts';
 import { deedsOf } from './state.ts';
+import { allFinds } from '../shared/catalog.ts';
 
 export interface Career {
   totalLevel: number;
@@ -22,6 +23,14 @@ export interface Career {
   runs: number;
   /** The deepest depth reached in the Deep (session 226), 0 before the first descent. */
   deepest: number;
+  /** Lifetime records (session 242): finds in the collection log of all there are, bounties claimed, weeks'
+   *  contracts kept, the pedlar's favour, and the realm's bosses fallen with their strike. */
+  finds: number;
+  findsAll: number;
+  bounties: number;
+  weeks: number;
+  favour: number;
+  realmFallen: number;
   castle: { level: number; fortresses: number; routs: number; legends: number } | null;
 }
 
@@ -41,6 +50,12 @@ export function careerOf(state: State, now: number): Career {
     bossWins: BOSSES.reduce((n, b) => n + r.bossWins(b.id), 0),
     runs: r.runs(),
     deepest: r.deepest(),
+    finds: r.logged(),
+    findsAll: allFinds().length,
+    bounties: r.bounties(),
+    weeks: r.weeksKept(),
+    favour: r.favour(),
+    realmFallen: r.realmFallen(),
     castle: r.castleRaised()
       ? {
           level: r.castle('level'),

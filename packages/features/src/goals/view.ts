@@ -44,6 +44,8 @@ export interface GoalsView {
   rows: GoalRow[];
   /** The page asks the server to make the goals it lacks (new short goals, today's daily goal). */
   refresh: boolean;
+  /** "Claim all 3", while two goals or more are ready (session 242). */
+  claimAll: string | null;
 }
 
 const LANE_NAMES: Record<LaneId, string> = {

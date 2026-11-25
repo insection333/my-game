@@ -29,6 +29,8 @@ export interface DeedStep {
   unlocks: string[];
   /** A hidden deed not yet done: its words are not shown. */
   secret: boolean;
+  /** Followed on the Hearth (session 242). */
+  followed: boolean;
 }
 export interface DeedRow {
   id: string;
@@ -75,6 +77,7 @@ const unlocksOf = (id: string) =>
 
 export function stepOf(d: Deed, r: Reader, doneAt: number | undefined): DeedStep {
   const secret = d.hidden && doneAt === undefined;
+  const followed = doneAt === undefined && (deedsOf(r.state).followed ?? []).includes(d.id);
   const measured = doneAt === undefined ? d.measure(r) : d.target;
   return {
     id: d.id,
@@ -90,6 +93,7 @@ export function stepOf(d: Deed, r: Reader, doneAt: number | undefined): DeedStep
     count: secret || doneAt !== undefined ? null : countText(d, measured),
     unlocks: secret ? [] : unlocksOf(d.id),
     secret,
+    followed,
   };
 }
 
@@ -162,4 +166,16 @@ export function deedsView(state: State, now: number): DeedsView {
     .flatMap(([id]) => steps.get(id) ?? [])
     .slice(0, RECENT);
   return { categories, nearest, recent };
+}
+
+/** The deeds followed on the Hearth and not yet done (session 242), each with its progress. */
+export function followedView(state: State, now: number): DeedStep[] {
+  const d = deedsOf(state);
+  const ids = (d.followed ?? []).filter((id) => !Object.hasOwn(d.done, id));
+  if (!ids.length) return [];
+  const r = new Reader(state, now);
+  return ids.flatMap((id) => {
+    const deed = deedById(id);
+    return deed ? [stepOf(deed, r, undefined)] : [];
+  });
 }

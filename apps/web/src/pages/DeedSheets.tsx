@@ -40,6 +40,17 @@ export function DeedSheet({ onClose }: { onClose: () => void }) {
           {step.unlocks.length > 0 && (
             <p className={s.unlocks}>{t('deeds.unlocks', { honours: step.unlocks.join(', ') })}</p>
           )}
+          {/* Followed on the Hearth (session 242), three at most. */}
+          {!step.done && !step.secret && (
+            <div>
+              <Button
+                variant={step.followed ? 'quiet' : 'secondary'}
+                onClick={() => game.act('deeds', 'follow', { id: step.id, on: !step.followed })}
+              >
+                {step.followed ? t('deeds.unfollow') : t('deeds.follow')}
+              </Button>
+            </div>
+          )}
         </div>
       )}
       {view && !step && (

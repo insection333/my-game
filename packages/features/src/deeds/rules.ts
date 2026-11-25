@@ -4,8 +4,8 @@
 import { noteMoment, type GameEvent, type State } from '@idle-clash/kernel';
 import { POINTS, wordsOf } from './content.ts';
 import { HONOURS, honourName, honourOf, unlocked, type HonourKind } from './honours.ts';
-import { pending, pointsOf } from './list.ts';
-import { deedsOf, setDeeds } from './state.ts';
+import { deedById, pending, pointsOf } from './list.ts';
+import { deedsOf, FOLLOW, setDeeds, type DeedsState } from './state.ts';
 
 type Answer<R> = { state: State; result: R; events: GameEvent[] };
 
@@ -56,5 +56,25 @@ export function choose(state: State, kind: HonourKind, id: string | null): Answe
   if (d[kind] === id) return { state, result: { ok: true }, events: [] };
   const out = structuredClone(state);
   setDeeds(out, { ...d, [kind]: id });
+  return { state: out, result: { ok: true }, events: [] };
+}
+
+export type FollowResult = { ok: true } | { ok: false; reason: 'unknown' | 'done' };
+
+/** Follows a deed on the Hearth, or lets it go (session 242): three at most (a fourth lets the first go), never
+ *  one done or hidden. */
+export function follow(state: State, id: string, on: boolean): { state: State; result: FollowResult; events: [] } {
+  const d = deedsOf(state);
+  const deed = deedById(id);
+  const kept = (d.followed ?? []).filter((x) => x !== id && !Object.hasOwn(d.done, x));
+  if (on) {
+    if (!deed || deed.hidden) return { state, result: { ok: false, reason: 'unknown' }, events: [] };
+    if (Object.hasOwn(d.done, id)) return { state, result: { ok: false, reason: 'done' }, events: [] };
+  }
+  const out = structuredClone(state);
+  const followed = on ? [...kept, id].slice(-FOLLOW) : kept;
+  const next: DeedsState = { ...d, followed };
+  if (!followed.length) delete next.followed;
+  setDeeds(out, next);
   return { state: out, result: { ok: true }, events: [] };
 }

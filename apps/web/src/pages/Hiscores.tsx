@@ -19,6 +19,7 @@ import { profileHref } from './ProfileSheet.tsx';
 import { unrankedNote } from './hiscores-words.ts';
 import { Rivals } from './Rivals.tsx';
 import s from './hiscores.module.css';
+import { FindPlayer } from './FindPlayer.tsx';
 
 const PHONE_ROWS = 10;
 
@@ -95,6 +96,7 @@ export function Hiscores() {
         <Slot id="hiscores.online" className={s.online}>
           {data && <Pill tone="moss">{t('hiscores.online', { count: fmt.int(data.online) })}</Pill>}
         </Slot>
+        <FindPlayer />
       </HiscoresHead>
       <div className={s.layout}>
         <div className={s.tabs}>

@@ -153,3 +153,29 @@ export function swap(state: State, index: number, now: number): Answer<{ ok: boo
   setGoals(out, { ...g, week: next });
   return { state: out, result: { ok: true }, events: [] };
 }
+
+/** Every goal ready to claim, claimed at one press (session 242): each as its own Claim would, in the order the
+ *  Hearth lists them, so each says its moment and the moments fold under the first; and what claiming brings
+ *  ready in turn (First steps done open the ladder, whose milestone may be done already), a few rounds at most. */
+export function claimAll(
+  state: State,
+  readyIn: (state: State) => string[],
+  now: number,
+): Answer<{ ok: boolean; count: number }> {
+  let out = state;
+  const events: GameEvent[] = [];
+  let count = 0;
+  for (let round = 0; round < 4; round++) {
+    let claimed = 0;
+    for (const goal of readyIn(out)) {
+      const r = claim(out, goal, now);
+      if (!r.result.ok) continue;
+      out = r.state;
+      events.push(...r.events);
+      claimed++;
+    }
+    count += claimed;
+    if (!claimed) break;
+  }
+  return { state: out, result: { ok: count > 0, count }, events };
+}

@@ -26,6 +26,13 @@ export interface Profile {
     runs: number;
     /** The deepest depth reached in the Deep (session 226), 0 before the first descent. */
     deepest: number;
+    /** Lifetime records (session 242). */
+    finds: number;
+    findsAll: number;
+    bounties: number;
+    weeks: number;
+    favour: number;
+    realmFallen: number;
   };
   /** Their places on the hiscores (session 54), once listed: Total first, then their three best skills,
    *  the best first. */

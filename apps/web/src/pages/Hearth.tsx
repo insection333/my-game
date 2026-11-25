@@ -25,6 +25,7 @@ import { Steading } from './Steading.tsx';
 import { CastleRow, castleNote } from './HearthCastle.tsx';
 import { WeekGoal } from './WeekGoal.tsx';
 import { Errands, useErrands } from './HearthErrands.tsx';
+import { FollowedDeeds, useFollowed } from './HearthDeeds.tsx';
 
 export function Hearth() {
   const { state, now, features } = useGame();
@@ -39,6 +40,7 @@ export function Hearth() {
   const [realmWork] = fills<RealmWorkView>(features, 'hearth.realmWork', state, now);
   const castle = castleNote(state, now);
   const errands = useErrands();
+  const followed = useFollowed();
   const season = seasonView(now, state);
   // The ladder lacks a goal (a short goal was claimed, or a new day began): the server makes it.
   const wants = goals?.data.refresh ?? false;
@@ -96,7 +98,20 @@ export function Hearth() {
         </section>
         {goals && (
           <section data-section className={s.goalsArea}>
-            <Panel title={goals.data.title} aside={goals.data.progress ?? undefined} flush>
+            <Panel
+              title={goals.data.title}
+              aside={
+                // Claim all (session 242): every goal ready at one press, while two or more are.
+                goals.data.claimAll ? (
+                  <Button variant="primary" onClick={() => game.act('goals', 'claimAll', {})}>
+                    {goals.data.claimAll}
+                  </Button>
+                ) : (
+                  (goals.data.progress ?? undefined)
+                )
+              }
+              flush
+            >
               <Slot id="hearth.goals" className={s.goalRows} scrolls>
                 {goals.data.rows.map((row) =>
                   row.parts ? (
@@ -109,7 +124,7 @@ export function Hearth() {
             </Panel>
           </section>
         )}
-        {(next.length > 0 || castle || season || errands.length > 0) && (
+        {(next.length > 0 || castle || season || errands.length > 0 || followed.length > 0) && (
           <section data-section className={s.nextArea}>
             <Panel title={t('hearth.next.title')} flush>
               <Slot id="hearth.nextUp" className={s.rows}>
@@ -117,6 +132,8 @@ export function Hearth() {
                 {castle?.first && <CastleRow text={castle.text} />}
                 {/* The day's fights waiting: a share or bounty to take, the realm's strike (session 188). */}
                 <Errands rows={errands} />
+                {/* The deeds followed, each with how far it has come (session 242). */}
+                <FollowedDeeds deeds={followed} />
                 {/* The season and what it lifts, until it turns (session 164). */}
                 {season && (
                   <a

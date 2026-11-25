@@ -85,6 +85,15 @@ export const honours: Record<string, string> = {
   'profile.bossWins': 'Bosses beaten',
   'profile.runs': 'Expeditions home',
   'profile.deepest': 'Deepest in the Deep',
+  // Find a player by name on Hiscores (session 242).
+  'hiscores.find': 'Find a player',
+  'hiscores.findGo': 'Find',
+  // Lifetime records (session 242).
+  'profile.finds': 'Finds logged',
+  'profile.bounties': 'Bounties claimed',
+  'profile.weeks': "Weeks' contracts kept",
+  'profile.favour': "The pedlar's favour",
+  'profile.realmFallen': "Realm's bosses felled",
   'profile.castle': 'Castle and war record',
   'profile.castleLevel': 'Castle level',
   'profile.rating': 'Rating',
