@@ -97,6 +97,10 @@
   display: grid;
 }
 
+.browsers li + li {
+  border-top: 1px solid var(--line);
+}
+
 .browsers li {
   display: flex;
   flex-wrap: wrap;
@@ -104,7 +108,6 @@
   justify-content: space-between;
   gap: var(--s-2) var(--s-3);
   padding-block: var(--s-2);
-  border-bottom: 1px solid var(--line);
   min-width: 0;
 }
 
@@ -171,4 +174,31 @@
   margin: 0;
   color: var(--ink-2);
   font-size: var(--t-small);
+}
+
+/* The notices sent: when, then the words, a line each where there is room. */
+.noticeList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--s-2);
+}
+
+.noticeList li {
+  display: grid;
+  grid-template-columns: 7rem minmax(0, 1fr);
+  gap: var(--s-3);
+}
+
+.noticeList li > :last-child {
+  overflow-wrap: anywhere;
+}
+
+@container main (min-width: 56rem) {
+  /* The notes beside the box for another. */
+  .notes {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    align-items: start;
+  }
 }

@@ -74,42 +74,42 @@ export function RecordActivity({ record, run }: { record: RecordResponse; run: R
     );
   return (
     <div className={s.columns}>
-      <div className={s.wide}>
+      <div className={s.stack}>
         <Calendar a={a} />
-      </div>
-      <Panel title={t('record.browsers')} aside={fmt.int(a.sessions.length)}>
-        {a.sessions.length ? (
-          <ul className={m.browsers}>
-            {a.sessions.map((x) => (
-              <li key={x.handle}>
-                <span className={m.browserWords}>
-                  <span>{t('record.browserSeen', { when: whenOf(x.lastSeenAt, a.at) })}</span>
-                  <span className={s.muted}>
-                    {t('record.browserMeta', { since: dayOf(x.createdAt, a.at), until: dayOf(x.expiresAt, a.at) })}
-                  </span>
-                  {x.online && (
-                    <span>
-                      <Pill tone="moss">{t('record.online')}</Pill>
+        <Panel title={t('record.browsers')} aside={fmt.int(a.sessions.length)}>
+          {a.sessions.length ? (
+            <ul className={m.browsers}>
+              {a.sessions.map((x) => (
+                <li key={x.handle}>
+                  <span className={m.browserWords}>
+                    <span>{t('record.browserSeen', { when: whenOf(x.lastSeenAt, a.at) })}</span>
+                    <span className={s.muted}>
+                      {t('record.browserMeta', { since: dayOf(x.createdAt, a.at), until: dayOf(x.expiresAt, a.at) })}
                     </span>
-                  )}
-                </span>
-                <Button onClick={() => end(x.handle)}>{t('record.endBrowser')}</Button>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className={s.note}>{t('record.noBrowsers')}</p>
-        )}
-        {said && (
-          <p className={s.note} role="status">
-            {said}
-          </p>
-        )}
-      </Panel>
+                    {x.online && (
+                      <span>
+                        <Pill tone="moss">{t('record.online')}</Pill>
+                      </span>
+                    )}
+                  </span>
+                  <Button onClick={() => end(x.handle)}>{t('record.endBrowser')}</Button>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className={s.note}>{t('record.noBrowsers')}</p>
+          )}
+          {said && (
+            <p className={s.note} role="status">
+              {said}
+            </p>
+          )}
+        </Panel>
+      </div>
       <div className={m.span2}>
         <Panel title={t('record.notices')}>
           {a.notices.length ? (
-            <ul className={s.letters}>
+            <ul className={m.noticeList}>
               {a.notices.map((n, i) => (
                 <li key={`${n.at}-${i}`}>
                   <span className={s.muted}>{whenOf(n.at, a.at)}</span>
