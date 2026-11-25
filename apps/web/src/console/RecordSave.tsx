@@ -87,7 +87,7 @@ export function RecordHistory({ record }: { record: RecordResponse }) {
           {/* The record keeps the newest twenty; the log keeps all (session 231). */}
           <p className={s.note}>
             <TextLink href={auditHref(record.name)} onNavigate={navigate}>
-              {t('record.allHistory', { name: record.name })}
+              {t('record.allHistory')}
             </TextLink>
           </p>
         </>

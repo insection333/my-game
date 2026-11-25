@@ -239,7 +239,7 @@ export const consoleWords = {
   'record.unknownSkill': 'There is no such skill.',
   'record.download': 'Download the save',
   'record.noHistory': 'No admin has acted on this player.',
-  'record.allHistory': 'Everything done to {name}, in the Audit log',
+  'record.allHistory': 'All of it in the Audit log',
   'record.renamed': 'Renamed to {name}.',
   'record.bannedNow': 'Banned and signed out everywhere.',
   'record.unbannedNow': 'Unbanned: they can sign in again.',
