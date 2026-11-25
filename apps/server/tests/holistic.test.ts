@@ -57,7 +57,9 @@ describe('browser error reports', () => {
 describe('the request log', () => {
   it('writes no line for each request (it carried every connection address)', async () => {
     s = await server();
-    expect(s.app.initialConfig.disableRequestLogging).toBe(true);
+    const key = Object.getOwnPropertySymbols(s.app).find((k) => k.description === 'fastify.logController')!;
+    const logs = (s.app as unknown as Record<symbol, { isLogDisabled: (req: unknown) => boolean }>)[key];
+    expect(logs.isLogDisabled({ url: '/api/game' })).toBe(true);
   });
 });
 

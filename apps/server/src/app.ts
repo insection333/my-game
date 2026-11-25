@@ -5,7 +5,7 @@ import websocket from '@fastify/websocket';
 import { ROUTES } from '@idle-clash/contracts';
 import { actionRegistry, FEATURES, type Feature } from '@idle-clash/features';
 import { createEngine, PlayerQueue } from '@idle-clash/kernel';
-import Fastify, { type FastifyInstance } from 'fastify';
+import Fastify, { LogController, type FastifyInstance } from 'fastify';
 import { emailRoutes } from './auth/email.ts';
 import { LogMailer, type Mailer } from './auth/mailer.ts';
 import { authRoutes, identify } from './auth/routes.ts';
@@ -73,7 +73,7 @@ export async function buildApp(
     // journal, kept for months, where the privacy page says the address is used a short while and not
     // kept; and at play's pace it filled the journal. Errors and warnings are still logged; the console's
     // System counts the requests.
-    disableRequestLogging: true,
+    logController: new LogController({ disableRequestLogging: true }),
     bodyLimit: 16 * 1024,
     // Only a proxy on this machine (Caddy, from session 10) may say who the client is; anyone else's
     // X-Forwarded-For is ignored, so it cannot be used to slip past the per-address limits.
