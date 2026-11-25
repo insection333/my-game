@@ -105,3 +105,18 @@ export const adminActions = sqliteTable(
   },
   (t) => [index('admin_actions_at').on(t.at), index('admin_actions_target').on(t.targetId)],
 );
+
+/** Admins' notes on a player (session 234): private to admins, kept in the record, each in the Audit log;
+ *  they go with the player's account, and a deleted admin's notes stay unnamed. */
+export const adminNotes = sqliteTable(
+  'admin_notes',
+  {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    playerId: text('player_id').notNull(),
+    at: integer('at').notNull(),
+    actorId: text('actor_id').notNull(),
+    actorName: text('actor_name').notNull(),
+    text: text('text').notNull(),
+  },
+  (t) => [index('admin_notes_player').on(t.playerId, t.at)],
+);

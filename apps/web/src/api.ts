@@ -37,6 +37,8 @@ import {
   type SendResult,
   type AdminMailResponse,
   type PushKeyResponse,
+  type ActivityResponse,
+  type NoteResult,
 } from '@idle-clash/contracts';
 import type { castleEngine } from '@idle-clash/features';
 import { heardBuild } from './deploys.ts';
@@ -135,9 +137,10 @@ export const api = {
     settleReports: (playerId: string) => post<void>(PATHS.adminSettleReports, { playerId }),
     siegeFlows: () => post<AdminSiegeFlowsResponse>(PATHS.adminSiegeFlows),
     overview: () => post<AdminOverviewResponse>(PATHS.adminOverview),
-    directory: (q: { query: string; filter: DirectoryFilter; sort: DirectorySort; page: number }) =>
+    directory: (q: { query: string; filter: DirectoryFilter; sort: DirectorySort; page: number; file?: true }) =>
       post<DirectoryResponse>(PATHS.adminDirectory, q),
-    audit: (query: string, before: number | null) => post<AuditResponse>(PATHS.adminAudit, { query, before }),
+    audit: (query: string, before: number | null, file?: true) =>
+      post<AuditResponse>(PATHS.adminAudit, file ? { query, before, file } : { query, before }),
     record: (playerId: string) => post<RecordResponse>(PATHS.adminRecord, { playerId }),
     grant: (playerId: string, item: string, count: number, reason: string) =>
       post<GrantResult>(PATHS.adminGrant, { playerId, item, count, reason }),
@@ -148,6 +151,10 @@ export const api = {
     live: () => post<LiveResponse>(PATHS.adminLive),
     broadcast: (text: string, to: number) => post<BroadcastResult>(PATHS.adminBroadcast, { text, to }),
     system: () => post<SystemResponse>(PATHS.adminSystem),
+    note: (playerId: string, text: string) => post<NoteResult>(PATHS.adminNote, { playerId, text }),
+    unnote: (playerId: string, noteId: number) => post<void>(PATHS.adminNoteDelete, { playerId, noteId }),
+    activity: (playerId: string) => post<ActivityResponse>(PATHS.adminActivity, { playerId }),
+    endSession: (playerId: string, handle: string) => post<void>(PATHS.adminEndSession, { playerId, handle }),
   },
   push: {
     key: () => get<PushKeyResponse>(PATHS.pushKey),

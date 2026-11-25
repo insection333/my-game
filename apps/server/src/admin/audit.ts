@@ -2,7 +2,7 @@
 // `admin_actions` (as well as telemetry, by id). Names are kept as they were, so the log reads after a
 // rename or an account deleted.
 import { t } from '@idle-clash/content';
-import { AUDIT_PAGE, ROUTES, type AuditEntry, type AuditResponse } from '@idle-clash/contracts';
+import { AUDIT_PAGE, FILE_PAGE, ROUTES, type AuditEntry, type AuditResponse } from '@idle-clash/contracts';
 import { and, desc, eq, inArray, lt, or, sql } from 'drizzle-orm';
 import type { SQLiteColumn } from 'drizzle-orm/sqlite-core';
 import type { FastifyInstance, FastifyRequest } from 'fastify';
@@ -55,16 +55,21 @@ const ACTIONS: Record<string, () => string> = {
   signOut: () => t('audit.signOut'),
   delete: () => t('audit.delete'),
   broadcast: () => t('audit.broadcast'),
+  note: () => t('audit.note'),
+  unnote: () => t('audit.unnote'),
+  endSession: () => t('audit.endSession'),
 };
 /** The actions whose words, as the console says them ("Gave", "Banned"), hold what was typed (session 231). */
 const said = (q: string) => Object.keys(ACTIONS).filter((a) => ACTIONS[a]().toLowerCase().includes(q.toLowerCase()));
 
 export function auditRoutes(app: FastifyInstance, ctx: Ctx): void {
-  contractRoute<{ query: string; before: number | null }>(
+  contractRoute<{ query: string; before: number | null; file?: true }>(
     app,
     ROUTES.adminAudit,
     ({ input }) => {
       const q = input.query.trim();
+      // A larger page for a file (session 234).
+      const size = input.file ? FILE_PAGE : AUDIT_PAGE;
       // Anywhere in the action, either name or what it changed (an item, a skill, a reason: session 231);
       // % and _ taken literally.
       const words = q ? `%${q.replace(/[\\%_]/g, (c) => `\\${c}`)}%` : null;
@@ -87,9 +92,9 @@ export function auditRoutes(app: FastifyInstance, ctx: Ctx): void {
           ),
         )
         .orderBy(desc(adminActions.id))
-        .limit(AUDIT_PAGE + 1)
+        .limit(size + 1)
         .all();
-      const entries: AuditEntry[] = rows.slice(0, AUDIT_PAGE).map((r) => ({
+      const entries: AuditEntry[] = rows.slice(0, size).map((r) => ({
         id: r.id,
         at: r.at,
         actor: r.actorName,
@@ -98,7 +103,7 @@ export function auditRoutes(app: FastifyInstance, ctx: Ctx): void {
         targetId: r.targetId,
         detail: r.detail ? (JSON.parse(r.detail) as Record<string, string | number>) : null,
       }));
-      return { entries, more: rows.length > AUDIT_PAGE ? entries.at(-1)!.id : null } satisfies AuditResponse;
+      return { entries, more: rows.length > size ? entries.at(-1)!.id : null } satisfies AuditResponse;
     },
     requireAdmin(ctx),
   );

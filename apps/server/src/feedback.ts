@@ -78,9 +78,24 @@ export function feedbackRoutes(app: FastifyInstance, ctx: Ctx, features: readonl
     requirePlayer(ctx),
   );
 
+  const st = statements(ctx.store.sqlite);
   /** What the Hearth's goals ask of a player now, in the game's own words. */
   const goals = features.find((f) => f.id === 'goals');
+  // Kept for each tester while their save and the hour stand (session 234): reading a grown save and asking
+  // the goals of it is the page's greatest cost, and a tester between visits asks the same as a minute ago.
+  const aimsKept = new Map<string, { rev: number; hour: number; aims: string[] }>();
   const aimsOf = (playerId: string): string[] => {
+    const rev = (st('select rev from saves where player_id = ?').get(playerId) as { rev: number } | undefined)?.rev;
+    const hour = Math.floor(now() / 3_600_000);
+    const was = aimsKept.get(playerId);
+    if (was && was.rev === rev && was.hour === hour) return was.aims;
+    const aims = aimsAfresh(playerId);
+    // Testers come and go as players join: only the newest are kept.
+    if (aimsKept.size > 4 * TESTERS) aimsKept.clear();
+    if (rev !== undefined) aimsKept.set(playerId, { rev, hour, aims });
+    return aims;
+  };
+  const aimsAfresh = (playerId: string): string[] => {
     const saved = ctx.store.read(playerId, now());
     const view =
       saved && goals ? (goals.slots['hearth.goals']({ state: saved.doc.state, now: now() }) as unknown) : null;
@@ -88,7 +103,6 @@ export function feedbackRoutes(app: FastifyInstance, ctx: Ctx, features: readonl
   };
   // A player's visits summed in one walk of their own key (session 233), where every day was read out and
   // gathered in a set for each tester and each note.
-  const st = statements(ctx.store.sqlite);
   const visitsOf = (playerId: string, joinedAt: number) =>
     st(
       `select count(*) n, max(day) last, coalesce(max(day = @d2), 0) d2, coalesce(max(day = @d3), 0) d3

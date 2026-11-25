@@ -2,8 +2,9 @@
 // parts since session 229): their name and standing at its head, then by tabs (`?tab=`) the Summary (who
 // they are, what they hold and do, their skills and castle), Account (rename, ban, password, sign out
 // everywhere, messages, delete), Give and take (gold, items and XP, each with a reason), Save (check and
-// mend, download, what was repaired, the save itself) and History (what admins have done to them). A name
-// in the address (`@Rowan`) opens that player's record.
+// mend, download, what was repaired, the save itself) and History (what admins have done to them); since
+// session 234 notes admins keep for each other head the Summary, and Activity holds the days they came, the
+// browsers signed in and the notices sent them. A name in the address (`@Rowan`) opens that player's record.
 import { FIRE_WATCH_HOURS, type RecordResponse } from '@idle-clash/contracts';
 import { fmt, t } from '@idle-clash/content';
 import { Pill, Tabs, TextLink } from '@idle-clash/ui';
@@ -15,16 +16,20 @@ import { untilLoaded } from '../Ready.tsx';
 import { refused } from '../refused.ts';
 import { navigate, replace, useLocation } from '../router.ts';
 import { Slot } from '../slots.tsx';
+import { opened } from './recent.ts';
 import { RecordAccount } from './RecordAccount.tsx';
+import { RecordActivity } from './RecordActivity.tsx';
 import { RecordGrants } from './RecordGrants.tsx';
 import { RecordHistory, RecordSave } from './RecordSave.tsx';
+import { RecordNotes } from './RecordNotes.tsx';
 import { RecordSummary } from './RecordSummary.tsx';
 import s from './admin.module.css';
 
-const TABS = ['summary', 'account', 'grants', 'save', 'history'] as const;
+const TABS = ['summary', 'activity', 'account', 'grants', 'save', 'history'] as const;
 type Tab = (typeof TABS)[number];
 const TAB_WORDS: Record<Tab, () => string> = {
   summary: () => t('record.summary'),
+  activity: () => t('record.activity'),
   account: () => t('record.account'),
   grants: () => t('record.grants'),
   save: () => t('record.save'),
@@ -41,9 +46,15 @@ export function PlayerRecord({ id }: { id: string }) {
   const [record, setRecord] = useState<RecordResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const load = () =>
-    untilLoaded(api.admin.record(id)).then(setRecord, (err: unknown) => {
-      if (!handled(err)) setError(refused(err, { notFound: t('admin.none') }));
-    });
+    untilLoaded(api.admin.record(id)).then(
+      (r) => {
+        setRecord(r);
+        opened({ id: r.id, name: r.name });
+      },
+      (err: unknown) => {
+        if (!handled(err)) setError(refused(err, { notFound: t('admin.none') }));
+      },
+    );
   useEffect(() => {
     // A record named in the address (`/admin/players/@Rowan`), as an admin can write it or pass it on, is
     // found by the name and opened at its own address.
@@ -89,6 +100,7 @@ export function PlayerRecord({ id }: { id: string }) {
                 {t('console.standing.reports', { count: fmt.int(record.reports.name + record.reports.cheating) })}
               </Pill>
             )}
+            {record.notes.length > 0 && <Pill>{t('record.notesPill', { count: fmt.int(record.notes.length) })}</Pill>}
             {/* A fire that never sleeps is a script's (session 156). */}
             {record.fireHours >= FIRE_WATCH_HOURS && (
               <Pill tone="ember">{t('admin.fireWatch', { hours: fmt.num(record.fireHours) })}</Pill>
@@ -113,7 +125,13 @@ export function PlayerRecord({ id }: { id: string }) {
               current: x === tab,
             }))}
           />
-          {tab === 'summary' && <RecordSummary record={record} />}
+          {tab === 'summary' && (
+            <>
+              <RecordNotes key={record.id} record={record} reload={() => void load()} run={run} />
+              <RecordSummary record={record} />
+            </>
+          )}
+          {tab === 'activity' && <RecordActivity record={record} run={run} />}
           {tab === 'account' && <RecordAccount record={record} reload={() => void load()} run={run} />}
           {tab === 'grants' && <RecordGrants record={record} reload={() => void load()} run={run} />}
           {tab === 'save' && <RecordSave id={id} run={run} />}
