@@ -102,17 +102,29 @@ export function recapLines(a: AwaySummary, notices: readonly GameEvent[] = []): 
   for (const e of a.events)
     if (e.type === 'kindled') kindled.set(e.skill, Math.max(kindled.get(e.skill) ?? 0, e.count));
   for (const [skill, count] of kindled) lines.push(kindledLine(skill, count));
-  // Each run that came home, its story.
-  for (const e of a.events)
-    if (e.type === 'expeditionDone') {
-      const story = storyOf(e);
-      lines.push({
-        kind: 'expedition',
-        text: `${story.title}. ${story.body}`,
-        icon: e.region,
-        href: '/combat/expeditions',
-      });
-    }
+  // The run that came home, its story; several (runs set out again since session 239), one line for them all.
+  const runs = a.events.filter((e) => e.type === 'expeditionDone');
+  if (runs.length === 1) {
+    const story = storyOf(runs[0]);
+    lines.push({
+      kind: 'expedition',
+      text: `${story.title}. ${story.body}`,
+      icon: runs[0].region,
+      href: '/combat/expeditions',
+    });
+  } else if (runs.length > 1) {
+    const marks = runs.reduce((n, e) => n + e.marks, 0);
+    lines.push({
+      kind: 'expedition',
+      text: t('recap.runs', {
+        count: fmt.int(runs.length),
+        won: fmt.int(runs.filter((e) => e.outcome === 'won').length),
+        gained: marks === 1 ? t('expedition.marksOne') : t('expedition.marks', { marks: fmt.int(marks) }),
+      }),
+      icon: runs.at(-1)!.region,
+      href: '/combat/expeditions',
+    });
+  }
   // Each boss fought alone in the lane (session 72), the realm's (session 190), and each descent into the
   // Deep (session 212).
   for (const e of a.events)
