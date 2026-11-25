@@ -25,6 +25,8 @@ export const CONTENT: FeatureContent = {
   actions: [
     ...REGIONS.map((r) => ({ id: r, level: opensAt(r) })),
     ...BOSSES.map((b) => ({ id: b.id, level: b.hitpoints, gives: [{ item: b.drop, count: 1 }] })),
+    // The day's bosses (session 239), opened with the first boss.
+    { id: 'bosses', level: Math.min(...BOSSES.map((b) => b.hitpoints)) },
     // The realm's boss of the week (session 174), fought at each player's own measure.
     { id: 'realm', level: 1 },
     // The Deep (session 212), opened at Hitpoints 99.

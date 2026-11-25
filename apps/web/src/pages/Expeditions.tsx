@@ -7,6 +7,7 @@ import {
   type BossRow,
   type DeepView,
   type RealmView,
+  type RoundView,
   type ExpeditionView,
   type RelicsView,
   type RouteView,
@@ -36,6 +37,7 @@ export function Expeditions() {
   const [view] = fills<ExpeditionView>(features, 'combat.expedition', state, now);
   const [bosses] = fills<BossRow[]>(features, 'combat.bosses', state, now);
   const [realm] = fills<RealmView>(features, 'combat.realm', state, now);
+  const [round] = fills<RoundView>(features, 'combat.round', state, now);
   const [relics] = fills<RelicsView>(features, 'combat.relics', state, now);
   const [deep] = fills<DeepView>(features, 'combat.deep', state, now);
   return (
@@ -60,7 +62,7 @@ export function Expeditions() {
         <div className={s.side}>
           {bosses && (
             <section data-section>
-              <Bosses bosses={bosses.data} realm={realm?.data ?? null} />
+              <Bosses bosses={bosses.data} realm={realm?.data ?? null} round={round?.data ?? null} />
             </section>
           )}
           {relics && (
@@ -185,6 +187,8 @@ function Run({ view, run }: { view: ExpeditionView; run: RunView }) {
   return (
     <Panel title={t('expedition.title')} aside={<Pill tone="gold">{view.marks}</Pill>}>
       <div className={s.stack}>
+        {/* The run before this one, when this one set out again after it (session 239). */}
+        {view.last && <LastRun last={view.last} />}
         <div>
           <p className={s.summary}>{run.title}</p>
           <p className={s.note}>{run.road}</p>
@@ -240,6 +244,19 @@ function Run({ view, run }: { view: ExpeditionView; run: RunView }) {
             </Button>
           )}
         </div>
+        <label className={s.again}>
+          <input
+            type="checkbox"
+            data-ui="Checkbox"
+            checked={view.again}
+            onChange={(e) => game.act('expeditions', 'again', { on: e.target.checked })}
+            aria-describedby="again-note"
+          />
+          {t('expedition.again')}
+        </label>
+        <p id="again-note" className={s.note}>
+          {t('expedition.againNote')}
+        </p>
         <Legend twists={view.legend} />
       </div>
     </Panel>

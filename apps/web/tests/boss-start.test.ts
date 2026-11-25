@@ -5,6 +5,10 @@ import { HOUR, seeded, type State } from '@idle-clash/kernel';
 import { describe, expect, it } from 'vitest';
 import { engine, fighterAt, T0 } from '../../../packages/features/tests/helpers/expedition.ts';
 import { bossCommands } from '../src/pages/boss-start.ts';
+import { nextRoute } from '../../../packages/features/src/expeditions/route.ts';
+import { setOut } from '../../../packages/features/src/expeditions/routes.ts';
+import { planRound } from '../../../packages/features/src/expeditions/round.ts';
+import { expeditionsOf } from '../../../packages/features/src/shared/expeditions/state.ts';
 
 const run = (s: State, cmds: ReturnType<typeof bossCommands>) =>
   cmds.reduce((x, c) => {
@@ -32,5 +36,18 @@ describe('a boss fought from the middle of a fight', () => {
       { type: 'queueNext', lane: 'combat', action: { feature: 'combat', id: 'goblin-slinger' } },
     ]);
     expect(bossCommands(fighting, 'troll-chief')).toHaveLength(1);
+  });
+
+  // Session 239: the day's bosses pressed in the middle of a run took the lane and left the run behind.
+  it("takes up a run again once the day's bosses are fought", () => {
+    let s = fighterAt('peaks', 4);
+    s = setOut(s, 'peaks', 8, nextRoute(s, 'peaks', 8)!.roads[0]).state;
+    const peaks = { feature: 'expeditions', id: 'peaks' };
+    s = run(s, [{ type: 'start', lane: 'combat', action: peaks }]);
+    s = run(planRound(s, T0).state, bossCommands(s, 'bosses'));
+    expect(s.lanes.combat.next).toEqual(peaks);
+    const later = engine.advance({ ...s, lastSeen: T0 + 3 * HOUR }, T0 + 3 * HOUR, seeded(3)).state;
+    expect(later.lanes.combat.current?.action).toEqual(peaks);
+    expect(expeditionsOf(later).run?.at).toBeGreaterThan(0);
   });
 });

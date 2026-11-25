@@ -2,23 +2,27 @@
 // strikes and yours, a bar to its fall, Fight once a day at your own measure, and your share to take once it
 // falls with your strike.
 import { t } from '@idle-clash/content';
-import type { RealmView } from '@idle-clash/features';
+import type { RealmView, RoundView } from '@idle-clash/features';
 import { actionKey, LANE_IDS } from '@idle-clash/kernel';
 import { ActionRow, Button, hasIcon, ItemIcon, Pill, ProgressBar } from '@idle-clash/ui';
 import { useGame } from '../game/hooks.ts';
 import { game } from '../game/store.ts';
 import { Slot } from '../slots.tsx';
-import { bossCommands } from './boss-start.ts';
+import { bossCommands, inRound } from './boss-start.ts';
 import s from './expeditions.module.css';
 
 const VERDICT_TONE = { easy: 'moss', fair: 'woad', costly: 'gold', tooStrong: 'neutral' } as const;
 
-export function RealmRow({ realm }: { realm: RealmView }) {
+export function RealmRow({ realm, round }: { realm: RealmView; round: RoundView | null }) {
   const { state } = useGame();
-  const fighting = LANE_IDS.some((l) => {
-    const c = state.lanes[l].current;
-    return c !== null && actionKey(c.action) === 'expeditions:realm';
-  });
+  // Fought alone, or as the day's bosses' first (session 239).
+  const turn = inRound(round, 'realm');
+  const fighting =
+    turn === 'on' ||
+    LANE_IDS.some((l) => {
+      const c = state.lanes[l].current;
+      return c !== null && actionKey(c.action) === 'expeditions:realm';
+    });
   return (
     <Slot id="combat.realm">
       <ActionRow
@@ -28,6 +32,8 @@ export function RealmRow({ realm }: { realm: RealmView }) {
         status={
           fighting ? (
             <Pill tone="woad">{t('action.working')}</Pill>
+          ) : turn === 'waiting' ? (
+            <Pill tone="woad">{t('action.queued')}</Pill>
           ) : realm.fell ? (
             <Pill tone="moss">{t('realm.fallenPill')}</Pill>
           ) : realm.status ? (
@@ -44,7 +50,8 @@ export function RealmRow({ realm }: { realm: RealmView }) {
             </Button>
           ) : (
             realm.ready &&
-            !fighting && (
+            !fighting &&
+            !turn && (
               <Button
                 variant="primary"
                 onClick={() => {
