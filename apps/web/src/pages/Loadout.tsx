@@ -37,7 +37,6 @@ export function Loadout({ loadout, triangle }: { loadout: LoadoutView; triangle:
               </div>
             )
           )}
-          <FightAs loadout={loadout} />
           <Slot id="combat.triangle">
             <ul className={s.triangle}>
               {triangle.map((p) => (
@@ -61,6 +60,7 @@ export function Loadout({ loadout, triangle }: { loadout: LoadoutView; triangle:
           </div>
         </div>
       </Slot>
+      <FightAs loadout={loadout} />
     </Panel>
   );
 }

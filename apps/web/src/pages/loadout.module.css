@@ -155,6 +155,7 @@
 
 /* Fight as a style, or wear the best for this one (session 241). */
 .fightAs {
+  margin-top: var(--s-3);
   display: flex;
   flex-wrap: wrap;
   align-items: center;
