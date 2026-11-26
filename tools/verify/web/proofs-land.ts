@@ -49,7 +49,7 @@ async function materials(served: Served, problems: string[]) {
       throw new Error('a Level up still names materials');
     await box.check();
     step = "the edict's growth is said";
-    await page.getByText(/^Your castle's levels lift every edict by \d+%/).waitFor({ timeout: 5_000 });
+    await page.getByText(/^\+\d+% from your castle$/).waitFor({ timeout: 5_000 });
   } catch (err) {
     problems.push(`Castle: the land's materials did not play in the page, where ${step} (${say(err)})`);
   } finally {
