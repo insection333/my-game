@@ -3,7 +3,8 @@
 // takes the server's state whenever one arrives (a command's answer, the live channel, or a fresh
 // read when the tab comes back). The clock ticks only while something is moving, so a resting page
 // uses no CPU.
-import { actionRegistry, castleEngine, FEATURES, type Feature, type Json } from '@idle-clash/features';
+import { actionRegistry, FEATURES, type Feature, type Json } from '@idle-clash/features';
+import { toldOf } from './told.ts';
 import {
   createEngine,
   seeded,
@@ -127,14 +128,15 @@ export async function start(flags: Record<string, boolean>): Promise<void> {
     state: (state, now) => adopt(state, now),
     events: (events) => {
       if (!view) return;
-      // Castle Clash's events happen only on the server (a siege, a caught spy), so they join this page's
-      // own events for their moments; the rest the page has already played itself.
-      const castle = events.filter(castleEngine.isCastleEvent);
+      // What only the server makes joins this page's own events for their moments (`told.ts`).
+      const told = toldOf(events);
       publish({
         ...view,
         notices: [...[...events].reverse(), ...view.notices].slice(0, 100),
-        ...(castle.length ? { events: [...view.events, ...castle].slice(-50) } : {}),
+        ...(told.length ? { events: [...view.events, ...told].slice(-50) } : {}),
       });
+      // A gift waits in the save as the server tells it: the page reads the game again to show it.
+      if (events.some((e) => e.type === 'giftCame')) void resync();
     },
     mail: setUnreadMail,
     banner: setBanner,

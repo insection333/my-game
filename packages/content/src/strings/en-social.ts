@@ -10,6 +10,7 @@ export const social = {
   'cheer.none': 'Nothing to cheer this week',
   'cheer.sent': 'Cheered today',
   'cheer.spent': 'Your three cheers are spent today',
+  'cheer.full': 'They have had all the cheers they can take today',
   'gift.someone': 'A friend',
   'gift.came': '{name} sent you a gift',
   'gift.cameBody': 'Open it from Next up on the Hearth',

@@ -10,7 +10,11 @@ import { handled } from '../game/session.ts';
 import { refused } from '../refused.ts';
 import s from './profile.module.css';
 
-const CHEER_WHY: Partial<Record<SocialState, string>> = { sent: 'cheer.sent', spent: 'cheer.spent' };
+const CHEER_WHY: Partial<Record<SocialState, string>> = {
+  sent: 'cheer.sent',
+  spent: 'cheer.spent',
+  full: 'cheer.full',
+};
 const GIFT_WHY: Partial<Record<SocialState, string>> = {
   given: 'gift.given',
   young: 'gift.young',
@@ -22,6 +26,7 @@ const OWN = {
   nothingToCheer: t('cheer.none'),
   cheerSent: t('cheer.sent'),
   cheersSpent: t('cheer.spent'),
+  cheersFull: t('cheer.full'),
   giftGiven: t('gift.given'),
   giftYoung: t('gift.young'),
   giftSameWeek: t('gift.sameWeek'),
