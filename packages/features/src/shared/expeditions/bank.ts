@@ -5,6 +5,7 @@
 // fought and the fights left banked after it; a fight never taken has one waiting.
 import type { State } from '@idle-clash/kernel';
 import { expeditionsOf, type ExpeditionState } from './state.ts';
+import { weekOf } from '../week-time.ts';
 
 /** The fights a day's rest can bank, the one of today among them. */
 export const BANK_DAYS = 3;
@@ -30,9 +31,13 @@ export function bossFights(state: State, id: string, at: number): number {
   return fightsBanked(last, left, dayOf(at));
 }
 
-/** The strikes the realm's boss has waiting at a moment. */
+/** The strikes the realm's boss has waiting at a moment. They bank within its week alone (session 259: strikes
+ *  banked over the days after it fell, when nothing asks for them, struck it down again on the Monday): from a
+ *  week before, the days since the week began. */
 export function realmFights(state: State, at: number): number {
   const r = expeditionsOf(state).realm;
+  const monday = weekOf(at);
+  if (r?.day && r.day < monday) return fightsBanked(dayOf(Date.parse(`${monday}T00:00:00Z`) - DAY), 0, dayOf(at));
   return fightsBanked(r?.day, r?.left, dayOf(at));
 }
 

@@ -4,7 +4,15 @@
 // writes the rows, the war chest, the reports and the save together. Nothing is half done.
 import type { CastleAction } from '@idle-clash/contracts';
 import { castleEngine as E, materialsFor, MATERIAL_OF, seasonAt, totalLevel } from '@idle-clash/features';
-import { countOf, REMEMBERED_REQUESTS, seeded, type GameEvent, type SaveDoc, type State } from '@idle-clash/kernel';
+import {
+  countOf,
+  REMEMBERED_REQUESTS,
+  seeded,
+  take,
+  type GameEvent,
+  type SaveDoc,
+  type State,
+} from '@idle-clash/kernel';
 import type { Ctx } from '../context.ts';
 import { fail } from '../http.ts';
 import { mirrored } from './mirror.ts';
@@ -126,8 +134,12 @@ function upgrade(io: Io, w: E.Wallet, action: Extract<CastleAction, { type: 'upg
       ? materialsFor(io.state, id as keyof typeof MATERIAL_OF, cost)
       : null;
   const out = own(io, E.upgrade(w, id, io.now, times, paid?.credit ?? 0));
-  if (out.ok && paid)
-    io.state = { ...io.state, items: { ...io.state.items, [paid.item]: countOf(io.state, paid.item) - paid.count } };
+  // Taken as the kernel takes, so none left leaves no empty entry (session 259).
+  if (out.ok && paid) {
+    const next = structuredClone(io.state);
+    take(next, paid.item, paid.count);
+    io.state = next;
+  }
   return out;
 }
 

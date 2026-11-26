@@ -50,9 +50,23 @@ describe('a day not fought', () => {
       return n;
     };
     expect(strikes(1)).toBe(14);
-    // The first visit has one; each after, the two days since.
-    expect(strikes(2)).toBe(13);
-    expect(strikes(3)).toBe(13);
+    // The first visit has one; each after, the days since, counted within the realm's week alone.
+    expect(strikes(2)).toBe(12);
+    expect(strikes(3)).toBe(10);
+  });
+});
+
+// Session 259: strikes banked over the days after the realm's boss fell, when nothing asks for them, struck the
+// next week's down on its Monday; they bank within the week alone.
+describe("the realm's strikes", () => {
+  it('bank within its week alone', () => {
+    const s = fighterAt('march', 5);
+    // Last struck on a Wednesday: by the next Sunday three wait; on the Monday after, one.
+    const wednesday = Date.UTC(2026, 10, 25, 9);
+    const struck = { ...s, features: { ...s.features, expeditions: spendRealm(s, expeditionsOf(s), wednesday) } };
+    expect(realmFights(struck, wednesday + 4 * DAY)).toBe(BANK_DAYS);
+    expect(realmFights(struck, wednesday + 5 * DAY)).toBe(1);
+    expect(realmFights(struck, wednesday + 6 * DAY)).toBe(2);
   });
 });
 

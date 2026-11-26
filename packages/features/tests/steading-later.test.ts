@@ -75,7 +75,8 @@ describe('the later stages', () => {
 
 describe('Sell finds', () => {
   it('keeps back what the next stages ask, counted for every work that takes a find', () => {
-    const items = { 'birds-nest': 500, 'rough-garnet': 40, 'chalk-stub': 30 };
+    // Session 259: the logs the next stage takes as well were named among the finds kept back.
+    const items = { 'birds-nest': 500, 'rough-garnet': 40, 'chalk-stub': 30, 'ancient-logs': 9_000 };
     // Below its pennant a work asks for no finds.
     expect(steadingKeeps(at({ woodyard: 4 }), 'birds-nest')).toBe(0);
     const s = at({ woodyard: 5, watchtower: 6 }, items);

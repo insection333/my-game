@@ -58,6 +58,8 @@ describe('a Level up paid in materials', () => {
     expect(await act(me.cookie, { type: 'upgrade', id: 'watchtower', materials: true })).toEqual({ ok: true });
     expect(save(me.id).items.gold).toBe(50_000_000 - (cost - Math.floor(10 * 70)));
     expect(save(me.id).items['maple-logs'] ?? 0).toBe(0);
+    // All taken leaves no empty entry in the Storehouse (session 259).
+    expect(Object.hasOwn(save(me.id).items, 'maple-logs')).toBe(false);
     const next = E.levelUpCost(me.castles.read(me.id)!, 'watchtower', 1, s.clock.now);
     const before = save(me.id).items.gold;
     expect(await act(me.cookie, { type: 'upgrade', id: 'watchtower' })).toEqual({ ok: true });

@@ -112,7 +112,8 @@ export function edictPct(state: State, at: number, lifts: 'xp' | 'finds' | 'figh
  *  bonus, until the moment upkeep (2% a day, compounding, while not paused) takes the treasury under the
  *  requirement. Paused upkeep keeps the edict until the lord's next Call to arms rewrites the mirror. */
 export function mirrorFor(c: Castle, totalLevel: number, now: number): CastleMirror {
-  const pct = edictBonusPct(c, totalLevel);
+  // Held to the mirror's own bound (session 259: the castle's growth lifts it, and a mirror past 50 would not read).
+  const pct = Math.min(50, edictBonusPct(c, totalLevel));
   const standing = standingOf(c);
   // The charters cross over whether an edict is paid or not (session 249).
   const charters = Object.values(c.charters).some((n) => n > 0) ? { ...c.charters } : undefined;

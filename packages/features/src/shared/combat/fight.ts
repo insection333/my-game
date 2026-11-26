@@ -125,7 +125,7 @@ export function fight(
     if (rng() < hit) {
       const roll = 1 + Math.floor(rng() * maxHit);
       const crit = roll > maxHit * CRIT_SHARE;
-      // The blade's fury below half health; the staff's fire on a critical hit against a boss.
+      // The blade's fury below three quarters of health; the staff's fire on a critical hit against a boss.
       const fury = has('fury') && health < most * HEIRLOOM.FURY_BELOW ? HEIRLOOM.FURY_DEALT : 1;
       const ember = has('ember') && crit && trait ? HEIRLOOM.EMBER_CRIT : 1;
       const d = Math.min(foeHp, roll * dealtMult * fury * ember);
@@ -149,7 +149,7 @@ export function fight(
     // The greaves turn one hit in ten aside (a draw only while they are worn).
     if (rng() < foeHit && !(has('gale') && rng() < HEIRLOOM.GALE_CHANCE)) {
       const roll = 1 + Math.floor(rng() * foe.maxHit);
-      // The helm stands fast below a third of health.
+      // The helm stands fast below three quarters of health.
       const stand = has('standfast') && health < most * HEIRLOOM.STANDFAST_BELOW ? HEIRLOOM.STANDFAST_TAKEN : 1;
       const d = roll * guard * foeHitMult * stand;
       health -= d;
