@@ -18,9 +18,10 @@ import {
   type BuildingId,
   type UnitId,
 } from '@idle-clash/content';
-import { castleEngine as E, seasonAt, totalLevel } from '@idle-clash/features';
+import { castleEngine as E, materialsFor, seasonAt, totalLevel } from '@idle-clash/features';
 import type { State } from '@idle-clash/kernel';
 import { mirrored } from '../../../apps/server/src/castle/mirror.ts';
+import { STAGES, stageCost, stageOf, WORKS } from '../../../packages/features/src/shared/steading.ts';
 
 export interface CastleDay {
   /** Average castle level, the edict's bonus now, the treasury and what it needs. */
@@ -40,6 +41,8 @@ export interface CastleDay {
   troops: number;
   /** Season's legends taken, all five chambers (session 220). */
   legends: number;
+  /** The gold its own materials have paid towards levels so far (session 247). */
+  materials: number;
 }
 
 /** A share of the gold left after the treasury is topped up, spent on the castle each visit; nearly all once
@@ -54,10 +57,24 @@ const TEMPERS_A_VISIT = 3;
 const SPY_SHARE = 0.1;
 /** The bribes at the season's legend a visit, at most this share of the purse: the season's goal. */
 const LEGEND_SPY_SHARE = 0.3;
+/** What the steading's next raisings ask, by item. */
+function steadingAsks(state: State): Record<string, number> {
+  const asks: Record<string, number> = {};
+  for (const w of WORKS) {
+    const stage = stageOf(state, w.id);
+    if (stage < STAGES) for (const i of stageCost(w, stage + 1).items) asks[i.item] = (asks[i.item] ?? 0) + i.count;
+  }
+  return asks;
+}
+
+/** Of each material, what the lord keeps for its lanes before the castle takes any (session 247). */
+const MATERIAL_RESERVE = 5_000;
 /** The treasury kept: this many times what the edict needs. */
 const TREASURY_TIMES = 1.5;
 
 export class Lordship {
+  /** The gold its own materials have paid towards levels, all told (session 247). */
+  materialsPaid = 0;
   castle: E.Castle | null = null;
   private roll: () => number;
   constructor(seed: number) {
@@ -92,6 +109,16 @@ export class Lordship {
     if (call.ok) c = call.castle;
     let purse = state.items.gold ?? 0;
     const start = purse;
+    // The materials the castle may take (session 247): what is held above a reserve kept for the lanes and
+    // what the steading's next raisings ask.
+    const items: Record<string, number> = { ...state.items };
+    const forWorks = steadingAsks(state);
+    const spare = (): State => ({
+      ...state,
+      items: Object.fromEntries(
+        Object.entries(items).map(([k, n]) => [k, Math.max(0, n - MATERIAL_RESERVE - (forWorks[k] ?? 0))]),
+      ),
+    });
     const wallet = (): E.Wallet => ({ castle: c, purse });
     const apply = (d: E.Done) => {
       if (!d.ok) return false;
@@ -151,9 +178,18 @@ export class Lordship {
           .map((x) => x.id)
           .filter((x) => c.levels[x] < 100)
           .sort((a, b) => levelCost(a) - levelCost(b))[0];
-        if (!id || levelCost(id) > budget) break;
+        if (!id) break;
+        // Its own materials pay their part (session 247), those held above a reserve for the lanes.
+        const paid = (BUILDINGS as readonly { id: string }[]).some((b) => b.id === id)
+          ? materialsFor(spare(), id as BuildingId, levelCost(id))
+          : null;
+        if (levelCost(id) - (paid?.credit ?? 0) > budget) break;
         const before = purse;
-        if (!apply(E.upgrade(wallet(), id, t))) break;
+        if (!apply(E.upgrade(wallet(), id, t, 1, paid?.credit ?? 0))) break;
+        if (paid) {
+          items[paid.item] = (items[paid.item] ?? 0) - paid.count;
+          this.materialsPaid += paid.credit;
+        }
         budget -= before - purse;
       }
       for (const tech of TECH_IDS) {
@@ -257,7 +293,7 @@ export class Lordship {
     // A chamber of the season's legend taken (session 222): a named fortress's battle won, said as a moment.
     else if (c.legendTaken > (c.legendSeason === was.legendSeason ? was.legendTaken : 0)) firsts.push('castle:chamber');
     this.castle = c;
-    const next = mirrored({ ...state, items: { ...state.items, gold: Math.max(0, Math.floor(purse)) } }, c, t);
+    const next = mirrored({ ...state, items: { ...items, gold: Math.max(0, Math.floor(purse)) } }, c, t);
     return {
       state: next,
       firsts,
@@ -274,6 +310,7 @@ export class Lordship {
         rating: c.rating,
         evolution: Math.min(...UNIT_IDS.map((u) => E.evolutionOf(c.levels[u]))),
         troops: Math.min(...UNIT_IDS.map((u) => c.levels[u])),
+        materials: this.materialsPaid,
       },
     };
   }

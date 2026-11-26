@@ -5,7 +5,7 @@ import { BUILDINGS, EDICTS, ECONOMY, fmt, t } from '@idle-clash/content';
 import { castleEngine as E } from '@idle-clash/features';
 import { ActionRow, Button, ItemIcon, Panel, Pill } from '@idle-clash/ui';
 import { buildingDoes, buildingName, edictGives, edictName } from './labels.ts';
-import { LevelUp, Mend } from './Steps.tsx';
+import { LevelUp, MaterialsSwitch, Mend, useLevelGold } from './Steps.tsx';
 import { Treasury } from './Treasury.tsx';
 import { castleAct } from './store.ts';
 import { affords, hasAp, shortText, useSyncedCastle } from './synced.ts';
@@ -97,15 +97,19 @@ function does(c: E.Castle, id: string, now: number): string {
 
 function Buildings() {
   const { castle, now, purse } = useSyncedCastle();
+  const levelGold = useLevelGold();
   if (!castle) return null;
   const mending = 100 - castle.wallIntegrity > 0.01;
   return (
     <section data-section>
       <Panel title={t('castle.buildings.title')} flush>
+        <div className={s.materialsHead}>
+          <MaterialsSwitch />
+        </div>
         {/* Four rows, each with its Level up: on a short screen they scroll inside the panel (session 134). */}
         <div
           data-slot="castle.buildings"
-          className={s.relics}
+          className={s.buildings}
           data-scrollbox
           tabIndex={0}
           role="group"
@@ -114,7 +118,7 @@ function Buildings() {
           {BUILDINGS.map((b) => {
             const level = castle.levels[b.id];
             const top = level >= ECONOMY.MAX_LEVEL;
-            const cost = E.levelCost(castle, b.cost, level, now);
+            const cost = levelGold(b.id, E.levelCost(castle, b.cost, level, now));
             return (
               <ActionRow
                 key={b.id}
