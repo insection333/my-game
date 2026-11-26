@@ -400,3 +400,4 @@
 - Session 259: a sweep of sessions 239 to 258. Realm strikes bank within the week alone; the day's bosses queued behind Next say so; materials used to the last leave no empty entry; Sell finds names only the finds the steading keeps; the castle's edict held to its mirror's bound.
 - Session 260: a deeper sweep of sessions 239 to 259. A worn heirloom is no longer taken off by Fight as or Wear your best for tempered gear of its slot; the routes' random play reaches every new route with real inputs.
 - Session 261: a bad actor's sweep. A player takes ten cheers a day at most, so a crowd of accounts cannot flood their moments and tray; the server's news (cheers, gifts, rank-ups, the realm's boss and work) is said as moments, and a gift come shows at once.
+- Session 262: verify shows a failed test run's failures, where it showed the first sixty passing lines.
