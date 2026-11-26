@@ -17,7 +17,9 @@ export const isNotice = (e: GameEvent) =>
     !(e.type === 'find' && e.rarity === 'uncommon' && !e.first) &&
     e.type !== 'workRaised' &&
     e.type !== 'findUsed' &&
-    e.type !== 'relicRaised') ||
+    e.type !== 'relicRaised' &&
+    // A gift opened: a press its moment answers (session 254).
+    e.type !== 'giftOpened') ||
   (e.type === 'laneStopped' && !isQuietStop(e.reason.code)) ||
   // A rival passing you (session 173): the tray's alone, never a moment.
   e.type === 'passedBy';
@@ -78,10 +80,12 @@ export class Notices {
       .all();
     for (const r of rows) {
       const e = JSON.parse(r.data) as Record<string, unknown>;
-      if (e.foe !== name) continue;
+      // A cheer's or a gift's giver too (session 254).
+      const key = e.foe === name ? 'foe' : e.from === name ? 'from' : null;
+      if (!key) continue;
       this.db
         .update(notices)
-        .set({ data: JSON.stringify({ ...e, foe: '' }) })
+        .set({ data: JSON.stringify({ ...e, [key]: '' }) })
         .where(eq(notices.id, r.id))
         .run();
     }

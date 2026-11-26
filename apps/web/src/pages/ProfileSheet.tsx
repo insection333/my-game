@@ -12,6 +12,7 @@ import { navigate, trayHref } from '../router.ts';
 import { badgeName, bannerStyle, companionName } from './honours-style.ts';
 import { cardRefusal } from './missing.ts';
 import { ReportPlayer } from './ReportPlayer.tsx';
+import { Friendly } from './Friendly.tsx';
 import s from './profile.module.css';
 
 /** The address of a player's card, over the page shown. */
@@ -104,6 +105,7 @@ function Card({ p }: { p: Profile }) {
             </Button>
           </p>
         )}
+        {p.social && <Friendly name={p.name} social={p.social} />}
       </div>
       <section className={s.section} aria-label={t('profile.career')}>
         <h3>{t('profile.career')}</h3>

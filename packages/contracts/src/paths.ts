@@ -35,6 +35,8 @@ export const PATHS = {
   adminSettleReports: '/api/admin/reports/settle',
   adminSiegeFlows: '/api/admin/siege-flows',
   profile: '/api/profile',
+  cheer: '/api/cheer',
+  gift: '/api/gift',
   mailInbox: '/api/mail',
   mailSend: '/api/mail/send',
   mailRead: '/api/mail/read',

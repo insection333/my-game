@@ -12,6 +12,7 @@ import type { Notices } from './game/notices.ts';
 import type { Push } from './push/push.ts';
 import type { Realm } from './game/realm.ts';
 import type { RealmWorks } from './game/realm-works.ts';
+import type { Social } from './game/social.ts';
 import { fail } from './http.ts';
 import type { RateLimiter } from './security.ts';
 import type { Telemetry } from './telemetry.ts';
@@ -35,6 +36,8 @@ export interface Ctx {
   realm: Realm;
   /** The realm's work of the season (session 218). */
   realmWorks: RealmWorks;
+  /** Cheers and gifts between players (session 254). */
+  social: Social;
 }
 
 declare module 'fastify' {

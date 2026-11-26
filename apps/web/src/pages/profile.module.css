@@ -157,3 +157,25 @@
 .message {
   margin: var(--s-2) 0 0;
 }
+
+/* Cheers and a gift (session 254): a line each, its words beside its press, wrapping on a phone. */
+.friendly {
+  display: grid;
+  gap: var(--s-2);
+  margin: var(--s-3) 0 0;
+}
+.friend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-2);
+  min-width: 0;
+}
+.friend > span:first-child {
+  flex: 1 1 12rem;
+  min-width: 0;
+}
+.friendSaid {
+  color: var(--ink-2);
+}

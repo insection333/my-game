@@ -9,7 +9,7 @@ import { CASTLE_ROUTES } from './castle.ts';
 import { MODERATION_ROUTES } from './moderation.ts';
 import { MAIL_ROUTES } from './mail.ts';
 import { PUSH_ROUTES } from './push.ts';
-import { PROFILE_ROUTES } from './profile.ts';
+import { PROFILE_ROUTES, SOCIAL_REFUSALS } from './profile.ts';
 import { CLOSED_TEST_ROUTES } from './closed-test.ts';
 import { CONSOLE_ROUTES } from './console.ts';
 import { CONSOLE_LIVE_ROUTES } from './console-live.ts';
@@ -331,6 +331,7 @@ export const ErrorCode = z.enum([
   'mustChangePassword',
   // A new password the same as the one it replaces, or the console's first (session 237).
   'samePassword',
+  ...SOCIAL_REFUSALS,
   'serverError',
 ]);
 export type ErrorCode = z.infer<typeof ErrorCode>;

@@ -47,8 +47,12 @@ export function cueFor(e: GameEvent): Cue | null {
       return e.won ? 'goal' : null;
     case 'realmFell':
       return 'rare';
+    // Cheers and gifts (session 254): the goal's small chime, as a share and a bounty.
     case 'realmShare':
     case 'bountyDone':
+    case 'cheered':
+    case 'giftCame':
+    case 'giftOpened':
       return 'goal';
     // A descent (session 212): the deepest yet rings like a Rare find.
     case 'deepDone':

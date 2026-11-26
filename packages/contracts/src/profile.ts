@@ -57,7 +57,31 @@ export interface Profile {
   } | null;
   /** Whether this is the asking player's own card (no Report, no Send a message). */
   you: boolean;
+  /** Cheers and a gift (session 254), for another's card: what a cheer would be for this week (null when
+   *  there is nothing to cheer), whether one may be sent now, and whether a gift may. Null on your own card
+   *  and between players where either has blocked the other. */
+  social: {
+    cheer: { occasion: 'rank' | 'legend' | 'strike'; detail: string; place: number } | null;
+    cheerState: SocialState;
+    gift: SocialState;
+  } | null;
 }
+
+/** Whether a cheer or gift may be sent now, or why not: sent to them today, three cheers sent today, a gift
+ *  given today, your account under a week old, both made the same week, or theirs full for the day. */
+/** Cheers and gifts refused (session 254): nothing to cheer this week, cheered today, three cheers today, a gift
+ *  given today, an account under a week old, two made the same week, or the friend's gifts full today. */
+export const SOCIAL_REFUSALS = [
+  'nothingToCheer',
+  'cheerSent',
+  'cheersSpent',
+  'giftGiven',
+  'giftYoung',
+  'giftSameWeek',
+  'giftFull',
+] as const;
+
+export type SocialState = 'open' | 'sent' | 'spent' | 'given' | 'young' | 'sameWeek' | 'full';
 
 const route = (r: RouteContract) => r;
 export const PROFILE_ROUTES = {
@@ -65,6 +89,23 @@ export const PROFILE_ROUTES = {
     id: 'profile',
     method: 'POST',
     path: PATHS.profile,
+    auth: 'player',
+    input: ProfileRequest,
+    example: { name: 'Rowan' },
+  }),
+  // Cheers and gifts (session 254).
+  cheer: route({
+    id: 'cheer',
+    method: 'POST',
+    path: PATHS.cheer,
+    auth: 'player',
+    input: ProfileRequest,
+    example: { name: 'Rowan' },
+  }),
+  gift: route({
+    id: 'gift',
+    method: 'POST',
+    path: PATHS.gift,
     auth: 'player',
     input: ProfileRequest,
     example: { name: 'Rowan' },

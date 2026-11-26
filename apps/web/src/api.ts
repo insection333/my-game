@@ -116,6 +116,8 @@ export const api = {
   consolePassword: (current: string, password: string) => post<void>(PATHS.consolePassword, { current, password }),
   report: (name: string, reason: ReportReason) => post<void>(PATHS.reportPlayer, { name, reason }),
   profile: (name: string) => post<Profile>(PATHS.profile, { name }),
+  cheer: (name: string) => post<{ ok: true }>(PATHS.cheer, { name }),
+  gift: (name: string) => post<{ ok: true }>(PATHS.gift, { name }),
   mail: {
     inbox: () => post<InboxResponse>(PATHS.mailInbox),
     send: (to: string, body: string) => post<SendResult>(PATHS.mailSend, { to, body }),

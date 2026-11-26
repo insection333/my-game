@@ -14,6 +14,8 @@ import {
   kindlingData,
   rankUpWords,
   realmWords,
+  cacheText,
+  socialMoment,
   bountyWords,
   deepDoneWords,
   seasonOpenedWords,
@@ -192,6 +194,11 @@ function describe(
       const w = deepDoneWords(e);
       return { title: w.title, body: w.body, icon: 'peaks' };
     }
+    // Cheers and gifts (session 254).
+    case 'cheered':
+    case 'giftCame':
+    case 'giftOpened':
+      return socialMoment(e);
     case 'realmFought':
     case 'realmFell':
     case 'realmShare': {
@@ -225,16 +232,6 @@ function describe(
       return { title: m.title, body: m.body, icon: hasIcon(icon) ? icon : null };
     }
   }
-}
-
-/** What a cache held, as the moment says it: "A rich cache: 1,650 gold". */
-export function cacheText(cache: { grade: string; items: { item: string; count: number }[] }): string {
-  const items = cache.items.map((i) =>
-    i.item === 'gold'
-      ? t('goals.reward.gold', { amount: fmt.int(i.count) })
-      : t('action.gives', { item: t(`item.${i.item}`), count: fmt.int(i.count) }),
-  );
-  return t('cache.holds', { cache: t(`cache.${cache.grade}`), items: items.join(', ') });
 }
 
 /** The moments to show for events after `since`, newest last. */
