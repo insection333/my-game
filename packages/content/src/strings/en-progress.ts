@@ -60,7 +60,7 @@ export const progress: Record<string, string> = {
   'pedlar.paidBody': '+{gold} gold. Favour: {favour}.',
   'help.pedlar.title': 'The pedlar',
   'help.pedlar.body':
-    "Each day a travelling pedlar wants three lots of what you have or make: three of an Uncommon find you have found, an older tier's material, and ten of a dish you can cook. Hand one in at one press from the pedlar's row in the Hearth's Next up, for half again its price in gold (never less than ten minutes of your earning) and a favour. Until it is handed in, Sell finds and the realm's work keep the day's lot back. Favour opens a banner and a title, and has deeds of its own. The wants change when the day turns.",
+    "Each day a travelling pedlar wants three lots of what you have or make: three of an Uncommon find you have found, an older tier's material, and ten of a dish you can cook. Hand one in at one press from the pedlar's row in the Hearth's Next up (or every lot ready with Hand in all; a lot locked in the Storehouse stays), for half again its price in gold (never less than ten minutes of your earning) and a favour. Until it is handed in, Sell finds and the realm's work keep the day's lot back. Favour opens a banner and a title, and has deeds of its own. The wants change when the day turns.",
   'day.turnsAt': 'at {time}',
   'day.turnsTomorrow': 'tomorrow at {time}',
   'goals.milestone': 'Milestone',

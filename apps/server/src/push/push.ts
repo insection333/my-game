@@ -6,7 +6,7 @@
 import { fmt, t } from '@idle-clash/content';
 import { recap } from '@idle-clash/features';
 import type { Engine, GameEvent, State } from '@idle-clash/kernel';
-import { and, asc, eq, inArray, lte } from 'drizzle-orm';
+import { and, asc, eq, inArray, lte, sql } from 'drizzle-orm';
 import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
 import { pushDue, pushSent, pushSubs } from '../db/schema.ts';
 import { isQuiet, localDay, localTime, quietEnds } from './clock.ts';
@@ -170,6 +170,15 @@ export class Push {
     db.delete(pushSubs).where(eq(pushSubs.playerId, playerId)).run();
     db.delete(pushDue).where(eq(pushDue.playerId, playerId)).run();
     db.delete(pushSent).where(eq(pushSent.playerId, playerId)).run();
+  }
+
+  /** An account deleted: its name goes from a siege still waiting to be told (session 265), as from notices. */
+  forgetFoe(name: string): void {
+    this.deps.db
+      .update(pushDue)
+      .set({ data: sql`json_set(${pushDue.data}, '$.foe', '')` })
+      .where(and(eq(pushDue.kind, 'siege'), sql`json_extract(${pushDue.data}, '$.foe') = ${name}`))
+      .run();
   }
 }
 

@@ -39,6 +39,10 @@ describe('a cheer', () => {
     for (const id of ids) climbed(id);
     expect((await card('Birch', alder)).social?.cheer).toEqual({ occasion: 'rank', detail: 'woodcutting', place: 3 });
     expect((await post(s, '/api/cheer', { name: 'Birch' }, alder)).statusCode).toBe(200);
+    const cheerKept = s.ctx.store.sqlite.prepare("select data from telemetry where type = 'game.cheered'").all() as {
+      data: string;
+    }[];
+    expect(cheerKept.map((k) => k.data).join()).not.toMatch(/Alder/);
     expect(heard(ids[0], 'cheered')).toEqual([
       expect.objectContaining({ from: 'Alder', occasion: 'rank', detail: 'woodcutting', place: 3 }),
     ]);
@@ -134,6 +138,12 @@ describe('a gift', () => {
       ).body,
     ) as { result: unknown };
     expect(again.result).toEqual({ ok: false, reason: 'none' });
+    // Session 265: no player's name is kept in telemetry, as the privacy page says (a gift's giver was).
+    const kept = s.ctx.store.sqlite.prepare("select data from telemetry where type like 'game.gift%'").all() as {
+      data: string;
+    }[];
+    expect(kept.length).toBeGreaterThanOrEqual(1);
+    for (const k of kept) expect(k.data).not.toMatch(/Alder/);
   });
 
   it('reaches one player three times a day at most, and goes with a deleted account', async () => {

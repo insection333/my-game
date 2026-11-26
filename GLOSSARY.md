@@ -39,6 +39,7 @@ Plain, warm and brief, with an old-world flavour in names rather than in instruc
 | Critical hit | A hit in the top tenth of what you can deal, marked in gold in the arena |
 | Decree | Castle Clash: the realm's rule for the week, the same for every castle |
 | Deed | A feat done in the course of play (a level, work, mastery, foes, finds, the fire), easy, hard, elite or master; listed on the Deeds tab of Hiscores |
+| Follow | Set on a deed from its sheet: up to three deeds followed stand in Next up on the Hearth with how near each is |
 | Deed points | What deeds give by tier (easy 5, hard 15, elite 40, master 100); they open titles, a banner and frames |
 | Disadvantage | The foe's style beats yours: you deal less damage and take more |
 | Dish | A pie or a stew: Cooking mixes a tier's fish with the one before, and it heals a quarter more |
@@ -47,7 +48,7 @@ Plain, warm and brief, with an old-world flavour in names rather than in instruc
 | Edict | Castle Clash: a lift to XP, fight gold or finds across the game while the treasury holds what it needs |
 | Elite | A bounty's foe once a style is at 99: harder hits, half again its health, its finds twice as likely |
 | Enlarge | Buy more Storehouse slots with gold |
-| Expedition | A run into a region for 1, 2, 4 or 8 hours in the Combat lane: fight stages, caches and camps, twists, a fork, and the region's boss at the end |
+| Expedition | A run into a region for 1, 2, 4 or 8 hours in the Combat lane: fight stages, caches and camps, twists, a fork, and one of the region's bosses at the end; it sets out again once home unless you clear Set out again |
 | Favour | The pedlar's count of the lots you have handed in, opening a banner and a title |
 | Feast | A dish made with a greater Uncommon find: heals as the dish, and while eaten first lifts a fight's damage (a pie's) or combat XP (a stew's) 5% |
 | Find | A rare extra from an action, at one of three rarities |
@@ -69,6 +70,7 @@ Plain, warm and brief, with an old-world flavour in names rather than in instruc
 | Key | Opens a tier's standing stones for Runecraft; Smithing binds it from two bars, and it is kept |
 | Kindling | Each long stretch of XP a skill earns past 99 (the skill page says how far): a flame on its seal and, for the first five, a stronger Path. Nothing is reset |
 | Lane | One of your workers: Gathering, Artisan, Combat; each runs one action at a time |
+| Lock | Set on an item from its panel: no sale, Sell finds, Sell old gear, the pedlar or the realm's work takes it |
 | Lasting mark | The bonus a Legendary find gives the first time you find it |
 | Legendary | The rarest find, about 1 in 60,000 actions |
 | Legendary siege | Castle Clash: a season's named fortress of eight chambers, one opening each week, taken in order once a season and measured against your castle's might |
@@ -91,8 +93,9 @@ Plain, warm and brief, with an old-world flavour in names rather than in instruc
 | Omen | Something that holds in the Deep for a week, the same for everyone, or for a whole season |
 | Pedlar | Wants three lots a day of what you have found, gathered and cooked, for half again their price |
 | Rank | Your standing, from Wanderer to Legend of the Realm, rising with your total level |
+| Today's bosses | Every boss you fare well against with a fight waiting (and the realm's strike), fought in turn by the Combat lane at one press; then the lane takes up what it was doing |
 | Rare | A find of about 1 in 500 actions |
-| Realm's boss | The boss of the week, fought by every player once a day at their own measure (a day missed banked, up to three strikes); when the realm has struck enough it falls, and everyone who struck takes a share |
+| Realm's boss | The boss of the week, fought by every player once a day at their own measure (a day missed banked, up to three strikes within its week); when the realm has struck enough it falls, and everyone who struck takes a share |
 | Region | Where foes are fought: the march, the Sunken Fen and the Ashen Peaks, each a tab of Combat |
 | Realm's work | A work the whole realm raises in a season, in five stages, from gold and materials anyone gives |
 | Relic | A lasting boost bought with marks, in ranks: XP in a skill, food, finds or Storehouse space; the Deep's own three never stop |
@@ -111,7 +114,7 @@ Plain, warm and brief, with an old-world flavour in names rather than in instruc
 | Stoke | Keep the fire burning |
 | Storehouse | Where everything you own is kept |
 | Storehouse full | No free slot for a new kind of item: a lane that would make one stops |
-| Strike | A win over the realm's boss: one a day |
+| Strike | A win over the realm's boss: one a day, a day missed banked up to three within its week |
 | Style | Melee, Archery or Magic: set by the weapon you wear |
 | Supply | A style's extra damage, one used a foe: whetstones for Melee, arrows for Archery, runes for Magic |
 | Supply cache | What short goals and the daily goal pay in: gold for certain, and a draw for more |

@@ -403,3 +403,4 @@
 - Session 262: verify shows a failed test run's failures, where it showed the first sixty passing lines.
 - Session 263: parts that do not read. A save part with an unreadable small field (the day's bosses, fights banked, locks, gifts opened, deeds followed) lets that field go and keeps the rest, where the whole part was read as empty.
 - Session 264: an item locked in the Storehouse is kept from the pedlar's Hand in and Hand in all and from the realm's Give all, which took it all the same; the row, Next up, the lock and the help say so.
+- Session 265: a holistic sweep: telemetry keeps no giver's name, a deleted lord's name leaves a siege waiting to be pushed, and the privacy page, ARCHITECTURE.md, the glossary, the help, the closed test and the operations doc say the game as built.

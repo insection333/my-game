@@ -13,7 +13,9 @@ puzzled them, what they enjoyed, what felt slow, and anything that broke.
 
 ## Before it starts
 
-1. The server is up (`OPERATIONS.md`), the owner has signed up and is named in `ADMIN_NAMES`.
+1. The server is up (`OPERATIONS.md`), and the owner has signed in to the admin console as `Admin` at
+   https://idleclash.com/admin and chosen its own password (until then it holds the first password,
+   `Password`, which anyone reading the repository knows: session 237).
 2. Send each friend the message below.
 
 ## Who
@@ -45,7 +47,8 @@ the first deeds and titles, where the year's simulation says the game's shape ch
 
 ## What to watch, each day
 
-The admin page's **Player activity** and **Feedback** panels:
+The admin console's **Closed test** section (`/admin/test`), its **Player activity** and **Feedback** panels
+(it lists the newest 25 players; the console's **Players** section holds everyone):
 
 - **Back on day 2 / day 3** for each tester. Anyone not back on day 2: write to them that day and ask,
   kindly, what made them stop. That answer is worth more than any number.
@@ -70,7 +73,8 @@ On the last day: what did you like most, what would you change first, and would 
 ## What decides launch
 
 - All five back on days 2 and 3, and each names an aim on day 3 that the game itself set them.
-- No save lost or damaged (the admin page shows every repair; there should be none).
+- No save lost or damaged (a player's record in the console shows every repair under Save; there should be
+  none).
 - Nothing that blocks play, open.
 - The owner is satisfied: launch waits for the owner, as decided.
 

@@ -4,6 +4,7 @@
 // ore. Held to the rules: only to a browser's push service, never while a page is open, never at night in
 // the player's own clock (held to the morning), three a day at most, and gone with the account.
 import { afterEach, describe, expect, it } from 'vitest';
+import { erase } from '../src/auth/account.ts';
 import { post, server, signUp, T0, type TestServer } from './helpers.ts';
 
 let s: TestServer;
@@ -158,5 +159,31 @@ describe('notices while away', () => {
     });
     await pass(2);
     expect(sent).toHaveLength(1);
+  });
+
+  // Session 265: a deleted lord's name stayed in a siege waiting to be told (held to the morning), and was sent.
+  it("lets go of a deleted lord's name in a siege still waiting", async () => {
+    s = await server();
+    const p = await player('Hazel');
+    const keeper = await signUp(s, 'Keeper');
+    const keeperId = (
+      JSON.parse((await s.app.inject({ method: 'GET', url: '/api/me', headers: { cookie: keeper } })).body) as {
+        player: { id: string };
+      }
+    ).player.id;
+    s.ctx.push.now(p.id, {
+      type: 'castleBesieged',
+      at: s.clock.now,
+      foe: 'Keeper',
+      outcome: 'breached',
+      lost: 1,
+      marks: 2,
+    });
+    erase(s.ctx, keeperId);
+    const waiting = s.ctx.store.sqlite.prepare("select data from push_due where kind = 'siege'").all() as {
+      data: string;
+    }[];
+    expect(waiting).toHaveLength(1);
+    expect(waiting[0].data).not.toContain('Keeper');
   });
 });
