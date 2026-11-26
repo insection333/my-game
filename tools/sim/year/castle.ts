@@ -9,6 +9,8 @@
 // year's checks run with the edict lifting every skill's XP.
 import {
   BUILDINGS,
+  CHARTER_IDS,
+  CHARTER_MARKS,
   RELICS,
   SIEGE,
   SINKS,
@@ -264,6 +266,13 @@ export class Lordship {
         if (!cost || c.warMarks < cost.marks || purse * share < cost.gold || !apply(E.forgeRelic(wallet(), forging.id)))
           break;
       }
+      // Then the charters (session 249), the cheapest rank first: lasting gains in the skills and fights.
+      for (;;) {
+        const next = CHARTER_IDS.filter((id) => c.charters[id] < CHARTER_MARKS.length).sort(
+          (a, b) => c.charters[a] - c.charters[b],
+        )[0];
+        if (!next || c.warMarks < CHARTER_MARKS[c.charters[next]] || !apply(E.raiseCharter(wallet(), next))) break;
+      }
       for (const r of RELICS)
         for (let n = 0; n < TEMPERS_A_VISIT; n++) {
           const cost = E.temperCost(c, r.id);
@@ -289,6 +298,8 @@ export class Lordship {
     if (evolved(c) > evolved(was)) firsts.push('castle:evolve');
     if (sum(c.relics) > sum(was.relics)) firsts.push('castle:relic');
     if (sum(c.tempers) > sum(was.tempers)) firsts.push('castle:temper');
+    // A charter raised a rank (session 249).
+    if (sum(c.charters) > sum(was.charters)) firsts.push('castle:charter');
     if (c.legends > was.legends) firsts.push('castle:legend');
     // A chamber of the season's legend taken (session 222): a named fortress's battle won, said as a moment.
     else if (c.legendTaken > (c.legendSeason === was.legendSeason ? was.legendTaken : 0)) firsts.push('castle:chamber');

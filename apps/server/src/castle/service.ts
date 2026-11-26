@@ -167,6 +167,9 @@ export function act(io: Io, action: CastleAction): Outcome {
       return upgrade(io, w, action);
     case 'research':
       return own(io, E.research(w, action.tech as Parameters<typeof E.research>[1], io.now));
+    case 'charter':
+      if (!E.tabOpen(c, 'halls')) return { ok: false, reason: 'locked' };
+      return own(io, E.raiseCharter(w, action.charter));
     case 'forgeRelic':
       if (!E.tabOpen(c, 'halls')) return { ok: false, reason: 'locked' };
       return own(io, E.forgeRelic(w, action.relic));

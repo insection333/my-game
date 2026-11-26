@@ -29,7 +29,7 @@ import { relicFindPct, relicXpPct } from './expeditions/relics.ts';
 import { steadingSavePct, steadingXpPct, steadingYieldPct } from './steading.ts';
 import { HITPOINTS, STYLE_SKILLS } from './combat/data.ts';
 import { feastLift, mealAtHand } from './feast.ts';
-import { edictPct, mirrorOf } from './castle/mirror.ts';
+import { charterPct, edictPct, mirrorOf } from './castle/mirror.ts';
 import { announceKindling, pathBonus, pathOf } from './kindling.ts';
 import { seasonFindPct, seasonXpPct, seasonXpTwist, seasonYieldPct } from './season.ts';
 import { actionModifiers, perksAt, skillLevel, yieldOf } from './skill.ts';
@@ -157,7 +157,9 @@ export function completeSkillAction(ctx: ActionContext, def: SkillDefinition, ac
   // Ingredients are checked before every repetition starts; should one have gone since, nothing is made.
   // The Workshop keeps an ingredient now and then; the Woodyard brings more of what gathering makes.
   const artisan = !!act.takes?.length;
-  if (artisan && !takeInputs(ctx, act.takes!, m.saveInput + steadingSavePct(state))) return false;
+  // The Charter of the Craft (session 249) keeps an ingredient now and then, as the Workshop does.
+  if (artisan && !takeInputs(ctx, act.takes!, m.saveInput + steadingSavePct(state) + charterPct(state, 'craft')))
+    return false;
   // A skill on the Path of Fortune finds more; on Bounty, makes more (past 99, see kindling.ts).
   rollFind(
     ctx,
@@ -202,6 +204,7 @@ export function extraYieldPct(
   count: number,
   at: number,
 ): number {
-  const gathered = artisan ? 0 : steadingYieldPct(state) + seasonYieldPct(skill, at);
+  // The Charter of the Land (session 249) beside the Woodyard.
+  const gathered = artisan ? 0 : steadingYieldPct(state) + seasonYieldPct(skill, at) + charterPct(state, 'land');
   return perks + gathered + pathBonus(state, skill, 'items') * count;
 }

@@ -4,7 +4,7 @@
 // here. `until` is when upkeep would take the treasury under its requirement (at the fullest rate), so an
 // edict never outlives its gold while its lord is away.
 import type { State } from '@idle-clash/kernel';
-import { ECONOMY, EDICTS } from '@idle-clash/content';
+import { CHARTER_PCT, ECONOMY, EDICTS } from '@idle-clash/content';
 import { z } from 'zod';
 import type { Castle } from './castle.ts';
 import { avgLevel, edictBonusPct, requiredTreasury } from './economy.ts';
@@ -47,6 +47,15 @@ export const CastleMirror = z
     pct: z.number().min(0).max(50),
     until: z.number(),
     standing: CastleStanding.optional(),
+    /** The charters' ranks (session 249), read by the skills and fights; absent before the first. */
+    charters: z
+      .object({
+        land: z.number().int().min(0).max(5),
+        craft: z.number().int().min(0).max(5),
+        arms: z.number().int().min(0).max(5),
+      })
+      .strict()
+      .optional(),
   })
   .strict();
 export type CastleMirror = z.infer<typeof CastleMirror>;
@@ -105,7 +114,9 @@ export function edictPct(state: State, at: number, lifts: 'xp' | 'finds' | 'figh
 export function mirrorFor(c: Castle, totalLevel: number, now: number): CastleMirror {
   const pct = edictBonusPct(c, totalLevel);
   const standing = standingOf(c);
-  if (!c.edict || pct <= 0) return { ...NO_EDICT, standing };
+  // The charters cross over whether an edict is paid or not (session 249).
+  const charters = Object.values(c.charters).some((n) => n > 0) ? { ...c.charters } : undefined;
+  if (!c.edict || pct <= 0) return { ...NO_EDICT, standing, ...(charters ? { charters } : {}) };
   const req = requiredTreasury(c, totalLevel);
   const days = Math.log(req / c.treasury) / Math.log(1 - ECONOMY.UPKEEP_PER_DAY);
   const crossing = now + Math.max(0, days) * 86_400_000;
@@ -113,5 +124,16 @@ export function mirrorFor(c: Castle, totalLevel: number, now: number): CastleMir
     ? Date.parse(`${c.lastCtaDateUtc}T00:00:00Z`) + ECONOMY.UPKEEP_PAUSE_MS
     : Number.NEGATIVE_INFINITY;
   const until = crossing <= pauseAt ? crossing : Number.MAX_SAFE_INTEGER;
-  return { edict: c.edict as CastleMirror['edict'], pct, until: Math.floor(until), standing };
+  return {
+    edict: c.edict as CastleMirror['edict'],
+    pct,
+    until: Math.floor(until),
+    standing,
+    ...(charters ? { charters } : {}),
+  };
+}
+
+/** What a charter gives now, in percent (session 249): 1% a rank. */
+export function charterPct(state: State, id: 'land' | 'craft' | 'arms'): number {
+  return (mirrorOf(state).charters?.[id] ?? 0) * CHARTER_PCT;
 }

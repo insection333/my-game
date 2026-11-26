@@ -85,3 +85,16 @@ describe('a Level up paid in materials', () => {
     expect(E.upgrade(w, 'vanguard', s.clock.now, 1, -1)).toMatchObject({ ok: false });
   });
 });
+
+describe('a charter over HTTP (session 249)', () => {
+  it('is kept on the castle and mirrored into the save', async () => {
+    s = await server();
+    const me = await lord({ gold: 1_000_000 });
+    const c = me.castles.read(me.id)!;
+    me.castles.write({ ...c, warMarks: 200, warMarksEarned: 1_000 });
+    expect(await act(me.cookie, { type: 'charter', charter: 'arms' })).toEqual({ ok: true });
+    expect(me.castles.read(me.id)!.charters).toEqual({ land: 0, craft: 0, arms: 1 });
+    expect(me.castles.read(me.id)!.warMarks).toBe(140);
+    expect((save(me.id).features.castle as { charters?: unknown }).charters).toEqual({ land: 0, craft: 0, arms: 1 });
+  });
+});
