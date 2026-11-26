@@ -22,6 +22,7 @@ import { useGame } from '../game/hooks.ts';
 import { game } from '../game/store.ts';
 import { navigate } from '../router.ts';
 import s from './items.module.css';
+import { ThrowAway } from './ThrowAway.tsx';
 
 export const KINDS = ['resource', 'supply', 'gear', 'food', 'find'] as const;
 export const KIND_TITLE: Record<(typeof KINDS)[number], string> = {
@@ -84,6 +85,7 @@ export function ItemPanel({ item }: { item: string }) {
         </div>
       </div>
       <ItemActions key={item} item={item} value={def.value} gear={def.kind === 'gear'} />
+      <ThrowAway key={`throw-${item}`} item={item} />
       <UseFind item={item} />
       <Sources title={t('item.panel.comesFrom')} list={items.comesFrom(features, item)} />
       <Sources title={t('item.panel.usedIn')} list={items.usedIn(features, item)} none={t('item.panel.unused')} />

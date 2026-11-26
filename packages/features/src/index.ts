@@ -26,7 +26,8 @@ export type { FoeRow, GearChoice, LoadoutSlot, LoadoutView, SupplyView, Triangle
 export { yourOdds } from './combat/slots.ts';
 export type { CapacityView, FoodView } from './storehouse/index.ts';
 export * as storehouseData from './shared/storehouse.ts';
-export { isLocked } from './shared/storehouse.ts';
+export { isLocked, worthless } from './shared/storehouse.ts';
+export { throwable } from './storehouse/tidy.ts';
 export { withoutUnknown } from './shared/part.ts';
 export { actionsFor, RARE_FIND_COMPLETIONS, findUses, spentFind, type FindUse } from './storehouse/finds.ts';
 export { findOf } from './shared/catalog.ts';
