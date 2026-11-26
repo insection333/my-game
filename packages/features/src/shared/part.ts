@@ -35,3 +35,13 @@ export function partReader<T>(
     return part;
   };
 }
+
+/** A part's salvage that lets go of what is least worth keeping (session 263: a list of locks or gifts opened that
+ *  did not read cost the whole part, the Storehouse's enlargements or the goals with it). */
+export function dropping<T>(schema: z.ZodType<T>, ...keys: string[]): (raw: object) => T | null {
+  return (raw) => {
+    const kept = Object.fromEntries(Object.entries(raw).filter(([k]) => !keys.includes(k)));
+    const r = schema.safeParse(kept);
+    return r.success ? r.data : null;
+  };
+}

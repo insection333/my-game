@@ -401,3 +401,4 @@
 - Session 260: a deeper sweep of sessions 239 to 259. A worn heirloom is no longer taken off by Fight as or Wear your best for tempered gear of its slot; the routes' random play reaches every new route with real inputs.
 - Session 261: a bad actor's sweep. A player takes ten cheers a day at most, so a crowd of accounts cannot flood their moments and tray; the server's news (cheers, gifts, rank-ups, the realm's boss and work) is said as moments, and a gift come shows at once.
 - Session 262: verify shows a failed test run's failures, where it showed the first sixty passing lines.
+- Session 263: parts that do not read. A save part with an unreadable small field (the day's bosses, fights banked, locks, gifts opened, deeds followed) lets that field go and keeps the rest, where the whole part was read as empty.

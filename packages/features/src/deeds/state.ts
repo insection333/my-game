@@ -2,6 +2,7 @@
 // your name, a banner's colour, a frame; since session 43 a picture, its glow, a badge and a scene). Read on every draw, so each saved object is checked once.
 import type { State } from '@idle-clash/kernel';
 import { z } from 'zod';
+import { dropping } from '../shared/part.ts';
 
 const Key = z.string().regex(/^[a-z0-9][a-z0-9-]{0,63}$/);
 const time = z.number().int().nonnegative();
@@ -47,7 +48,8 @@ export function deedsOf(state: State): DeedsState {
   const known = checked.get(raw);
   if (known) return known;
   const parsed = DeedsState.safeParse(raw);
-  const d = parsed.success ? parsed.data : EMPTY;
+  // Deeds followed that do not read are let go, never the deeds done (session 263).
+  const d = parsed.success ? parsed.data : (dropping(DeedsState, 'followed')(raw) ?? EMPTY);
   checked.set(raw, d);
   return d;
 }

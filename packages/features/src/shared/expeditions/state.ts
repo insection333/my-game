@@ -135,15 +135,31 @@ const EMPTY: ExpeditionState = Object.freeze({
 });
 const checked = new WeakMap<object, ExpeditionState>();
 
+/** What can be let go of a part that does not read, the least first: the run, then the day's list of bosses,
+ *  then the fights banked (each day's back by tomorrow). */
+function salvage(raw: Record<string, unknown>): ExpeditionState | null {
+  const realm = raw.realm && typeof raw.realm === 'object' ? { ...raw.realm, left: undefined } : raw.realm;
+  for (const tried of [
+    { ...raw, run: null },
+    { ...raw, run: null, round: undefined },
+    { ...raw, run: null, round: undefined, bossLeft: undefined, realm },
+  ]) {
+    const r = ExpeditionState.safeParse(tried);
+    if (r.success) return r.data;
+  }
+  return null;
+}
+
 export function expeditionsOf(state: State): ExpeditionState {
   const raw = Object.hasOwn(state.features, 'expeditions') ? state.features.expeditions : undefined;
   if (!raw || typeof raw !== 'object') return EMPTY;
   const known = checked.get(raw);
   if (known) return known;
   const parsed = ExpeditionState.safeParse(raw);
-  // A run's record that does not read costs that run, never the marks, relics and wins beside it.
-  const salvaged = parsed.success ? null : ExpeditionState.safeParse({ ...raw, run: null });
-  const e = parsed.success ? parsed.data : salvaged?.success ? salvaged.data : EMPTY;
+  // A run's record that does not read costs that run, never the marks, relics and wins beside it; nor does the
+  // day's list of bosses or the fights banked (session 263: either unread cost the whole part, marks and all).
+  const salvaged = parsed.success ? null : salvage(raw as Record<string, unknown>);
+  const e = parsed.success ? parsed.data : (salvaged ?? EMPTY);
   checked.set(raw, e);
   return e;
 }
