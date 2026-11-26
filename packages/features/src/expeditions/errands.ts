@@ -35,7 +35,11 @@ export function expeditionErrands(state: State, now: number): ErrandRow[] {
     if (realm.ready && !r.fell && !inHand(state.lanes, 'expeditions', 'realm') && !round.includes('realm'))
       rows.push({
         icon: realmBossIn(r.week).id,
-        text: t('errand.realm', { name: midSentence(realm.name) }),
+        // A strike banked is counted (session 253).
+        text:
+          realm.fights > 1
+            ? t('errand.realmBanked', { name: midSentence(realm.name), count: fmt.int(realm.fights) })
+            : t('errand.realm', { name: midSentence(realm.name) }),
         href: HREF,
         order: ERRAND_ORDER.realm,
       });
@@ -47,13 +51,18 @@ export function expeditionErrands(state: State, now: number): ErrandRow[] {
       !inHand(state.lanes, 'expeditions', b.id) &&
       !round.includes(b.id),
   );
+  const fights = bosses.reduce((n, b) => n + b.fights, 0);
   if (bosses.length)
     rows.push({
       icon: bosses[0].id,
       text:
         bosses.length === 1
-          ? t('errand.bossesOne', { name: bosses[0].name })
-          : t('errand.bosses', { count: fmt.int(bosses.length) }),
+          ? fights > 1
+            ? t('errand.bossBanked', { name: bosses[0].name, count: fmt.int(fights) })
+            : t('errand.bossesOne', { name: bosses[0].name })
+          : fights > bosses.length
+            ? t('errand.bossesBanked', { count: fmt.int(fights) })
+            : t('errand.bosses', { count: fmt.int(bosses.length) }),
       href: HREF,
       order: ERRAND_ORDER.bosses,
     });

@@ -8,7 +8,7 @@ import { combatOf, fighterOf, healthAt, mealsOf, setCombat } from '../shared/com
 import { BOSS_FINDS, LEGENDARY_MARKS, product, type Boss, type Twist } from '../shared/expeditions/data.ts';
 import { expeditionsOf, setExpeditions } from '../shared/expeditions/state.ts';
 import { relicFindPct } from '../shared/expeditions/relics.ts';
-import { dayOf } from '../shared/expeditions/round.ts';
+import { bossFights, dayOf } from '../shared/expeditions/bank.ts';
 
 /** A boss made harder by the twists in force: more health, harder hits. */
 export const bossUnder = (boss: Boss, mods: readonly Twist[]): Boss => ({
@@ -37,11 +37,8 @@ export function playBoss(
 /** The UTC day a moment falls on (2026-10-28): a boss rests a day after it is fought in the lane. */
 export { dayOf };
 
-/** Whether a boss has been fought in the lane today. */
-export const restedToday = (state: State, boss: Boss, at: number) => {
-  const days = expeditionsOf(state).bossDay;
-  return Object.hasOwn(days, boss.id) && days[boss.id] === dayOf(at);
-};
+/** Whether a boss has no fight waiting: fought today with none banked (session 253). */
+export const restedToday = (state: State, boss: Boss, at: number) => bossFights(state, boss.id, at) === 0;
 
 /** Fights a boss and pays for a win. Returns whether it fell, the marks it paid, any find and the food eaten.
  *  The Deep's bosses (session 212) fight from the descent's pack and are not counted among the boss's wins,

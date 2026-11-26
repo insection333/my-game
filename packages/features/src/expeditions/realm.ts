@@ -31,7 +31,7 @@ import type { Foe } from '../shared/combat/foes.ts';
 import { BOSSES, type Boss } from '../shared/expeditions/data.ts';
 import { traitWords } from './views.ts';
 import { noRoom } from '../shared/storehouse.ts';
-import { dayOf } from './boss.ts';
+import { realmFights, spendRealm } from '../shared/expeditions/bank.ts';
 
 const NONE = { day: null, claimed: null, fallen: 0 };
 /** Whether a week's share is taken: it, or a later week's, was the last claimed (weeks are dates, so they
@@ -39,8 +39,8 @@ const NONE = { day: null, claimed: null, fallen: 0 };
 const taken = (claimed: string | null, week: string) => claimed !== null && week <= claimed;
 const realmPart = (e: ExpeditionState) => e.realm ?? NONE;
 
-/** Whether the realm's boss has been fought today. */
-export const realmRested = (state: State, at: number) => realmPart(expeditionsOf(state)).day === dayOf(at);
+/** Whether the realm's boss has no strike waiting: struck today with none banked (session 253). */
+export const realmRested = (state: State, at: number) => realmFights(state, at) === 0;
 
 function playRealm(ctx: ActionContext): Fought | null {
   const foe = realmFoe(ctx.state, ctx.startedAt);
@@ -81,11 +81,7 @@ export const REALM_RULES: ActionRules = {
       give(state, foe.drop, 1);
     }
     const e = expeditionsOf(state);
-    setExpeditions(state, {
-      ...e,
-      marks: e.marks + (won ? REALM_MARKS : 0),
-      realm: { ...realmPart(e), day: dayOf(ctx.at) },
-    });
+    setExpeditions(state, spendRealm(state, { ...e, marks: e.marks + (won ? REALM_MARKS : 0) }, ctx.at));
     const boss = realmBossIn(weekOf(ctx.startedAt)).id;
     ctx.emit({ type: 'realmFought', at: ctx.at, boss, won, gold, marks: won ? REALM_MARKS : 0 });
   },
@@ -130,6 +126,10 @@ export interface RealmView {
   mark: string | null;
   /** Why it cannot be fought now (today's fought, no weapon), or null. */
   status: string | null;
+  /** The strikes banked past today's (session 253): "2 strikes banked", or null with one or none. */
+  banked: string | null;
+  /** The strikes waiting today. */
+  fights: number;
   ready: boolean;
   /** A share to take: its words, and the button's. */
   share: { text: string; label: string } | null;
@@ -152,7 +152,8 @@ export function realmView(state: State, now: number): RealmView | null {
   const boss = realmBossIn(r.week);
   const foe = realmFoe(state, now);
   const o = foe ? oddsFor(state, foe) : null;
-  const rested = realmRested(state, now);
+  const fights = realmFights(state, now);
+  const rested = fights === 0;
   const part = realmPart(expeditionsOf(state));
   const owed = r.owed && !taken(part.claimed, r.owed.week) ? r.owed : null;
   const name = realmName(boss.id);
@@ -168,6 +169,8 @@ export function realmView(state: State, now: number): RealmView | null {
     mark: foe?.trait ? markWords(foe, boss) : null,
     status: !o ? t('stop.noWeapon') : rested ? t('realm.rested', { back: dayTurns(now) }) : null,
     ready: o !== null && !rested,
+    banked: o && fights > 1 && !r.fell ? t('realm.banked', { count: fmt.int(fights) }) : null,
+    fights: o && !r.fell ? fights : 0,
     share: owed
       ? {
           text: t('realm.owed', { boss: realmName(owed.boss) }),

@@ -100,6 +100,12 @@ describe('t', () => {
     // Session 66: every counting placeholder, not only {count}: "+1 war marks", "1 marks so far" and
     // "Playing for 1 days" were all on screen. Counts that are never 1 are named here, each with why.
     const neverOne = [
+      // Banked fights are said from two (session 253).
+      'boss.banked',
+      'realm.banked',
+      'errand.realmBanked',
+      'errand.bossBanked',
+      'errand.bossesBanked',
       // The 500 completions a Rare find gives, and the log sizes milestones ask for.
       'item.panel.use',
       'moment.findUsed.body',

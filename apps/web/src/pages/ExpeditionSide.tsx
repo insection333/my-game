@@ -89,7 +89,13 @@ function Boss({ boss, round }: { boss: BossRow; round: RoundView | null }) {
       icon={hasIcon(boss.id) ? <ItemIcon name={boss.id} size={32} /> : undefined}
       name={boss.name}
       locked={!boss.ready && !boss.verdict}
-      facts={[boss.region, boss.style, ...(boss.trait ? [boss.trait] : []), boss.wins]}
+      facts={[
+        boss.region,
+        boss.style,
+        ...(boss.trait ? [boss.trait] : []),
+        boss.wins,
+        ...(boss.banked ? [boss.banked] : []),
+      ]}
       status={
         fighting ? (
           <Pill tone="woad">{t('action.working')}</Pill>

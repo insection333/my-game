@@ -3,7 +3,7 @@
 export const expeditions = {
   'help.expeditions.title': 'Expeditions',
   'help.expeditions.body':
-    "Set out into a region for 1, 2, 4 or 8 hours from the Combat page, here or away. A run is six ten-minute fight stages an hour against foes drawn for it, with a cache and a camp each hour, one or two twists, a fork whose road you choose before setting out, and one of the region's two bosses at the end, drawn from those your Hitpoints has opened. A run home with its boss beaten sets out again on a new route of the same length, unless you clear Set out again when home or a Next waits in the lane. Each boss can also be fought alone once a day, and Fight today's bosses fights every one you fare well against, with the realm's, one after another before the lane goes back to what it was on. Each boss fights its own way, said on its row, and Your odds counts it. Runs pay at least as well as the lane, and they, the bosses and bounties pay marks, which buy relics: lasting boosts in ranks. Once every expedition relic is raised, the quartermaster trades marks for gold. At Hitpoints 99 the Deep opens: a descent with no floor, a depth each ten minutes, its foes stronger each depth down and a boss at every tenth, as deep as a pack of 30 meals takes you; each tenth depth reached leaves a waystone to start from next time, and the week's two omens and the season's own hold for everyone. The Deep's three relics, bought with marks, work there alone and have no last rank.",
+    "Set out into a region for 1, 2, 4 or 8 hours from the Combat page, here or away. A run is six ten-minute fight stages an hour against foes drawn for it, with a cache and a camp each hour, one or two twists, a fork whose road you choose before setting out, and one of the region's two bosses at the end, drawn from those your Hitpoints has opened. A run home with its boss beaten sets out again on a new route of the same length, unless you clear Set out again when home or a Next waits in the lane. Each boss can also be fought alone once a day, a day not fought banking its fight for later, up to three, and Fight today's bosses fights every one you fare well against, with the realm's, one after another before the lane goes back to what it was on. Each boss fights its own way, said on its row, and Your odds counts it. Runs pay at least as well as the lane, and they, the bosses and bounties pay marks, which buy relics: lasting boosts in ranks. Once every expedition relic is raised, the quartermaster trades marks for gold. At Hitpoints 99 the Deep opens: a descent with no floor, a depth each ten minutes, its foes stronger each depth down and a boss at every tenth, as deep as a pack of 30 meals takes you; each tenth depth reached leaves a waystone to start from next time, and the week's two omens and the season's own hold for everyone. The Deep's three relics, bought with marks, work there alone and have no last rank.",
 
   'action.expeditions.march': 'Expedition into the march',
   'action.expeditions.fen': 'Expedition into the Sunken Fen',
@@ -133,7 +133,7 @@ export const expeditions = {
   'hiscores.unrankedRealm': "You join this week's ladder with your first strike on the realm's boss.",
   'realm.fell': 'Fallen this week. A new boss comes {when}.',
   'realm.note':
-    'The whole realm fights it this week, each at their own measure, once a day. When the realm has struck enough, it falls, and everyone who struck shares the spoils.',
+    'The whole realm fights it this week, each at their own measure, once a day (a day missed is banked, up to three strikes). When the realm has struck enough, it falls, and everyone who struck shares the spoils.',
   'realm.struck': '{name}: struck',
   'realm.struckPays': '{gold} gold and {marks} marks',
   'realm.struckPaysOne': '{gold} gold and 1 mark',
@@ -223,6 +223,12 @@ export const expeditions = {
   'expedition.marksOne': '1 mark',
 
   'boss.rested': 'Fought today: back {back}',
+  // Days banked (session 253): a day not fought keeps its fight, up to three.
+  'boss.banked': '{count} fights banked',
+  'realm.banked': '{count} strikes banked',
+  'errand.realmBanked': 'Strike {name}: {count} strikes banked',
+  'errand.bossBanked': '{name} can be fought {count} times today',
+  'errand.bossesBanked': '{count} boss fights wait today',
   'expedition.lastRun': 'Last run, {when}',
   'boss.beaten': '{boss} beaten',
   'boss.firstWin': '{boss} beaten for the first time',

@@ -11,14 +11,16 @@ import { expeditionsOf, setExpeditions } from '../shared/expeditions/state.ts';
 import { realmView } from './realm.ts';
 import { bossRows } from './views.ts';
 
-/** The fights the day's bosses would take on now, in the order fought: the realm's first. */
+/** The fights the day's bosses would take on now, in the order fought: the realm's first, each as often as it
+ *  has fights banked (session 253), a boss's banked fights one after another. */
 export function roundFoes(state: State, now: number): string[] {
   const realm = realmView(state, now);
   const r = realmOf(state);
+  const times = (id: string, n: number) => Array.from({ length: n }, () => id);
   const bosses = bossRows(state, now)
     .filter((b) => b.ready && (b.verdictId === 'easy' || b.verdictId === 'fair'))
-    .map((b) => b.id);
-  return [...(realm?.ready && r && !r.fell ? ['realm'] : []), ...bosses];
+    .flatMap((b) => times(b.id, b.fights));
+  return [...(realm?.ready && r && !r.fell ? times('realm', realm.fights) : []), ...bosses];
 }
 
 export type RoundResult = { ok: true; count: number } | { ok: false; reason: 'none' };

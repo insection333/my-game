@@ -22,7 +22,7 @@ Plain, warm and brief, with an old-world flavour in names rather than in instruc
 | Banner | The colour your plaque and your hiscores pennant fly, opened by deeds |
 | Bar | Metal smelted from ore: copper, bronze, iron, steel |
 | Block | Stops one player sending you messages, and nothing else; Unblock lets them again |
-| Boss | One of a region's two hardest foes, each fighting its own way: met at an expedition's end, fought alone once a day, and every tenth depth of the Deep |
+| Boss | One of a region's two hardest foes, each fighting its own way: met at an expedition's end, fought alone once a day (a day missed banked, up to three), and every tenth depth of the Deep |
 | Bounty | One of three a day on Combat: a foe you fare well against and about an hour of fights of it, paid in gold and marks once done |
 | Call to arms | Castle Clash: answered once a day for AP held in reserve; days in a row build a streak that adds to the hourly AP |
 | Castle Clash | The castle each lord raises at total level 100: an edict for the rest of the game, troops, spies and sieges |
@@ -90,7 +90,7 @@ Plain, warm and brief, with an old-world flavour in names rather than in instruc
 | Pedlar | Wants three lots a day of what you have found, gathered and cooked, for half again their price |
 | Rank | Your standing, from Wanderer to Legend of the Realm, rising with your total level |
 | Rare | A find of about 1 in 500 actions |
-| Realm's boss | The boss of the week, fought by every player once a day at their own measure; when the realm has struck enough it falls, and everyone who struck takes a share |
+| Realm's boss | The boss of the week, fought by every player once a day at their own measure (a day missed banked, up to three strikes); when the realm has struck enough it falls, and everyone who struck takes a share |
 | Region | Where foes are fought: the march, the Sunken Fen and the Ashen Peaks, each a tab of Combat |
 | Realm's work | A work the whole realm raises in a season, in five stages, from gold and materials anyone gives |
 | Relic | A lasting boost bought with marks, in ranks: XP in a skill, food, finds or Storehouse space; the Deep's own three never stop |
