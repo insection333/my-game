@@ -6,7 +6,7 @@
   align-items: start;
 }
 
-@container main (min-width: 900px) {
+@container main (min-width: 56.25rem) {
   .layout {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
   }

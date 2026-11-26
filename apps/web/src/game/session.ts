@@ -5,7 +5,7 @@ import type { PlayerView } from '@idle-clash/contracts';
 import { useSyncExternalStore } from 'react';
 import { api, ApiError, showPlayer } from '../api.ts';
 import { keepFor } from '../kept.ts';
-import { pushOff } from '../push.ts';
+import { pushAgain, pushOff } from '../push.ts';
 import { replace } from '../router.ts';
 import { notePlayed } from '../welcome-path.ts';
 import type * as Store from './store.ts';
@@ -108,6 +108,7 @@ async function enter(player: PlayerView) {
   await m.start(session.flags);
   notePlayed(true);
   setSession({ phase: 'playing', player, bounced: null });
+  void pushAgain().catch(() => undefined);
 }
 
 /** Asks the server who is here and which features are on, then loads the game for a player. */

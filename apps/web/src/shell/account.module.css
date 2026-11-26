@@ -29,7 +29,7 @@
 
 /* On a phone the hiscores live here, so the picture is ringed in woad while they are open, as a menu
    entry is lit for its page. */
-@media (max-width: 767px) {
+@media (max-width: 47.9375em) {
   .button[data-current] {
     box-shadow: inset 0 0 0 2px var(--woad);
   }

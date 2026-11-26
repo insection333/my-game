@@ -101,7 +101,7 @@
 }
 
 /* The side variant: on a wide page area, a list down the side of what it switches. */
-@container main (min-width: 720px) {
+@container main (min-width: 45rem) {
   .tabs[data-variant='side'] {
     flex-direction: column;
     gap: 0;

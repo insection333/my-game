@@ -15,7 +15,7 @@
   max-height: min(48rem, 50dvh);
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 64em) {
   .list {
     max-height: min(48rem, 70dvh);
   }
@@ -196,7 +196,7 @@
   color: var(--ink);
 }
 
-@container foes (min-width: 600px) {
+@container foes (min-width: 37.5rem) {
   .foe {
     grid-template-columns: auto minmax(0, 1fr) minmax(0, 22rem);
     grid-template-areas:

@@ -54,14 +54,14 @@
   }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 48em) {
   .gains {
     bottom: auto;
     top: calc(var(--header-h) + 64px);
   }
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 64em) {
   .gains {
     top: auto;
     bottom: var(--s-5);

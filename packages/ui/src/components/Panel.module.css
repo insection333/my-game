@@ -34,7 +34,7 @@
 
 /* On wide screens a panel stands a little off the page, lit along its top edge, and its title is marked
    with gold leaf (session 131). */
-@media (min-width: 1024px) {
+@media (min-width: 64em) {
   .panel {
     box-shadow:
       var(--raise),

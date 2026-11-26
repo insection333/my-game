@@ -29,7 +29,7 @@
   display: none;
 }
 
-@container main (min-width: 720px) {
+@container main (min-width: 45rem) {
   .layout {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
     grid-template-rows: auto auto 1fr;
@@ -120,7 +120,7 @@
 /* A narrow arena (a phone) stands each side's picture above its name and health, so the words have the
    side's whole width: beside the picture "The Troll-chief of the hill" stood in four lines 54px wide
    (session 88). */
-@container arena (max-width: 479px) {
+@container arena (max-width: 29.9375rem) {
   .duel > .side {
     flex-direction: column;
     align-items: flex-start;

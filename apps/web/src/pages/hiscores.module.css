@@ -20,7 +20,7 @@
   font: 600 var(--t-body) / 1.2 var(--font-book);
 }
 
-@container main (min-width: 720px) {
+@container main (min-width: 45rem) {
   .layout {
     grid-template-columns: 12rem minmax(0, 1fr);
   }
@@ -88,7 +88,7 @@
   display: none;
 }
 
-@container main (max-width: 479px) {
+@container main (max-width: 29.9375rem) {
   .rowPicture {
     display: none;
   }
@@ -214,7 +214,7 @@
   background: linear-gradient(var(--woad-soft), var(--woad-soft)), var(--surface);
 }
 
-@container main (max-width: 719px) {
+@container main (max-width: 44.9375rem) {
   .ladder tbody:first-of-type tr:nth-child(n + 11) {
     display: none;
   }

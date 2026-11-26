@@ -18,7 +18,7 @@ const ruleIn = (condition: string, selector: string) => {
 describe("the ladder's name", () => {
   it('is a caption seen where the tabs are icons alone', () => {
     expect(tsx).toMatch(/<caption className=\{s\.caption\}>/);
-    expect(ruleIn('min-width: 720px', '.caption')).toMatch(/clip-path: inset\(50%\)/);
+    expect(ruleIn('min-width: 45rem', '.caption')).toMatch(/clip-path: inset\(50%\)/);
     expect(css).toMatch(/\.caption \{[^}]*caption-side: top/);
   });
 });
