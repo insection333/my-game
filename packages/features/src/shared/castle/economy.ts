@@ -66,8 +66,13 @@ export function edictBonusPct(c: Castle, totalLevel: number): number {
   const req = requiredTreasury(c, totalLevel);
   if (!c.edict || c.treasury < req) return 0;
   const scale = Math.min(ECONOMY.EDICT_MAX_MULT, 1 + ECONOMY.EDICT_LOG_SLOPE * Math.log2(c.treasury / req));
-  return ECONOMY.EDICT_BASE_PCT * scale * idleMultiplier(c);
+  return ECONOMY.EDICT_BASE_PCT * scale * idleMultiplier(c) * edictGrowth(c);
 }
+
+/** How much the castle's own levels lift its edict (session 248): 2% for each average level above the first,
+ *  to half again at most. */
+export const edictGrowth = (c: Castle): number =>
+  Math.min(ECONOMY.EDICT_LEVEL_MAX, 1 + ECONOMY.EDICT_LEVEL_SLOPE * Math.max(0, avgLevel(c) - 1));
 
 /** Below the requirement, the garrison fights at 80% (the plan's unpaid morale). */
 export const morale = (c: Castle, totalLevel: number): number =>

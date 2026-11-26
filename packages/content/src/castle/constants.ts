@@ -44,6 +44,10 @@ export const ECONOMY = {
   EDICT_BASE_PCT: 5,
   EDICT_MAX_MULT: 2,
   EDICT_LOG_SLOPE: 1 / Math.log2(5),
+  /** The edict grows with the castle (session 248): this much more for each average level above the first, to
+   *  half again at most (about 1.42 times at level 22), so a castle raised high gives back more than a new one. */
+  EDICT_LEVEL_SLOPE: 0.02,
+  EDICT_LEVEL_MAX: 1.5,
   /** Defending troops when the treasury is under its requirement. */
   UNPAID_MORALE: 0.8,
   WITHDRAW_TAX: 0.2,

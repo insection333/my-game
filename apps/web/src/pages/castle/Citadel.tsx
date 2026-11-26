@@ -41,6 +41,8 @@ function Edicts() {
   if (!castle) return null;
   const required = E.requiredTreasury(castle, totalLevel);
   const paid = castle.treasury >= required;
+  // The castle's own levels lift every edict (session 248).
+  const growth = E.edictGrowth(castle);
   return (
     <section data-section>
       <Panel title={t('castle.edict.title')} flush>
@@ -54,7 +56,7 @@ function Edicts() {
                 iconYields
                 icon={<ItemIcon name={`edict-${e.id}`} size={32} />}
                 name={edictName(e.id)}
-                facts={[edictGives(e.lifts, { pct: pct(paid ? gives : ECONOMY.EDICT_BASE_PCT) })]}
+                facts={[edictGives(e.lifts, { pct: pct(paid ? gives : ECONOMY.EDICT_BASE_PCT * growth) })]}
                 status={
                   chosen ? (
                     <Pill tone={paid ? 'moss' : 'gold'}>
@@ -75,6 +77,11 @@ function Edicts() {
             );
           })}
         </div>
+        <p className={s.note}>
+          {growth > 1
+            ? t('castle.edict.growth', { pct: fmt.pct(Math.round((growth - 1) * 100)) })
+            : t('castle.edict.growthNone')}
+        </p>
       </Panel>
     </section>
   );
