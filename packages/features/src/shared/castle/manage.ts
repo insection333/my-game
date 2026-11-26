@@ -45,14 +45,17 @@ const spend = (w: Wallet, gold: number, next: (c: Castle) => Castle): Done => {
   return paid ? { ok: true, castle: next(paid.castle), purse: paid.purse, burned: gold } : no('gold');
 };
 
-/** Raises a building or unit a level (to 100 at most). */
-export function upgrade(w: Wallet, id: BuildingId | UnitId, now: number, times = 1): Done {
+/** Raises a building or unit a level (to 100 at most). `credit` is gold the lord's own materials stand in for
+ *  (session 247), a quarter of the price at most; the rest is paid in gold. */
+export function upgrade(w: Wallet, id: BuildingId | UnitId, now: number, times = 1, credit = 0): Done {
   const base = [...BUILDINGS, ...UNITS].find((x) => x.id === id);
   if (!base) return no('unknown');
   if (!Number.isInteger(times) || times < 1 || times > LEVEL_UP_MOST) return no('invalid');
   const level = w.castle.levels[id];
   if (level + times > ECONOMY.MAX_LEVEL) return no('top');
-  return spend(w, levelUpCost(w.castle, id, times, now), (c) => ({
+  const cost = levelUpCost(w.castle, id, times, now);
+  if (!Number.isInteger(credit) || credit < 0 || credit > Math.floor(cost / 4)) return no('invalid');
+  return spend(w, cost - credit, (c) => ({
     ...c,
     levels: { ...c.levels, [id]: level + times },
   }));

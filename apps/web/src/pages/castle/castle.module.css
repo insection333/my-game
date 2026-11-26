@@ -633,6 +633,30 @@
   gap: var(--s-2);
 }
 
+.levelUp {
+  display: grid;
+  gap: var(--s-1);
+}
+
+/* What a Level up takes of the lord's materials (session 247): a quiet line under its steps. */
+.levelUpWith {
+  margin: 0;
+  color: var(--ink-2);
+  font-size: var(--t-small);
+}
+
+.materialsHead {
+  padding: var(--s-2) var(--s-3);
+  border-bottom: 1px solid var(--line);
+}
+
+.materials {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-2);
+  font-size: var(--t-small);
+}
+
 .stepsLabel {
   min-width: 4.5rem;
   color: var(--ink-2);

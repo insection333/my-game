@@ -4,9 +4,12 @@
 // ("Level up +5 for 160M"). And the slider that heals the wounded or repairs the walls by as much as the
 // lord chooses, with the price of that much on its button.
 import { ECONOMY, fmt, t, type BuildingId, type UnitId } from '@idle-clash/content';
-import { castleEngine as E } from '@idle-clash/features';
+import { castleEngine as E, materialFor, materialsFor, MATERIAL_OF } from '@idle-clash/features';
+import { countOf } from '@idle-clash/kernel';
 import { Button, Pill } from '@idle-clash/ui';
 import { useId, useState } from 'react';
+import { useGame } from '../../game/hooks.ts';
+import { setUseMaterials, useMaterials } from './materials.ts';
 import { castleAct } from './store.ts';
 import { affords, hasAp, useSyncedCastle } from './synced.ts';
 import s from './castle.module.css';
@@ -36,26 +39,76 @@ export function Steps({ label, steps }: { label: string; steps: readonly Step[] 
   );
 }
 
-/** Level up +1 and +5 (fewer near the top) for a troop or a building, or At its highest. */
+/** Level up +1 and +5 (fewer near the top) for a troop or a building, or At its highest. With the lord's own
+ *  materials (session 247), each price is the gold left after them, and a line says what they take. */
 export function LevelUp({ id }: { id: BuildingId | UnitId }) {
   const { castle, now, purse, busy } = useSyncedCastle();
+  const { state } = useGame();
+  const withMaterials = useMaterials();
   if (!castle) return null;
   const left = ECONOMY.MAX_LEVEL - castle.levels[id];
   if (left <= 0) return <Pill tone="moss">{t('castle.highest')}</Pill>;
   const counts = [...new Set([1, Math.min(E.LEVEL_UP_MOST, left)])];
+  // A building may be paid in part with materials (session 247); a troop in gold alone.
+  const building = Object.hasOwn(MATERIAL_OF, id) ? (id as BuildingId) : null;
+  const paidFor = (more: number) => {
+    const full = E.levelUpCost(castle, id, more, now);
+    const paid = withMaterials && building ? materialsFor(state, building, full) : null;
+    return { gold: full - (paid?.credit ?? 0), paid };
+  };
+  const first = paidFor(1).paid;
   return (
-    <Steps
-      label={t('castle.levelUp.label')}
-      steps={counts.map((more) => {
-        const gold = E.levelUpCost(castle, id, more, now);
-        return {
-          text: t('castle.step.gold', { more: fmt.int(more), gold: fmt.short(gold) }),
-          name: t('castle.levelUp', { more: fmt.int(more), gold: fmt.short(gold) }),
-          disabled: busy || !affords(castle, purse, gold),
-          onPress: () => void castleAct({ type: 'upgrade', id, ...(more > 1 ? { times: more } : {}) }),
-        };
-      })}
-    />
+    <div className={s.levelUp}>
+      <Steps
+        label={t('castle.levelUp.label')}
+        steps={counts.map((more) => {
+          const { gold, paid } = paidFor(more);
+          const words = { more: fmt.int(more), gold: fmt.short(gold) };
+          return {
+            text: t('castle.step.gold', words),
+            name: paid
+              ? t('castle.levelUp.with', { ...words, count: fmt.int(paid.count), item: t(`item.${paid.item}`) })
+              : t('castle.levelUp', words),
+            disabled: busy || !affords(castle, purse, gold),
+            onPress: () =>
+              void castleAct({
+                type: 'upgrade',
+                id,
+                ...(more > 1 ? { times: more } : {}),
+                ...(paid ? { materials: true } : {}),
+              }),
+          };
+        })}
+      />
+      {withMaterials && building && (
+        <p className={s.levelUpWith}>
+          {first
+            ? t('castle.materials.paid', { count: fmt.int(first.count), item: t(`item.${first.item}`) })
+            : t('castle.materials.none', { item: t(`item.${materialFor(state, building)}`) })}
+          {first && ` ${t('castle.materials.held', { count: fmt.int(countOf(state, first.item)) })}`}
+        </p>
+      )}
+    </div>
+  );
+}
+
+/** The gold a level's price leaves once the lord's materials have paid their part (session 247), for the
+ *  rows' "more gold needed". */
+export function useLevelGold(): (id: BuildingId, full: number) => number {
+  const { state } = useGame();
+  const on = useMaterials();
+  return (id, full) => full - (on ? (materialsFor(state, id, full)?.credit ?? 0) : 0);
+}
+
+/** The switch for paying in materials (session 247), at the head of the Citadel. */
+export function MaterialsSwitch() {
+  const on = useMaterials();
+  const id = useId();
+  return (
+    <label className={s.materials} htmlFor={id}>
+      <input id={id} type="checkbox" checked={on} onChange={(e) => setUseMaterials(e.target.checked)} />
+      <span>{t('castle.materials.switch')}</span>
+    </label>
   );
 }
 

@@ -250,6 +250,8 @@ export function yearChecks(check: Check, lines: string[]): { steady: Year; light
 
 /** Days in a year the edict may go unpowered (a short treasury), and what a castle reaches in a year. */
 const UNPOWERED_DAYS = 0.1;
+/** The least share of the castle's year its lord's own materials pay (session 247: the castle raised from the land). */
+const MATERIALS_SHARE = 0.05;
 const CASTLE_YEAR = { level: 15, tier: 26, marks: 550 };
 /** The days each of the troops' later evolutions should come in (session 138): the second within the first
  *  months, the third about half a year in, the fourth past the year, each gap about double the last. The
@@ -274,6 +276,13 @@ function castleYear(y: Year, check: Check, lines: string[]) {
         `Day ${n}: castle level ${c.level.toFixed(1)}, edict +${c.pct.toFixed(1)}%, treasury ${(c.treasury / 1e6).toFixed(1)}M of ${(c.required / 1e6).toFixed(1)}M needed, tier ${c.tier}, ${c.marks} war marks earned`,
       );
   }
+  // What its own materials paid towards its levels (session 247), against all the gold the castle took.
+  const spentAll = kept.reduce((n, d) => n + d.castle!.spent, 0);
+  const byMaterials = kept.at(-1)?.castle?.materials ?? 0;
+  check(
+    byMaterials >= (byMaterials + spentAll) * MATERIALS_SHARE,
+    `${y.kind.name}'s own materials pay ${(byMaterials / 1e6).toFixed(1)}M of the castle's year beside ${(spentAll / 1e6).toFixed(1)}M of gold (at least ${MATERIALS_SHARE * 100}%)`,
+  );
   const unpowered = kept.filter((d) => d.castle!.pct <= 0).length;
   check(
     unpowered <= kept.length * UNPOWERED_DAYS,

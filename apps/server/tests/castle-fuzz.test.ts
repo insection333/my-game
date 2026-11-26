@@ -97,6 +97,8 @@ describe('Castle Clash under random play', () => {
         { type: 'payFrom', treasury: rand() < 0.5 },
         { type: 'upgrade', id: pick(ids) },
         { type: 'upgrade', id: pick(ids), times: 1 + Math.floor(rand() * 5) },
+        // Part paid in materials, when any are held (session 247).
+        { type: 'upgrade', id: pick(ids), materials: true },
         { type: 'research', tech: pick(['logistics', 'siegecraft', 'fortification', 'espionage']) },
         { type: 'forgeRelic', relic: pick(['aegis-shard', 'banner-of-the-first-king', 'tidings-stone']) },
         { type: 'equipRelics', relics: rand() < 0.5 ? ['aegis-shard'] : [] },

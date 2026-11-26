@@ -14,7 +14,7 @@ export const STAGES = 10;
 export const PENNANT = 5;
 /** Each stage's gold, in order. */
 export const STAGE_GOLD = [
-  50_000, 500_000, 3_000_000, 15_000_000, 20_000_000, 1_000_000, 1_500_000, 2_000_000, 2_500_000, 3_000_000,
+  50_000, 500_000, 3_000_000, 15_000_000, 15_000_000, 1_000_000, 1_500_000, 2_000_000, 2_500_000, 3_000_000,
 ];
 /** Each stage's materials: how many of each, and from which tier. */
 export const STAGE_COUNT = [200, 600, 1_500, 3_000, 6_000, 4_000, 4_500, 5_000, 5_500, 6_000];
@@ -38,7 +38,7 @@ export const GREATER: Readonly<Record<string, string>> = {
 };
 
 /** Each material family's item at each tier (1 to 8), named here: a feature never imports another. */
-const FAMILY = {
+export const FAMILY = {
   logs: ['pine', 'ash', 'oak', 'yew', 'maple', 'silverbark', 'elderwood', 'ancient'].map((t) => `${t}-logs`),
   ore: ['copper-ore', 'tin-ore', 'iron-ore', 'coal', 'moonsilver-ore', 'star-iron-ore', 'ember-ore', 'dawnstone'],
   bars: ['copper', 'bronze', 'iron', 'steel', 'moonsilver', 'star-iron', 'embersteel', 'dawnsteel'].map(
@@ -47,7 +47,7 @@ const FAMILY = {
   fish: ['perch', 'trout', 'pike', 'salmon', 'moon-carp', 'silver-eel', 'ember-char', 'dawn-sturgeon'],
   runes: ['spark', 'gale', 'tide', 'earth', 'moon', 'star', 'ember', 'dawn'].map((t) => `${t}-rune`),
 } as const;
-type Family = keyof typeof FAMILY;
+export type Family = keyof typeof FAMILY;
 
 export type WorkEffect = 'gatherYield' | 'artisanSave' | 'damage' | 'foodHeal' | 'marks' | 'xp';
 export interface Work {

@@ -259,7 +259,7 @@ Once the Storehouse is fully enlarged, gold had nothing left to buy: the year's 
 | Watchtower | Expeditions bring 5% more marks | bars and logs |
 | Shrine | +1% XP in every skill | runes |
 
-The first five raisings cost 50,000, 500,000, 3,000,000, 15,000,000 and 20,000,000 gold (the fifth was 60,000,000 until session 244, and four of the six works never reached it in two years), with 200, 600, 1,500, 3,000 and 6,000 materials of tiers 1, 3, 5, 6 and 8 (shared between the families of a work built of two). At its fifth a work flies a pennant.
+The first five raisings cost 50,000, 500,000, 3,000,000, 15,000,000 and 15,000,000 gold (the fifth was 60,000,000 until session 244, and four of the six works never reached it in two years; 20,000,000 until session 247, when the castle's materials left the Shrine short of it), with 200, 600, 1,500, 3,000 and 6,000 materials of tiers 1, 3, 5, 6 and 8 (shared between the families of a work built of two). At its fifth a work flies a pennant.
 
 **The later stages (session 244).** The twenty Uncommon finds had no use but the vendor and the pedlar's three a day. From its sixth raising a work also takes the Uncommon finds of the skills it serves, two kinds each, and at its tenth their greater finds:
 

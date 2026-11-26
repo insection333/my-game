@@ -25,7 +25,7 @@ export const CastleAction = z.discriminatedUnion('type', [
   act('edict', { edict: Id.nullable() }),
   act('payFrom', { treasury: z.boolean() }),
   // Levels raised at one press, 1 to 5 (session 134); one when left out.
-  act('upgrade', { id: Id, times: z.number().int().min(1).max(5).optional() }),
+  act('upgrade', { id: Id, times: z.number().int().min(1).max(5).optional(), materials: z.boolean().optional() }),
   act('research', { tech: Id }),
   act('forgeRelic', { relic: Id }),
   act('temperRelic', { relic: Id }),
