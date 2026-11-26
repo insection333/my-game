@@ -5,7 +5,7 @@
 // engine runs (as the realm's boss is), with the thanks for the last work finished with the player's part.
 import { REALM_WORK, realmWorkIn, seasonAt, type RealmWorkMirror } from '@idle-clash/features';
 import type { GameEvent, State } from '@idle-clash/kernel';
-import { and, desc, eq, isNotNull, sql } from 'drizzle-orm';
+import { and, desc, eq, isNotNull, isNull, sql } from 'drizzle-orm';
 import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
 import { players, realmWorkGifts, realmWorkSeasons } from '../db/schema.ts';
 
@@ -101,7 +101,8 @@ export class RealmWorks {
         .select({ name: players.name })
         .from(realmWorkGifts)
         .innerJoin(players, eq(players.id, realmWorkGifts.playerId))
-        .where(eq(realmWorkGifts.season, last))
+        // A banned raiser is not named (session 274): a ban is often for a name that gave offence.
+        .where(and(eq(realmWorkGifts.season, last), isNull(players.bannedAt)))
         .orderBy(realmWorkGifts.firstAt)
         .all()
         .map((r) => r.name);

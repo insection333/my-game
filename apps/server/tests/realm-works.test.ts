@@ -56,6 +56,9 @@ describe("the realm's work on the server", () => {
     // A gift to a finished work counts for nothing more.
     s.ctx.realmWorks.heard(a, [gift(IN2 + 2000, 999)]);
     expect(s.ctx.realmWorks.standing(a, IN2)!.mine).toBe(REALM_WORK.LEAST / 5);
+    // Session 274: a raiser banned (often for a name that gave offence) is no longer named to the realm.
+    s.ctx.store.sqlite.prepare('update players set banned_at = 1 where id = ?').run(a);
+    expect(s.ctx.realmWorks.standing(b, IN2)!.thanks).toMatchObject({ names: ['Birch'], more: 0 });
   });
 
   it('asks a share for each player who gave the season before, and lets a deleted account’s gifts go', async () => {

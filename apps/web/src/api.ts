@@ -57,7 +57,9 @@ export class ApiError extends Error {
   constructor(status: number, body: Partial<ErrorResponse> | null) {
     super(body?.error?.code ?? 'offline');
     this.status = status;
-    this.code = body?.error?.code ?? (status === 0 ? 'offline' : 'serverError');
+    // A gateway's answer without the server's own (Caddy's 502 while a deploy restarts the game) is the server
+    // out of reach, not a fault of the request (session 274).
+    this.code = body?.error?.code ?? (status === 0 || (status >= 502 && status <= 504) ? 'offline' : 'serverError');
     this.retryAfterSeconds = body?.error?.retryAfterSeconds;
     this.fields = body?.error?.fields ?? [];
   }
