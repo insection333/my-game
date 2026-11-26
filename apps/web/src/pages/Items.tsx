@@ -2,6 +2,7 @@
 // wears gear, and answers Comes from and Used in by asking every feature.
 import { fmt, t } from '@idle-clash/content';
 import {
+  feastWords,
   findOf,
   gearDoes,
   healsFor,
@@ -77,6 +78,7 @@ export function ItemPanel({ item }: { item: string }) {
           <Pill>{t(KIND_TITLE[def.kind])}</Pill>
           <p>{t('item.panel.have', { count: fmt.int(countOf(state, item)) })}</p>
           {def.heals !== undefined && <p>{t('food.heals', { health: fmt.int(healsFor(state, def.heals)) })}</p>}
+          {feastWords(item) && <p>{feastWords(item)}</p>}
           {def.gear && <p>{gearDoes(item)}</p>}
           {def.value > 0 && <p className={s.muted}>{t('item.panel.sells', { gold: fmt.int(def.value) })}</p>}
         </div>

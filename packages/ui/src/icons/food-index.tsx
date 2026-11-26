@@ -1,5 +1,16 @@
 // Fishing's and Cooking's icons (session 13), registered beside the rest (index.tsx).
-import { CarpPie, CharPie, EelStew, PikePie, SalmonStew, SturgeonStew } from './dishes.tsx';
+import {
+  CarpFeast,
+  CarpPie,
+  CharFeast,
+  CharPie,
+  EelFeast,
+  EelStew,
+  PikePie,
+  SalmonStew,
+  SturgeonFeast,
+  SturgeonStew,
+} from './dishes.tsx';
 import {
   CauldronOfPlenty,
   EverWarmPot,
@@ -56,6 +67,10 @@ export const FOOD_ICONS: Record<string, IconDef> = {
   'eel-stew': { draw: EelStew, family: 'food', title: 'Eel stew' },
   'char-pie': { draw: CharPie, family: 'food', title: 'Char pie' },
   'sturgeon-stew': { draw: SturgeonStew, family: 'food', title: 'Sturgeon stew' },
+  'carp-feast': { draw: CarpFeast, family: 'food', title: 'Carp feast' },
+  'eel-feast': { draw: EelFeast, family: 'food', title: 'Eel feast' },
+  'char-feast': { draw: CharFeast, family: 'food', title: 'Char feast' },
+  'sturgeon-feast': { draw: SturgeonFeast, family: 'food', title: 'Sturgeon feast' },
   'pearl-mussel': { draw: PearlMussel, family: 'find', title: 'Pearl mussel (Uncommon find)' },
   'river-pearl': { draw: RiverPearl, family: 'find', title: 'River pearl (Uncommon find)' },
   'message-in-a-bottle': { draw: MessageInABottle, family: 'find', title: 'Message in a bottle (Rare find)' },

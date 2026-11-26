@@ -89,6 +89,7 @@ The fish family the owner approved on 27 October 2026 (`icons/fish.tsx`, `fish-l
 - **Pies** are the vendor's pie dish with two of the tier's fish heads looking up out of the crust; **stews** are the hearty stew's wooden bowl, the tier's fish tail rising from a broth in the tier's colour.
 - **Finds** come up from the water or out of a cook's keeping: a pearl mussel, a river pearl, a message in a bottle, a drowned signet ring, a great scale of the deep and a fen-king's crown hung with weed; wild herbs, saffron in a tied sack, a grandmother's sealed recipe, a silver ladle, an ever-warm pot and a cauldron of plenty spilling gold.
 - **Seals:** Fishing's hook and line with a red float; Cooking's pot over a small flame.
+- **Feasts** (session 245, in this approved family): the dish drawn a size down on a gilded charger, with two broad leaves of a sprig on its near rim, so a feast reads apart from its dish at 24 px.
 
 ## Supplies (session 14)
 

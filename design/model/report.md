@@ -386,30 +386,31 @@ PASS  Tier 1: Cooked perch heals no more than half the health at Hitpoints 1
 Tier 2: Cooked trout heals 330 for 4 gold of worth (82.5 a gold); Meat pie 320 for 50 (6.4)
 PASS  Tier 2: home-cooked food heals at least 1.2 times the vendor's for its worth
 PASS  Tier 2: Cooked trout heals no more than half the health at Hitpoints 10
-Tier 3: Cooked pike heals 530 for 13 gold of worth (40.8 a gold); Hearty stew 600 for 110 (5.5); Pike pie heals 660 for 11
+Tier 3: Cooked pike heals 530 for 13 gold of worth (40.8 a gold); Hearty stew 600 for 110 (5.5); Pike pie heals 680 for 11
 PASS  Tier 3: home-cooked food heals at least 1.2 times the vendor's for its worth
 PASS  Tier 3: Cooked pike heals no more than half the health at Hitpoints 20
 PASS  Tier 3: Pike pie wastes little of its healing
-Tier 4: Cooked salmon heals 730 for 32 gold of worth (22.8 a gold); Hearty stew 600 for 110 (5.5); Salmon stew heals 910 for 28
+Tier 4: Cooked salmon heals 730 for 32 gold of worth (22.8 a gold); Hearty stew 600 for 110 (5.5); Salmon stew heals 940 for 28
 PASS  Tier 4: home-cooked food heals at least 1.2 times the vendor's for its worth
 PASS  Tier 4: Cooked salmon heals no more than half the health at Hitpoints 30
 PASS  Tier 4: Salmon stew wastes little of its healing
-Tier 5: Cooked moon carp heals 930 for 63 gold of worth (14.8 a gold); Roast fowl 1000 for 190 (5.3); Carp pie heals 1160 for 56
+Tier 5: Cooked moon carp heals 930 for 63 gold of worth (14.8 a gold); Roast fowl 1000 for 190 (5.3); Carp pie heals 1200 for 56
 PASS  Tier 5: home-cooked food heals at least 1.2 times the vendor's for its worth
 PASS  Tier 5: Cooked moon carp heals no more than half the health at Hitpoints 40
 PASS  Tier 5: Carp pie wastes little of its healing
-Tier 6: Cooked silver eel heals 1230 for 104 gold of worth (11.8 a gold); Roast fowl 1000 for 190 (5.3); Eel stew heals 1540 for 95
+Tier 6: Cooked silver eel heals 1230 for 104 gold of worth (11.8 a gold); Roast fowl 1000 for 190 (5.3); Eel stew heals 1590 for 95
 PASS  Tier 6: home-cooked food heals at least 1.2 times the vendor's for its worth
 PASS  Tier 6: Cooked silver eel heals no more than half the health at Hitpoints 55
 PASS  Tier 6: Eel stew wastes little of its healing
-Tier 7: Cooked ember char heals 1530 for 162 gold of worth (9.4 a gold); Hunter's feast 1600 for 320 (5.0); Char pie heals 1910 for 149
+Tier 7: Cooked ember char heals 1530 for 162 gold of worth (9.4 a gold); Hunter's feast 1600 for 320 (5.0); Char pie heals 1980 for 149
 PASS  Tier 7: home-cooked food heals at least 1.2 times the vendor's for its worth
 PASS  Tier 7: Cooked ember char heals no more than half the health at Hitpoints 70
 PASS  Tier 7: Char pie wastes little of its healing
-Tier 8: Cooked dawn sturgeon heals 1830 for 243 gold of worth (7.5 a gold); Warden's feast 2300 for 480 (4.8); Sturgeon stew heals 2290 for 225
+Tier 8: Cooked dawn sturgeon heals 1830 for 243 gold of worth (7.5 a gold); Warden's feast 2300 for 480 (4.8); Sturgeon stew heals 2370 for 225
 PASS  Tier 8: home-cooked food heals at least 1.2 times the vendor's for its worth
 PASS  Tier 8: Cooked dawn sturgeon heals no more than half the health at Hitpoints 85
 PASS  Tier 8: Sturgeon stew wastes little of its healing
+PASS  Cooking's best dish heals 2370, more than the vendor's best (2300)
 PASS  Cooking recipes within 10% of their tier rate
 Tier 1: an hour of Woodcutting sells for 698; an hour of Fishing, cooked and eaten, saves 14608 at the vendor
 PASS  Tier 1: Fishing pays at least 80% of Woodcutting

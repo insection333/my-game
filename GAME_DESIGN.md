@@ -301,7 +301,7 @@ Every recipe in a tier pays the same XP an hour, so the choice is about what you
 
 Cooking is the Artisan lane's second skill. Each tier's fish is cooked two at a time over one of that tier's logs; from tier 3 a pie or a stew mixes the tier's fish with the one before (the older catch keeps its use), two at a time. Every recipe pays its tier's XP an hour, as Smithing's do.
 
-Cooked food heals about half the health a fighter has at its tier: the most a meal, eaten below half health, never wastes. A dish heals a quarter more. It sells for what went into it, and for that worth it heals at least 1.2 times what the vendor's food heals for its price from tier 2 on, so feeding yourself is a real choice. One Gathering lane fishing, with the fire's second lane chopping about half the time, keeps the Artisan lane cooking.
+Cooked food heals about half the health a fighter has at its tier: the most a meal, eaten below half health, never wastes. A dish heals 1.3 times as much, in tens (a quarter more until session 245, when Cooking's best dish healed 2,290 to the vendor's best's 2,300); now sturgeon stew heals 2,370. **Feasts (session 245):** from tier 5 ten of a dish and one greater Uncommon find make ten feasts, which heal as the dish. While a feast is the meal at hand (the food a fight eats first, a feast before a dish that heals as much) it lifts the fight: a pie's feast (carp, char) damage 5%, a stew's feast (eel, sturgeon) the style's and Hitpoints' XP 5%, counted in Your odds, every rate and the arena. A feast works only while eaten: it is never a lift to keep up by hand, and a feast or two a fight makes it a steady use for the greater finds. It sells for what went into it, and for that worth it heals at least 1.2 times what the vendor's food heals for its price from tier 2 on, so feeding yourself is a real choice. One Gathering lane fishing, with the fire's second lane chopping about half the time, keeps the Artisan lane cooking.
 
 *Generated:*
 
@@ -310,17 +310,21 @@ Cooked food heals about half the health a fighter has at its tier: the most a me
 | Cooked perch | 1 | Perch ×2, Pine logs ×1 | 2 | 22.5 | 34 | 150 | 2 | 75.0 |
 | Cooked trout | 10 | Trout ×2, Ash logs ×1 | 2 | 37.5 | 75 | 330 | 4 | 82.5 |
 | Cooked pike | 20 | Pike ×2, Oak logs ×1 | 2 | 60 | 155 | 530 | 13 | 40.8 |
-| Pike pie | 25 | Pike ×1, Trout ×1, Oak logs ×1 | 2 | 60 | 155 | 660 | 11 | 60.0 |
+| Pike pie | 25 | Pike ×1, Trout ×1, Oak logs ×1 | 2 | 60 | 155 | 680 | 11 | 61.8 |
 | Cooked salmon | 30 | Salmon ×2, Yew logs ×1 | 2 | 78 | 260 | 730 | 32 | 22.8 |
-| Salmon stew | 35 | Salmon ×1, Pike ×1, Yew logs ×1 | 2 | 78 | 260 | 910 | 28 | 32.5 |
+| Salmon stew | 35 | Salmon ×1, Pike ×1, Yew logs ×1 | 2 | 78 | 260 | 940 | 28 | 33.6 |
 | Cooked moon carp | 40 | Moon carp ×2, Maple logs ×1 | 2 | 90 | 425 | 930 | 63 | 14.8 |
-| Carp pie | 45 | Moon carp ×1, Salmon ×1, Maple logs ×1 | 2 | 90 | 425 | 1,160 | 56 | 20.7 |
+| Carp pie | 45 | Moon carp ×1, Salmon ×1, Maple logs ×1 | 2 | 90 | 425 | 1,200 | 56 | 21.4 |
+| Carp feast | 45 | Carp pie ×10, River pearl ×1 | 10 | 90 | 425 | 1,200 | 176 | 6.8 |
 | Cooked silver eel | 55 | Silver eel ×2, Silverbark logs ×1 | 2 | 102 | 623 | 1,230 | 104 | 11.8 |
-| Eel stew | 60 | Silver eel ×1, Moon carp ×1, Silverbark logs ×1 | 2 | 102 | 623 | 1,540 | 95 | 16.2 |
+| Eel stew | 60 | Silver eel ×1, Moon carp ×1, Silverbark logs ×1 | 2 | 102 | 623 | 1,590 | 95 | 16.7 |
+| Eel feast | 60 | Eel stew ×10, Saffron threads ×1 | 10 | 102 | 623 | 1,590 | 395 | 4.0 |
 | Cooked ember char | 70 | Ember char ×2, Elderwood logs ×1 | 2 | 114 | 887 | 1,530 | 162 | 9.4 |
-| Char pie | 75 | Ember char ×1, Silver eel ×1, Elderwood logs ×1 | 2 | 114 | 887 | 1,910 | 149 | 12.8 |
+| Char pie | 75 | Ember char ×1, Silver eel ×1, Elderwood logs ×1 | 2 | 114 | 887 | 1,980 | 149 | 13.3 |
+| Char feast | 75 | Char pie ×10, Amber nugget ×1 | 10 | 114 | 887 | 1,980 | 269 | 7.4 |
 | Cooked dawn sturgeon | 85 | Dawn sturgeon ×2, Ancient logs ×1 | 2 | 126 | 1225 | 1,830 | 243 | 7.5 |
-| Sturgeon stew | 90 | Dawn sturgeon ×1, Ember char ×1, Ancient logs ×1 | 2 | 126 | 1225 | 2,290 | 225 | 10.2 |
+| Sturgeon stew | 90 | Dawn sturgeon ×1, Ember char ×1, Ancient logs ×1 | 2 | 126 | 1225 | 2,370 | 225 | 10.5 |
+| Sturgeon feast | 90 | Sturgeon stew ×10, Rough sapphire ×1 | 10 | 126 | 1225 | 2,370 | 345 | 6.9 |
 
 ### Supplies: whetstones, arrows and runes
 
@@ -759,22 +763,22 @@ Every level 1 to 99 of every skill unlocks something: an action, a recipe, a tie
 | **7** Thrifty (8% chance to save an ingredient in all) | **32** Cook's eye (Rare and Legendary finds 56% likelier in all) | **57** Practised hands (mastery 80% faster in all) | **82** Thrifty (52% chance to save an ingredient in all) |
 | **8** Cook's eye (Rare and Legendary finds 16% likelier in all) | **33** Practised hands (mastery 56% faster in all) | **58** Steady flame (33% faster in all) | **83** Cook's eye (Rare and Legendary finds 104% likelier in all) |
 | **9** Practised hands (mastery 16% faster in all) | **34** Steady flame (24% faster in all) | **59** Thrifty (42% chance to save an ingredient in all) | **84** Practised hands (mastery 104% faster in all) |
-| **10** Cooked trout | **35** Salmon stew | **60** Eel stew | **85** Cooked dawn sturgeon |
+| **10** Cooked trout | **35** Salmon stew | **60** Eel stew; Eel feast | **85** Cooked dawn sturgeon |
 | **11** Steady flame (9% faster in all) | **36** Thrifty (32% chance to save an ingredient in all) | **61** Cook's eye (Rare and Legendary finds 84% likelier in all) | **86** Steady flame (42% faster in all) |
 | **12** Thrifty (12% chance to save an ingredient in all) | **37** Cook's eye (Rare and Legendary finds 64% likelier in all) | **62** Practised hands (mastery 84% faster in all) | **87** Thrifty (54% chance to save an ingredient in all) |
 | **13** Cook's eye (Rare and Legendary finds 24% likelier in all) | **38** Practised hands (mastery 64% faster in all) | **63** Steady flame (34.5% faster in all) | **88** Cook's eye (Rare and Legendary finds 108% likelier in all) |
 | **14** Practised hands (mastery 24% faster in all) | **39** Steady flame (27% faster in all) | **64** Thrifty (44% chance to save an ingredient in all) | **89** Practised hands (mastery 108% faster in all) |
-| **15** Steady flame (12% faster in all) | **40** Cooked moon carp; Master cook (8% chance to save an ingredient) | **65** Cook's eye (Rare and Legendary finds 88% likelier in all) | **90** Sturgeon stew |
+| **15** Steady flame (12% faster in all) | **40** Cooked moon carp; Master cook (8% chance to save an ingredient) | **65** Cook's eye (Rare and Legendary finds 88% likelier in all) | **90** Sturgeon stew; Sturgeon feast |
 | **16** Thrifty (16% chance to save an ingredient in all) | **41** Thrifty (34% chance to save an ingredient in all) | **66** Practised hands (mastery 88% faster in all) | **91** Steady flame (43.5% faster in all) |
 | **17** Cook's eye (Rare and Legendary finds 32% likelier in all) | **42** Cook's eye (Rare and Legendary finds 68% likelier in all) | **67** Steady flame (36% faster in all) | **92** Thrifty (56% chance to save an ingredient in all) |
 | **18** Practised hands (mastery 32% faster in all) | **43** Practised hands (mastery 68% faster in all) | **68** Thrifty (46% chance to save an ingredient in all) | **93** Cook's eye (Rare and Legendary finds 112% likelier in all) |
 | **19** Steady flame (15% faster in all) | **44** Steady flame (28.5% faster in all) | **69** Cook's eye (Rare and Legendary finds 92% likelier in all) | **94** Practised hands (mastery 112% faster in all) |
-| **20** Cooked pike | **45** Carp pie | **70** Cooked ember char | **95** Steady flame (45% faster in all) |
+| **20** Cooked pike | **45** Carp pie; Carp feast | **70** Cooked ember char | **95** Steady flame (45% faster in all) |
 | **21** Thrifty (20% chance to save an ingredient in all) | **46** Thrifty (36% chance to save an ingredient in all) | **71** Practised hands (mastery 92% faster in all) | **96** Thrifty (58% chance to save an ingredient in all) |
 | **22** Cook's eye (Rare and Legendary finds 40% likelier in all) | **47** Cook's eye (Rare and Legendary finds 72% likelier in all) | **72** Steady flame (37.5% faster in all) | **97** Cook's eye (Rare and Legendary finds 116% likelier in all) |
 | **23** Practised hands (mastery 40% faster in all) | **48** Practised hands (mastery 72% faster in all) | **73** Thrifty (48% chance to save an ingredient in all) | **98** Practised hands (mastery 116% faster in all) |
 | **24** Steady flame (18% faster in all) | **49** Steady flame (30% faster in all) | **74** Cook's eye (Rare and Legendary finds 96% likelier in all) | **99** Grandmaster cook (10% chance to save an ingredient) |
-| **25** Pike pie | **50** Thrifty (38% chance to save an ingredient in all) | **75** Char pie |  |
+| **25** Pike pie | **50** Thrifty (38% chance to save an ingredient in all) | **75** Char pie; Char feast |  |
 
 ### Fletching
 
@@ -1350,30 +1354,31 @@ PASS  Tier 1: Cooked perch heals no more than half the health at Hitpoints 1
 Tier 2: Cooked trout heals 330 for 4 gold of worth (82.5 a gold); Meat pie 320 for 50 (6.4)
 PASS  Tier 2: home-cooked food heals at least 1.2 times the vendor's for its worth
 PASS  Tier 2: Cooked trout heals no more than half the health at Hitpoints 10
-Tier 3: Cooked pike heals 530 for 13 gold of worth (40.8 a gold); Hearty stew 600 for 110 (5.5); Pike pie heals 660 for 11
+Tier 3: Cooked pike heals 530 for 13 gold of worth (40.8 a gold); Hearty stew 600 for 110 (5.5); Pike pie heals 680 for 11
 PASS  Tier 3: home-cooked food heals at least 1.2 times the vendor's for its worth
 PASS  Tier 3: Cooked pike heals no more than half the health at Hitpoints 20
 PASS  Tier 3: Pike pie wastes little of its healing
-Tier 4: Cooked salmon heals 730 for 32 gold of worth (22.8 a gold); Hearty stew 600 for 110 (5.5); Salmon stew heals 910 for 28
+Tier 4: Cooked salmon heals 730 for 32 gold of worth (22.8 a gold); Hearty stew 600 for 110 (5.5); Salmon stew heals 940 for 28
 PASS  Tier 4: home-cooked food heals at least 1.2 times the vendor's for its worth
 PASS  Tier 4: Cooked salmon heals no more than half the health at Hitpoints 30
 PASS  Tier 4: Salmon stew wastes little of its healing
-Tier 5: Cooked moon carp heals 930 for 63 gold of worth (14.8 a gold); Roast fowl 1000 for 190 (5.3); Carp pie heals 1160 for 56
+Tier 5: Cooked moon carp heals 930 for 63 gold of worth (14.8 a gold); Roast fowl 1000 for 190 (5.3); Carp pie heals 1200 for 56
 PASS  Tier 5: home-cooked food heals at least 1.2 times the vendor's for its worth
 PASS  Tier 5: Cooked moon carp heals no more than half the health at Hitpoints 40
 PASS  Tier 5: Carp pie wastes little of its healing
-Tier 6: Cooked silver eel heals 1230 for 104 gold of worth (11.8 a gold); Roast fowl 1000 for 190 (5.3); Eel stew heals 1540 for 95
+Tier 6: Cooked silver eel heals 1230 for 104 gold of worth (11.8 a gold); Roast fowl 1000 for 190 (5.3); Eel stew heals 1590 for 95
 PASS  Tier 6: home-cooked food heals at least 1.2 times the vendor's for its worth
 PASS  Tier 6: Cooked silver eel heals no more than half the health at Hitpoints 55
 PASS  Tier 6: Eel stew wastes little of its healing
-Tier 7: Cooked ember char heals 1530 for 162 gold of worth (9.4 a gold); Hunter's feast 1600 for 320 (5.0); Char pie heals 1910 for 149
+Tier 7: Cooked ember char heals 1530 for 162 gold of worth (9.4 a gold); Hunter's feast 1600 for 320 (5.0); Char pie heals 1980 for 149
 PASS  Tier 7: home-cooked food heals at least 1.2 times the vendor's for its worth
 PASS  Tier 7: Cooked ember char heals no more than half the health at Hitpoints 70
 PASS  Tier 7: Char pie wastes little of its healing
-Tier 8: Cooked dawn sturgeon heals 1830 for 243 gold of worth (7.5 a gold); Warden's feast 2300 for 480 (4.8); Sturgeon stew heals 2290 for 225
+Tier 8: Cooked dawn sturgeon heals 1830 for 243 gold of worth (7.5 a gold); Warden's feast 2300 for 480 (4.8); Sturgeon stew heals 2370 for 225
 PASS  Tier 8: home-cooked food heals at least 1.2 times the vendor's for its worth
 PASS  Tier 8: Cooked dawn sturgeon heals no more than half the health at Hitpoints 85
 PASS  Tier 8: Sturgeon stew wastes little of its healing
+PASS  Cooking's best dish heals 2370, more than the vendor's best (2300)
 PASS  Cooking recipes within 10% of their tier rate
 Tier 1: an hour of Woodcutting sells for 698; an hour of Fishing, cooked and eaten, saves 14608 at the vendor
 PASS  Tier 1: Fishing pays at least 80% of Woodcutting

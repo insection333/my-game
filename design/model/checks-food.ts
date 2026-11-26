@@ -32,6 +32,11 @@ export function foodChecks(out: Say, ok: Ok) {
     );
     if (dish) ok(dish.heals <= half * 1.3, `Tier ${tier}: ${dish.name} wastes little of its healing`);
   }
+  // Session 245: Cooking's best dish heals more than the vendor's best food (at a quarter more it healed 2,290
+  // to the Warden's feast's 2,300, so gold bought the better meal).
+  const bestDish = Math.max(...COOKING.map((r) => r.heals));
+  const bestVendor = Math.max(...FOODS.map((f) => f.heals));
+  ok(bestDish > bestVendor, `Cooking's best dish heals ${bestDish}, more than the vendor's best (${bestVendor})`);
   ok(
     COOKING.every((r) => Math.abs(((r.xp / r.seconds) * 3600) / TIER_XP_PER_HOUR[r.tier - 1] - 1) < 0.1),
     'Cooking recipes within 10% of their tier rate',

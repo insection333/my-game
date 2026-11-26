@@ -105,6 +105,8 @@ describe('every item says where it comes from and where it goes', () => {
       "The steading: the Watchtower's sixth raising and on",
     ]);
     expect(items.usedIn(FEATURES, 'amber-nugget').map(label)).toEqual([
+      // And a feast's find (session 245).
+      'Cooking: Char feast (×1)',
       "The steading: the Woodyard's tenth raising",
       "The steading: the Watchtower's tenth raising",
     ]);

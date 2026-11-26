@@ -23,6 +23,8 @@ function nameOf(p: XpPart, skill: string): string {
       return t('gains.path', { path: t(`kindling.path.${p.id}`) });
     case 'season':
       return t(`season.name.${p.id}`);
+    case 'feast':
+      return t(`item.${p.id}`);
   }
 }
 

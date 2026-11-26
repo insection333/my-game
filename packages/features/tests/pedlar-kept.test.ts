@@ -22,7 +22,8 @@ function player(): State {
   s.skills = { woodcutting: { xp: XP_TABLE[50] } };
   s.found = { 'birds-nest': T0 - 86_400_000 };
   s.mastery = { 'woodcutting:pine-tree': 5_000 };
-  s.items = { 'birds-nest': 90, 'amber-nugget': 2, 'pine-logs': 1_000 };
+  // Rough garnets, not amber nuggets, which a feast takes (session 245) and Sell finds keeps.
+  s.items = { 'birds-nest': 90, 'rough-garnet': 2, 'pine-logs': 1_000 };
   return s;
 }
 
@@ -36,7 +37,7 @@ describe("the pedlar's lot kept back", () => {
 
   it('keeps three of the day’s find from Sell finds until it is handed in, and says so', () => {
     const r = sellFinds(player(), T0);
-    expect(r.result).toEqual({ ok: true, gold: 87 * 100 + 2 * 1200, kinds: 2 });
+    expect(r.result).toEqual({ ok: true, gold: 87 * 100 + 2 * 100, kinds: 2 });
     expect(r.state.items['birds-nest']).toBe(3);
     const view = storehouse.slots['store.capacity']({ state: player(), now: T0 }) as unknown as {
       sellFinds: { ask: string };
@@ -73,7 +74,7 @@ describe("the pedlar's lot kept back", () => {
   it('is said on the item’s sell panel', () => {
     expect(pedlarWants(player(), T0, 'birds-nest')).toBe('The pedlar wants 3 of these today.');
     expect(pedlarWants(handIn(player(), 'find', T0).state, T0, 'birds-nest')).toBeNull();
-    expect(pedlarWants(player(), T0, 'amber-nugget')).toBeNull();
+    expect(pedlarWants(player(), T0, 'rough-garnet')).toBeNull();
   });
 });
 

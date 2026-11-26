@@ -1,7 +1,8 @@
 // Cooking's content: each tier's fish cooked two at a time over one of that tier's logs, and from tier 3
-// a pie or a stew mixing the tier's fish with the one before; six finds and the unlock ladder. Cooked
-// food heals about half the health a fighter has at its tier and sells for what went into it; every
-// number matches GAME_DESIGN.md section 6.
+// a pie or a stew mixing the tier's fish with the one before; from tier 5 the dish's feast (session 245),
+// ten dishes and a greater Uncommon find making ten; six finds and the unlock ladder. Cooked food heals
+// about half the health a fighter has at its tier and sells for what went into it; every number matches
+// GAME_DESIGN.md section 6.
 import {
   buildLadder,
   fillPerks,
@@ -11,6 +12,7 @@ import {
   type Find,
   type Item,
 } from '@idle-clash/content';
+import { FEAST_BATCH, FEASTS } from '../shared/feast.ts';
 
 export const SKILL = 'cooking';
 
@@ -18,7 +20,7 @@ export interface Dish {
   id: string;
   level: number;
   tier: number;
-  kind: 'fish' | 'dish';
+  kind: 'fish' | 'dish' | 'feast';
   takes: { item: string; count: number }[];
   gives: { item: string; count: number }[];
   seconds: number;
@@ -68,8 +70,37 @@ export const RECIPES: Dish[] = FISH.flatMap((fish, i) => {
     xp,
     findMultiple: 1,
   };
-  return [cooked, dish];
+  // From tier 5, the dish's feast, at the dish's own level (so no perk on the ladder moves).
+  const feast = Object.entries(FEASTS).find(([, f]) => f.dish === DISHES[i]);
+  if (!feast) return [cooked, dish];
+  const made: Dish = {
+    id: feast[0],
+    level: dish.level,
+    tier: i + 1,
+    kind: 'feast',
+    takes: [
+      { item: DISHES[i], count: FEAST_BATCH },
+      { item: feast[1].find, count: 1 },
+    ],
+    gives: [{ item: feast[0], count: FEAST_BATCH }],
+    seconds,
+    xp,
+    findMultiple: 1,
+  };
+  return [cooked, dish, made];
 });
+
+/** What a dish heals: 1.3 times its tier's cooked fish, in tens (session 245: a quarter more until then, so
+ *  the best dish healed less than the vendor's best food). */
+const dishHeals = (i: number) => Math.floor((HEALS[i] * 1.3) / 10) * 10;
+const dishValue = (i: number) => Math.round((FISH_VALUE[i] + FISH_VALUE[i - 1] + LOG_VALUE[i]) / 2);
+/** The greater finds' prices, named here (their skills' contents hold them). */
+const GREATER_VALUE: Record<string, number> = {
+  'river-pearl': 1200,
+  'saffron-threads': 3000,
+  'amber-nugget': 1200,
+  'rough-sapphire': 1200,
+};
 
 export const FINDS: Find[] = [
   { item: 'wild-herbs', rarity: 'uncommon', greater: false },
@@ -100,12 +131,22 @@ export const ITEMS: Item[] = [
           {
             id,
             kind: 'food',
-            value: Math.round((FISH_VALUE[i] + FISH_VALUE[i - 1] + LOG_VALUE[i]) / 2),
-            heals: Math.round((HEALS[i] * 1.25) / 10) * 10,
+            value: dishValue(i),
+            heals: dishHeals(i),
           },
         ]
       : [],
   ),
+  // A feast heals as its dish and is worth its dish and a tenth of its find.
+  ...Object.entries(FEASTS).map(([id, f]): Item => {
+    const i = DISHES.indexOf(f.dish);
+    return {
+      id,
+      kind: 'food',
+      value: dishValue(i) + Math.round(GREATER_VALUE[f.find] / FEAST_BATCH),
+      heals: dishHeals(i),
+    };
+  }),
   ...FINDS.map((f): Item => ({ id: f.item, kind: 'find', value: FIND_VALUE[f.item] ?? 0 })),
 ];
 

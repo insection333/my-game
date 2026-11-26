@@ -1,7 +1,8 @@
 // Cooking's pies and stews (session 13), from tier 3: each mixes the tier's fish with the one before.
 // A pie is a dish with a golden crust and two fish heads looking up out of it (the reference the owner
 // approved); a stew is a wooden bowl, as the vendor's hearty stew is, with the fish's tail breaking the
-// broth. Each tier's fish gives the dish its colour, so pies and stews read apart by tier.
+// broth. Each tier's fish gives the dish its colour, so pies and stews read apart by tier. A feast (session
+// 245) is its dish set on a gilded charger with a sprig of herbs laid in front.
 import { ellipse, Glint, INK, LINE, M, Shape, type Tone } from './style.tsx';
 import { tone } from './fish.tsx';
 
@@ -106,3 +107,49 @@ export const CharPie = () => <Pie front={HEADS.char} back={HEADS.char} crust={to
 export const SalmonStew = () => <Stew broth={tone('#ffd2b0', '#e39a72', '#a65a39')} tail={HEADS.salmon} />;
 export const EelStew = () => <Stew broth={tone('#d7d79a', '#9c9a55', '#5f5d2c')} tail={HEADS.eel} />;
 export const SturgeonStew = () => <Stew broth={tone('#ffe7a6', '#e2b35a', '#9c7429')} tail={HEADS.sturgeon} />;
+
+/** A gilded charger under a dish, a sprig of herbs in front: the dish made a feast. */
+function Feast({ children }: { children: React.ReactNode }) {
+  return (
+    <g>
+      <Shape d={ellipse(24, 40.5, 22, 6)} tone={M.amber} lit={ellipse(17, 39, 12, 3)}>
+        <Glint x={7.5} y={40} r={1} />
+      </Shape>
+      <g transform="translate(3.5 -1.5) scale(0.86)">{children}</g>
+      {/* The sprig: two broad leaves on a short stem, lying on the charger's near rim at the right. */}
+      {[
+        [31, 45, -18],
+        [37.5, 43.5, 14],
+      ].map(([x, y, a]) => (
+        <g key={x} transform={`rotate(${a} ${x} ${y})`}>
+          <Shape
+            d={`M${x} ${y} C${x + 1} ${y - 4} ${x + 5} ${y - 6} ${x + 9} ${y - 5} C${x + 8} ${y - 1.5} ${x + 4} ${y + 0.8} ${x} ${y} Z`}
+            tone={M.leaf}
+            lit={`M${x} ${y} C${x + 1} ${y - 4} ${x + 5} ${y - 6} ${x + 9} ${y - 5} C${x + 5} ${y - 3.5} ${x + 2} ${y - 1.5} ${x} ${y} Z`}
+          />
+        </g>
+      ))}
+    </g>
+  );
+}
+
+export const CarpFeast = () => (
+  <Feast>
+    <CarpPie />
+  </Feast>
+);
+export const EelFeast = () => (
+  <Feast>
+    <EelStew />
+  </Feast>
+);
+export const CharFeast = () => (
+  <Feast>
+    <CharPie />
+  </Feast>
+);
+export const SturgeonFeast = () => (
+  <Feast>
+    <SturgeonStew />
+  </Feast>
+);
