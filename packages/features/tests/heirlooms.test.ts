@@ -111,6 +111,13 @@ describe('an heirloom worn', () => {
   it('is left on by Fight as, beside an untempered piece of its tier (session 252)', () => {
     const s = at99({ weapon: 'troll-blade', helm: 'barrow-helm' }, {}, { 'dawnsteel-sword': 1, 'dawnsteel-helm': 1 });
     expect(bestChanges(s, 'melee')).toEqual([]);
+    // Nor for a tempered piece of its tier (session 260): an heirloom is worn by choice, different, not weaker.
+    const tempered = at99(
+      { weapon: 'troll-blade', helm: 'barrow-helm' },
+      { 'dawnsteel-sword': 5, 'dawnsteel-helm': 5 },
+      { 'dawnsteel-sword': 1, 'dawnsteel-helm': 1 },
+    );
+    expect(bestChanges(tempered, 'melee')).toEqual([]);
     // Fighting as another style still changes the weapon.
     const magic = at99({ weapon: 'troll-blade' }, {}, { 'dawnsteel-staff': 1 });
     expect(bestChanges(magic, 'magic')).toEqual([{ slot: 'weapon', item: 'dawnsteel-staff' }]);
