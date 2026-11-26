@@ -7,6 +7,7 @@
 // - A gift (session 254): one waiting stands in the Hearth's Next up, leads to its sheet, and Open answers with
 //   what the cache held.
 import { XP_TABLE } from '@idle-clash/content';
+import { lotsOf } from '../../../packages/features/src/shared/pedlar-lots.ts';
 import { endTour, playerWith } from './proofs-lanes.ts';
 import { newcomer, type Served } from './session.ts';
 
@@ -117,10 +118,48 @@ async function gift(served: Served, problems: string[]) {
   }
 }
 
+/** Session 257: the pedlar's three lots at one press (Hand in all, session 256). */
+async function handInAll(served: Served, problems: string[]) {
+  const page = await playerWith(served, 'Pedlar Friend', '/?panel=pedlar', (s, now) => {
+    const out = {
+      ...s,
+      skills: { woodcutting: { xp: XP_TABLE[50] }, mining: { xp: XP_TABLE[45] }, cooking: { xp: XP_TABLE[40] } },
+      found: { ...s.found, 'birds-nest': now - DAY, 'amber-nugget': now - DAY },
+      mastery: {
+        ...s.mastery,
+        'woodcutting:pine-tree': 5_000,
+        'woodcutting:ash-tree': 2_000,
+        'mining:copper-vein': 3_000,
+        'cooking:cooked-perch': 900,
+        'cooking:cooked-trout': 400,
+      },
+    };
+    const day = new Date(now).toISOString().slice(0, 10);
+    const items = { ...out.items };
+    for (const l of lotsOf(out, day)) items[l.item] = l.count * 2;
+    return { ...out, items };
+  });
+  let step = 'the sheet offers Hand in all';
+  try {
+    await endTour(page);
+    await page.reload();
+    const sheet = page.locator('[data-ui="Sheet"]');
+    await sheet.getByRole('button', { name: 'Hand in all 3' }).click({ timeout: 10_000 });
+    step = 'each lot says Handed in';
+    await sheet.getByText('Handed in').nth(2).waitFor({ timeout: 10_000 });
+    if (await sheet.getByRole('button', { name: /^Hand in all/ }).count()) throw new Error('Hand in all still offered');
+  } catch (err) {
+    problems.push(`Hand in all: failed where ${step} (${String(err).slice(0, 200)})`);
+  } finally {
+    await page.close();
+  }
+}
+
 export async function runFriendsProofs(served: Served): Promise<string[]> {
   const problems: string[] = [];
   await banked(served, problems);
   await cheer(served, problems);
   await gift(served, problems);
+  await handInAll(served, problems);
   return problems;
 }
