@@ -646,15 +646,31 @@
 }
 
 .materialsHead {
-  padding: var(--s-2) var(--s-3);
+  padding: var(--s-1) var(--s-3);
   border-bottom: 1px solid var(--line);
 }
 
 .materials {
   display: flex;
-  align-items: flex-start;
-  gap: var(--s-2);
+  align-items: center;
+  gap: var(--s-3);
+  min-height: var(--tap);
+  cursor: pointer;
   font-size: var(--t-small);
+}
+
+.materials input {
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  flex: none;
+  accent-color: var(--woad);
+}
+
+/* The Citadel's buildings under the materials switch (session 247): a shorter box, so the panel keeps to the
+   page area on a phone. */
+.buildings {
+  max-height: min(30rem, 46dvh);
 }
 
 .stepsLabel {
