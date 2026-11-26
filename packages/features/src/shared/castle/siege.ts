@@ -5,7 +5,7 @@ import { ESPIONAGE, RECOVERY, SIEGE } from '@idle-clash/content';
 import { formatUtcDate, type Castle, type DebuffKind } from './castle.ts';
 import { castleSide, combatRatio, debuffStacks, lootFactor, outcomeOf, type Outcome } from './combat.ts';
 import { lift, modifiers } from './effects.ts';
-import { raidableGold, requiredTreasury, splitBurn, youth } from './economy.ts';
+import { raidableGold, requiredTreasury, youth } from './economy.ts';
 import { pairOf, withPair } from './pairs.ts';
 
 /** The defender's rating over the attacker's (the plan's brRatio). */
@@ -200,5 +200,3 @@ export function resolveSiege(
   };
 }
 
-/** The fee is burned whatever the outcome (DESIGN.md 5.10). */
-export const burnFee = (gold: number) => splitBurn(gold);

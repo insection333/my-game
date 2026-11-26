@@ -78,7 +78,8 @@ export function levelUpCost(c: Castle, id: BuildingId | UnitId, times: number, n
 
 /** A War College rank, for gold and war marks. */
 export function research(w: Wallet, tech: TechId, now: number): Done {
-  if (!(tech in w.castle.techs)) return no('unknown');
+  // Its own key only: "constructor" or "toString" stands on every object (session 277), and read a rank of NaN.
+  if (!Object.hasOwn(w.castle.techs, tech)) return no('unknown');
   const cost = techCost(w.castle, tech, now);
   if (!cost) return no('top');
   if (w.castle.warMarks < cost.marks) return no('marks');

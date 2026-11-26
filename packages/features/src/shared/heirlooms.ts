@@ -5,7 +5,6 @@
 // an heirloom is not stronger than tempered dawnsteel, only different: it wins where its trait bites. Shared,
 // because Smithing forges them and the fighter, Your odds, the arena and the Deep all fight with them.
 import { type GearSlot, type Style } from '@idle-clash/content';
-import { countOf, type State } from '@idle-clash/kernel';
 import { bossById } from './expeditions/data.ts';
 
 export type HeirloomTrait = 'standfast' | 'fury' | 'mire' | 'tide' | 'gale' | 'ember';
@@ -63,6 +62,3 @@ export function heirloomTraits(worn: readonly (string | null)[]): HeirloomTrait[
   return worn.flatMap((id) => (id ? [heirloomOf(id)?.trait].filter((t): t is HeirloomTrait => !!t) : []));
 }
 
-/** What an heirloom's forging lacks, by item, or nothing. */
-export const heirloomShort = (state: State, h: Heirloom) =>
-  heirloomCost(h).filter((c) => countOf(state, c.item) < c.count);

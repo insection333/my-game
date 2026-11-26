@@ -96,14 +96,3 @@ export function heldByWounds(castle: E.Castle, def: E.Side, now: number): boolea
 export const spiesWouldTip = (target: Target, chance: number | null) =>
   target.merc === null && chance !== null && chance < 0.5;
 
-/** The chance against a target in words: with the attack as set, and set against them if that is better. */
-export function chanceLine(c: E.Castle, def: E.Side | null, estimate: boolean, now: number): string {
-  if (!def) return t('castle.target.unscouted');
-  const chance = E.winChance(E.oddsWith(c, c.offense, def, now));
-  const best = E.winChance(E.bestOffense(c, def, now).r);
-  const better = best >= chance + 0.01 && chance < 0.995;
-  const set = { pct: pct(chance), best: pct(best) };
-  const only = { pct: pct(chance) };
-  if (estimate) return better ? t('castle.target.chanceAbout.set', set) : t('castle.target.chanceAbout', only);
-  return better ? t('castle.target.chance.set', set) : t('castle.target.chance', only);
-}

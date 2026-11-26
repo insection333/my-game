@@ -140,7 +140,6 @@ export const ROADS: readonly Twist[] = [
   { id: 'hunters-trail', drops: 1.5 },
   { id: 'wardens-gate', marks: 1.5, bossHp: 1.2 },
 ];
-export const twistOf = (id: string) => TWISTS.find((t) => t.id === id) ?? ROADS.find((t) => t.id === id);
 /** Several twists (and a road) together: each number multiplied. */
 export const product = (mods: readonly Twist[], key: Exclude<keyof Twist, 'id'>): number =>
   mods.reduce((m, t) => m * (t[key] ?? 1), 1);
