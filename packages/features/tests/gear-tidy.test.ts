@@ -105,3 +105,22 @@ describe('old gear', () => {
     expect(route(storehouse, 'sell', { item: 'birds-nest', count: 1 }, s).result.ok).toBe(true);
   });
 });
+
+// The audit of phase 1 (session 243): a Magic player holding only an old iron sword for Melee sold it with the
+// rest, leaving Fight as with no Melee weapon.
+describe('old gear, the best kept', () => {
+  it('keeps one of the best piece held for each slot and style, however old', () => {
+    const s = {
+      ...newState(243, T0),
+      skills: { melee: { xp: XP_TABLE[60] }, magic: { xp: XP_TABLE[60] }, hitpoints: { xp: XP_TABLE[60] } },
+      items: { 'iron-sword': 3, 'copper-sword': 2, 'moonsilver-staff': 1 },
+      features: {
+        combat: { worn: { weapon: 'moonsilver-staff' }, health: null, healthAt: 0, retreated: null },
+      },
+    } as State;
+    const r = route(storehouse, 'sellGear', {}, s);
+    expect(r.state.items['iron-sword']).toBe(1);
+    expect(r.state.items['copper-sword'] ?? 0).toBe(0);
+    expect(route(combat, 'wearBest', { style: 'melee' }, r.state).result).toMatchObject({ ok: true });
+  });
+});
