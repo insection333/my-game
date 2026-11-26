@@ -394,3 +394,4 @@
 - Session 253: days banked: a boss's daily fight and the realm's strike bank up to three days, fought one after another by the day's bosses and counted on the Hearth, so a friend who plays every other day keeps up.
 - Session 254: cheers and a gift. A friend's card offers Cheer for their week's climb, legend or strike (three a day) and, once a day, a gift: a supply cache they open on the Hearth, worth a quarter-hour of their own earning, refused from new accounts and between accounts made the same week.
 - Session 255: phase five audited. Banked fights, cheers and gifts played in the page; a gift that cannot go says only why, and a cheer's tray line leads to what it was for.
+- Session 256: the plan measured again. The year and two years hold every check at three seeds; gold at a year 3.2 to 3.7M (was 13M) and a completionist's day 13 presses (was 24) are now checks; the pedlar's Hand in all; a friend's cheer or gift while away is in the away recap.

@@ -47,3 +47,21 @@ export function handIn(state: State, kind: LotKind, now: number): Answer<HandInR
     events: [{ type: 'pedlarPaid', at: now, item: lot.item, count: lot.count, gold, favour }],
   };
 }
+
+/** Hands in every lot ready at one press (session 256: a completionist pressed three times a day for it), each
+ *  as its own Hand in would, its moments folding under the first. */
+export function handInAll(
+  state: State,
+  now: number,
+): Answer<{ ok: true; count: number } | { ok: false; reason: 'none' }> {
+  let out = state;
+  const events: GameEvent[] = [];
+  for (const lot of lotsOf(state, dayOf(now))) {
+    const r = handIn(out, lot.kind, now);
+    if (!r.result.ok) continue;
+    out = r.state;
+    events.push(...r.events);
+  }
+  if (!events.length) return { state, result: { ok: false, reason: 'none' }, events: [] };
+  return { state: out, result: { ok: true, count: events.length }, events };
+}

@@ -21,6 +21,11 @@ export function PedlarSheet({ onClose }: { onClose: () => void }) {
           <p className={s.held}>
             {v.favour}. {v.turns}.
           </p>
+          {v.all && (
+            <p>
+              <Button onClick={() => game.act('pedlar', 'handInAll', {})}>{v.all}</Button>
+            </p>
+          )}
           {!v.lots.length && <p>{t('pedlar.none')}</p>}
           <div className={s.materials}>
             {v.lots.map((l) => (

@@ -27,32 +27,41 @@ export interface PedlarView {
   favour: string;
   /** "New wants at 11:00" */
   turns: string;
+  /** "Hand in all 3", offered while two lots or more are ready (session 256). */
+  all: string | null;
 }
 
 const lotName = (item: string, count: number) => t('pedlar.lot', { item: t(`item.${item}`), count: fmt.int(count) });
 
 export function pedlarView(state: State, now: number): PedlarView {
   const handed = handedToday(state, now);
+  const lots = lotRows(state, now, handed);
+  const ready = lots.filter((l) => l.ready).length;
   return {
-    lots: lotsOf(state, dayOf(now)).map((l) => {
-      const held = countOf(state, l.item);
-      const done = handed.includes(l.kind);
-      return {
-        kind: l.kind,
-        item: l.item,
-        name: lotName(l.item, l.count),
-        held:
-          held >= l.count
-            ? t('pedlar.held', { count: fmt.int(held) })
-            : t('pedlar.short', { count: fmt.int(held), more: fmt.int(l.count - held) }),
-        pays: t('pedlar.pays', { gold: fmt.int(payFor(state, l)) }),
-        done,
-        ready: !done && held >= l.count,
-      };
-    }),
+    lots,
     favour: t('pedlar.favour', { count: fmt.int(pedlarOf(state).favour) }),
     turns: t('pedlar.turns', { when: dayTurns(now) }),
+    all: ready > 1 ? t('pedlar.handInAll', { count: fmt.int(ready) }) : null,
   };
+}
+
+function lotRows(state: State, now: number, handed: readonly string[]): LotRow[] {
+  return lotsOf(state, dayOf(now)).map((l) => {
+    const held = countOf(state, l.item);
+    const done = handed.includes(l.kind);
+    return {
+      kind: l.kind,
+      item: l.item,
+      name: lotName(l.item, l.count),
+      held:
+        held >= l.count
+          ? t('pedlar.held', { count: fmt.int(held) })
+          : t('pedlar.short', { count: fmt.int(held), more: fmt.int(l.count - held) }),
+      pays: t('pedlar.pays', { gold: fmt.int(payFor(state, l)) }),
+      done,
+      ready: !done && held >= l.count,
+    };
+  });
 }
 
 /** The row of Next up: what is still wanted today, or nothing once all is handed in. */

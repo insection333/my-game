@@ -108,6 +108,8 @@ describe('t', () => {
       'errand.bossesBanked',
       // Gifts said one by name, more by count (session 254).
       'errand.gifts',
+      // Offered from two lots ready (session 256).
+      'pedlar.handInAll',
       // The 500 completions a Rare find gives, and the log sizes milestones ask for.
       'item.panel.use',
       'moment.findUsed.body',
