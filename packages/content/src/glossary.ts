@@ -127,7 +127,7 @@ export const TERMS: [term: string, meaning: string][] = [
   ['Lane', 'One of your workers: Gathering, Artisan, Combat; each runs one action at a time'],
   [
     'Lock',
-    "Set on an item from its panel: no sale, Sell finds, Sell old gear, the pedlar or the realm's work takes it",
+    "Set on an item from its panel: no sale, Sell finds, Sell old gear, the pedlar, the realm's work or the castle's materials takes it",
   ],
   ['Lasting mark', 'The bonus a Legendary find gives the first time you find it'],
   ['Legendary', 'The rarest find, about 1 in 60,000 actions'],

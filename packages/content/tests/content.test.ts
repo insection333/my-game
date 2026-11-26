@@ -24,6 +24,16 @@ import {
 describe('fmt', () => {
   it('formats numbers one way everywhere', () => {
     expect(fmt.int(1234567.4)).toBe('1,234,567');
+    // Session 270: under a thousand skips the formatter, and a rounded -0 reads 0 (the formatter wrote "-0").
+    expect([fmt.int(999.4), fmt.int(999.6), fmt.int(-999.4), fmt.int(-1000), fmt.int(-0.2), fmt.int(0)]).toEqual([
+      '999',
+      '1,000',
+      '-999',
+      '-1,000',
+      '0',
+      '0',
+    ]);
+    expect([fmt.short(-0.3), fmt.pct(-0.001), fmt.num(-0.002), fmt.seconds(-0.01)]).toEqual(['0', '0%', '0', '0 s']);
     expect([12_345, 123_456, 2_500_000].map(fmt.short)).toEqual(['12,345', '123.5K', '2.5M']);
     expect(fmt.pct(2.5)).toBe('2.5%');
     expect(fmt.seconds(7.5)).toBe('7.5 s');

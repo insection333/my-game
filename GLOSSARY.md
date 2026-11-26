@@ -70,7 +70,7 @@ Plain, warm and brief, with an old-world flavour in names rather than in instruc
 | Key | Opens a tier's standing stones for Runecraft; Smithing binds it from two bars, and it is kept |
 | Kindling | Each long stretch of XP a skill earns past 99 (the skill page says how far): a flame on its seal and, for the first five, a stronger Path. Nothing is reset |
 | Lane | One of your workers: Gathering, Artisan, Combat; each runs one action at a time |
-| Lock | Set on an item from its panel: no sale, Sell finds, Sell old gear, the pedlar or the realm's work takes it |
+| Lock | Set on an item from its panel: no sale, Sell finds, Sell old gear, the pedlar, the realm's work or the castle's materials takes it |
 | Lasting mark | The bonus a Legendary find gives the first time you find it |
 | Legendary | The rarest find, about 1 in 60,000 actions |
 | Legendary siege | Castle Clash: a season's named fortress of eight chambers, one opening each week, taken in order once a season and measured against your castle's might |

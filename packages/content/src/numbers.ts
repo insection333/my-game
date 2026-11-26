@@ -33,17 +33,25 @@ const ROMAN: [number, string][] = [
   [1, 'I'],
 ];
 
+/** A number that rounds to nothing at a format's precision, as 0: the formatter writes "-0" otherwise (session 270). */
+const unsigned0 = (n: number, half: number): number => (Math.abs(n) < half ? 0 : n);
+
 export const fmt = {
   /** 1234 → "1,234" */
-  int: (n: number): string => whole.format(Math.round(n)),
+  int: (n: number): string => {
+    // Under a thousand needs no grouping, so it skips the formatter (session 270: counts are most of what a page
+    // writes each second); a rounded -0 reads 0.
+    const r = Math.round(n);
+    return r > -1000 && r < 1000 ? String(r === 0 ? 0 : r) : whole.format(r);
+  },
   /** Where room is short (the header's gold): 12345 → "12,345", but 123456 → "123.5K", 2500000 → "2.5M" */
-  short: (n: number): string => (Math.abs(n) < 100_000 ? whole.format(Math.round(n)) : compact.format(n)),
+  short: (n: number): string => (Math.abs(n) < 100_000 ? fmt.int(n) : compact.format(n)),
   /** Where room is shortest (a deed's medallion): 100 → "100", 1000 → "1K", 2500000 → "2.5M" */
   compact: (n: number): string => compact.format(n),
   /** 2.5 → "2.5", 1234.5 → "1,234.5" */
-  num: (n: number): string => decimal.format(n),
+  num: (n: number): string => decimal.format(unsigned0(n, 0.005)),
   /** 2.5 → "2.5%" */
-  pct: (n: number): string => `${decimal.format(n)}%`,
+  pct: (n: number): string => `${decimal.format(unsigned0(n, 0.005))}%`,
   /** A chance from 0 to 1 → "37%"; one that rounds to nothing or to certain but is neither says so
    *  ("<1%", ">99%"; session 56), where "0% to win" read as hopeless for a fight that could be won. */
   chance: (p: number): string =>
@@ -51,9 +59,9 @@ export const fmt = {
       ? `<${whole.format(1)}%`
       : p < 1 && p >= 0.995
         ? `>${whole.format(99)}%`
-        : `${whole.format(Math.round(p * 100))}%`,
+        : `${fmt.int(p * 100)}%`,
   /** 7.5 → "7.5 s"; an action's time to a tenth, never "37.74 s" */
-  seconds: (s: number): string => `${tenths.format(s)} s`,
+  seconds: (s: number): string => `${tenths.format(unsigned0(s, 0.05))} s`,
   /** milliseconds → "45 s", "12 min", "3 h 20 min", "2 d 4 h" */
   duration: (ms: number): string => {
     const s = Math.round(ms / 1000);
