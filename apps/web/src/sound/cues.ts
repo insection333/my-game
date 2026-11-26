@@ -33,6 +33,7 @@ export function cueFor(e: GameEvent): Cue | null {
     case 'findUsed':
     case 'relicRaised':
     case 'gearTempered':
+    case 'heirloomForged':
     case 'pedlarPaid':
     case 'realmGiven':
       return 'goal';

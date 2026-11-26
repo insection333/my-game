@@ -20,6 +20,7 @@ import {
   type Foe,
 } from './data.ts';
 import type { Trait } from './foes.ts';
+import { HEIRLOOM, type HeirloomTrait } from '../heirlooms.ts';
 
 export interface Fighter {
   style: Style;
@@ -35,6 +36,8 @@ export interface Fighter {
   mastery: number;
   /** The supply used for this fight (one, whatever its length) and the damage it adds, if any. */
   supply?: { item: string; pct: number } | null;
+  /** The traits of the heirlooms worn (session 251). */
+  heirlooms?: readonly HeirloomTrait[];
 }
 
 export interface Meal {
@@ -90,6 +93,8 @@ export function fight(
   log?: (s: Swing) => void,
 ): Fought {
   const trait = foe.trait;
+  // The heirlooms worn (session 251), each its boss's way turned to the wearer.
+  const has = (h: HeirloomTrait) => p.heirlooms?.includes(h) ?? false;
   const hit = clamp(0.66 + 0.012 * (p.styleLevel - foe.level) + p.perks.accuracy / 100) * (tw.hit ?? 1);
   const maxHit = 10 * (3 + Math.floor(p.styleLevel / 12)) + WEAPON_HIT_PER_TIER * p.weaponTier;
   const boosts = 1 + (p.perks.damage + (p.supply?.pct ?? 0)) / 100 + (MASTERY_DAMAGE_PER_STEP / 100) * p.mastery;
@@ -99,9 +104,12 @@ export function fight(
   // triangle, a ward that only the style beating it gets through, plumage that only a supply cuts.
   const against = (style: Style) => {
     const m = matchup(p.style, style);
-    const ward = trait?.kind === 'ward' && m !== 'advantage' ? trait.dealt : 1;
+    // The Warden's bow is blunted half as much: by a foe's style, and by a ward.
+    const half = (x: number) => (has('tide') ? (x + 1) / 2 : x);
+    const ward = trait?.kind === 'ward' && m !== 'advantage' ? half(trait.dealt) : 1;
     const plumage = trait?.kind === 'plumage' && !p.supply ? trait.dealt : 1;
-    return { dealt: TRIANGLE[m].dealt * boosts * ward * plumage, taken: armour * TRIANGLE[m].taken };
+    const triangle = m === 'disadvantage' ? half(TRIANGLE[m].dealt) : TRIANGLE[m].dealt;
+    return { dealt: triangle * boosts * ward * plumage, taken: armour * TRIANGLE[m].taken };
   };
   let { dealt: dealtMult, taken: guard } = against(foe.style);
   let [turned, streak, mended, foeHitMult] = [false, 0, 0, 1];
@@ -116,10 +124,14 @@ export function fight(
     t += SWING_S;
     if (rng() < hit) {
       const roll = 1 + Math.floor(rng() * maxHit);
-      const d = Math.min(foeHp, roll * dealtMult);
+      const crit = roll > maxHit * CRIT_SHARE;
+      // The blade's fury below half health; the staff's fire on a critical hit against a boss.
+      const fury = has('fury') && health < most * HEIRLOOM.FURY_BELOW ? HEIRLOOM.FURY_DEALT : 1;
+      const ember = has('ember') && crit && trait ? HEIRLOOM.EMBER_CRIT : 1;
+      const d = Math.min(foeHp, roll * dealtMult * fury * ember);
       foeHp -= d;
       dealt += d;
-      log?.({ t, by: 'you', hit: true, damage: d, crit: roll > maxHit * CRIT_SHARE, health, foeHp });
+      log?.({ t, by: 'you', hit: true, damage: d, crit, health, foeHp });
     } else log?.({ t, by: 'you', hit: false, damage: 0, crit: false, health, foeHp });
     if (foeHp <= 0) break;
     // A boss's turn, once, as its health falls past its mark (session 211).
@@ -134,9 +146,12 @@ export function fight(
       else foeHp += foe.hp * trait.grows;
       log?.({ t, by: 'trait', trait: trait.kind, health, foeHp });
     }
-    if (rng() < foeHit) {
+    // The greaves turn one hit in ten aside (a draw only while they are worn).
+    if (rng() < foeHit && !(has('gale') && rng() < HEIRLOOM.GALE_CHANCE)) {
       const roll = 1 + Math.floor(rng() * foe.maxHit);
-      const d = roll * guard * foeHitMult;
+      // The helm stands fast below a third of health.
+      const stand = has('standfast') && health < most * HEIRLOOM.STANDFAST_BELOW ? HEIRLOOM.STANDFAST_TAKEN : 1;
+      const d = roll * guard * foeHitMult * stand;
       health -= d;
       taken += d;
       log?.({ t, by: 'foe', hit: true, damage: d, crit: roll > foe.maxHit * CRIT_SHARE, health, foeHp });
@@ -173,7 +188,8 @@ export function fight(
       };
   }
   t += SWING_S;
-  health = Math.min(most, health + regen);
+  // The mail mends a share of health after a fight won.
+  health = Math.min(most, health + regen + (has('mire') ? most * HEIRLOOM.MIRE_HEALS : 0));
   return { seconds: t, dealt: round(dealt), taken: round(taken), health: round(health), retreated: false, eaten };
 }
 

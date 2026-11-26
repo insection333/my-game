@@ -12,6 +12,8 @@ import {
   type Item,
 } from '@idle-clash/content';
 
+import { HEIRLOOMS } from '../shared/heirlooms.ts';
+
 export const SKILL = 'smithing';
 
 export interface Recipe {
@@ -161,6 +163,13 @@ export const ITEMS: Item[] = [
     })),
   ),
   ...FINDS.map((f): Item => ({ id: f.item, kind: 'find', value: FIND_VALUE[f.item] ?? 0 })),
+  // The six heirlooms (session 251), forged from bosses' finds: the last tier's strength, never sold.
+  ...HEIRLOOMS.map((h): Item => ({
+    id: h.item,
+    kind: 'gear',
+    value: 0,
+    gear: { slot: h.slot, tier: 8, ...(h.style ? { style: h.style } : {}) },
+  })),
 ];
 
 export const LADDER = fillPerks(

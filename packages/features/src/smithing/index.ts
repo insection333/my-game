@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { GEAR_SLOTS } from '@idle-clash/content';
 import { defineFeature, defineRoute } from '../define.ts';
 import { temper } from './temper.ts';
+import { forgeHeirloom } from './heirloom.ts';
 import { skillSlots } from '../shared/skill-slots.ts';
 import { FINDS, ITEMS, LADDER, RECIPES, SKILL } from './content.ts';
 import { RULES } from './rules.ts';
@@ -26,6 +27,12 @@ export const smithing = defineFeature({
       input: z.object({ slot: z.enum(GEAR_SLOTS) }).strict(),
       example: { slot: 'weapon' as const },
       run: (state, input, now) => temper(state, input.slot, now),
+    }),
+    // Forging an heirloom from a boss's finds (session 251).
+    forgeHeirloom: defineRoute({
+      input: z.object({ item: z.string().regex(/^[a-z0-9][a-z0-9-]{0,63}$/) }).strict(),
+      example: { item: 'barrow-helm' },
+      run: (state, input, now) => forgeHeirloom(state, input.item, now),
     }),
   },
   slots: skillSlots({ feature: 'smithing', skill: SKILL, ladder: LADDER, finds: FINDS, actions: RECIPES }),

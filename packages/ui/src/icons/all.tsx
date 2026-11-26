@@ -1,6 +1,7 @@
 // Every icon of the game's items, foes, skills, rewards and honours (moved out of index.tsx in session 215):
 // added to the registry with the rest of the game's own icons as the game's code loads (late.ts), so the
 // first page carries only the welcome page's four.
+import { HEIRLOOM_ICONS } from './heirlooms.tsx';
 import type { IconDef } from './index.tsx';
 import { AmberNugget, CarvedAcorn, CrownOfTheOldWood, HeartwoodKnot, SilverbarkSeed } from './finds.tsx';
 import {
@@ -259,6 +260,8 @@ const NAMED = {
 
 export const ALL_ICONS: Record<string, IconDef> = {
   ...GEAR,
+  // The bosses' heirlooms (session 251).
+  ...HEIRLOOM_ICONS,
   ...NAMED,
   ...FOOD_ICONS,
   ...SUPPLY_ICONS,

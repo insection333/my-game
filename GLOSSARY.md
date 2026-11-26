@@ -59,6 +59,7 @@ Plain, warm and brief, with an old-world flavour in names rather than in instruc
 | Gold | Earned from selling and from foes; buys food and Storehouse space |
 | Health | How much damage you can take; set by Hitpoints |
 | Hearth | The home page |
+| Heirloom | A piece forged from a boss's finds at Smithing 90: the last tier's strength with its boss's way, never tempered or sold |
 | Hiscores | The ladders of every skill and the total |
 | Hitpoints | The skill that raises health, opens foes and lets you wear armour; trained by every fight |
 | Honours | Your title, banner and frame: chosen on the Deeds tab, seen by everyone |

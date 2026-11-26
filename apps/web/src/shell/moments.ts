@@ -86,7 +86,10 @@ function sizeOf(e: GameEvent): MomentSize {
   if (e.type === 'bountyDone') return e.elite ? 'banner' : 'toast';
   if (e.type === 'deepDone') return deepDoneWords(e).size;
   // A work raised: a press answered; fully raised, a banner (session 76).
-  if (e.type === 'workRaised') return e.stage >= 5 ? 'banner' : 'toast';
+  // Fully raised at the tenth since session 244 (session 251: it bannered the fifth).
+  if (e.type === 'workRaised') return e.stage >= 10 ? 'banner' : 'toast';
+  // An heirloom forged (session 251): a banner, as a piece tempered whole.
+  if (e.type === 'heirloomForged') return 'banner';
   // A relic raised, as a work is (session 98).
   if (e.type === 'relicRaised') return relicRaisedWords(e.relic, e.rank)?.top ? 'banner' : 'toast';
   if (e.type === 'gearTempered') return temperedWords(e.item, e.step).top ? 'banner' : 'toast';
@@ -172,6 +175,7 @@ function describe(
     case 'relicRaised':
     case 'pedlarPaid':
     case 'gearTempered':
+    case 'heirloomForged':
       return pressSaid(e);
     case 'realmGiven':
     case 'realmWorkStage':

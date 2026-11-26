@@ -50,6 +50,8 @@ export interface EventMap {
   pedlarPaid: { item: string; count: number; gold: number; favour: number };
   /** A worn piece tempered a step at the forge by the player's press (session 216). */
   gearTempered: { item: string; step: number };
+  /** A heirloom forged from a boss's finds by the player's press (session 251). */
+  heirloomForged: { item: string };
   /** A steading work raised a stage by the player's press (session 76); its building is also a deed. */
   workRaised: { work: string; stage: number };
   /** A boss fought alone in the lane (session 72): beaten or held, what a win paid (gold, the boss's
@@ -142,6 +144,7 @@ export const NOTABLE_EVENTS: readonly (keyof EventMap)[] = [
   'findUsed',
   'relicRaised',
   'gearTempered',
+  'heirloomForged',
   'pedlarPaid',
   'realmGiven',
   'realmWorkStage',
