@@ -17,7 +17,8 @@ self.addEventListener('push', (event) => {
       tag: typeof data.tag === 'string' ? data.tag : 'idle-clash',
       icon: '/icon-192.png',
       badge: '/icon-192.png',
-      data: { url: typeof data.url === 'string' && data.url.startsWith('/') ? data.url : '/' },
+      // A path on this site only: "//elsewhere" also starts with a slash (session 275).
+      data: { url: typeof data.url === 'string' && /^\/(?![/\\])/.test(data.url) ? data.url : '/' },
     }),
   );
 });

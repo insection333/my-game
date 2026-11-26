@@ -51,6 +51,25 @@ export async function pushOn(): Promise<PushState> {
   return 'on';
 }
 
+const TOLD = 'pushTold';
+
+/** Tells the server again where this browser's notices go, and the player's time zone, each time the game opens
+ *  (session 275). Settings said "On" while the browser held a subscription, yet the server could have let it go
+ *  (a push service's 410, a restored backup older than it) or the browser changed its address, and the time zone
+ *  was told only once: notices stopped without a word. Never asks the player anything. */
+export async function pushAgain(now = Date.now()): Promise<void> {
+  if (!supported() || Notification.permission !== 'granted') return;
+  // Once a day is enough, and keeps within the server's ten switch-ons an hour for a player who reloads often.
+  const last = kept(TOLD);
+  if (last && now - Number(last) < 86_400_000) return;
+  const reg = await navigator.serviceWorker.getRegistration('/');
+  const sub = await reg?.pushManager.getSubscription();
+  if (!sub) return;
+  const json = sub.toJSON() as { endpoint: string; keys: { p256dh: string; auth: string } };
+  await api.push.on(json, Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC');
+  keep(TOLD, String(now));
+}
+
 /** Switches notices off in this browser, here and on the server. */
 export async function pushOff(): Promise<PushState> {
   if (!supported()) return pushState();
