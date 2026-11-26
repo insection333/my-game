@@ -6,6 +6,7 @@ import { ERRAND_ORDER, type ErrandRow } from '../shared/errand.ts';
 import { pedlarOf } from '../shared/pedlar.ts';
 import { dayOf, handedToday, payFor } from './rules.ts';
 import { lotsOf, type LotKind } from '../shared/pedlar-lots.ts';
+import { isLocked } from '../shared/storehouse.ts';
 
 export const PEDLAR_HREF = '/?panel=pedlar';
 
@@ -49,17 +50,19 @@ function lotRows(state: State, now: number, handed: readonly string[]): LotRow[]
   return lotsOf(state, dayOf(now)).map((l) => {
     const held = countOf(state, l.item);
     const done = handed.includes(l.kind);
+    const locked = isLocked(state, l.item);
     return {
       kind: l.kind,
       item: l.item,
       name: lotName(l.item, l.count),
-      held:
-        held >= l.count
+      held: locked
+        ? t('pedlar.heldLocked')
+        : held >= l.count
           ? t('pedlar.held', { count: fmt.int(held) })
           : t('pedlar.short', { count: fmt.int(held), more: fmt.int(l.count - held) }),
       pays: t('pedlar.pays', { gold: fmt.int(payFor(state, l)) }),
       done,
-      ready: !done && held >= l.count,
+      ready: !done && !locked && held >= l.count,
     };
   });
 }
@@ -67,7 +70,7 @@ function lotRows(state: State, now: number, handed: readonly string[]): LotRow[]
 /** The row of Next up: what is still wanted today, or nothing once all is handed in. */
 export function pedlarErrands(state: State, now: number): ErrandRow[] {
   const handed = handedToday(state, now);
-  const wanted = lotsOf(state, dayOf(now)).filter((l) => !handed.includes(l.kind));
+  const wanted = lotsOf(state, dayOf(now)).filter((l) => !handed.includes(l.kind) && !isLocked(state, l.item));
   if (!wanted.length) return [];
   const names = wanted.map((l) => lotName(l.item, l.count));
   const list =

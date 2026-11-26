@@ -46,6 +46,7 @@ export const progress: Record<string, string> = {
   'pedlar.lot': '{item} ×{count}',
   'pedlar.held': 'You hold {count}',
   'pedlar.short': 'You hold {count}: {more} more needed',
+  'pedlar.heldLocked': 'Locked in the Storehouse: kept',
   'pedlar.pays': 'Pays {gold} gold',
   'pedlar.favour': 'Favour: {count}',
   'pedlar.turns': 'New wants {when}',
