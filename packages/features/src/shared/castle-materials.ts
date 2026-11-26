@@ -6,6 +6,8 @@
 import { TIER_LEVELS, type BuildingId } from '@idle-clash/content';
 import { countOf, type State } from '@idle-clash/kernel';
 import { itemOf } from './catalog.ts';
+import { laneUsing } from './in-use.ts';
+import { isLocked } from './storehouse.ts';
 import { skillLevel } from './skill.ts';
 import { FAMILY } from './steading.ts';
 
@@ -45,9 +47,16 @@ export interface MaterialsPaid {
   credit: number;
 }
 
+/** Whether a running lane needs the material (an artisan's ingredient, the food a fight eats, the style's
+ *  supply): then gold pays all (session 266: a Level up took the runes a Magic fighter carried, or the bars
+ *  the Artisan lane was forging with, and stopped it without a word). */
+export const materialInUse = (state: State, id: BuildingId): boolean =>
+  laneUsing(state, materialFor(state, id)) !== null || isLocked(state, materialFor(state, id));
+
 /** What materials pay towards a Level up costing `gold`: as many of the material held as cover up to a quarter
- *  of it, each at its price; null when none is held or it is worth nothing. */
+ *  of it, each at its price; null when none is held, it is worth nothing, a running lane needs it or it is locked. */
 export function materialsFor(state: State, id: BuildingId, gold: number): MaterialsPaid | null {
+  if (materialInUse(state, id)) return null;
   const item = materialFor(state, id);
   const worth = (itemOf(item)?.value ?? 0) * MATERIAL_WORTH;
   const most = Math.floor(gold * MATERIAL_SHARE);

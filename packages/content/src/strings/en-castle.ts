@@ -143,6 +143,8 @@ export const castle = {
   'castle.materials.paid': 'Also takes {item} ×{count}.',
   'castle.materials.held': '{count} held.',
   'castle.materials.none': 'No {item} held: gold pays all.',
+  'castle.materials.inUse': '{item} is in use, so gold pays all. {use}',
+  'castle.materials.locked': '{item} is locked in the Storehouse, so gold pays all.',
   'castle.train.label': 'Train',
   'castle.step.gold': '+{more} · {gold}',
   'castle.step.ap': '+{more} · {ap} AP',

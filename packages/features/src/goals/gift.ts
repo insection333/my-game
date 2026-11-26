@@ -35,7 +35,7 @@ export function openGift(
   const out = structuredClone(state);
   const cache = cacheFor(state, giftWorth(state), g.opened);
   openCache(out, cache);
-  setGoals(out, { ...g, opened: g.opened + 1, gifts: [...g.gifts, id].slice(-30) });
+  setGoals(out, { ...g, opened: g.opened + 1, gifted: g.gifted + 1, gifts: [...g.gifts, id].slice(-30) });
   return {
     state: out,
     result: { ok: true },
