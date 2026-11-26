@@ -75,8 +75,16 @@ export class Push {
     this.deps.db.delete(pushDue).where(eq(pushDue.playerId, playerId)).run();
   }
 
+  /** The server is closing (session 273): pages' sockets close after the database does, and each one's last
+   *  page closing asked the database for the player's subscriptions, an error thrown at every restart. */
+  private stopped = false;
+  stop(): void {
+    this.stopped = true;
+  }
+
   /** The player's last page closed: their absence is foreseen a minute later, unless they come back. */
   gone(playerId: string): void {
+    if (this.stopped) return;
     if (this.subs(playerId).length) this.left.set(playerId, this.deps.now());
   }
 
@@ -94,8 +102,22 @@ export class Push {
         .run();
   }
 
+  /** Whether a sweep still waits on a push service (session 273): each send may wait ten seconds, one after
+   *  another, so a slow minute let the next sweep read the same notices as due and send them twice. */
+  private sweeping = false;
+
   /** Plays the absence of players who left a minute ago forward, then sends what is due. */
   async sweep(): Promise<void> {
+    if (this.sweeping || this.stopped) return;
+    this.sweeping = true;
+    try {
+      await this.sweepNow();
+    } finally {
+      this.sweeping = false;
+    }
+  }
+
+  private async sweepNow(): Promise<void> {
     const at = this.deps.now();
     for (const [playerId, leftAt] of [...this.left]) {
       if (at - leftAt < LEFT_AFTER_MS) continue;
@@ -120,11 +142,12 @@ export class Push {
     const due = this.deps.db.select().from(pushDue).where(lte(pushDue.at, at)).orderBy(asc(pushDue.at)).all();
     const players = [...new Set(due.map((d) => d.playerId))];
     for (const playerId of players)
-      await this.send(
-        playerId,
-        due.filter((d) => d.playerId === playerId),
-        at,
-      );
+      if (!this.stopped)
+        await this.send(
+          playerId,
+          due.filter((d) => d.playerId === playerId),
+          at,
+        );
   }
 
   private async send(playerId: string, due: { id: number; kind: string; data: string }[], at: number) {
@@ -159,7 +182,7 @@ export class Push {
         payload,
       );
       // The browser let go of it: it is gone for good.
-      if (status === 404 || status === 410) db.delete(pushSubs).where(eq(pushSubs.id, sub.id)).run();
+      if (!this.stopped && (status === 404 || status === 410)) db.delete(pushSubs).where(eq(pushSubs.id, sub.id)).run();
     }
   }
 

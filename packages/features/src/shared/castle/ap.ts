@@ -62,7 +62,13 @@ export function claimCallToArms(c: Castle, now: number): CallResult {
   );
   return {
     ok: true,
-    castle: { ...c, activeAp: ap, streakAtLastCta: streak, lastCtaDateUtc: today, lastApSyncAt: now },
+    castle: {
+      ...c,
+      activeAp: ap,
+      streakAtLastCta: streak,
+      lastCtaDateUtc: today,
+      lastApSyncAt: Math.max(c.lastApSyncAt, now),
+    },
     gained: ap - c.activeAp,
     streak,
   };

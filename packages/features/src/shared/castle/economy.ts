@@ -81,7 +81,7 @@ export const morale = (c: Castle, totalLevel: number): number =>
 /** Upkeep owed since the last count: 2% a day, compounding, while an edict is chosen, paused from 48 hours
  *  after the start of the last Call to arms day (DESIGN.md 5.6). Returns the castle and the gold burned. */
 export function syncUpkeep(c: Castle, now: number): { castle: Castle; burned: number } {
-  if (!c.edict || c.treasury <= 0 || now <= c.lastUpkeepAt) return { castle: { ...c, lastUpkeepAt: now }, burned: 0 };
+  if (!c.edict || c.treasury <= 0 || now <= c.lastUpkeepAt) return { castle: { ...c, lastUpkeepAt: Math.max(c.lastUpkeepAt, now) }, burned: 0 };
   const pauseAt = c.lastCtaDateUtc ? Date.parse(`${c.lastCtaDateUtc}T00:00:00Z`) + ECONOMY.UPKEEP_PAUSE_MS : -Infinity;
   const until = Math.min(now, pauseAt);
   // Week by week, each at its own decree's rate (DESIGN.md 5.19).

@@ -118,8 +118,10 @@ function fireSinceOf(v: unknown, clock: number, repairs: string[]): { fireSince?
   return {};
 }
 
-/** How far a save's clock may run ahead of the server's (clock drift between machines). */
-const FUTURE_SLACK = 5 * 60_000;
+/** How far a save's clock may run ahead of the server's. Only the server writes saves, so a clock ahead means the
+ *  server's own clock stepped back (a machine paused and resumed, a large correction): at five minutes every
+ *  player's next read stopped their lanes as mended (session 273); a few hours are taken as that, a year as damage. */
+export const FUTURE_SLACK = 6 * 3_600_000;
 
 export function mend(raw: unknown, now: number): Mended {
   const strict = SaveDoc.safeParse(raw);

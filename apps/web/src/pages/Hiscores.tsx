@@ -18,6 +18,7 @@ import { PageHead } from './PageHead.tsx';
 import { profileHref } from './ProfileSheet.tsx';
 import { unrankedNote } from './hiscores-words.ts';
 import { Rivals } from './Rivals.tsx';
+import { whileSeen } from '../seen.ts';
 import s from './hiscores.module.css';
 import { FindPlayer } from './FindPlayer.tsx';
 
@@ -49,10 +50,10 @@ export function Hiscores() {
         (err: unknown) => void handled(err),
       );
     void load(true);
-    const every = setInterval(() => void load(), 60_000);
+    const stop = whileSeen(() => void load(), 60_000);
     return () => {
       live = false;
-      clearInterval(every);
+      stop();
     };
   }, []);
   const asked = new URLSearchParams(location.search).get('skill') ?? 'total';

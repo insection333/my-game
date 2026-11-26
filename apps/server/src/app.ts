@@ -19,7 +19,7 @@ import { openDb } from './db/open.ts';
 import { LiveHub } from './game/live.ts';
 import { gameRoutes } from './game/routes.ts';
 import { castleRoutes } from './castle/routes.ts';
-import { contractRoute, harden } from './http.ts';
+import { contractRoute, fail, harden } from './http.ts';
 import { RateLimiter } from './security.ts';
 import { adminRoutes } from './admin/routes.ts';
 import { auditRoutes } from './admin/audit.ts';
@@ -42,7 +42,7 @@ import { Notices } from './game/notices.ts';
 import { hearWatching, WATCH_EVERY_MS } from './game/watching.ts';
 import { Telemetry } from './telemetry.ts';
 import { tellBuild, webRoutes } from './web.ts';
-import { backupsHealth } from './ops/status.ts';
+import { backupsHealth, DISK_LOW_BYTES, diskFree } from './ops/status.ts';
 import { HOUSEKEEPING_EVERY_MS, keepHouse } from './housekeeping.ts';
 import { Push } from './push/push.ts';
 import { Realm } from './game/realm.ts';
@@ -154,6 +154,8 @@ export async function buildApp(
   // Up, and the database answers; with how recent the backups are, for the outside uptime check.
   contractRoute(app, ROUTES.health, () => {
     store.sqlite.prepare('select 1').get();
+    const free = (config.diskFree ?? diskFree)(config.dbPath);
+    if (free !== null && free < DISK_LOW_BYTES) throw fail(503, 'serverError');
     return { ok: true, backups: backupsHealth(config.backupStatusDir, config.now()) };
   });
   contractRoute<{ message: string; url: string }>(
@@ -229,6 +231,7 @@ export async function buildApp(
     app,
     ctx,
     close: async () => {
+      ctx.push.stop();
       clearInterval(watching);
       clearInterval(housekeeping);
       clearInterval(pushing);

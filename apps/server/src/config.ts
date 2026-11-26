@@ -37,6 +37,8 @@ export interface Config {
   pagesPerMinute: number;
   /** Where the backup and the restore rehearsal mark their success; null where there are none. */
   backupStatusDir: string | null;
+  /** The free space on the database's disk; tests give their own (ops/status.ts's `diskFree` otherwise). */
+  diskFree?: (dbPath: string) => number | null;
 }
 
 /** Flags from FEATURES: unset keeps each feature's own flag; "all" turns every built feature on. */

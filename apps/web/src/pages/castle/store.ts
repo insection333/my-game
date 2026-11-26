@@ -11,6 +11,7 @@ import { untilLoaded } from '../../Ready.tsx';
 import { refused as refusedWords } from '../../refused.ts';
 import { refusal } from './labels.ts';
 import type { Field } from './hosts.ts';
+import { whileSeen } from '../../seen.ts';
 
 export interface CastleSnapshot {
   view: castleEngine.CastleView | null;
@@ -130,8 +131,7 @@ export const castleAct = async (action: CastleAction | 'open'): Promise<boolean>
 export function useCastleLoad(): void {
   useEffect(() => {
     void loadCastle(snapshot.view === null);
-    const every = setInterval(() => void loadCastle(), 60_000);
-    return () => clearInterval(every);
+    return whileSeen(() => void loadCastle(), 60_000);
   }, []);
   // Another lord's siege or spy changes this castle on the server: read it again when one is heard.
   const { events } = useGame();
