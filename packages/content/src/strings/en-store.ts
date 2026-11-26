@@ -29,7 +29,7 @@ export const store = {
   // Old gear at one press, and locks (session 241).
   'store.sellGear': 'Sell old gear for {gold} gold',
   'store.sellGear.ask':
-    'Sell {gear} for {gold} gold? Each is two tiers or more below what you may wear; worn and tempered pieces keep one.',
+    'Sell {gear} for {gold} gold? Each is two tiers or more below what you may wear; your best of each kind and worn or tempered pieces keep one.',
   'store.soldGear': 'Sold {count} kinds of gear for {gold} gold',
   'store.soldGearOne': 'Sold 1 kind of gear for {gold} gold',
   'store.lock': 'Lock',

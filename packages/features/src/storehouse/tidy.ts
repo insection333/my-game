@@ -18,15 +18,32 @@ export const OLD_BY = 2;
 /** The highest tier a level allows. */
 const tierAt = (level: number) => TIER_LEVELS.filter((l) => l <= level).length;
 
-/** The old gear held, each with how many go: all but a worn or tempered piece's one. */
+/** The best piece held for each slot (a weapon's for each style): the highest tier, then the most tempered. One
+ *  is always kept, so Fight as still has a weapon for a style trained little (session 243's audit). */
+function bestHeld(state: State): Set<string> {
+  const best = new Map<string, string>();
+  const worth = (id: string) => itemOf(id)!.gear!.tier * 10 + stepsOf(state, id);
+  for (const item of Object.keys(state.items)) {
+    const gear = itemOf(item)?.gear;
+    if (!gear || countOf(state, item) < 1) continue;
+    const key = gear.slot === 'weapon' ? `weapon:${gear.style}` : gear.slot;
+    const was = best.get(key);
+    if (!was || worth(item) > worth(was)) best.set(key, item);
+  }
+  return new Set(best.values());
+}
+
+/** The old gear held, each with how many go: all but one of a piece worn, tempered or the best held for its
+ *  slot. */
 export function oldGear(state: State): { item: string; count: number }[] {
   const worn = Object.values(combatOf(state).worn);
+  const best = bestHeld(state);
   return Object.keys(state.items).flatMap((item) => {
     const gear = itemOf(item)?.gear;
     if (!gear || isLocked(state, item) || !(itemOf(item)!.value > 0)) return [];
     const level = skillLevel(state, gear.slot === 'weapon' ? gear.style! : HITPOINTS);
     if (gear.tier > tierAt(level) - OLD_BY) return [];
-    const keep = worn.includes(item) || stepsOf(state, item) > 0 ? 1 : 0;
+    const keep = worn.includes(item) || stepsOf(state, item) > 0 || best.has(item) ? 1 : 0;
     const count = countOf(state, item) - keep;
     return count > 0 ? [{ item, count }] : [];
   });
