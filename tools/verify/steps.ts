@@ -26,6 +26,7 @@ import { runRoundProofs } from './web/proofs-round.ts';
 import { runItemProofs } from './web/proofs-items.ts';
 import { runLandProofs } from './web/proofs-land.ts';
 import { runForgeProofs } from './web/proofs-forge.ts';
+import { runFriendsProofs } from './web/proofs-friends.ts';
 import { runCastleProofs } from './web/proofs-castle.ts';
 import { runCommandProofs } from './web/proofs-command.ts';
 import { runLaneProofs } from './web/proofs-lanes.ts';
@@ -206,6 +207,7 @@ async function screenshots(): Promise<StepResult> {
   const itemProofs = await runItemProofs(served);
   const landProofs = await runLandProofs(served);
   const forgeProofs = await runForgeProofs(served);
+  const friendsProofs = await runFriendsProofs(served);
   const views = webViews().length;
   const problems = [
     ...r.problems,
@@ -230,6 +232,7 @@ async function screenshots(): Promise<StepResult> {
     ...itemProofs,
     ...landProofs,
     ...forgeProofs,
+    ...friendsProofs,
   ];
   if (problems.length)
     return fail(`${problems.length} layout or flow problem${problems.length > 1 ? 's' : ''}`, problems.join('\n'));

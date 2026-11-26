@@ -62,16 +62,19 @@ export function Friendly({ name, social }: { name: string; social: NonNullable<P
           )}
         </div>
       )}
+      {/* A gift that cannot go says only why (session 255: its offer and its reason stood in five lines). */}
       <div className={s.friend}>
-        <span>{t('gift.offer')}</span>
         {gift || giftWhy ? (
           <span role="status" className={s.friendSaid}>
             {gift ?? t(giftWhy!)}
           </span>
         ) : (
-          <Button variant="secondary" disabled={busy} onClick={() => void press('gift')}>
-            {t('gift.button')}
-          </Button>
+          <>
+            <span>{t('gift.offer')}</span>
+            <Button variant="secondary" disabled={busy} onClick={() => void press('gift')}>
+              {t('gift.button')}
+            </Button>
+          </>
         )}
       </div>
     </div>

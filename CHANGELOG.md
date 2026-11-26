@@ -393,3 +393,4 @@
 - Session 252: phase four audited. Fight as leaves a worn weapon of its style that is worth as much on, where it took an heirloom off for an untempered dawnsteel piece; step 6 forges and wears an heirloom in the page.
 - Session 253: days banked: a boss's daily fight and the realm's strike bank up to three days, fought one after another by the day's bosses and counted on the Hearth, so a friend who plays every other day keeps up.
 - Session 254: cheers and a gift. A friend's card offers Cheer for their week's climb, legend or strike (three a day) and, once a day, a gift: a supply cache they open on the Hearth, worth a quarter-hour of their own earning, refused from new accounts and between accounts made the same week.
+- Session 255: phase five audited. Banked fights, cheers and gifts played in the page; a gift that cannot go says only why, and a cheer's tray line leads to what it was for.

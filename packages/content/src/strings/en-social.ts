@@ -21,7 +21,7 @@ export const social = {
   'gift.note':
     "A friend's gift is a supply cache drawn as your goals' are, worth about {gold} gold to you: a quarter of an hour of your own earning. Nothing leaves their Storehouse.",
   'gift.button': 'Send a gift',
-  'gift.offer': 'Once a day, send a friend a supply cache, worth a quarter of an hour of their own earning.',
+  'gift.offer': 'A supply cache for them, once a day',
   'gift.given': 'Your gift for today is given',
   'gift.young': 'Gifts open once your account is a week old',
   'gift.sameWeek': 'No gifts between accounts made the same week',

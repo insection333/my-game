@@ -221,7 +221,8 @@ export function noticeLine(e: GameEvent): (RecapLine & { at: number }) | null {
     case 'cheered': {
       // Cheers (session 254): who cheered and what for.
       const w = cheeredWords(e);
-      return { kind: 'rank', text: `${w.title}. ${w.body}`, icon: w.icon, href: '/hiscores', at: e.at };
+      const href = e.occasion === 'rank' ? '/hiscores' : e.occasion === 'legend' ? '/castle' : '/combat/expeditions';
+      return { kind: 'rank', text: `${w.title}. ${w.body}`, icon: w.icon, href, at: e.at };
     }
     case 'giftCame': {
       const w = giftCameWords(e);
