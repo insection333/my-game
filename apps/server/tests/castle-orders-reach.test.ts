@@ -51,6 +51,8 @@ describe("a day's orders and the lords in reach", () => {
     s = await server();
     const me = await lord('Neighbourly');
     await lord('Neighbour');
-    expect(await kindsOver(me.cookie, 12)).toContain('lord');
+    // Two orders a day are drawn from five by the lord's (random) id, so twelve days missed "lord" now and then
+    // (it failed on GitHub in session 244); over thirty the chance of a miss is about 2 in 10 million.
+    expect(await kindsOver(me.cookie, 30)).toContain('lord');
   });
 });
