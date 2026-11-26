@@ -252,6 +252,8 @@ export function yearChecks(check: Check, lines: string[]): { steady: Year; light
 const UNPOWERED_DAYS = 0.1;
 /** The least share of the castle's year its lord's own materials pay (session 247: the castle raised from the land). */
 const MATERIALS_SHARE = 0.05;
+/** The edict at a year, grown with the castle (session 248). */
+const EDICT_AT_YEAR = [9, 11];
 const CASTLE_YEAR = { level: 15, tier: 26, marks: 550 };
 /** The days each of the troops' later evolutions should come in (session 138): the second within the first
  *  months, the third about half a year in, the fourth past the year, each gap about double the last. The
@@ -283,6 +285,13 @@ function castleYear(y: Year, check: Check, lines: string[]) {
     byMaterials >= (byMaterials + spentAll) * MATERIALS_SHARE,
     `${y.kind.name}'s own materials pay ${(byMaterials / 1e6).toFixed(1)}M of the castle's year beside ${(spentAll / 1e6).toFixed(1)}M of gold (at least ${MATERIALS_SHARE * 100}%)`,
   );
+  // The edict grows with the castle (session 248): at a year, between +9% and +11% (+6.9% before).
+  const atYear = y.days[YEAR - 1]?.castle?.pct ?? 0;
+  if (y.days.length >= YEAR)
+    check(
+      atYear >= EDICT_AT_YEAR[0] && atYear <= EDICT_AT_YEAR[1],
+      `${y.kind.name}'s edict gives +${atYear.toFixed(1)}% at a year (between +${EDICT_AT_YEAR[0]}% and +${EDICT_AT_YEAR[1]}%)`,
+    );
   const unpowered = kept.filter((d) => d.castle!.pct <= 0).length;
   check(
     unpowered <= kept.length * UNPOWERED_DAYS,

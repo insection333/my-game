@@ -386,3 +386,4 @@
 - Session 245: Cooking that matters. Dishes heal 1.3 times their fish (sturgeon stew 2,370, above the vendor's best); from tier 5 ten dishes and a greater Uncommon find make ten feasts, a pie's lifting damage 5% and a stew's combat XP 5% while eaten first.
 - Session 246: phase two audited. Step 6 plays the steading's later stages and feasts in the page; nothing more was found.
 - Session 247: the castle raised from the land. A Citadel building's Level up may pay up to a quarter in the lord's own ore, bars, logs or runes at their price (a switch, on until turned off); the troops stay gold alone; the steading's fifth raising costs 15M.
+- Session 248: the edict grows with the castle. Every edict is lifted 2% for each average castle level above the first, to half again (+9.8% at a year where it was +6.9%); the Citadel says so.
