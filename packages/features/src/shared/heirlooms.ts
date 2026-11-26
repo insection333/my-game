@@ -61,4 +61,3 @@ export function heirloomCost(h: Heirloom): { item: string; count: number }[] {
 export function heirloomTraits(worn: readonly (string | null)[]): HeirloomTrait[] {
   return worn.flatMap((id) => (id ? [heirloomOf(id)?.trait].filter((t): t is HeirloomTrait => !!t) : []));
 }
-

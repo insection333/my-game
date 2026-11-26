@@ -119,4 +119,3 @@ export function offersFor(state: State, now: number, fair: (foe: Foe) => { secon
     elite: elites && p.foe.tier >= 7 && r('bounty-elite', n + i) < 0.5,
   }));
 }
-

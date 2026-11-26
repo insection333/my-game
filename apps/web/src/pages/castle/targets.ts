@@ -95,4 +95,3 @@ export function heldByWounds(castle: E.Castle, def: E.Side, now: number): boolea
  *  (two poisonings take an even siege near certain), so the row says so until they have. */
 export const spiesWouldTip = (target: Target, chance: number | null) =>
   target.merc === null && chance !== null && chance < 0.5;
-

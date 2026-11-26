@@ -188,4 +188,3 @@ export function lordsInReach<T extends { rating: number }>(
   }
   return { lords: [], reach: 0 };
 }
-
