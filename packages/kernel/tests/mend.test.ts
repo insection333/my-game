@@ -61,6 +61,19 @@ describe('mend', () => {
     expect(repairs).toContain('The clock time was damaged and was reset');
   });
 
+  // Session 273: only the server writes saves, so a clock a little ahead means the server's own clock stepped back;
+  // at five minutes' slack, every player's next read stopped their lanes as mended.
+  it('leaves a save a few hours ahead as it is, its lanes at work, and takes a command on it', () => {
+    const doc = sample();
+    const behind = doc.state.clock - 2 * HOUR;
+    expect(mend(doc, behind)).toEqual({ doc, repairs: [] });
+    const engine = createEngine(registry);
+    const out = engine.advance(doc.state, behind, seeded(1));
+    expect(out.state).toEqual(doc.state);
+    const stoked = engine.command(doc.state, behind, { type: 'stoke' }, seeded(1));
+    expect(mend({ ...doc, state: stoked.state }, behind).repairs).toEqual([]);
+  });
+
   it("starts the fire's heat again when it was lit after the clock", () => {
     const raw = damaged((d) => {
       d.state.fireSince = d.state.clock + HOUR;

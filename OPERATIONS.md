@@ -82,7 +82,8 @@ Progress since that backup is lost, so restore only when the live database canno
 
 - **UptimeRobot**: a keyword monitor on `https://idleclash.com/api/health` every 5 minutes, alerting
   when the keyword `"backups":"fresh"` is missing. It catches the site being down, HTTPS failing, the
-  database not answering, and backups or rehearsals that stopped.
+  database not answering, the database's disk under 512 MB free (the answer fails, as SQLite still reads
+  on a full disk while no press can be written), and backups or rehearsals that stopped.
 - **Browser errors** reach the server's log (`journalctl -u idleclash | grep "browser error"`).
 - **GitHub** emails the owner when a deploy fails.
 

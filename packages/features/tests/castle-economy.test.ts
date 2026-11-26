@@ -88,6 +88,17 @@ describe('Castle Clash gold', () => {
     expect(syncUpkeep({ ...c, edict: null }, T0 + 10 * DAY).burned).toBe(0);
   });
 
+  // Session 273: a server clock stepped back (a machine paused and resumed) set the count's time back with it,
+  // so the hours between were charged again once the clock caught up.
+  it('charges no hour twice when the clock steps back', () => {
+    const c = fresh({ edict: 'harvest', treasury: 1_000_000, lastCtaDateUtc: new Date(T0).toISOString().slice(0, 10) });
+    const ahead = syncUpkeep(c, T0 + 12 * H).castle;
+    const once = syncUpkeep(ahead, T0 + DAY).castle.treasury;
+    const back = syncUpkeep(ahead, T0 + 9 * H).castle;
+    expect(back.lastUpkeepAt).toBe(T0 + 12 * H);
+    expect(syncUpkeep(back, T0 + DAY).castle.treasury).toBe(once);
+  });
+
   it('protects at most 75% of the treasury', () => {
     const vault = { ...fresh().levels, deepVault: 100 };
     expect(protectedGold(fresh({ treasury: 1_000_000, levels: vault }), T0)).toBe(750_000);

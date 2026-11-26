@@ -5,7 +5,7 @@ import { mkdtempSync, utimesSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
-import { BACKUP_FRESH_MS, RESTORE_FRESH_MS } from '../src/ops/status.ts';
+import { BACKUP_FRESH_MS, DISK_LOW_BYTES, diskFree, RESTORE_FRESH_MS } from '../src/ops/status.ts';
 import { server, type TestServer } from './helpers.ts';
 
 let s: TestServer;
@@ -18,6 +18,23 @@ const touch = (dir: string, name: string, at: number) => {
 };
 
 describe('the health answer', () => {
+  // Session 273: SQLite reads on a full disk, so `select 1` said all was well while no press could be written.
+  it("fails while the database's disk is nearly full", async () => {
+    let free = DISK_LOW_BYTES + 1;
+    s = await server({ diskFree: () => free });
+    expect((await s.app.inject({ method: 'GET', url: '/api/health' })).statusCode).toBe(200);
+    free = DISK_LOW_BYTES - 1;
+    const r = await s.app.inject({ method: 'GET', url: '/api/health' });
+    expect(r.statusCode).toBe(503);
+    expect(r.body).not.toContain('"backups":"fresh"');
+  });
+
+  it("reads the free space of the database's own disk", () => {
+    const dir = mkdtempSync(join(tmpdir(), 'ic-disk-'));
+    expect(diskFree(join(dir, 'game.db'))).toBeGreaterThan(0);
+    expect(diskFree(':memory:')).toBeNull();
+  });
+
   it('says backups are off where none are kept', async () => {
     s = await server();
     expect(await health()).toEqual({ ok: true, backups: 'off' });
