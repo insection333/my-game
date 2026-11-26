@@ -30,7 +30,9 @@ interface Entry {
 /** The season's rows to write beside the skills' at `at`, from the save and the rows as last written
  *  (`had`, read before this write); none before the first season. */
 export function seasonEntries(at: number, state: State, had: ReadonlyMap<string, { xp: number }>): Entry[] {
-  const done = goalsOf(state).opened;
+  // Goals done: the caches opened, less those a friend's gift brought (session 266).
+  const g = goalsOf(state);
+  const done = g.opened - g.gifted;
   const row = (skill: string, xp: number): Entry => ({ skill, xp, level: 0, milestones: 0 });
   const season = seasonAt(at);
   if (!season) return [row(ALL, done)];

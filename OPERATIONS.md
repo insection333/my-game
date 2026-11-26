@@ -88,9 +88,9 @@ Progress since that backup is lost, so restore only when the live database canno
 
 ## Moderation
 
-The admin page (`/admin`, for names in `ADMIN_NAMES`) holds what players report and what sieges show (session 39):
+The admin console (`/admin`, for its own account `Admin` and names in `ADMIN_NAMES`) holds, under **Moderation**, what players report and what sieges show (session 39; the console since session 227):
 
-- **Reports** lists the players reported, those reported by players who have played a while first. Open shows the player beside, to rename or ban them (either settles their reports); Dismiss settles them as unfounded. A player reported again after that comes back.
+- **Reports** lists the players reported, those reported by players who have played a while first. Open leads to the player's record, to rename or ban them (either settles their reports); Dismiss settles them as unfounded. A player reported again after that comes back.
 - **Sieges between lords** lists pairs of lords with four or more sieges in 30 days, most gold first, with the sieges the other way. A pair where gold only flows one way, between accounts made close together, is worth a look in both saves.
 
 ## Capacity

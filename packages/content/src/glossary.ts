@@ -71,6 +71,10 @@ export const TERMS: [term: string, meaning: string][] = [
     'A feat done in the course of play (a level, work, mastery, foes, finds, the fire), easy, hard, elite or master; listed on the Deeds tab of Hiscores',
   ],
   [
+    'Follow',
+    'Set on a deed from its sheet: up to three deeds followed stand in Next up on the Hearth with how near each is',
+  ],
+  [
     'Deed points',
     'What deeds give by tier (easy 5, hard 15, elite 40, master 100); they open titles, a banner and frames',
   ],
@@ -86,7 +90,7 @@ export const TERMS: [term: string, meaning: string][] = [
   ['Enlarge', 'Buy more Storehouse slots with gold'],
   [
     'Expedition',
-    "A run into a region for 1, 2, 4 or 8 hours in the Combat lane: fight stages, caches and camps, twists, a fork, and the region's boss at the end",
+    "A run into a region for 1, 2, 4 or 8 hours in the Combat lane: fight stages, caches and camps, twists, a fork, and one of the region's bosses at the end; it sets out again once home unless you clear Set out again",
   ],
   ['Favour', "The pedlar's count of the lots you have handed in, opening a banner and a title"],
   [
@@ -121,6 +125,10 @@ export const TERMS: [term: string, meaning: string][] = [
     'Each long stretch of XP a skill earns past 99 (the skill page says how far): a flame on its seal and, for the first five, a stronger Path. Nothing is reset',
   ],
   ['Lane', 'One of your workers: Gathering, Artisan, Combat; each runs one action at a time'],
+  [
+    'Lock',
+    "Set on an item from its panel: no sale, Sell finds, Sell old gear, the pedlar or the realm's work takes it",
+  ],
   ['Lasting mark', 'The bonus a Legendary find gives the first time you find it'],
   ['Legendary', 'The rarest find, about 1 in 60,000 actions'],
   [
@@ -173,10 +181,14 @@ export const TERMS: [term: string, meaning: string][] = [
   ['Omen', 'Something that holds in the Deep for a week, the same for everyone, or for a whole season'],
   ['Pedlar', 'Wants three lots a day of what you have found, gathered and cooked, for half again their price'],
   ['Rank', 'Your standing, from Wanderer to Legend of the Realm, rising with your total level'],
+  [
+    "Today's bosses",
+    "Every boss you fare well against with a fight waiting (and the realm's strike), fought in turn by the Combat lane at one press; then the lane takes up what it was doing",
+  ],
   ['Rare', 'A find of about 1 in 500 actions'],
   [
     "Realm's boss",
-    'The boss of the week, fought by every player once a day at their own measure (a day missed banked, up to three strikes); when the realm has struck enough it falls, and everyone who struck takes a share',
+    'The boss of the week, fought by every player once a day at their own measure (a day missed banked, up to three strikes within its week); when the realm has struck enough it falls, and everyone who struck takes a share',
   ],
   ['Region', 'Where foes are fought: the march, the Sunken Fen and the Ashen Peaks, each a tab of Combat'],
   ["Realm's work", 'A work the whole realm raises in a season, in five stages, from gold and materials anyone gives'],
@@ -205,7 +217,7 @@ export const TERMS: [term: string, meaning: string][] = [
   ['Stoke', 'Keep the fire burning'],
   ['Storehouse', 'Where everything you own is kept'],
   ['Storehouse full', 'No free slot for a new kind of item: a lane that would make one stops'],
-  ['Strike', "A win over the realm's boss: one a day"],
+  ['Strike', "A win over the realm's boss: one a day, a day missed banked up to three within its week"],
   ['Style', 'Melee, Archery or Magic: set by the weapon you wear'],
   ['Supply', "A style's extra damage, one used a foe: whetstones for Melee, arrows for Archery, runes for Magic"],
   ['Supply cache', 'What short goals and the daily goal pay in: gold for certain, and a draw for more'],

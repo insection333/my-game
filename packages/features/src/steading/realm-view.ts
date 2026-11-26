@@ -10,6 +10,7 @@ import { pedlarKeeps } from '../shared/pedlar-lots.ts';
 import { REALM_WORK, realmWorkOf, workStage, type RealmWorkId } from '../shared/realm-work.ts';
 import { seasonAt } from '../shared/season.ts';
 import { STAGES, stageCost, stageOf, WORKS } from '../shared/steading.ts';
+import { isLocked } from '../shared/storehouse.ts';
 import { givable } from './realm-give.ts';
 import { realmWorkName } from '../shared/realm-work-words.ts';
 
@@ -69,7 +70,7 @@ export function realmWorkView(state: State, now: number): RealmWorkView | null {
     .map((amount) => ({ amount, label: t('realmWork.giveGold', { gold: fmt.short(amount) }) }));
   const materials = Object.keys(state.items)
     .map((id) => ({ id, kept: givable(id) ? pedlarKeeps(state, now, id) : 0 }))
-    .map(({ id, kept }) => ({ id, kept, count: givable(id) ? countOf(state, id) - kept : 0 }))
+    .map(({ id, kept }) => ({ id, kept, count: givable(id) && !isLocked(state, id) ? countOf(state, id) - kept : 0 }))
     .filter((x) => x.count > 0)
     .map((x) => ({ ...x, worth: itemOf(x.id)!.value * x.count }))
     .sort((a, b) => b.worth - a.worth)

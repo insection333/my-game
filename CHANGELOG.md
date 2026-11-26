@@ -402,3 +402,7 @@
 - Session 261: a bad actor's sweep. A player takes ten cheers a day at most, so a crowd of accounts cannot flood their moments and tray; the server's news (cheers, gifts, rank-ups, the realm's boss and work) is said as moments, and a gift come shows at once.
 - Session 262: verify shows a failed test run's failures, where it showed the first sixty passing lines.
 - Session 263: parts that do not read. A save part with an unreadable small field (the day's bosses, fights banked, locks, gifts opened, deeds followed) lets that field go and keeps the rest, where the whole part was read as empty.
+- Session 264: an item locked in the Storehouse is kept from the pedlar's Hand in and Hand in all and from the realm's Give all, which took it all the same; the row, Next up, the lock and the help say so.
+- Session 265: a holistic sweep: telemetry keeps no giver's name, a deleted lord's name leaves a siege waiting to be pushed, and the privacy page, ARCHITECTURE.md, the glossary, the help, the closed test and the operations doc say the game as built.
+- Session 266: the season's ladder counts goals, not the caches a friend's gift opens; the Citadel's materials leave what a running lane needs and what is locked, and say so.
+- Session 267: the plan of 26 November played as a bad actor (the server held every attack); a castle Level up keeps back a day of what the running lanes use and takes the rest of its material.

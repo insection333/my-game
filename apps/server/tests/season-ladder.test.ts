@@ -95,3 +95,18 @@ describe("a season's ladder", () => {
     expect(places.map((p) => p.skill)).toEqual(['total', 'woodcutting']);
   });
 });
+
+// Session 266: a friend's gift opens a supply cache, and the ladder counted caches opened, so three friends
+// gifting each other daily climbed it by three goals a day without doing one.
+describe("a season's ladder and gifts", () => {
+  it('counts goals done, not gifts opened', async () => {
+    const { seasonEntries } = await import('../src/game/season-ladder.ts');
+    const at = EPOCH + 10 * DAY;
+    const n = String(seasonAt(at)!.number);
+    const { newState } = await import('@idle-clash/kernel');
+    const st = newState(3, at);
+    st.features.goals = { ...goalsOf(st), opened: 6, gifted: 1 };
+    const row = seasonEntries(at, st, new Map([[`seasonfrom:${n}`, { xp: 2 }]])).find((e) => e.skill === `season:${n}`);
+    expect(row?.xp).toBe(3);
+  });
+});

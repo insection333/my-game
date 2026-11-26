@@ -4,8 +4,10 @@
 // gold is paid in them, each at its price. Gold alone pays as before, so no lord is ever held up by
 // a lane they do not run. Shared, because the server pays by it and the page says it.
 import { TIER_LEVELS, type BuildingId } from '@idle-clash/content';
-import { countOf, type State } from '@idle-clash/kernel';
-import { itemOf } from './catalog.ts';
+import { countOf, LANE_IDS, type State } from '@idle-clash/kernel';
+import { itemOf, skillActions } from './catalog.ts';
+import { styleOf, supplyOf } from './combat/state.ts';
+import { isLocked } from './storehouse.ts';
 import { skillLevel } from './skill.ts';
 import { FAMILY } from './steading.ts';
 
@@ -45,14 +47,39 @@ export interface MaterialsPaid {
   credit: number;
 }
 
+const DAY_SECONDS = 86_400;
+/** A fight at its quickest, for a day of a style's supply (one a fight). */
+const FIGHT_SECONDS = 6;
+
+/** What a day of the running lanes uses of an item (session 266: a Level up took the bars the Artisan lane
+ *  was forging with, or the runes a Magic fighter carried, and stopped it without a word): an artisan's
+ *  ingredient at its action's pace, and a style's supply at a fight every few seconds. Kept back. */
+export function dayOfUse(state: State, item: string): number {
+  let use = 0;
+  for (const lane of LANE_IDS) {
+    const run = state.lanes[lane].current;
+    if (!run) continue;
+    const action = skillActions()
+      .find((sk) => sk.feature === run.action.feature)
+      ?.actions.find((a) => a.id === run.action.id);
+    const takes = action?.takes?.find((g) => g.item === item);
+    if (takes && action) use += Math.ceil((takes.count * DAY_SECONDS) / Math.max(1, action.seconds ?? 60));
+  }
+  const style = state.lanes.combat.current ? styleOf(state) : null;
+  if (style && supplyOf(state, style)?.item === item) use += DAY_SECONDS / FIGHT_SECONDS;
+  return use;
+}
+
 /** What materials pay towards a Level up costing `gold`: as many of the material held as cover up to a quarter
- *  of it, each at its price; null when none is held or it is worth nothing. */
+ *  of it, each at its price, keeping back a day of what the running lanes use; null when none is spare, it is
+ *  worth nothing or it is locked in the Storehouse. */
 export function materialsFor(state: State, id: BuildingId, gold: number): MaterialsPaid | null {
   const item = materialFor(state, id);
+  if (isLocked(state, item)) return null;
   const worth = (itemOf(item)?.value ?? 0) * MATERIAL_WORTH;
   const most = Math.floor(gold * MATERIAL_SHARE);
   if (worth <= 0 || most <= 0 || !Number.isFinite(gold)) return null;
-  const count = Math.min(countOf(state, item), Math.ceil(most / worth));
+  const count = Math.min(countOf(state, item) - dayOfUse(state, item), Math.ceil(most / worth));
   if (count <= 0) return null;
   return { item, count, credit: Math.min(most, Math.floor(count * worth)) };
 }

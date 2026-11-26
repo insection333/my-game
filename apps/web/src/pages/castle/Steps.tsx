@@ -4,8 +4,8 @@
 // ("Level up +5 for 160M"). And the slider that heals the wounded or repairs the walls by as much as the
 // lord chooses, with the price of that much on its button.
 import { ECONOMY, fmt, t, type BuildingId, type UnitId } from '@idle-clash/content';
-import { castleEngine as E, materialFor, materialsFor, MATERIAL_OF } from '@idle-clash/features';
-import { countOf } from '@idle-clash/kernel';
+import { castleEngine as E, dayOfUse, isLocked, materialFor, materialsFor, MATERIAL_OF } from '@idle-clash/features';
+import { countOf, type State } from '@idle-clash/kernel';
 import { Button, Pill } from '@idle-clash/ui';
 import { useId, useState } from 'react';
 import { useGame } from '../../game/hooks.ts';
@@ -84,12 +84,26 @@ export function LevelUp({ id }: { id: BuildingId | UnitId }) {
         <p className={s.levelUpWith}>
           {first
             ? t('castle.materials.paid', { count: fmt.int(first.count), item: t(`item.${first.item}`) })
-            : t('castle.materials.none', { item: t(`item.${materialFor(state, building)}`) })}
+            : materialWords(state, building)}
           {first && ` ${t('castle.materials.held', { count: fmt.int(countOf(state, first.item)) })}`}
+          {first &&
+            dayOfUse(state, first.item) > 0 &&
+            ` ${t('castle.materials.kept', { count: fmt.int(dayOfUse(state, first.item)) })}`}
         </p>
       )}
     </div>
   );
+}
+
+/** Why no material pays: none held, locked, or all held kept for a day of the running lanes (session 266). */
+function materialWords(state: State, building: BuildingId): string {
+  const item = materialFor(state, building);
+  const name = t(`item.${item}`);
+  if (isLocked(state, item)) return t('castle.materials.locked', { item: name });
+  const kept = dayOfUse(state, item);
+  return kept > 0 && countOf(state, item) > 0
+    ? t('castle.materials.inUse', { item: name, count: fmt.int(kept) })
+    : t('castle.materials.none', { item: name });
 }
 
 /** The gold a level's price leaves once the lord's materials have paid their part (session 247), for the

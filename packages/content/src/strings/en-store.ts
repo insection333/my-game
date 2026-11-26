@@ -35,7 +35,7 @@ export const store = {
   'store.soldGearOne': 'Sold 1 kind of gear for {gold} gold',
   'store.lock': 'Lock',
   'store.unlock': 'Unlock',
-  'store.locked': 'Locked: kept from every sale.',
+  'store.locked': "Locked: kept from every sale, the pedlar, the realm's work and the castle's materials.",
   'store.sellYes': 'Sell',
   'store.sellNo': 'Keep them',
   'store.sold': 'Sold {count} for {gold} gold',
@@ -48,7 +48,7 @@ export const store = {
   'stop.storehouseFull': 'Storehouse full',
   'help.storehouse.title': 'Storehouse',
   'help.storehouse.body':
-    "The Storehouse holds any number of each item, but only so many different items. Sell what you do not need to the vendor (Sell finds sells at one press every find that only your steading takes, and every Rare find with no use left, keeping back the pedlar's of the day and what your steading asks, and Sell old gear every piece two tiers or more below what you may wear), lock an item from its panel to keep it from every sale, buy food, and enlarge it with gold.",
+    "The Storehouse holds any number of each item, but only so many different items. Sell what you do not need to the vendor (Sell finds sells at one press every find that only your steading takes, and every Rare find with no use left, keeping back the pedlar's of the day and what your steading asks, and Sell old gear every piece two tiers or more below what you may wear), lock an item from its panel to keep it from every sale, the pedlar, the realm's work and the castle's materials, buy food, and enlarge it with gold.",
   'store.kind.resource': 'Resources',
   'store.kind.supply': 'Supplies',
   'store.kind.gear': 'Gear',

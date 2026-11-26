@@ -85,6 +85,9 @@ export const GoalsState = z
     weeks: Count.default(0),
     /** The gifts opened lately (session 254), by the server's id, so one is never opened twice. */
     gifts: z.array(z.number().int().positive()).max(30).default([]),
+    /** Of the caches opened, those a friend's gift brought (session 266): no goal done, so the season's
+     *  ladder, which counts goals, leaves them out. */
+    gifted: Count.default(0),
   })
   .strict();
 export type GoalsState = z.infer<typeof GoalsState>;
@@ -102,6 +105,7 @@ export const goalsOf: (state: State) => GoalsState = partReader(
     week: null,
     weeks: 0,
     gifts: [],
+    gifted: 0,
   },
   dropping(GoalsState, 'gifts'),
 );

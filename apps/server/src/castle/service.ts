@@ -122,7 +122,7 @@ export function openCastle(io: Io): Outcome {
   return { ok: true, opened: true };
 }
 
-/** A Level up, paid in gold, or (session 247) up to a third in the lord's own materials when asked: what they
+/** A Level up, paid in gold, or (session 247) up to a quarter in the lord's own materials when asked: what they
  *  stand in for comes off the gold, and they are taken from the save only once the engine has taken the rest. */
 function upgrade(io: Io, w: E.Wallet, action: Extract<CastleAction, { type: 'upgrade' }>): Outcome {
   const id = action.id as Parameters<typeof E.upgrade>[1];

@@ -5,6 +5,7 @@ import { itemOf } from '../shared/catalog.ts';
 import { earning, nice, paces } from '../shared/pace.ts';
 import { dayOf, handedToday, pedlarOf } from '../shared/pedlar.ts';
 import { lotsOf, type Lot, type LotKind } from '../shared/pedlar-lots.ts';
+import { isLocked } from '../shared/storehouse.ts';
 
 export { dayOf, handedToday };
 
@@ -22,10 +23,10 @@ export function payFor(state: State, lot: Lot): number {
 }
 
 type Answer<R> = { state: State; result: R; events: GameEvent[] };
-export type HandInResult = { ok: true; gold: number } | { ok: false; reason: 'none' | 'done' | 'short' };
+export type HandInResult = { ok: true; gold: number } | { ok: false; reason: 'none' | 'done' | 'short' | 'locked' };
 
 export function handIn(state: State, kind: LotKind, now: number): Answer<HandInResult> {
-  const no = (reason: 'none' | 'done' | 'short'): Answer<HandInResult> => ({
+  const no = (reason: 'none' | 'done' | 'short' | 'locked'): Answer<HandInResult> => ({
     state,
     result: { ok: false, reason },
     events: [],
@@ -34,6 +35,8 @@ export function handIn(state: State, kind: LotKind, now: number): Answer<HandInR
   if (!lot) return no('none');
   const handed = handedToday(state, now);
   if (handed.includes(kind)) return no('done');
+  // A lot locked in the Storehouse is kept from every sale (session 264: the pedlar took it all the same).
+  if (isLocked(state, lot.item)) return no('locked');
   if (countOf(state, lot.item) < lot.count) return no('short');
   const gold = payFor(state, lot);
   const out = structuredClone(state);
