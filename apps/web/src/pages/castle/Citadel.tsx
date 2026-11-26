@@ -109,7 +109,7 @@ function Buildings() {
         {/* Four rows, each with its Level up: on a short screen they scroll inside the panel (session 134). */}
         <div
           data-slot="castle.buildings"
-          className={s.relics}
+          className={s.buildings}
           data-scrollbox
           tabIndex={0}
           role="group"

@@ -106,7 +106,13 @@ export function MaterialsSwitch() {
   const id = useId();
   return (
     <label className={s.materials} htmlFor={id}>
-      <input id={id} type="checkbox" checked={on} onChange={(e) => setUseMaterials(e.target.checked)} />
+      <input
+        id={id}
+        type="checkbox"
+        data-ui="Checkbox"
+        checked={on}
+        onChange={(e) => setUseMaterials(e.target.checked)}
+      />
       <span>{t('castle.materials.switch')}</span>
     </label>
   );

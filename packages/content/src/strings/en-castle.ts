@@ -138,7 +138,7 @@ export const castle = {
   'castle.levelUp.label': 'Level up',
   // Paid up to a third in the lord's own materials (session 247).
   'castle.levelUp.with': 'Level up +{more} for {gold} and {count} {item}',
-  'castle.materials.switch': 'Pay up to a quarter of each level in your own materials, at their price',
+  'castle.materials.switch': 'Pay up to a quarter of each level in your materials',
   'castle.materials.paid': 'Takes {count} {item} as well.',
   'castle.materials.held': '{count} held.',
   'castle.materials.none': 'No {item} held: gold pays all.',
