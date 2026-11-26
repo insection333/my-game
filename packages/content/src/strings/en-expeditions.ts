@@ -227,7 +227,7 @@ export const expeditions = {
   'boss.banked': '{count} fights banked',
   'realm.banked': '{count} strikes banked',
   'errand.realmBanked': 'Strike {name}: {count} strikes banked',
-  'errand.bossBanked': '{name} can be fought {count} times today',
+  'errand.bossBanked': '{name}: {count} fights banked today',
   'errand.bossesBanked': '{count} boss fights wait today',
   'expedition.lastRun': 'Last run, {when}',
   'boss.beaten': '{boss} beaten',

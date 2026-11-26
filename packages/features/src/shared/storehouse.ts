@@ -5,7 +5,7 @@
 import { relicSlots } from './expeditions/relics.ts';
 import { countOf, type State, type StopReason } from '@idle-clash/kernel';
 import { z } from 'zod';
-import { partReader } from './part.ts';
+import { dropping, partReader } from './part.ts';
 
 export const START_SLOTS = 24;
 export const SLOTS_PER_ENLARGEMENT = 6;
@@ -34,7 +34,12 @@ export const StoreState = z
   .strict();
 export type StoreState = z.infer<typeof StoreState>;
 
-export const storeOf: (state: State) => StoreState = partReader('storehouse', StoreState, { enlargements: 0 });
+export const storeOf: (state: State) => StoreState = partReader(
+  'storehouse',
+  StoreState,
+  { enlargements: 0 },
+  dropping(StoreState, 'locked'),
+);
 
 /** Whether an item is locked against selling (session 241): no sale, Sell finds or Sell old gear takes it. */
 export const isLocked = (state: State, item: string): boolean => (storeOf(state).locked ?? []).includes(item);

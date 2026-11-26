@@ -97,7 +97,7 @@ describe('banked fights', () => {
     const ready = bossRows(s, T0).filter((b) => b.ready && (b.verdictId === 'easy' || b.verdictId === 'fair'));
     const words =
       ready.length === 1
-        ? `${ready[0].name} can be fought 2 times today`
+        ? `${ready[0].name}: 2 fights banked today`
         : `${(ready.length * 2).toString()} boss fights wait today`;
     expect(expeditionErrands(s, T0).map((r) => r.text)).toContain(words);
   });
