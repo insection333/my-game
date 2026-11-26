@@ -1,5 +1,6 @@
 // The steading's works in the region's scene (session 25), on the hill beside the forge: each appears
-// when first built, takes its full shape by its third raising and flies a pennant at its fifth. Drawn
+// when first built, takes its full shape by its third raising, flies a pennant at its fifth and gilds it at
+// its tenth (session 244). Drawn
 // as the forge is (MarchScene.tsx): flat tones, the light from the upper left, ink round each shape.
 import s from './MarchScene.module.css';
 
@@ -53,13 +54,13 @@ function House({ x, base, w, h, roof }: { x: number; base: number; w: number; h:
   );
 }
 
-/** A pennant on a pole: a work raised five times. */
-function Pennant({ x, top }: { x: number; top: number }) {
+/** A pennant on a pole: a work raised five times, gilded at ten. */
+function Pennant({ x, top, stage }: { x: number; top: number; stage: number }) {
   return (
     <g>
       <line className={s.ink} x1={x} y1={top} x2={x} y2={top - 16} />
       <polygon
-        className={s.pennant}
+        className={stage >= 10 ? s.pennantGilt : s.pennant}
         points={poly([
           [x, top - 16],
           [x + 12, top - 12],
@@ -115,7 +116,7 @@ function Shrine({ stage, x, base }: Placed) {
         <House x={x} base={base - 5} w={16} h={12} roof={8} />
       )}
       {stage >= 4 && <rect className={s.fireDoor} x={x - 2} y={base - 13} width={4} height={7} />}
-      {stage >= 5 && <Pennant x={x} top={base - 25} />}
+      {stage >= 5 && <Pennant x={x} top={base - 25} stage={stage} />}
     </g>
   );
 }
@@ -139,7 +140,7 @@ function Watchtower({ stage, x, base }: Placed) {
         <House x={x} base={base - h} w={16} h={5} roof={7} />
       )}
       {stage >= 2 && <rect className={s.window} x={x - 2} y={base - h + 8} width={4} height={5} />}
-      {stage >= 5 && <Pennant x={x} top={base - h - 12} />}
+      {stage >= 5 && <Pennant x={x} top={base - h - 12} stage={stage} />}
     </g>
   );
 }
@@ -158,7 +159,7 @@ function Smokehouse({ stage, x, base }: Placed) {
           <circle key={i} className={s.smoke} cx={cx} cy={cy} r={r} style={{ opacity: 0.55 - i * 0.12 }} />
         ))}
       {stage >= 4 && <House x={x - 19} base={base} w={12} h={8} roof={5} />}
-      {stage >= 5 && <Pennant x={x - 5} top={base - 22} />}
+      {stage >= 5 && <Pennant x={x - 5} top={base - 22} stage={stage} />}
     </g>
   );
 }
@@ -170,7 +171,7 @@ function Workshop({ stage, x, base }: Placed) {
       <House x={x} base={base} w={32} h={15} roof={10} />
       {stage >= 2 && <rect className={s.fireDoor} x={x - 3} y={base - 9} width={6} height={9} />}
       {stage >= 4 && <rect className={s.window} x={x - 12} y={base - 11} width={5} height={4} />}
-      {stage >= 5 && <Pennant x={x} top={base - 25} />}
+      {stage >= 5 && <Pennant x={x} top={base - 25} stage={stage} />}
     </g>
   );
 }
@@ -217,7 +218,7 @@ function Woodyard({ stage, x, base }: Placed) {
           [-32, -4],
           [-28, -11],
         ].map(([dx, dy], i) => <Log key={i} x={x + dx} y={base + dy} />)}
-      {stage >= 5 && <Pennant x={x} top={base - 34} />}
+      {stage >= 5 && <Pennant x={x} top={base - 34} stage={stage} />}
     </g>
   );
 }
@@ -246,7 +247,7 @@ function TrainingYard({ stage, x, base }: Placed) {
           <circle className={s.ink} cx={x - 30} cy={base - 20} r={6} />
         </g>
       )}
-      {stage >= 5 && <Pennant x={x + posts[posts.length - 1]} top={base - 10} />}
+      {stage >= 5 && <Pennant x={x + posts[posts.length - 1]} top={base - 10} stage={stage} />}
     </g>
   );
 }

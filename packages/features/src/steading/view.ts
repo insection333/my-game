@@ -2,7 +2,16 @@
 // stage costs and gives, with whether the player holds enough of each.
 import { fmt, t } from '@idle-clash/content';
 import { countOf, type GameEvent, type State } from '@idle-clash/kernel';
-import { STAGE_GOLD, STAGES, stageCost, stageOf, WORKS, type Work, type WorkEffect } from '../shared/steading.ts';
+import {
+  STAGE_GOLD,
+  STAGES,
+  stageCost,
+  stageOf,
+  WORKS,
+  workPct,
+  type Work,
+  type WorkEffect,
+} from '../shared/steading.ts';
 
 export interface WorkCost {
   label: string;
@@ -58,7 +67,7 @@ const SHORT: Record<WorkEffect, string> = {
   marks: 'steading.short.marks',
   xp: 'steading.short.xp',
 };
-const effectAt = (w: Work, stage: number) => t(EFFECT[w.effect], { pct: fmt.pct(w.pct * stage) });
+const effectAt = (w: Work, stage: number) => t(EFFECT[w.effect], { pct: fmt.pct(workPct(w, stage)) });
 
 export function steadingView(state: State): SteadingView {
   const rows = WORKS.map((w): WorkRow => {
@@ -86,7 +95,7 @@ export function steadingView(state: State): SteadingView {
       standing:
         stage === 0 ? t('steading.unbuilt') : t('steading.stage', { stage: fmt.int(stage), stages: fmt.int(STAGES) }),
       gives: effectAt(w, Math.max(1, stage)),
-      short: stage ? t(SHORT[w.effect], { pct: fmt.pct(w.pct * stage) }) : null,
+      short: stage ? t(SHORT[w.effect], { pct: fmt.pct(workPct(w, stage)) }) : null,
       ready: lines.length > 0 && lines.every((l) => l.enough),
       next: cost ? { gives: effectAt(w, stage + 1), cost: lines, affordable: lines.every((l) => l.enough) } : null,
     };

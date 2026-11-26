@@ -84,8 +84,10 @@ function grown(ctx: Ctx, base: State, now: number): State {
       // Every worn piece tempered to its last step with boss trophies (session 216).
       smithing: { tempered: { 'dawnsteel-sword': 5, 'dawnsteel-helm': 5, 'dawnsteel-body': 5, 'dawnsteel-legs': 4 } },
       pedlar: { day: null, handed: [], favour: 612 },
+      // As the year's simulation leaves it at two years (session 244): the Woodyard at its height, its pennant
+      // gilded, the rest raised past their pennants with finds, waiting on the skills it left.
       steading: {
-        stages: { woodyard: 5, workshop: 5, 'training-yard': 5, smokehouse: 5, watchtower: 5, shrine: 5 },
+        stages: { woodyard: 10, workshop: 8, 'training-yard': 8, smokehouse: 8, watchtower: 6, shrine: 7 },
       },
       expeditions: {
         ...expeditions,

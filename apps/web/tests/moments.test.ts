@@ -288,27 +288,28 @@ describe('the pictures of deeds and milestones', () => {
 describe('a work raised', () => {
   it('says the stage it reached and what the work now gives', () => {
     const [m] = momentsFrom([{ type: 'workRaised', at: T, work: 'woodyard', stage: 3 }], T - 1, FEATURES);
-    expect(m).toMatchObject({ size: 'toast', title: 'Woodyard raised: 3 of 5' });
+    expect(m).toMatchObject({ size: 'toast', title: 'Woodyard raised: 3 of 10' });
     expect(m.body).toMatch(/^Now: \+[0-9.]+% chance of an extra item when gathering$/);
-    const [top] = momentsFrom([{ type: 'workRaised', at: T, work: 'woodyard', stage: 5 }], T - 1, FEATURES);
-    expect(top).toMatchObject({ size: 'banner', title: 'Woodyard fully raised' });
+    const [top] = momentsFrom([{ type: 'workRaised', at: T, work: 'woodyard', stage: 10 }], T - 1, FEATURES);
+    expect(top).toMatchObject({ size: 'banner', title: 'Woodyard at its height' });
   });
 
   // Session 86: the deed of the same name read "Smokehouse fully raised. Now: …. Also done: Smokehouse
-  // fully raised."; a deed named as the moment it follows is said as that moment's own deed.
+  // fully raised."; a deed named as the moment it follows is said as that moment's own deed (since session 244
+  // at a work's tenth raising, its height).
   it('says the deed of the same name as its deed, not its name again', () => {
     const deed: GameEvent = {
       type: 'deedDone',
       at: T + 50,
-      deed: 'raised-smokehouse',
-      name: 'Smokehouse fully raised',
+      deed: 'height-smokehouse',
+      name: 'Smokehouse at its height',
       icon: null,
       tier: 'hard',
       points: 15,
       mark: '',
     };
-    const [m] = momentsFrom([{ type: 'workRaised', at: T, work: 'smokehouse', stage: 5 }, deed], T - 1, FEATURES);
-    expect(m.title).toBe('Smokehouse fully raised');
+    const [m] = momentsFrom([{ type: 'workRaised', at: T, work: 'smokehouse', stage: 10 }, deed], T - 1, FEATURES);
+    expect(m.title).toBe('Smokehouse at its height');
     expect(m.body).toMatch(/^Now: Food heals [0-9.]+% more\. Also done: its deed \(Hard, 15 points\)\.$/);
   });
 });

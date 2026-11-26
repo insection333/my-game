@@ -539,7 +539,7 @@ Enlargement costs follow each day's net gold, so one is affordable roughly when 
 
 ### The steading (session 25)
 
-Once the Storehouse is fully enlarged, gold had nothing left to buy: the year's simulation ended with about 990 million unspent. The steading is where it goes. Six works stand around the Hearth, each raised five times with gold and materials from the player's own skills, and every raising gives a small lasting gain:
+Once the Storehouse is fully enlarged, gold had nothing left to buy: the year's simulation ended with about 990 million unspent. The steading is where it goes. Six works stand around the Hearth, each raised ten times with gold and materials from the player's own skills, and every raising gives a small lasting gain:
 
 | Work | Each raising gives | Built of |
 | --- | --- | --- |
@@ -550,7 +550,20 @@ Once the Storehouse is fully enlarged, gold had nothing left to buy: the year's 
 | Watchtower | Expeditions bring 5% more marks | bars and logs |
 | Shrine | +1% XP in every skill | runes |
 
-The five raisings cost 50,000, 500,000, 3,000,000, 15,000,000 and 60,000,000 gold, with 200, 600, 1,500, 3,000 and 6,000 materials of tiers 1, 3, 5, 6 and 8 (shared between the families of a work built of two). All thirty cost about 470 million gold, half of what the year once left unspent. In the year's simulation the steady player builds all six works in the first five days, raises each a third time between days 39 and 84, and gives each its fifth between days 186 and 324, the last waiting on tier 8. Gains are kept small (at most +5% XP and +5% damage) so that the year's pacing holds. Each work appears in the Hearth's banner beside the forge once built, grows with its raisings and flies a pennant at its fifth; the deeds count each work built and fully raised, and the whole steading.
+The first five raisings cost 50,000, 500,000, 3,000,000, 15,000,000 and 20,000,000 gold (the fifth was 60,000,000 until session 244, and four of the six works never reached it in two years), with 200, 600, 1,500, 3,000 and 6,000 materials of tiers 1, 3, 5, 6 and 8 (shared between the families of a work built of two). At its fifth a work flies a pennant.
+
+**The later stages (session 244).** The twenty Uncommon finds had no use but the vendor and the pedlar's three a day. From its sixth raising a work also takes the Uncommon finds of the skills it serves, two kinds each, and at its tenth their greater finds:
+
+| Work | Its finds (the tenth adds their greater finds) |
+| --- | --- |
+| Woodyard | Bird's nest, rough garnet |
+| Workshop | Lucky horseshoe, heron quill |
+| Training yard | Battle trophy, glimmer stone |
+| Smokehouse | Pearl mussel, wild herbs |
+| Watchtower | Goose fletchings, bird's nest |
+| Shrine | Chalk stub, rough garnet |
+
+Raisings six to ten take 60, 90, 150, 240 and 360 of each find (and 60 of each greater find at the tenth), 4,000 to 6,000 tier 8 materials, and only 1,000,000 to 3,000,000 gold, as gold is spent on the castle by then. Each gives half what an earlier raising did, so a work at its height gives seven and a half times its first raising (+7.5% XP from the Shrine, +7.5% damage from the Training yard). Sell finds keeps back what the next raisings ask. In the year's simulation every work flies its pennant between days 207 and 306 and is raised past it with finds from day 214; the Woodyard stands at its height on day 320, and the rest wait on the finds of skills the year's player leaves in year two (fishing, cooking, fletching, archery, magic and runecraft), which is the reason to go back to them. The year's pacing holds. Each work appears in the Hearth's banner beside the forge once built, grows with its raisings, flies a pennant at its fifth and gilds it at its tenth; the deeds count each work built, raised to its pennant and to its height, and the whole steading at both.
 
 ## 11. Goals and notable moments
 
