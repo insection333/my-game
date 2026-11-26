@@ -27,6 +27,8 @@ import {
 } from '@idle-clash/kernel';
 import { relicFindPct, relicXpPct } from './expeditions/relics.ts';
 import { steadingSavePct, steadingXpPct, steadingYieldPct } from './steading.ts';
+import { HITPOINTS, STYLE_SKILLS } from './combat/data.ts';
+import { feastLift, mealAtHand } from './feast.ts';
 import { edictPct, mirrorOf } from './castle/mirror.ts';
 import { announceKindling, pathBonus, pathOf } from './kindling.ts';
 import { seasonFindPct, seasonXpPct, seasonXpTwist, seasonYieldPct } from './season.ts';
@@ -53,9 +55,9 @@ export interface CompletedAction {
 /** One source of a skill's XP lift, in percent: where it comes from, and for a relic, an edict, a Path or a
  *  season, which one (session 194: the skill's page names each). */
 export interface XpPart {
-  source: 'fire' | 'marks' | 'relic' | 'steading' | 'edict' | 'path' | 'season';
+  source: 'fire' | 'marks' | 'relic' | 'steading' | 'edict' | 'path' | 'season' | 'feast';
   pct: number;
-  /** The edict, the Path or the season's twist, by id. */
+  /** The edict, the Path, the season's twist or the feast at hand, by id. */
   id?: string;
 }
 
@@ -78,9 +80,17 @@ export function xpParts(
     { source: 'edict', pct: edictPct(state, at, 'xp'), id: mirrorOf(state).edict ?? undefined },
     { source: 'path', pct: pathBonus(state, skill, 'xp'), id: pathOf(state, skill)?.id },
     { source: 'season', pct: seasonXpPct(skill, at), id: seasonXpTwist(skill, at)?.id },
+    // A stew's feast at hand lifts the fighting skills' XP (session 245).
+    {
+      source: 'feast',
+      pct: fighting(skill) ? feastLift(state, 'xp') : 0,
+      id: fighting(skill) ? (mealAtHand(state) ?? undefined) : undefined,
+    },
   ];
   return parts.filter((p) => p.pct > 0);
 }
+
+const fighting = (skill: string) => skill === HITPOINTS || (STYLE_SKILLS as readonly string[]).includes(skill);
 
 /** Every gain on a skill's XP, as one percentage: the sum of its parts. The engine pays by it, and every "XP
  *  an hour" a page states counts it too (session 47), so the two agree. */

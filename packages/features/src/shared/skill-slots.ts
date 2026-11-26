@@ -18,6 +18,7 @@ import { countOf, xpOf, type State } from '@idle-clash/kernel';
 import type { Json, SlotFill } from '../define.ts';
 import { actionMastery, actionModifiers, nextUnlock, skillLevel, unlockText } from './skill.ts';
 import { extraYieldPct, xpBonusPct } from './complete.ts';
+import { feastRowWords } from './feast.ts';
 import { itemOf } from './catalog.ts';
 import { STYLE_SKILLS } from './combat/data.ts';
 import { healsFor } from './combat/state.ts';
@@ -232,7 +233,12 @@ export function skillSlots(def: SkillDef): Record<string, SlotFill> {
                 items: a.needs.map((n) => t(`item.${n.item}`)).join(', '),
               })
             : null,
-          heals: food === undefined ? null : t('action.heals', { health: fmt.int(healsFor(state, food)) }),
+          heals:
+            food === undefined
+              ? null
+              : [t('action.heals', { health: fmt.int(healsFor(state, food)) }), feastRowWords(a.gives[0]?.item ?? '')]
+                  .filter(Boolean)
+                  .join(' '),
           luck: (a.findMultiple ?? 1) >= 2 ? t('action.luck') : null,
           mastery: t('mastery.step', { step: fmt.int(step) }),
           masteryStep: step,

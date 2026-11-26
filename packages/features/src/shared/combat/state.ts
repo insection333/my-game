@@ -11,6 +11,7 @@ import { HITPOINTS, LADDERS, SUPPLY_DAMAGE, type Foe } from './data.ts';
 import { maxHealth, regenPerSecond, type Fighter, type Meal } from './fight.ts';
 import { steadingDamagePct, steadingFoodHealPct } from '../steading.ts';
 import { temperGains } from '../temper.ts';
+import { feastLift, mealOrder } from '../feast.ts';
 
 const ItemId = z.string().regex(/^[a-z0-9][a-z0-9-]{0,63}$/);
 export const CombatState = z
@@ -57,12 +58,13 @@ export const styleOf = (state: State): Style | null => {
   return w ? (itemOf(w)?.gear?.style ?? null) : null;
 };
 
-/** The style's perks, with the Training yard's damage and the worn set's tempering (session 216) added. */
+/** The style's perks, with the Training yard's damage, the worn set's tempering (session 216) and a pie's
+ *  feast at hand (session 245) added. */
 const withYard = (perks: ReturnType<typeof perksAt>, state: State) => {
   const tempered = temperGains(state, (slot) => wornIn(state, slot));
   return {
     ...perks,
-    damage: perks.damage + steadingDamagePct(state) + tempered.damage,
+    damage: perks.damage + steadingDamagePct(state) + tempered.damage + feastLift(state, 'damage'),
     guard: perks.guard + tempered.guard,
   };
 };
@@ -112,12 +114,12 @@ export function fighterOf(state: State, foe: Foe): Fighter | null {
   };
 }
 
-/** The food carried, the most healing first: cooked or bought alike. */
+/** The food carried, the most healing first (a feast before a dish that heals as much): cooked or bought alike. */
 export const mealsOf = (state: State): Meal[] =>
   foods()
     .map((f) => ({ item: f.id, heals: f.heals!, count: countOf(state, f.id) }))
     .filter((m) => m.count > 0)
-    .sort((a, b) => b.heals - a.heals || a.item.localeCompare(b.item));
+    .sort(mealOrder);
 
 export const healthMax = (state: State) => maxHealth(hitpointsPart(state));
 

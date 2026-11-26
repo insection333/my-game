@@ -81,6 +81,10 @@ export const TERMS: [term: string, meaning: string][] = [
     "A run into a region for 1, 2, 4 or 8 hours in the Combat lane: fight stages, caches and camps, twists, a fork, and the region's boss at the end",
   ],
   ['Favour', "The pedlar's count of the lots you have handed in, opening a banner and a title"],
+  [
+    'Feast',
+    "A dish made with a greater Uncommon find: heals as the dish, and while eaten first lifts a fight's damage (a pie's) or combat XP (a stew's) 5%",
+  ],
   ['Find', 'A rare extra from an action, at one of three rarities'],
   ['First steps', 'The six opening goals, each with a button'],
   ['Foe', 'Something to fight; each has a style, shown before you fight'],

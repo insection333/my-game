@@ -226,15 +226,17 @@ async function searchTheStorehouse(served: Served, problems: string[]) {
 async function sellTheFinds(served: Served, problems: string[]) {
   const page = await playerWith(served, 'Nest Keeper', '/storehouse', (s) => ({
     ...s,
-    items: { 'birds-nest': 90, 'amber-nugget': 2, 'carved-acorn': 3, 'pine-logs': 40 },
+    // Amber nuggets are a feast's ingredient (session 245): kept, as a carved acorn with a use is.
+    items: { 'birds-nest': 90, 'rough-garnet': 2, 'amber-nugget': 2, 'carved-acorn': 3, 'pine-logs': 40 },
   }));
   try {
-    await page.getByRole('button', { name: 'Sell finds for 11,400 gold' }).click({ timeout: 5_000 });
-    await page.getByText("Sell every bird's nest and amber nugget for 11,400 gold?").waitFor({ timeout: 3_000 });
+    await page.getByRole('button', { name: 'Sell finds for 9,200 gold' }).click({ timeout: 5_000 });
+    await page.getByText("Sell every bird's nest and rough garnet for 9,200 gold?").waitFor({ timeout: 3_000 });
     await page.getByRole('button', { name: 'Sell', exact: true }).click();
-    await page.getByText('Sold 2 kinds of find for 11,400 gold').waitFor({ timeout: 3_000 });
+    await page.getByText('Sold 2 kinds of find for 9,200 gold').waitFor({ timeout: 3_000 });
     const names = (await page.locator('[data-ui="ItemTile"]').allInnerTexts()).join(' ');
-    if (/Bird's nest|Amber nugget/.test(names) || !/Carved acorn/.test(names)) throw new Error(`it left ${names}`);
+    if (/Bird's nest|Rough garnet/.test(names) || !/Carved acorn/.test(names) || !/Amber nugget/.test(names))
+      throw new Error(`it left ${names}`);
     if (await page.getByRole('button', { name: /^Sell finds/ }).count()) throw new Error('it still offers the sale');
   } catch (err) {
     problems.push(`Storehouse: the finds kept to sell did not go at one press (${say(err)})`);

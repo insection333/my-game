@@ -21,7 +21,7 @@ export const store = {
   // The finds kept to sell, sold at one press (session 187).
   'store.sellFinds': 'Sell finds for {gold} gold',
   'store.sellFinds.ask':
-    'Sell every {finds} for {gold} gold? They have no use left, and your collection log keeps them.',
+    'Sell every {finds} for {gold} gold? Nothing but your steading takes them, and your collection log keeps them.',
   'store.sellFinds.more': '{first} and {count} more',
   'store.sellFinds.pedlar': '{item} ×{count}: kept back for the pedlar today.',
   'store.sellFinds.steading': 'What your steading asks of {finds} is kept back for it.',
@@ -48,7 +48,7 @@ export const store = {
   'stop.storehouseFull': 'Storehouse full',
   'help.storehouse.title': 'Storehouse',
   'help.storehouse.body':
-    "The Storehouse holds any number of each item, but only so many different items. Sell what you do not need to the vendor (Sell finds sells every find with no use left at one press, keeping back the pedlar's of the day and what your steading asks, and Sell old gear every piece two tiers or more below what you may wear), lock an item from its panel to keep it from every sale, buy food, and enlarge it with gold.",
+    "The Storehouse holds any number of each item, but only so many different items. Sell what you do not need to the vendor (Sell finds sells at one press every find that only your steading takes, and every Rare find with no use left, keeping back the pedlar's of the day and what your steading asks, and Sell old gear every piece two tiers or more below what you may wear), lock an item from its panel to keep it from every sale, buy food, and enlarge it with gold.",
   'store.kind.resource': 'Resources',
   'store.kind.supply': 'Supplies',
   'store.kind.gear': 'Gear',

@@ -1,7 +1,7 @@
 // The Storehouse's routes (GAME_DESIGN.md section 10): selling to the vendor, buying food from it,
 // and enlarging the Storehouse. Pure: each takes the state and returns a new one and an answer.
 import { countOf, give, take, type State } from '@idle-clash/kernel';
-import { findOf, itemOf } from '../shared/catalog.ts';
+import { findOf, itemOf, skillActions } from '../shared/catalog.ts';
 import { spentFind } from './finds.ts';
 import { FOODS, HITPOINTS } from '../shared/combat/data.ts';
 import { combatOf } from '../shared/combat/state.ts';
@@ -38,15 +38,24 @@ export function sell(state: State, item: string, count: number): { state: State;
 /** The finds kept to sell (session 187): every Uncommon find held, none used anywhere (a test holds it), and
  *  every Rare find with no use left (session 192), so selling them all loses nothing but their spaces. The
  *  pedlar's find of the day is kept back, three of it, until handed in (session 226), and what the steading's
- *  next stages take (session 244). */
+ *  next stages take (session 244). A find a recipe takes (a feast's, session 245) is an ingredient, never sold
+ *  by it, as no material is. */
 export function findsToSell(state: State, at: number): { item: string; count: number }[] {
   return Object.keys(state.items)
     .filter(
-      (id) => (findOf(id)?.rarity === 'uncommon' || spentFind(state, id)) && priceOf(id) > 0 && !isLocked(state, id),
+      (id) =>
+        (findOf(id)?.rarity === 'uncommon' || spentFind(state, id)) &&
+        priceOf(id) > 0 &&
+        !isLocked(state, id) &&
+        !ingredient(id),
     )
     .map((item) => ({ item, count: countOf(state, item) - pedlarKeeps(state, at, item) - steadingKeeps(state, item) }))
     .filter((x) => x.count > 0);
 }
+
+/** An item some skill's recipe takes. */
+const ingredient = (item: string): boolean =>
+  skillActions().some((sk) => sk.actions.some((a) => (a.takes ?? []).some((x) => x.item === item)));
 
 export const keptToSell = (state: State, at: number): string[] => findsToSell(state, at).map((x) => x.item);
 
