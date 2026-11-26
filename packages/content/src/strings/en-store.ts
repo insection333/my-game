@@ -24,6 +24,7 @@ export const store = {
     'Sell every {finds} for {gold} gold? They have no use left, and your collection log keeps them.',
   'store.sellFinds.more': '{first} and {count} more',
   'store.sellFinds.pedlar': '{item} ×{count}: kept back for the pedlar today.',
+  'store.sellFinds.steading': 'What your steading asks of {finds} is kept back for it.',
   'store.soldFinds': 'Sold {count} kinds of find for {gold} gold',
   'store.soldFindsOne': 'Sold 1 kind of find for {gold} gold',
   // Old gear at one press, and locks (session 241).
@@ -47,7 +48,7 @@ export const store = {
   'stop.storehouseFull': 'Storehouse full',
   'help.storehouse.title': 'Storehouse',
   'help.storehouse.body':
-    "The Storehouse holds any number of each item, but only so many different items. Sell what you do not need to the vendor (Sell finds sells every find with no use left at one press, keeping back the pedlar's of the day, and Sell old gear every piece two tiers or more below what you may wear), lock an item from its panel to keep it from every sale, buy food, and enlarge it with gold.",
+    "The Storehouse holds any number of each item, but only so many different items. Sell what you do not need to the vendor (Sell finds sells every find with no use left at one press, keeping back the pedlar's of the day and what your steading asks, and Sell old gear every piece two tiers or more below what you may wear), lock an item from its panel to keep it from every sale, buy food, and enlarge it with gold.",
   'store.kind.resource': 'Resources',
   'store.kind.supply': 'Supplies',
   'store.kind.gear': 'Gear',
@@ -62,6 +63,8 @@ export const store = {
   'item.panel.find': '{skill}: {rarity} find',
   'item.panel.nothing': 'Nothing.',
   'item.panel.unused': 'Nothing; it is kept to sell.',
+  'item.panel.steading': "The steading: the {work}'s sixth raising and on",
+  'item.panel.steadingTop': "The steading: the {work}'s tenth raising",
   'store.worn': 'Worn',
   'item.panel.wearing': 'Your fighter wears it now: the one worn is never sold.',
   'item.panel.vendor': 'The vendor in Combat: {gold} gold each',

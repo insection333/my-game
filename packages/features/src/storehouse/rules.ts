@@ -7,6 +7,7 @@ import { FOODS, HITPOINTS } from '../shared/combat/data.ts';
 import { combatOf } from '../shared/combat/state.ts';
 import { pedlarKeeps } from '../shared/pedlar-lots.ts';
 import { skillLevel } from '../shared/skill.ts';
+import { steadingKeeps } from '../shared/steading.ts';
 import { ENLARGE_COSTS, isLocked, noRoom, storeOf } from '../shared/storehouse.ts';
 
 type Refusal<C extends string> = { ok: false; reason: { code: C; detail?: Record<string, string | number> } };
@@ -36,13 +37,14 @@ export function sell(state: State, item: string, count: number): { state: State;
 
 /** The finds kept to sell (session 187): every Uncommon find held, none used anywhere (a test holds it), and
  *  every Rare find with no use left (session 192), so selling them all loses nothing but their spaces. The
- *  pedlar's find of the day is kept back, three of it, until handed in (session 226). */
+ *  pedlar's find of the day is kept back, three of it, until handed in (session 226), and what the steading's
+ *  next stages take (session 244). */
 export function findsToSell(state: State, at: number): { item: string; count: number }[] {
   return Object.keys(state.items)
     .filter(
       (id) => (findOf(id)?.rarity === 'uncommon' || spentFind(state, id)) && priceOf(id) > 0 && !isLocked(state, id),
     )
-    .map((item) => ({ item, count: countOf(state, item) - pedlarKeeps(state, at, item) }))
+    .map((item) => ({ item, count: countOf(state, item) - pedlarKeeps(state, at, item) - steadingKeeps(state, item) }))
     .filter((x) => x.count > 0);
 }
 

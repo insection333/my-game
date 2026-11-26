@@ -13,7 +13,7 @@ import { BOSSES, TWISTS } from '../shared/expeditions/data.ts';
 import { rankOf, relics } from '../shared/expeditions/relics.ts';
 import { expeditionsOf } from '../shared/expeditions/state.ts';
 import { kindlings } from '../shared/kindling.ts';
-import { STAGES, stageOf, WORKS } from '../shared/steading.ts';
+import { PENNANT, STAGES, stageOf, WORKS } from '../shared/steading.ts';
 import { castleStanding, type CastleStanding } from '../shared/castle/mirror.ts';
 import { bestInTwist, pairingsPlayed, seasonsPlayed } from '../shared/season-state.ts';
 import { weeksKept } from '../shared/weeks.ts';
@@ -58,7 +58,8 @@ export class Reader {
   allKindlings = () => this.once('kindlings', () => allSkills().reduce((n, s) => n + this.kindlings(s), 0));
   /** A work's stage in the steading, and how many works are fully raised. */
   stage = (work: string) => this.once(`stage:${work}`, () => stageOf(this.state, work));
-  worksRaised = () => this.once('worksRaised', () => WORKS.filter((w) => this.stage(w.id) === STAGES).length);
+  worksRaised = () => this.once('worksRaised', () => WORKS.filter((w) => this.stage(w.id) >= PENNANT).length);
+  worksAtHeight = () => this.once('worksAtHeight', () => WORKS.filter((w) => this.stage(w.id) >= STAGES).length);
   /** Castle Clash: 1 once a castle is raised, and its standing (0 before). */
   castleRaised = () => this.once('castleRaised', () => (castleStanding(this.state) ? 1 : 0));
   castle = (part: Exclude<keyof CastleStanding, 'called' | 'legend'>) =>

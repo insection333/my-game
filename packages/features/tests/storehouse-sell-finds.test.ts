@@ -32,10 +32,17 @@ describe('selling the finds kept to sell', () => {
     expect(r.result).toEqual({ ok: false, reason: { code: 'nothingToSell' } });
   });
 
-  it('sells only what is used nowhere: every Uncommon find is', () => {
+  it('sells only what nothing but the steading uses: every Uncommon find goes to its later stages', () => {
     const uncommon = items.catalog(FEATURES).filter((i) => findOf(i.id)?.rarity === 'uncommon');
     expect(uncommon.length).toBe(20);
-    for (const i of uncommon) expect(items.usedIn(FEATURES, i.id)).toEqual([]);
+    for (const i of uncommon) {
+      const uses = items.usedIn(FEATURES, i.id);
+      expect(uses.length, i.id).toBeGreaterThan(0);
+      expect(
+        uses.every((u) => u.feature === 'steading'),
+        i.id,
+      ).toBe(true);
+    }
   });
 
   it('is offered beside the space with what it brings', () => {

@@ -2,6 +2,7 @@
 // it comes from (actions that give it, finds, the vendor's shelf), and what uses it (actions that take
 // it, and what a fighter eats, wears and carries, by the item's own kind). A feature that arrives later
 // answers by declaring its content.
+import { worksTaking } from './steading.ts';
 import { TROPHY_STYLE } from './temper.ts';
 import { fmt, t, type Item } from '@idle-clash/content';
 import type { Feature } from '../define.ts';
@@ -96,7 +97,17 @@ function kept(def: Item | null): ItemSource[] {
       ]
     : [];
   if (rare?.rarity === 'rare') return [mastery(rare), ...trophy];
-  return trophy;
+  // An Uncommon find raises the later stages of the works that take it (session 244).
+  const works: ItemSource[] = worksTaking(def.id).map((w) => ({
+    feature: 'steading',
+    skill: null,
+    action: null,
+    rarity: null,
+    count: 0,
+    label: t(w.finds.includes(def.id) ? 'item.panel.steading' : 'item.panel.steadingTop', { work: t(`work.${w.id}`) }),
+    href: `/?panel=work&work=${w.id}`,
+  }));
+  return [...trophy, ...works];
 }
 
 /** A Rare find, used (session 53): its mastery completions on one of its skill's actions, a style's on

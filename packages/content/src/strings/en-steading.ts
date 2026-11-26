@@ -2,7 +2,7 @@
 export const steading = {
   'help.steading.title': 'The steading',
   'help.steading.body':
-    'Works you build around your Hearth with gold and your own materials. Each can be raised five times; every raising gives a small lasting bonus and shows in the scene above. Each season the whole realm raises one work of its own together, from the gold and materials anyone gives; every giver hears as each stage is raised.',
+    'Works you build around your Hearth with gold and your own materials. Each can be raised ten times; every raising gives a small lasting bonus and shows in the scene above. At its fifth a work flies a pennant, and from its sixth it also takes the Uncommon finds of the skills it serves, each raising giving half what one before it did; at its tenth the pennant is gilded. Each season the whole realm raises one work of its own together, from the gold and materials anyone gives; every giver hears as each stage is raised.',
   'steading.title': 'The steading',
   'steading.missing': 'There is no such work.',
   'steading.raise': 'Raise',
@@ -29,7 +29,7 @@ export const steading = {
   'steading.held': '{count} held',
   'steading.now': 'Now: {gives}',
   'steading.raised': '{work} raised: {stage} of {stages}',
-  'steading.raisedTop': '{work} fully raised',
+  'steading.raisedTop': '{work} at its height',
   'work.woodyard': 'Woodyard',
   'work.workshop': 'Workshop',
   'work.training-yard': 'Training yard',

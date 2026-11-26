@@ -8,7 +8,7 @@ import { pointsOf } from '../../../packages/features/src/deeds/list.ts';
 import { companionChecks } from './companions.ts';
 import { titleChecks } from './titles.ts';
 import { secondYearChecks, TWO_YEARS } from './second-year.ts';
-import { stageOf, WORKS } from '../../../packages/features/src/shared/steading.ts';
+import { STAGES as WORK_STAGES, stageCost, stageOf, WORKS } from '../../../packages/features/src/shared/steading.ts';
 import { fighter } from '../combat.ts';
 import { DAY, focusedPlayer, gaps, T0 } from '../player.ts';
 import { LIGHT, playYear, STEADY, type Year } from './player.ts';
@@ -92,6 +92,27 @@ export function yearChecks(check: Check, lines: string[]): { steady: Year; light
   // Where it goes instead: the steading's works, raised as the materials and the gold come (session 25).
   const works = WORKS.map((w) => `${w.id} ${raised[w.id].join(', ') || 'never'}`);
   lines.push(`The steady player's works, raised on days: ${works.join('; ')}`);
+  // What holds each work not yet at its height when the run ends (session 244).
+  const held = (item: string) => steady.final.items[item] ?? 0;
+  const lacks = WORKS.filter((w) => stageOf(steady.final, w.id) < WORK_STAGES).map((w) => {
+    const cost = stageCost(w, stageOf(steady.final, w.id) + 1);
+    const short = [{ item: 'gold', count: cost.gold * 1.5 }, ...cost.items]
+      .filter((i) => held(i.item) < i.count)
+      .map((i) => `${i.item} ${held(i.item)} of ${i.count}`);
+    return `${w.id} (${short.join(', ') || 'nothing'})`;
+  });
+  if (lacks.length) lines.push(`At the run's end, what the works' next raisings lack: ${lacks.join('; ')}`);
+  // Every work flies its pennant within the year (at 60M its fifth raising never came for four of the six),
+  // and the later stages, paid in Uncommon finds, are reached: every work raised past its pennant, one to its height.
+  const pennants = WORKS.map((w) => raised[w.id][4]);
+  check(
+    pennants.every((d) => d !== undefined && d <= 365),
+    `Every work of the steading flies its pennant within the year (days ${pennants.map((d) => d ?? 'never').join(', ')})`,
+  );
+  check(
+    WORKS.every((w) => raised[w.id].length > 5) && WORKS.some((w) => raised[w.id].length === WORK_STAGES),
+    `Every work is raised past its pennant with Uncommon finds, one to its height (${WORKS.map((w) => raised[w.id].length).join(', ')})`,
+  );
 
   // Every skill at 99 in about a year, for the steady player; the light player not far behind.
   const all = lastOf(steady, ALL_SKILLS);

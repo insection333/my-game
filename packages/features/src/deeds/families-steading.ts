@@ -1,7 +1,8 @@
-// The deeds of the steading (session 25): each work built, and each fully raised; and the whole
-// steading fully raised.
+// The deeds of the steading (session 25): each work built, each raised to its pennant, and the whole
+// steading to its pennants; and from session 244, when the later stages came, each work and the whole
+// steading at its height.
 import { fmt, t } from '@idle-clash/content';
-import { STAGES, WORKS } from '../shared/steading.ts';
+import { PENNANT, STAGES, WORKS } from '../shared/steading.ts';
 import { deed, lower, type Deed } from './content.ts';
 
 export function steadingDeeds(): Deed[] {
@@ -29,6 +30,18 @@ export function steadingDeeds(): Deed[] {
         brief: true,
         row: w.id,
         tier: 'elite',
+        target: PENNANT,
+        words: { ...words, stages: fmt.int(PENNANT) },
+        mark: fmt.int(PENNANT),
+        measure: (r) => r.stage(w.id),
+      }),
+      deed({
+        id: `height-${w.id}`,
+        family: 'works',
+        key: 'deed.height',
+        brief: true,
+        row: w.id,
+        tier: 'master',
         target: STAGES,
         words: { ...words, stages: fmt.int(STAGES) },
         mark: fmt.int(STAGES),
@@ -45,5 +58,15 @@ export function steadingDeeds(): Deed[] {
     mark: fmt.int(WORKS.length),
     measure: (r) => r.worksRaised(),
   });
-  return [...each, all];
+  const height = deed({
+    id: 'steading-height',
+    family: 'steading',
+    key: 'deed.steadingHeight',
+    tier: 'master',
+    target: WORKS.length,
+    words: { count: fmt.int(WORKS.length) },
+    mark: fmt.int(WORKS.length),
+    measure: (r) => r.worksAtHeight(),
+  });
+  return [...each, all, height];
 }

@@ -224,7 +224,10 @@ export const TERMS: [term: string, meaning: string][] = [
     "Week's contract",
     'Four tasks a week drawn from your own play, about eight hours of it each, paid with a supply cache and a week kept',
   ],
-  ['Work', 'One of the six buildings of the steading, raised five times, each time for a little more'],
+  [
+    'Work',
+    'One of the six buildings of the steading, raised ten times, each time for a little more; from the sixth it also takes Uncommon finds',
+  ],
   ['Worn', 'Gear your fighter has on, marked on its tile in the Storehouse; the one worn is never sold'],
   ['XP', 'Experience; earned by actions, it raises levels'],
   ['Your odds', "The fight engine's verdict on a foe with your current gear and food"],

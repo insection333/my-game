@@ -49,6 +49,7 @@
   --window: #e9c27a;
   --fire: #d4511f;
   --pennant: #2e5b8a;
+  --pennant-gilt: #c9962e;
   --glow: 0;
   --smoke: #eef2ef;
   --cloud: rgb(255 255 255 / 0.72);
@@ -87,6 +88,7 @@
     --window: #ffbe5c;
     --fire: #ff7a32;
     --pennant: #7fa9d8;
+    --pennant-gilt: #e6bf5c;
     --glow: 0.45;
     --smoke: #3f4c4f;
     --cloud: rgb(150 172 178 / 0.1);
@@ -125,6 +127,7 @@
   --window: #ffbe5c;
   --fire: #ff7a32;
   --pennant: #7fa9d8;
+  --pennant-gilt: #e6bf5c;
   --glow: 0.45;
   --smoke: #3f4c4f;
   --cloud: rgb(150 172 178 / 0.1);
@@ -232,6 +235,10 @@
 /* A work raised five times flies a pennant in the game's blue. */
 .pennant {
   fill: var(--pennant);
+}
+/* Gilded at its tenth, in the frame's gold leaf. */
+.pennantGilt {
+  fill: var(--pennant-gilt);
 }
 .glow {
   fill: var(--fire);
