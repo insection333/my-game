@@ -27,6 +27,7 @@ export const CastleAction = z.discriminatedUnion('type', [
   // Levels raised at one press, 1 to 5 (session 134); one when left out.
   act('upgrade', { id: Id, times: z.number().int().min(1).max(5).optional(), materials: z.boolean().optional() }),
   act('research', { tech: Id }),
+  act('charter', { charter: z.enum(['land', 'craft', 'arms']) }),
   act('forgeRelic', { relic: Id }),
   act('temperRelic', { relic: Id }),
   act('equipRelics', { relics: z.array(Id).max(3) }),

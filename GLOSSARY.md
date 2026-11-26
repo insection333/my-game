@@ -27,6 +27,7 @@ Plain, warm and brief, with an old-world flavour in names rather than in instruc
 | Call to arms | Castle Clash: answered once a day for AP held in reserve; days in a row build a streak that adds to the hourly AP |
 | Castle Clash | The castle each lord raises at total level 100: an edict for the rest of the game, troops, spies and sieges |
 | Castle rating | A castle's lasting strength from its buildings, troops and best relics; lords are matched near it |
+| Charter | One of three lasting gains bought with war marks in the Halls: the Land (gathering), the Craft (ingredients kept) and Arms (damage), 1% a rank for five ranks |
 | Collect | Close the away recap: everything in it is already in your Storehouse |
 | Collection log | The record of every find you have made, by skill |
 | Combat lane | The lane that fights; trains your weapon's style and Hitpoints |

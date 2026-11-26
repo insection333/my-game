@@ -3,6 +3,8 @@
 // (the save's gold) and returns both, with the gold it burned, or the reason it cannot. Pure.
 import {
   BUILDINGS,
+  CHARTER_IDS,
+  CHARTER_MARKS,
   COMBAT,
   DOCTRINES,
   ECONOMY,
@@ -12,6 +14,7 @@ import {
   TRAPS,
   UNITS,
   type BuildingId,
+  type CharterId,
   type TechId,
   type UnitId,
 } from '@idle-clash/content';
@@ -83,6 +86,20 @@ export function research(w: Wallet, tech: TechId, now: number): Done {
     ...c,
     warMarks: c.warMarks - cost.marks,
     techs: { ...c.techs, [tech]: c.techs[tech] + 1 },
+  }));
+}
+
+/** A charter raised a rank (session 249), for war marks alone. */
+export function raiseCharter(w: Wallet, id: CharterId): Done {
+  if (!(CHARTER_IDS as readonly string[]).includes(id)) return no('unknown');
+  const rank = w.castle.charters[id];
+  if (rank >= CHARTER_MARKS.length) return no('top');
+  const marks = CHARTER_MARKS[rank];
+  if (w.castle.warMarks < marks) return no('marks');
+  return spend(w, 0, (c) => ({
+    ...c,
+    warMarks: c.warMarks - marks,
+    charters: { ...c.charters, [id]: rank + 1 },
   }));
 }
 

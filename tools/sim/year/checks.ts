@@ -285,6 +285,13 @@ function castleYear(y: Year, check: Check, lines: string[]) {
     byMaterials >= (byMaterials + spentAll) * MATERIALS_SHARE,
     `${y.kind.name}'s own materials pay ${(byMaterials / 1e6).toFixed(1)}M of the castle's year beside ${(spentAll / 1e6).toFixed(1)}M of gold (at least ${MATERIALS_SHARE * 100}%)`,
   );
+  // War marks cross over (session 249): spent on charters, relics and tempering, under a quarter held at a year.
+  const yearEnd = y.days[YEAR - 1]?.castle;
+  if (yearEnd)
+    check(
+      yearEnd.held <= yearEnd.marks / 4,
+      `${y.kind.name} holds ${yearEnd.held} of the ${yearEnd.marks} war marks earned at a year (under a quarter)`,
+    );
   // The edict grows with the castle (session 248): at a year, between +9% and +11% (+6.9% before).
   const atYear = y.days[YEAR - 1]?.castle?.pct ?? 0;
   if (y.days.length >= YEAR)

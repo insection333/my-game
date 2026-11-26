@@ -1,0 +1,1 @@
+ALTER TABLE `player_bastions` ADD `charters` text DEFAULT '{}' NOT NULL;

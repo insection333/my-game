@@ -128,6 +128,7 @@ describe('t', () => {
       'castle.target.paysMarks',
       'castle.incursion.rewards',
       'castle.study',
+      'castle.charter.raise',
       'castle.relic.forge',
       'castle.relic.levelUp',
       'castle.temper.cost',

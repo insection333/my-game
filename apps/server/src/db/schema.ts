@@ -227,6 +227,8 @@ export const playerBastions = sqliteTable(
     /** The orders of the day (session 40), as JSON, or null before the first. */
     orders: text('orders').notNull().default('null'),
     // Bounded collections (JSON, at most 20 entries each).
+    /** The charters' ranks (session 249). */
+    charters: text('charters').notNull().default('{}'),
     relics: text('relics').notNull().default('{}'),
     relicTempers: text('relic_tempers').notNull().default('{}'),
     equippedRelics: text('equipped_relics').notNull().default('[]'),

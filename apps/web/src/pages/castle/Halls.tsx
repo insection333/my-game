@@ -1,7 +1,20 @@
-// The Halls (IA.md, Castle Clash): where war marks are spent. The War College's four studies, and the
-// Reliquary's nine war relics, each forged and raised with war marks and gold, three worn at once (a
+// The Halls (IA.md, Castle Clash): where war marks are spent. The War College's four studies, the charters
+// that carry war marks back into the rest of the game (session 249), and the Reliquary's nine war relics, each forged and raised with war marks and gold, three worn at once (a
 // castle's three best relics count towards its rating, worn or not; only worn ones give).
-import { RELIC, RELIC_SOCKETS, RELICS, TECH, TECHS, fmt, t, type CastleEffect } from '@idle-clash/content';
+import {
+  CHARTER_IDS,
+  CHARTER_MARKS,
+  CHARTER_PCT,
+  RELIC,
+  RELIC_SOCKETS,
+  RELICS,
+  TECH,
+  TECHS,
+  fmt,
+  t,
+  type CastleEffect,
+  type CharterId,
+} from '@idle-clash/content';
 import { castleEngine as E } from '@idle-clash/features';
 import { ActionRow, Button, ItemIcon, Panel, Pill } from '@idle-clash/ui';
 import { useState } from 'react';
@@ -19,7 +32,10 @@ function gives(effect: CastleEffect, level: number): string {
 export function Halls() {
   return (
     <div className={s.grid}>
-      <College />
+      <div className={s.column}>
+        <College />
+        <Charters />
+      </div>
       <Reliquary />
     </div>
   );
@@ -66,6 +82,58 @@ function College() {
             );
           })}
         </div>
+      </Panel>
+    </section>
+  );
+}
+
+/** Each charter's picture (a skill's seal it serves) and words. */
+const CHARTER: Record<CharterId, { icon: string; name: string; does: string }> = {
+  land: { icon: 'woodcutting', name: 'castle.charter.land', does: 'castle.charter.land.does' },
+  craft: { icon: 'smithing', name: 'castle.charter.craft', does: 'castle.charter.craft.does' },
+  arms: { icon: 'melee', name: 'castle.charter.arms', does: 'castle.charter.arms.does' },
+};
+
+/** The charters (session 249): war marks for lasting gains in the rest of the game, a rank at a time. */
+function Charters() {
+  const { castle, purse, busy } = useSyncedCastle();
+  if (!castle) return null;
+  return (
+    <section data-section>
+      <Panel title={t('castle.charters.title')} flush>
+        <div data-slot="castle.charters" role="group" aria-label={t('castle.charters.title')}>
+          {CHARTER_IDS.map((id) => {
+            const rank = castle.charters[id];
+            const marks = rank < CHARTER_MARKS.length ? CHARTER_MARKS[rank] : null;
+            const now = t(CHARTER[id].does, { pct: fmt.pct(Math.max(1, rank) * CHARTER_PCT) });
+            return (
+              <ActionRow
+                key={id}
+                iconYields
+                icon={<ItemIcon name={CHARTER[id].icon} size={32} />}
+                name={t(CHARTER[id].name)}
+                status={<Pill>{t('castle.rank', { rank: fmt.int(rank), ranks: fmt.int(CHARTER_MARKS.length) })}</Pill>}
+                facts={[
+                  rank > 0 ? now : t('castle.charter.aRank', { does: now }),
+                  ...(marks === null ? [] : lacks(castle, purse, { gold: 0, marks })),
+                ]}
+                actions={
+                  marks === null ? (
+                    <Pill tone="moss">{t('castle.highest')}</Pill>
+                  ) : (
+                    <Button
+                      disabled={busy || castle.warMarks < marks}
+                      onClick={() => void castleAct({ type: 'charter', charter: id })}
+                    >
+                      {t('castle.charter.raise', { marks: fmt.int(marks) })}
+                    </Button>
+                  )
+                }
+              />
+            );
+          })}
+        </div>
+        <p className={s.note}>{t('castle.charters.note')}</p>
       </Panel>
     </section>
   );

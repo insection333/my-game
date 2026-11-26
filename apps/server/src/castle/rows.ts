@@ -48,6 +48,11 @@ const OrdersSchema = z
   })
   .nullable();
 const Relics = z.record(z.string().max(40), z.number().int().min(1).max(5));
+/** The charters' ranks (session 249); an older row, or one that does not read, has none raised. */
+const Rank = z.number().int().min(0).max(5).catch(0);
+const Charters = z
+  .object({ land: Rank.default(0), craft: Rank.default(0), arms: Rank.default(0) })
+  .catch({ land: 0, craft: 0, arms: 0 });
 const Tempers = z.record(z.string().max(40), z.number().int().min(0).max(10_000));
 const Equipped = z.array(z.string().max(40)).max(3);
 
@@ -117,6 +122,7 @@ export function toCastle(r: BastionRow): Castle {
     legends: r.legends,
     routs: r.routs,
     orders: json(OrdersSchema, r.orders, null),
+    charters: json(Charters, r.charters, { land: 0, craft: 0, arms: 0 }),
     relics: json(Relics, r.relics, {}),
     tempers: json(Tempers, r.relicTempers, {}),
     equippedRelics: json(Equipped, r.equippedRelics, []),
@@ -183,6 +189,7 @@ export function toRow(c: Castle): BastionRow {
     legends: c.legends,
     routs: c.routs,
     orders: JSON.stringify(c.orders),
+    charters: JSON.stringify(c.charters),
     relics: JSON.stringify(c.relics),
     relicTempers: JSON.stringify(c.tempers),
     equippedRelics: JSON.stringify(c.equippedRelics),

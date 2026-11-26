@@ -183,6 +183,13 @@
       "when": 1795616786121,
       "tag": "0025_console_first_password",
       "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "6",
+      "when": 1795664528635,
+      "tag": "0026_castle_charters",
+      "breakpoints": true
     }
   ]
 }

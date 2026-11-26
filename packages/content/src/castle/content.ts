@@ -166,6 +166,15 @@ export const FORTRESSES: readonly { id: string; garrison: readonly [number, numb
 
 /** The War College: four trees of ten ranks. A rank costs GOLD_SCALE × 3000 × 1.35^rank gold and
  *  10 × (rank + 1) war marks, and gives its effects once more. */
+/** Charters (session 249): war marks crossing back into the rest of the game. The Charter of the Land lifts
+ *  what gathering brings, the Charter of the Craft keeps an artisan's ingredient now and then, the Charter of
+ *  Arms lifts every fight's damage, each 1% a rank for five ranks, bought with war marks alone. */
+export const CHARTER_IDS = ['land', 'craft', 'arms'] as const;
+export type CharterId = (typeof CHARTER_IDS)[number];
+export const CHARTER_PCT = 1;
+/** Each rank's war marks, in order: 2,700 for all three, a year's side goal beside the relics and tempering. */
+export const CHARTER_MARKS = [60, 120, 180, 240, 300] as const;
+
 export const TECH_IDS = ['logistics', 'siegecraft', 'fortification', 'espionage'] as const;
 export type TechId = (typeof TECH_IDS)[number];
 export const TECH = { RANKS: 10, GOLD_BASE: 3000 * GOLD_SCALE, GOLD_GROWTH: 1.35, MARKS_PER_RANK: 10 } as const;
