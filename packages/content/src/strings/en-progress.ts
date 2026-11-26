@@ -51,6 +51,7 @@ export const progress: Record<string, string> = {
   'pedlar.turns': 'New wants {when}',
   'pedlar.errand': 'The pedlar wants {list}',
   'pedlar.handIn': 'Hand in',
+  'pedlar.handInAll': 'Hand in all {count}',
   'pedlar.wantsThese': 'The pedlar wants {count} of these today.',
   'pedlar.handed': 'Handed in',
   'pedlar.none': 'The pedlar wants nothing you have yet: find, gather past a tier and cook, and come back.',

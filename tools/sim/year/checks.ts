@@ -8,6 +8,7 @@ import { pointsOf } from '../../../packages/features/src/deeds/list.ts';
 import { companionChecks } from './companions.ts';
 import { titleChecks } from './titles.ts';
 import { secondYearChecks, TWO_YEARS } from './second-year.ts';
+import { pressRound } from './presses.ts';
 import { STAGES as WORK_STAGES, stageCost, stageOf, WORKS } from '../../../packages/features/src/shared/steading.ts';
 import { fighter } from '../combat.ts';
 import { DAY, focusedPlayer, gaps, T0 } from '../player.ts';
@@ -42,6 +43,10 @@ const EMPTY_DAYS = 7;
  *  cadence the end game keeps whatever the seed. */
 const ENDGAME_WAIT = 6;
 const ENDGAME_DAYS_WITH_A_FIRST = 0.5;
+/** A completionist's presses a day (session 256): about 12 asked, the castle's six battles its own choice. */
+const ROUND_PRESSES = 13;
+/** Gold held at a year (session 256): the plan's measure, 13M before it. */
+const GOLD_AT_A_YEAR = 8e6;
 
 const lastOf = (y: Year, skills: readonly string[]) => Math.max(...skills.map((s) => y.at99[s] ?? Infinity));
 const firstOf = (y: Year, skills: readonly string[]) => Math.min(...skills.map((s) => y.at99[s] ?? Infinity));
@@ -89,6 +94,20 @@ export function yearChecks(check: Check, lines: string[]): { steady: Year; light
   // Gold over the year, once the Storehouse is fully enlarged and the steading takes the rest.
   const gold = [30, 90, 180, 365].map((n) => `day ${n} ${((steady.days[n - 1]?.gold ?? 0) / 1e6).toFixed(0)}M`);
   lines.push(`\nThe steady player's gold: ${gold.join(', ')}`);
+  // Gold piles no longer (the plan of 26 November, D1): 13M held at a year before the steading's later stages,
+  // the castle's materials and the realm's work; 3.2 to 3.7M at seeds 11 to 13 (session 256).
+  const atYear = steady.days[364]?.gold ?? Infinity;
+  check(
+    atYear < GOLD_AT_A_YEAR,
+    `The steady player holds ${(atYear / 1e6).toFixed(1)}M gold at a year (under ${GOLD_AT_A_YEAR / 1e6}M)`,
+  );
+  // A completionist's daily round (the plan of 26 November, D8): about 25 presses before, the castle's war its own.
+  const round = pressRound();
+  lines.push(`A completionist's daily round: ${round.rows.map((r) => `${r.what} ${r.now} (${r.before})`).join(', ')}`);
+  check(
+    round.now <= ROUND_PRESSES && round.now * 1.8 <= round.before,
+    `A completionist's day takes ${round.now} presses, where it took ${round.before} (at most ${ROUND_PRESSES})`,
+  );
   // Where it goes instead: the steading's works, raised as the materials and the gold come (session 25).
   const works = WORKS.map((w) => `${w.id} ${raised[w.id].join(', ') || 'never'}`);
   lines.push(`The steady player's works, raised on days: ${works.join('; ')}`);

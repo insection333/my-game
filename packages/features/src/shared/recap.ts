@@ -25,6 +25,9 @@ export { noticeLine, RECAP_ORDER, type RecapKind, type RecapLine };
  *  a siege or a caught spy against their castle (kind `defence`), the realm's boss fallen with their strike,
  *  and a climb on the ladders, which the server says as the read that opens the page records it (so a
  *  little after the time away ends). */
+// A friend's cheer or gift while away (session 256: only the bell said, and a gift waited unseen).
+const FROM_NOTICES: readonly GameEvent['type'][] = ['rankUp', 'realmFell', 'realmWorkStage', 'cheered', 'giftCame'];
+
 function fromNotices(a: AwaySummary, notices: readonly GameEvent[]): RecapLine[] {
   const lines: RecapLine[] = [];
   for (const e of [...notices].sort((x, y) => x.at - y.at)) {
@@ -32,7 +35,7 @@ function fromNotices(a: AwaySummary, notices: readonly GameEvent[]): RecapLine[]
     const line = noticeLine(e);
     if (e.type === 'castleBesieged' || e.type === 'castleSpyCaught') lines.push({ ...line!, kind: 'defence' });
     // The realm's boss fell with this player's strike while they were away (session 190: only the bell said).
-    else if ((e.type === 'rankUp' || e.type === 'realmFell' || e.type === 'realmWorkStage') && line) lines.push(line);
+    else if (FROM_NOTICES.includes(e.type) && line) lines.push(line);
   }
   return lines.map(({ kind, text, icon, href }) => ({ kind, text, icon, href }));
 }

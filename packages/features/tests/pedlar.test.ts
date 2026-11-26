@@ -7,8 +7,8 @@ import { describe, expect, it } from 'vitest';
 import { itemOf } from '../src/shared/catalog.ts';
 import { favourOf } from '../src/shared/pedlar.ts';
 import { lotsOf } from '../src/shared/pedlar-lots.ts';
-import { dayOf, handIn } from '../src/pedlar/rules.ts';
-import { pedlarErrands } from '../src/pedlar/view.ts';
+import { dayOf, handIn, handInAll } from '../src/pedlar/rules.ts';
+import { pedlarErrands, pedlarView } from '../src/pedlar/view.ts';
 import { FEATURES } from '../src/registry.ts';
 
 void FEATURES;
@@ -80,5 +80,17 @@ describe('the pedlar', () => {
     const tomorrow = stocked(r.state, T0 + DAY);
     expect(handIn(tomorrow, 'find', T0 + DAY).result.ok).toBe(true);
     expect(handIn(player(), 'dish', T0).result).toEqual({ ok: false, reason: 'short' });
+  });
+
+  // Session 256: a completionist pressed Hand in three times a day.
+  it('takes every lot ready at one press, offered from two', () => {
+    const s = stocked(player());
+    expect(pedlarView(s, T0).all).toBe('Hand in all 3');
+    const r = handInAll(s, T0);
+    expect(r.result).toEqual({ ok: true, count: 3 });
+    expect(r.events.map((e) => e.type)).toEqual(['pedlarPaid', 'pedlarPaid', 'pedlarPaid']);
+    expect(favourOf(r.state)).toBe(3);
+    expect(pedlarView(r.state, T0).all).toBeNull();
+    expect(handInAll(r.state, T0).result).toEqual({ ok: false, reason: 'none' });
   });
 });

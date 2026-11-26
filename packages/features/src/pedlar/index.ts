@@ -4,7 +4,7 @@
 // are worth keeping for the pedlar; Sell finds stays for the overflow. Home: the Hearth.
 import { z } from 'zod';
 import { defineFeature, defineRoute, type Json } from '../define.ts';
-import { handIn } from './rules.ts';
+import { handIn, handInAll } from './rules.ts';
 import { pedlarErrands, pedlarView } from './view.ts';
 
 export type { LotRow, PedlarView } from './view.ts';
@@ -22,6 +22,11 @@ export const pedlar = defineFeature({
       input: z.object({ kind: z.enum(['find', 'material', 'dish']) }).strict(),
       example: { kind: 'find' as const },
       run: (state, input, now) => handIn(state, input.kind, now),
+    }),
+    handInAll: defineRoute({
+      input: z.object({}).strict(),
+      example: {},
+      run: (state, _input, now) => handInAll(state, now),
     }),
   },
   slots: {
