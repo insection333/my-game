@@ -6,7 +6,14 @@ import { odds, type Odds } from './fight.ts';
 import { fighterOf, mealsOf } from './state.ts';
 import { asFought } from '../bounty.ts';
 
+/** Odds remembered, the least lately asked let go first (session 272: at 500 the whole cache was emptied, and the
+ *  realm's boss alone asks about twenty a player, so a realm of some twenty players emptied it again and again, each
+ *  time playing a thousand fights a foe afresh: 200 ms on the server's one thread for a player two years in). */
+export const ODDS_KEPT = 10_000;
 const cache = new Map<string, Odds>();
+let played = 0;
+/** How many odds were played rather than remembered, for the test. */
+export const oddsPlayed = (): number => played;
 
 export function oddsFor(state: State, base: Foe): Odds | null {
   // An elite foe while its bounty is held (session 175): the odds of the fight the lane will play.
@@ -18,10 +25,12 @@ export function oddsFor(state: State, base: Foe): Odds | null {
   // relics and a whetstone carried change), the foe and the meal as it heals (the Smokehouse).
   const key = JSON.stringify([p, foe.id, foe.hp, foe.maxHit, meal?.item, meal?.heals]);
   let o = cache.get(key);
-  if (!o) {
-    if (cache.size > 500) cache.clear();
+  if (o) cache.delete(key);
+  else {
     o = odds(p, foe, meal && { item: meal.item, heals: meal.heals });
-    cache.set(key, o);
+    played++;
+    if (cache.size >= ODDS_KEPT) cache.delete(cache.keys().next().value!);
   }
+  cache.set(key, o);
   return o;
 }

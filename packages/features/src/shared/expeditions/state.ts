@@ -4,6 +4,7 @@
 // boss wins, twists met), for deeds. Read on every draw, so each saved object is checked once.
 import type { State } from '@idle-clash/kernel';
 import { z } from 'zod';
+import { stripped, withoutUnknown } from '../part.ts';
 
 const Key = z.string().regex(/^[a-z0-9][a-z0-9-]{0,63}$/);
 const Count = z.number().int().nonnegative();
@@ -158,7 +159,10 @@ export function expeditionsOf(state: State): ExpeditionState {
   const parsed = ExpeditionState.safeParse(raw);
   // A run's record that does not read costs that run, never the marks, relics and wins beside it; nor does the
   // day's list of bosses or the fights banked (session 263: either unread cost the whole part, marks and all).
-  const salvaged = parsed.success ? null : salvage(raw as Record<string, unknown>);
+  // Keys a later build added are let go first (session 272).
+  const salvaged = parsed.success
+    ? null
+    : (withoutUnknown(ExpeditionState, raw) ?? salvage(stripped(ExpeditionState, raw) as Record<string, unknown>));
   const e = parsed.success ? parsed.data : (salvaged ?? EMPTY);
   checked.set(raw, e);
   return e;
