@@ -60,8 +60,8 @@ describe('raising a work', () => {
     const yard = view.rows.find((r) => r.id === 'woodyard')!;
     expect(yard).toMatchObject({ standing: 'Not yet built', stage: 0 });
     expect(yard.next!.cost).toEqual([
-      { label: '50,000 gold', enough: true, held: '1,000,000,000 held' },
-      { label: 'Pine logs ×200', enough: false, held: '0 held' },
+      { label: '50,000 gold', enough: true, held: '1,000,000,000 held', from: null },
+      { label: 'Pine logs ×200', enough: false, held: '0 held', from: null },
     ]);
     expect(yard.next!.affordable).toBe(false);
     expect(yard.ready).toBe(false);

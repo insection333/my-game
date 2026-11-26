@@ -86,11 +86,20 @@ people to judge:
 - **Gold and the steading.** Once the Storehouse is fully enlarged, around the second month, gold
   goes to the steading's works (session 25), which take about 470 million over the year. Whether the
   first raisings come soon enough to matter in a two-week test is worth asking.
-- **Combat finishes first.** Fighting reaches 99 in all three styles around day 255, months before
-  the gathering skills (about day 375); Hitpoints reaches 99 around day 120. Kindling keeps those
+- **Combat finishes first.** Fighting reaches 99 in all three styles around day 237, months before
+  the gathering skills (about day 336); Hitpoints keeps pace with the best style since session 177. Kindling keeps those
   skills going, but whether the fighters feel done early is worth asking later players.
 - **Moments in a long session.** After the first week, about half of the moments in an active hour are
   Uncommon finds. If testers say finds stop feeling special, that is why.
+
+The design audit of 27 November (`docs/DESIGN_AUDIT.md`) adds four:
+
+- **A castle left unraised.** Castle Clash carries year two (without it, something new on about one day
+  in four). Any tester who leaves the castle unraised after a week: ask why, and what they aim for instead.
+- **The steading's sources.** Whether a tester whose work asks for Uncommon finds follows its "Any Cooking
+  action" line back to the skill.
+- **The light pattern.** Whether a few minutes twice a day feels it is keeping up.
+- **A full Next up.** Whether a veteran's Next up reads as things to do or as a wall.
 
 ## After
 

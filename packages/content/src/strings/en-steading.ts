@@ -13,6 +13,7 @@ export const steading = {
   'steading.next': 'Next: {gives}',
   'steading.cost.gold': '{gold} gold',
   'steading.cost.item': '{item} ×{count}',
+  'steading.fromGreater': '{where}, tier {tier} and up',
   'steading.effect.gatherYield': '+{pct} chance of an extra item when gathering',
   'steading.effect.artisanSave': '{pct} chance to keep an ingredient when crafting',
   'steading.effect.damage': '+{pct} damage',

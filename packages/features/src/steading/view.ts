@@ -1,8 +1,11 @@
 // The steading as the Hearth draws it: each work with its stage, what it gives now, and what its next
 // stage costs and gives, with whether the player holds enough of each.
-import { fmt, t } from '@idle-clash/content';
+import { fmt, GREATER_FROM_TIER, t } from '@idle-clash/content';
 import { countOf, type GameEvent, type State } from '@idle-clash/kernel';
+import { findOf } from '../shared/catalog.ts';
+import { STYLE_SKILLS } from '../shared/combat/data.ts';
 import {
+  GREATER,
   STAGE_GOLD,
   STAGES,
   stageCost,
@@ -18,6 +21,19 @@ export interface WorkCost {
   enough: boolean;
   /** How many the player holds now ("40 held"). */
   held: string;
+  /** Where a find comes from, while short of it (session 269: "Wild herbs ×240" said nothing of Cooking, and a
+   *  player at 99 who had left the skill never met them): "Any Cooking action". */
+  from: string | null;
+}
+
+/** Where a find a work asks for is found, in the collection log's words. */
+function findFrom(item: string): string | null {
+  const f = findOf(item);
+  if (!f) return null;
+  const style = (STYLE_SKILLS as readonly string[]).includes(f.skill);
+  const where = t(style ? 'find.anyFoe' : 'find.anyAction', { skill: t(`skill.${f.skill}`) });
+  const greater = Object.values(GREATER).includes(item);
+  return greater ? t('steading.fromGreater', { where, tier: fmt.int(GREATER_FROM_TIER) }) : where;
 }
 export interface WorkRow {
   id: string;
@@ -79,11 +95,13 @@ export function steadingView(state: State): SteadingView {
             label: t('steading.cost.gold', { gold: fmt.int(cost.gold) }),
             enough: countOf(state, 'gold') >= cost.gold,
             held: t('steading.held', { count: fmt.int(countOf(state, 'gold')) }),
+            from: null,
           },
           ...cost.items.map((i) => ({
             label: t('steading.cost.item', { count: fmt.int(i.count), item: t(`item.${i.item}`) }),
             enough: countOf(state, i.item) >= i.count,
             held: t('steading.held', { count: fmt.int(countOf(state, i.item)) }),
+            from: countOf(state, i.item) >= i.count ? null : findFrom(i.item),
           })),
         ]
       : [];

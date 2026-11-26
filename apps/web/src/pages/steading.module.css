@@ -101,6 +101,13 @@
   text-underline-offset: 3px;
 }
 
+/* Where a find still short comes from (session 269), on a line of its own under the cost. */
+.from {
+  flex-basis: 100%;
+  color: var(--ink-2);
+  font-size: var(--t-small);
+}
+
 /* The realm's work (session 218): across the head of the works, set off from the player's own. */
 .realmWork {
   grid-column: 1 / -1;

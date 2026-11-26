@@ -37,7 +37,7 @@ Idle Clash is a free browser idle MMO set in a medieval fantasy world in the spi
 **2. Fun: frequent, varied rewards, and play that feels good.**
 
 - During active play, something worth noticing happens about every two minutes: a level, an unlock, a rare find, a goal done, a mastery step.
-- Rewards vary: each action has rare finds at three rarities (about 1 in 50, 1 in 500, 1 in 5,000), and a find has its own moment on screen.
+- Rewards vary: each action has rare finds at three rarities (about 1 in 50, 1 in 500, 1 in 5,000 as first planned; 1 in 500 and 1 in 60,000 for Rare and Legendary since session 24, so first finds spread over the year), and a find has its own moment on screen.
 - A goals ladder is always in view: first steps, then three rolling short goals of 5 to 15 minutes, a daily goal and milestone goals.
 - Every action has motion and numbers that count up; level-ups and rare finds have a moment; the return recap leads with the best thing that happened.
 - The next goal is always visible: every skill shows its next unlock and how far away it is.
@@ -97,7 +97,7 @@ Every pillar has numbers the simulation and real players are measured against; a
 | Pull | A player who switched notices on hears of a lane that stopped, or a siege that breached their walls, within a few minutes of it while away; never while a page is open, never from 22:00 to 08:00 in their clock, three a day at most (session 171) | Server tests |
 | Pull | Something to finish every day, every week and every season: the day's goal, the week's contract (four tasks of about eight hours of the player's own pace each), the season's ladder (session 172) | The simulation |
 | Competition | Every listed player sees a rival just above and below on each ladder, the gap in their own terms, and hears once a day when a friend passes them on a ladder they climb (session 173) | Server and web tests |
-| Competition | One thing the whole realm does each week: the realm's boss, fought by each player once a day at their own measure, needing four strikes for each player who played the week before, so a realm that plays brings it down (session 174) | Server and features tests |
+| Competition | One thing the whole realm does each week: the realm's boss, fought by each player once a day at their own measure, needing three strikes for each player who struck it the week before, four at least, so a realm that plays brings it down and a realm of one can (sessions 174 and 198) | Server and features tests |
 | Longevity | Combat has a choice every day and a target after 99: three bounties a day on foes the player fares well against, elite foes past 99 in a style (session 175) | Features tests |
 | All | All five test players return on days 2 and 3, and each can say what they are aiming for next | The five-player test |
 
