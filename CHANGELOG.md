@@ -396,3 +396,4 @@
 - Session 255: phase five audited. Banked fights, cheers and gifts played in the page; a gift that cannot go says only why, and a cheer's tray line leads to what it was for.
 - Session 256: the plan measured again. The year and two years hold every check at three seeds; gold at a year 3.2 to 3.7M (was 13M) and a completionist's day 13 presses (was 24) are now checks; the pedlar's Hand in all; a friend's cheer or gift while away is in the away recap.
 - Session 257: phase six audited. Hand in all played on a phone in step 6; the plan of 26 November is done.
+- Session 258: a season said once. The Hearth's Today and the tray listed a season's opening twice (the page's goals and the server's each said it); it is now known by its number.

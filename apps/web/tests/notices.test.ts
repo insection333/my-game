@@ -67,6 +67,13 @@ describe('a notice', () => {
     const lines = noticesOf({ notices: [deed(T), goal(T + 2_000)], events: [deed(T + 400), goal(T + 2_300)] });
     expect(lines.map((n) => n.text)).toEqual(['Goal done: Earn 900 Mining XP today', 'Deed done: Castle 10']);
   });
+
+  // Session 258: the Hearth's Today listed a season's opening twice, made by the page's goals and the server's.
+  it('names a season opened once, though the page and the server each said it', () => {
+    const opened = (at: number): GameEvent => ({ type: 'seasonOpened', at, number: 1, twist: 'greenwood', last: 0 });
+    const lines = noticesOf({ notices: [opened(T)], events: [opened(T + 900)] });
+    expect(lines).toHaveLength(1);
+  });
 });
 
 // Session 68: deeds done together read as one line, pictured by the best of them (as their moment leads
