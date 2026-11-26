@@ -45,7 +45,11 @@ function Edicts() {
   const growth = E.edictGrowth(castle);
   return (
     <section data-section>
-      <Panel title={t('castle.edict.title')} flush>
+      <Panel
+        title={t('castle.edict.title')}
+        aside={growth > 1 ? t('castle.edict.growth', { pct: fmt.pct(Math.round((growth - 1) * 100)) }) : undefined}
+        flush
+      >
         <div data-slot="castle.edict">
           {EDICTS.map((e) => {
             const chosen = castle.edict === e.id;
@@ -77,11 +81,6 @@ function Edicts() {
             );
           })}
         </div>
-        <p className={s.note}>
-          {growth > 1
-            ? t('castle.edict.growth', { pct: fmt.pct(Math.round((growth - 1) * 100)) })
-            : t('castle.edict.growthNone')}
-        </p>
       </Panel>
     </section>
   );
