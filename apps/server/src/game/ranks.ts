@@ -151,6 +151,19 @@ export class Ranks {
     }
   }
 
+  /** A ladder let go of (session 271). */
+  dropLadder(skill: string): void {
+    this.ladders.delete(skill);
+  }
+
+  keys(): string[] {
+    return [...this.ladders.keys()];
+  }
+
+  size(): number {
+    return this.ladders.size;
+  }
+
   /** Who is on the ladders changed in some other way: every ladder is read afresh when next asked for. */
   forget(): void {
     this.ladders.clear();

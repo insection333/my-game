@@ -60,6 +60,9 @@ export interface Fought {
 export const maxHealth = (p: Pick<Fighter, 'hpPerks'>) => BASE_HEALTH + p.hpPerks.maxHealth;
 /** The share of health below which a fighter with no food left retreats (Stubborn lowers it). */
 export const retreatShare = (p: Pick<Fighter, 'hpPerks'>) => (p.hpPerks.retreatAt || BASE_RETREAT_PCT) / 100;
+/** The most swings one fight plays: twenty thousand, near seventeen hours, far past any fight that ends. */
+export const MAX_SWINGS = 20_000;
+
 export const regenPerSecond = (p: Pick<Fighter, 'hpPerks'>) => (REGEN_PER_6S / 6) * (1 + p.hpPerks.regen / 100);
 const clamp = (x: number) => Math.min(0.95, Math.max(0.2, x));
 const round = (x: number) => Math.round(x * 100) / 100;
@@ -121,6 +124,10 @@ export function fight(
   const eaten: Record<string, number> = {};
   let [foeHp, t, dealt, taken] = [foe.hp, 0, 0, 0];
   while (foeHp > 0) {
+    // A fight no side can end (a fighter the Deep's Lantern keeps unharmed against a foe its depths made vast) is
+    // given up as a retreat at MAX_SWINGS, so the server never plays millions of swings in one request (session 271).
+    if (t >= MAX_SWINGS * SWING_S)
+      return { seconds: t, dealt: round(dealt), taken: round(taken), health: round(health), retreated: true, eaten };
     t += SWING_S;
     if (rng() < hit) {
       const roll = 1 + Math.floor(rng() * maxHit);

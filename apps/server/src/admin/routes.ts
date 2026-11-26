@@ -91,6 +91,11 @@ export function adminRoutes(app: FastifyInstance, ctx: Ctx): void {
         .where(eq(players.id, input.playerId))
         .run();
       ctx.hiscores.forget();
+      // Other players' notices and a siege waiting to be pushed say the new name (session 271).
+      if (before !== input.name) {
+        ctx.notices.renameFoe(before, input.name);
+        ctx.push.forgetFoe(before, input.name);
+      }
       settleReports(ctx, input.playerId, ctx.config.now());
       audit(ctx, req, 'rename', input.playerId, { from: before, to: input.name });
       return view(ctx, playerOf(ctx, input.playerId));

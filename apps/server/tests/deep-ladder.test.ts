@@ -100,6 +100,30 @@ describe("the Deep's ladder", () => {
     expect(kept).toEqual(['deep:2026-11-30']);
   });
 
+  // Session 271: each week's ladder, and each player's row in it, stayed in the server's memory for as long as it
+  // ran; what housekeeping lets go of in the table goes from memory too.
+  it('lets go of the weeks past keeping in memory as well', async () => {
+    s = await server();
+    s.clock.now = MONDAY + DAY;
+    const a = await signUp(s, 'Ashgrove');
+    await reach(a, 12);
+    await ladders(a);
+    const week1 = s.ctx.hiscores.held();
+    s.clock.now = MONDAY + 8 * DAY;
+    await reach(a, 14);
+    await ladders(a);
+    s.clock.now = MONDAY + 15 * DAY;
+    await reach(a, 16);
+    await ladders(a);
+    const before = s.ctx.hiscores.held();
+    keepHouse(s.ctx);
+    const after = s.ctx.hiscores.held();
+    // The first week's row is let go; this week's and last week's are kept.
+    expect(after.rows).toBe(before.rows - 1);
+    expect(after.keys.some((k) => k === 'deep:2026-11-23')).toBe(false);
+    expect(before.rows).toBeGreaterThan(week1.rows);
+  });
+
   it("leaves a player's places on their card to the skills and Total", async () => {
     s = await server();
     s.clock.now = MONDAY + DAY;

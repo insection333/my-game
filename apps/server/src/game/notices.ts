@@ -73,6 +73,12 @@ export class Notices {
   /** A departed lord's name, taken out of every other lord's Castle Clash notice that named them (the
    *  notice then reads "a lord no longer of the realm"). */
   forgetFoe(name: string): void {
+    this.renameFoe(name, '');
+  }
+
+  /** A player renamed (session 271: a name an admin renamed for giving offence stayed in every other player's
+   *  sieges, spies, passes, cheers and gifts): the new name in place of the old wherever a notice named them. */
+  renameFoe(name: string, to: string): void {
     const rows = this.db
       .select()
       .from(notices)
@@ -85,7 +91,7 @@ export class Notices {
       if (!key) continue;
       this.db
         .update(notices)
-        .set({ data: JSON.stringify({ ...e, [key]: '' }) })
+        .set({ data: JSON.stringify({ ...e, [key]: to }) })
         .where(eq(notices.id, r.id))
         .run();
     }

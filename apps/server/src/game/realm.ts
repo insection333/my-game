@@ -199,6 +199,13 @@ export class Realm {
     return { skill: REALM, rows, you: row(mine, above + 1) };
   }
 
+  /** Weeks long gone, let go of in memory as housekeeping lets their rows go (session 271). */
+  sweep(before: string): void {
+    for (const week of [...this.weeks.keys()]) if (week < before) this.weeks.delete(week);
+    for (const week of [...this.totals.keys()]) if (week < before) this.totals.delete(week);
+    for (const key of [...this.mines.keys()]) if (key < before) this.mines.delete(key);
+  }
+
   /** An account deleted: its strikes go (the week's count with them). */
   remove(playerId: string): void {
     this.db.delete(realmStrikes).where(eq(realmStrikes.playerId, playerId)).run();

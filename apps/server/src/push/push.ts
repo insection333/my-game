@@ -172,11 +172,12 @@ export class Push {
     db.delete(pushSent).where(eq(pushSent.playerId, playerId)).run();
   }
 
-  /** An account deleted: its name goes from a siege still waiting to be told (session 265), as from notices. */
-  forgetFoe(name: string): void {
+  /** An account deleted: its name goes from a siege still waiting to be told (session 265), as from notices; a
+   *  player renamed: the new name in its place (session 271). */
+  forgetFoe(name: string, to = ''): void {
     this.deps.db
       .update(pushDue)
-      .set({ data: sql`json_set(${pushDue.data}, '$.foe', '')` })
+      .set({ data: sql`json_set(${pushDue.data}, '$.foe', ${to})` })
       .where(and(eq(pushDue.kind, 'siege'), sql`json_extract(${pushDue.data}, '$.foe') = ${name}`))
       .run();
   }

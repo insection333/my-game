@@ -269,6 +269,24 @@ export class Hiscores {
     return [...total, ...skills.slice(0, best)].map(({ skill, place }) => ({ skill, place }));
   }
 
+  /** Housekeeping let go of ladders' rows (a season's or a week in the Deep past keeping): their memory goes too
+   *  (session 271: each new week's and season's ladder was held, and each player's row in it, as long as the server
+   *  ran). */
+  letGo(skills: readonly string[]): void {
+    for (const skill of skills) {
+      this.tops.delete(skill);
+      this.standings.dropLadder(skill);
+    }
+    for (const had of this.rows.values()) for (const skill of skills) had.delete(skill);
+  }
+
+  /** How many ladders and rows are held in memory, for the housekeeping test. */
+  held(): { ladders: number; rows: number; keys: string[] } {
+    let rows = 0;
+    for (const had of this.rows.values()) rows += had.size;
+    return { ladders: this.standings.size(), rows, keys: [...this.standings.keys(), ...this.tops.keys()] };
+  }
+
   /** Lets go of every ladder held: a player was renamed, banned or let back. */
   forget(): void {
     this.tops.clear();
