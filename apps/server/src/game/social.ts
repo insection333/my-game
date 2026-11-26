@@ -11,6 +11,9 @@ import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
 import { cheers, gifts, mailBlocks, players } from '../db/schema.ts';
 
 export const CHEERS_A_DAY = 3;
+/** The cheers one player may take in a day (session 261): a crowd of new accounts cannot flood their moments
+ *  and their tray, whose newest hundred hold their sieges too. */
+export const CHEERS_TAKEN_A_DAY = 10;
 export const GIFTS_TAKEN_A_DAY = 3;
 /** The gifts the save is told of at once (shared/gifts.ts holds the same). */
 export const GIFTS_WAITING = 10;
@@ -66,7 +69,13 @@ export class Social {
       .where(and(eq(cheers.fromId, fromId), eq(cheers.day, dayOf(now))))
       .all();
     if (today.some((c) => c.toId === toId)) return 'sent';
-    return today.length >= CHEERS_A_DAY ? 'spent' : 'open';
+    if (today.length >= CHEERS_A_DAY) return 'spent';
+    const taken = this.db
+      .select({ n: sql<number>`count(*)` })
+      .from(cheers)
+      .where(and(eq(cheers.toId, toId), eq(cheers.day, dayOf(now))))
+      .get()!.n;
+    return taken >= CHEERS_TAKEN_A_DAY ? 'full' : 'open';
   }
 
   giftState(from: { id: string; createdAt: number }, to: { id: string; createdAt: number }, now: number): SocialState {

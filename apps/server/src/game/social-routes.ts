@@ -71,7 +71,7 @@ export function socialRoutes(app: FastifyInstance, ctx: Ctx): void {
         const to = targetOf(ctx, input.name);
         if (!from || !to || to.id === id || ctx.social.blocked(id, to.id)) throw fail(404, 'notFound');
         const said = ask === 'cheer' ? ctx.social.cheer(from, to.id, now) : ctx.social.gift(from, to, now);
-        if (said !== 'open') throw fail(409, REFUSED[said]);
+        if (said !== 'open') throw fail(409, said === 'full' && ask === 'cheer' ? 'cheersFull' : REFUSED[said]);
         return { ok: true };
       },
       requirePlayer(ctx),

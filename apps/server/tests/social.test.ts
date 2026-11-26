@@ -54,6 +54,25 @@ describe('a cheer', () => {
     expect((await card('Elder', alder)).social?.cheer).toBeNull();
   });
 
+  // Session 261: a crowd of new accounts could flood one player's moments and tray with cheers.
+  it('reaches one player ten times a day at most', async () => {
+    s = await server();
+    const target = await idOf(await signUp(s, 'Target'));
+    climbed(target);
+    // Made an hour apart, as sign-ups from one address are paced (a crowd from many addresses is not).
+    const crowd: string[] = [];
+    for (let i = 0; i < 11; i++) {
+      crowd.push(await signUp(s, `Cheerer${String(i)}`));
+      s.clock.now += 3_600_000;
+    }
+    climbed(target);
+    for (const c of crowd.slice(0, 10))
+      expect((await post(s, '/api/cheer', { name: 'Target' }, c)).statusCode).toBe(200);
+    expect(code(await post(s, '/api/cheer', { name: 'Target' }, crowd[10]))).toBe('cheersFull');
+    expect((await card('Target', crowd[10])).social?.cheerState).toBe('full');
+    expect(heard(target, 'cheered')).toHaveLength(10);
+  });
+
   it('is never offered on your own card, nor between players where either blocked the other', async () => {
     s = await server();
     const alder = await signUp(s, 'Alder');

@@ -75,6 +75,7 @@ export const SOCIAL_REFUSALS = [
   'nothingToCheer',
   'cheerSent',
   'cheersSpent',
+  'cheersFull',
   'giftGiven',
   'giftYoung',
   'giftSameWeek',
