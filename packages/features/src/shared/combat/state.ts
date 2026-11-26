@@ -14,6 +14,7 @@ import { temperGains } from '../temper.ts';
 import { feastLift, mealOrder } from '../feast.ts';
 import { charterPct } from '../castle/mirror.ts';
 import { heirloomTraits } from '../heirlooms.ts';
+import { withoutUnknown } from '../part.ts';
 
 const ItemId = z.string().regex(/^[a-z0-9][a-z0-9-]{0,63}$/);
 export const CombatState = z
@@ -38,7 +39,15 @@ export function combatOf(state: State): CombatState {
   const known = raw && typeof raw === 'object' ? checked.get(raw) : undefined;
   if (known) return known;
   const parsed = CombatState.safeParse(raw);
-  const c = parsed.success ? parsed.data : { worn: {}, health: null, healthAt: 0, retreated: null };
+  // Keys a later build added are let go, never the gear worn (session 272).
+  const c = parsed.success
+    ? parsed.data
+    : ((raw && typeof raw === 'object' ? withoutUnknown(CombatState, raw) : null) ?? {
+        worn: {},
+        health: null,
+        healthAt: 0,
+        retreated: null,
+      });
   Object.freeze(c.worn);
   if (raw && typeof raw === 'object') checked.set(raw, c);
   return c;

@@ -1,6 +1,6 @@
 // Castle Clash: a `player_bastions` row as the engine's Castle and back. JSON columns are read through
 // strict schemas: a damaged one reads as empty rather than failing the request, and is written back whole.
-import { castleEngine } from '@idle-clash/features';
+import { castleEngine, withoutUnknown } from '@idle-clash/features';
 import { z } from 'zod';
 import type { playerBastions } from '../db/schema.ts';
 
@@ -58,8 +58,11 @@ const Equipped = z.array(z.string().max(40)).max(3);
 
 function json<T>(schema: z.ZodType<T>, text: string, empty: T): T {
   try {
-    const parsed = schema.safeParse(JSON.parse(text));
-    return parsed.success ? parsed.data : empty;
+    const value: unknown = JSON.parse(text);
+    const parsed = schema.safeParse(value);
+    if (parsed.success) return parsed.data;
+    // Keys a later build added are let go before the column is given up (session 272: a rollback).
+    return (value && typeof value === 'object' ? withoutUnknown(schema, value) : null) ?? empty;
   } catch {
     return empty;
   }

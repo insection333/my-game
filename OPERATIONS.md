@@ -51,7 +51,7 @@ By hand, from GitHub: Actions, **deploy**, Run workflow, then choose:
 | Action | Does |
 | --- | --- |
 | deploy | Deploys `main` again |
-| rollback | Switches to the release before the live one. The code only: the database stays, so no one loses progress (the migrations so far only add tables and columns, so older code runs on a newer database) |
+| rollback | Switches to the release before the live one. The code only: the database stays, so no one loses progress (the migrations so far only add tables and columns, so older code runs on a newer database; and from session 272 every build reads a save's parts with any key a later build added let go, where before it read such a part as empty and its next write lost it, so never roll back to a release from before session 272 without restoring the database from a backup taken before the newer release went live) |
 | backup | Runs the nightly backup now |
 | rehearse | Runs the restore rehearsal now |
 

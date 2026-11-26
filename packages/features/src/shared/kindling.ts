@@ -10,6 +10,7 @@ import { z } from 'zod';
 import { skillActions } from './catalog.ts';
 import { STYLE_SKILLS } from './combat/data.ts';
 import { skillLevel } from './skill.ts';
+import { withoutUnknown } from './part.ts';
 
 export const KINDLE_XP = 37_000_000;
 export const KINDLINGS_THAT_STRENGTHEN = 5;
@@ -53,7 +54,8 @@ export function kindlingOf(state: State): KindlingState {
   const known = checked.get(raw);
   if (known) return known;
   const parsed = KindlingState.safeParse(raw);
-  const k = parsed.success ? parsed.data : EMPTY;
+  // Keys a later build added are let go, never the Paths chosen (session 272).
+  const k = parsed.success ? parsed.data : (withoutUnknown(KindlingState, raw) ?? EMPTY);
   checked.set(raw, k);
   return k;
 }

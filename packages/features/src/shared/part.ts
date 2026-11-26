@@ -30,10 +30,44 @@ export function partReader<T>(
     const known = read.get(raw);
     if (known) return known;
     const parsed = schema.safeParse(raw);
-    const part = freezeDeep(parsed.success ? parsed.data : (salvage?.(raw) ?? empty));
+    let part: T;
+    if (parsed.success) part = parsed.data;
+    else {
+      // Keys a later build added, let go before anything is salvaged (session 272: after a rollback, the older
+      // build read a part a newer one had written as empty, and its next write put months of play in its place).
+      const kept = withoutUnknown(schema, raw);
+      part = kept ?? salvage?.(stripped(schema, raw)) ?? empty;
+    }
+    freezeDeep(part);
     read.set(raw, part);
     return part;
   };
+}
+
+type Issue = { code: string; path: PropertyKey[]; keys?: string[] };
+
+/** The part with every key its schema does not know taken out, wherever it is nested. */
+export function stripped(schema: z.ZodType<unknown>, raw: object): object {
+  const v: unknown = structuredClone(raw);
+  for (let round = 0; round < 32; round++) {
+    const r = schema.safeParse(v);
+    if (r.success) break;
+    const unknown = (r.error.issues as Issue[]).filter((i) => i.code === 'unrecognized_keys');
+    if (!unknown.length) break;
+    for (const issue of unknown) {
+      let at: unknown = v;
+      for (const step of issue.path)
+        at = at && typeof at === 'object' ? (at as Record<PropertyKey, unknown>)[step] : undefined;
+      if (at && typeof at === 'object') for (const k of issue.keys ?? []) delete (at as Record<string, unknown>)[k];
+    }
+  }
+  return v as object;
+}
+
+/** The part as its schema reads it once unknown keys are let go, or null if it still does not read. */
+export function withoutUnknown<T>(schema: z.ZodType<T>, raw: object): T | null {
+  const r = schema.safeParse(stripped(schema, raw));
+  return r.success ? r.data : null;
 }
 
 /** A part's salvage that lets go of what is least worth keeping (session 263: a list of locks or gifts opened that
