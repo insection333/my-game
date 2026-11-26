@@ -50,7 +50,11 @@ const POOL: Record<string, fc.Arbitrary<unknown>> = {
   // Sessions 191 and 218: the quartermaster's lots, gold given to the realm's work.
   lots: fc.constantFrom(1, 3, 1_000, 1_000_000),
   gold: fc.constantFrom(0, 1, 999, 1_000, 2_500_000, 1e12),
-  id: fc.constantFrom('woad', 'the-kindled', 'squirrel', 'no-such-honour', null),
+  // An honour, a deed to follow (session 242) or a gift by its number (session 254; the save is told of 1 and 2).
+  id: fc.constantFrom('woad', 'the-kindled', 'squirrel', 'no-such-honour', null, 'level-woodcutting-40', 1, 2, 3),
+  // Session 260: whether a run sets out again, a deed is followed, an item locked; a style to fight as.
+  on: fc.boolean(),
+  style: fc.constantFrom('melee', 'archery', 'magic'),
   // Sessions 172 to 179: a bounty's foe, the week's task to swap.
   foe: fc.constantFrom(...FOES.map((f) => f.id), 'no-such-foe'),
   task: fc.constantFrom(0, 1, 3, 4, -1),
@@ -87,6 +91,12 @@ const commandStep = fc.record({
       action: fc.constantFrom(...ACTIONS),
     }),
     fc.record({ type: fc.constantFrom('stop' as const, 'clearNext' as const), lane: fc.constantFrom(...LANES) }),
+    // One of the three to come, by its place (session 240).
+    fc.record({
+      type: fc.constant('clearNext' as const),
+      lane: fc.constantFrom(...LANES),
+      at: fc.integer({ min: 0, max: 2 }),
+    }),
     fc.constant({ type: 'stoke' as const }),
   ),
 });
@@ -109,6 +119,13 @@ function veteran(seed: number): State {
     mine: 2,
     fell: true,
     owed: { week: weekOf(T0), boss: 'troll-chief' },
+  };
+  // Two friends' gifts waiting (session 254).
+  state.features.gifts = {
+    waiting: [
+      { id: 1, from: 'Alder', at: T0 - HOUR },
+      { id: 2, from: 'Birch', at: T0 - HOUR },
+    ],
   };
   return state;
 }

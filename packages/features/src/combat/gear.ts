@@ -4,6 +4,7 @@ import { fmt, GEAR_SLOTS, STYLES, t, TIER_LEVELS, type GearSlot, type Style } fr
 import { countOf, type State } from '@idle-clash/kernel';
 import { itemOf } from '../shared/catalog.ts';
 import { heirloomWords } from '../shared/heirloom-view.ts';
+import { heirloomOf } from '../shared/heirlooms.ts';
 import { ARMOUR_GUARD_PER_TIER, HITPOINTS, WEAPON_HIT_PER_TIER } from '../shared/combat/data.ts';
 import { combatOf, setCombat } from '../shared/combat/state.ts';
 import { stepsOf } from '../shared/temper.ts';
@@ -88,12 +89,13 @@ export function bestChanges(state: State, style: Style): { slot: GearSlot; item:
     const best = bestIn(state, slot, style);
     const on = worn[slot];
     // A piece as good is left on: a weapon of the style asked (session 252: worn, the Troll-chief's blade tied
-    // with an untempered dawnsteel sword, lost the tie by name, and Fight as Melee took it off).
+    // with an untempered dawnsteel sword, lost the tie by name, and Fight as Melee took it off). A worn heirloom is
+    // always left on (session 260: a tempered dawnsteel piece outranked it): it is worn by choice, as different.
     const keep =
       on &&
       countOf(state, on) > 0 &&
       (slot !== 'weapon' || itemOf(on)?.gear?.style === style) &&
-      worthOf(state, on) >= worthOf(state, best ?? on);
+      (heirloomOf(on) !== null || worthOf(state, on) >= worthOf(state, best ?? on));
     return best && !keep ? [{ slot, item: best }] : [];
   });
 }

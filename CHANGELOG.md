@@ -398,3 +398,4 @@
 - Session 257: phase six audited. Hand in all played on a phone in step 6; the plan of 26 November is done.
 - Session 258: a season said once. The Hearth's Today and the tray listed a season's opening twice (the page's goals and the server's each said it); it is now known by its number.
 - Session 259: a sweep of sessions 239 to 258. Realm strikes bank within the week alone; the day's bosses queued behind Next say so; materials used to the last leave no empty entry; Sell finds names only the finds the steading keeps; the castle's edict held to its mirror's bound.
+- Session 260: a deeper sweep of sessions 239 to 259. A worn heirloom is no longer taken off by Fight as or Wear your best for tempered gear of its slot; the routes' random play reaches every new route with real inputs.
