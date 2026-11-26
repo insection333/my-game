@@ -22,7 +22,7 @@ import {
 import { expeditionsOf, type Last, type Route, type Run } from '../shared/expeditions/state.ts';
 import { storyOf } from '../shared/expeditions/story.ts';
 import { skillLevel } from '../shared/skill.ts';
-import { restedToday } from './boss.ts';
+import { bossFights } from '../shared/expeditions/bank.ts';
 import { bossOfRun, nextRoute, type Hours } from './route.ts';
 import { stageCount } from './stage.ts';
 import { twistText } from './words.ts';
@@ -205,6 +205,10 @@ export interface BossRow {
   ready: boolean;
   /** Its way of fighting (session 211), so it can be prepared for. */
   trait: string | null;
+  /** The fights banked past today's (session 253): "3 fights banked", or null with one or none. */
+  banked: string | null;
+  /** The fights waiting today, banked ones among them. */
+  fights: number;
 }
 
 /** The style that beats each style. */
@@ -224,7 +228,8 @@ export function bossRows(state: State, now: number): BossRow[] {
   const hp = skillLevel(state, HITPOINTS);
   return BOSSES.map((b) => {
     const locked = hp < b.hitpoints;
-    const rested = restedToday(state, b, now);
+    const fights = locked ? 0 : bossFights(state, b.id, now);
+    const rested = !locked && fights === 0;
     const o = locked ? null : oddsFor(state, b);
     const wins = Object.hasOwn(e.wins, b.id) ? e.wins[b.id] : 0;
     return {
@@ -245,6 +250,8 @@ export function bossRows(state: State, now: number): BossRow[] {
       wins: wins === 0 ? t('boss.winsNone') : wins === 1 ? t('boss.winsOne') : t('boss.wins', { count: fmt.int(wins) }),
       ready: !locked && !rested && o !== null,
       trait: traitWords(b),
+      banked: !locked && fights > 1 ? t('boss.banked', { count: fmt.int(fights) }) : null,
+      fights,
     };
   });
 }

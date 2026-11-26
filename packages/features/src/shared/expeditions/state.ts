@@ -66,6 +66,9 @@ export const ExpeditionState = z
     drawn: Count,
     run: Run.nullable(),
     bossDay: z.record(Key, Day),
+    /** The fights each boss has banked after the day it was last fought (session 253). Saves from before
+     *  have none. */
+    bossLeft: z.record(Key, z.number().int().min(0).max(2)).optional(),
     wins: z.record(Key, Count),
     runs: z.record(z.string().regex(/^[1248]$/), Count),
     twists: z.array(Key).max(20),
@@ -81,6 +84,8 @@ export const ExpeditionState = z
           .regex(/^\d{4}-\d{2}-\d{2}$/)
           .nullable(),
         fallen: Count,
+        /** The strikes banked after the day it was last fought (session 253). */
+        left: z.number().int().min(0).max(2).optional(),
       })
       .strict()
       .optional(),
@@ -90,7 +95,7 @@ export const ExpeditionState = z
     /** The day's bosses (session 239): the fights one press set for the day, the realm's boss as `realm`, fought
      *  in this order in the Combat lane as `expeditions:bosses`, each once. */
     round: z
-      .object({ day: Day, foes: z.array(Key).max(8) })
+      .object({ day: Day, foes: z.array(Key).max(24) })
       .strict()
       .optional(),
     /** The Deep (session 212): the deepest depth reached ever and this week, the week it counts for, the

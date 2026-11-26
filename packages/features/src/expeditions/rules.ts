@@ -14,7 +14,8 @@ import { DEEP_RULES } from './deep.ts';
 import { expeditionsOf, RUN_FINDS, setExpeditions, type Last, type Run } from '../shared/expeditions/state.ts';
 import { skillLevel } from '../shared/skill.ts';
 import { noRoom } from '../shared/storehouse.ts';
-import { dayOf, fightBoss, playBoss, restedToday } from './boss.ts';
+import { fightBoss, playBoss, restedToday } from './boss.ts';
+import { spendBoss } from '../shared/expeditions/bank.ts';
 import { cacheAt, modsAt, playStage, stageCount } from './stage.ts';
 import { steadingMarksPct } from '../shared/steading.ts';
 import { seasonMarksPct } from '../shared/season.ts';
@@ -141,7 +142,7 @@ function bossRules(boss: Boss): ActionRules {
       const before = expeditionsOf(ctx.state).wins;
       const fought = fightBoss(ctx, boss, []);
       const e = expeditionsOf(ctx.state);
-      setExpeditions(ctx.state, { ...e, bossDay: { ...e.bossDay, [boss.id]: dayOf(ctx.at) } });
+      setExpeditions(ctx.state, spendBoss(ctx.state, e, boss.id, ctx.at));
       // How it ended, said (session 72): a day's win paid and said nothing.
       ctx.emit({
         type: 'bossFought',

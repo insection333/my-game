@@ -28,7 +28,7 @@ export const TERMS: [term: string, meaning: string][] = [
   ['Block', 'Stops one player sending you messages, and nothing else; Unblock lets them again'],
   [
     'Boss',
-    "One of a region's two hardest foes, each fighting its own way: met at an expedition's end, fought alone once a day, and every tenth depth of the Deep",
+    "One of a region's two hardest foes, each fighting its own way: met at an expedition's end, fought alone once a day (a day missed banked, up to three), and every tenth depth of the Deep",
   ],
   [
     'Bounty',
@@ -168,7 +168,7 @@ export const TERMS: [term: string, meaning: string][] = [
   ['Rare', 'A find of about 1 in 500 actions'],
   [
     "Realm's boss",
-    'The boss of the week, fought by every player once a day at their own measure; when the realm has struck enough it falls, and everyone who struck takes a share',
+    'The boss of the week, fought by every player once a day at their own measure (a day missed banked, up to three strikes); when the realm has struck enough it falls, and everyone who struck takes a share',
   ],
   ['Region', 'Where foes are fought: the march, the Sunken Fen and the Ashen Peaks, each a tab of Combat'],
   ["Realm's work", 'A work the whole realm raises in a season, in five stages, from gold and materials anyone gives'],

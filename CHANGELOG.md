@@ -391,3 +391,4 @@
 - Session 250: phase three audited. A Level up's materials are written as "Moon rune ×3,464" where "3,464 Moon rune" read wrongly; step 6 plays a building paid in materials and a charter raised in the page.
 - Session 251: heirlooms. Six pieces forged at Smithing 90 from a boss's ten Rare finds and its Legendary find, each of the last tier's strength with its boss's way; never tempered or sold; each wins somewhere and loses somewhere against tempered dawnsteel.
 - Session 252: phase four audited. Fight as leaves a worn weapon of its style that is worth as much on, where it took an heirloom off for an untempered dawnsteel piece; step 6 forges and wears an heirloom in the page.
+- Session 253: days banked: a boss's daily fight and the realm's strike bank up to three days, fought one after another by the day's bosses and counted on the Hearth, so a friend who plays every other day keeps up.
