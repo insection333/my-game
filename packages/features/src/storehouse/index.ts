@@ -13,7 +13,7 @@ import { steadingKeeps } from '../shared/steading.ts';
 import { capacity, ENLARGE_COSTS, noRoom, SLOTS_PER_ENLARGEMENT, slotsUsed, storeOf } from '../shared/storehouse.ts';
 import { useFind } from './finds.ts';
 import { buy, enlarge, findsToSell, priceOf, sell, sellFinds } from './rules.ts';
-import { oldGear, sellGear, setLock } from './tidy.ts';
+import { oldGear, sellGear, setLock, throwAway } from './tidy.ts';
 
 /** The Storehouse's space, as the page shows it. */
 export interface CapacityView {
@@ -174,6 +174,12 @@ export const storehouse = defineFeature({
       input: z.object({}).strict(),
       example: {},
       run: (state) => sellGear(state),
+    }),
+    // An item worth nothing thrown away, freeing its space (session 276).
+    throwAway: defineRoute({
+      input: z.object({ item: Id }).strict(),
+      example: { item: 'spark-rune' },
+      run: (state, input, now) => throwAway(state, input.item, now),
     }),
     lock: defineRoute({
       input: z.object({ item: Id, on: z.boolean() }).strict(),

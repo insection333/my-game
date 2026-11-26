@@ -9,7 +9,9 @@ import { itemOf } from '../shared/catalog.ts';
 import { HITPOINTS } from '../shared/combat/data.ts';
 import { combatOf } from '../shared/combat/state.ts';
 import { skillLevel } from '../shared/skill.ts';
-import { isLocked, LOCKS, storeOf, type StoreState } from '../shared/storehouse.ts';
+import { laneUsing } from '../shared/in-use.ts';
+import { pedlarKeeps } from '../shared/pedlar-lots.ts';
+import { isLocked, LOCKS, storeOf, worthless, type StoreState } from '../shared/storehouse.ts';
 import { stepsOf } from '../shared/temper.ts';
 
 /** How far below what the player may wear a piece must be to count as old. */
@@ -79,4 +81,30 @@ export function setLock(state: State, item: string, on: boolean): { state: State
   if (!out.locked!.length) delete out.locked;
   next.features.storehouse = out;
   return { state: next, result: { ok: true } };
+}
+
+export type ThrowResult =
+  { ok: true; count: number } | { ok: false; reason: { code: 'notWorthless' | 'locked' | 'inUse' | 'nothingToThrow' } };
+
+/** How many of an item worth nothing may go: all held but what the pedlar wants today; none while a running lane
+ *  uses it (a fighter's supply, an artisan's ingredient) or it is locked. */
+export function throwable(state: State, item: string, at: number): number {
+  if (!worthless(item) || isLocked(state, item) || laneUsing(state, item)) return 0;
+  return Math.max(0, countOf(state, item) - pedlarKeeps(state, at, item));
+}
+
+/** Throws away an item worth nothing (session 276), all of it that may go, freeing its space. */
+export function throwAway(state: State, item: string, at: number): { state: State; result: ThrowResult } {
+  const no = (code: 'notWorthless' | 'locked' | 'inUse' | 'nothingToThrow') => ({
+    state,
+    result: { ok: false as const, reason: { code } },
+  });
+  if (!worthless(item)) return no('notWorthless');
+  if (isLocked(state, item)) return no('locked');
+  if (laneUsing(state, item)) return no('inUse');
+  const count = throwable(state, item, at);
+  if (count < 1) return no('nothingToThrow');
+  const next = structuredClone(state);
+  take(next, item, count);
+  return { state: next, result: { ok: true, count } };
 }

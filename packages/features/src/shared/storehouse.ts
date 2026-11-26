@@ -5,6 +5,7 @@
 import { relicSlots } from './expeditions/relics.ts';
 import { countOf, type State, type StopReason } from '@idle-clash/kernel';
 import { z } from 'zod';
+import { itemOf } from './catalog.ts';
 import { dropping, partReader } from './part.ts';
 
 export const START_SLOTS = 24;
@@ -43,6 +44,15 @@ export const storeOf: (state: State) => StoreState = partReader(
 
 /** Whether an item is locked against selling (session 241): no sale, Sell finds or Sell old gear takes it. */
 export const isLocked = (state: State, item: string): boolean => (storeOf(state).locked ?? []).includes(item);
+
+/** An item worth nothing to the vendor that only a space keeps (session 276): the first two tiers' runes,
+ *  whetstones and arrows. A fighter carries the best supply held, so an earlier tier's is never used again, and
+ *  with no price it could not be sold: it held a space for good. Never gear (an heirloom is worth nothing too),
+ *  a find or food. */
+export const worthless = (item: string): boolean => {
+  const i = itemOf(item);
+  return !!i && i.value === 0 && (i.kind === 'resource' || i.kind === 'supply');
+};
 
 /** Spaces: the first 24, six for each enlargement, and six for each rank of the builder's cord (a relic). */
 export const capacity = (state: State): number =>
