@@ -32,11 +32,9 @@ function gives(effect: CastleEffect, level: number): string {
 export function Halls() {
   return (
     <div className={s.grid}>
-      <div className={s.column}>
-        <College />
-        <Charters />
-      </div>
+      <College />
       <Reliquary />
+      <Charters />
     </div>
   );
 }
@@ -99,9 +97,11 @@ function Charters() {
   const { castle, purse, busy } = useSyncedCastle();
   if (!castle) return null;
   return (
-    <section data-section>
+    // Across both columns, the three side by side where there is room (session 249: under the War College it
+    // stood beside 418 px of empty page on a wide screen).
+    <section data-section className={s.wide}>
       <Panel title={t('castle.charters.title')} flush>
-        <div data-slot="castle.charters" role="group" aria-label={t('castle.charters.title')}>
+        <div data-slot="castle.charters" className={s.charters} role="group" aria-label={t('castle.charters.title')}>
           {CHARTER_IDS.map((id) => {
             const rank = castle.charters[id];
             const marks = rank < CHARTER_MARKS.length ? CHARTER_MARKS[rank] : null;
