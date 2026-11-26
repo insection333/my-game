@@ -47,6 +47,8 @@ import { HOUSEKEEPING_EVERY_MS, keepHouse } from './housekeeping.ts';
 import { Push } from './push/push.ts';
 import { Realm } from './game/realm.ts';
 import { RealmWorks } from './game/realm-works.ts';
+import { Social } from './game/social.ts';
+import { socialRoutes } from './game/social-routes.ts';
 import { pushRoutes } from './push/routes.ts';
 import { keysOf, webPushSender } from './push/send.ts';
 import { withCastle } from './castle/mirror.ts';
@@ -98,7 +100,9 @@ export async function buildApp(
     push: null as unknown as Push,
     realm: new Realm(db),
     realmWorks: new RealmWorks(db),
+    social: null as unknown as Social,
   };
+  ctx.social = new Social(db, (id) => ctx.notices.list(id));
   ctx.push = new Push(
     {
       db,
@@ -124,6 +128,11 @@ export async function buildApp(
   };
   // A stage of the realm's work raised (session 218): each who gave hears at once, and their tray keeps it.
   ctx.realmWorks.onStage = (playerId, events) => {
+    ctx.live.publish(playerId, { type: 'events', events });
+    ctx.notices.add(playerId, events);
+  };
+  // A cheer or a gift come (session 254): told at once, and kept in the tray.
+  ctx.social.onTold = (playerId, events) => {
     ctx.live.publish(playerId, { type: 'events', events });
     ctx.notices.add(playerId, events);
   };
@@ -191,6 +200,7 @@ export async function buildApp(
   castleRoutes(app, ctx);
   moderationRoutes(app, ctx);
   profileRoutes(app, ctx);
+  socialRoutes(app, ctx);
   mailRoutes(app, ctx);
   pushRoutes(app, ctx);
   if (config.webDist) webRoutes(app, config.webDist);

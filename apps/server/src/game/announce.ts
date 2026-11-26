@@ -22,6 +22,7 @@ export function announce(
     ctx.notices.add(playerId, events);
     ctx.realm.heard(playerId, events);
     ctx.realmWorks.heard(playerId, events);
+    ctx.social.heard(playerId, events);
     ctx.hiscores.update(playerId, doc.state, at);
   })();
 }

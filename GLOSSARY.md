@@ -21,13 +21,14 @@ Plain, warm and brief, with an old-world flavour in names rather than in instruc
 | Badge | A rare feat's mark worn beside your title, opened by a deed few reach |
 | Banner | The colour your plaque and your hiscores pennant fly, opened by deeds |
 | Bar | Metal smelted from ore: copper, bronze, iron, steel |
-| Block | Stops one player sending you messages, and nothing else; Unblock lets them again |
+| Block | Stops one player sending you messages, cheers and gifts, and nothing else; Unblock lets them again |
 | Boss | One of a region's two hardest foes, each fighting its own way: met at an expedition's end, fought alone once a day (a day missed banked, up to three), and every tenth depth of the Deep |
 | Bounty | One of three a day on Combat: a foe you fare well against and about an hour of fights of it, paid in gold and marks once done |
 | Call to arms | Castle Clash: answered once a day for AP held in reserve; days in a row build a streak that adds to the hourly AP |
-| Castle Clash | The castle each lord raises at total level 100: an edict for the rest of the game, troops, spies and sieges |
+| Castle Clash | The castle each lord raises from total level 30: an edict for the rest of the game, troops, spies and sieges |
 | Castle rating | A castle's lasting strength from its buildings, troops and best relics; lords are matched near it |
 | Charter | One of three lasting gains bought with war marks in the Halls: the Land (gathering), the Craft (ingredients kept) and Arms (damage), 1% a rank for five ranks |
+| Cheer | One press on a friend's card for what they did this week (a climb on a ladder, a legend taken, a strike on the realm's boss), a small moment for them; three a day |
 | Collect | Close the away recap: everything in it is already in your Storehouse |
 | Collection log | The record of every find you have made, by skill |
 | Combat lane | The lane that fights; trains your weapon's style and Hitpoints |
@@ -55,6 +56,7 @@ Plain, warm and brief, with an old-world flavour in names rather than in instruc
 | Fork | Halfway along an expedition: two roads, one chosen before setting out, each changing the second half |
 | Frame | The metal rim of your plaque and your picture, opened by deed points (and two of prestige by deeds) |
 | Gathering lane | The lane that cuts wood, mines ore, fishes or draws runes; the fire opens a second one |
+| Gift | A supply cache sent to a friend once a day from their card, opened on the Hearth as one of their own and worth a quarter of an hour of their earning; nothing leaves the giver's Storehouse |
 | Glow | A slow ring of light round your picture, opened by a deed of the middle or end of the game |
 | Gold | Earned from selling and from foes; buys food and Storehouse space |
 | Health | How much damage you can take; set by Hitpoints |

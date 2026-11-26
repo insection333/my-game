@@ -111,7 +111,7 @@ export const progress: Record<string, string> = {
   'goals.needsItem': 'Needs {item}',
   'help.goals.title': 'Goals',
   'help.goals.body':
-    "Goals show what to aim for next. First steps walk you through the game; then three short goals follow your lanes, a daily goal asks for a day's work in one skill, the week's contract sets four tasks drawn from your own play, and a milestone marks the next total level. Claim each for its reward: a supply cache, or gold for a milestone; Claim all takes every one ready at once. Follow up to three deeds from their sheets to keep them in Next up.",
+    "Goals show what to aim for next. First steps walk you through the game; then three short goals follow your lanes, a daily goal asks for a day's work in one skill, the week's contract sets four tasks drawn from your own play, and a milestone marks the next total level. Claim each for its reward: a supply cache, or gold for a milestone; Claim all takes every one ready at once. Follow up to three deeds from their sheets to keep them in Next up. A friend's card offers Cheer for something they did this week (three cheers a day) and, once a day, Send a gift: a supply cache they open on the Hearth, worth a quarter of an hour of their own earning, so nothing leaves your Storehouse.",
   // Supply caches: what short goals and the daily goal pay in
   'goals.reward.cache': 'A cache, about {amount} gold',
   'goals.openCache': 'Open cache',

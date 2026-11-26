@@ -72,6 +72,7 @@ export function erase(ctx: Ctx, playerId: string): void {
     ctx.push.remove(playerId);
     ctx.realm.remove(playerId);
     ctx.realmWorks.remove(playerId);
+    ctx.social.remove(playerId);
     const name = ctx.db.select({ name: players.name }).from(players).where(eq(players.id, playerId)).get()?.name;
     if (name) ctx.notices.forgetFoe(name);
     if (name) forgetBannerActor(ctx, name);

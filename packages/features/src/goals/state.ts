@@ -83,6 +83,8 @@ export const GoalsState = z
     /** The week's contract (session 172), and the weeks kept: counted, never taken away. */
     week: WeekContract.nullable().default(null),
     weeks: Count.default(0),
+    /** The gifts opened lately (session 254), by the server's id, so one is never opened twice. */
+    gifts: z.array(z.number().int().positive()).max(30).default([]),
   })
   .strict();
 export type GoalsState = z.infer<typeof GoalsState>;
@@ -96,6 +98,7 @@ export const goalsOf: (state: State) => GoalsState = partReader('goals', GoalsSt
   opened: 0,
   week: null,
   weeks: 0,
+  gifts: [],
 });
 
 export const setGoals = (state: State, g: GoalsState): void => {

@@ -13,6 +13,7 @@ import { bountyWords } from './bounty-words.ts';
 import { deepDoneWords } from './expeditions/deep-words.ts';
 import { seasonOpenedWords } from './season-view.ts';
 import { remedyFor } from './remedy.ts';
+import { cheeredWords, giftCameWords } from './social-words.ts';
 
 export type RecapKind =
   | 'legendary'
@@ -216,6 +217,15 @@ export function noticeLine(e: GameEvent): (RecapLine & { at: number }) | null {
     case 'bountyDone': {
       const w = bountyWords(e);
       return { kind: 'goal', text: `${w.title}. ${w.body}`, icon: e.foe, href: '/combat', at: e.at };
+    }
+    case 'cheered': {
+      // Cheers (session 254): who cheered and what for.
+      const w = cheeredWords(e);
+      return { kind: 'rank', text: `${w.title}. ${w.body}`, icon: w.icon, href: '/hiscores', at: e.at };
+    }
+    case 'giftCame': {
+      const w = giftCameWords(e);
+      return { kind: 'goal', text: `${w.title}. ${w.body}`, icon: 'supply-cache', href: '/?panel=gifts', at: e.at };
     }
     case 'passedBy': {
       // Rivals (session 173): who passed you, where, and where you stand now.

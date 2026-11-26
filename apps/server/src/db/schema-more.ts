@@ -120,3 +120,32 @@ export const adminNotes = sqliteTable(
   },
   (t) => [index('admin_notes_player').on(t.playerId, t.at)],
 );
+
+/** Cheers (session 254): one player's cheer to another, by the UTC day, for the limits (three a day, one a
+ *  friend a day). Kept two days. */
+export const cheers = sqliteTable(
+  'cheers',
+  {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    fromId: text('from_id').notNull(),
+    toId: text('to_id').notNull(),
+    at: integer('at').notNull(),
+    day: text('day').notNull(),
+  },
+  (t) => [index('cheers_from_day').on(t.fromId, t.day), index('cheers_to').on(t.toId)],
+);
+
+/** Gifts (session 254): a supply cache one player sends another once a day, waiting until opened. Opened or
+ *  not, each is kept a month for the limits and then let go. */
+export const gifts = sqliteTable(
+  'gifts',
+  {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    fromId: text('from_id').notNull(),
+    toId: text('to_id').notNull(),
+    at: integer('at').notNull(),
+    day: text('day').notNull(),
+    openedAt: integer('opened_at'),
+  },
+  (t) => [index('gifts_from_day').on(t.fromId, t.day), index('gifts_to').on(t.toId, t.day), index('gifts_at').on(t.at)],
+);

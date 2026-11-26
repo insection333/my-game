@@ -10,7 +10,7 @@ export type {
   FindEntry,
   CollectionGroup,
 } from './shared/skill-slots.ts';
-export type { GoalRow, GoalsView, StandingView } from './goals/index.ts';
+export type { GiftsView, GoalRow, GoalsView, StandingView } from './goals/index.ts';
 export { RANKS } from './shared/standing.ts';
 export { CACHE_DRAWS } from './goals/cache.ts';
 export * as items from './shared/items.ts';
@@ -33,6 +33,7 @@ export { pedlarWants } from './shared/pedlar-lots.ts';
 export * as recap from './shared/recap.ts';
 export { rankUpWords } from './shared/rank-up.ts';
 export { realmName, realmWords } from './shared/realm-words.ts';
+export { cacheText, cheerWhat, socialMoment } from './shared/social-words.ts';
 export { bountyWords } from './shared/bounty-words.ts';
 export type { BountyView, BountyLine } from './combat/bounty.ts';
 export { RealmMirror, realmBossIn, weekOf, REALM_PER_PLAYER, REALM_LEAST } from './shared/realm.ts';

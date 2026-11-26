@@ -26,6 +26,7 @@ export function keepHouse(ctx: Ctx): void {
     .run();
   sweepModeration(ctx, now);
   sweepMail(ctx, now);
+  ctx.social.sweep(now);
   const [old, oldDeep] = [oldSeasonRows(now), oldDeepRows(now)];
   // The seasons' ladders before the last, and the Deep's weeks before the last (session 214).
   const gone = ctx.db

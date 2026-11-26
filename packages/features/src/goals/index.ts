@@ -7,10 +7,12 @@ import { firstStepRows, firstStepsDone } from './first-steps.ts';
 import { ladderRows } from './ladder-view.ts';
 import { standingView } from './ranks.ts';
 import { claim, claimAll, needsRefresh, refresh, swap } from './rules.ts';
+import { giftErrands, giftsView, openGift } from './gift.ts';
 import type { State } from '@idle-clash/kernel';
 import type { GoalRow, GoalsView } from './view.ts';
 
 export type { GoalRow, GoalsView } from './view.ts';
+export type { GiftsView } from './gift.ts';
 
 /** The rows the Hearth lists: First steps while unfinished, the ladder after. */
 const rowsOf = (state: State, now: number): GoalRow[] =>
@@ -50,6 +52,12 @@ export const goals = defineFeature({
       example: { task: 0 },
       run: (state, input, now) => swap(state, input.task, now),
     }),
+    // A friend's gift opened (session 254).
+    openGift: defineRoute({
+      input: z.object({ id: z.number().int().positive() }).strict(),
+      example: { id: 1 },
+      run: (state, input, now) => openGift(state, input.id, now),
+    }),
     refresh: defineRoute({
       passive: true,
       input: z.object({}).strict(),
@@ -58,6 +66,8 @@ export const goals = defineFeature({
     }),
   },
   slots: {
+    'hearth.gifts': ({ state, now }) => giftsView(state, now) as unknown as Json,
+    'hearth.errands': ({ state }) => giftErrands(state) as unknown as Json,
     'hearth.standing': ({ state }) => standingView(state) as unknown as Json,
     'hearth.goals': ({ state, now }) => {
       if (!firstStepsDone(state)) {

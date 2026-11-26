@@ -114,6 +114,14 @@ export interface EventMap {
   /** Rivals (session 173): a listed player passed you on a ladder you climb; `foe` is their name as it was
    *  then (emptied if their account goes), `place` yours now. */
   passedBy: { skill: string; foe: string; place: number };
+  /** Cheers (session 254): a friend cheered this player for a climb on a ladder (`detail` the ladder, `place`
+   *  the place), a legend taken (`detail` the legend) or a strike on the realm's boss (`detail` the boss); `from`
+   *  is their name then (emptied if their account goes). Told by the server. */
+  cheered: { from: string; occasion: 'rank' | 'legend' | 'strike'; detail: string; place: number };
+  /** A gift (session 254): a friend sent a supply cache, told by the server; and the cache opened, with what it
+   *  held. */
+  giftCame: { from: string };
+  giftOpened: { gift: number; from: string; cache: { grade: string; items: { item: string; count: number }[] } };
   /** A season seen for the first time (session 166): its number, its twist, and the goals done in the season
    *  before it (0 when none). Said once, on the player's first visit in it. */
   seasonOpened: { number: number; twist: string; pair?: string; last: number };
@@ -164,5 +172,8 @@ export const NOTABLE_EVENTS: readonly (keyof EventMap)[] = [
   'realmShare',
   'bountyDone',
   'deepDone',
+  'cheered',
+  'giftCame',
+  'giftOpened',
 ];
 export const isNotable = (e: GameEvent): boolean => NOTABLE_EVENTS.includes(e.type);

@@ -11,12 +11,17 @@ import { recordOf } from '../castle/record.ts';
 import { limit, type Ctx } from '../context.ts';
 import { playerBastions, players } from '../db/schema.ts';
 import { contractRoute, fail } from '../http.ts';
+import { socialOf } from './social-routes.ts';
 
 const KEPT_MS = 60_000;
 const DAY = 86_400_000;
 
 /** A player's card as others see it, or null if there is no such player (or they are banned). */
-export function profileOf(ctx: Ctx, name: string, now: number): (Omit<Profile, 'you'> & { id: string }) | null {
+export function profileOf(
+  ctx: Ctx,
+  name: string,
+  now: number,
+): (Omit<Profile, 'you' | 'social'> & { id: string; createdAt: number }) | null {
   const p = ctx.db
     .select({ id: players.id, name: players.name, createdAt: players.createdAt, bannedAt: players.bannedAt })
     .from(players)
@@ -48,6 +53,7 @@ export function profileOf(ctx: Ctx, name: string, now: number): (Omit<Profile, '
   };
   return {
     id: p.id,
+    createdAt: p.createdAt,
     name: p.name,
     since: Math.max(0, Math.floor((now - p.createdAt) / DAY)),
     title: shown.title,
@@ -95,8 +101,9 @@ export function profileRoutes(app: FastifyInstance, ctx: Ctx): void {
         for (const [k, v] of kept) if (now - v.at > KEPT_MS) kept.delete(k);
       }
       if (!hit.card) throw fail(404, 'notFound');
-      const { id, ...card } = hit.card;
-      return { ...card, you: id === asker } satisfies Profile;
+      const { id, createdAt, ...card } = hit.card;
+      const you = id === asker;
+      return { ...card, you, social: you ? null : socialOf(ctx, asker, { id, createdAt }, now) } satisfies Profile;
     },
     requirePlayer(ctx),
   );
