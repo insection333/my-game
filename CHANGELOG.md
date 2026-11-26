@@ -390,3 +390,4 @@
 - Session 249: war marks that cross over. Three charters in the Halls, bought with war marks, lift gathering's extra items, ingredients kept and fight damage 1% a rank for five ranks, edict paid or not.
 - Session 250: phase three audited. A Level up's materials are written as "Moon rune ×3,464" where "3,464 Moon rune" read wrongly; step 6 plays a building paid in materials and a charter raised in the page.
 - Session 251: heirlooms. Six pieces forged at Smithing 90 from a boss's ten Rare finds and its Legendary find, each of the last tier's strength with its boss's way; never tempered or sold; each wins somewhere and loses somewhere against tempered dawnsteel.
+- Session 252: phase four audited. Fight as leaves a worn weapon of its style that is worth as much on, where it took an heirloom off for an untempered dawnsteel piece; step 6 forges and wears an heirloom in the page.

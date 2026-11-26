@@ -87,10 +87,12 @@ export function bestChanges(state: State, style: Style): { slot: GearSlot; item:
   return GEAR_SLOTS.flatMap((slot) => {
     const best = bestIn(state, slot, style);
     const on = worn[slot];
+    // A piece as good is left on: a weapon of the style asked (session 252: worn, the Troll-chief's blade tied
+    // with an untempered dawnsteel sword, lost the tie by name, and Fight as Melee took it off).
     const keep =
       on &&
       countOf(state, on) > 0 &&
-      (slot !== 'weapon' || on === best) &&
+      (slot !== 'weapon' || itemOf(on)?.gear?.style === style) &&
       worthOf(state, on) >= worthOf(state, best ?? on);
     return best && !keep ? [{ slot, item: best }] : [];
   });
