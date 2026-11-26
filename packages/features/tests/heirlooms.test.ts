@@ -16,6 +16,7 @@ import { reachOf } from '../src/expeditions/deep-view.ts';
 import { forgeHeirloom } from '../src/smithing/heirloom.ts';
 import { temper } from '../src/smithing/temper.ts';
 import { oldGear } from '../src/storehouse/tidy.ts';
+import { bestChanges } from '../src/combat/gear.ts';
 
 const T0 = Date.UTC(2026, 10, 26);
 const SET = { helm: 'dawnsteel-helm', body: 'dawnsteel-body', legs: 'dawnsteel-legs' };
@@ -103,5 +104,15 @@ describe('against tempered dawnsteel, each heirloom', () => {
       expect(b, item).toBeGreaterThan(a);
       expect(b - a, item).toBeLessThanOrEqual(1);
     }
+  });
+});
+
+describe('an heirloom worn', () => {
+  it('is left on by Fight as, beside an untempered piece of its tier (session 252)', () => {
+    const s = at99({ weapon: 'troll-blade', helm: 'barrow-helm' }, {}, { 'dawnsteel-sword': 1, 'dawnsteel-helm': 1 });
+    expect(bestChanges(s, 'melee')).toEqual([]);
+    // Fighting as another style still changes the weapon.
+    const magic = at99({ weapon: 'troll-blade' }, {}, { 'dawnsteel-staff': 1 });
+    expect(bestChanges(magic, 'magic')).toEqual([{ slot: 'weapon', item: 'dawnsteel-staff' }]);
   });
 });
