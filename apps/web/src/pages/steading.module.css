@@ -7,7 +7,7 @@
   margin: 0 -1px -1px 0;
 }
 
-@container main (max-width: 359px) {
+@container main (max-width: 22.4375rem) {
   .works {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   }

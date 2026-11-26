@@ -14,34 +14,49 @@ const ready = (page: Page) =>
     .then(() => page.waitForTimeout(300));
 const WIDTH = 390;
 
+/** Two ways larger text reaches the page: on a 390 px phone with its text at 150% (the page's own rem), and on a
+ *  1,024 px screen whose browser is set to 32 px text (session 275), which also scales the breakpoints written
+ *  in em. With them in px, the desktop's rail of a fixed 200 px kept "Storehouse" and "Castle Clash" cut short on
+ *  every page; now that screen is laid out as the 512 px it holds. Every view at the phone; at the desktop, every
+ *  view but an open sheet's (the rail and the page are what the setting moves). */
+const CASES = [
+  { width: WIDTH, label: `${LARGE_TEXT} text`, browser: 0, all: true },
+  { width: 1024, label: 'the browser set to 32 px text', browser: 32, all: false },
+] as const;
+
 export async function runLargeTextProofs(served: Served): Promise<string[]> {
   const problems: string[] = [];
-  for (const v of views()) {
-    const page = await openPage('chromium', v.path, { viewport: { width: WIDTH, height: 844 } }, v.as);
-    await page.addInitScript((scale: string) => {
-      document.addEventListener('DOMContentLoaded', () => {
-        const style = document.createElement('style');
-        style.textContent = `html { font-size: ${scale} !important }`;
-        document.head.appendChild(style);
-      });
-    }, LARGE_TEXT);
-    try {
-      await page.goto(`${served.url}${v.path}`);
-      // Measured once the page is ready, its fonts in: a fallback face is wider, and cut the lanes' names.
-      await ready(page);
-      // The step's own measure, held to what larger text can break: sideways scroll, things past the edge
-      // or cut off by their box, words cut short.
-      const m = await page.evaluate(measurePage);
-      const found = [...new Set(m.problems.filter((p) => /sideways|runs off|cut short|cut off/.test(p)))].slice(0, 3);
-      for (const f of found) problems.push(`At ${WIDTH} px with ${LARGE_TEXT} text, ${v.name}: ${f}`);
-    } catch (err) {
-      problems.push(
-        `At ${WIDTH} px with ${LARGE_TEXT} text, ${v.name} did not open (${err instanceof Error ? err.message.split('\n')[0] : String(err)})`,
-      );
-    } finally {
-      await page.close();
+  for (const c of CASES)
+    for (const v of views().filter((x) => c.all || !/panel|-view-/.test(x.name))) {
+      const page = await openPage('chromium', v.path, { viewport: { width: c.width, height: 844 } }, v.as);
+      if (c.browser) {
+        const cdp = await page.context().newCDPSession(page);
+        await cdp.send('Page.setFontSizes', { fontSizes: { standard: c.browser, fixed: Math.round(c.browser * 0.8) } });
+      } else
+        await page.addInitScript((scale: string) => {
+          document.addEventListener('DOMContentLoaded', () => {
+            const style = document.createElement('style');
+            style.textContent = `html { font-size: ${scale} !important }`;
+            document.head.appendChild(style);
+          });
+        }, LARGE_TEXT);
+      try {
+        await page.goto(`${served.url}${v.path}`);
+        // Measured once the page is ready, its fonts in: a fallback face is wider, and cut the lanes' names.
+        await ready(page);
+        // The step's own measure, held to what larger text can break: sideways scroll, things past the edge
+        // or cut off by their box, words cut short.
+        const m = await page.evaluate(measurePage);
+        const found = [...new Set(m.problems.filter((p) => /sideways|runs off|cut short|cut off/.test(p)))].slice(0, 3);
+        for (const f of found) problems.push(`At ${c.width} px with ${c.label}, ${v.name}: ${f}`);
+      } catch (err) {
+        problems.push(
+          `At ${c.width} px with ${c.label}, ${v.name} did not open (${err instanceof Error ? err.message.split('\n')[0] : String(err)})`,
+        );
+      } finally {
+        await page.close();
+      }
     }
-  }
   return problems;
 }
 

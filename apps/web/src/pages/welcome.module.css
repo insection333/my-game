@@ -22,7 +22,7 @@
   padding: var(--pad-top) var(--pad-right) calc(var(--s-5) + env(safe-area-inset-bottom, 0px)) var(--pad-left);
 }
 
-@media (min-width: 900px) {
+@media (min-width: 56.25em) {
   .page {
     grid-template-columns: minmax(0, 1fr) minmax(0, 400px);
     align-items: start;
@@ -76,7 +76,7 @@
   gap: var(--s-3);
 }
 
-@media (min-width: 900px) {
+@media (min-width: 56.25em) {
   .title {
     font-size: 2.5rem;
   }
@@ -113,7 +113,7 @@
 
 /* The narrowest phones (a fold's 280 px cover screen): the loop's pictures shrink to keep it on the
    screen, where at 48 px it ran 23 px past the edge and the whole page scrolled sideways (session 157). */
-@media (max-width: 319px) {
+@media (max-width: 19.9375em) {
   .loop,
   .loop li {
     gap: var(--s-1);

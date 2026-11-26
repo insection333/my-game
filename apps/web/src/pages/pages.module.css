@@ -43,7 +43,7 @@
   grid-area: steading;
 }
 
-@container main (min-width: 720px) {
+@container main (min-width: 45rem) {
   .hearth {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     grid-template-rows: auto auto 1fr;
@@ -64,7 +64,7 @@
   border-radius: var(--r-panel);
 }
 
-@container main (min-width: 720px) {
+@container main (min-width: 45rem) {
   .banner {
     height: 132px;
   }
@@ -121,7 +121,7 @@
   margin-right: 16px;
 }
 
-@container main (max-width: 719px) {
+@container main (max-width: 44.9375rem) {
   .plaquePicture > span:first-child,
   .plaquePicture > span:first-child svg {
     width: 36px !important;
@@ -166,7 +166,7 @@
   align-items: start;
 }
 
-@container main (min-width: 720px) {
+@container main (min-width: 45rem) {
   .pair {
     grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
   }
@@ -176,7 +176,7 @@
   display: block;
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 64em) {
   .phoneOnly {
     display: none;
   }
@@ -259,7 +259,7 @@ a.row:hover {
 }
 
 /* On wide screens a skill's head is a raised band across the page, its bar given more length (session 131). */
-@media (min-width: 1024px) {
+@media (min-width: 64em) {
   .skillHead {
     padding: var(--s-4) var(--s-5);
     border: 1px solid var(--line);

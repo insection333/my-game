@@ -107,7 +107,7 @@
 }
 
 /* On the narrowest phones a chip gives its icon's room to the words ("Old silverbark"). */
-@media (max-width: 359px) {
+@media (max-width: 22.4375em) {
   .chip .icon {
     display: none;
   }

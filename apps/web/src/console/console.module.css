@@ -340,7 +340,7 @@
 }
 
 /* From 1,024 px the sections are a rail down the left, the full height of the screen, in three groups. */
-@media (min-width: 1024px) {
+@media (min-width: 64em) {
   .console {
     grid-template-columns: 15rem minmax(0, 1fr);
     grid-template-rows: auto minmax(0, 1fr);
