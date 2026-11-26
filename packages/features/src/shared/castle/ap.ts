@@ -74,10 +74,6 @@ export function claimCallToArms(c: Castle, now: number): CallResult {
   };
 }
 
-/** Spends AP, or null when there is not enough. */
-export const spendAp = (c: Castle, ap: number): Castle | null =>
-  c.activeAp + 1e-9 >= ap ? { ...c, activeAp: Math.max(0, c.activeAp - ap) } : null;
-
 /** What answering today's Call to arms would give, as answering it reckons (session 127: the button said
  *  today's reserve at the old streak, without the 5 AP more). 0 once answered. */
 export function callGain(c: Castle, now: number): number {

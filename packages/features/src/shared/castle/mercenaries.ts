@@ -188,7 +188,3 @@ export function lordsInReach<T extends { rating: number }>(
   }
   return { lords: [], reach: 0 };
 }
-
-/** Whether a lord is a fair match: unshielded, not you, within 0.75 to 1.35 of your rating. */
-export const inBracket = (mine: number, theirs: number): boolean =>
-  theirs >= SIEGE.BRACKET_LOW * mine && theirs <= SIEGE.BRACKET_HIGH * mine;

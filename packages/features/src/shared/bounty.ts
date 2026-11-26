@@ -5,7 +5,7 @@
 // fought while the bounty is held, so the lane, the arena and Your odds all meet the elite alike.
 import { seeded, type State } from '@idle-clash/kernel';
 import { z } from 'zod';
-import { FOES, foeById, HITPOINTS, type Foe } from './combat/data.ts';
+import { FOES, HITPOINTS, type Foe } from './combat/data.ts';
 import { doneCount } from './given.ts';
 import { partReader } from './part.ts';
 import { skillLevel } from './skill.ts';
@@ -119,9 +119,3 @@ export function offersFor(state: State, now: number, fair: (foe: Foe) => { secon
     elite: elites && p.foe.tier >= 7 && r('bounty-elite', n + i) < 0.5,
   }));
 }
-
-/** A bounty held on a foe that no longer exists is let go, as is one from a foe removed. */
-export const heldFoe = (state: State): Foe | null => {
-  const t = bountyOf(state).taken;
-  return t ? (foeById(t.foe) ?? null) : null;
-};

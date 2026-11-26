@@ -42,7 +42,6 @@ export const castleWar = {
   'castle.target.twice': 'Sieged twice today',
   'castle.target.unscouted': 'Not scouted: odds unknown',
   'castle.target.chance': '{pct} to win',
-  'castle.target.chance.set': '{pct} to win, {best} set against them',
   'castle.target.chanceAbout': 'About {pct} to win',
   'castle.target.beyond': 'Beyond you for now: no roll takes it',
   'castle.target.spies':
@@ -50,7 +49,6 @@ export const castleWar = {
   'castle.incursion.beyond': 'Beyond you for now: your troops need more levels to take it',
   'castle.incursion.spies': 'Beyond you as it stands: send spies to poison its wells and sabotage its gate first',
   'castle.target.beyondWounded': 'Beyond you while {pct}% of your troops are wounded: heal them on the Army',
-  'castle.target.chanceAbout.set': 'About {pct} to win, {best} set against them',
   'castle.target.pays': 'Pays {marks} war marks and a bounty of {gold} gold',
   'castle.target.paysMarks': 'Pays {marks} war marks',
   'castle.target.paysLord': 'A breach: up to {gold} gold and {marks} war marks',
