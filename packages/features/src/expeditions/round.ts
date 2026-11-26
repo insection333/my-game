@@ -4,7 +4,7 @@
 // through its own rules, so it pays, rests and is said as a boss fought alone is. Done, the lane rests
 // quietly and a Next queued takes over. Where six presses (and a press each time one ended) asked for each.
 import { fmt, t } from '@idle-clash/content';
-import { actionKey, type ActionRules, type GameEvent, type State } from '@idle-clash/kernel';
+import { actionKey, queueOf, type ActionRules, type GameEvent, type State } from '@idle-clash/kernel';
 import { realmBossIn, realmOf } from '../shared/realm.ts';
 import { dayOf, roundLeft, roundOn } from '../shared/expeditions/round.ts';
 import { expeditionsOf, setExpeditions } from '../shared/expeditions/state.ts';
@@ -86,7 +86,8 @@ export function roundView(state: State, now: number): RoundView | null {
   const lane = state.lanes.combat;
   const key = 'expeditions:bosses';
   const current = lane.current !== null && actionKey(lane.current.action) === key;
-  const next = lane.next !== null && actionKey(lane.next) === key;
+  // Next or behind it (session 259: queued second or third, it offered itself again).
+  const next = queueOf(lane).some((a) => actionKey(a) === key);
   const left = roundLeft(state, lane.current?.startedAt ?? now);
   const round = expeditionsOf(state).round;
   if ((current || next) && left.length && round) {

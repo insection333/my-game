@@ -96,6 +96,19 @@ describe("the day's bosses", () => {
     expect(out.state.lanes.combat.current?.action).toEqual(fight);
   });
 
+  // Session 259: queued second or third in the lane, it offered itself again.
+  it('says it is in the lane when queued behind Next', () => {
+    let s = fighterAt('peaks', 12);
+    const fight = { feature: 'combat', id: 'goblin-slinger' };
+    const other = { feature: 'combat', id: 'hollow-rat' };
+    s = engine.command(s, T0, { type: 'start', lane: 'combat', action: fight }, seeded(12)).state;
+    s = planRound(s, T0).state;
+    s = engine.command(s, T0, { type: 'queueNext', lane: 'combat', action: other }, seeded(12)).state;
+    s = engine.command(s, T0, { type: 'queueNext', lane: 'combat', action: BOSSES.action }, seeded(12)).state;
+    expect(s.lanes.combat.then?.[0]).toEqual(BOSSES.action);
+    expect(roundView(s, T0)).toMatchObject({ running: true, on: null });
+  });
+
   it('is refused with nothing to fight, and a list set yesterday fights nothing today', () => {
     const s = fighterAt('march', 13);
     const set = planRound(s, T0).state;

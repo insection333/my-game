@@ -8,6 +8,7 @@ import { FOODS, HITPOINTS } from '../shared/combat/data.ts';
 import { healsFor } from '../shared/combat/state.ts';
 import { pedlarKeeps } from '../shared/pedlar-lots.ts';
 import { skillLevel } from '../shared/skill.ts';
+import { findOf } from '../shared/catalog.ts';
 import { steadingKeeps } from '../shared/steading.ts';
 import { capacity, ENLARGE_COSTS, noRoom, SLOTS_PER_ENLARGEMENT, slotsUsed, storeOf } from '../shared/storehouse.ts';
 import { useFind } from './finds.ts';
@@ -50,7 +51,10 @@ function sellFindsView(state: State, now: number): CapacityView['sellFinds'] {
       })
     : '';
   // And what the steading's next stages take (session 244).
-  const forWorks = Object.keys(state.items).filter((id) => countOf(state, id) > 0 && steadingKeeps(state, id) > 0);
+  // Finds alone: the materials a stage takes as well are never sold by it (session 259: its logs were named).
+  const forWorks = Object.keys(state.items).filter(
+    (id) => findOf(id) && countOf(state, id) > 0 && steadingKeeps(state, id) > 0,
+  );
   const works = forWorks.length ? t('store.sellFinds.steading', { finds: findsWords(forWorks) }) : '';
   return { label: t('store.sellFinds', { gold }), ask: [ask, keeps, works].filter(Boolean).join(' ') };
 }

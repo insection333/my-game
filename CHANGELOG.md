@@ -397,3 +397,4 @@
 - Session 256: the plan measured again. The year and two years hold every check at three seeds; gold at a year 3.2 to 3.7M (was 13M) and a completionist's day 13 presses (was 24) are now checks; the pedlar's Hand in all; a friend's cheer or gift while away is in the away recap.
 - Session 257: phase six audited. Hand in all played on a phone in step 6; the plan of 26 November is done.
 - Session 258: a season said once. The Hearth's Today and the tray listed a season's opening twice (the page's goals and the server's each said it); it is now known by its number.
+- Session 259: a sweep of sessions 239 to 258. Realm strikes bank within the week alone; the day's bosses queued behind Next say so; materials used to the last leave no empty entry; Sell finds names only the finds the steading keeps; the castle's edict held to its mirror's bound.
