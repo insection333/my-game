@@ -1,12 +1,12 @@
 // Session 266: with the Citadel's materials on (the default), a Level up of the deep vault took the bars the
 // Artisan lane was forging with, and the Spy Guild's the runes a Magic fighter carried, stopping the lane or
-// the supply without a word. A material a running lane needs, or one locked, is left; gold pays all, and the
+// the supply without a word. A day of what a running lane uses is kept back, and a locked material left; the
 // line says why.
 import { XP_TABLE } from '@idle-clash/content';
 import { newState, type State } from '@idle-clash/kernel';
 import { describe, expect, it } from 'vitest';
 import '../src/index.ts';
-import { materialFor, materialsFor } from '../src/shared/castle-materials.ts';
+import { dayOfUse, materialFor, materialsFor } from '../src/shared/castle-materials.ts';
 
 const T0 = Date.UTC(2026, 10, 24, 9);
 
@@ -23,10 +23,21 @@ function smith(forging: boolean): State {
 }
 
 describe("the Citadel's materials", () => {
-  it('leave the bars the Artisan lane is forging with, and take them once it is not', () => {
+  it('keep back a day of the bars the Artisan lane is forging with, and take the rest', () => {
     expect(materialFor(smith(false), 'deepVault')).toBe('copper-bar');
+    const day = dayOfUse(smith(true), 'copper-bar');
+    expect(day).toBeGreaterThan(1_000);
+    expect(dayOfUse(smith(false), 'copper-bar')).toBe(0);
+    // Plenty held: what is spare pays, a day kept back.
+    const rich = smith(true);
+    rich.items['copper-bar'] = day + 50_000;
+    const paid = materialsFor(rich, 'deepVault', 100_000_000)!;
+    expect(paid.count).toBe(50_000);
+    // No more than a day held: gold pays all, and the lane runs on.
+    const poor = smith(true);
+    poor.items['copper-bar'] = day;
+    expect(materialsFor(poor, 'deepVault', 100_000_000)).toBeNull();
     expect(materialsFor(smith(false), 'deepVault', 100_000)?.count).toBeGreaterThan(0);
-    expect(materialsFor(smith(true), 'deepVault', 100_000)).toBeNull();
   });
 
   it('leave a material locked in the Storehouse', () => {

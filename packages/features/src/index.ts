@@ -18,7 +18,7 @@ export type { ErrandRow } from './shared/errand.ts';
 export * as combatData from './shared/combat/data.ts';
 export { healsFor } from './shared/combat/state.ts';
 export { feastWords } from './shared/feast.ts';
-export { materialFor, materialInUse, materialsFor, MATERIAL_OF } from './shared/castle-materials.ts';
+export { dayOfUse, materialFor, materialsFor, MATERIAL_OF } from './shared/castle-materials.ts';
 export { gearDoes } from './combat/gear.ts';
 export type { Fighter, Odds, Swing, Verdict } from './shared/combat/fight.ts';
 export { arenaAt, arenaOf, healthShown, type Arena, type ArenaNow, type Shown } from './combat/arena.ts';

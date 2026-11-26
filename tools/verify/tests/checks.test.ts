@@ -23,9 +23,11 @@ const content = (features: Feature[], keys = literalKeys) =>
   checkContent({ features, states, literalKeys: keys }).problems;
 
 describe('the manifest check', () => {
+  // It draws every slot of all nineteen features; on GitHub's busier runners it ran past the 5 s default and
+  // failed sessions 259, 260 and 264 (session 267).
   it('passes the real registry', () => {
     expect(manifest([...FEATURES])).toEqual([]);
-  });
+  }, 60_000);
 
   it('finds a folder missing from the registry, and a slot IA.md does not list', () => {
     const odd = { ...woodcutting, slots: { ...woodcutting.slots, 'hearth.weather': () => null } };
@@ -81,7 +83,7 @@ describe('the manifest check', () => {
 describe('the content check', () => {
   it('passes the real registry', () => {
     expect(content([...FEATURES])).toEqual([]);
-  });
+  }, 60_000);
 
   const tiny = (over: Partial<Feature> = {}) =>
     defineFeature({
