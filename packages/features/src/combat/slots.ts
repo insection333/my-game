@@ -201,6 +201,13 @@ function supplyView(state: State, style: Style): SupplyView {
 
 /** Gold an hour as the lane pays it now: the winnings lifted by the style's Path of Bounty and an Edict of
  *  Harvest (as spoils pays them), less food and supplies. */
+/** What the lane nets in gold an hour, food's worth taken off; a fight whose food costs more than it pays
+ *  says so in words (session 268: it read "-1,000 gold an hour"). */
+const goldWords = (gold: number): string =>
+  Math.round(gold) < 0
+    ? t('combat.goldLost', { gold: fmt.int(-gold) })
+    : t('combat.goldPerHour', { gold: fmt.int(Math.max(0, gold)) });
+
 function goldNow(state: State, o: Odds, now: number): number {
   const style = styleOf(state);
   const bounty = style ? pathBonus(state, style, 'items') : 0;
@@ -235,7 +242,7 @@ function foeRow(state: State, foe: Foe, now: number): FoeRow {
             xp: fmt.int(o.xpPerHour * (style ? 1 + xpBonusPct(state, style, findsOf(style), now) / 100 : 1)),
           }),
           t('combat.foodPerHour', { food: fmt.int(o.foodPerHour) }),
-          t('combat.goldPerHour', { gold: fmt.int(goldNow(state, o, now)) }),
+          goldWords(goldNow(state, o, now)),
           ...foodLasts(state, o.foodPerHour),
           ...(style ? supplyLasts(state, style, o.secondsPerFight) : []),
         ]

@@ -1,7 +1,7 @@
 // How expeditions read on the Combat page's Expeditions tab: each region (open or not), the route the
 // next run would take with its twists and the fork's two roads, the run under way stage by stage,
 // the bosses with Your odds, and the relics with their ranks. Formatted already; the page draws it.
-import { dayTurns, fmt, midSentence, t } from '@idle-clash/content';
+import { dayTurns, fmt, formatStop, midSentence, t } from '@idle-clash/content';
 import { actionKey, LANE_IDS, type State } from '@idle-clash/kernel';
 import { BEATS, FOES, regionOf } from '../shared/combat/data.ts';
 import type { Style } from '@idle-clash/content';
@@ -23,6 +23,7 @@ import { expeditionsOf, type Last, type Route, type Run } from '../shared/expedi
 import { storyOf } from '../shared/expeditions/story.ts';
 import { skillLevel } from '../shared/skill.ts';
 import { bossFights } from '../shared/expeditions/bank.ts';
+import { unfit } from './fit.ts';
 import { bossOfRun, nextRoute, type Hours } from './route.ts';
 import { stageCount } from './stage.ts';
 import { twistText } from './words.ts';
@@ -231,6 +232,8 @@ export function bossRows(state: State, now: number): BossRow[] {
     const fights = locked ? 0 : bossFights(state, b.id, now);
     const rested = !locked && fights === 0;
     const o = locked ? null : oddsFor(state, b);
+    // What the lane's own check refuses besides (session 268: no room for the boss's drop said nothing).
+    const held = locked || rested || !o ? null : unfit(state, now, b, [b.drop]);
     const wins = Object.hasOwn(e.wins, b.id) ? e.wins[b.id] : 0;
     return {
       id: b.id,
@@ -246,9 +249,11 @@ export function bossRows(state: State, now: number): BossRow[] {
           ? t('boss.rested', { back: dayTurns(now) })
           : !o
             ? t('stop.noWeapon')
-            : null,
+            : held
+              ? formatStop(held)
+              : null,
       wins: wins === 0 ? t('boss.winsNone') : wins === 1 ? t('boss.winsOne') : t('boss.wins', { count: fmt.int(wins) }),
-      ready: !locked && !rested && o !== null,
+      ready: !locked && !rested && o !== null && !held,
       trait: traitWords(b),
       banked: !locked && fights > 1 ? t('boss.banked', { count: fmt.int(fights) }) : null,
       fights,
