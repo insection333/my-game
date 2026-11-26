@@ -8,6 +8,7 @@ import { describe, expect, it } from 'vitest';
 import '../src/index.ts';
 import { goals, type GoalsView } from '../src/goals/index.ts';
 import { goalsOf } from '../src/goals/state.ts';
+import { FIRST_STEPS } from '../src/goals/content.ts';
 import { deeds } from '../src/deeds/index.ts';
 import { deedsOf } from '../src/deeds/state.ts';
 import { careerOf } from '../src/deeds/career.ts';
@@ -53,6 +54,28 @@ describe('Claim all', () => {
     expect(ready(r.state)).toBe(0);
     expect(view(r.state).claimAll).toBeNull();
     expect(goals.routes.claimAll.run(r.state, {}, T0).result).toEqual({ ok: false, count: 0 });
+  });
+});
+
+// Session 268: the Hearth shows one milestone at a time, and claiming it brings the next forward, so a player back
+// with several reached saw one Claim (and no Claim all) and pressed it again and again.
+describe('Claim all and milestones reached', () => {
+  it('counts every milestone reached behind the one shown, and takes them all', () => {
+    const s: State = {
+      ...newState(42, T0),
+      skills: Object.fromEntries(
+        ['woodcutting', 'mining', 'smithing', 'fishing', 'cooking', 'melee', 'hitpoints'].map((k) => [
+          k,
+          { xp: XP_TABLE[45] },
+        ]),
+      ),
+    };
+    s.features.goals = { ...goalsOf(s), claimed: FIRST_STEPS.map((f) => f.id) };
+    const offered = view(s).claimAll;
+    const r = goals.routes.claimAll.run(s, {}, T0) as unknown as { result: { ok: boolean; count: number } };
+    // Total level 315: the milestones at 50, 100, 150, 200, 250 and 280.
+    expect(r.result.count).toBeGreaterThanOrEqual(6);
+    expect(offered).toBe(`Claim all ${String(r.result.count)}`);
   });
 });
 

@@ -170,6 +170,16 @@ export function milestoneProgress(state: State, m: Milestone): { now: number; of
   }
 }
 
+/** The milestones reached and not yet claimed (session 268): the Hearth shows one at a time, and claiming it
+ *  brings the next forward, so a player back with four reached saw one Claim and pressed it four times. */
+export function milestonesReady(state: State, g: GoalsState): number {
+  return MILESTONES.filter((m) => {
+    if (g.milestones.includes(m.id)) return false;
+    const p = milestoneProgress(state, m);
+    return p.now >= p.of;
+  }).length;
+}
+
 /** The milestone to show: the nearest to done among those not yet claimed. */
 export function nextMilestone(state: State, g: GoalsState): Milestone | null {
   const open = MILESTONES.filter((m) => !g.milestones.includes(m.id));

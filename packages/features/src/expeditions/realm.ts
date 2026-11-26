@@ -1,7 +1,7 @@
 // The realm's boss of the week in the Combat lane (session 174): fought once a day at the player's own
 // measure (shared/realm.ts), a win a strike for the realm, paying gold, marks and XP as a fight does; and,
 // once the server says it fell with the player's strike, their share taken from the Combat page.
-import { dayTurns, fmt, midSentence, t } from '@idle-clash/content';
+import { dayTurns, fmt, formatStop, midSentence, t } from '@idle-clash/content';
 import {
   give,
   seeded,
@@ -31,6 +31,7 @@ import type { Foe } from '../shared/combat/foes.ts';
 import { BOSSES, type Boss } from '../shared/expeditions/data.ts';
 import { traitWords } from './views.ts';
 import { noRoom } from '../shared/storehouse.ts';
+import { unfit } from './fit.ts';
 import { realmFights, spendRealm } from '../shared/expeditions/bank.ts';
 
 const NONE = { day: null, claimed: null, fallen: 0 };
@@ -157,6 +158,8 @@ export function realmView(state: State, now: number): RealmView | null {
   const part = realmPart(expeditionsOf(state));
   const owed = r.owed && !taken(part.claimed, r.owed.week) ? r.owed : null;
   const name = realmName(boss.id);
+  // What the strike's own check refuses besides (session 268): no room for the drop, too hurt to fight.
+  const held = foe && o && !rested ? unfit(state, now, foe, [foe.drop]) : null;
   return {
     boss: boss.id,
     name,
@@ -167,8 +170,14 @@ export function realmView(state: State, now: number): RealmView | null {
     verdict: o ? t(`verdict.${o.verdict}`) : null,
     verdictId: o?.verdict ?? null,
     mark: foe?.trait ? markWords(foe, boss) : null,
-    status: !o ? t('stop.noWeapon') : rested ? t('realm.rested', { back: dayTurns(now) }) : null,
-    ready: o !== null && !rested,
+    status: !o
+      ? t('stop.noWeapon')
+      : rested
+        ? t('realm.rested', { back: dayTurns(now) })
+        : held
+          ? formatStop(held)
+          : null,
+    ready: o !== null && !rested && !held,
     banked: o && fights > 1 && !r.fell ? t('realm.banked', { count: fmt.int(fights) }) : null,
     fights: o && !r.fell ? fights : 0,
     share: owed

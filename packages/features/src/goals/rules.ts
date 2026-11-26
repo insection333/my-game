@@ -165,7 +165,8 @@ export function claimAll(
   let out = state;
   const events: GameEvent[] = [];
   let count = 0;
-  for (let round = 0; round < 4; round++) {
+  // A round for each milestone that may wait behind the one shown (session 268), and a few more.
+  for (let round = 0; round < MILESTONES.length + 4; round++) {
     let claimed = 0;
     for (const goal of readyIn(out)) {
       const r = claim(out, goal, now);

@@ -4,8 +4,6 @@
 // (session 239) unless the player turned that off or queued a Next, and otherwise the lane stops. A boss (`expeditions:troll-chief`)
 // can also be fought alone once a day.
 import type { ActionContext, ActionRules, GameEvent, StopReason } from '@idle-clash/kernel';
-import { maxHealth, retreatShare } from '../shared/combat/fight.ts';
-import { fighterOf, healthAt, mealsOf } from '../shared/combat/state.ts';
 import { foeById, HITPOINTS, type Foe } from '../shared/combat/data.ts';
 import { BOSSES, REGIONS, STAGE_MINUTES, type Boss, type Region } from '../shared/expeditions/data.ts';
 import { bossOfRun, nextRoute } from './route.ts';
@@ -13,22 +11,16 @@ import { roundRules } from './round.ts';
 import { DEEP_RULES } from './deep.ts';
 import { expeditionsOf, RUN_FINDS, setExpeditions, type Last, type Run } from '../shared/expeditions/state.ts';
 import { skillLevel } from '../shared/skill.ts';
-import { noRoom } from '../shared/storehouse.ts';
 import { fightBoss, playBoss, restedToday } from './boss.ts';
 import { spendBoss } from '../shared/expeditions/bank.ts';
 import { cacheAt, modsAt, playStage, stageCount } from './stage.ts';
 import { steadingMarksPct } from '../shared/steading.ts';
 import { seasonMarksPct } from '../shared/season.ts';
 import { REALM_RULES } from './realm.ts';
+import { unfit as unfitNow } from './fit.ts';
 
-/** Why a fighter cannot take on a foe now: no weapon, or hurt with nothing to eat. */
-function unfit(ctx: ActionContext, foe: Foe, gives: string[]): StopReason | null {
-  const p = fighterOf(ctx.state, foe);
-  if (!p) return { code: 'noWeapon' };
-  const low = healthAt(ctx.state, ctx.at) < maxHealth(p) * retreatShare(p);
-  if (low && mealsOf(ctx.state).length === 0) return { code: 'tooHurt' };
-  return noRoom(ctx.state, gives);
-}
+const unfit = (ctx: ActionContext, foe: Foe, gives: string[]): StopReason | null =>
+  unfitNow(ctx.state, ctx.at, foe, gives);
 
 const runOf = (ctx: ActionContext, region: Region): Run | null => {
   const run = expeditionsOf(ctx.state).run;
