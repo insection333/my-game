@@ -407,3 +407,4 @@
 - Session 266: the season's ladder counts goals, not the caches a friend's gift opens; the Citadel's materials leave what a running lane needs and what is locked, and say so.
 - Session 267: the plan of 26 November played as a bad actor (the server held every attack); a castle Level up keeps back a day of what the running lanes use and takes the rest of its material.
 - Session 268: a two-week play-through held every offer to the engine; Claim all counts and takes every milestone reached, a boss row and the realm's say why a fight would be refused (no room, too hurt), and a fight that loses gold says so in words.
+- Session 269: a game design audit (docs/DESIGN_AUDIT.md); a steading work's Uncommon finds say where they are found, the simulation's player goes back for them, and the brief's stale numbers are brought to the game.

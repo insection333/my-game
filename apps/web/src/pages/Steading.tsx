@@ -76,6 +76,7 @@ function Work({ row }: { row: WorkRow }) {
               <li key={c.label} className={s.cost} data-short={c.enough ? undefined : true}>
                 <span>{c.label}</span>
                 <span className={s.held}>{c.held}</span>
+                {c.from && <span className={s.from}>{c.from}</span>}
               </li>
             ))}
           </ul>

@@ -8,7 +8,8 @@ import { combatData } from '@idle-clash/features';
 import type { State } from '@idle-clash/kernel';
 import { dailyProgress } from '../../../packages/features/src/goals/ladder.ts';
 import { goalsOf } from '../../../packages/features/src/goals/state.ts';
-import { itemOf } from '../../../packages/features/src/shared/catalog.ts';
+import { findOf, itemOf } from '../../../packages/features/src/shared/catalog.ts';
+import { stageCost, stageOf, STAGES, WORKS } from '../../../packages/features/src/shared/steading.ts';
 import { ACTS, actsOf, ARTISAN, GATHERING, have, level, madeBy, open, repsHeld, type Act } from './world.ts';
 
 const tierAt = (lvl: number) => TIER_LEVELS.filter((l) => l <= lvl).length;
@@ -20,11 +21,34 @@ export const behind = (state: State, skills: readonly string[]) => {
   const daily = goalsOf(state).daily;
   const p = daily && !daily.claimed ? dailyProgress(state, daily) : null;
   const steer = daily && p && p.now < p.of ? daily.skill : null;
+  const sought = findsSought(state);
   return [...skills].sort((a, b) => {
     const [la, lb] = [level(state, a), level(state, b)];
-    return Number(b === steer) - Number(a === steer) || Number(la >= 99) - Number(lb >= 99) || la - lb;
+    return (
+      Number(b === steer) - Number(a === steer) ||
+      Number(la >= 99) - Number(lb >= 99) ||
+      la - lb ||
+      // At 99, a skill whose find a work of the steading still lacks first (session 269: the work's sheet says
+      // where each find is found, and the two-year player had left the skills its works waited on).
+      (sought.get(b) ?? 0) - (sought.get(a) ?? 0)
+    );
   });
 };
+
+/** Skills by how many of their finds the steading's next raisings still lack. */
+function findsSought(state: State): Map<string, number> {
+  const out = new Map<string, number>();
+  for (const w of WORKS) {
+    const stage = stageOf(state, w.id);
+    if (stage >= STAGES) continue;
+    for (const i of stageCost(w, stage + 1).items) {
+      const f = findOf(i.item);
+      const short = i.count - have(state, i.item);
+      if (f && short > 0) out.set(f.skill, (out.get(f.skill) ?? 0) + short);
+    }
+  }
+  return out;
+}
 
 /** A skill's open actions, the best XP a second first. */
 /** A skill's open actions, the best XP a second first; Smithing trains by smelting while it holds few
