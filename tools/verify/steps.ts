@@ -1,5 +1,6 @@
 // The nine steps of pnpm verify, in the brief's order. A step that is not built yet says so and
 // names its session; once the thing it checks exists, an unbuilt step fails instead of skipping.
+import { failuresOf } from './failures.ts';
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { bin, exec, node, ROOT } from './exec.ts';
@@ -144,7 +145,7 @@ async function content(): Promise<StepResult> {
 async function tests(): Promise<StepResult> {
   const r = await bin('vitest', ['run']);
   const passed = /Tests\s+(\d+) passed/.exec(r.output)?.[1];
-  if (r.code !== 0 || !passed) return fail('tests failed', r.output);
+  if (r.code !== 0 || !passed) return fail('tests failed', failuresOf(r.output));
   return pass(`${passed} tests`);
 }
 
