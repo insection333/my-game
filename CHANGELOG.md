@@ -409,3 +409,4 @@
 - Session 268: a two-week play-through held every offer to the engine; Claim all counts and takes every milestone reached, a boss row and the realm's say why a fight would be refused (no room, too hurt), and a fight that loses gold says so in words.
 - Session 269: a game design audit (docs/DESIGN_AUDIT.md); a steading work's Uncommon finds say where they are found, the simulation's player goes back for them, and the brief's stale numbers are brought to the game.
 - Session 270: a holistic sweep: templates parsed once and small counts formatted directly (a page's slots a quarter cheaper each second), no number form writes -0, and the glossary and design text caught up with sessions 266 and 269.
+- Session 271: housekeeping lets old weekly and seasonal ladders go from memory as well as the table, a fight past twenty thousand swings is given up as a retreat, and a rename reaches every notice that named the old name.

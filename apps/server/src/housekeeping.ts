@@ -36,7 +36,10 @@ export function keepHouse(ctx: Ctx): void {
     .all()
     .map((r) => r.skill)
     .filter((skill) => old(skill) || oldDeep(skill));
-  if (gone.length) ctx.db.delete(hiscores).where(inArray(hiscores.skill, gone)).run();
+  if (gone.length) {
+    ctx.db.delete(hiscores).where(inArray(hiscores.skill, gone)).run();
+    ctx.hiscores.letGo(gone);
+  }
   // Notices while away (session 171): a count of a day long past, and anything left waiting for days.
   ctx.db
     .delete(pushSent)
@@ -50,4 +53,5 @@ export function keepHouse(ctx: Ctx): void {
   const longGone = new Date(now - 35 * DAY).toISOString().slice(0, 10);
   ctx.db.delete(realmStrikes).where(lt(realmStrikes.week, longGone)).run();
   ctx.db.delete(realmWeeks).where(lt(realmWeeks.week, longGone)).run();
+  ctx.realm.sweep(longGone);
 }
