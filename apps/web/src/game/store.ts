@@ -4,6 +4,7 @@
 // read when the tab comes back). The clock ticks only while something is moving, so a resting page
 // uses no CPU.
 import { actionRegistry, FEATURES, type Feature, type Json } from '@idle-clash/features';
+import { outbox } from './outbox.ts';
 import { toldOf } from './told.ts';
 import {
   createEngine,
@@ -86,6 +87,7 @@ function adopt(state: State, now: number) {
 /** Signed out: the channel closes and the clock stops. The last view stays until the next sign-in
  *  replaces it, so nothing still drawn reads an empty game. */
 export function stop() {
+  box.drop();
   live?.close();
   live = null;
   stopClock();
@@ -109,6 +111,8 @@ let retrying: ReturnType<typeof setInterval> | null = null;
 onConnection((up) => {
   if (up && retrying) clearInterval(retrying);
   if (up) retrying = null;
+  // Back: what could not get through is sent, in order, before anything else.
+  if (up) void box.flush();
   else retrying ??= setInterval(() => void resync(), 5000);
 });
 if (typeof window !== 'undefined') window.addEventListener('online', () => void resync());
@@ -155,23 +159,15 @@ if (typeof document !== 'undefined') {
   });
 }
 
-/** Sends a change, retrying with the same request id when the connection drops so it acts once.
- *  Resolves to null when it was refused or never got through. */
-async function send<T>(go: () => Promise<T>): Promise<T | null> {
-  for (let attempt = 0; attempt < 3; attempt++) {
-    try {
-      const answer = await go();
-      setConnected(true);
-      return answer;
-    } catch (err) {
-      if (handled(err)) return null;
-      if (!(err instanceof ApiError) || err.code !== 'offline') break;
-      if (attempt === 2) setConnected(false);
-      await new Promise((r) => setTimeout(r, 500 * 2 ** attempt));
-    }
-  }
-  return null;
-}
+/** Sends a change, retrying with the same request id when the connection drops so it acts once, and keeping it
+ *  to send again once the server answers (`outbox.ts`, session 274). Resolves to null when it was refused or let go. */
+const box = outbox({
+  connected: setConnected,
+  handled,
+  now: () => Date.now(),
+  pause: (ms) => new Promise((r) => setTimeout(r, ms)),
+});
+const send = <T>(go: () => Promise<T>): Promise<T | null> => box.send(go);
 
 /** The answers canStart gave for one save. */
 /** A second press of the same thing within this long is a double tap, not a second press. */
