@@ -5,6 +5,7 @@ import { countOf, type State } from '@idle-clash/kernel';
 import { itemOf } from './catalog.ts';
 import { skillLevel } from './skill.ts';
 import { guardOf, stepCost, stepsOf, TEMPER, trophiesFor } from './temper.ts';
+import { heirloomOf } from './heirlooms.ts';
 
 export interface TemperLine {
   /** "Tempered 2 of 5: +2% damage", or null before the first step. */
@@ -24,6 +25,8 @@ export const trophiesHeld = (state: State, item: string) =>
     .sort((a, b) => b.count - a.count || a.id.localeCompare(b.id));
 
 export function temperLine(state: State, item: string): TemperLine | null {
+  // An heirloom is never tempered (session 251).
+  if (heirloomOf(item)) return null;
   const steps = stepsOf(state, item);
   const open = skillLevel(state, 'smithing') >= TEMPER.OPENS;
   if (!open && steps === 0) return null;

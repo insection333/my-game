@@ -1,6 +1,6 @@
 // Combat's part of the save: what is worn, health as of a moment (it returns with time), and the
 // last retreat. Combat writes it; the Storehouse and goals read it through these helpers.
-import { masteryStep, TIER_LEVELS, type GearSlot, type Style } from '@idle-clash/content';
+import { GEAR_SLOTS, masteryStep, TIER_LEVELS, type GearSlot, type Style } from '@idle-clash/content';
 import { countOf, type State } from '@idle-clash/kernel';
 import { z } from 'zod';
 import { itemOf } from '../catalog.ts';
@@ -13,6 +13,7 @@ import { steadingDamagePct, steadingFoodHealPct } from '../steading.ts';
 import { temperGains } from '../temper.ts';
 import { feastLift, mealOrder } from '../feast.ts';
 import { charterPct } from '../castle/mirror.ts';
+import { heirloomTraits } from '../heirlooms.ts';
 
 const ItemId = z.string().regex(/^[a-z0-9][a-z0-9-]{0,63}$/);
 export const CombatState = z
@@ -117,6 +118,11 @@ export function fighterOf(state: State, foe: Foe): Fighter | null {
     perks: withYard(perksAt(LADDERS[style], styleLevel), state),
     mastery: masteryStep(Object.hasOwn(state.mastery, key) ? state.mastery[key] : 0),
     supply: supplyOf(state, style),
+    // The heirlooms worn (session 251); none worn leaves the fighter as it was.
+    ...(() => {
+      const traits = heirloomTraits(GEAR_SLOTS.map((slot) => wornIn(state, slot)));
+      return traits.length ? { heirlooms: traits } : {};
+    })(),
   };
 }
 

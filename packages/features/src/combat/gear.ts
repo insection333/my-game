@@ -3,6 +3,7 @@
 import { fmt, GEAR_SLOTS, STYLES, t, TIER_LEVELS, type GearSlot, type Style } from '@idle-clash/content';
 import { countOf, type State } from '@idle-clash/kernel';
 import { itemOf } from '../shared/catalog.ts';
+import { heirloomWords } from '../shared/heirloom-view.ts';
 import { ARMOUR_GUARD_PER_TIER, HITPOINTS, WEAPON_HIT_PER_TIER } from '../shared/combat/data.ts';
 import { combatOf, setCombat } from '../shared/combat/state.ts';
 import { stepsOf } from '../shared/temper.ts';
@@ -26,12 +27,16 @@ export function wearNeeds(item: string): { skill: string; level: number } | null
 export function gearDoes(item: string): string | null {
   const gear = itemOf(item)?.gear;
   if (!gear) return null;
-  return gear.slot === 'weapon'
-    ? t('gear.does.weapon', {
-        style: t(`skill.${gear.style}`),
-        hit: fmt.int(WEAPON_HIT_PER_TIER * gear.tier),
-      })
-    : t('gear.does.armour', { pct: fmt.pct(ARMOUR_GUARD_PER_TIER * gear.tier) });
+  const base =
+    gear.slot === 'weapon'
+      ? t('gear.does.weapon', {
+          style: t(`skill.${gear.style}`),
+          hit: fmt.int(WEAPON_HIT_PER_TIER * gear.tier),
+        })
+      : t('gear.does.armour', { pct: fmt.pct(ARMOUR_GUARD_PER_TIER * gear.tier) });
+  // An heirloom's trait beside it (session 251).
+  const trait = heirloomWords(item);
+  return trait ? `${base}. ${trait}` : base;
 }
 
 export function wear(state: State, item: string): { state: State; result: WearResult } {

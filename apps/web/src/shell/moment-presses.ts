@@ -1,6 +1,12 @@
 // The moments of a press answered at the forge, the Reliquary or the pedlar (sessions 98, 216 and 217): the
 // words and the picture of a relic raised, a piece tempered and a lot handed in; and the realm's work (218).
-import { pedlarPaidWords, realmWorkWords, relicRaisedWords, temperedWords } from '@idle-clash/features';
+import {
+  heirloomForgedWords,
+  pedlarPaidWords,
+  realmWorkWords,
+  relicRaisedWords,
+  temperedWords,
+} from '@idle-clash/features';
 import type { EventOf, GameEvent } from '@idle-clash/kernel';
 import { hasIcon } from '@idle-clash/ui';
 
@@ -15,12 +21,20 @@ export const byYou = (e: GameEvent) =>
   e.type === 'findUsed' ||
   e.type === 'relicRaised' ||
   e.type === 'gearTempered' ||
+  e.type === 'heirloomForged' ||
   e.type === 'pedlarPaid' ||
   e.type === 'realmGiven';
 
 type Said = { title: string; body: string | null; icon: string | null };
 
-export function pressSaid(e: EventOf<'relicRaised'> | EventOf<'gearTempered'> | EventOf<'pedlarPaid'>): Said {
+export function pressSaid(
+  e: EventOf<'relicRaised'> | EventOf<'gearTempered'> | EventOf<'pedlarPaid'> | EventOf<'heirloomForged'>,
+): Said {
+  // An heirloom forged (session 251): its name and its way.
+  if (e.type === 'heirloomForged') {
+    const w = heirloomForgedWords(e.item);
+    return { title: w.title, body: w.body, icon: hasIcon(e.item) ? e.item : null };
+  }
   if (e.type === 'relicRaised') {
     const w = relicRaisedWords(e.relic, e.rank);
     return { title: w?.title ?? '', body: w?.body ?? null, icon: hasIcon(e.relic) ? e.relic : null };

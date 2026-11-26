@@ -19,6 +19,7 @@ import { bestChanges, gearDoes, stylesHeld, wearNeeds } from './gear.ts';
 import { FEATURE } from './rules.ts';
 import { xpGainsWords } from '../shared/xp-gains.ts';
 import { temperLine, type TemperLine } from '../shared/temper-view.ts';
+import { heirloomRows, type HeirloomRow } from '../shared/heirloom-view.ts';
 
 export interface GearChoice {
   item: string;
@@ -37,6 +38,8 @@ export interface LoadoutSlot {
   item: string | null;
   name: string;
   choices: GearChoice[];
+  /** The heirlooms it takes, to forge from Smithing 90 (session 251). */
+  heirlooms: HeirloomRow[];
 }
 /** The supply in the figure's other hand: what is used, how many are left, or what makes it. */
 export interface SupplyView {
@@ -134,6 +137,7 @@ function loadout(state: State, now: number): LoadoutView {
             ? t('gear.wearWeapon')
             : t('gear.noWeapon'),
       choices,
+      heirlooms: heirloomRows(state, slot),
     };
   });
   const most = healthMax(state);

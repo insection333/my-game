@@ -236,6 +236,19 @@ Each boss fights its own way (session 211), played by the fight itself and so co
 
 {{TWIST_TABLE}}
 
+
+**Heirlooms (session 251).** At Smithing 90 a boss's ten Rare finds and its Legendary find forge its heirloom, one held at a time: a piece of the last tier's strength with its boss's way turned to the wearer, never tempered and never sold, so it is different from tempered dawnsteel rather than stronger.
+
+| Heirloom | Slot | Its way |
+| --- | --- | --- |
+| Barrow-king's helm | Helm | Below three quarters of health, hits land 20% lighter |
+| Troll-chief's blade | Melee weapon | Below three quarters of health, blows land 20% harder |
+| Mire-mother's mail | Body | Mends 2% of health after each fight won |
+| Drowned Warden's bow | Archery weapon | Blunted half as much by a foe's style or a ward |
+| Storm-roc's greaves | Legs | Turns one hit in ten aside |
+| Ember Wyrm's staff | Magic weapon | Critical hits on a boss burn half again |
+
+Against tempered dawnsteel at level 99, each wins somewhere and loses somewhere: the blade against the Peaks' foes, not the first boss; the bow where its style is weak, not where it is even; the staff on bosses, not on the Peaks' foes; the helm, the mail and the greaves each take a fresh fighter a depth deeper into the Deep (12 to 13), and no more. Measured before it was trusted: below a third or a half of health the helm and the blade woke too seldom to matter (a fighter eats at half); the bow first struck fully at any foe (+19% where its style is weak, the triangle gone); the staff's fire on every critical hit won everywhere; the mail first mended 15% a fight won and took the Deep from 12 to 19.
 ## 10. Gold and the Storehouse
 
 - **Sources:** selling logs, ores, bars, gear and Uncommon and Rare finds to the vendor; gold and drops from foes.

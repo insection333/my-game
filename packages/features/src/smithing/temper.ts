@@ -7,9 +7,11 @@ import { wornIn } from '../shared/combat/state.ts';
 import { skillLevel } from '../shared/skill.ts';
 import { stepCost, stepsOf, TEMPER, temperOf } from '../shared/temper.ts';
 import { trophiesHeld } from '../shared/temper-view.ts';
+import { heirloomOf } from '../shared/heirlooms.ts';
 
 type Answer<R> = { state: State; result: R; events: GameEvent[] };
-export type TemperResult = { ok: true } | { ok: false; reason: 'locked' | 'notWorn' | 'full' | 'bars' | 'trophies' };
+export type TemperResult =
+  { ok: true } | { ok: false; reason: 'locked' | 'notWorn' | 'full' | 'bars' | 'trophies' | 'heirloom' };
 const no = (state: State, reason: Exclude<TemperResult, { ok: true }>['reason']): Answer<TemperResult> => ({
   state,
   result: { ok: false, reason },
@@ -20,6 +22,8 @@ export function temper(state: State, slot: GearSlot, now: number = state.clock):
   if (skillLevel(state, 'smithing') < TEMPER.OPENS) return no(state, 'locked');
   const item = wornIn(state, slot);
   if (!item) return no(state, 'notWorn');
+  // An heirloom is never tempered (session 251): it is different, not stronger.
+  if (heirloomOf(item)) return no(state, 'heirloom');
   const steps = stepsOf(state, item);
   if (steps >= TEMPER.STEPS) return no(state, 'full');
   const cost = stepCost(item, steps + 1)!;

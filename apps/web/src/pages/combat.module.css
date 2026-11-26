@@ -43,6 +43,14 @@
   color: var(--ink-2);
 }
 
+/* The gear sheet's heirlooms (session 251), under the pieces held. */
+.sheetHeading {
+  margin: 0;
+  padding: var(--s-4) var(--s-4) 0;
+  border-top: 1px solid var(--line);
+  font: 500 var(--t-h3) / 1.2 var(--font-book);
+}
+
 /* The foes of a tier under the fight, scrolling inside their box where three with all their facts and the
    fight would run past the page area. */
 .foeRows {

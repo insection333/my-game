@@ -389,3 +389,4 @@
 - Session 248: the edict grows with the castle. Every edict is lifted 2% for each average castle level above the first, to half again (+9.8% at a year where it was +6.9%); the Citadel says so.
 - Session 249: war marks that cross over. Three charters in the Halls, bought with war marks, lift gathering's extra items, ingredients kept and fight damage 1% a rank for five ranks, edict paid or not.
 - Session 250: phase three audited. A Level up's materials are written as "Moon rune ×3,464" where "3,464 Moon rune" read wrongly; step 6 plays a building paid in materials and a charter raised in the page.
+- Session 251: heirlooms. Six pieces forged at Smithing 90 from a boss's ten Rare finds and its Legendary find, each of the last tier's strength with its boss's way; never tempered or sold; each wins somewhere and loses somewhere against tempered dawnsteel.

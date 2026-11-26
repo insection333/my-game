@@ -12,6 +12,7 @@ import type { GearSlot } from '@idle-clash/content';
 import { z } from 'zod';
 import { itemOf } from './catalog.ts';
 import { BOSSES } from './expeditions/data.ts';
+import { heirloomCost, HEIRLOOMS, heirloomOf } from './heirlooms.ts';
 import { partReader } from './part.ts';
 
 export const TEMPER = {
@@ -48,7 +49,8 @@ export const stepsOf = (state: State, item: string): number => {
 /** The trophies a piece can be tempered with: a weapon's style's bosses' Rare finds, or any boss's. */
 export function trophiesFor(item: string): string[] {
   const gear = itemOf(item)?.gear;
-  if (!gear) return [];
+  // An heirloom is never tempered (session 251).
+  if (!gear || heirloomOf(item)) return [];
   return BOSSES.filter((b) => gear.slot !== 'weapon' || b.style === gear.style).map((b) => b.finds.rare);
 }
 
@@ -75,10 +77,17 @@ export function temperGains(state: State, worn: (slot: GearSlot) => string | nul
   return { damage: steps('weapon') * TEMPER.PCT, guard: Math.min(TEMPER.CAP, armour * ARMOUR_STEP) };
 }
 
-/** Whether a boss's Rare find is still wanted as a trophy: some gear held that it suits is not fully tempered. */
+/** Whether a boss's Rare find is still wanted as a trophy: some gear held that it suits is not fully tempered,
+ *  or its boss's heirloom is not yet held (session 251). */
 export function trophyWanted(state: State, find: string): boolean {
-  return Object.keys(state.items).some(
-    (id) => (state.items[id] ?? 0) > 0 && trophiesFor(id).includes(find) && stepsOf(state, id) < TEMPER.STEPS,
+  const forging = HEIRLOOMS.some(
+    (h) => !((state.items[h.item] ?? 0) > 0) && heirloomCost(h).some((c) => c.item === find),
+  );
+  return (
+    forging ||
+    Object.keys(state.items).some(
+      (id) => (state.items[id] ?? 0) > 0 && trophiesFor(id).includes(find) && stepsOf(state, id) < TEMPER.STEPS,
+    )
   );
 }
 

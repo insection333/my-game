@@ -79,6 +79,7 @@ Tiers 5 to 8 keep the march's drawings (the log pile, the rock with its nuggets,
 - **Ores lie in their own rock:** moonsilver in blue-grey stone, star-iron's pale flecks in black rock, ember ore glowing out of volcanic glass; dawnstone is a cluster of pale gold crystals.
 - **The Sunken Fen's foes** wear bog-green, reed-gold and drowned-grey, with weed and water about them; **the Ashen Peaks'** are ash, obsidian and fur, with ember cracks and glowing eyes.
 - **The later foods:** roast fowl, a hunter's feast on a board, a warden's raised pie.
+- **Heirlooms** (session 251, in the gear family): each the tier's own shape (helm, blade, mail, bow, greaves, staff) wrought in its boss's colours (the barrow's bone-grey, the troll's hill-stone, the mire's moss, the Warden's sea-green, the Storm-roc's thundercloud, the Wyrm's coal and fire) with a gold gem set where the light falls, so an heirloom reads apart from dawnsteel at 24 px.
 
 ## Fishing and Cooking (session 13)
 

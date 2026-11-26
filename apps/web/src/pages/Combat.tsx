@@ -177,10 +177,11 @@ function CombatPage({ combat }: { combat: Feature }) {
 }
 
 function GearChoices({ gear }: { gear: LoadoutSlot }) {
-  if (!gear.choices.length) return <p className={s.note}>{t('gear.nothingToWear')}</p>;
+  if (!gear.choices.length && !gear.heirlooms.length) return <p className={s.note}>{t('gear.nothingToWear')}</p>;
   const tempering = gear.choices.some((c) => c.temper?.next);
   return (
     <div>
+      {!gear.choices.length && <p className={s.note}>{t('gear.nothingToWear')}</p>}
       {tempering && <p className={s.note}>{t('temper.note')}</p>}
       {gear.choices.map((c) => (
         <ActionRow
@@ -221,6 +222,30 @@ function GearChoices({ gear }: { gear: LoadoutSlot }) {
           }
         />
       ))}
+      {gear.heirlooms.length > 0 && <Heirlooms gear={gear} />}
     </div>
+  );
+}
+
+/** The heirlooms this slot takes, to forge from Smithing 90 (session 251). */
+function Heirlooms({ gear }: { gear: LoadoutSlot }) {
+  return (
+    <>
+      <h3 className={s.sheetHeading}>{t('heirloom.title')}</h3>
+      <p className={s.note}>{t('heirloom.note')}</p>
+      {gear.heirlooms.map((h) => (
+        <ActionRow
+          key={h.item}
+          icon={<ItemIcon name={h.item} size={32} />}
+          name={h.name}
+          facts={[h.does, h.cost, ...(h.short ? [h.short] : [])]}
+          actions={
+            <Button disabled={!h.ready} onClick={() => game.act('smithing', 'forgeHeirloom', { item: h.item })}>
+              {t('heirloom.forge')}
+            </Button>
+          }
+        />
+      ))}
+    </>
   );
 }

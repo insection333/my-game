@@ -3,6 +3,7 @@
 // it, and what a fighter eats, wears and carries, by the item's own kind). A feature that arrives later
 // answers by declaring its content.
 import { worksTaking } from './steading.ts';
+import { heirloomCost, heirloomOf } from './heirlooms.ts';
 import { TROPHY_STYLE } from './temper.ts';
 import { fmt, t, type Item } from '@idle-clash/content';
 import type { Feature } from '../define.ts';
@@ -51,6 +52,21 @@ export function comesFrom(features: readonly Feature[], item: string): ItemSourc
       .map((x) => ({ feature: f.id, skill, action: null, rarity: x.rarity, count: 1 }));
     return [...made, ...found];
   });
+  // An heirloom, forged from its boss's finds (session 251).
+  const heirloom = heirloomOf(item);
+  if (heirloom)
+    out.push({
+      feature: 'smithing',
+      skill: 'smithing',
+      action: null,
+      rarity: null,
+      count: 0,
+      label: t('item.panel.forged', {
+        finds: heirloomCost(heirloom)
+          .map((c) => t('steading.cost.item', { item: t(`item.${c.item}`), count: fmt.int(c.count) }))
+          .join(', '),
+      }),
+    });
   // Food the vendor sells, and from which Hitpoints level.
   const sold = FOODS.find((f) => f.id === item);
   if (sold)

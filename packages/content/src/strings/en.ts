@@ -18,6 +18,7 @@ import { lanes } from './en-lanes.ts';
 import { castle } from './en-castle.ts';
 import { castleWar } from './en-castle-war.ts';
 import { steading } from './en-steading.ts';
+import { heirlooms } from './en-heirlooms.ts';
 import { closedTest } from './en-test.ts';
 import { moderation } from './en-moderation.ts';
 import { consoleWords } from './en-console.ts';
@@ -267,6 +268,7 @@ export const en: Record<string, string> = {
   ...store,
   ...lanes,
   ...steading,
+  ...heirlooms,
   ...closedTest,
   ...moderation,
   ...consoleWords,
