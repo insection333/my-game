@@ -30,9 +30,13 @@ const TOGETHER_MS = 60_000;
 const keyOf = (e: GameEvent): string =>
   e.type === 'deedDone'
     ? `deed:${e.deed}`
-    : e.type === 'goalDone'
-      ? JSON.stringify({ ...e, at: Math.floor(e.at / TOGETHER_MS) })
-      : JSON.stringify(e);
+    : // A season opened is said once ever, by the goals the page and the server each make (session 258: the
+      // Hearth's Today listed it twice).
+      e.type === 'seasonOpened'
+      ? `season:${e.number}`
+      : e.type === 'goalDone'
+        ? JSON.stringify({ ...e, at: Math.floor(e.at / TOGETHER_MS) })
+        : JSON.stringify(e);
 
 /** Deeds' tiers, least first: a line of deeds done together wears its best one's medallion (session 68). */
 const TIERS = ['easy', 'hard', 'elite', 'master'];
