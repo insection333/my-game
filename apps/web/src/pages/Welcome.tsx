@@ -3,7 +3,8 @@
 import { CONTACT_ADDRESS, t } from '@idle-clash/content';
 import { NAME_MAX } from '@idle-clash/contracts';
 import { Button, Field, GameMark, ItemIcon, MarchScene, Tabs, TextLink } from '@idle-clash/ui';
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
+import { keepTrying } from '../keep-trying.ts';
 import { refused } from '../refused.ts';
 import { account, loadGame, useSession } from '../game/session.ts';
 import { navigate } from '../router.ts';
@@ -167,7 +168,9 @@ export function Welcome({ path, next }: { path: string; next: string }) {
 }
 
 /** Shown when the server cannot be reached on the first visit. */
-export function Offline({ retry }: { retry: () => void }) {
+export function Offline({ retry }: { retry: () => unknown }) {
+  // Tried again by itself (session 283): a deploy restarts the server for a few seconds after every merge.
+  useEffect(() => keepTrying(retry), []); // eslint-disable-line react-hooks/exhaustive-deps
   return (
     <main className={s.page} id="main">
       <section className={s.intro}>
@@ -176,7 +179,7 @@ export function Offline({ retry }: { retry: () => void }) {
           {t('welcome.title')}
         </h1>
         <p className={s.lead}>{t('welcome.offline')}</p>
-        <Button variant="primary" onClick={retry}>
+        <Button variant="primary" onClick={() => void retry()}>
           {t('welcome.retry')}
         </Button>
       </section>
