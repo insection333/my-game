@@ -72,11 +72,29 @@ let shown: string | null = null;
 export const showPlayer = (id: string | null): void => void (shown = id);
 export const shownPlayer = (): string | null => shown;
 
+/** How long a request may go unanswered before it is given up as the server out of reach (session 282): a phone
+ *  moving between networks can leave a connection open with no one at the other end, and the browser waited
+ *  minutes on it, every castle button greyed and the page taking no word from the server meanwhile. A change
+ *  given up so is sent again under its own request id, so it acts once. */
+export const STALLED_MS = 30_000;
+
 async function call<T>(method: 'GET' | 'POST', path: string, body?: unknown): Promise<T> {
+  // A timer and a controller rather than AbortSignal.timeout, which Safari before 16 lacks.
+  const stop = new AbortController();
+  const timer = setTimeout(() => stop.abort(), STALLED_MS);
+  try {
+    return await answer<T>(method, path, body, stop.signal);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function answer<T>(method: 'GET' | 'POST', path: string, body: unknown, signal: AbortSignal): Promise<T> {
   let res: Response;
   try {
     res = await fetch(path, {
       method,
+      signal,
       credentials: 'same-origin',
       headers: {
         ...(body === undefined ? {} : { 'content-type': 'application/json' }),
@@ -89,9 +107,11 @@ async function call<T>(method: 'GET' | 'POST', path: string, body?: unknown): Pr
   }
   heardBuild(res.headers.get('x-build'));
   if (res.status === 204) return undefined as T;
-  const json = (await res.json().catch(() => null)) as unknown;
+  // A body cut off on its way (the request given up, or the connection lost) is the server out of reach.
+  const json = (await res.json().catch(() => (signal.aborted ? undefined : null))) as unknown;
+  if (json === undefined) throw new ApiError(0, null);
   if (!res.ok) {
-    const err = new ApiError(res.status, json as ErrorResponse | null);
+    const err = new ApiError(res.status, json);
     if (err.code === 'otherPlayer') location.reload();
     throw err;
   }
