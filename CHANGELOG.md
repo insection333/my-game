@@ -423,3 +423,4 @@
 - Session 282: a request unanswered for half a minute is given up as the server out of reach, where the page waited minutes on a connection open to no one.
 - Session 283: a page that cannot reach the server as it opens tries again by itself every few seconds and when back on a network, where it waited for Try again.
 - Session 284: a save naming an item or skill the game no longer has keeps working: gear gone is worn by no one, a notice naming it is left out of the tray, and it takes no Storehouse space.
+- Session 286: a letter keeps at most three marks stacked on a letter, where "Zalgo" text was drawn over the letters around it in the inbox.
