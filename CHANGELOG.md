@@ -426,3 +426,4 @@
 - Session 285: the push sweep lets the server answer between one departed player's foresight and the next, where it played them all in one go on the server's one thread.
 - Session 286: a letter keeps at most three marks stacked on a letter, where "Zalgo" text was drawn over the letters around it in the inbox.
 - Session 287: a page that has lost the server asks for the game again one read at a time, where six stood waiting on a dead connection.
+- Session 288: the server's load measured again with the latest sessions (24% of a core for 500 players), and pages closed together by a deploy reopen and retry apart, where they came back in one wave that held the server 1.8 s.

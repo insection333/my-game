@@ -60,7 +60,7 @@ const handlers = () => ({
 
 describe('the live channel', () => {
   it('reopens a dropped page with growing pauses', () => {
-    const live = openLive(handlers());
+    const live = openLive(handlers(), () => 0.5);
     sockets[0].onclose?.({ code: 1006 });
     vi.advanceTimersByTime(1000);
     expect(sockets).toHaveLength(2);
@@ -107,7 +107,7 @@ describe('the live channel', () => {
   });
 
   it('opens afresh at once when the device is back on a network', () => {
-    const live = openLive(handlers());
+    const live = openLive(handlers(), () => 0.5);
     sockets[0].onopen?.();
     sockets[0].onclose?.({ code: 1006 });
     vi.advanceTimersByTime(1000);

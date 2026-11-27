@@ -22,7 +22,10 @@ afterEach(() => {
 describe('a page that cannot reach the server', () => {
   it('tries again every few seconds and when back on a network, until let go', async () => {
     const tries: string[] = [];
-    const stop = keepTrying(() => tries.push('try'));
+    const stop = keepTrying(
+      () => tries.push('try'),
+      () => 0.5,
+    );
     await vi.advanceTimersByTimeAsync(TRY_EVERY_MS * 2);
     expect(tries).toHaveLength(2);
     win.get('online')?.();
@@ -36,10 +39,13 @@ describe('a page that cannot reach the server', () => {
   it('waits for a try still on its way rather than doubling it', async () => {
     let asked = 0;
     let answer = () => undefined as void;
-    const stop = keepTrying(() => {
-      asked++;
-      return new Promise<void>((r) => (answer = r));
-    });
+    const stop = keepTrying(
+      () => {
+        asked++;
+        return new Promise<void>((r) => (answer = r));
+      },
+      () => 0.5,
+    );
     vi.advanceTimersByTime(TRY_EVERY_MS * 3);
     expect(asked).toBe(1);
     answer();
