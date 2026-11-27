@@ -122,8 +122,13 @@ async function enter(player: PlayerView) {
   void pushAgain().catch(() => undefined);
 }
 
-/** Asks the server who is here and which features are on, then loads the game for a player. */
-export async function boot(): Promise<void> {
+/** Asks the server who is here and which features are on, then loads the game for a player: one ask at a time
+ *  (session 283: the offline page tries again by itself, and a press of Try again beside it must not start the
+ *  game twice). */
+let booting: Promise<void> | null = null;
+export const boot = (): Promise<void> => (booting ??= ask().finally(() => (booting = null)));
+
+async function ask(): Promise<void> {
   try {
     const me = await api.me();
     setSession({ flags: me.flags, email: me.email.enabled, admin: me.admin, staff: me.staff });

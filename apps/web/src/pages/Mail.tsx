@@ -9,6 +9,7 @@ import { fmt, t } from '@idle-clash/content';
 import { Button, Field } from '@idle-clash/ui';
 import { useEffect, useId, useRef, useState, type FormEvent, type KeyboardEvent } from 'react';
 import { api } from '../api.ts';
+import { keepTrying } from '../keep-trying.ts';
 import { refused } from '../refused.ts';
 import { setUnreadMail, useUnreadMail } from '../game/mail.ts';
 import { Slot } from '../slots.tsx';
@@ -72,16 +73,7 @@ export function Messages() {
   }, [unread]);
   // Not loaded: tried again every few seconds and as soon as the device is back online, so the inbox comes
   // back with the connection, where it kept saying the server could not be reached (session 118).
-  useEffect(() => {
-    if (!failed) return;
-    const again = () => void load();
-    const every = setInterval(again, 5000);
-    window.addEventListener('online', again);
-    return () => {
-      clearInterval(every);
-      window.removeEventListener('online', again);
-    };
-  }, [failed]);
+  useEffect(() => (failed ? keepTrying(load) : undefined), [failed]);
   // Opened to write: the cursor where the words go next (the message once a name is in).
   useEffect(() => {
     if (writing) form.current?.querySelector<HTMLElement>(to ? 'textarea' : 'input')?.focus();

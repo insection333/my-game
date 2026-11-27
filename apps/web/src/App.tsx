@@ -36,7 +36,7 @@ export function App() {
   if (phase === 'offline')
     return (
       <>
-        <Offline retry={() => void boot()} />
+        <Offline retry={boot} />
         <Ready />
       </>
     );
