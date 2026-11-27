@@ -23,7 +23,7 @@ export interface LiveHandlers {
 /** Out of sight this long, the channel is opened afresh on return (session 281). */
 export const AWAY_MS = 60_000;
 
-export function openLive(on: LiveHandlers): { close: () => void } {
+export function openLive(on: LiveHandlers, random: () => number = Math.random): { close: () => void } {
   // No live channel where there are no sockets (a test's page): the page plays through its reads alone.
   if (typeof WebSocket === 'undefined') return { close: () => undefined };
   let socket: WebSocket | null = null;
@@ -96,7 +96,10 @@ export function openLive(on: LiveHandlers): { close: () => void } {
         return;
       }
       setConnected(false);
-      retry = setTimeout(() => open(true), pause);
+      // The pause give or take half (session 288): every page's channel closes at once when a deploy restarts
+      // the server, and with the same pauses they all came back in one wave (500 on one core: 1.8 s of the
+      // server's one thread, each page waiting up to that long; spread over five seconds, 5 ms each).
+      retry = setTimeout(() => open(true), pause * (0.5 + random()));
       pause = Math.min(pause * 2, 30_000);
     };
   };

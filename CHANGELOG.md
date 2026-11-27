@@ -424,3 +424,4 @@
 - Session 283: a page that cannot reach the server as it opens tries again by itself every few seconds and when back on a network, where it waited for Try again.
 - Session 284: a save naming an item or skill the game no longer has keeps working: gear gone is worn by no one, a notice naming it is left out of the tray, and it takes no Storehouse space.
 - Session 285: the push sweep lets the server answer between one departed player's foresight and the next, where it played them all in one go on the server's one thread.
+- Session 288: the server's load measured again with the latest sessions (24% of a core for 500 players), and pages closed together by a deploy reopen and retry apart, where they came back in one wave that held the server 1.8 s.
