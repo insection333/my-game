@@ -418,4 +418,5 @@
 - Session 277: a code audit by tool (strict lint, unused exports, unsafe patterns): a War College study is looked for as the castle's own key ("constructor" read a rank of NaN), and seven functions used nowhere are removed.
 - Session 278: answers taken in the order asked: the console's directory, audit log and a player's record keep the latest ask's answer, Castle Clash's castle is never put back by an older read, and a game state made before the one shown is let go (within a minute, so a server clock stepped back is followed).
 - Session 279: the address a sign-in returns to keeps to this site ("/\\elsewhere" passed, and a browser reads it as another site).
+- Session 280: a part of the page's code that could not be fetched is fetched again at the next ask, never reloads the page under words being typed, and is said as a connection that never reached the server.
 - Session 281: the server lets go of a page that stops answering (a phone out of signal stood online, and was never sent its notices while away), and the page opens its channel afresh when back in sight after a minute or back on a network.

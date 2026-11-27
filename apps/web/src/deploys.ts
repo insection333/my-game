@@ -1,10 +1,13 @@
 // After a deploy, a page opened before it may ask for a script the server no longer has (each build
 // names its files by their contents). The page then loads the new build instead of breaking, at most
-// once a minute, so a file that is truly missing cannot reload it forever.
+// once a minute, so a file that is truly missing cannot reload it forever; never while words are typed in a box
+// (session 280: a fetch that failed offline, or as the server restarted, reloaded the welcome page under the
+// name and password being typed), when the failure is left to the press that asked, which says it.
 const KEY = 'reloadedForDeploy';
 
 export function reloadOnStaleFiles() {
   window.addEventListener('vite:preloadError', (event) => {
+    if (typing()) return;
     try {
       if (Date.now() - Number(sessionStorage.getItem(KEY) ?? 0) < 60_000) return;
       sessionStorage.setItem(KEY, String(Date.now()));
