@@ -18,6 +18,7 @@ import {
   type LaneId,
   type State,
 } from '@idle-clash/kernel';
+import { keepTrying } from '../keep-trying.ts';
 import { api, ApiError, requestId } from '../api.ts';
 import { onConnection, setConnected } from './connection.ts';
 import { announceGains } from './gains.ts';
@@ -111,16 +112,16 @@ async function resync() {
 }
 
 // While the server cannot be reached, the page tries again every few seconds, and at once when the
-// device says it is back online.
-let retrying: ReturnType<typeof setInterval> | null = null;
+// device says it is back online, one read at a time (session 287: an ask may wait half a minute before it is
+// given up, and six stood waiting on a dead connection).
+let retrying: (() => void) | null = null;
 onConnection((up) => {
-  if (up && retrying) clearInterval(retrying);
+  if (up) retrying?.();
   if (up) retrying = null;
   // Back: what could not get through is sent, in order, before anything else.
   if (up) void box.flush();
-  else retrying ??= setInterval(() => void resync(), 5000);
+  else retrying ??= keepTrying(resync);
 });
-if (typeof window !== 'undefined') window.addEventListener('online', () => void resync());
 
 /** Loads the save with the features the server has switched on, and opens the live channel. */
 export async function start(flags: Record<string, boolean>): Promise<void> {
