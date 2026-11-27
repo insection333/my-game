@@ -252,5 +252,6 @@ export function gameRoutes(app: FastifyInstance, ctx: Ctx, features: readonly Fe
       if (!ctx.live.has(player)) ctx.push.gone(player);
     });
     socket.on('message', () => undefined);
+    socket.on('pong', () => ctx.live.heard(socket));
   });
 }

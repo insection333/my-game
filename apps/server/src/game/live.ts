@@ -5,9 +5,14 @@ interface Socket {
   readyState: number;
   send(data: string): void;
   close(code?: number, reason?: string): void;
+  ping?(): void;
+  terminate?(): void;
 }
 
 const OPEN = 1;
+/** How often each page is asked whether it is still there (session 281); one that has not answered by the next
+ *  ask is gone. */
+export const BEAT_MS = 30_000;
 /** Pages a player may hold open at once: a new one past this closes their oldest. */
 export const PAGES_PER_PLAYER = 6;
 
@@ -15,6 +20,8 @@ export class LiveHub {
   private sockets = new Map<string, Set<Socket>>();
   /** The session each page was opened under (its token's hash), so ending a session closes its pages. */
   private sessionOf = new WeakMap<Socket, string>();
+  /** Whether each page has answered since it was last asked (session 281). */
+  private answered = new WeakMap<Socket, boolean>();
 
   /** Holds a page open; past the limit, the player's oldest page is closed (a Set keeps its order). */
   add(playerId: string, socket: Socket, session = ''): void {
@@ -86,6 +93,29 @@ export class LiveHub {
       s.close(4401, 'signed out');
     }
     if (!set.size) this.sockets.delete(playerId);
+  }
+
+  /** A page answered the last ask: it is still there. */
+  heard(socket: Socket): void {
+    this.answered.set(socket, true);
+  }
+
+  /** Asks every page whether it is still there, letting go of each that did not answer the last ask (session
+   *  281): a phone that lost its signal, or slept, leaves its socket open on the server with no one at the
+   *  other end, and the player stood online for as long as the server ran, so their notices while away were
+   *  never foreseen or sent (only a player with no page open is away), and each such page took one of their
+   *  six. Letting go of it closes it as any page closing does. */
+  beat(): void {
+    for (const set of this.sockets.values())
+      for (const s of set) {
+        if (!s.ping || !s.terminate) continue;
+        if (this.answered.get(s) === false) {
+          s.terminate();
+          continue;
+        }
+        this.answered.set(s, false);
+        if (s.readyState === OPEN) s.ping();
+      }
   }
 
   closeAll(): void {
