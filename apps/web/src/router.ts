@@ -29,15 +29,18 @@ export function replace(href: string) {
   for (const l of listeners) l();
 }
 
+/** Where to go after signing in: only an address on this site (session 279: "/\\elsewhere" passed the old test, and a
+ *  browser reads that backslash as a slash, so a page of an older build, which follows with a full load, left the
+ *  site). */
+export const safeNext = (next: string | null): string => (next && /^\/(?![/\\])/.test(next) ? next : '/');
+
 export function useLocation(): { path: string; panel: string | null; next: string } {
   const at = useSyncExternalStore(subscribe, snapshot);
   const url = new URL(at, 'http://x');
-  // Where to go after signing in: only an address on this site.
-  const next = url.searchParams.get('next') ?? '/';
   return {
     path: url.pathname.replace(/\/$/, '') || '/',
     panel: url.searchParams.get('panel'),
-    next: /^\/(?!\/)/.test(next) ? next : '/',
+    next: safeNext(url.searchParams.get('next')),
   };
 }
 
