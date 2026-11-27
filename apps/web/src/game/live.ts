@@ -20,20 +20,48 @@ export interface LiveHandlers {
   reopened: () => void;
 }
 
+/** Out of sight this long, the channel is opened afresh on return (session 281). */
+export const AWAY_MS = 60_000;
+
 export function openLive(on: LiveHandlers): { close: () => void } {
+  // No live channel where there are no sockets (a test's page): the page plays through its reads alone.
+  if (typeof WebSocket === 'undefined') return { close: () => undefined };
   let socket: WebSocket | null = null;
   let closed = false;
   let pause = 1000;
   let retry: ReturnType<typeof setTimeout> | null = null;
   let resting = false;
-  const back = () => {
-    if (!resting || closed || document.visibilityState !== 'visible') return;
-    resting = false;
+  let hiddenAt: number | null = null;
+  /** Opens a fresh channel at once in place of the one held (session 281): after a while out of sight, or the
+   *  device back on a network, a socket that looks open may have no one at the other end (the server lets go of
+   *  a page that stops answering, but a phone asleep never hears it close), and live news was never heard again. */
+  const afresh = () => {
+    if (closed || resting) return;
+    if (retry) clearTimeout(retry);
+    retry = null;
+    if (socket) {
+      socket.onclose = null;
+      socket.close();
+    }
+    pause = 1000;
     open(true);
+  };
+  const back = () => {
+    if (document.visibilityState !== 'visible') {
+      hiddenAt = Date.now();
+      return;
+    }
+    const away = hiddenAt !== null && Date.now() - hiddenAt >= AWAY_MS;
+    hiddenAt = null;
+    if (closed) return;
+    if (resting) {
+      resting = false;
+      return open(true);
+    }
+    if (away) afresh();
   };
 
   const open = (again: boolean) => {
-    if (typeof WebSocket === 'undefined') return;
     const scheme = location.protocol === 'https:' ? 'wss:' : 'ws:';
     const player = shownPlayer();
     socket = new WebSocket(
@@ -74,11 +102,13 @@ export function openLive(on: LiveHandlers): { close: () => void } {
   };
   open(false);
   document.addEventListener('visibilitychange', back);
+  window.addEventListener('online', afresh);
 
   return {
     close: () => {
       closed = true;
       document.removeEventListener('visibilitychange', back);
+      window.removeEventListener('online', afresh);
       if (retry) clearTimeout(retry);
       socket?.close();
     },

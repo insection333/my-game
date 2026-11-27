@@ -7,6 +7,7 @@ import { openLive } from '../src/game/live.ts';
 
 const sockets: { onclose: ((e: { code: number }) => void) | null; onopen: (() => void) | null }[] = [];
 const doc = { visibilityState: 'hidden', listeners: [] as (() => void)[] };
+const win = new Map<string, () => void>();
 
 beforeEach(() => {
   sockets.length = 0;
@@ -31,12 +32,22 @@ beforeEach(() => {
     addEventListener: (_: string, fn: () => void) => doc.listeners.push(fn),
     removeEventListener: () => undefined,
   });
+  vi.stubGlobal('window', {
+    addEventListener: (type: string, fn: () => void) => win.set(type, fn),
+    removeEventListener: (type: string) => win.delete(type),
+  });
 });
 afterEach(() => {
   vi.useRealTimers();
   vi.unstubAllGlobals();
   doc.listeners.length = 0;
+  doc.visibilityState = 'hidden';
+  win.clear();
 });
+const seen = (state: 'visible' | 'hidden') => {
+  doc.visibilityState = state;
+  for (const l of doc.listeners) l();
+};
 
 const handlers = () => ({
   state: vi.fn(),
@@ -73,6 +84,38 @@ describe('the live channel', () => {
     sockets[1].onopen?.();
     expect(on.reopened).toHaveBeenCalled();
     stop();
+    live.close();
+  });
+
+  // Session 281: a phone asleep, or off its network, kept a socket that looked open with no one at the other
+  // end, and live news (a siege, a letter) was never heard again until the page was reloaded.
+  it('opens afresh, and reads the game again, when the page is back after a minute out of sight', () => {
+    const on = handlers();
+    const live = openLive(on);
+    sockets[0].onopen?.();
+    seen('hidden');
+    vi.advanceTimersByTime(30_000);
+    seen('visible');
+    expect(sockets).toHaveLength(1);
+    seen('hidden');
+    vi.advanceTimersByTime(90_000);
+    seen('visible');
+    expect(sockets).toHaveLength(2);
+    sockets[1].onopen?.();
+    expect(on.reopened).toHaveBeenCalledTimes(1);
+    live.close();
+  });
+
+  it('opens afresh at once when the device is back on a network', () => {
+    const live = openLive(handlers());
+    sockets[0].onopen?.();
+    sockets[0].onclose?.({ code: 1006 });
+    vi.advanceTimersByTime(1000);
+    sockets[1].onclose?.({ code: 1006 });
+    win.get('online')?.();
+    expect(sockets).toHaveLength(3);
+    vi.advanceTimersByTime(60_000);
+    expect(sockets).toHaveLength(3);
     live.close();
   });
 });
