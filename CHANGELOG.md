@@ -420,3 +420,4 @@
 - Session 279: the address a sign-in returns to keeps to this site ("/\\elsewhere" passed, and a browser reads it as another site).
 - Session 280: a part of the page's code that could not be fetched is fetched again at the next ask, never reloads the page under words being typed, and is said as a connection that never reached the server.
 - Session 281: the server lets go of a page that stops answering (a phone out of signal stood online, and was never sent its notices while away), and the page opens its channel afresh when back in sight after a minute or back on a network.
+- Session 282: a request unanswered for half a minute is given up as the server out of reach, where the page waited minutes on a connection open to no one.
