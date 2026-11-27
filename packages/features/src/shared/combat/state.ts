@@ -57,10 +57,12 @@ export const setCombat = (state: State, c: CombatState): void => {
   state.features.combat = c;
 };
 
-/** The gear worn in a slot, if the player still has it. */
+/** The gear worn in a slot, if the player still has it and it is gear for that slot: an item gone from the game
+ *  since it was put on (an id renamed or let go) is worn by no one (session 284: the loadout asked its name and
+ *  the Combat page broke). */
 export function wornIn(state: State, slot: GearSlot): string | null {
   const id = combatOf(state).worn[slot];
-  return id && countOf(state, id) > 0 ? id : null;
+  return id && countOf(state, id) > 0 && itemOf(id)?.gear?.slot === slot ? id : null;
 }
 
 /** The style the worn weapon fights with, or null with none worn. */

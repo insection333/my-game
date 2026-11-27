@@ -33,9 +33,10 @@ function fromNotices(a: AwaySummary, notices: readonly GameEvent[]): RecapLine[]
   for (const e of [...notices].sort((x, y) => x.at - y.at)) {
     if (e.at <= a.from || e.at > a.to + 60_000) continue;
     const line = noticeLine(e);
-    if (e.type === 'castleBesieged' || e.type === 'castleSpyCaught') lines.push({ ...line!, kind: 'defence' });
+    if (!line) continue;
+    if (e.type === 'castleBesieged' || e.type === 'castleSpyCaught') lines.push({ ...line, kind: 'defence' });
     // The realm's boss fell with this player's strike while they were away (session 190: only the bell said).
-    else if (FROM_NOTICES.includes(e.type) && line) lines.push(line);
+    else if (FROM_NOTICES.includes(e.type)) lines.push(line);
   }
   return lines.map(({ kind, text, icon, href }) => ({ kind, text, icon, href }));
 }

@@ -3,13 +3,16 @@
 // count read "25 of 24 slots", as though the count were wrong.
 import { newState } from '@idle-clash/kernel';
 import { describe, expect, it } from 'vitest';
+import { FEATURES } from '../src/index.ts';
 import { storehouse } from '../src/storehouse/index.ts';
 import { START_SLOTS } from '../src/shared/storehouse.ts';
 
 const T0 = Date.UTC(2026, 10, 20, 9);
+// Kinds the game has: an item it no longer has takes no space (session 284).
+const KINDS = FEATURES.flatMap((f) => f.content.items ?? []).filter((i) => i.kind === 'resource');
 const holding = (kinds: number) => ({
   ...newState(1, T0),
-  items: Object.fromEntries(Array.from({ length: kinds }, (_, i) => [`item-${i}`, 1])),
+  items: Object.fromEntries(KINDS.slice(0, kinds).map((i) => [i.id, 1])),
 });
 const text = (kinds: number) =>
   (storehouse.slots['store.capacity']({ state: holding(kinds), now: T0 }) as unknown as { text: string }).text;

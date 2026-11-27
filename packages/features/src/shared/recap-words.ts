@@ -94,8 +94,18 @@ export const kindledLine = (skill: string, count: number): RecapLine => ({
   href: `/skills/${skill}`,
 });
 
-/** One event as the notices tray lists it: what happened, and where to act. Null for the rest. */
+/** One event as the notices tray lists it: what happened, and where to act. Null for the rest, and for a notice
+ *  naming what the game no longer has (session 284: the server keeps a player's last hundred, a later build may
+ *  rename or let go of an item, skill or foe they name, and its missing words threw on every draw of the bell). */
 export function noticeLine(e: GameEvent): (RecapLine & { at: number }) | null {
+  try {
+    return lineOf(e);
+  } catch {
+    return null;
+  }
+}
+
+function lineOf(e: GameEvent): (RecapLine & { at: number }) | null {
   switch (e.type) {
     case 'find': {
       // The tray leaves out Uncommon finds the log already holds: they come by the dozen.

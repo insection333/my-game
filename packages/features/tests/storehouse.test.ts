@@ -11,10 +11,20 @@ import { storehouse } from '../src/storehouse/index.ts';
 const T0 = Date.UTC(2026, 9, 21, 9);
 const engine = createEngine(actionRegistry(FEATURES, () => true));
 const rng = seeded(9);
+const JUNK = FEATURES.flatMap((f) => f.content.items ?? [])
+  .filter((i) => i.kind === 'resource' && !/pine|oak|copper|tin/.test(i.id))
+  .map((i) => i.id);
 const with24 = (extra: Record<string, number> = {}): State => ({
   ...newState(9, T0),
-  // 24 different items: the Storehouse is full.
-  items: { ...Object.fromEntries(Array.from({ length: 24 }, (_, i) => [`junk-${i}`, 1])), ...extra },
+  // 24 different items the game has (session 284: one it no longer has takes no space): the Storehouse is full.
+  items: {
+    ...Object.fromEntries(
+      JUNK.filter((id) => !(id in extra))
+        .slice(0, 24)
+        .map((id) => [id, 1]),
+    ),
+    ...extra,
+  },
 });
 const run = (route: 'sell' | 'buy' | 'enlarge', state: State, input: unknown) =>
   storehouse.routes[route].run(state, input, T0) as {
