@@ -8,6 +8,7 @@ import { useEffect, useState, type FormEvent } from 'react';
 import { api } from '../api.ts';
 import { csvOf, fileName, isoWhen } from './csv.ts';
 import { DownloadCsv } from './Download.tsx';
+import { latest } from '../latest.ts';
 import { handled } from '../game/session.ts';
 import { whenOf } from '../pages/days.ts';
 import { untilLoaded } from '../Ready.tsx';
@@ -103,15 +104,17 @@ export function Audit() {
   }
   const [entries, setEntries] = useState<AuditEntry[] | null>(null);
   const [more, setMore] = useState<number | null>(null);
+  const [take] = useState(latest);
   const load = (q: string, before: number | null) =>
-    untilLoaded(api.admin.audit(q, before)).then(
+    take(
+      untilLoaded(api.admin.audit(q, before)),
       (r) => {
         setEntries((was) => (before ? [...(was ?? []), ...r.entries] : r.entries));
         setMore(r.more);
       },
       (err: unknown) => void handled(err),
     );
-  useEffect(() => void load(query, null), [query]);
+  useEffect(() => void load(query, null), [query]); // eslint-disable-line react-hooks/exhaustive-deps
   const search = (e: FormEvent) => {
     e.preventDefault();
     navigate(auditHref(typed.trim()));

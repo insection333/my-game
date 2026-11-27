@@ -12,6 +12,7 @@ import { refused as refusedWords } from '../../refused.ts';
 import { refusal } from './labels.ts';
 import type { Field } from './hosts.ts';
 import { whileSeen } from '../../seen.ts';
+import { inOrder } from '../../latest.ts';
 
 export interface CastleSnapshot {
   view: castleEngine.CastleView | null;
@@ -67,10 +68,15 @@ export const castleStore = {
   },
 };
 
+/** The castle's reads and presses in the order asked: an older answer never puts back what a newer one showed. */
+const views = inOrder();
+const targetsAsked = inOrder();
+
 export async function loadCastle(first = false): Promise<void> {
   try {
+    const mine = views.ask();
     const view = await (first ? untilLoaded(api.castle.view()) : api.castle.view());
-    set({ view });
+    if (views.fresh(mine)) set({ view });
   } catch (err) {
     handled(err);
   }
@@ -78,8 +84,9 @@ export async function loadCastle(first = false): Promise<void> {
 
 export async function loadTargets(first = false): Promise<void> {
   try {
+    const mine = targetsAsked.ask();
     const targets = await (first ? untilLoaded(api.castle.targets()) : api.castle.targets());
-    set({ targets });
+    if (targetsAsked.fresh(mine)) set({ targets });
   } catch (err) {
     handled(err);
   }
@@ -101,9 +108,10 @@ export async function castleRun(
   if (snapshot.busy) return null;
   set({ busy: true, refused: null, refusedAt: null });
   try {
+    const mine = views.ask();
     const r = await (action === 'open' ? api.castle.open(requestId()) : api.castle.act(requestId(), action));
     const refused = r.result.ok ? null : refusal(r.result.reason ?? 'unknown');
-    set({ view: r.castle });
+    if (views.fresh(mine)) set({ view: r.castle });
     say(refused, at);
     if (r.result.ok && (action === 'open' || action.type === 'siege' || action.type === 'spy')) void loadTargets();
     return r.result;

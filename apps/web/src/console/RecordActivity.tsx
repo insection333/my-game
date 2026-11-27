@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import { api } from '../api.ts';
 import { handled } from '../game/session.ts';
 import { dayOf, whenOf } from '../pages/days.ts';
+import { latest } from '../latest.ts';
 import { untilLoaded } from '../Ready.tsx';
 import type { Run } from './Players.tsx';
 import m from './more.module.css';
@@ -61,7 +62,8 @@ function Calendar({ a }: { a: ActivityResponse }) {
 export function RecordActivity({ record, run }: { record: RecordResponse; run: Run }) {
   const [a, setA] = useState<ActivityResponse | null>(null);
   const [said, setSaid] = useState<string | null>(null);
-  const load = () => untilLoaded(api.admin.activity(record.id)).then(setA, (err: unknown) => void handled(err));
+  const [take] = useState(latest);
+  const load = () => take(untilLoaded(api.admin.activity(record.id)), setA, (err: unknown) => void handled(err));
   useEffect(() => void load(), [record.id]); // eslint-disable-line react-hooks/exhaustive-deps
   if (!a) return null;
   const end = (handle: string) =>

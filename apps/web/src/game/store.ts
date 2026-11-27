@@ -4,6 +4,7 @@
 // read when the tab comes back). The clock ticks only while something is moving, so a resting page
 // uses no CPU.
 import { actionRegistry, FEATURES, type Feature, type Json } from '@idle-clash/features';
+import { cameLate } from '../latest.ts';
 import { outbox } from './outbox.ts';
 import { toldOf } from './told.ts';
 import {
@@ -78,8 +79,12 @@ function tick() {
 }
 
 /** Takes the server's word for the save, unless a change sent since is still unanswered. */
+/** When, by the server's clock, the state shown was made. */
+let takenAt = 0;
+
 function adopt(state: State, now: number) {
-  if (inFlight > 0) return;
+  if (inFlight > 0 || cameLate(now, takenAt)) return;
+  takenAt = now;
   setServerTime(now);
   publish({ state, now, events: view?.events ?? [], features, notices: view?.notices ?? [], away: view?.away ?? null });
 }
@@ -122,6 +127,7 @@ export async function start(flags: Record<string, boolean>): Promise<void> {
   features = FEATURES.filter((f) => flags[f.id]);
   engine = createEngine(actionRegistry(features, () => true));
   inFlight = 0;
+  takenAt = 0;
   const [g, n] = await Promise.all([api.game(), api.notices().catch(() => ({ notices: [] }))]);
   view = null;
   adopt(g.state, g.now);

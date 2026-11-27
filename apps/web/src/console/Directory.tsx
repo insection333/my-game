@@ -19,6 +19,7 @@ import { useEffect, useState, type FormEvent } from 'react';
 import { api } from '../api.ts';
 import { csvOf, fileName, isoDay } from './csv.ts';
 import { DownloadCsv } from './Download.tsx';
+import { latest } from '../latest.ts';
 import { handled } from '../game/session.ts';
 import { dayOf } from '../pages/days.ts';
 import { untilLoaded } from '../Ready.tsx';
@@ -152,9 +153,10 @@ export function Directory() {
   }
   const [found, setFound] = useState<DirectoryResponse | null>(null);
   const key = hrefOf(ask);
+  const [take] = useState(latest);
   useEffect(() => {
-    untilLoaded(api.admin.directory(askOf(location.search))).then(setFound, (err: unknown) => void handled(err));
-  }, [key]);
+    void take(untilLoaded(api.admin.directory(askOf(location.search))), setFound, (err: unknown) => void handled(err));
+  }, [key, take]);
 
   const go = (next: Partial<Ask>) => navigate(hrefOf({ ...ask, page: 0, ...next }));
   const search = (e: FormEvent) => {
