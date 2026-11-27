@@ -11,7 +11,7 @@ let down = false;
 const json = (body: unknown) => new Response(JSON.stringify(body), { headers: { 'content-type': 'application/json' } });
 
 beforeAll(() => {
-  vi.useFakeTimers({ toFake: ['setInterval', 'clearInterval'] });
+  vi.useFakeTimers({ toFake: ['setInterval', 'clearInterval', 'setTimeout', 'clearTimeout'] });
   vi.stubGlobal('document', { hidden: false, addEventListener: () => undefined });
   vi.stubGlobal('window', { addEventListener: () => undefined, removeEventListener: () => undefined });
   vi.stubGlobal('WebSocket', undefined);
