@@ -58,9 +58,11 @@ export const worthless = (item: string): boolean => {
 export const capacity = (state: State): number =>
   START_SLOTS + SLOTS_PER_ENLARGEMENT * storeOf(state).enlargements + relicSlots(state);
 
-/** Different items held (not gold). */
+/** Different items held (not gold), of those the game still has: one gone since (an id renamed or let go,
+ *  session 284) is shown nowhere and cannot be sold, so it takes no space. */
 export const slotsUsed = (state: State): number =>
-  Object.keys(state.items).filter((id) => !SLOTLESS.has(id) && countOf(state, id) > 0).length;
+  Object.keys(state.items).filter((id) => !SLOTLESS.has(id) && countOf(state, id) > 0 && itemOf(id) !== undefined)
+    .length;
 
 /**
  * Whether a repetition that gives these items (and uses up these) fits: a new kind needs a free slot,

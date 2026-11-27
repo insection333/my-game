@@ -4,6 +4,7 @@ import { XP_TABLE } from '@idle-clash/content';
 import { newState, type State } from '@idle-clash/kernel';
 import { describe, expect, it } from 'vitest';
 import type { FoodView } from '../src/storehouse/index.ts';
+import '../src/index.ts';
 import { storehouse } from '../src/storehouse/index.ts';
 import { START_SLOTS } from '../src/shared/storehouse.ts';
 

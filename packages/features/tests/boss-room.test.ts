@@ -2,10 +2,11 @@
 // realm's strike, yet the boss rows and the realm's row said ready (Fight offered) and the Hearth asked for
 // them; they now ask the lane's own check and say why.
 import { HOUR, type State } from '@idle-clash/kernel';
+import { itemOf } from '../src/shared/catalog.ts';
 import { describe, expect, it } from 'vitest';
 import { bossRows } from '../src/expeditions/views.ts';
 import { expeditionErrands } from '../src/expeditions/errands.ts';
-import { capacity } from '../src/shared/storehouse.ts';
+import { capacity, slotsUsed } from '../src/shared/storehouse.ts';
 import { BOSSES } from '../src/shared/expeditions/data.ts';
 import { engine, fighterAt, T0 } from './helpers/expedition.ts';
 
@@ -44,9 +45,9 @@ function full(s: State): State {
     'goose-fletching',
     'amber-nugget',
     'river-pearl',
-  ].filter((i) => !drops.has(i));
+  ].filter((i) => !drops.has(i) && itemOf(i));
   for (const item of fill) {
-    if (Object.keys(out.items).filter((k) => k !== 'gold').length >= capacity(out)) break;
+    if (slotsUsed(out) >= capacity(out)) break;
     out.items[item] = (out.items[item] ?? 0) + 1;
   }
   for (const b of BOSSES) delete out.items[b.drop];
