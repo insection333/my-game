@@ -416,3 +416,4 @@
 - Session 275: breakpoints in em and containers in rem, so a browser set to larger text lays a desktop out as the narrower screen it holds (the rail cut its names on every page), notices while away told again each day with the player's time zone, and a notice's link kept to this site.
 - Session 276: the numbers swept across every system (rates, values, curves, words against constants, stated rates against engine hours with the newest lifts), and items worth nothing to the vendor (the first tiers' runes, whetstones and arrows) can be thrown away, where they held a space for good.
 - Session 277: a code audit by tool (strict lint, unused exports, unsafe patterns): a War College study is looked for as the castle's own key ("constructor" read a rank of NaN), and seven functions used nowhere are removed.
+- Session 279: the address a sign-in returns to keeps to this site ("/\\elsewhere" passed, and a browser reads it as another site).
