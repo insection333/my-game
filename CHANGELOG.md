@@ -417,3 +417,4 @@
 - Session 276: the numbers swept across every system (rates, values, curves, words against constants, stated rates against engine hours with the newest lifts), and items worth nothing to the vendor (the first tiers' runes, whetstones and arrows) can be thrown away, where they held a space for good.
 - Session 277: a code audit by tool (strict lint, unused exports, unsafe patterns): a War College study is looked for as the castle's own key ("constructor" read a rank of NaN), and seven functions used nowhere are removed.
 - Session 278: answers taken in the order asked: the console's directory, audit log and a player's record keep the latest ask's answer, Castle Clash's castle is never put back by an older read, and a game state made before the one shown is let go (within a minute, so a server clock stepped back is followed).
+- Session 279: the address a sign-in returns to keeps to this site ("/\\elsewhere" passed, and a browser reads it as another site).
