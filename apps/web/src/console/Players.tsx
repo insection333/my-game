@@ -16,6 +16,7 @@ import { untilLoaded } from '../Ready.tsx';
 import { refused } from '../refused.ts';
 import { navigate, replace, useLocation } from '../router.ts';
 import { Slot } from '../slots.tsx';
+import { latest } from '../latest.ts';
 import { opened } from './recent.ts';
 import { RecordAccount } from './RecordAccount.tsx';
 import { RecordActivity } from './RecordActivity.tsx';
@@ -45,8 +46,10 @@ export function PlayerRecord({ id }: { id: string }) {
   const tab: Tab = TABS.find((x) => x === asked) ?? 'summary';
   const [record, setRecord] = useState<RecordResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [take] = useState(latest);
   const load = () =>
-    untilLoaded(api.admin.record(id)).then(
+    take(
+      untilLoaded(api.admin.record(id)),
       (r) => {
         setRecord(r);
         opened({ id: r.id, name: r.name });
