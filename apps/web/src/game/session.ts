@@ -4,7 +4,9 @@
 import type { PlayerView } from '@idle-clash/contracts';
 import { useSyncExternalStore } from 'react';
 import { api, ApiError, showPlayer } from '../api.ts';
+import { staleBuild } from '../deploys.ts';
 import { keepFor } from '../kept.ts';
+import { onceLoaded } from '../once-loaded.ts';
 import { pushAgain, pushOff } from '../push.ts';
 import { replace } from '../router.ts';
 import { notePlayed } from '../welcome-path.ts';
@@ -58,13 +60,13 @@ export const sessionStore = {
 };
 export const useSession = (): Session => useSyncExternalStore(sessionStore.subscribe, sessionStore.get);
 
-let game: Promise<typeof Store> | null = null;
-/** The game's part of the page: fetched once, the first time anything asks. */
-export const loadGame = () => (game ??= import('./store.ts'));
+/** The game's part of the page: fetched once, the first time anything asks, and again if that failed. */
+export const loadGame = onceLoaded(() => import('./store.ts'));
+let started: typeof Store | null = null;
 
 /** The session ended (signed out here, or found ended by the server): back to the welcome page. */
 export function signedOut(why: Bounced | null = null) {
-  void game?.then((m) => m.stop());
+  started?.stop();
   keepFor(null);
   showPlayer(null);
   setSession({ phase: 'signedOut', player: null, admin: false, staff: false, mustChangePassword: false, bounced: why });
@@ -104,7 +106,16 @@ function enterConsole(player: PlayerView, mustChangePassword = false) {
 async function enter(player: PlayerView) {
   keepFor(player.id);
   showPlayer(player.id);
-  const m = await loadGame();
+  let m: typeof Store;
+  try {
+    m = await loadGame();
+  } catch (err) {
+    // Signed in, but the game's code is not this build's any more (a deploy since the page opened): the page
+    // loads the new build, which opens on the game.
+    if (staleBuild()) location.reload();
+    throw err;
+  }
+  started = m;
   await m.start(session.flags);
   notePlayed(true);
   setSession({ phase: 'playing', player, bounced: null });

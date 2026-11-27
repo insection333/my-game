@@ -21,7 +21,11 @@ const refusal = (err: unknown): string =>
     banned: t('error.banned'),
   });
 
-const prefetch = () => void loadGame().then(() => import('../Game.tsx'));
+// Fetched while the form is filled in; a fetch that fails here is tried again by signing in (session 280).
+const prefetch = () =>
+  void loadGame()
+    .then(() => import('../Game.tsx'))
+    .catch(() => undefined);
 
 export function Welcome({ path, next }: { path: string; next: string }) {
   const create = path !== '/welcome/sign-in';

@@ -16,7 +16,7 @@ import type { Config } from './config.ts';
 import type { Ctx } from './context.ts';
 import { ipOf, limit } from './context.ts';
 import { openDb } from './db/open.ts';
-import { LiveHub } from './game/live.ts';
+import { BEAT_MS, LiveHub } from './game/live.ts';
 import { gameRoutes } from './game/routes.ts';
 import { castleRoutes } from './castle/routes.ts';
 import { contractRoute, fail, harden } from './http.ts';
@@ -225,6 +225,9 @@ export async function buildApp(
     60_000,
   );
   pushing.unref();
+  // Pages whose other end has gone without closing (a phone out of signal) let go (session 281).
+  const beating = setInterval(() => ctx.live.beat(), BEAT_MS);
+  beating.unref();
   app.setNotFoundHandler((_req, reply) => reply.code(404).send({ error: { code: 'notFound' } }));
 
   return {
@@ -235,6 +238,7 @@ export async function buildApp(
       clearInterval(watching);
       clearInterval(housekeeping);
       clearInterval(pushing);
+      clearInterval(beating);
       ctx.live.closeAll();
       await app.close();
       closeDb();
