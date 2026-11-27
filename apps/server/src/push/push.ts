@@ -119,8 +119,15 @@ export class Push {
 
   private async sweepNow(): Promise<void> {
     const at = this.deps.now();
+    let played = false;
     for (const [playerId, leftAt] of [...this.left]) {
       if (at - leftAt < LEFT_AFTER_MS) continue;
+      // Each foresight plays a day on the server's one thread (up to 0.4 s two years in): the server answers
+      // others between one and the next (session 285), where every player who left that minute was played in
+      // one go.
+      if (played) await new Promise((r) => setImmediate(r));
+      if (this.stopped) return;
+      played = true;
       this.left.delete(playerId);
       if (this.deps.online(playerId)) continue;
       const state = this.deps.stateOf(playerId, at);

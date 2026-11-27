@@ -37,6 +37,9 @@ export function cleanMessage(raw: string): string | null {
     // Control characters and the invisible ones used to hide words.
     .replace(HIDDEN, '')
     .replace(CONTROL, ' ')
+    // Marks stacked on one letter (session 286: "Zalgo" text drawn over the letters around it in the inbox):
+    // three at most, as no language needs more.
+    .replace(/(\p{M}{3})\p{M}+/gu, '$1')
     .replace(/\s+/g, ' ')
     .trim();
   return text || null;
