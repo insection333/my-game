@@ -4,6 +4,7 @@
 // id (so it acts once), and is sent again in order when the server answers again; a press made meanwhile waits
 // behind it, so the order the player pressed in is kept. A change left unsent for ten minutes is let go.
 import { ApiError } from '../api.ts';
+import { holdReloadWhile, reloadIfWaiting } from '../deploys.ts';
 
 /** How long a change that could not get through is kept to send again. */
 export const KEEP_UNSENT_MS = 10 * 60_000;
@@ -32,6 +33,10 @@ export function outbox(deps: Deps): Outbox {
   let queue: { go: () => Promise<unknown>; done: (r: unknown) => void; at: number }[] = [];
   let running: Promise<void> | null = null;
   let again = false;
+  // A page of an older build waits for its changes to be sent before it loads the new one (session 292): the
+  // first answer of a server restarted for a deploy names the new build, and a page out of sight loaded it at
+  // once, losing every change still waiting behind the first.
+  holdReloadWhile(() => queue.length > 0);
   const wait = <T>(go: () => Promise<T>) =>
     new Promise<T | null>((done) => queue.push({ go, done: done as (r: unknown) => void, at: deps.now() }));
 
@@ -98,6 +103,7 @@ export function outbox(deps: Deps): Outbox {
           again = false;
           await drain();
         } while (again);
+        if (!queue.length) reloadIfWaiting();
       })().finally(() => (running = null));
       return running;
     },
