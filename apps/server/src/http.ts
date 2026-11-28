@@ -43,8 +43,11 @@ export function harden(app: FastifyInstance, origins: string[]): void {
     }
   });
 
-  app.addHook('onSend', async (_req, reply, payload) => {
+  app.addHook('onSend', async (req, reply, payload) => {
     for (const [k, v] of Object.entries(SECURITY_HEADERS)) reply.header(k, v);
+    // The API's answers are a player's own, or for an admin any player's record: never kept in a browser's
+    // disk cache, where a shared computer held them after signing out (session 295).
+    if (req.url.startsWith('/api/') && !reply.hasHeader('cache-control')) reply.header('cache-control', 'no-store');
     return payload;
   });
 
