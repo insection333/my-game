@@ -32,7 +32,10 @@ self.addEventListener('notificationclick', (event) => {
       for (const c of open) {
         if (new URL(c.url).origin === self.location.origin && 'focus' in c) {
           await c.focus();
-          if ('navigate' in c) await c.navigate(url).catch(() => undefined);
+          // The tab goes there in place (session 302): navigated, it loaded afresh and lost a letter half written
+          // and the presses still waiting to be sent. A tab of a build that does not listen is only brought forward.
+          const to = new URL(url);
+          c.postMessage({ type: 'idle-clash:open', url: to.pathname + to.search });
           return;
         }
       }
