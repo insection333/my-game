@@ -31,6 +31,7 @@ import { Connection } from './Connection.tsx';
 import { RealmBanner } from './RealmBanner.tsx';
 import { Gains } from './Gains.tsx';
 import { Moments } from './Moments.tsx';
+import { usePageName } from './page-name.ts';
 import s from './shell.module.css';
 
 /** The menu. `wide`: only where the menu is a rail (768 px and wider); on a phone the place is in the account
@@ -52,6 +53,7 @@ export function Shell({ children }: { children: ReactNode }) {
   const { path, panel } = useLocation();
   const lanes = laneViews(state, now, features, game.canStart);
   const close = () => navigate(withPanel(null));
+  usePageName(path);
   const gold = useCountUp(countOf(state, 'gold'));
   // Deeds done and not yet recorded, wherever the player is: the server records them, each with its moment.
   const deeds = fills<{ pending: string }>(features, 'shell.deeds', state, now)[0]?.data.pending ?? '';
