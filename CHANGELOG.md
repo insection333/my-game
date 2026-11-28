@@ -441,3 +441,4 @@
 - Session 300: a field's reason for refusing is said aloud as it appears, where only the eye saw it.
 - Session 301: a script missing while presses wait to be sent no longer reloads the page under them; it reloads once they are sent.
 - Session 302: a notice pressed with the game open takes its tab to the page in place, keeping a letter half written and the presses waiting to be sent.
+- Session 303: a sheet shut hands the focus back to the account menu's picture, or to the page's heading when what opened it is gone, where it fell to the page's body.

@@ -84,3 +84,46 @@ export async function runSaidProofs(served: Served): Promise<string[]> {
   }
   return problems;
 }
+
+/** A sheet shut hands the focus back to where it was opened from (session 303). Settings opened from the
+ *  account menu was opened by a link the menu took away as it closed, so on Escape the focus fell to the
+ *  page's body and a keyboard or screen reader player was left nowhere. Choosing a place in the menu now
+ *  hands the focus to its picture, and a sheet whose opener is gone hands it to the page's heading. */
+export async function runFocusBackProofs(served: Served): Promise<string[]> {
+  const problems: string[] = [];
+  const page = await openPage('chromium', '/', { viewport: { width: 390, height: 844 } }, 'veteran');
+  const focused = () =>
+    page.evaluate(() => {
+      const el = document.activeElement;
+      return !el || el === document.body ? 'the page itself' : (el.getAttribute('aria-label') ?? el.tagName);
+    });
+  try {
+    await page.goto(`${served.url}/`);
+    await page.waitForFunction(() => document.documentElement.dataset.ready === 'true', undefined, { timeout: 15_000 });
+    await page.locator('[data-ui="AccountButton"]').click();
+    await page.locator('[data-ui="AccountLink"]', { hasText: 'Settings' }).click();
+    await page.locator('[data-ui="Sheet"]').waitFor({ timeout: 5_000 });
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(300);
+    const at = await focused();
+    if (at !== 'Your account')
+      problems.push(`Settings opened from the account menu and shut left the focus on ${at}, not the account`);
+    // A sheet whose opener is gone (opened by its address) hands the focus to the page's heading.
+    await page.goto(`${served.url}/?panel=settings`);
+    await page.waitForFunction(() => document.documentElement.dataset.ready === 'true', undefined, { timeout: 15_000 });
+    await page.locator('[data-ui="Sheet"]').waitFor({ timeout: 5_000 });
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(300);
+    const after = await page.evaluate(
+      () => document.activeElement?.closest('#main') !== null && document.activeElement?.tagName === 'H1',
+    );
+    if (!after) problems.push(`Settings opened by its address and shut left the focus on ${await focused()}`);
+  } catch (err) {
+    problems.push(
+      `The focus could not be followed: ${err instanceof Error ? err.message.split('\n')[0] : String(err)}`,
+    );
+  } finally {
+    await page.close();
+  }
+  return problems;
+}
