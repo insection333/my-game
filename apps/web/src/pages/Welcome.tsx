@@ -137,7 +137,7 @@ export function Welcome({ path, next }: { path: string; next: string }) {
                 {t('welcome.age')}
               </label>
               {errors.age && (
-                <p id="age-error" className={s.error}>
+                <p id="age-error" className={s.error} data-said>
                   {errors.age}
                 </p>
               )}
