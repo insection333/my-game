@@ -36,6 +36,34 @@ describe('no one can lock a player out', () => {
     expect(code(await signIn('203.0.113.9', 'Ashling', 'wrong again'))).toBe('tooManyTries');
     expect((await signIn('198.51.100.4', 'Ashling', PW)).statusCode).toBe(200);
   });
+
+  it('lets a player in from a browser they have signed in on while a crowd spends the name’s tries (session 290)', async () => {
+    s = await server();
+    await signUp(s, 'Ashling');
+    const first = await signIn('198.51.100.4', 'Ashling', PW);
+    const known = /ic_known=[^;]+/.exec(String(first.headers['set-cookie']))?.[0];
+    expect(known).toBeDefined();
+    // A crowd of ten networks (or one IPv6 home's ten /64s) spends the hundred tries the name has.
+    for (let n = 0; n < 10; n++)
+      for (let i = 0; i < 10; i++) await signIn(`203.0.${113 + n}.9`, 'Ashling', `wrong guess ${i}`);
+    expect(code(await signIn('192.0.2.50', 'Ashling', 'one more guess'))).toBe('tooManyTries');
+    // A stranger with the right password from a new place waits, as before...
+    expect(code(await signIn('192.0.2.51', 'Ashling', PW))).toBe('tooManyTries');
+    // ...but the player's own browser is let in, and a wrong password from it is still wrong.
+    expect(
+      code(await from('192.0.2.52', '/api/auth/sign-in', { name: 'Ashling', password: 'nope nope nope' }, known)),
+    ).toBe('wrongNameOrPassword');
+    expect((await from('192.0.2.53', '/api/auth/sign-in', { name: 'Ashling', password: PW }, known)).statusCode).toBe(
+      200,
+    );
+    // Another player's mark does not open this account.
+    await signUp(s, 'Brindle');
+    const other = await from('192.0.2.54', '/api/auth/sign-in', { name: 'Brindle', password: PW });
+    const mark = String(other.headers['set-cookie']).match(/ic_known=[^;]+/)![0];
+    expect(code(await from('192.0.2.55', '/api/auth/sign-in', { name: 'Ashling', password: PW }, mark))).toBe(
+      'tooManyTries',
+    );
+  });
 });
 
 describe('accounts', () => {

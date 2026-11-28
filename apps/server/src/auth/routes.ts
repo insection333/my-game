@@ -9,6 +9,7 @@ import { ipOf, limit, type Ctx } from '../context.ts';
 import { players } from '../db/schema.ts';
 import { contractRoute, fail } from '../http.ts';
 import { nameAllowed } from './names.ts';
+import { knownHere, markKnown } from './known.ts';
 import { checkPassword, dummyHash, hashPassword } from './passwords.ts';
 import { SESSION_COOKIE, SESSION_DAYS, tokenHash } from './sessions.ts';
 import { STAFF_HOURS } from './staff.ts';
@@ -147,6 +148,7 @@ export function authRoutes(app: FastifyInstance, ctx: Ctx): void {
       throw err;
     }
     startSession(ctx, reply, id);
+    markKnown(ctx, req, reply, id);
     ctx.telemetry.record('signUp', id);
     return reply.code(201).send({ player: view({ id, name: input.name }) } satisfies AuthResponse);
   });
@@ -157,16 +159,19 @@ export function authRoutes(app: FastifyInstance, ctx: Ctx): void {
     const key = nameKey(input.name);
     limit(ctx, reply, `sign-in:ip:${ipOf(req)}`, 20, 15 * MIN);
     limit(ctx, reply, `sign-in:name:${key}:${ipOf(req)}`, 10, 15 * MIN);
-    limit(ctx, reply, `sign-in:name:${key}`, 100, 15 * MIN);
     const row = ctx.db
       .select()
       .from(players)
       .where(eq(players.nameKey, nameKey(input.name)))
       .get();
+    // The name's tries across every address: a browser the player has signed in on is let past them
+    // (session 290), so a crowd that spends them cannot keep the player out.
+    if (!(row && knownHere(ctx, req, row.id))) limit(ctx, reply, `sign-in:name:${key}`, 100, 15 * MIN);
     const ok = await checkPassword(row?.passwordHash ?? (await dummyHash()), input.password);
     if (!row || !ok) throw fail(401, 'wrongNameOrPassword');
     if (row.bannedAt) throw fail(403, 'banned');
     startSession(ctx, reply, row.id, row.role === 'staff');
+    markKnown(ctx, req, reply, row.id);
     ctx.telemetry.record('signIn', row.id);
     return { player: view(row) } satisfies AuthResponse;
   });
