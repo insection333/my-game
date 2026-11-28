@@ -427,3 +427,4 @@
 - Session 286: a letter keeps at most three marks stacked on a letter, where "Zalgo" text was drawn over the letters around it in the inbox.
 - Session 287: a page that has lost the server asks for the game again one read at a time, where six stood waiting on a dead connection.
 - Session 288: the server's load measured again with the latest sessions (24% of a core for 500 players), and pages closed together by a deploy reopen and retry apart, where they came back in one wave that held the server 1.8 s.
+- Session 289: the deploy runs only after verify passes on a push to this repository's main, where a fork's pull request from a branch named main would have been deployed with the server's secrets.

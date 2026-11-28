@@ -26,7 +26,10 @@ concurrency:
 
 jobs:
   deploy:
-    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    # After verify, only for a push to this repository's main (session 289): the branch filter above reads
+    # the head branch of the run that triggered it, so a pull request from a fork whose branch is named main
+    # passed it, and its commit would have been checked out and deployed with every secret.
+    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push' && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.head_repository.full_name == github.repository)
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:
