@@ -11,6 +11,7 @@ import { watchErrors } from './errors.ts';
 import { boot } from './game/session.ts';
 import { watchScrollboxes } from './scrollbox.ts';
 import { applyTheme, followScheme, readTheme } from './theme.ts';
+import { hearNotices } from './notice-open.ts';
 import { sayLines } from './said.ts';
 import { bearTranslation } from './translated.ts';
 
@@ -19,6 +20,7 @@ import { bearTranslation } from './translated.ts';
 if (document.documentElement.dataset.tooOld !== 'true') {
   bearTranslation();
   sayLines();
+  hearNotices();
   watchErrors();
   reloadOnStaleFiles();
   watchBuild(new URL(import.meta.url).pathname);
