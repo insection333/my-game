@@ -434,3 +434,4 @@
 - Session 293: the rules break ties by the ids themselves, not the device's language, and the lint holds them to no locale, clock or chance of their own.
 - Session 294: the console secret's mark in the server's settings is an Argon2id hash, where a SHA-256 of it let a copy of the database be guessed at speed.
 - Session 295: every answer of the API tells the browser not to store it, so a shared computer keeps no player's save or admin's record in its cache.
+- Session 296: each page names the browser's tab after its heading, and a page opened in place takes the focus to its heading for screen readers.

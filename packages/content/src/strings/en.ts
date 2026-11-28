@@ -34,6 +34,7 @@ import { supplies } from './en-supplies.ts';
 export const en: Record<string, string> = {
   // The shell: header, menu, lanes, sheets
   'shell.name': 'Idle Clash',
+  'shell.pageTitle': '{page} · Idle Clash',
   'shell.menu': 'Main menu',
   'shell.skip': 'Skip to the page',
   'shell.fire.out': 'Stoke',
