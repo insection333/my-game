@@ -51,7 +51,10 @@ export function AccountMenu() {
     setOpen(false);
     if (focus) button.current?.focus();
   };
+  // A place chosen hands the focus to the picture first, as a menu's should: the link pressed goes with the
+  // popup, and a sheet it opens hands the focus back to what held it when it opened (session 303).
   const go = (href: string) => {
+    button.current?.focus();
     setOpen(false);
     navigate(href);
   };

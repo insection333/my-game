@@ -34,7 +34,7 @@ import { runLaneProofs } from './web/proofs-lanes.ts';
 import { NARROW, runNarrowProofs } from './web/proofs-narrow.ts';
 import { LARGE_TEXT, runForcedColorProofs, runLargeTextProofs } from './web/proofs-text.ts';
 import { runOldBrowserProofs, runTranslatedProof } from './web/proofs-translate.ts';
-import { runPageNameProofs, runSaidProofs } from './web/proofs-pages.ts';
+import { runFocusBackProofs, runPageNameProofs, runSaidProofs } from './web/proofs-pages.ts';
 import { runSafeAreaProofs } from './web/proofs-safe-area.ts';
 import { runProofs } from './web/proofs.ts';
 import { ensureBuilt, ensureServer, views as webViews } from './web/session.ts';
@@ -202,6 +202,7 @@ async function screenshots(): Promise<StepResult> {
   const translated = await runTranslatedProof(served);
   const pageNames = await runPageNameProofs(served);
   const said = await runSaidProofs(served);
+  const focusBack = await runFocusBackProofs(served);
   const safe = await runSafeAreaProofs(served);
   const old = await runOldBrowserProofs(served);
   const adminConsole = await runConsoleProofs(served);
@@ -229,6 +230,7 @@ async function screenshots(): Promise<StepResult> {
     ...translated,
     ...pageNames,
     ...said,
+    ...focusBack,
     ...safe,
     ...old,
     ...adminConsole,

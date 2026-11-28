@@ -58,7 +58,14 @@ export function Sheet({ title, closeLabel, onClose, children, slot }: SheetProps
     return () => {
       window.removeEventListener('keydown', onKey);
       for (const el of slept) el.removeAttribute('inert');
-      before?.focus();
+      // What opened the sheet may be gone (a menu that closed, a row that changed, an address opened afresh):
+      // the focus then goes to the page's heading, where it fell to the body before (session 303).
+      const back =
+        before?.isConnected && before !== document.body
+          ? before
+          : document.querySelector<HTMLElement>('main h1, [role="main"] h1');
+      if (back && back !== before && !back.hasAttribute('tabindex')) back.tabIndex = -1;
+      back?.focus({ preventScroll: true });
     };
   }, []);
   return (
