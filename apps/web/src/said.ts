@@ -27,6 +27,11 @@ export function sayLines(): void {
   region.setAttribute('data-awake', '');
   region.setAttribute('data-said-aloud', '');
   region.className = 'visually-hidden';
+  // Fixed at the top, out of the page's flow: placed at its end, the region's one pixel made every page a pixel
+  // taller than the screen, and on GitHub's wide screens the rail's last link measured unlike the others.
+  region.style.position = 'fixed';
+  region.style.top = '0';
+  region.style.left = '0';
   document.body.appendChild(region);
   const heard = new WeakMap<Element, string>();
   new MutationObserver((records) => {
