@@ -53,6 +53,19 @@ describe('a script missing while words are typed', () => {
     expect(await fail()).toBe(true);
     expect(reloads).toEqual(['reload']);
   });
+
+  // Session 301: presses made while a deploy restarts the server wait to be sent (session 274), and a script
+  // missing meanwhile (a page opened then, its part not yet fetched) reloaded the page at once, losing them.
+  it('waits for the presses still to be sent, then loads the new build', async () => {
+    const deploys = await import('../src/deploys.ts');
+    let waiting = 2;
+    deploys.holdReloadWhile(() => waiting > 0);
+    await fail();
+    expect(reloads).toEqual([]);
+    waiting = 0;
+    deploys.reloadIfWaiting();
+    expect(reloads).toEqual(['reload']);
+  });
 });
 
 describe('the form a failed fetch of the game is said on', () => {
