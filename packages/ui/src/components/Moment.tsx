@@ -15,9 +15,11 @@ export interface MomentProps {
   closeLabel?: string;
 }
 
+// Not a live region of its own (session 298): the shell's moments stand in one (`shell.moment`, polite), and a
+// region inside another was read out twice by some screen readers.
 export function Moment({ size, title, body, icon, action, onClose, closeLabel }: MomentProps) {
   return (
-    <div role="status" data-ui="Moment" data-size={size} className={`${s.moment} ${s[size]}`}>
+    <div data-ui="Moment" data-size={size} className={`${s.moment} ${s[size]}`}>
       {icon && (
         <div className={s.icon}>
           {/* A big moment's icon stands in a burst of light that opens once and stays still. */}

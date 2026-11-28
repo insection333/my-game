@@ -436,3 +436,4 @@
 - Session 295: every answer of the API tells the browser not to store it, so a shared computer keeps no player's save or admin's record in its cache.
 - Session 296: each page names the browser's tab after its heading, and a page opened in place takes the focus to its heading for screen readers.
 - Session 297: moments and the connection's line stay awake behind an open sheet, so a toast raised from the sheet is read out.
+- Session 298: a moment is no longer a live region inside the moments' own, so screen readers read it once; step 7 fails a live region nested in another.
