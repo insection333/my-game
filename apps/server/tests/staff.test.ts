@@ -81,6 +81,30 @@ describe('the console account', () => {
   });
 });
 
+// Session 294: the server knew a secret it had seen by a SHA-256 of it kept in its settings, so a copy of the
+// database (a backup) gave the console's password to a guesser at billions of tries a second, where its
+// Argon2id hash beside it takes a fraction of a second each. The mark is an Argon2id hash too; an older one is
+// still known once, and replaced.
+describe("the console secret's mark", () => {
+  it('is kept as slowly as a password, and an older fast mark is known once and replaced', async () => {
+    s = await server({ staff: { name: 'Admin', password: SECRET } });
+    const { eq } = await import('drizzle-orm');
+    const { serverSettings } = await import('../src/db/schema.ts');
+    const { createHash } = await import('node:crypto');
+    const { ensureStaff } = await import('../src/auth/staff.ts');
+    const mark = () =>
+      s.ctx.db.select().from(serverSettings).where(eq(serverSettings.key, 'staff.secret')).get()?.value;
+    expect(mark()).toMatch(/^\$argon2id\$/);
+    expect(mark()).not.toContain(createHash('sha256').update(`idle-clash console:${SECRET}`).digest('hex'));
+    expect(await ensureStaff(s.ctx)).toBe('kept');
+    const old = createHash('sha256').update(`idle-clash console:${SECRET}`).digest('hex');
+    s.ctx.db.update(serverSettings).set({ value: old }).where(eq(serverSettings.key, 'staff.secret')).run();
+    expect(await ensureStaff(s.ctx)).toBe('kept');
+    expect(mark()).toMatch(/^\$argon2id\$/);
+    expect(await ensureStaff(s.ctx)).toBe('kept');
+  });
+});
+
 describe("the console account's password from the settings", () => {
   it('is read as written, or from base64 as the deploy writes it, every character itself', async () => {
     const { consolePassword } = await import('../src/config.ts');
