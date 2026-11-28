@@ -125,8 +125,16 @@ describe('the admin page', () => {
     const id = found.players[0].id;
     await signUp(s, 'Bystander');
     expect(code(await post(s, '/api/admin/rename', { playerId: id, name: 'bystander' }, warden))).toBe('nameTaken');
+    const told: unknown[] = [];
+    const publish = s.ctx.live.publish.bind(s.ctx.live);
+    s.ctx.live.publish = (playerId, message) => {
+      if (playerId === id) told.push(message);
+      publish(playerId, message);
+    };
     await post(s, '/api/admin/rename', { playerId: id, name: 'Rowena' }, warden);
     expect((await meOf(rowan)).player).toMatchObject({ name: 'Rowena' });
+    // Their own open pages are told the new name (session 291).
+    expect(told).toContainEqual({ type: 'renamed', name: 'Rowena' });
     const save = JSON.parse((await post(s, '/api/admin/save', { playerId: id }, warden)).body) as AdminSaveResponse;
     expect(save).toMatchObject({ player: { name: 'Rowena', bannedAt: null }, repairs: [] });
     expect((save.doc as { state: { seed: number } }).state.seed).toEqual(expect.any(Number));

@@ -16,6 +16,8 @@ export interface LiveHandlers {
   mail: (unread: number) => void;
   /** The realm's banner put up or taken down (session 235). */
   banner: (banner: Banner | null) => void;
+  /** The player's own name, changed by an admin (session 291). */
+  renamed: (name: string) => void;
   signedOut: (why?: 'banned') => void;
   reopened: () => void;
 }
@@ -79,6 +81,7 @@ export function openLive(on: LiveHandlers, random: () => number = Math.random): 
         else if (msg.type === 'events') on.events(msg.events);
         else if (msg.type === 'mail') on.mail(msg.unread);
         else if (msg.type === 'banner') on.banner(msg.banner);
+        else if (msg.type === 'renamed') on.renamed(msg.name);
       } catch {
         /* A message this page cannot read is skipped; the next read corrects it. */
       }

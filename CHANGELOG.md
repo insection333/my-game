@@ -429,3 +429,4 @@
 - Session 288: the server's load measured again with the latest sessions (24% of a core for 500 players), and pages closed together by a deploy reopen and retry apart, where they came back in one wave that held the server 1.8 s.
 - Session 289: the deploy runs only after verify passes on a push to this repository's main, where a fork's pull request from a branch named main would have been deployed with the server's secrets.
 - Session 290: limits count an IPv6 address by its /64, and a browser that has signed in to an account is let past the name's sign-in limit, so a crowd cannot keep a player out.
+- Session 291: a player renamed by an admin sees the new name on their open pages, and a password reset by email closes the player's open pages.

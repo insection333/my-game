@@ -39,7 +39,11 @@ describe('with email switched on', () => {
     await post(s, '/api/account/email/confirm', { token: tokenIn(s.mailer.sent[0].text) });
     expect((await post(s, '/api/auth/recover', { name: 'rowan' })).statusCode).toBe(202);
     const reset = tokenIn(s.mailer.sent[1].text);
+    // Its open pages stop hearing the player's news too (session 291), as a password changed in Settings does.
+    const closed: string[] = [];
+    s.ctx.live.closePlayer = (id) => void closed.push(id);
     expect((await post(s, '/api/auth/reset', { token: reset, password: 'a brand new secret' })).statusCode).toBe(204);
+    expect(closed).toHaveLength(1);
     expect(code(await s.app.inject({ method: 'GET', url: '/api/game', headers: { cookie } }))).toBe('notSignedIn');
     expect((await signIn('a brand new secret')).statusCode).toBe(200);
     expect(code(await signIn('a long enough secret'))).toBe('wrongNameOrPassword');
