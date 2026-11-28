@@ -167,6 +167,19 @@ async function keyboardHolds(page: Page, problems: string[]) {
     step = 'the page behind it sleeps';
     if (!(await page.evaluate(() => !!document.querySelector('[data-main]')?.closest('[inert]'))))
       problems.push('Keyboard: the page behind the Settings sheet can still be reached');
+    // Session 297: what is said aloud as it happens (moments, the connection's line) stays awake behind a
+    // sheet, where a toast raised from the sheet itself (a sale, a work raised) was never read out.
+    step = 'moments stay awake behind the sheet';
+    if (
+      await page.evaluate(() =>
+        ['[data-slot="shell.moment"]', '[data-shell="connection"]'].some(
+          (q) => !!document.querySelector(q)?.closest('[inert]'),
+        ),
+      )
+    )
+      problems.push(
+        'Keyboard: moments and the connection line sleep behind the Settings sheet, so nothing is read out',
+      );
     step = 'Escape closes it';
     await page.keyboard.press('Escape');
     await sheet.waitFor({ state: 'detached', timeout: 5_000 });

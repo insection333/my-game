@@ -35,7 +35,7 @@ export function Moments() {
   const centre = showing.filter((m) => m.size === 'centre').at(-1);
   const stack = showing.filter((m) => m.size !== 'centre').slice(-3);
   return (
-    <div data-slot="shell.moment" aria-live="polite" className={s.moments}>
+    <div data-slot="shell.moment" data-awake aria-live="polite" className={s.moments}>
       {centre && (
         <div className={s.centreMoment}>
           <Moment
