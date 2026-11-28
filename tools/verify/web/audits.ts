@@ -39,6 +39,16 @@ export async function runAxe(): Promise<{ problems: string[]; checks: number }> 
           .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice'])
           .analyze();
         checks++;
+        // A live region inside another (session 298): some screen readers read its words out twice, as the
+        // moments did inside the shell's region for them.
+        const nested = await page.evaluate(() => {
+          const live = '[aria-live]:not([aria-live="off"]),[role="status"],[role="alert"],[role="log"]';
+          return Array.from(document.querySelectorAll(live))
+            .filter((el) => el.parentElement?.closest(live))
+            .map((el) => (el.textContent ?? '').trim().slice(0, 60));
+        });
+        for (const words of nested)
+          problems.push(`${width}px ${scheme} ${view.path}: a live region inside another, read out twice ("${words}")`);
         for (const v of result.violations) {
           const where = v.nodes
             .slice(0, 3)
