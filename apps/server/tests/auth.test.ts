@@ -22,8 +22,10 @@ describe('sign up', () => {
     s = await server();
     const r = await post(s, '/api/auth/sign-up', { name: 'Rowan', password: PW, ageConfirmed: true });
     expect(r.statusCode).toBe(201);
-    const cookie = String(r.headers['set-cookie']);
+    const [cookie, known] = [r.headers['set-cookie']].flat().map(String);
     expect(cookie).toMatch(/^ic_session=[A-Za-z0-9_-]{43}; Max-Age=2592000; Path=\/; HttpOnly; SameSite=Lax$/);
+    // The browser's mark of the account (session 290), for the sign-in page alone.
+    expect(known).toMatch(/^ic_known=[A-Za-z0-9_-]{22}; Max-Age=31536000; Path=\/api\/auth; HttpOnly; SameSite=Lax$/);
     expect((await game(cookie.split(';')[0])).statusCode).toBe(200);
   });
 

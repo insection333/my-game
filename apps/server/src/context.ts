@@ -3,6 +3,7 @@ import type { Engine, PlayerQueue } from '@idle-clash/kernel';
 import type { SqliteStore } from '@idle-clash/kernel/store';
 import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
 import type { FastifyReply, FastifyRequest } from 'fastify';
+import { isIPv6 } from 'node:net';
 import type { Sessions } from './auth/sessions.ts';
 import type { Mailer } from './auth/mailer.ts';
 import type { Config } from './config.ts';
@@ -58,11 +59,31 @@ export function limit(ctx: Ctx, reply: FastifyReply, key: string, max: number, w
   }
 }
 
-/** The client's address as the proxy in front of the server reports it. A request whose address
- *  cannot be read (no socket, as in a test's injected page) counts as one shared address. */
+/** The network a request comes from, as the limits count it (session 290): an IPv4 address as it is (or
+ *  written as IPv6), an IPv6 address by its /64, the least block one home, phone or server is given, any
+ *  address of which a single device may take at will; counted by the whole address, one person could
+ *  sign up without end or spend a player's sign-in tries from one machine. */
+export function networkOf(ip: string): string {
+  const bare = ip.split('%')[0];
+  const mapped = /^::ffff:(\d{1,3}(?:\.\d{1,3}){3})$/i.exec(bare);
+  if (mapped) return mapped[1];
+  if (!isIPv6(bare)) return bare;
+  const [head = '', tail] = bare.split('::');
+  const groups = (part: string) => (part ? part.split(':').flatMap((g) => (g.includes('.') ? ['0', '0'] : [g])) : []);
+  const front = groups(head);
+  const back = tail === undefined ? [] : groups(tail);
+  const all = [...front, ...Array<string>(Math.max(0, 8 - front.length - back.length)).fill('0'), ...back];
+  return `${all
+    .slice(0, 4)
+    .map((g) => parseInt(g, 16).toString(16))
+    .join(':')}::/64`;
+}
+
+/** The client's network as the proxy in front of the server reports it (`networkOf`). A request whose
+ *  address cannot be read (no socket, as in a test's injected page) counts as one shared address. */
 export function ipOf(req: FastifyRequest): string {
   try {
-    return req.ip;
+    return networkOf(req.ip);
   } catch {
     return 'unknown';
   }

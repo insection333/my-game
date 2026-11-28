@@ -4,7 +4,7 @@
 export const legal: Record<string, string> = {
   'legal.contact': 'Contact: {address}',
   'legal.privacy.title': 'Privacy',
-  'legal.privacy.updated': 'Last changed 26 November 2026',
+  'legal.privacy.updated': 'Last changed 28 November 2026',
   'legal.privacy.body': [
     'What we keep\nYour player name, your password (only as a one-way hash, never the password itself), your game save, the notices in your tray and your place on the hiscores. We do not ask for your real name, your email address or your age, beyond your word that you are 13 or older.',
     'How it is used\nTo run your game: your lanes keep working while you are away because your save is kept on our server. Your player name and levels are shown to other players on the hiscores.',
@@ -13,7 +13,7 @@ export const legal: Record<string, string> = {
     'Messages\nA message you send to another player is kept in their inbox until they delete it: a read one for at most a week, an unread one for at most two. A cheer is kept for two days, and a gift for a month or until it is opened, with who sent it. Blocking a player stops their messages, cheers and gifts reaching you, and nothing else.',
     "Notices while away\nIf you switch them on, we keep the address your browser gives us for its notices (at your browser maker's notice service, never your own) and your time zone, so a notice is not sent at night. Switching them off, or signing out in that browser, lets them go.",
     'Reports\nIf you report a player, we keep who reported whom, for what (an offensive name, or cheating and abuse) and when, so an admin can look into it; the player reported is not told who reported them. Sieges between lords in Castle Clash are kept for 30 days, so an admin can spot an account feeding another. Admins may keep short notes about an account for each other; you never see them, and they go with the account.',
-    'One cookie\nA single cookie keeps you signed in for 30 days. There are no advertising or tracking cookies, and nothing is shared with other companies.',
+    'Two cookies\nOne keeps you signed in for 30 days. The other, kept for a year, remembers that this browser has signed in to your account, so you can still sign in while strangers are guessing at your name. There are no advertising or tracking cookies, and nothing is shared with other companies.',
     'Your address on the internet\nYour connection address is used for a short while to stop people guessing passwords or flooding sign-ups. It is not stored with your account.',
     'Deleting your account\nYou can delete your account from Settings at any time. Everything we hold about you goes at once: your account, your save, your notices, the messages you sent and received, your hiscores, your game statistics, any feedback you sent, the cheers and gifts you sent and received, your notices while away, any notes admins kept about you, and any reports you made or that were made about you.',
     'Questions\nWrite to admin@idleclash.com.',
