@@ -46,6 +46,13 @@ export function heardBuild(build: string | null): void {
 /** Whether this page is of an older build than the server's: the router then loads the next page afresh. */
 export const staleBuild = (): boolean => stale;
 
+/** A press refused as not what the server takes (session 292): from a page of an older build it is the build's
+ *  fault (a route's input changed by the deploy), and pressed again it would be refused again, so the new build
+ *  loads at once, while seen, unless words are typed in a box. */
+export function refusedInput(): void {
+  if (stale) reloadIfFree();
+}
+
 const typing = (): boolean =>
   Array.from(
     document.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>(
@@ -53,6 +60,16 @@ const typing = (): boolean =>
     ),
   ).some((el) => el.value !== '');
 
+/** What must finish before the page loads anew (session 292): changes still waiting to be sent. */
+const holds = new Set<() => boolean>();
+export function holdReloadWhile(busy: () => boolean): void {
+  holds.add(busy);
+}
+/** A hold let go: the page loads the new build now if it was waiting to while out of sight. */
+export function reloadIfWaiting(): void {
+  if (stale && document.hidden) reloadIfFree();
+}
+
 function reloadIfFree(): void {
-  if (!typing()) location.reload();
+  if (!typing() && ![...holds].some((busy) => busy())) location.reload();
 }

@@ -42,7 +42,7 @@ import {
   type BannerView,
 } from '@idle-clash/contracts';
 import type { castleEngine } from '@idle-clash/features';
-import { heardBuild } from './deploys.ts';
+import { heardBuild, refusedInput } from './deploys.ts';
 import type { Command, CommandResult } from '@idle-clash/kernel';
 
 type CastleView = castleEngine.CastleView;
@@ -113,6 +113,7 @@ async function answer<T>(method: 'GET' | 'POST', path: string, body: unknown, si
   if (!res.ok) {
     const err = new ApiError(res.status, json);
     if (err.code === 'otherPlayer') location.reload();
+    if (err.code === 'invalidInput') refusedInput();
     throw err;
   }
   return json as T;
