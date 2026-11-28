@@ -432,3 +432,4 @@
 - Session 291: a player renamed by an admin sees the new name on their open pages, and a password reset by email closes the player's open pages.
 - Session 292: a page of an older build sends every press waiting from a deploy's restart before it loads the new build, and loads it at once when a press is refused for its input.
 - Session 293: the rules break ties by the ids themselves, not the device's language, and the lint holds them to no locale, clock or chance of their own.
+- Session 294: the console secret's mark in the server's settings is an Argon2id hash, where a SHA-256 of it let a copy of the database be guessed at speed.
