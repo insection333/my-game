@@ -21,7 +21,7 @@ export function Fought({ battle }: { battle: string }) {
   const { battle: last, castle, refused, refusedAt } = useSyncedCastle();
   if (refused && refusedAt === battle)
     return (
-      <p className={s.refused} data-slot="castle.fought.refused" role="status">
+      <p className={s.refused} data-slot="castle.fought.refused" data-said>
         {refused}
       </p>
     );
@@ -42,7 +42,7 @@ export function Fought({ battle }: { battle: string }) {
     ...(num(r.marks) > 0 ? [t('castle.report.marks', { marks: fmt.int(num(r.marks)) })] : []),
   ];
   return (
-    <div className={s.fought} data-slot="castle.fought" data-won={won || undefined} role="status">
+    <div className={s.fought} data-slot="castle.fought" data-won={won || undefined}>
       {/* The battle played out (session 168): the two hosts as they met, the beaten falling back. */}
       {last.field && <Battlefield key={last.report ?? battle} you={last.field.you} foe={last.field.foe} won={won} />}
       {attack > 0 && defense > 0 && (

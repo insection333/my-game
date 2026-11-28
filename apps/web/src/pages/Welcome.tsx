@@ -79,12 +79,12 @@ export function Welcome({ path, next }: { path: string; next: string }) {
           </p>
         )}
         {bounced === 'ended' && (
-          <p className={s.done} role="status" data-part="bounced">
+          <p className={s.done} data-said data-part="bounced">
             {t('welcome.ended')}
           </p>
         )}
         {bounced === 'deleted' && (
-          <p className={s.done} role="status" data-part="bounced">
+          <p className={s.done} data-said data-part="bounced">
             {t('welcome.deleted')}
           </p>
         )}

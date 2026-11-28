@@ -134,7 +134,7 @@ export function LegendSheet({ onClose }: { onClose: () => void }) {
           </div>
         </div>
         {refused && (
-          <p className={s.refused} role="status">
+          <p className={s.refused} data-said>
             {refused}
           </p>
         )}

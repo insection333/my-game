@@ -57,7 +57,7 @@ export function Friendly({ name, social }: { name: string; social: NonNullable<P
         <div className={s.friend}>
           <span>{t('cheer.offer', { what: cheerWhat(c.occasion, c.detail, c.place) })}</span>
           {cheer || cheerWhy ? (
-            <span role="status" className={s.friendSaid}>
+            <span data-said className={s.friendSaid}>
               {cheer ?? t(cheerWhy!)}
             </span>
           ) : (
@@ -70,7 +70,7 @@ export function Friendly({ name, social }: { name: string; social: NonNullable<P
       {/* A gift that cannot go says only why (session 255: its offer and its reason stood in five lines). */}
       <div className={s.friend}>
         {gift || giftWhy ? (
-          <span role="status" className={s.friendSaid}>
+          <span data-said className={s.friendSaid}>
             {gift ?? t(giftWhy!)}
           </span>
         ) : (

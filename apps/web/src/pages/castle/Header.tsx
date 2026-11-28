@@ -70,7 +70,7 @@ export function Header({ note, overview }: { note: string | null; overview: bool
       {note && <p className={s.closed}>{note}</p>}
       {/* A battle's refusal is said on its own row in the War (session 119). */}
       {refused && refusedAt === null && (
-        <p className={s.refused} role="status">
+        <p className={s.refused} data-said>
           {refused}
         </p>
       )}

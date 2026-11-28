@@ -59,7 +59,7 @@ export function TargetSheet({ target, onClose }: { target: Target; onClose: () =
         )}
         {/* The header is behind the sheet: a refusal is said here too. */}
         {refused && (
-          <p className={s.refused} role="status">
+          <p className={s.refused} data-said>
             {refused}
           </p>
         )}

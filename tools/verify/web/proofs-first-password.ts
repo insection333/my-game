@@ -39,7 +39,7 @@ export async function runFirstPasswordProofs(served: Served): Promise<string[]> 
     await page.getByLabel('New password', { exact: true }).fill(original);
     await page.getByLabel('The new password again').fill(original);
     await page.getByRole('button', { name: 'Save the password' }).click();
-    await page.getByRole('status').getByText('Saved.').waitFor({ timeout: 10_000 });
+    await page.locator('[data-said]').getByText('Saved.').waitFor({ timeout: 10_000 });
   } catch (err) {
     problems.push(`The console's first password: ${step} failed (${say(err)})`);
   } finally {

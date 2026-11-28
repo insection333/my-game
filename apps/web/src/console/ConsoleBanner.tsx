@@ -103,7 +103,7 @@ export function ConsoleBanner({ live, reload }: { live: LiveResponse; reload: ()
             </Button>
           </div>
           {said && (
-            <p className={said.bad ? a.error : s.note} role="status">
+            <p className={said.bad ? a.error : s.note} data-said>
               {said.text}
             </p>
           )}

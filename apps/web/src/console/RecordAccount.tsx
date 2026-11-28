@@ -117,7 +117,7 @@ export function RecordAccount({ record: r, reload, run }: { record: RecordRespon
             </div>
           )}
           {said && (
-            <p className={p.note} role="status">
+            <p className={p.note} data-said>
               {said}
             </p>
           )}

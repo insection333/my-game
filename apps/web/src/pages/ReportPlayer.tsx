@@ -28,7 +28,7 @@ export function ReportPlayer({ name }: { name: string }) {
     <div className={s.report} data-slot="player.report">
       <h3>{t('report.title')}</h3>
       {state === 'sent' ? (
-        <p role="status">{t('report.sent')}</p>
+        <p data-said>{t('report.sent')}</p>
       ) : (
         <div className={s.reasons}>
           {REPORT_REASONS.map((r) => (
@@ -38,7 +38,7 @@ export function ReportPlayer({ name }: { name: string }) {
           ))}
         </div>
       )}
-      {state === 'failed' && <p role="status">{t('report.failed')}</p>}
+      {state === 'failed' && <p data-said>{t('report.failed')}</p>}
     </div>
   );
 }
