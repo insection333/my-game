@@ -438,3 +438,4 @@
 - Session 297: moments and the connection's line stay awake behind an open sheet, so a toast raised from the sheet is read out.
 - Session 298: a moment is no longer a live region inside the moments' own, so screen readers read it once; step 7 fails a live region nested in another.
 - Session 299: lines that appear with their words already in them (feedback sent, refusals, Reconnecting) are said aloud through one standing live region.
+- Session 300: a field's reason for refusing is said aloud as it appears, where only the eye saw it.

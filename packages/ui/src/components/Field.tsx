@@ -38,7 +38,9 @@ export function Field({ label, labelHidden, hint, error, className, ...rest }: F
         <input {...shared} className={s.input} {...rest} />
       )}
       {note && (
-        <p id={`${id}-note`} className={error ? s.error : s.hint}>
+        // A reason for refusing is said aloud as it appears (session 300, the page's `data-said`), where it
+        // was only seen: the field it describes keeps the focus, and nothing read it out.
+        <p id={`${id}-note`} className={error ? s.error : s.hint} data-said={error ? '' : undefined}>
           {note}
         </p>
       )}

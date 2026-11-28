@@ -51,21 +51,30 @@ export async function runPageNameProofs(served: Served): Promise<string[]> {
 export async function runSaidProofs(served: Served): Promise<string[]> {
   const problems: string[] = [];
   const page = await openPage('chromium', '/?panel=settings', { viewport: { width: 390, height: 844 } }, 'sage');
-  try {
-    await page.goto(`${served.url}/?panel=settings`);
-    await page.waitForFunction(() => document.documentElement.dataset.ready === 'true', undefined, { timeout: 15_000 });
-    const sheet = page.locator('[data-ui="Sheet"]');
-    await sheet.getByRole('button', { name: 'Send feedback' }).click();
-    await sheet.getByLabel('Your feedback').fill('The pages read well on my phone.');
-    await sheet.getByRole('button', { name: 'Send feedback' }).click();
-    await sheet.getByText('Sent. Thank you.').waitFor({ timeout: 10_000 });
-    await page.waitForTimeout(300);
-    const aloud = await page.evaluate(() =>
+  const aloudNow = () =>
+    page.evaluate(() =>
       Array.from(document.querySelectorAll('[aria-live]:not([aria-live="off"])'))
         .filter((el) => !el.closest('[inert]'))
         .map((el) => el.textContent ?? '')
         .join(' | '),
     );
+  try {
+    await page.goto(`${served.url}/?panel=settings`);
+    await page.waitForFunction(() => document.documentElement.dataset.ready === 'true', undefined, { timeout: 15_000 });
+    const sheet = page.locator('[data-ui="Sheet"]');
+    await sheet.getByRole('button', { name: 'Send feedback' }).click();
+    // A field's reason for refusing is said too (session 300): it appears with its words in it, under the field.
+    await sheet.getByRole('button', { name: 'Send feedback' }).click();
+    await sheet.getByText('Write something first.').waitFor({ timeout: 5_000 });
+    await page.waitForTimeout(300);
+    const refused = await aloudNow();
+    if (!refused.includes('Write something first.'))
+      problems.push(`A field's refusal was not said aloud (live regions: "${refused}")`);
+    await sheet.getByLabel('Your feedback').fill('The pages read well on my phone.');
+    await sheet.getByRole('button', { name: 'Send feedback' }).click();
+    await sheet.getByText('Sent. Thank you.').waitFor({ timeout: 10_000 });
+    await page.waitForTimeout(300);
+    const aloud = await aloudNow();
     if (!aloud.includes('Sent. Thank you.'))
       problems.push(`Feedback sent was not said aloud (live regions: "${aloud}")`);
   } catch (err) {
