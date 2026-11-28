@@ -99,7 +99,7 @@ export function Live() {
               </div>
             )}
             {said && (
-              <p className={said.bad ? a.error : s.note} role="status">
+              <p className={said.bad ? a.error : s.note} data-said>
                 {said.text}
               </p>
             )}

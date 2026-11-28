@@ -114,7 +114,7 @@ export function RecordGrants({ record: r, reload, run }: { record: RecordRespons
             </Button>
           </div>
           {said && (
-            <p className={said.bad ? s.error : p.note} role="status">
+            <p className={said.bad ? s.error : p.note} data-said>
               {said.text}
             </p>
           )}
@@ -155,7 +155,7 @@ export function RecordGrants({ record: r, reload, run }: { record: RecordRespons
             </Button>
           </div>
           {saidXp && (
-            <p className={saidXp.bad ? s.error : p.note} role="status">
+            <p className={saidXp.bad ? s.error : p.note} data-said>
               {saidXp.text}
             </p>
           )}

@@ -11,12 +11,14 @@ import { watchErrors } from './errors.ts';
 import { boot } from './game/session.ts';
 import { watchScrollboxes } from './scrollbox.ts';
 import { applyTheme, followScheme, readTheme } from './theme.ts';
+import { sayLines } from './said.ts';
 import { bearTranslation } from './translated.ts';
 
 // A browser too old for the game has been told so by old-browser.js (session 207): the game does not start
 // over its words.
 if (document.documentElement.dataset.tooOld !== 'true') {
   bearTranslation();
+  sayLines();
   watchErrors();
   reloadOnStaleFiles();
   watchBuild(new URL(import.meta.url).pathname);

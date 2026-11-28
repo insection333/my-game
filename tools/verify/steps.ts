@@ -34,7 +34,7 @@ import { runLaneProofs } from './web/proofs-lanes.ts';
 import { NARROW, runNarrowProofs } from './web/proofs-narrow.ts';
 import { LARGE_TEXT, runForcedColorProofs, runLargeTextProofs } from './web/proofs-text.ts';
 import { runOldBrowserProofs, runTranslatedProof } from './web/proofs-translate.ts';
-import { runPageNameProofs } from './web/proofs-pages.ts';
+import { runPageNameProofs, runSaidProofs } from './web/proofs-pages.ts';
 import { runSafeAreaProofs } from './web/proofs-safe-area.ts';
 import { runProofs } from './web/proofs.ts';
 import { ensureBuilt, ensureServer, views as webViews } from './web/session.ts';
@@ -201,6 +201,7 @@ async function screenshots(): Promise<StepResult> {
   const forced = await runForcedColorProofs(served);
   const translated = await runTranslatedProof(served);
   const pageNames = await runPageNameProofs(served);
+  const said = await runSaidProofs(served);
   const safe = await runSafeAreaProofs(served);
   const old = await runOldBrowserProofs(served);
   const adminConsole = await runConsoleProofs(served);
@@ -227,6 +228,7 @@ async function screenshots(): Promise<StepResult> {
     ...forced,
     ...translated,
     ...pageNames,
+    ...said,
     ...safe,
     ...old,
     ...adminConsole,
@@ -242,7 +244,7 @@ async function screenshots(): Promise<StepResult> {
     return fail(`${problems.length} layout or flow problem${problems.length > 1 ? 's' : ''}`, problems.join('\n'));
   const awaiting = r.awaiting.size ? `; ${r.awaiting.size} slots await their features` : '';
   return pass(
-    `${views} views x 3 widths x 3 engines (${r.shots} shots): no overflow, taps 24px+, one design system, specs met; account flows (${flows.steps} checks) work; a newcomer is chopping after ${proofs.newcomerSeconds.toFixed(0)} s at a person's pace; a Rare find has its moment; a stopped lane says why and offers what puts it right; a queued action ran while away; gear is worn from the page and a retreat costs nothing; the recap leads with the best thing; a deleted account leaves nothing; an admin resets a password; work is seen landing; the keyboard holds in a sheet; a lost connection is said and recovered; a big sale asks first and says what it brought in; a goal's cache opens in a moment; Castle Clash's tabs stay at hand; a siege is played out and spies go at the day's foes; every view holds on a ${NARROW} px phone and with its text at ${LARGE_TEXT}; bars and the open tab stay seen in high contrast; a translated page keeps working; each page names its tab and takes the focus to its heading; nothing stands under a phone's notch or home bar; a browser too old, or with scripts off, is told so; Admin signs in to the console, which never loads the game; the realm's banner is put up, put away and taken down; the console's first password opens nothing until changed; the day's bosses, three to come, Fight as, Sell old gear and the Hearth's round play in the page; the steading's later stages and feasts play in the page; a building paid in materials and a charter raised play in the page; an heirloom is forged and worn in the page${awaiting}`,
+    `${views} views x 3 widths x 3 engines (${r.shots} shots): no overflow, taps 24px+, one design system, specs met; account flows (${flows.steps} checks) work; a newcomer is chopping after ${proofs.newcomerSeconds.toFixed(0)} s at a person's pace; a Rare find has its moment; a stopped lane says why and offers what puts it right; a queued action ran while away; gear is worn from the page and a retreat costs nothing; the recap leads with the best thing; a deleted account leaves nothing; an admin resets a password; work is seen landing; the keyboard holds in a sheet; a lost connection is said and recovered; a big sale asks first and says what it brought in; a goal's cache opens in a moment; Castle Clash's tabs stay at hand; a siege is played out and spies go at the day's foes; every view holds on a ${NARROW} px phone and with its text at ${LARGE_TEXT}; bars and the open tab stay seen in high contrast; a translated page keeps working; each page names its tab and takes the focus to its heading; a line drawn whole is said aloud; nothing stands under a phone's notch or home bar; a browser too old, or with scripts off, is told so; Admin signs in to the console, which never loads the game; the realm's banner is put up, put away and taken down; the console's first password opens nothing until changed; the day's bosses, three to come, Fight as, Sell old gear and the Hearth's round play in the page; the steading's later stages and feasts play in the page; a building paid in materials and a charter raised play in the page; an heirloom is forged and worn in the page${awaiting}`,
   );
 }
 

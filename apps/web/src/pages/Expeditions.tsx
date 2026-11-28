@@ -208,7 +208,7 @@ function Run({ view, run }: { view: ExpeditionView; run: RunView }) {
           </p>
         )}
         {stopped && (
-          <p className={s.stopped} role="status">
+          <p className={s.stopped} data-said>
             {stopped.why}
           </p>
         )}

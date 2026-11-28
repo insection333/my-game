@@ -88,7 +88,7 @@ export function ConsolePassword({ first }: { first: boolean }) {
             </Button>
           </div>
           {done && (
-            <p className={s.note} role="status">
+            <p className={s.note} data-said>
               {t('console.password.done')}
             </p>
           )}

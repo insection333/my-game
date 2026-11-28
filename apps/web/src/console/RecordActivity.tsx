@@ -102,7 +102,7 @@ export function RecordActivity({ record, run }: { record: RecordResponse; run: R
             <p className={s.note}>{t('record.noBrowsers')}</p>
           )}
           {said && (
-            <p className={s.note} role="status">
+            <p className={s.note} data-said>
               {said}
             </p>
           )}

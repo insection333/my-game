@@ -20,7 +20,7 @@ export function Connection() {
   }, [connected]);
   if (connected || !late) return null;
   return (
-    <div className={s.connection} role="status" data-shell="connection" data-awake>
+    <div className={s.connection} data-said data-shell="connection" data-awake>
       {t('shell.reconnecting')}
     </div>
   );

@@ -22,7 +22,7 @@ export function Feedback() {
   const [error, setError] = useState<string | null>(null);
   if (state === 'sent')
     return (
-      <p className={s.feedbackSent} role="status">
+      <p className={s.feedbackSent} data-said>
         {t('feedback.sent')}
       </p>
     );

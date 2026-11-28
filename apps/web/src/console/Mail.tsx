@@ -141,7 +141,7 @@ export function MailMonitor() {
           />
         </div>
         {said && (
-          <p className={said.bad ? s.error : s.note} role="status">
+          <p className={said.bad ? s.error : s.note} data-said>
             {said.text}
           </p>
         )}

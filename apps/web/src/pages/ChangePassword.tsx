@@ -17,7 +17,7 @@ export function ChangePassword() {
   const [errors, setErrors] = useState<{ current?: string; next?: string }>({});
   if (state === 'done')
     return (
-      <p className={s.feedbackSent} role="status">
+      <p className={s.feedbackSent} data-said>
         {t('settings.password.done')}
       </p>
     );

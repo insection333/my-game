@@ -30,7 +30,7 @@ export function FortressSheet({ target, onClose }: { target: Target; onClose: ()
           </div>
         </div>
         {refused && (
-          <p className={s.refused} role="status">
+          <p className={s.refused} data-said>
             {refused}
           </p>
         )}

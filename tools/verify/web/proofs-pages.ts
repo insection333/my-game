@@ -42,3 +42,36 @@ export async function runPageNameProofs(served: Served): Promise<string[]> {
   }
   return problems;
 }
+
+/** A line that appears with its words already in it is said aloud (session 299): a live region read out only
+ *  what changed inside it after it stood, so "Sent. Thank you.", a castle's refusal or a report sent, each drawn
+ *  whole as it came, was read by some screen readers and not others. Such a line now carries `data-said`, and
+ *  the page says it through one region that stands from its first moment. Feedback sent from Settings must be
+ *  in that region. */
+export async function runSaidProofs(served: Served): Promise<string[]> {
+  const problems: string[] = [];
+  const page = await openPage('chromium', '/?panel=settings', { viewport: { width: 390, height: 844 } }, 'sage');
+  try {
+    await page.goto(`${served.url}/?panel=settings`);
+    await page.waitForFunction(() => document.documentElement.dataset.ready === 'true', undefined, { timeout: 15_000 });
+    const sheet = page.locator('[data-ui="Sheet"]');
+    await sheet.getByRole('button', { name: 'Send feedback' }).click();
+    await sheet.getByLabel('Your feedback').fill('The pages read well on my phone.');
+    await sheet.getByRole('button', { name: 'Send feedback' }).click();
+    await sheet.getByText('Sent. Thank you.').waitFor({ timeout: 10_000 });
+    await page.waitForTimeout(300);
+    const aloud = await page.evaluate(() =>
+      Array.from(document.querySelectorAll('[aria-live]:not([aria-live="off"])'))
+        .filter((el) => !el.closest('[inert]'))
+        .map((el) => el.textContent ?? '')
+        .join(' | '),
+    );
+    if (!aloud.includes('Sent. Thank you.'))
+      problems.push(`Feedback sent was not said aloud (live regions: "${aloud}")`);
+  } catch (err) {
+    problems.push(`Feedback could not be sent: ${err instanceof Error ? err.message.split('\n')[0] : String(err)}`);
+  } finally {
+    await page.close();
+  }
+  return problems;
+}
