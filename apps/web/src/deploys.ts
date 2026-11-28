@@ -4,10 +4,16 @@
 // (session 280: a fetch that failed offline, or as the server restarted, reloaded the welcome page under the
 // name and password being typed), when the failure is left to the press that asked, which says it.
 const KEY = 'reloadedForDeploy';
+/** A script was missing while presses waited to be sent (session 301): the new build loads once they are. */
+let missing = false;
 
 export function reloadOnStaleFiles() {
   window.addEventListener('vite:preloadError', (event) => {
     if (typing()) return;
+    if (busy()) {
+      missing = true;
+      return;
+    }
     try {
       if (Date.now() - Number(sessionStorage.getItem(KEY) ?? 0) < 60_000) return;
       sessionStorage.setItem(KEY, String(Date.now()));
@@ -67,9 +73,11 @@ export function holdReloadWhile(busy: () => boolean): void {
 }
 /** A hold let go: the page loads the new build now if it was waiting to while out of sight. */
 export function reloadIfWaiting(): void {
-  if (stale && document.hidden) reloadIfFree();
+  if (missing || (stale && document.hidden)) reloadIfFree();
 }
 
+const busy = (): boolean => [...holds].some((held) => held());
+
 function reloadIfFree(): void {
-  if (!typing() && ![...holds].some((busy) => busy())) location.reload();
+  if (!typing() && !busy()) location.reload();
 }
