@@ -431,3 +431,4 @@
 - Session 290: limits count an IPv6 address by its /64, and a browser that has signed in to an account is let past the name's sign-in limit, so a crowd cannot keep a player out.
 - Session 291: a player renamed by an admin sees the new name on their open pages, and a password reset by email closes the player's open pages.
 - Session 292: a page of an older build sends every press waiting from a deploy's restart before it loads the new build, and loads it at once when a press is refused for its input.
+- Session 293: the rules break ties by the ids themselves, not the device's language, and the lint holds them to no locale, clock or chance of their own.

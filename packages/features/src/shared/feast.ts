@@ -6,6 +6,7 @@
 import { fmt, t } from '@idle-clash/content';
 import { countOf, type State } from '@idle-clash/kernel';
 import { foods, itemOf } from './catalog.ts';
+import { codeOrder } from './order.ts';
 
 export type FeastLift = 'damage' | 'xp';
 export interface Feast {
@@ -31,7 +32,7 @@ export const feastOf = (item: string): Feast | null => (Object.hasOwn(FEASTS, it
 
 /** The order a fight eats its food: the most healing first, a feast before a dish that heals as much. */
 export function mealOrder(a: { item: string; heals: number }, b: { item: string; heals: number }): number {
-  return b.heals - a.heals || Number(!!feastOf(b.item)) - Number(!!feastOf(a.item)) || a.item.localeCompare(b.item);
+  return b.heals - a.heals || Number(!!feastOf(b.item)) - Number(!!feastOf(a.item)) || codeOrder(a.item, b.item);
 }
 
 /** The meal at hand: the food carried that a fight eats first, or null with none. */

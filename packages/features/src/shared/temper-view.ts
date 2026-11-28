@@ -6,6 +6,7 @@ import { itemOf } from './catalog.ts';
 import { skillLevel } from './skill.ts';
 import { guardOf, stepCost, stepsOf, TEMPER, trophiesFor } from './temper.ts';
 import { heirloomOf } from './heirlooms.ts';
+import { codeOrder } from './order.ts';
 
 export interface TemperLine {
   /** "Tempered 2 of 5: +2% damage", or null before the first step. */
@@ -22,7 +23,7 @@ export const trophiesHeld = (state: State, item: string) =>
   trophiesFor(item)
     .map((id) => ({ id, count: countOf(state, id) }))
     .filter((x) => x.count > 0)
-    .sort((a, b) => b.count - a.count || a.id.localeCompare(b.id));
+    .sort((a, b) => b.count - a.count || codeOrder(a.id, b.id));
 
 export function temperLine(state: State, item: string): TemperLine | null {
   // An heirloom is never tempered (session 251).

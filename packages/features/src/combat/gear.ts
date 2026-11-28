@@ -9,6 +9,7 @@ import { ARMOUR_GUARD_PER_TIER, HITPOINTS, WEAPON_HIT_PER_TIER } from '../shared
 import { combatOf, setCombat } from '../shared/combat/state.ts';
 import { stepsOf } from '../shared/temper.ts';
 import { skillLevel } from '../shared/skill.ts';
+import { codeOrder } from '../shared/order.ts';
 
 export type WearResult =
   | { ok: true }
@@ -75,7 +76,7 @@ export function bestIn(state: State, slot: GearSlot, style?: Style): string | nu
     const needs = wearNeeds(id)!;
     return skillLevel(state, needs.skill) >= needs.level;
   });
-  return held.sort((a, b) => worthOf(state, b) - worthOf(state, a) || a.localeCompare(b))[0] ?? null;
+  return held.sort((a, b) => worthOf(state, b) - worthOf(state, a) || codeOrder(a, b))[0] ?? null;
 }
 
 /** The styles a player could fight as now: those with a weapon held that they may wear. */
