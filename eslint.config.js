@@ -28,6 +28,31 @@ export default tseslint.config(
     rules: { ...reactHooks.configs.recommended.rules },
   },
   {
+    // The rules run on the page and on the server alike, and must answer the same on both (session 293): a
+    // tie broken by localeCompare follows the device's language (Lithuanian sorts y with i), so the page's
+    // fight could eat another meal than the server's and spend other trophies; nor may the rules read the
+    // clock or chance of their own, which come in with each command.
+    files: ['packages/kernel/src/**/*.ts', 'packages/features/src/**/*.ts', 'packages/content/src/**/*.ts'],
+    rules: {
+      'no-restricted-properties': [
+        'error',
+        { object: 'Math', property: 'random', message: 'The rules draw chance from the save (rng).' },
+        { object: 'Date', property: 'now', message: 'The rules take the time they are given.' },
+        ...['localeCompare', 'toLocaleString', 'toLocaleLowerCase', 'toLocaleUpperCase'].map((property) => ({
+          property,
+          message: "This follows the device's language: order ids with codeOrder, and say numbers through fmt.",
+        })),
+      ],
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: "NewExpression[callee.name='Date'][arguments.length=0]",
+          message: 'The rules take the time they are given.',
+        },
+      ],
+    },
+  },
+  {
     files: ['eslint.config.js'],
     extends: [tseslint.configs.disableTypeChecked],
   },
