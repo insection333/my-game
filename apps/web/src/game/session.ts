@@ -122,6 +122,20 @@ async function enter(player: PlayerView) {
   void pushAgain().catch(() => undefined);
 }
 
+/** The player's own name, changed by an admin while this page was open (session 291): told on the live channel,
+ *  and asked again as the channel reopens, in case it was told while the page was not listening. */
+export function renamed(name: string): void {
+  if (session.player && session.player.name !== name) setSession({ player: { ...session.player, name } });
+}
+export async function askName(): Promise<void> {
+  try {
+    const me = await api.me();
+    if (me.player && me.player.id === session.player?.id) renamed(me.player.name);
+  } catch {
+    /* The next reopening asks again. */
+  }
+}
+
 /** Asks the server who is here and which features are on, then loads the game for a player: one ask at a time
  *  (session 283: the offline page tries again by itself, and a press of Try again beside it must not start the
  *  game twice). */

@@ -11,6 +11,8 @@ export type LiveMessage =
   /** A letter came, or letters were read (session 45): how many are unread now. */
   | { type: 'mail'; unread: number }
   /** The realm's banner put up or taken down (session 235). */
-  | { type: 'banner'; banner: Banner | null };
+  | { type: 'banner'; banner: Banner | null }
+  /** The player's own name, changed by an admin (session 291). */
+  | { type: 'renamed'; name: string };
 
 export const LIVE_PATH = '/api/live';

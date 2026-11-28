@@ -25,7 +25,7 @@ import { announceGains } from './gains.ts';
 import { openLive } from './live.ts';
 import { refreshMail, setUnreadMail } from './mail.ts';
 import { setBanner } from './banner.ts';
-import { bounceOf, handled, sessionStore, signedOut } from './session.ts';
+import { askName, bounceOf, handled, renamed, sessionStore, signedOut } from './session.ts';
 import { serverNow, setServerTime } from './clock.ts';
 
 export interface GameView {
@@ -151,10 +151,12 @@ export async function start(flags: Record<string, boolean>): Promise<void> {
     },
     mail: setUnreadMail,
     banner: setBanner,
+    renamed,
     signedOut: (why) => signedOut(why ?? bounceOf('notSignedIn', sessionStore.get().phase)),
     reopened: () => {
       void resync();
       void refreshMail();
+      void askName();
     },
   });
   void refreshMail();

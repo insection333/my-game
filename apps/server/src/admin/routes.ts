@@ -95,6 +95,8 @@ export function adminRoutes(app: FastifyInstance, ctx: Ctx): void {
       if (before !== input.name) {
         ctx.notices.renameFoe(before, input.name);
         ctx.push.forgetFoe(before, input.name);
+        // Their own open pages say the new name too (session 291).
+        ctx.live.publish(input.playerId, { type: 'renamed', name: input.name });
       }
       settleReports(ctx, input.playerId, ctx.config.now());
       audit(ctx, req, 'rename', input.playerId, { from: before, to: input.name });

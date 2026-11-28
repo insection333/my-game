@@ -43,6 +43,7 @@ const on = () => ({
   reopened: vi.fn(),
   mail: vi.fn(),
   banner: vi.fn(),
+  renamed: vi.fn(),
 });
 
 describe('pages closed together', () => {

@@ -98,6 +98,8 @@ export function emailRoutes(app: FastifyInstance, ctx: Ctx): void {
     const passwordHash = await hashPassword(input.password);
     ctx.db.update(players).set({ passwordHash }).where(eq(players.id, row.playerId)).run();
     ctx.sessions.endAll(row.playerId);
+    // Their open pages too (session 291): left open, they went on hearing the player's news after the reset.
+    ctx.live.closePlayer(row.playerId);
     return reply.code(204).send();
   });
 }
