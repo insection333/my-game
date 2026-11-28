@@ -27,11 +27,13 @@ export function Sheet({ title, closeLabel, onClose, children, slot }: SheetProps
   useEffect(() => {
     const before = document.activeElement as HTMLElement | null;
     // Everything else on the page sleeps while the sheet is open (inert: not focusable, not read out,
-    // not pressable), as behind any modal dialog; it wakes when the sheet closes.
+    // not pressable), as behind any modal dialog; it wakes when the sheet closes. What is said aloud as it
+    // happens (`data-awake`: the moments, the connection's line) stays awake (session 297): asleep, a toast
+    // raised from the sheet itself, a sale or a work raised, was never read out.
     const slept: Element[] = [];
     for (let el = ref.current?.parentElement; el && el !== document.body; el = el.parentElement)
       for (const sib of Array.from(el.parentElement?.children ?? []))
-        if (sib !== el && !sib.hasAttribute('inert') && sib.tagName !== 'SCRIPT') {
+        if (sib !== el && !sib.hasAttribute('inert') && !sib.hasAttribute('data-awake') && sib.tagName !== 'SCRIPT') {
           sib.setAttribute('inert', '');
           slept.push(sib);
         }
